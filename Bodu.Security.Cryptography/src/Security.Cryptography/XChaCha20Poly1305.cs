@@ -30,9 +30,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Each instance is single-use. A new instance must be created for every message. Reusing a nonce under the same key
-/// destroys confidentiality and authenticity. Call <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" />
-/// before <see cref="IAeadBlockCipherModeTransform.Encrypt" /> or <see cref="IAeadBlockCipherModeTransform.Decrypt" />,
-/// passing an empty span if there is no associated data.
+/// destroys confidentiality and authenticity. Associated data is passed directly to
+/// <see cref="IAeadTransform.Encrypt" /> or <see cref="IAeadTransform.Decrypt" /> and defaults to empty; the emitted
+/// wire format is <c>ciphertext ‖ tag</c>.
+/// </para>
+/// <para>
+/// <strong>Key separation.</strong> Do not reuse a key across this construction, the raw <see cref="XChaCha20" />
+/// stream cipher, or a different AEAD construction unless an external protocol-level key-separation scheme (for example
+/// HKDF with distinct info labels) derives an independent key for each use.
 /// </para>
 /// </remarks>
 /// <example>
@@ -41,17 +46,16 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
-/// // The convenience helpers size the output buffer and return a single freshly allocated array.
-/// using IAeadBlockCipherModeTransform enc = new XChaCha20Poly1305(key, nonce);
-/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
-/// using IAeadBlockCipherModeTransform dec = new XChaCha20Poly1305(key, nonce);
+/// using var enc = new XChaCha20Poly1305(key, nonce);
+/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header); // ciphertext || tag
+/// using var dec = new XChaCha20Poly1305(key, nonce);
 /// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 ///]]>
 /// </code>
 /// </example>
 /// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="XChaCha20" /> <seealso cref="Poly1305" />
-/// <seealso cref="IAeadBlockCipherModeTransform" />
+/// <seealso cref="IStreamAeadTransform" />
 public sealed class XChaCha20Poly1305
     : Poly1305AeadTransform
 {

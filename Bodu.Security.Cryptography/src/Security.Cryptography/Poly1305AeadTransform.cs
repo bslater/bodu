@@ -10,25 +10,30 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the common <see cref="IAeadBlockCipherModeTransform" /> implementation shared by the extended-nonce
-/// Poly1305 AEAD constructions — argument validation, single-use lifecycle, associated-data capture, and secure
-/// clearing of retained key material. Derived types supply the keystream engine and, when required, an alternative
-/// framing.
+/// Provides the common <see cref="IStreamAeadTransform" /> implementation shared by the extended-nonce Poly1305 AEAD
+/// constructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
+/// material. Derived types supply the keystream engine and, when required, an alternative framing.
 /// </summary>
 /// <remarks>
 /// <para>
-/// All constructions in this family bind a 256-bit key and a 192-bit nonce and emit a 128-bit tag. By default the
-/// transform applies the RFC 8439 framing (<see cref="Poly1305AeadCore.SealRfc8439" /> /
-/// <see cref="Poly1305AeadCore.OpenRfc8439" />); a derived type may override <see cref="SealCore" /> and
-/// <see cref="OpenCore" /> to substitute a different framing, as the NaCl <c>crypto_secretbox</c> construction does.
+/// All constructions in this family bind a 256-bit key and a 192-bit nonce and emit a 128-bit tag, with the wire format
+/// <c>ciphertext ‖ tag</c>. Associated data is passed directly to <see cref="Encrypt" /> / <see cref="Decrypt" /> and
+/// defaults to empty; there is no separate associated-data step. By default the transform applies the RFC 8439 framing
+/// (<see cref="Poly1305AeadCore.SealRfc8439" /> / <see cref="Poly1305AeadCore.OpenRfc8439" />); a derived type may
+/// override <see cref="SealCore" /> and <see cref="OpenCore" /> to substitute a different framing, as the NaCl
+/// <c>crypto_secretbox</c> construction does.
 /// </para>
 /// <para>
 /// Instances are stateful, not thread-safe, and single-use per message. A second call to <see cref="Encrypt" /> or
 /// <see cref="Decrypt" /> — including after a tag-mismatch failure — throws <see cref="InvalidOperationException" />.
 /// </para>
+/// <para>
+/// <strong>Buffer overlap.</strong> Exact in-place operation is supported: the plaintext (or ciphertext) may begin at
+/// the same location as the output. Any other (partial) overlap is rejected with <see cref="ArgumentException" />.
+/// </para>
 /// </remarks>
 public abstract class Poly1305AeadTransform
-    : IAeadBlockCipherModeTransform
+    : IStreamAeadTransform
 {
     /// <summary>
     /// Length of the key, in bytes (256 bits).
@@ -53,8 +58,6 @@ public abstract class Poly1305AeadTransform
     private readonly byte[] _key;
     private readonly byte[] _nonce;
 
-    private byte[] _associatedData = [];
-    private bool _associatedDataProcessed;
     private bool _completed;
     private bool _disposed;
 
@@ -83,6 +86,15 @@ public abstract class Poly1305AeadTransform
     public int TagSize => TagSizeBits;
 
     /// <summary>
+    /// Gets a value indicating whether this construction authenticates associated data.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> for the RFC 8439-framed constructions; <see langword="false" /> for the secretbox
+    /// construction, which has no associated-data input.
+    /// </returns>
+    protected virtual bool SupportsAssociatedData => true;
+
+    /// <summary>
     /// Gets the retained secret key.
     /// </summary>
     /// <returns>A read-only view over the 32-byte key.</returns>
@@ -95,35 +107,24 @@ public abstract class Poly1305AeadTransform
     protected ReadOnlySpan<byte> Nonce => _nonce;
 
     /// <inheritdoc />
-    public virtual void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
+    public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output, ReadOnlySpan<byte> associatedData = default)
     {
         ThrowIfDisposed();
         ThrowIfCompleted();
+        ThrowIfAssociatedDataUnsupported(associatedData);
 
-        if (_associatedDataProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
-
-        _associatedData = associatedData.IsEmpty ? [] : associatedData.ToArray();
-        _associatedDataProcessed = true;
-    }
-
-    /// <inheritdoc />
-    public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
-    {
-        ThrowIfDisposed();
-        ThrowIfCompleted();
-        ThrowIfAssociatedDataNotProcessed();
-
-        int required = plaintext.Length + TagBytes;
+        int required = checked(plaintext.Length + TagBytes);
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
 
+        ThrowIfPartialOverlap(plaintext, output);
+
         try
         {
             using IStreamCipher engine = CreateEngine();
-            return SealCore(engine, _associatedData, plaintext, output);
+            return SealCore(engine, associatedData, plaintext, output);
         }
         finally
         {
@@ -132,11 +133,11 @@ public abstract class Poly1305AeadTransform
     }
 
     /// <inheritdoc />
-    public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output, ReadOnlySpan<byte> associatedData = default)
     {
         ThrowIfDisposed();
         ThrowIfCompleted();
-        ThrowIfAssociatedDataNotProcessed();
+        ThrowIfAssociatedDataUnsupported(associatedData);
 
         if (ciphertextWithTag.Length < TagBytes)
             throw new ArgumentException(
@@ -149,10 +150,12 @@ public abstract class Poly1305AeadTransform
                 string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
 
+        ThrowIfPartialOverlap(ciphertextWithTag, output);
+
         try
         {
             using IStreamCipher engine = CreateEngine();
-            return OpenCore(engine, _associatedData, ciphertextWithTag, output);
+            return OpenCore(engine, associatedData, ciphertextWithTag, output);
         }
         finally
         {
@@ -161,8 +164,7 @@ public abstract class Poly1305AeadTransform
     }
 
     /// <summary>
-    /// Releases the resources used by this instance and clears the retained key, nonce, and associated data from
-    /// memory.
+    /// Releases the resources used by this instance and clears the retained key and nonce from memory.
     /// </summary>
     public void Dispose()
     {
@@ -171,8 +173,6 @@ public abstract class Poly1305AeadTransform
 
         CryptographicOperations.ZeroMemory(_key);
         CryptographicOperations.ZeroMemory(_nonce);
-        if (_associatedData.Length > 0)
-            CryptographicOperations.ZeroMemory(_associatedData);
 
         _completed = true;
         _disposed = true;
@@ -223,6 +223,36 @@ public abstract class Poly1305AeadTransform
         Poly1305AeadCore.OpenRfc8439(engine, associatedData, ciphertextWithTag, output);
 
     /// <summary>
+    /// Throws an <see cref="ArgumentException" /> if <paramref name="input" /> and <paramref name="output" /> overlap
+    /// by any amount other than an exact same-start in-place arrangement.
+    /// </summary>
+    /// <param name="input">The plaintext or ciphertext span.</param>
+    /// <param name="output">The destination span.</param>
+    /// <exception cref="ArgumentException">The buffers partially overlap.</exception>
+    private static void ThrowIfPartialOverlap(ReadOnlySpan<byte> input, ReadOnlySpan<byte> output)
+    {
+        if (input.Overlaps(output, out int elementOffset) && elementOffset != 0)
+            throw new ArgumentException(CryptoResourceStrings.Crypt_Invalid_PartialBufferOverlap, nameof(output));
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentException" /> if non-empty associated data is supplied to a construction that does
+    /// not authenticate it.
+    /// </summary>
+    /// <param name="associatedData">The associated data supplied by the caller.</param>
+    /// <exception cref="ArgumentException">
+    /// <see cref="SupportsAssociatedData" /> is <see langword="false" /> and <paramref name="associatedData" /> is not
+    /// empty.
+    /// </exception>
+    private void ThrowIfAssociatedDataUnsupported(ReadOnlySpan<byte> associatedData)
+    {
+        if (!SupportsAssociatedData && !associatedData.IsEmpty)
+            throw new ArgumentException(
+                CryptoResourceStrings.Crypt_Invalid_SecretboxAssociatedData,
+                nameof(associatedData));
+    }
+
+    /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if this instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -240,17 +270,5 @@ public abstract class Poly1305AeadTransform
     {
         if (_completed)
             throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_TransformAlreadyFinalized);
-    }
-
-    /// <summary>
-    /// Throws an <see cref="InvalidOperationException" /> if <see cref="ProcessAssociatedData" /> has not been called.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// <see cref="ProcessAssociatedData" /> has not been called.
-    /// </exception>
-    private void ThrowIfAssociatedDataNotProcessed()
-    {
-        if (!_associatedDataProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
     }
 }

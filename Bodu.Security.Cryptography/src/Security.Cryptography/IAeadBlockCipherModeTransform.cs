@@ -145,8 +145,8 @@ public interface IAeadBlockCipherModeTransform
     /// </summary>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">
-    /// Receives the ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag. Must be at least
-    /// <c>plaintext.Length + (TagSize / 8)</c> bytes long.
+    /// Receives the ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag. Must be
+    /// at least <c>plaintext.Length + (TagSize / 8)</c> bytes long.
     /// </param>
     /// <returns>Total bytes written: <c>plaintext.Length + (TagSize / 8)</c>.</returns>
     /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
@@ -160,8 +160,8 @@ public interface IAeadBlockCipherModeTransform
     /// Decrypts <paramref name="ciphertextWithTag" /> and verifies the authentication tag.
     /// </summary>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte authentication tag. Must be at least
-    /// <see cref="IAeadTransform.TagSize" /> / 8 bytes long.
+    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte authentication tag.
+    /// Must be at least <see cref="IAeadTransform.TagSize" /> / 8 bytes long.
     /// </param>
     /// <param name="output">
     /// Receives the decrypted plaintext. Must be at least <c>ciphertextWithTag.Length - (TagSize / 8)</c> bytes long.

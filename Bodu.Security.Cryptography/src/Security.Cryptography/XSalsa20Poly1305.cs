@@ -4,37 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides authenticated encryption using the NaCl <c>crypto_secretbox</c> XSalsa20-Poly1305 construction. Accepts a
-/// 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.
+/// Provides authenticated encryption using the XSalsa20-Poly1305 construction of NaCl / libsodium
+/// <c>crypto_secretbox</c>, with the Bodu AEAD combined layout <c>ciphertext ‖ tag</c>. Accepts a 256-bit key and a
+/// 192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// XSalsa20-Poly1305 is the secret-key authenticated-encryption primitive behind NaCl / libsodium
-/// <c>crypto_secretbox</c>. A 256-bit subkey is derived from the key and the first 128 bits of the nonce via HSalsa20,
-/// and Salsa20 runs under that subkey with the trailing 64 bits of the nonce. The leading 32 bytes of the counter-0
-/// keystream block form the one-time <see cref="Poly1305" /> key; the message is encrypted with the keystream from byte
-/// 32 onward; and the tag is computed over the ciphertext alone.
+/// The cryptographic body matches secretbox: a 256-bit subkey is derived from the key and the first 128 bits of the
+/// nonce via HSalsa20, Salsa20 runs under that subkey with the trailing 64 bits of the nonce, the leading 32 bytes of
+/// the counter-0 keystream block form the one-time <see cref="Poly1305" /> key, the message is encrypted with the
+/// keystream from byte 32 onward, and the tag is computed over the ciphertext alone.
 /// </para>
 /// <para>
-/// <strong>No associated data.</strong> The classic secretbox construction does not authenticate associated data. For
-/// interface compatibility this type implements <see cref="IAeadBlockCipherModeTransform" />, but
-/// <see cref="ProcessAssociatedData" /> accepts only an empty span and otherwise throws. When associated-data support
-/// is required, use <see cref="XSalsa20Poly1305Ietf" /> (XSalsa20 with RFC 8439 framing) or
-/// <see cref="XChaCha20Poly1305" />.
+/// <strong>Wire format is not libsodium combined-mode.</strong> libsodium <c>crypto_secretbox_easy</c> emits
+/// <c>tag ‖ ciphertext</c>; this type emits <c>ciphertext ‖ tag</c> to match the rest of the Bodu AEAD surface. The
+/// ciphertext and tag bytes are identical — only the order differs. Use <see cref="ToLibsodiumCombined" /> /
+/// <see cref="FromLibsodiumCombined" /> at the interop boundary to convert between the two layouts.
 /// </para>
 /// <para>
-/// <strong>Wire format.</strong> This type emits the ciphertext followed by the 16-byte tag (<c>ciphertext ‖ tag</c>),
-/// matching the rest of the library's AEAD surface. NaCl's combined <c>crypto_secretbox</c> output places the tag first
-/// (<c>tag ‖ ciphertext</c>); the ciphertext and tag bytes are identical, only their order differs.
+/// <strong>No associated data.</strong> The secretbox construction does not authenticate associated data; supplying
+/// non-empty associated data to <see cref="IAeadTransform.Encrypt" /> or <see cref="IAeadTransform.Decrypt" /> throws
+/// <see cref="ArgumentException" />. When associated-data support is required, use <see cref="XSalsa20Poly1305Aead" />
+/// (XSalsa20 with RFC 8439 framing) or <see cref="XChaCha20Poly1305" />.
 /// </para>
 /// <para>
 /// Each instance is single-use. A new instance must be created for every message. Reusing a nonce under the same key
 /// destroys confidentiality and authenticity.
+/// </para>
+/// <para>
+/// <strong>Key separation.</strong> Do not reuse a key across this construction, the raw <see cref="XSalsa20" /> stream
+/// cipher, or any other AEAD construction unless an external key-separation scheme derives an independent key for each
+/// use.
 /// </para>
 /// </remarks>
 /// <example>
@@ -43,16 +46,15 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
-/// using IAeadBlockCipherModeTransform enc = new XSalsa20Poly1305(key, nonce);
+/// using var enc = new XSalsa20Poly1305(key, nonce);
 /// byte[] sealed_ = enc.Encrypt(plaintext); // ciphertext || tag, no associated data
-/// using IAeadBlockCipherModeTransform dec = new XSalsa20Poly1305(key, nonce);
+/// using var dec = new XSalsa20Poly1305(key, nonce);
 /// byte[] recovered = dec.Decrypt(sealed_);
 ///]]>
 /// </code>
 /// </example>
 /// <seealso href="https://nacl.cr.yp.to/secretbox.html">NaCl crypto_secretbox</seealso> <seealso cref="XSalsa20" />
-/// <seealso cref="XSalsa20Poly1305Ietf" /> <seealso cref="XChaCha20Poly1305" />
-/// <seealso cref="IAeadBlockCipherModeTransform" />
+/// <seealso cref="XSalsa20Poly1305Aead" /> <seealso cref="XChaCha20Poly1305" /> <seealso cref="IStreamAeadTransform" />
 public sealed class XSalsa20Poly1305
     : Poly1305AeadTransform
 {
@@ -102,22 +104,54 @@ public sealed class XSalsa20Poly1305
     {
     }
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// The secretbox construction does not authenticate associated data. Supplying a non-empty span throws
-    /// <see cref="ArgumentException" />; an empty span is accepted to satisfy the
-    /// <see cref="IAeadBlockCipherModeTransform" /> contract.
-    /// </remarks>
-    /// <exception cref="ArgumentException"><paramref name="associatedData" /> is not empty.</exception>
-    public override void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
+    /// <summary>
+    /// Converts a Bodu combined output <c>ciphertext ‖ tag</c> into the libsodium combined layout
+    /// <c>tag ‖ ciphertext</c>.
+    /// </summary>
+    /// <param name="ciphertextThenTag">The Bodu output: ciphertext followed by the 16-byte tag.</param>
+    /// <param name="tagThenCiphertext">
+    /// Receives the libsodium layout: the 16-byte tag followed by the ciphertext. May alias
+    /// <paramref name="ciphertextThenTag" /> for an in-place conversion.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="ciphertextThenTag" /> is shorter than the tag, or <paramref name="tagThenCiphertext" /> is too
+    /// small.
+    /// </exception>
+    public static void ToLibsodiumCombined(ReadOnlySpan<byte> ciphertextThenTag, Span<byte> tagThenCiphertext)
     {
-        if (!associatedData.IsEmpty)
-            throw new ArgumentException(
-                CryptoResourceStrings.Crypt_Invalid_SecretboxAssociatedData,
-                nameof(associatedData));
+        int ciphertextLength = ValidateCombined(ciphertextThenTag, tagThenCiphertext);
 
-        base.ProcessAssociatedData(associatedData);
+        Span<byte> tag = stackalloc byte[TagBytes];
+        ciphertextThenTag[ciphertextLength..].CopyTo(tag);
+        ciphertextThenTag[..ciphertextLength].CopyTo(tagThenCiphertext[TagBytes..]);
+        tag.CopyTo(tagThenCiphertext[..TagBytes]);
     }
+
+    /// <summary>
+    /// Converts a libsodium combined output <c>tag ‖ ciphertext</c> into the Bodu combined layout
+    /// <c>ciphertext ‖ tag</c>.
+    /// </summary>
+    /// <param name="tagThenCiphertext">The libsodium output: the 16-byte tag followed by the ciphertext.</param>
+    /// <param name="ciphertextThenTag">
+    /// Receives the Bodu layout: the ciphertext followed by the 16-byte tag. May alias
+    /// <paramref name="tagThenCiphertext" /> for an in-place conversion.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="tagThenCiphertext" /> is shorter than the tag, or <paramref name="ciphertextThenTag" /> is too
+    /// small.
+    /// </exception>
+    public static void FromLibsodiumCombined(ReadOnlySpan<byte> tagThenCiphertext, Span<byte> ciphertextThenTag)
+    {
+        int ciphertextLength = ValidateCombined(tagThenCiphertext, ciphertextThenTag);
+
+        Span<byte> tag = stackalloc byte[TagBytes];
+        tagThenCiphertext[..TagBytes].CopyTo(tag);
+        tagThenCiphertext[TagBytes..].CopyTo(ciphertextThenTag[..ciphertextLength]);
+        tag.CopyTo(ciphertextThenTag[ciphertextLength..]);
+    }
+
+    /// <inheritdoc />
+    protected override bool SupportsAssociatedData => false;
 
     /// <inheritdoc />
     protected override IStreamCipher CreateEngine() =>
@@ -138,4 +172,28 @@ public sealed class XSalsa20Poly1305
         ReadOnlySpan<byte> ciphertextWithTag,
         Span<byte> output) =>
         Poly1305AeadCore.OpenSecretbox(engine, ciphertextWithTag, output);
+
+    /// <summary>
+    /// Validates the source and destination buffers for a layout conversion and returns the ciphertext length.
+    /// </summary>
+    /// <param name="source">The combined input buffer (either layout).</param>
+    /// <param name="destination">The combined output buffer (the other layout).</param>
+    /// <returns>The ciphertext length, <c>source.Length - <see cref="Poly1305AeadTransform.TagBytes" /></c>.</returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="source" /> is shorter than the tag, or <paramref name="destination" /> is too small.
+    /// </exception>
+    private static int ValidateCombined(ReadOnlySpan<byte> source, Span<byte> destination)
+    {
+        if (source.Length < TagBytes)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
+                nameof(source));
+
+        if (destination.Length < source.Length)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, source.Length),
+                nameof(destination));
+
+        return source.Length - TagBytes;
+    }
 }

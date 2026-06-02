@@ -154,8 +154,8 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </summary>
     /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag.
-    /// Must be at least <c>transform.TagSize / 8</c> bytes long.
+    /// The ciphertext followed immediately by the <see cref="IAeadTransform.TagSize" /> / 8 byte tag. Must be at least
+    /// <c>transform.TagSize / 8</c> bytes long.
     /// </param>
     /// <param name="associatedData">
     /// The data authenticated alongside the ciphertext. Must match what was supplied at encryption time.

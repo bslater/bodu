@@ -9,9 +9,9 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a provenance-aware known-answer-test vector for the stream-cipher AEAD constructions
-/// (XChaCha20-Poly1305 and the XSalsa20-Poly1305 family). Vectors are stored with their ciphertext and authentication
-/// tag detached; the <see cref="SourceKind" /> records how authoritative the vector is so test labels do not overclaim.
+/// Represents a provenance-aware known-answer-test vector for the stream-cipher AEAD constructions (XChaCha20-Poly1305
+/// and the XSalsa20-Poly1305 family). Vectors are stored with their ciphertext and authentication tag detached; the
+/// <see cref="SourceKind" /> records how authoritative the vector is so test labels do not overclaim.
 /// </summary>
 /// <param name="Id">A stable identifier for the vector.</param>
 /// <param name="Algorithm">The construction name the vector exercises; selects the implementation under test.</param>
@@ -24,6 +24,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <param name="PlaintextHex">The plaintext as lowercase hexadecimal.</param>
 /// <param name="CiphertextHex">The expected ciphertext as lowercase hexadecimal, excluding the tag.</param>
 /// <param name="TagHex">The expected authentication tag as lowercase hexadecimal.</param>
+/// <param name="SourceOutputLayout">The combined-output layout used by the vector's source.</param>
 /// <param name="Notes">Optional additional guidance about the vector.</param>
 public sealed record StreamAeadKnownAnswerVector(
     string Id,
@@ -37,6 +38,7 @@ public sealed record StreamAeadKnownAnswerVector(
     string PlaintextHex,
     string CiphertextHex,
     string TagHex,
+    AeadKatOutputLayout SourceOutputLayout = AeadKatOutputLayout.DetachedTag,
     string? Notes = null) : IKat
 {
     /// <inheritdoc />

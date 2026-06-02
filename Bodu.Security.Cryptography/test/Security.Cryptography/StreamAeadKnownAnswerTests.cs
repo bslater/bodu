@@ -13,11 +13,11 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the public stream-cipher AEAD constructions against provenance-labelled known-answer vectors:
 /// <see cref="XChaCha20Poly1305" /> against the draft-irtf-cfrg-xchacha Internet-Draft vector, and
-/// <see cref="XSalsa20Poly1305" /> against the libsodium <c>crypto_secretbox</c> reference vector. The
-/// <see cref="XSalsa20Poly1305Ietf" /> construction has no published external vector, so it is checked against a derived
-/// oracle composed from the independently-tested public <see cref="XSalsa20" /> keystream and <see cref="Poly1305" />
-/// MAC. The RFC 8439 ChaCha20-Poly1305 framing that all of these reuse is anchored separately in
-/// <see cref="Poly1305AeadCoreTests" />.
+/// <see cref="XSalsa20Poly1305" /> against the libsodium <c>crypto_secretbox</c> reference vector (including its native
+/// <c>tag ‖ ciphertext</c> layout). The Bodu-defined <see cref="XSalsa20Poly1305Aead" /> construction has no published
+/// external vector, so it is checked against a derived oracle composed from the independently-tested public
+/// <see cref="XSalsa20" /> keystream and <see cref="Poly1305" /> MAC, and against a frozen value locked into the test
+/// source. The RFC 8439 framing that all of these reuse is anchored separately in <see cref="Poly1305AeadCoreTests" />.
 /// </summary>
 [TestClass]
 public class StreamAeadKnownAnswerTests
@@ -32,7 +32,18 @@ public class StreamAeadKnownAnswerTests
         "73756e73637265656e20776f756c642062652069742e";
 
     private const string SunscreenKeyHex = "808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f";
+    private const string SunscreenNonce24Hex = "404142434445464748494a4b4c4d4e4f5051525354555657";
     private const string SunscreenAadHex = "50515253c0c1c2c3c4c5c6c7";
+
+    // Frozen XSalsa20Poly1305Aead output for the sunscreen key/nonce/AAD/plaintext above, generated once from the
+    // construction itself and cross-checked against the derived oracle. This is NOT an external published vector; it
+    // pins the Bodu-defined hybrid so a regression cannot pass simply because production and oracle drift together.
+    private const string FrozenAeadCiphertextHex =
+        "60779c35e39f91b373dd13218ebe366e3c7f17829b1fc4006ee44681d1a961e9efd1d51c54cde408d4f66ea28bb6c303" +
+        "5575cc7de3b4604426e0a7a03e96e6ea87e108f60ad2bc7123d67455056588c5a8bbd275e9981cfebebfeba673f2cd1f" +
+        "f3f3805c28d5cc5382859152ca2e0b33e1cb";
+
+    private const string FrozenAeadTagHex = "c46bc8bc3951e8a05d1c752917e39bf4";
 
     /// <summary>
     /// Enumerates the externally published known-answer vectors, each wrapped as a single
@@ -50,7 +61,7 @@ public class StreamAeadKnownAnswerTests
                 SourceKind: AeadKatSourceKind.InternetDraft,
                 Source: "draft-irtf-cfrg-xchacha-03 Appendix A.3.1, AEAD_XCHACHA20_POLY1305",
                 KeyHex: SunscreenKeyHex,
-                NonceHex: "404142434445464748494a4b4c4d4e4f5051525354555657",
+                NonceHex: SunscreenNonce24Hex,
                 AadHex: SunscreenAadHex,
                 PlaintextHex: SunscreenPlaintextHex,
                 CiphertextHex:
@@ -58,6 +69,7 @@ public class StreamAeadKnownAnswerTests
                     "e39ae64c6708c54c216cb96b72e1213b4522f8c9ba40db5d945b11b69b982c1bb9e3f3fac2bc369488f76b238356" +
                     "5d3fff921f9664c97637da9768812f615c68b13b52e",
                 TagHex: "c0875924c1c7987947deafd8780acf49",
+                SourceOutputLayout: AeadKatOutputLayout.DetachedTag,
                 Notes: "Internet-Draft vector (not an RFC). Matches libsodium crypto_aead_xchacha20poly1305_ietf."),
         };
 
@@ -81,6 +93,7 @@ public class StreamAeadKnownAnswerTests
                     "c97271d2c20f9b928fe2270d6fb863d51738b48eeee314a7cc8ab932164548e526ae90224368517acfeabd6bb37" +
                     "32bc0e9da99832b61ca01b6de56244a9e88d5f9b37973f622a43d14a6599b1f654cb45a74e355a5",
                 TagHex: "f3ffc7703f9400e52a7dfb4b3d3305d9",
+                SourceOutputLayout: AeadKatOutputLayout.TagThenCiphertext,
                 Notes: "Reference-implementation vector. libsodium emits tag || ciphertext; Bodu emits ciphertext || tag."),
         };
     }
@@ -107,10 +120,9 @@ public class StreamAeadKnownAnswerTests
         var plaintext = vector.Plaintext;
         var output = new byte[plaintext.Length + 16];
 
-        using (IAeadBlockCipherModeTransform enc = CreateTransform(vector))
+        using (IStreamAeadTransform enc = CreateTransform(vector))
         {
-            enc.ProcessAssociatedData(vector.AssociatedData);
-            int written = enc.Encrypt(plaintext, output);
+            int written = enc.Encrypt(plaintext, output, vector.AssociatedData);
             Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
         }
 
@@ -132,10 +144,9 @@ public class StreamAeadKnownAnswerTests
         var ciphertextWithTag = vector.CiphertextWithTag;
         var output = new byte[ciphertextWithTag.Length - 16];
 
-        using (IAeadBlockCipherModeTransform dec = CreateTransform(vector))
+        using (IStreamAeadTransform dec = CreateTransform(vector))
         {
-            dec.ProcessAssociatedData(vector.AssociatedData);
-            int written = dec.Decrypt(ciphertextWithTag, output);
+            int written = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
             Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
         }
 
@@ -155,60 +166,101 @@ public class StreamAeadKnownAnswerTests
         ciphertextWithTag[^1] ^= 0x01;
         var output = new byte[ciphertextWithTag.Length - 16];
 
-        using IAeadBlockCipherModeTransform dec = CreateTransform(vector);
-        dec.ProcessAssociatedData(vector.AssociatedData);
-
+        using IStreamAeadTransform dec = CreateTransform(vector);
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            _ = dec.Decrypt(ciphertextWithTag, output);
+            _ = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="XSalsa20Poly1305Ietf" /> matches a derived oracle that composes the independently-tested
-    /// public <see cref="XSalsa20" /> keystream with the public <see cref="Poly1305" /> MAC under RFC 8439 framing, and
-    /// that the construction round-trips. No external standard vector exists for this hybrid; this is a derived-oracle
-    /// test, not an authoritative KAT.
+    /// Verifies that the libsodium secretbox reference output (<c>tag ‖ ciphertext</c>) is reproduced by encrypting with
+    /// <see cref="XSalsa20Poly1305" /> and converting the Bodu <c>ciphertext ‖ tag</c> output via
+    /// <see cref="XSalsa20Poly1305.ToLibsodiumCombined" />.
     /// </summary>
     [TestMethod]
-    public void XSalsa20Poly1305Ietf_WhenComparedToDerivedOracle_ShouldMatchAndRoundTrip()
+    public void Encrypt_WhenSecretboxVectorConvertedToLibsodiumLayout_ShouldMatchTagThenCiphertext()
     {
-        byte[] key = Convert.FromHexString(SunscreenKeyHex);
-        byte[] nonce = Convert.FromHexString("404142434445464748494a4b4c4d4e4f5051525354555657");
-        byte[] aad = Convert.FromHexString(SunscreenAadHex);
-        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+        StreamAeadKnownAnswerVector vector = SecretboxVector();
 
-        (byte[] expectedCiphertext, byte[] expectedTag) = DeriveXSalsa20Poly1305IetfOracle(key, nonce, aad, plaintext);
+        var boduCombined = new byte[vector.Plaintext.Length + 16];
+        using (var enc = new XSalsa20Poly1305(vector.Key, vector.Nonce))
+            enc.Encrypt(vector.Plaintext, boduCombined);
 
-        var output = new byte[plaintext.Length + 16];
-        using (var enc = new XSalsa20Poly1305Ietf(key, nonce))
-        {
-            enc.ProcessAssociatedData(aad);
-            enc.Encrypt(plaintext, output);
-        }
+        var libsodiumCombined = new byte[boduCombined.Length];
+        XSalsa20Poly1305.ToLibsodiumCombined(boduCombined, libsodiumCombined);
 
-        CollectionAssert.AreEqual(expectedCiphertext, output.AsSpan(0, plaintext.Length).ToArray(),
-            "XSalsa20Poly1305Ietf ciphertext must match the derived oracle.");
-        CollectionAssert.AreEqual(expectedTag, output.AsSpan(plaintext.Length).ToArray(),
-            "XSalsa20Poly1305Ietf tag must match the derived oracle.");
+        // libsodium native layout for this vector is tag || ciphertext.
+        var expected = new byte[vector.Tag.Length + vector.Ciphertext.Length];
+        vector.Tag.CopyTo(expected, 0);
+        vector.Ciphertext.CopyTo(expected, vector.Tag.Length);
 
-        var recovered = new byte[plaintext.Length];
-        using (var dec = new XSalsa20Poly1305Ietf(key, nonce))
-        {
-            dec.ProcessAssociatedData(aad);
-            dec.Decrypt(output, recovered);
-        }
-
-        CollectionAssert.AreEqual(plaintext, recovered, "XSalsa20Poly1305Ietf must round-trip.");
+        Assert.AreEqual(AeadKatOutputLayout.TagThenCiphertext, vector.SourceOutputLayout);
+        CollectionAssert.AreEqual(expected, libsodiumCombined);
     }
 
     /// <summary>
-    /// Creates the AEAD transform that a vector targets.
+    /// Verifies that <see cref="XSalsa20Poly1305Aead" /> matches a derived oracle that composes the independently-tested
+    /// public <see cref="XSalsa20" /> keystream with the public <see cref="Poly1305" /> MAC under RFC 8439 framing, and
+    /// that the construction round-trips. No external standard vector exists for this hybrid; this is a derived-oracle
+    /// check, not an authoritative KAT.
+    /// </summary>
+    [TestMethod]
+    public void XSalsa20Poly1305Aead_WhenComparedToDerivedOracle_ShouldMatchAndRoundTrip()
+    {
+        byte[] key = Convert.FromHexString(SunscreenKeyHex);
+        byte[] nonce = Convert.FromHexString(SunscreenNonce24Hex);
+        byte[] aad = Convert.FromHexString(SunscreenAadHex);
+        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+
+        (byte[] expectedCiphertext, byte[] expectedTag) = DeriveAeadOracle(key, nonce, aad, plaintext);
+
+        var output = new byte[plaintext.Length + 16];
+        using (var enc = new XSalsa20Poly1305Aead(key, nonce))
+            enc.Encrypt(plaintext, output, aad);
+
+        CollectionAssert.AreEqual(expectedCiphertext, output.AsSpan(0, plaintext.Length).ToArray(),
+            "XSalsa20Poly1305Aead ciphertext must match the derived oracle.");
+        CollectionAssert.AreEqual(expectedTag, output.AsSpan(plaintext.Length).ToArray(),
+            "XSalsa20Poly1305Aead tag must match the derived oracle.");
+
+        var recovered = new byte[plaintext.Length];
+        using (var dec = new XSalsa20Poly1305Aead(key, nonce))
+            dec.Decrypt(output, recovered, aad);
+
+        CollectionAssert.AreEqual(plaintext, recovered, "XSalsa20Poly1305Aead must round-trip.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XSalsa20Poly1305Aead" /> reproduces the frozen derived vector locked into this test, so
+    /// the construction cannot silently change even if the derived oracle changed in lock-step. This is a frozen
+    /// derived-oracle value, not an external KAT.
+    /// </summary>
+    [TestMethod]
+    public void XSalsa20Poly1305Aead_WhenGivenFrozenDerivedVector_ShouldRemainStable()
+    {
+        byte[] key = Convert.FromHexString(SunscreenKeyHex);
+        byte[] nonce = Convert.FromHexString(SunscreenNonce24Hex);
+        byte[] aad = Convert.FromHexString(SunscreenAadHex);
+        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+
+        var output = new byte[plaintext.Length + 16];
+        using (var enc = new XSalsa20Poly1305Aead(key, nonce))
+            enc.Encrypt(plaintext, output, aad);
+
+        CollectionAssert.AreEqual(Convert.FromHexString(FrozenAeadCiphertextHex),
+            output.AsSpan(0, plaintext.Length).ToArray(), "Frozen ciphertext drift.");
+        CollectionAssert.AreEqual(Convert.FromHexString(FrozenAeadTagHex),
+            output.AsSpan(plaintext.Length).ToArray(), "Frozen tag drift.");
+    }
+
+    /// <summary>
+    /// Creates the AEAD transform that an external vector targets.
     /// </summary>
     /// <param name="vector">The vector whose <see cref="StreamAeadKnownAnswerVector.Algorithm" /> selects the type.</param>
     /// <returns>A transform bound to the vector's key and nonce.</returns>
     /// <exception cref="NotSupportedException">The vector names an unrecognised algorithm.</exception>
-    private static IAeadBlockCipherModeTransform CreateTransform(StreamAeadKnownAnswerVector vector) =>
+    private static IStreamAeadTransform CreateTransform(StreamAeadKnownAnswerVector vector) =>
         vector.Algorithm switch
         {
             AlgorithmXChaCha20Poly1305 => new XChaCha20Poly1305(vector.Key, vector.Nonce),
@@ -217,16 +269,25 @@ public class StreamAeadKnownAnswerTests
         };
 
     /// <summary>
-    /// Computes the expected XSalsa20-Poly1305 (IETF framing) ciphertext and tag by composing the public
-    /// <see cref="XSalsa20" /> keystream with the public <see cref="Poly1305" /> MAC over the RFC 8439 framing — an
-    /// implementation path independent of <c>Poly1305AeadCore</c>.
+    /// Returns the libsodium secretbox reference vector from <see cref="ExternalVectors" />.
+    /// </summary>
+    /// <returns>The secretbox known-answer vector.</returns>
+    private static StreamAeadKnownAnswerVector SecretboxVector() =>
+        (StreamAeadKnownAnswerVector)ExternalVectors()
+            .Select(row => row[0])
+            .First(v => ((StreamAeadKnownAnswerVector)v).Algorithm == AlgorithmXSalsa20Poly1305Secretbox);
+
+    /// <summary>
+    /// Computes the expected XSalsa20-Poly1305 (RFC 8439 framing) ciphertext and tag by composing the public
+    /// <see cref="XSalsa20" /> keystream with the public <see cref="Poly1305" /> MAC — an implementation path
+    /// independent of <c>Poly1305AeadCore</c>.
     /// </summary>
     /// <param name="key">The 32-byte key.</param>
     /// <param name="nonce">The 24-byte nonce.</param>
     /// <param name="aad">The associated data.</param>
     /// <param name="plaintext">The plaintext.</param>
     /// <returns>The expected ciphertext and 16-byte tag.</returns>
-    private static (byte[] Ciphertext, byte[] Tag) DeriveXSalsa20Poly1305IetfOracle(
+    private static (byte[] Ciphertext, byte[] Tag) DeriveAeadOracle(
         byte[] key,
         byte[] nonce,
         byte[] aad,

@@ -82,6 +82,8 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> plaintext,
         Span<byte> output)
     {
+        ValidateSealBuffers(plaintext, output);
+
         Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
 
         try
@@ -116,6 +118,8 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertextWithTag,
         Span<byte> output)
     {
+        ValidateOpenBuffers(ciphertextWithTag, output);
+
         int ciphertextLength = ciphertextWithTag.Length - TagBytes;
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ciphertextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[ciphertextLength..];
@@ -152,6 +156,8 @@ internal static class Poly1305AeadCore
     /// <returns>The number of bytes written: <c>plaintext.Length + <see cref="TagBytes" /></c>.</returns>
     internal static int SealSecretbox(IStreamCipher engine, ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
+        ValidateSealBuffers(plaintext, output);
+
         Span<byte> block0 = stackalloc byte[KeystreamBlockBytes];
         Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
 
@@ -184,6 +190,8 @@ internal static class Poly1305AeadCore
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     internal static int OpenSecretbox(IStreamCipher engine, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
+        ValidateOpenBuffers(ciphertextWithTag, output);
+
         int ciphertextLength = ciphertextWithTag.Length - TagBytes;
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ciphertextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[ciphertextLength..];
@@ -304,35 +312,74 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertext,
         Span<byte> tag)
     {
-        int associatedDataPadding = PaddingTo16(associatedData.Length);
-        int ciphertextPadding = PaddingTo16(ciphertext.Length);
-        int macLength =
-            associatedData.Length + associatedDataPadding +
-            ciphertext.Length + ciphertextPadding +
-            (sizeof(ulong) * 2);
+        // Stream the MAC input through Poly1305 in bounded chunks rather than materialising the entire
+        // AAD || pad || ciphertext || pad || lengths buffer. The block-hash base buffers residual bytes across
+        // TransformBlock calls, so the ProcessBlock sequence is identical to a single-shot hash over the same
+        // bytes — but authenticating a large message no longer needs a second message-sized allocation.
+        const int chunkBytes = 4096;
 
-        byte[] rented = ArrayPool<byte>.Shared.Rent(macLength);
-        Span<byte> mac = rented.AsSpan(0, macLength);
+        byte[] keyBuffer = poly1305Key.ToArray();
+        byte[] chunk = ArrayPool<byte>.Shared.Rent(chunkBytes);
 
         try
         {
-            // Zero the whole buffer first so the pad16 gaps are clean before the segments are copied in.
-            mac.Clear();
+            using var poly1305 = new Poly1305 { Key = keyBuffer };
 
-            associatedData.CopyTo(mac);
-            ciphertext.CopyTo(mac[(associatedData.Length + associatedDataPadding)..]);
+            FeedData(poly1305, associatedData, chunk);
+            FeedZeros(poly1305, PaddingTo16(associatedData.Length), chunk);
+            FeedData(poly1305, ciphertext, chunk);
+            FeedZeros(poly1305, PaddingTo16(ciphertext.Length), chunk);
 
-            int lengthsOffset = associatedData.Length + associatedDataPadding + ciphertext.Length + ciphertextPadding;
-            BinaryPrimitives.WriteUInt64LittleEndian(mac[lengthsOffset..], (ulong)associatedData.Length);
-            BinaryPrimitives.WriteUInt64LittleEndian(mac[(lengthsOffset + sizeof(ulong))..], (ulong)ciphertext.Length);
+            // Final 16-byte little-endian length block completes the 16-aligned MAC input.
+            BinaryPrimitives.WriteUInt64LittleEndian(chunk.AsSpan(0, sizeof(ulong)), (ulong)associatedData.Length);
+            BinaryPrimitives.WriteUInt64LittleEndian(chunk.AsSpan(sizeof(ulong), sizeof(ulong)), (ulong)ciphertext.Length);
+            poly1305.TransformFinalBlock(chunk, 0, sizeof(ulong) * 2);
 
-            ComputePoly1305(poly1305Key, mac, tag);
+            byte[] hash = poly1305.Hash
+                ?? throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDidNotProduceValue);
+            hash.CopyTo(tag);
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(mac);
-            ArrayPool<byte>.Shared.Return(rented);
+            CryptographicOperations.ZeroMemory(chunk.AsSpan(0, chunkBytes));
+            ArrayPool<byte>.Shared.Return(chunk);
+            CryptographicOperations.ZeroMemory(keyBuffer);
         }
+    }
+
+    /// <summary>
+    /// Feeds <paramref name="data" /> into the running <paramref name="poly1305" /> MAC in chunk-sized segments.
+    /// </summary>
+    /// <param name="poly1305">The MAC accumulating the input.</param>
+    /// <param name="data">The data to authenticate.</param>
+    /// <param name="chunk">A scratch buffer used to bridge spans to the byte-array transform API.</param>
+    private static void FeedData(Poly1305 poly1305, ReadOnlySpan<byte> data, byte[] chunk)
+    {
+        int offset = 0;
+        while (offset < data.Length)
+        {
+            int count = Math.Min(chunk.Length, data.Length - offset);
+            data.Slice(offset, count).CopyTo(chunk);
+            poly1305.TransformBlock(chunk, 0, count, null, 0);
+            offset += count;
+        }
+    }
+
+    /// <summary>
+    /// Feeds <paramref name="count" /> zero bytes (RFC 8439 <c>pad16</c>) into the running MAC.
+    /// </summary>
+    /// <param name="poly1305">The MAC accumulating the input.</param>
+    /// <param name="count">The number of zero bytes to feed; in the range 0–15.</param>
+    /// <param name="chunk">
+    /// A scratch buffer, the first <paramref name="count" /> bytes of which are zeroed and fed.
+    /// </param>
+    private static void FeedZeros(Poly1305 poly1305, int count, byte[] chunk)
+    {
+        if (count == 0)
+            return;
+
+        Array.Clear(chunk, 0, count);
+        poly1305.TransformBlock(chunk, 0, count, null, 0);
     }
 
     /// <summary>
@@ -365,4 +412,41 @@ internal static class Poly1305AeadCore
     /// <returns>A value in the range 0–15.</returns>
     private static int PaddingTo16(int length) =>
         (16 - (length & 15)) & 15;
+
+    /// <summary>
+    /// Validates that <paramref name="output" /> can hold the ciphertext plus tag for a sealing operation.
+    /// </summary>
+    /// <param name="plaintext">The plaintext to be encrypted.</param>
+    /// <param name="output">The destination buffer.</param>
+    /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
+    private static void ValidateSealBuffers(ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        int required = checked(plaintext.Length + TagBytes);
+        if (output.Length < required)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
+                nameof(output));
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="ciphertextWithTag" /> is at least tag-sized and that <paramref name="output" />
+    /// can hold the recovered plaintext for an opening operation.
+    /// </summary>
+    /// <param name="ciphertextWithTag">The ciphertext followed by its tag.</param>
+    /// <param name="output">The destination buffer.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="ciphertextWithTag" /> is shorter than the tag, or <paramref name="output" /> is too small.
+    /// </exception>
+    private static void ValidateOpenBuffers(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    {
+        if (ciphertextWithTag.Length < TagBytes)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
+                nameof(ciphertextWithTag));
+
+        if (output.Length < ciphertextWithTag.Length - TagBytes)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ciphertextWithTag.Length - TagBytes),
+                nameof(output));
+    }
 }

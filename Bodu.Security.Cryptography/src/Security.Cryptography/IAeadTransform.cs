@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Represents an authenticated encryption with associated data (AEAD) transform — the construction-neutral surface
-/// shared by block-cipher AEAD modes (<see cref="IAeadBlockCipherModeTransform" />) and stream-cipher AEADs
-/// (<see cref="IStreamAeadTransform" />). A single call encrypts or decrypts a message together with its associated
+/// shared by block-cipher AEAD modes (<see cref="IAeadBlockCipherModeTransform" />) and stream-cipher AEADs (
+/// <see cref="IStreamAeadTransform" />). A single call encrypts or decrypts a message together with its associated
 /// data; associated data is optional and defaults to empty.
 /// </summary>
 /// <remarks>
@@ -47,7 +47,9 @@ public interface IAeadTransform
     /// </param>
     /// <param name="associatedData">The data authenticated but not encrypted. Defaults to empty.</param>
     /// <returns>Total bytes written: <c>plaintext.Length + (TagSize / 8)</c>.</returns>
-    /// <exception cref="ArgumentException"><paramref name="output" /> is too small, or the buffers partially overlap.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="output" /> is too small, or the buffers partially overlap.
+    /// </exception>
     /// <exception cref="InvalidOperationException">The instance has already processed a message.</exception>
     int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output, ReadOnlySpan<byte> associatedData = default);
 
@@ -59,7 +61,9 @@ public interface IAeadTransform
     /// <param name="output">
     /// Receives the recovered plaintext. Must be at least <c>ciphertextWithTag.Length - (TagSize / 8)</c> bytes long.
     /// </param>
-    /// <param name="associatedData">The data that must match what was supplied at encryption time. Defaults to empty.</param>
+    /// <param name="associatedData">
+    /// The data that must match what was supplied at encryption time. Defaults to empty.
+    /// </param>
     /// <returns>Bytes written: <c>ciphertextWithTag.Length - (TagSize / 8)</c>.</returns>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     /// <exception cref="ArgumentException">
