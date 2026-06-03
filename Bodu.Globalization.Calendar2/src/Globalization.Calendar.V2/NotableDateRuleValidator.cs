@@ -24,10 +24,11 @@ internal static class NotableDateRuleValidator
     /// </summary>
     /// <param name="resource">The resource to validate.</param>
     /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
-    public static void Validate(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    public static void Validate(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms = null)
     {
         ValidateAdjustmentPolicyIds(resource, diagnostics);
-        ValidateNotableDates(resource, diagnostics);
+        ValidateNotableDates(resource, diagnostics, algorithms);
     }
 
     /// <summary>
@@ -56,7 +57,8 @@ internal static class NotableDateRuleValidator
     /// </summary>
     /// <param name="resource">The resource to validate.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    private static void ValidateNotableDates(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    private static void ValidateNotableDates(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms)
     {
         HashSet<string> knownPolicies = new(resource.AdjustmentPolicies.Select(p => p.Id), StringComparer.Ordinal);
         HashSet<string> seenConcepts = new(StringComparer.Ordinal);
@@ -71,7 +73,7 @@ internal static class NotableDateRuleValidator
                     string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_DuplicateNotableDateId, definition.Id)));
             }
 
-            ValidateRules(resource, definition, knownPolicies, diagnostics);
+            ValidateRules(resource, definition, knownPolicies, diagnostics, algorithms);
         }
     }
 
@@ -83,11 +85,13 @@ internal static class NotableDateRuleValidator
     /// <param name="definition">The concept to validate.</param>
     /// <param name="knownPolicies">The set of declared adjustment-policy identifiers.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
     private static void ValidateRules(
         NotableDateResource resource,
         NotableDateDefinition definition,
         HashSet<string> knownPolicies,
-        ICollection<NotableDateValidationDiagnostic> diagnostics)
+        ICollection<NotableDateValidationDiagnostic> diagnostics,
+        INotableDateAlgorithmRegistry? algorithms)
     {
         HashSet<string> seenRules = new(StringComparer.Ordinal);
 
@@ -114,7 +118,7 @@ internal static class NotableDateRuleValidator
 
             ValidateYearBounds(definition, rule, diagnostics);
             ValidateFixedDate(definition, rule, diagnostics);
-            ValidateStrategyReferences(resource, definition, rule, diagnostics);
+            ValidateStrategyReferences(resource, definition, rule, diagnostics, algorithms);
         }
     }
 
@@ -125,11 +129,13 @@ internal static class NotableDateRuleValidator
     /// <param name="definition">The owning concept.</param>
     /// <param name="rule">The rule to validate.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
     private static void ValidateStrategyReferences(
         NotableDateResource resource,
         NotableDateDefinition definition,
         NotableDateRule rule,
-        ICollection<NotableDateValidationDiagnostic> diagnostics)
+        ICollection<NotableDateValidationDiagnostic> diagnostics,
+        INotableDateAlgorithmRegistry? algorithms)
     {
         switch (rule.Strategy)
         {
@@ -158,7 +164,7 @@ internal static class NotableDateRuleValidator
                 break;
             }
 
-            case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key):
+            case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key) && !(algorithms?.Contains(algorithm.Key) ?? false):
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL2-ALGORITHM",

@@ -56,7 +56,26 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver)
+    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver) =>
+        Load(xml, resourceResolver, null);
+
+    /// <summary>
+    /// Loads and validates a notable-date document from its XML content, resolving imports through the supplied
+    /// resolver and accepting custom algorithm keys registered in the supplied registry.
+    /// </summary>
+    /// <param name="xml">The notable-date document XML content.</param>
+    /// <param name="resourceResolver">A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.</param>
+    /// <param name="algorithms">A registry of custom algorithm keys to accept during validation, or <see langword="null" />.</param>
+    /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="xml" /> is empty or white-space.</exception>
+    /// <exception cref="FormatException"><paramref name="xml" /> is not well-formed XML.</exception>
+    /// <exception cref="NotableDateValidationException">
+    /// The notable-date document produced one or more error diagnostics.
+    /// </exception>
+    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms)
     {
         ThrowHelper.ThrowIfNull(xml);
         ThrowHelper.ThrowIfNull(resourceResolver);
@@ -65,7 +84,7 @@ public static class NotableDateResourceLoader
         List<NotableDateValidationDiagnostic> diagnostics = new();
         ParsedNotableDateDocument document = NotableDateDocumentParser.Parse(xml, diagnostics);
 
-        return Build(document, resourceResolver, diagnostics);
+        return Build(document, resourceResolver, algorithms, diagnostics);
     }
 
     /// <summary>
@@ -120,7 +139,7 @@ public static class NotableDateResourceLoader
         List<NotableDateValidationDiagnostic> diagnostics = new();
         ParsedNotableDateDocument document = NotableDateJsonDocumentParser.Parse(json, diagnostics);
 
-        return Build(document, resourceResolver, diagnostics);
+        return Build(document, resourceResolver, null, diagnostics);
     }
 
     /// <summary>
@@ -143,12 +162,13 @@ public static class NotableDateResourceLoader
     /// </summary>
     /// <param name="document">The parsed root document.</param>
     /// <param name="resourceResolver">The resolver used to fetch imported resources.</param>
+    /// <param name="algorithms">A registry of custom algorithm keys to accept during validation, or <see langword="null" />.</param>
     /// <param name="diagnostics">The diagnostics accumulated during parsing, extended by import resolution and validation.</param>
     /// <returns>The validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, List<NotableDateValidationDiagnostic> diagnostics)
+    private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics)
     {
         (List<AdjustmentPolicy> policies, List<NotableDateDefinition> concepts) =
             ResolveImports(document, resourceResolver, new HashSet<string>(StringComparer.Ordinal), diagnostics);
@@ -162,7 +182,7 @@ public static class NotableDateResourceLoader
             policies,
             definitions);
 
-        NotableDateRuleValidator.Validate(resource, diagnostics);
+        NotableDateRuleValidator.Validate(resource, diagnostics, algorithms);
 
         int errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
         if (errorCount > 0)

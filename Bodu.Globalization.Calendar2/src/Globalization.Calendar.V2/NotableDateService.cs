@@ -31,15 +31,32 @@ public sealed class NotableDateService : INotableDateService
     private readonly NotableDateResource _resource;
 
     /// <summary>
+    /// The custom algorithm registry, or <see langword="null" /> when only built-in algorithms are available.
+    /// </summary>
+    private readonly INotableDateAlgorithmRegistry? _algorithms;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(NotableDateResource resource)
+        : this(resource, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         this._resource = resource;
+        this._algorithms = algorithms;
     }
 
     /// <inheritdoc />
@@ -103,7 +120,7 @@ public sealed class NotableDateService : INotableDateService
     /// <returns>The calculated candidates.</returns>
     private List<ResolutionCandidate> GatherCandidates(string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
     {
-        StrategyResolutionContext context = new(this._resource);
+        StrategyResolutionContext context = new(this._resource, this._algorithms);
         List<ResolutionCandidate> candidates = new();
 
         foreach (NotableDateDefinition definition in this._resource.NotableDates)

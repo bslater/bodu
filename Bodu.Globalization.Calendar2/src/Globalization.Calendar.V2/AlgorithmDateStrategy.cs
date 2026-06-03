@@ -103,7 +103,10 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
             "asalha-puja" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 6, 15)),
             "losar" => LunarPhaseCalculator.NewMoonOnOrAfter(new DateOnly(year, 1, 20)),
             "matariki" => MatarikiCalendar.Resolve(year),
-            _ => HinduLunarCalculator.Resolve(this.Key, year),
+            _ when HinduLunarCalculator.IsFestivalKey(this.Key) => HinduLunarCalculator.Resolve(this.Key, year),
+            _ => context.Algorithms is INotableDateAlgorithmRegistry registry && registry.TryGet(this.Key, out INotableDateAlgorithm? algorithm) && algorithm is not null
+                ? algorithm.Calculate(year)
+                : null,
         };
     }
 }

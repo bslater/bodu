@@ -34,11 +34,30 @@ public sealed class StrategyResolutionContext
     /// <param name="resource">The resource that referential strategies resolve against.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public StrategyResolutionContext(NotableDateResource resource)
+        : this(resource, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StrategyResolutionContext" /> class with a custom algorithm
+    /// registry.
+    /// </summary>
+    /// <param name="resource">The resource that referential strategies resolve against.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public StrategyResolutionContext(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         this._resource = resource;
+        this.Algorithms = algorithms;
     }
+
+    /// <summary>
+    /// Gets the custom algorithm registry consulted for keys the built-in catalogue does not recognize.
+    /// </summary>
+    /// <returns>The registry, or <see langword="null" /> when only built-in algorithms are available.</returns>
+    public INotableDateAlgorithmRegistry? Algorithms { get; }
 
     /// <summary>
     /// Resolves the occurrence of a referenced rule for the supplied Gregorian year.
