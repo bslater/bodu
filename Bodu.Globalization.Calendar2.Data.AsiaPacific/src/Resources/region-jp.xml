@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Japanese notable-date resource, migrated from the v1 region-jp.xml to the v2 cookbook schema. The Vernal and
+  Autumnal Equinox Days are computed astronomically in Japan Standard Time. The imported New Year and Bodhi Day are
+  flattened into explicit rules. The v1 multi-day "Golden Week" and "Obon" period markers (durationDays) are omitted
+  pending multi-day span support; their constituent public holidays remain individually defined.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.jp">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="coming-of-age-day" displayName="Coming of Age Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2000"><Territory code="JP" /></Applicability><Strategy><DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="setsubun" displayName="Setsubun" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="February" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="national-foundation-day" displayName="National Foundation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="February" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="emperors-birthday" displayName="Emperor's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2020"><Territory code="JP" /></Applicability><Strategy><Fixed month="February" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="vernal-equinox-day" displayName="Vernal Equinox Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Algorithm key="jp-vernal-equinox" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="showa-day" displayName="Showa Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2007"><Territory code="JP" /></Applicability><Strategy><Fixed month="April" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="constitution-memorial-day" displayName="Constitution Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="May" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="greenery-day" displayName="Greenery Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2007"><Territory code="JP" /></Applicability><Strategy><Fixed month="May" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="childrens-day" displayName="Children's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="May" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="marine-day" displayName="Marine Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2003"><Territory code="JP" /></Applicability><Strategy><DayOfWeekInMonth month="July" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="mountain-day" displayName="Mountain Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2016"><Territory code="JP" /></Applicability><Strategy><Fixed month="August" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="respect-for-the-aged-day" displayName="Respect for the Aged Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2003"><Territory code="JP" /></Applicability><Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="autumnal-equinox-day" displayName="Autumnal Equinox Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Algorithm key="jp-autumnal-equinox" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="sports-day" displayName="Sports Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability fromYear="2020"><Territory code="JP" /></Applicability><Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="culture-day" displayName="Culture Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="November" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="labour-thanksgiving-day" displayName="Labour Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="November" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="bodhi-day" displayName="Bodhi Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="jp"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
