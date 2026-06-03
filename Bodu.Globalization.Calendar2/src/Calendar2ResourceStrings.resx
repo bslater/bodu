@@ -69,6 +69,9 @@
   <data name="Format_Invalid_XmlNotWellFormed" xml:space="preserve">
     <value>The notable-date document XML is not well-formed: {0}</value>
   </data>
+  <data name="Format_Invalid_JsonNotWellFormed" xml:space="preserve">
+    <value>The notable-date document JSON is not well-formed: {0}</value>
+  </data>
   <data name="Format_Invalid_XmlSchema" xml:space="preserve">
     <value>The notable-date document XML failed schema validation: {0}</value>
   </data>

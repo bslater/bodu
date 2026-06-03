@@ -79,6 +79,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The notable-date document JSON is not well-formed: {0}.
+        /// </summary>
+        internal static string Format_Invalid_JsonNotWellFormed {
+            get {
+                return ResourceManager.GetString("Format_Invalid_JsonNotWellFormed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The notable-date document XML failed schema validation: {0}.
         /// </summary>
         internal static string Format_Invalid_XmlSchema {
