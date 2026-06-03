@@ -149,6 +149,8 @@ internal static class NotableDateDocumentParser
                 ParseNullableEnum<DayOfWeek>(action?.Attribute("dayOfWeek")?.Value),
                 ParseInt(action?.Attribute("days")?.Value, 0),
                 ParseNullableInt(action?.Attribute("maxSearchDays")?.Value),
+                ParseBool(action?.Attribute("skipWeekends")?.Value, true),
+                ParseBool(action?.Attribute("skipNonWorkingDates")?.Value, false),
                 ParseEnum(emission?.Attribute("mode")?.Value, EmissionMode.ActualOnly),
                 (string?)emission?.Attribute("reason"),
                 ParseNullableBool(emission?.Attribute("nonWorking")?.Value)));

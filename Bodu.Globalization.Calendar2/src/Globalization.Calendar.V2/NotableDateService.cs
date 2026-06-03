@@ -12,13 +12,15 @@ namespace Bodu.Globalization.Calendar.V2;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The service applies territory and year filtering, strategy calculation, and adjustment policies, then emits
-/// occurrences according to each policy's emission mode. Inclusion is decided by the emitted (observed) date, so a
-/// single-day query and a range query covering the same dates return consistent results.
+/// Resolution runs in two phases. The first phase calculates every actual occurrence purely and seeds an occupied-day
+/// set with the actual dates of non-working occurrences. The second phase places observed dates in an explicit
+/// precedence order — earliest actual date, then higher priority, then stable identity — so that a substitute that opts
+/// in to <see cref="AdjustmentPolicy.SkipNonWorkingDates" /> advances past days already claimed by other holidays.
 /// </para>
 /// <para>
-/// To capture occurrences whose actual date lies just outside the requested window but whose observed date falls inside
-/// it, the service scans one civil year either side of the window and filters by the emitted date.
+/// Inclusion is decided by the emitted (observed) date, so a single-day query and a range query covering the same dates
+/// return consistent results. To capture occurrences whose actual date lies just outside the requested window but whose
+/// observed date falls inside it, the service scans one civil year either side of the window.
 /// </para>
 /// </remarks>
 public sealed class NotableDateService : INotableDateService
@@ -52,31 +54,17 @@ public sealed class NotableDateService : INotableDateService
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
 
-        List<NotableDate> results = new();
-        StrategyResolutionContext context = new(this._resource);
-
         int firstYear = Math.Max(1, range.StartDate.Year - 1);
         int lastYear = Math.Min(9999, range.EndDate.Year + 1);
 
-        foreach (NotableDateDefinition definition in this._resource.NotableDates)
-        {
-            foreach (NotableDateRule rule in definition.Rules)
-            {
-                NotableDateCategory category = rule.Category ?? definition.Category;
-                NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
+        HashSet<DateOnly> occupied = new();
+        List<ResolutionCandidate> candidates = this.GatherCandidates(territory, firstYear, lastYear, occupied);
 
-                for (int year = firstYear; year <= lastYear; year++)
-                {
-                    if (!rule.Applicability.AppliesTo(territory, year))
-                        continue;
+        candidates.Sort(CompareForPlacement);
 
-                    if (rule.Strategy.Calculate(year, context) is not DateOnly baseDate)
-                        continue;
-
-                    this.EmitOccurrences(results, definition, rule, category, identity, baseDate, territory, range);
-                }
-            }
-        }
+        List<NotableDate> results = new();
+        foreach (ResolutionCandidate candidate in candidates)
+            EmitCandidate(results, candidate, territory, occupied, range);
 
         return results
             .OrderBy(r => r.Date)
@@ -86,52 +74,109 @@ public sealed class NotableDateService : INotableDateService
     }
 
     /// <summary>
-    /// Emits the occurrences produced by a single calculated base date, honouring the winning adjustment policy's
-    /// emission mode and the requested window.
+    /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
+    /// non-working occurrences.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="firstYear">The first civil year to scan.</param>
+    /// <param name="lastYear">The last civil year to scan.</param>
+    /// <param name="occupied">The occupied-day set to seed.</param>
+    /// <returns>The calculated candidates.</returns>
+    private List<ResolutionCandidate> GatherCandidates(string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
+    {
+        StrategyResolutionContext context = new(this._resource);
+        List<ResolutionCandidate> candidates = new();
+
+        foreach (NotableDateDefinition definition in this._resource.NotableDates)
+        {
+            foreach (NotableDateRule rule in definition.Rules)
+            {
+                NotableDateCategory category = rule.Category ?? definition.Category;
+                NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
+                bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
+
+                for (int year = firstYear; year <= lastYear; year++)
+                {
+                    if (!rule.Applicability.AppliesTo(territory, year))
+                        continue;
+
+                    if (rule.Strategy.Calculate(year, context) is not DateOnly baseDate)
+                        continue;
+
+                    AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
+                    candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking));
+
+                    if (nonWorking)
+                        occupied.Add(baseDate);
+                }
+            }
+        }
+
+        return candidates;
+    }
+
+    /// <summary>
+    /// Orders candidates for placement: earliest actual date first, then higher priority, then stable identity.
+    /// Earliest first ensures an earlier holiday claims a contested day before a later one resolves its substitute.
+    /// </summary>
+    /// <param name="left">The first candidate.</param>
+    /// <param name="right">The second candidate.</param>
+    /// <returns>A signed comparison result.</returns>
+    private static int CompareForPlacement(ResolutionCandidate left, ResolutionCandidate right)
+    {
+        int byDate = left.BaseDate.CompareTo(right.BaseDate);
+        if (byDate != 0)
+            return byDate;
+
+        int byPriority = right.Priority.CompareTo(left.Priority);
+        if (byPriority != 0)
+            return byPriority;
+
+        int byNotableDate = string.CompareOrdinal(left.Identity.NotableDateId, right.Identity.NotableDateId);
+        return byNotableDate != 0 ? byNotableDate : string.CompareOrdinal(left.Identity.RuleId, right.Identity.RuleId);
+    }
+
+    /// <summary>
+    /// Phase two: computes the observed date for a candidate against the occupied-day set and emits occurrences per the
+    /// winning policy's emission mode, updating the occupied-day set with any claimed observed date.
     /// </summary>
     /// <param name="results">The accumulating result list.</param>
-    /// <param name="definition">The notable-date concept being resolved.</param>
-    /// <param name="rule">The rule being resolved.</param>
-    /// <param name="category">The effective category of the rule.</param>
-    /// <param name="identity">The full identity of the rule.</param>
-    /// <param name="baseDate">The calculated (actual) occurrence date.</param>
+    /// <param name="candidate">The candidate being placed.</param>
     /// <param name="territory">The requested territory code.</param>
+    /// <param name="occupied">The occupied-day set, updated as observed dates are claimed.</param>
     /// <param name="range">The inclusive range that controls emission inclusion.</param>
-    private void EmitOccurrences(
+    private static void EmitCandidate(
         List<NotableDate> results,
-        NotableDateDefinition definition,
-        NotableDateRule rule,
-        NotableDateCategory category,
-        NotableDateRuleIdentity identity,
-        DateOnly baseDate,
+        ResolutionCandidate candidate,
         string territory,
+        HashSet<DateOnly> occupied,
         DateRange range)
     {
-        AdjustmentPolicy? winning = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
-
-        if (winning is null)
+        if (candidate.Policy is not AdjustmentPolicy policy)
         {
-            AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, range);
+            AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
             return;
         }
 
-        DateOnly observed = winning.ApplyAction(baseDate);
-        string reason = winning.Reason ?? string.Empty;
+        DateOnly observed = policy.ApplyAction(candidate.BaseDate, occupied.Contains);
+        string reason = policy.Reason ?? string.Empty;
 
-        switch (winning.Emission)
+        switch (policy.Emission)
         {
             case EmissionMode.ActualOnly:
-                AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, range);
+                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
                 break;
 
             case EmissionMode.ObservedOnly:
-                AddIfInRange(results, observed, baseDate, true, identity, definition.DisplayName, territory, category, winning.Id, reason, range);
+                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
+                Claim(occupied, observed, candidate);
                 break;
 
             case EmissionMode.ActualAndObserved:
             case EmissionMode.ObservedAsAdditional:
-                AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, range);
-                AddIfInRange(results, observed, baseDate, true, identity, definition.DisplayName, territory, category, winning.Id, reason, range);
+                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
+                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
+                Claim(occupied, observed, candidate);
                 break;
 
             case EmissionMode.Suppress:
@@ -140,6 +185,18 @@ public sealed class NotableDateService : INotableDateService
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Claims an observed date in the occupied-day set when the candidate is a non-working occurrence.
+    /// </summary>
+    /// <param name="occupied">The occupied-day set.</param>
+    /// <param name="observed">The observed date to claim.</param>
+    /// <param name="candidate">The candidate that produced the observed date.</param>
+    private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate)
+    {
+        if (candidate.NonWorking)
+            occupied.Add(observed);
     }
 
     /// <summary>
@@ -183,10 +240,8 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="emitted">The emitted occurrence date.</param>
     /// <param name="actual">The calculated occurrence date.</param>
     /// <param name="isObserved">Whether the emitted date differs from the actual date.</param>
-    /// <param name="identity">The full identity of the rule.</param>
-    /// <param name="displayName">The display name of the notable-date concept.</param>
+    /// <param name="candidate">The candidate that produced the occurrence.</param>
     /// <param name="territory">The requested territory code.</param>
-    /// <param name="category">The effective category of the rule.</param>
     /// <param name="adjustmentPolicyId">
     /// The id of the adjustment policy that produced the observed date, if any.
     /// </param>
@@ -197,10 +252,8 @@ public sealed class NotableDateService : INotableDateService
         DateOnly emitted,
         DateOnly actual,
         bool isObserved,
-        NotableDateRuleIdentity identity,
-        string displayName,
+        ResolutionCandidate candidate,
         string territory,
-        NotableDateCategory category,
         string? adjustmentPolicyId,
         string? reason,
         DateRange range)
@@ -212,10 +265,10 @@ public sealed class NotableDateService : INotableDateService
             emitted,
             actual,
             isObserved,
-            identity,
-            displayName,
+            candidate.Identity,
+            candidate.DisplayName,
             territory,
-            category,
+            candidate.Category,
             adjustmentPolicyId,
             string.IsNullOrEmpty(reason) ? null : reason));
     }

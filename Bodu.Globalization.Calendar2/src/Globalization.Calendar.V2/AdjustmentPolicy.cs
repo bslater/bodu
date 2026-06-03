@@ -15,6 +15,12 @@ namespace Bodu.Globalization.Calendar.V2;
 /// it fires, an <see cref="Action" /> that computes the observed date, and an <see cref="Emission" /> mode that decides
 /// which occurrences are emitted. Policies are referenced by rules through stable ids.
 /// </para>
+/// <para>
+/// Working-day actions honour <see cref="SkipWeekends" /> and <see cref="SkipNonWorkingDates" />: a day is skipped
+/// while seeking the observed date if it is a weekend (when <see cref="SkipWeekends" /> is set) or already claimed by
+/// another non-working occurrence (when <see cref="SkipNonWorkingDates" /> is set). The latter is what advances a
+/// substitute past a day already taken by another holiday.
+/// </para>
 /// </remarks>
 public sealed class AdjustmentPolicy
 {
@@ -41,6 +47,10 @@ public sealed class AdjustmentPolicy
     /// <param name="maxSearchDays">
     /// The maximum number of days a working-day search may scan, or <see langword="null" /> for the default.
     /// </param>
+    /// <param name="skipWeekends">Whether a working-day search skips weekends.</param>
+    /// <param name="skipNonWorkingDates">
+    /// Whether a working-day search skips days already claimed by other non-working occurrences.
+    /// </param>
     /// <param name="emission">The emission mode applied when the policy fires.</param>
     /// <param name="reason">The reason recorded against an observed occurrence, if any.</param>
     /// <param name="nonWorking">The non-working-day flag applied to the observed occurrence, if specified.</param>
@@ -58,6 +68,8 @@ public sealed class AdjustmentPolicy
         DayOfWeek? actionWeekday,
         int actionDays,
         int? maxSearchDays,
+        bool skipWeekends,
+        bool skipNonWorkingDates,
         EmissionMode emission,
         string? reason,
         bool? nonWorking)
@@ -75,6 +87,8 @@ public sealed class AdjustmentPolicy
         this.ActionWeekday = actionWeekday;
         this.ActionDays = actionDays;
         this.MaxSearchDays = maxSearchDays;
+        this.SkipWeekends = skipWeekends;
+        this.SkipNonWorkingDates = skipNonWorkingDates;
         this.Emission = emission;
         this.Reason = reason;
         this.NonWorking = nonWorking;
@@ -135,6 +149,21 @@ public sealed class AdjustmentPolicy
     public int? MaxSearchDays { get; }
 
     /// <summary>
+    /// Gets a value indicating whether a working-day search skips weekends.
+    /// </summary>
+    /// <returns><see langword="true" /> when weekends are skipped; otherwise <see langword="false" />.</returns>
+    public bool SkipWeekends { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether a working-day search skips days already claimed by other non-working
+    /// occurrences.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when occupied non-working days are skipped; otherwise <see langword="false" />.
+    /// </returns>
+    public bool SkipNonWorkingDates { get; }
+
+    /// <summary>
     /// Gets the emission mode applied when the policy fires.
     /// </summary>
     /// <returns>The <see cref="EmissionMode" />.</returns>
@@ -171,33 +200,52 @@ public sealed class AdjustmentPolicy
     /// Applies the policy's action to the supplied occurrence date.
     /// </summary>
     /// <param name="date">The calculated occurrence date.</param>
+    /// <param name="isOccupied">
+    /// A predicate reporting whether a candidate day is already claimed by another non-working occurrence.
+    /// </param>
     /// <returns>The transformed (observed) date; the input date when the action makes no change.</returns>
-    public DateOnly ApplyAction(DateOnly date) =>
-        this.Action switch
+    /// <exception cref="ArgumentNullException"><paramref name="isOccupied" /> is <see langword="null" />.</exception>
+    public DateOnly ApplyAction(DateOnly date, Func<DateOnly, bool> isOccupied)
+    {
+        ThrowHelper.ThrowIfNull(isOccupied);
+
+        return this.Action switch
         {
             AdjustmentAction.AddDays => date.AddDays(this.ActionDays),
             AdjustmentAction.MoveToNextWeekday => this.ActionWeekday is DayOfWeek next ? WeekdayMath.OnOrAfter(date, next) : date,
             AdjustmentAction.MoveToPreviousWeekday => this.ActionWeekday is DayOfWeek previous ? WeekdayMath.OnOrBefore(date, previous) : date,
-            AdjustmentAction.MoveToNextWorkingDay => this.SeekWorkingDay(date, forward: true),
-            AdjustmentAction.MoveToPreviousWorkingDay => this.SeekWorkingDay(date, forward: false),
+            AdjustmentAction.MoveToNextWorkingDay => this.SeekWorkingDay(date, step: 1, isOccupied),
+            AdjustmentAction.MoveToPreviousWorkingDay => this.SeekWorkingDay(date, step: -1, isOccupied),
             _ => date,
         };
+    }
 
     /// <summary>
-    /// Seeks the nearest working day (Monday through Friday) in the requested direction, bounded by the policy's search
-    /// limit.
+    /// Seeks the nearest working day in the requested direction, starting strictly past the supplied date and skipping
+    /// blocked days until a free working day is found or the search bound is reached.
     /// </summary>
     /// <param name="date">The starting date.</param>
-    /// <param name="forward"><see langword="true" /> to search forward; otherwise backward.</param>
-    /// <returns>The first working day found, or the input date when the bound is reached.</returns>
-    private DateOnly SeekWorkingDay(DateOnly date, bool forward)
+    /// <param name="step">The direction of travel: <c>+1</c> forward, <c>-1</c> backward.</param>
+    /// <param name="isOccupied">A predicate reporting whether a candidate day is already claimed.</param>
+    /// <returns>The first working day found, or the last scanned day when the bound is reached.</returns>
+    private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied)
     {
         int bound = this.MaxSearchDays ?? DefaultMaxSearchDays;
 
-        DateOnly current = date;
-        for (int i = 0; i < bound && current.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday; i++)
-            current = current.AddDays(forward ? 1 : -1);
+        DateOnly cursor = date.AddDays(step);
+        for (int i = 0; i < bound && this.IsBlocked(cursor, isOccupied); i++)
+            cursor = cursor.AddDays(step);
 
-        return current;
+        return cursor;
     }
+
+    /// <summary>
+    /// Determines whether the supplied day is blocked for a working-day search under this policy's skip rules.
+    /// </summary>
+    /// <param name="date">The candidate day.</param>
+    /// <param name="isOccupied">A predicate reporting whether the day is already claimed.</param>
+    /// <returns><see langword="true" /> if the day is blocked; otherwise <see langword="false" />.</returns>
+    private bool IsBlocked(DateOnly date, Func<DateOnly, bool> isOccupied) =>
+        (this.SkipWeekends && date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+        || (this.SkipNonWorkingDates && isOccupied(date));
 }

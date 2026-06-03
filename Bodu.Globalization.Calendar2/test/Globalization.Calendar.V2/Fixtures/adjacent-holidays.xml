@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.adjacent">
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="weekend-substitute" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="au-fixed-dec-25" priority="100">
+          <Applicability calendar="Gregorian">
+            <Territory code="AU" />
+          </Applicability>
+          <Strategy>
+            <Fixed month="December" day="25" />
+          </Strategy>
+          <Adjustments>
+            <Adjustment policyRef="weekend-substitute" />
+          </Adjustments>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="au-fixed-dec-26" priority="100">
+          <Applicability calendar="Gregorian">
+            <Territory code="AU" />
+          </Applicability>
+          <Strategy>
+            <Fixed month="December" day="26" />
+          </Strategy>
+          <Adjustments>
+            <Adjustment policyRef="weekend-substitute" />
+          </Adjustments>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
