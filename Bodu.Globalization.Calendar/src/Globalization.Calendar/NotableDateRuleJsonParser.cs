@@ -33,8 +33,10 @@ namespace Bodu.Globalization.Calendar;
 /// The JSON vocabulary mirrors the XML schema one-for-one: a top-level object with optional <c>useFrom</c> and
 /// <c>notableDates</c> arrays; each rule selects exactly one of <c>fixed</c>, <c>dayOfWeekInMonth</c>,
 /// <c>offsetFromAnchor</c>, or <c>algorithm</c> as its strategy. After schema validation succeeds, a semantic pass
-/// enforces the remaining invariants the XML parser enforces — unique adjustment keys within a rule, resolvable
-/// enum/type names, and the override-body name/category requirement.
+/// enforces the remaining invariants the XML parser enforces — unique adjustment keys within a rule and resolvable
+/// enum/type names. An override body (the nested <c>rule</c> of a <c>useFrom</c> directive) is partial: its
+/// <c>ruleName</c> targets the inherited variant to amend, every other field is optional and overrides only what it
+/// declares, and <c>category</c> is required only when the body defines a complete standalone rule.
 /// </para>
 /// </remarks>
 public static class NotableDateRuleJsonParser
@@ -185,8 +187,9 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />, enforcing the
-    /// XSD-mandated <c>name</c> and <c>category</c> requirement on the override body.
+    /// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />. The body is partial:
+    /// <c>ruleName</c> (falling back to the legacy <c>name</c>) selects the inherited variant to amend and every other
+    /// field is optional, overriding only the values it declares; <c>category</c> is not required for a partial override.
     /// </summary>
     /// <param name="dto">The override DTO to map.</param>
     /// <returns>The mapped <see cref="NotableDateRuleOverrideBody" />.</returns>

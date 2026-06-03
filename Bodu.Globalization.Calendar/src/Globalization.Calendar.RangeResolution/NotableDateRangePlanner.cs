@@ -113,7 +113,7 @@ internal sealed class NotableDateRangePlanner
         // Anchor years per algorithmic root. Tight envelope: only the years the request range spans, plus any fringe years (since
         // a fringe-pass offset rule may need an adjacent-year algorithmic anchor). Keeps Easter / Lunar New Year / Vesak
         // computation count to the minimum that covers the request without conservative ±1-year padding.
-        Dictionary<string, IReadOnlyList<int>> anchorYearsByName = new(StringComparer.OrdinalIgnoreCase);
+        Dictionary<NotableDateRuleIdentity, IReadOnlyList<int>> anchorYearsByIdentity = new();
 
         HashSet<int> anchorYearSet = new(candidateYears);
         foreach (var year in fringeYears)
@@ -123,11 +123,10 @@ internal sealed class NotableDateRangePlanner
         foreach (RuleStaticProfile profile in eligible)
         {
             if (!profile.DependsOnAlgorithmicAnchor) continue;
-            if (string.IsNullOrWhiteSpace(profile.RootAnchorRuleName)) continue;
+            if (profile.RootAnchorIdentity is not { } anchorIdentity) continue;
 
-            var anchorName = profile.RootAnchorRuleName!;
-            if (!anchorYearsByName.ContainsKey(anchorName))
-                anchorYearsByName[anchorName] = anchorYears;
+            if (!anchorYearsByIdentity.ContainsKey(anchorIdentity))
+                anchorYearsByIdentity[anchorIdentity] = anchorYears;
         }
 
         return new NotableDateRangePlan(
@@ -137,7 +136,7 @@ internal sealed class NotableDateRangePlanner
             fringeYears,
             fringeStart,
             fringeEnd,
-            anchorYearsByName);
+            anchorYearsByIdentity);
     }
 
     /// <summary>
