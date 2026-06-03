@@ -19,9 +19,23 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 internal sealed class RuleStaticAnalysis
 {
     /// <summary>
-    /// The case-insensitive look-up of static profiles keyed by canonical rule name.
+    /// The look-up of static profiles keyed by the rule's full composite identity, so same-name variants resolve
+    /// distinctly rather than collapsing under a name-only key.
     /// </summary>
-    private readonly Dictionary<string, RuleStaticProfile> _profilesByRuleName;
+    private readonly Dictionary<NotableDateRuleIdentity, RuleStaticProfile> _profilesByIdentity;
+
+    /// <summary>
+    /// The case-insensitive look-up of profiles by canonical name, used only by the name-based convenience overload of
+    /// <see cref="TryGetProfile(string, out RuleStaticProfile)" /> and suppressed when a name is shared by more than one
+    /// variant (see <see cref="_ambiguousNames" />).
+    /// </summary>
+    private readonly Dictionary<string, RuleStaticProfile> _profilesByName;
+
+    /// <summary>
+    /// The canonical names shared by more than one variant; the name-based <see cref="TryGetProfile(string, out RuleStaticProfile)" />
+    /// reports no match for these so callers never bind to an arbitrary variant by name.
+    /// </summary>
+    private readonly HashSet<string> _ambiguousNames;
 
     /// <summary>
     /// The case-insensitive look-up of profiles whose root anchor matches the keyed rule name.
@@ -37,7 +51,9 @@ internal sealed class RuleStaticAnalysis
     /// Initializes a new instance of the <see cref="RuleStaticAnalysis" /> class.
     /// </summary>
     /// <param name="profiles">The static profile per rule.</param>
-    /// <param name="profilesByRuleName">The case-insensitive lookup of profiles by rule name.</param>
+    /// <param name="profilesByIdentity">The lookup of profiles by full composite identity.</param>
+    /// <param name="profilesByName">The case-insensitive lookup of profiles by canonical name.</param>
+    /// <param name="ambiguousNames">The canonical names shared by more than one variant.</param>
     /// <param name="dependentsByAnchor">
     /// The case-insensitive lookup of profiles whose root anchor is the keyed rule name.
     /// </param>
@@ -46,12 +62,16 @@ internal sealed class RuleStaticAnalysis
     /// </param>
     private RuleStaticAnalysis(
         List<RuleStaticProfile> profiles,
-        Dictionary<string, RuleStaticProfile> profilesByRuleName,
+        Dictionary<NotableDateRuleIdentity, RuleStaticProfile> profilesByIdentity,
+        Dictionary<string, RuleStaticProfile> profilesByName,
+        HashSet<string> ambiguousNames,
         Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor,
         int globalFringeReach)
     {
         _profiles = profiles;
-        _profilesByRuleName = profilesByRuleName;
+        _profilesByIdentity = profilesByIdentity;
+        _profilesByName = profilesByName;
+        _ambiguousNames = ambiguousNames;
         _dependentsByAnchor = dependentsByAnchor;
         GlobalFringeReach = globalFringeReach;
     }
@@ -81,16 +101,40 @@ internal sealed class RuleStaticAnalysis
     public int GlobalFringeReach { get; }
 
     /// <summary>
-    /// Attempts to retrieve a profile for the rule with the supplied name.
+    /// Attempts to retrieve the profile for the rule with the supplied composite identity.
     /// </summary>
-    /// <param name="ruleName">The rule name to look up.</param>
+    /// <param name="identity">The full rule identity to look up.</param>
     /// <param name="profile">The matching profile when the method returns <see langword="true" />.</param>
     /// <returns>
-    /// <see langword="true" /> when a profile exists for the supplied rule name; otherwise, <see langword="false" />.
+    /// <see langword="true" /> when a profile exists for the supplied identity; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool TryGetProfile(in NotableDateRuleIdentity identity, out RuleStaticProfile profile)
+    {
+        if (_profilesByIdentity.TryGetValue(identity, out RuleStaticProfile? found))
+        {
+            profile = found;
+            return true;
+        }
+
+        profile = null!;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve a profile for the rule with the supplied canonical name. Reports no match when the name is
+    /// shared by more than one variant, so callers never bind to an arbitrary candidate by name; prefer
+    /// <see cref="TryGetProfile(in NotableDateRuleIdentity, out RuleStaticProfile)" /> on execution paths.
+    /// </summary>
+    /// <param name="ruleName">The canonical rule name to look up.</param>
+    /// <param name="profile">The matching profile when the method returns <see langword="true" />.</param>
+    /// <returns>
+    /// <see langword="true" /> when exactly one profile carries the supplied name; otherwise, <see langword="false" />.
     /// </returns>
     public bool TryGetProfile(string ruleName, out RuleStaticProfile profile)
     {
-        if (_profilesByRuleName.TryGetValue(ruleName, out RuleStaticProfile? found))
+        if (!string.IsNullOrEmpty(ruleName)
+            && !_ambiguousNames.Contains(ruleName)
+            && _profilesByName.TryGetValue(ruleName, out RuleStaticProfile? found))
         {
             profile = found;
             return true;
@@ -121,34 +165,29 @@ internal sealed class RuleStaticAnalysis
     {
         ThrowHelper.ThrowIfNull(rules);
 
-        // Group rules by canonical name (multi-map) so an offset chain can bind to the contextually-correct variant
-        // when several rules share a name (for example western and orthodox Easter) rather than collapsing last-wins.
-        Dictionary<string, List<NotableDateRule>> rulesByName = new(StringComparer.OrdinalIgnoreCase);
-        foreach (NotableDateRule rule in rules)
-        {
-            if (string.IsNullOrWhiteSpace(rule.Name))
-                continue;
-
-            if (!rulesByName.TryGetValue(rule.Name, out List<NotableDateRule>? bucket))
-            {
-                bucket = [];
-                rulesByName[rule.Name] = bucket;
-            }
-
-            bucket.Add(rule);
-        }
+        // An identity-keyed index resolves offset anchors with the same deterministic, variant-aware disambiguation
+        // policy as the runtime resolver, so an offset chain binds to the contextually-correct variant (for example
+        // western versus orthodox Easter) rather than the first same-name candidate.
+        var index = new NotableDateRuleIndex(rules);
 
         List<RuleStaticProfile> profiles = [];
-        Dictionary<string, RuleStaticProfile> profilesByRuleName = new(StringComparer.OrdinalIgnoreCase);
+        Dictionary<NotableDateRuleIdentity, RuleStaticProfile> profilesByIdentity = new();
+        Dictionary<string, RuleStaticProfile> profilesByName = new(StringComparer.OrdinalIgnoreCase);
+        HashSet<string> ambiguousNames = new(StringComparer.OrdinalIgnoreCase);
         Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor = new(StringComparer.OrdinalIgnoreCase);
 
         foreach (NotableDateRule rule in rules)
         {
-            RuleStaticProfile profile = BuildProfile(rule, rulesByName);
+            RuleStaticProfile profile = BuildProfile(rule, index);
             profiles.Add(profile);
 
             if (!string.IsNullOrWhiteSpace(rule.Name))
-                profilesByRuleName[rule.Name] = profile;
+            {
+                profilesByIdentity[NotableDateRuleIdentity.From(rule)] = profile;
+
+                if (!profilesByName.TryAdd(rule.Name, profile))
+                    ambiguousNames.Add(rule.Name);
+            }
 
             if (!string.IsNullOrWhiteSpace(profile.RootAnchorRuleName))
             {
@@ -171,18 +210,18 @@ internal sealed class RuleStaticAnalysis
             if (magnitude > globalFringeReach) globalFringeReach = magnitude;
         }
 
-        return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor, globalFringeReach);
+        return new RuleStaticAnalysis(profiles, profilesByIdentity, profilesByName, ambiguousNames, dependentsByAnchor, globalFringeReach);
     }
 
     /// <summary>
     /// Computes the static profile for a single rule, walking offset chains until the root anchor is identified.
     /// </summary>
     /// <param name="rule">The rule to profile.</param>
-    /// <param name="rulesByName">The case-insensitive rule lookup.</param>
+    /// <param name="index">The identity-keyed rule index used to resolve offset anchors.</param>
     /// <returns>The constructed profile.</returns>
-    private static RuleStaticProfile BuildProfile(NotableDateRule rule, IReadOnlyDictionary<string, List<NotableDateRule>> rulesByName)
+    private static RuleStaticProfile BuildProfile(NotableDateRule rule, NotableDateRuleIndex index)
     {
-        (RuleTier baseTier, var rootAnchor, var offsetFromRoot) = ClassifyRule(rule, rulesByName);
+        (RuleTier baseTier, NotableDateRuleIdentity? rootAnchor, var offsetFromRoot) = ClassifyRule(rule, index);
 
         ComputeAdjustmentReach(rule, out var adjustmentMin, out var adjustmentMax);
 
@@ -201,18 +240,18 @@ internal sealed class RuleStaticAnalysis
     /// from the root.
     /// </summary>
     /// <param name="rule">The rule to classify.</param>
-    /// <param name="rulesByName">The case-insensitive rule lookup.</param>
+    /// <param name="index">The identity-keyed rule index used to resolve offset anchors.</param>
     /// <returns>
-    /// The classified tier, root anchor rule name (when applicable), and aggregate offset from the root anchor.
+    /// The classified tier, root anchor identity (when applicable), and aggregate offset from the root anchor.
     /// </returns>
-    private static (RuleTier Tier, string? RootAnchorRuleName, int OffsetFromRoot) ClassifyRule(
+    private static (RuleTier Tier, NotableDateRuleIdentity? RootAnchor, int OffsetFromRoot) ClassifyRule(
         NotableDateRule rule,
-        IReadOnlyDictionary<string, List<NotableDateRule>> rulesByName)
+        NotableDateRuleIndex index)
     {
         switch (rule.Strategy)
         {
             case DateResolutionStrategy.Algorithm:
-                return (RuleTier.Algorithmic, rule.Name, 0);
+                return (RuleTier.Algorithmic, NotableDateRuleIdentity.From(rule), 0);
 
             case DateResolutionStrategy.Fixed:
             case DateResolutionStrategy.DayOfWeekInMonth:
@@ -221,7 +260,7 @@ internal sealed class RuleStaticAnalysis
                 return (RuleTier.Fixed, null, 0);
 
             case DateResolutionStrategy.OffsetFromAnchor:
-                return ClassifyOffsetChain(rule, rulesByName);
+                return ClassifyOffsetChain(rule, index);
 
             default:
                 return (RuleTier.Fixed, null, 0);
@@ -233,11 +272,18 @@ internal sealed class RuleStaticAnalysis
     /// the offsets along the way.
     /// </summary>
     /// <param name="rule">The offset rule.</param>
-    /// <param name="rulesByName">The case-insensitive rule lookup.</param>
-    /// <returns>The classified tier, root anchor rule name, and aggregate offset.</returns>
-    private static (RuleTier Tier, string? RootAnchorRuleName, int OffsetFromRoot) ClassifyOffsetChain(
+    /// <param name="index">The identity-keyed rule index used to resolve each anchor in the chain.</param>
+    /// <returns>The classified tier, root anchor identity, and aggregate offset.</returns>
+    /// <remarks>
+    /// Each anchor reference is resolved through <see cref="NotableDateRuleIndex" /> using any authored
+    /// variant/territory/calendar filter and the requesting rule's context. When a reference cannot be resolved to a
+    /// single rule — because it is missing or ambiguous among same-name variants — the chain degrades to
+    /// <see cref="RuleTier.Fixed" /> with no root rather than binding to an arbitrary candidate; the strict validation
+    /// pass reports the missing/ambiguous reference as an error.
+    /// </remarks>
+    private static (RuleTier Tier, NotableDateRuleIdentity? RootAnchor, int OffsetFromRoot) ClassifyOffsetChain(
         NotableDateRule rule,
-        IReadOnlyDictionary<string, List<NotableDateRule>> rulesByName)
+        NotableDateRuleIndex index)
     {
         // Track visited rules by full identity so two same-name variants in a chain are not mistaken for a cycle.
         HashSet<NotableDateRuleIdentity> visited = [];
@@ -254,11 +300,9 @@ internal sealed class RuleStaticAnalysis
 
             aggregateOffset += current.OffsetDays ?? 0;
 
-            if (!rulesByName.TryGetValue(current.AnchorRuleName!, out List<NotableDateRule>? candidates))
-                return (RuleTier.Fixed, null, 0);
-
-            NotableDateRule? next = PickAnchorCandidate(candidates, current);
-            if (next is null)
+            NotableDateRuleReference reference = new(current.AnchorRuleName!, current.AnchorRuleVariant, current.AnchorTerritoryCode, current.AnchorCalendarType);
+            RuleReferenceResult result = index.Resolve(reference, current.TerritoryCode, current.CalendarType);
+            if (result.Match != RuleReferenceMatch.Unique || result.Rule is not { } next)
                 return (RuleTier.Fixed, null, 0);
 
             current = next;
@@ -266,34 +310,11 @@ internal sealed class RuleStaticAnalysis
 
         return current.Strategy switch
         {
-            DateResolutionStrategy.Algorithm => (RuleTier.OffsetFromAlgorithmic, current.Name, aggregateOffset),
+            DateResolutionStrategy.Algorithm => (RuleTier.OffsetFromAlgorithmic, NotableDateRuleIdentity.From(current), aggregateOffset),
             DateResolutionStrategy.Fixed or DateResolutionStrategy.DayOfWeekInMonth or DateResolutionStrategy.WeekdayNearDate or DateResolutionStrategy.RelativeWeekdayInMonth =>
-                (RuleTier.OffsetFromFixed, current.Name, aggregateOffset),
+                (RuleTier.OffsetFromFixed, NotableDateRuleIdentity.From(current), aggregateOffset),
             _ => (RuleTier.Fixed, null, 0),
         };
-    }
-
-    /// <summary>
-    /// Selects the anchor candidate that best matches the requesting rule's territory and calendar context, preferring
-    /// an exact territory-and-calendar match, then territory, then calendar, and finally the first candidate.
-    /// </summary>
-    /// <param name="candidates">The rules sharing the anchor name.</param>
-    /// <param name="from">The offset rule whose anchor is being resolved, supplying the disambiguation context.</param>
-    /// <returns>The selected anchor rule, or <see langword="null" /> when no candidate exists.</returns>
-    private static NotableDateRule? PickAnchorCandidate(List<NotableDateRule> candidates, NotableDateRule from)
-    {
-        if (candidates.Count <= 1)
-            return candidates.Count == 1 ? candidates[0] : null;
-
-        var territoryKey = NotableDateRuleIdentity.NormalizeTerritory(from.TerritoryCode);
-
-        return candidates.FirstOrDefault(c =>
-                   string.Equals(NotableDateRuleIdentity.NormalizeTerritory(c.TerritoryCode), territoryKey, StringComparison.OrdinalIgnoreCase)
-                   && c.CalendarType == from.CalendarType)
-               ?? candidates.FirstOrDefault(c =>
-                   string.Equals(NotableDateRuleIdentity.NormalizeTerritory(c.TerritoryCode), territoryKey, StringComparison.OrdinalIgnoreCase))
-               ?? candidates.FirstOrDefault(c => c.CalendarType == from.CalendarType)
-               ?? candidates[0];
     }
 
     /// <summary>

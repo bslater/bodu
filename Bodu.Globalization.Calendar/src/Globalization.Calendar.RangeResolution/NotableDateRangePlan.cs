@@ -25,9 +25,10 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 internal sealed class NotableDateRangePlan
 {
     /// <summary>
-    /// The civil years that must be resolved for each algorithmic anchor rule name.
+    /// The civil years that must be resolved for each algorithmic anchor, keyed by the anchor's full identity so
+    /// same-name variants are planned independently.
     /// </summary>
-    private readonly Dictionary<string, IReadOnlyList<int>> _anchorYearsByName;
+    private readonly Dictionary<NotableDateRuleIdentity, IReadOnlyList<int>> _anchorYearsByIdentity;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRangePlan" /> class.
@@ -42,7 +43,7 @@ internal sealed class NotableDateRangePlan
     /// </param>
     /// <param name="fringeStartDate">The inclusive start of the fringe scan window.</param>
     /// <param name="fringeEndDate">The inclusive end of the fringe scan window.</param>
-    /// <param name="anchorYearsByName">The civil years per algorithmic anchor that must be computed.</param>
+    /// <param name="anchorYearsByIdentity">The civil years per algorithmic anchor identity that must be computed.</param>
     public NotableDateRangePlan(
         NotableDateRangeRequest request,
         IReadOnlyList<RuleStaticProfile> eligibleRules,
@@ -50,7 +51,7 @@ internal sealed class NotableDateRangePlan
         IReadOnlyList<int> fringeYears,
         DateTime fringeStartDate,
         DateTime fringeEndDate,
-        Dictionary<string, IReadOnlyList<int>> anchorYearsByName)
+        Dictionary<NotableDateRuleIdentity, IReadOnlyList<int>> anchorYearsByIdentity)
     {
         Request = request;
         EligibleRules = eligibleRules;
@@ -58,7 +59,7 @@ internal sealed class NotableDateRangePlan
         FringeYears = fringeYears;
         FringeStartDate = fringeStartDate;
         FringeEndDate = fringeEndDate;
-        _anchorYearsByName = anchorYearsByName;
+        _anchorYearsByIdentity = anchorYearsByIdentity;
     }
 
     /// <summary>
@@ -111,20 +112,20 @@ internal sealed class NotableDateRangePlan
     public DateTime FringeEndDate { get; }
 
     /// <summary>
-    /// Gets the civil years that must be resolved for each algorithmic anchor name.
+    /// Gets the civil years that must be resolved for the algorithmic anchor with the supplied identity.
     /// </summary>
-    /// <param name="anchorRuleName">The algorithmic anchor rule name.</param>
+    /// <param name="anchorIdentity">The algorithmic anchor's full identity.</param>
     /// <returns>
     /// The required civil years; an empty list when the anchor has no dependents that touch the request window.
     /// </returns>
-    public IReadOnlyList<int> GetAnchorYears(string anchorRuleName) =>
-        _anchorYearsByName.TryGetValue(anchorRuleName, out IReadOnlyList<int>? list)
+    public IReadOnlyList<int> GetAnchorYears(in NotableDateRuleIdentity anchorIdentity) =>
+        _anchorYearsByIdentity.TryGetValue(anchorIdentity, out IReadOnlyList<int>? list)
             ? list
             : [];
 
     /// <summary>
-    /// Enumerates the algorithmic anchor names whose computation is demanded by at least one eligible rule.
+    /// Enumerates the algorithmic anchor identities whose computation is demanded by at least one eligible rule.
     /// </summary>
-    /// <returns>The required anchor names.</returns>
-    public IEnumerable<string> RequiredAnchorNames() => _anchorYearsByName.Keys;
+    /// <returns>The required anchor identities.</returns>
+    public IEnumerable<NotableDateRuleIdentity> RequiredAnchorIdentities() => _anchorYearsByIdentity.Keys;
 }

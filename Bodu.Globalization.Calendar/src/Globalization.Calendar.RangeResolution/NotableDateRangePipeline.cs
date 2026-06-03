@@ -301,9 +301,9 @@ internal sealed class NotableDateRangePipeline
         }
 
         if (profile.Tier != RuleTier.OffsetFromFixed) return null;
-        if (string.IsNullOrWhiteSpace(profile.RootAnchorRuleName)) return null;
+        if (profile.RootAnchorIdentity is not { } rootIdentity) return null;
 
-        DateTime? rootAnchor = cache.ResolveAnchor(profile.RootAnchorRuleName!, year);
+        DateTime? rootAnchor = cache.ResolveAnchor(rootIdentity, year);
 
         if (rootAnchor is null)
         {
@@ -311,7 +311,7 @@ internal sealed class NotableDateRangePipeline
             // rule may be missing for the fringe year. Materialize it here so this offset rule (and any sibling Tier 2 rules in
             // the fringe pass that share the same root) can read it. The anchor enters the cache as Computed unless its own
             // resolved date independently lands in the request window.
-            if (!_analysis.TryGetProfile(profile.RootAnchorRuleName!, out RuleStaticProfile rootProfile)) return null;
+            if (!_analysis.TryGetProfile(rootIdentity, out RuleStaticProfile rootProfile)) return null;
             if (rootProfile.Tier != RuleTier.Fixed) return null;
             if (!NotableDateRuleResolver.IsApplicable(rootProfile.Rule, year)) return null;
 
@@ -386,12 +386,12 @@ internal sealed class NotableDateRangePipeline
     /// </remarks>
     private void ProcessAlgorithmicAnchors(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
     {
-        foreach (var anchorName in plan.RequiredAnchorNames())
+        foreach (NotableDateRuleIdentity anchorIdentity in plan.RequiredAnchorIdentities())
         {
-            if (!_analysis.TryGetProfile(anchorName, out RuleStaticProfile profile)) continue;
+            if (!_analysis.TryGetProfile(anchorIdentity, out RuleStaticProfile profile)) continue;
             if (profile.Tier != RuleTier.Algorithmic) continue;
 
-            IReadOnlyList<int> years = plan.GetAnchorYears(anchorName);
+            IReadOnlyList<int> years = plan.GetAnchorYears(anchorIdentity);
             foreach (var year in years)
             {
                 if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
@@ -423,10 +423,10 @@ internal sealed class NotableDateRangePipeline
     /// <param name="cache">The shared cache being populated.</param>
     private void ProcessOffsetFromCached(RuleStaticProfile profile, NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
     {
-        if (string.IsNullOrWhiteSpace(profile.RootAnchorRuleName)) return;
+        if (profile.RootAnchorIdentity is not { } rootIdentity) return;
 
         IEnumerable<int> years = profile.Tier == RuleTier.OffsetFromAlgorithmic
-            ? plan.GetAnchorYears(profile.RootAnchorRuleName!)
+            ? plan.GetAnchorYears(rootIdentity)
             : plan.CandidateYears;
 
         foreach (var year in years)
@@ -434,7 +434,7 @@ internal sealed class NotableDateRangePipeline
             if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
                 continue;
 
-            DateTime? anchor = cache.ResolveAnchor(profile.RootAnchorRuleName!, year);
+            DateTime? anchor = cache.ResolveAnchor(rootIdentity, year);
             if (anchor is null) continue;
 
             DateTime occurrence;

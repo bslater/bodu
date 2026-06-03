@@ -716,9 +716,11 @@ internal sealed class NotableDateRuleResolver
         if (string.IsNullOrWhiteSpace(rule.AnchorRuleName))
             return null;
 
-        // Resolve the anchor by name, disambiguating with this rule's territory/calendar context when several
-        // variants share the name. An unresolvable name throws not-found; an undisambiguable match throws ambiguous.
-        RuleReferenceResult result = _index.Resolve(NotableDateRuleReference.ForName(rule.AnchorRuleName!), rule.TerritoryCode, rule.CalendarType);
+        // Resolve the anchor by name, applying any authored variant/territory/calendar filter and then disambiguating
+        // with this rule's territory/calendar context when several variants share the name. An unresolvable name throws
+        // not-found; an undisambiguable match throws ambiguous.
+        NotableDateRuleReference reference = new(rule.AnchorRuleName!, rule.AnchorRuleVariant, rule.AnchorTerritoryCode, rule.AnchorCalendarType);
+        RuleReferenceResult result = _index.Resolve(reference, rule.TerritoryCode, rule.CalendarType);
         if (result.Match == RuleReferenceMatch.Ambiguous)
             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AmbiguousAnchorReference, rule.AnchorRuleName, rule.Name, result.CandidateCount));
 

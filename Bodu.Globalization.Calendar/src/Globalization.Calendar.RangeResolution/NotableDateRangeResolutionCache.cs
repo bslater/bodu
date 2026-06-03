@@ -106,9 +106,37 @@ internal sealed class NotableDateRangeResolutionCache
     }
 
     /// <summary>
-    /// Resolves the cached anchor date for a rule by name and year, regardless of the entry's state.
+    /// Resolves the cached anchor date for the rule with the supplied composite identity and year, regardless of the
+    /// entry's state.
     /// </summary>
-    /// <param name="ruleName">The rule name.</param>
+    /// <param name="identity">
+    /// The root anchor's identity. The cached entry is matched on canonical name, rule-level variant, and calendar type
+    /// so that distinct same-name variants never resolve one another; the materialized territory is intentionally not
+    /// part of the match, mirroring the territory-agnostic anchor reuse the pipeline relies on.
+    /// </param>
+    /// <param name="year">The civil year.</param>
+    /// <returns>The cached anchor date, or <see langword="null" /> when no matching entry exists.</returns>
+    public DateTime? ResolveAnchor(in NotableDateRuleIdentity identity, int year)
+    {
+        foreach (NotableDateCacheEntry entry in _entries.Values)
+        {
+            if (entry.AnchorYear != year) continue;
+            if (!string.Equals(entry.Rule.Name, identity.Name, StringComparison.OrdinalIgnoreCase)) continue;
+            if (!string.Equals(entry.Rule.RuleName ?? string.Empty, identity.RuleName ?? string.Empty, StringComparison.OrdinalIgnoreCase)) continue;
+            if (entry.Rule.CalendarType != identity.CalendarType) continue;
+
+            return entry.BaseNotable.Date;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Resolves the cached anchor date for a rule by canonical name and year, returning the first matching entry. Kept
+    /// for name-only convenience; execution paths prefer <see cref="ResolveAnchor(in NotableDateRuleIdentity, int)" /> so
+    /// same-name variants do not collapse.
+    /// </summary>
+    /// <param name="ruleName">The canonical rule name.</param>
     /// <param name="year">The civil year.</param>
     /// <returns>The cached anchor date, or <see langword="null" /> when no matching entry exists.</returns>
     public DateTime? ResolveAnchor(string ruleName, int year)

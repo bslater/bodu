@@ -138,6 +138,9 @@
           <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required" />
             <xs:attribute name="offset" type="xs:int" use="required" />
+            <xs:attribute name="anchorRuleVariant" type="xs:string" use="optional" />
+            <xs:attribute name="anchorTerritory" type="xs:string" use="optional" />
+            <xs:attribute name="anchorCalendarType" type="xs:string" use="optional" />
           </xs:complexType>
         </xs:element>
         <!-- The target weekday positioned relative to a fixed reference month/day:
@@ -232,6 +235,9 @@
           <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required" />
             <xs:attribute name="offset" type="xs:int" use="required" />
+            <xs:attribute name="anchorRuleVariant" type="xs:string" use="optional" />
+            <xs:attribute name="anchorTerritory" type="xs:string" use="optional" />
+            <xs:attribute name="anchorCalendarType" type="xs:string" use="optional" />
           </xs:complexType>
         </xs:element>
         <!-- The target weekday positioned relative to a fixed reference month/day:
@@ -326,6 +332,7 @@
     <xs:attribute name="comparisonMonth" type="nd:monthName" use="optional" />
     <xs:attribute name="comparisonDay" type="nd:day" use="optional" />
     <xs:attribute name="target" type="xs:string" use="optional" />
+    <xs:attribute name="targetRuleVariant" type="xs:string" use="optional" />
     <!-- maxReachDays: symmetric +/- day envelope used by the range planner to size the fringe scan. -->
     <xs:attribute name="maxReachDays" type="xs:int" use="optional" />
     <!-- appliesToGlobalRules: opt a territory/calendar-scoped adjustment into territory/calendar-neutral rules. -->

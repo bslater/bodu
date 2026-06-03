@@ -27,11 +27,22 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 internal sealed record RuleStaticProfile(
     NotableDateRule Rule,
     RuleTier Tier,
-    string? RootAnchorRuleName,
+    NotableDateRuleIdentity? RootAnchorIdentity,
     int OffsetFromRoot,
     int MinObservedReach,
     int MaxObservedReach)
 {
+    /// <summary>
+    /// Gets the canonical name of the rule's transitive root anchor, for display and grouping only.
+    /// </summary>
+    /// <remarks>
+    /// Execution paths (anchor materialization, cache lookup, anchor-year planning) bind on the full
+    /// <see cref="RootAnchorIdentity" /> so that same-name variants do not collapse; this projection is provided for
+    /// diagnostics and human-readable assertions where the canonical name is sufficient.
+    /// </remarks>
+    /// <returns>The root anchor's canonical name, or <see langword="null" /> when the rule has no offset root.</returns>
+    public string? RootAnchorRuleName => RootAnchorIdentity?.Name;
+
     /// <summary>
     /// Gets a value indicating whether this rule depends transitively on an algorithmic anchor.
     /// </summary>
