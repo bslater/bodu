@@ -242,6 +242,26 @@ public sealed record NotableDateRuleOverrideBody
     public string? AnchorRuleName { get; init; }
 
     /// <summary>
+    /// Gets the optional rule-level variant of the <see cref="DateResolutionStrategy.OffsetFromAnchor" /> anchor.
+    /// </summary>
+    /// <returns>The anchor rule's <see cref="NotableDateRule.RuleName" />, or <see langword="null" />.</returns>
+    public string? AnchorRuleVariant { get; init; }
+
+    /// <summary>
+    /// Gets the optional territory filter applied when resolving the <see cref="DateResolutionStrategy.OffsetFromAnchor" />
+    /// anchor.
+    /// </summary>
+    /// <returns>The anchor rule's <see cref="NotableDateRule.TerritoryCode" /> filter, or <see langword="null" />.</returns>
+    public string? AnchorTerritoryCode { get; init; }
+
+    /// <summary>
+    /// Gets the optional calendar-type filter applied when resolving the
+    /// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> anchor.
+    /// </summary>
+    /// <returns>The anchor rule's <see cref="NotableDateRule.CalendarType" /> filter, or <see langword="null" />.</returns>
+    public Type? AnchorCalendarType { get; init; }
+
+    /// <summary>
     /// Gets the day offset used by <see cref="DateResolutionStrategy.OffsetFromAnchor" />.
     /// </summary>
     /// <returns>A signed day offset, or <see langword="null" /> to inherit the source value.</returns>

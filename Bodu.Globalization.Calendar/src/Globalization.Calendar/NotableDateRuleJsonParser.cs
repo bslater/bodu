@@ -301,6 +301,7 @@ public static class NotableDateRuleJsonParser
                 EffectiveToYear = dto.ToYear,
                 ComparisonDate = ParseOptionalMonthDay(dto.ComparisonMonth, dto.ComparisonDay),
                 TargetRuleName = dto.Target,
+                TargetRuleVariant = dto.TargetRuleVariant,
                 Priority = dto.Priority ?? 100,
                 MaxAdjustmentReachDays = dto.MaxReachDays,
                 AppliesToGlobalRules = dto.AppliesToGlobalRules ?? false,
@@ -421,6 +422,9 @@ public static class NotableDateRuleJsonParser
                     return rule with
                     {
                         AnchorRuleName = RequireString(o.Name, "name", "offsetFromAnchor"),
+                        AnchorRuleVariant = o.AnchorRuleVariant,
+                        AnchorTerritoryCode = o.AnchorTerritory,
+                        AnchorCalendarType = ParseOptionalType<SysGlobal.Calendar>(o.AnchorCalendarType, "anchorCalendarType"),
                         OffsetDays = RequireInt(o.Offset, "offset", "offsetFromAnchor"),
                     };
                 }
@@ -509,6 +513,9 @@ public static class NotableDateRuleJsonParser
                     return body with
                     {
                         AnchorRuleName = RequireString(o.Name, "name", "offsetFromAnchor"),
+                        AnchorRuleVariant = o.AnchorRuleVariant,
+                        AnchorTerritoryCode = o.AnchorTerritory,
+                        AnchorCalendarType = ParseOptionalType<SysGlobal.Calendar>(o.AnchorCalendarType, "anchorCalendarType"),
                         OffsetDays = RequireInt(o.Offset, "offset", "offsetFromAnchor"),
                     };
                 }
@@ -974,6 +981,9 @@ public static class NotableDateRuleJsonParser
     {
         [JsonPropertyName("name")] public string? Name { get; init; }
         [JsonPropertyName("offset")] public int? Offset { get; init; }
+        [JsonPropertyName("anchorRuleVariant")] public string? AnchorRuleVariant { get; init; }
+        [JsonPropertyName("anchorTerritory")] public string? AnchorTerritory { get; init; }
+        [JsonPropertyName("anchorCalendarType")] public string? AnchorCalendarType { get; init; }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
@@ -1022,6 +1032,7 @@ public static class NotableDateRuleJsonParser
         [JsonPropertyName("comparisonMonth")] public string? ComparisonMonth { get; init; }
         [JsonPropertyName("comparisonDay")] public int? ComparisonDay { get; init; }
         [JsonPropertyName("target")] public string? Target { get; init; }
+        [JsonPropertyName("targetRuleVariant")] public string? TargetRuleVariant { get; init; }
         [JsonPropertyName("maxReachDays")] public int? MaxReachDays { get; init; }
         [JsonPropertyName("appliesToGlobalRules")] public bool? AppliesToGlobalRules { get; init; }
         [JsonPropertyName("handlerKey")] public string? HandlerKey { get; init; }

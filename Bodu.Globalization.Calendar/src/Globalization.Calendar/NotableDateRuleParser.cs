@@ -323,6 +323,9 @@ public static class NotableDateRuleParser
             DateResolutionStrategy.OffsetFromAnchor => body with
             {
                 AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
+                AnchorRuleVariant = GetOptionalAttribute(strategyElement, "anchorRuleVariant"),
+                AnchorTerritoryCode = GetOptionalAttribute(strategyElement, "anchorTerritory"),
+                AnchorCalendarType = ParseOptionalType<SysGlobal.Calendar>(strategyElement, "anchorCalendarType"),
                 OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
             },
             DateResolutionStrategy.WeekdayNearDate => body with
@@ -469,6 +472,9 @@ public static class NotableDateRuleParser
             DateResolutionStrategy.OffsetFromAnchor => rule with
             {
                 AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
+                AnchorRuleVariant = GetOptionalAttribute(strategyElement, "anchorRuleVariant"),
+                AnchorTerritoryCode = GetOptionalAttribute(strategyElement, "anchorTerritory"),
+                AnchorCalendarType = ParseOptionalType<SysGlobal.Calendar>(strategyElement, "anchorCalendarType"),
                 OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
             },
             DateResolutionStrategy.WeekdayNearDate => rule with
@@ -518,6 +524,7 @@ public static class NotableDateRuleParser
             EffectiveToYear = ParseOptionalInt(element, "toYear"),
             ComparisonDate = ParseOptionalMonthDay(element, "comparisonMonth", "comparisonDay"),
             TargetRuleName = GetOptionalAttribute(element, "target"),
+            TargetRuleVariant = GetOptionalAttribute(element, "targetRuleVariant"),
             Priority = ParseOptionalInt(element, "priority") ?? 100,
             MaxAdjustmentReachDays = ParseOptionalInt(element, "maxReachDays"),
             AppliesToGlobalRules = ParseOptionalBool(element, "appliesToGlobalRules") ?? false,

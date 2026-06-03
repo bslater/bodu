@@ -604,6 +604,15 @@
         },
         "offset": {
           "$ref": "#/$defs/int32"
+        },
+        "anchorRuleVariant": {
+          "type": "string"
+        },
+        "anchorTerritory": {
+          "type": "string"
+        },
+        "anchorCalendarType": {
+          "type": "string"
         }
       }
     },
@@ -737,6 +746,9 @@
           "$ref": "#/$defs/day"
         },
         "target": {
+          "type": "string"
+        },
+        "targetRuleVariant": {
           "type": "string"
         },
         "maxReachDays": {

@@ -459,6 +459,38 @@ public sealed record NotableDateRule
     public string? AnchorRuleName { get; init; }
 
     /// <summary>
+    /// Gets the optional rule-level variant of the <see cref="DateResolutionStrategy.OffsetFromAnchor" /> anchor, used to
+    /// disambiguate when several rules share the canonical <see cref="AnchorRuleName" /> (for example western and orthodox
+    /// Easter).
+    /// </summary>
+    /// <returns>
+    /// The anchor rule's <see cref="RuleName" />, or <see langword="null" /> to resolve by name using the requesting
+    /// rule's territory and calendar context.
+    /// </returns>
+    public string? AnchorRuleVariant { get; init; }
+
+    /// <summary>
+    /// Gets the optional territory filter applied when resolving the <see cref="DateResolutionStrategy.OffsetFromAnchor" />
+    /// anchor, used to disambiguate same-name variants scoped to different territories.
+    /// </summary>
+    /// <returns>
+    /// The anchor rule's <see cref="TerritoryCode" /> filter, or <see langword="null" /> to resolve by name using the
+    /// requesting rule's context.
+    /// </returns>
+    public string? AnchorTerritoryCode { get; init; }
+
+    /// <summary>
+    /// Gets the optional calendar-type filter applied when resolving the
+    /// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> anchor, used to disambiguate same-name variants scoped to
+    /// different calendars.
+    /// </summary>
+    /// <returns>
+    /// The anchor rule's <see cref="CalendarType" /> filter, or <see langword="null" /> to resolve by name using the
+    /// requesting rule's context.
+    /// </returns>
+    public Type? AnchorCalendarType { get; init; }
+
+    /// <summary>
     /// Gets the integer day offset applied to the anchor for <see cref="DateResolutionStrategy.OffsetFromAnchor" />.
     /// </summary>
     /// <returns>

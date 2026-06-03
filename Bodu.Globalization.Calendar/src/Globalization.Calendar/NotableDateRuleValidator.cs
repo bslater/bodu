@@ -90,7 +90,8 @@ internal static class NotableDateRuleValidator
         if (string.IsNullOrWhiteSpace(rule.AnchorRuleName))
             return;
 
-        RuleReferenceResult result = index.Resolve(NotableDateRuleReference.ForName(rule.AnchorRuleName!), rule.TerritoryCode, rule.CalendarType);
+        NotableDateRuleReference reference = new(rule.AnchorRuleName!, rule.AnchorRuleVariant, rule.AnchorTerritoryCode, rule.AnchorCalendarType);
+        RuleReferenceResult result = index.Resolve(reference, rule.TerritoryCode, rule.CalendarType);
         switch (result.Match)
         {
             case RuleReferenceMatch.None:
