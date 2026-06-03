@@ -29,39 +29,41 @@ the concrete v1 → v2 type mapping.
 |---|---|---|---|
 | 1 | Concept/rule model & identity | `NotableDateRule`, `NotableDateRuleIdentity` (name-keyed) | ✅ Implemented (re-shaped: concept → rule, identity = resourceId+id+ruleId) |
 | 2 | Resolved-occurrence result | `NotableDate` (DateTime) | ✅ Implemented (re-shaped: `DateOnly`, `IsObserved`+`ActualDate`, stable `Identity`) |
-| 3 | Single-day & range query | `INotableDateService.GetNotableDates(…)` ×6 | 🟡 Partial (`Resolve(DateOnly)`, `Resolve(DateRange)`; no by-year/filter overloads) |
+| 3 | Single-day & range query | `INotableDateService.GetNotableDates(…)` ×6 | 🟡 Partial (`Resolve(DateOnly/DateRange)` plus filtered overloads; no by-year overload or interface working-day predicates) |
 | 4 | Date-calculation strategies | `DateResolutionStrategy` (6 kinds) | ✅ Implemented (all 6: Fixed, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth, OffsetFromRule, Algorithm) |
 | 5 | Easter algorithms | Gregorian + Orthodox Easter | ✅ Implemented (`EasterCalculator`, Western + Orthodox) |
 | 6 | Lunar / lunisolar / solar-term algorithms | Vesak, Asalha, Qingming, Losar, HinduLunar, LunarPhase | ✅ Implemented (Meeus equinox/lunar-phase + Matariki table; full solar-anchored Hindu festival set bar nakshatra-fixed Onam) |
-| 7 | Algorithm registry / dispatch | `INotableDateAlgorithmRegistry`, `NotableDateAlgorithmRegistry` | 🔵 Replaced (keys dispatched directly in `AlgorithmDateStrategy`; no public registry) |
+| 7 | Algorithm registry / dispatch | `INotableDateAlgorithmRegistry`, `NotableDateAlgorithmRegistry` | ✅ Implemented (`INotableDateAlgorithm` + `NotableDateAlgorithmRegistry`, threaded through resolution and validation) |
 | 8 | Observance adjustments | `ObservanceAdjustment`, `AdjustmentTrigger`/`Action`, `ObservedDateMode` | 🟡 Partial (reusable `AdjustmentPolicy`; core triggers/actions + richer `EmissionMode`; some triggers/actions deferred) |
 | 9 | Custom adjustment handlers | `IAdjustmentHandler`, `AdjustmentHandlerRegistry` | ⛔ Deferred |
 | 10 | Conflict-aware substitution | tier pipeline + non-working context | 🔵 Replaced & **strengthened** (compute-then-place occupied-day set, opt-in `skipNonWorkingDates`) |
 | 11 | Territory specificity / shadowing | `ApplySameNameTerritoryShadowing` (the v1 *bug*) | ✅ Implemented (correct redesign: `RuleApplicability.MatchSpecificity`, most-specific match wins) |
 | 12 | Same-day collision resolution | `INotableDateCollisionResolver`, `DefaultNotableDateCollisionResolver` | ⛔ Deferred (`ResolutionPolicy.sameDayCollisionPolicy` parsed but unwired) |
 | 13 | XML ingestion + schema validation | `NotableDateRuleParser`, `NotableDates.xsd`, `NotableDateRuleValidator` | ✅ Implemented (new schema: `NotableDateDocumentParser`, `NotableDates.v2.xsd`, validator + diagnostics) |
-| 14 | JSON ingestion | `NotableDateRuleJsonParser`, `NotableDates.schema.json` | 🟡 Partial (JSON **schema artifact ships**; no JSON **loader**) |
+| 14 | JSON ingestion | `NotableDateRuleJsonParser`, `NotableDates.schema.json` | ✅ Implemented (`NotableDateJsonDocumentParser` + `LoadJson`; XML/JSON auto-detected for imports) |
 | 15 | Declarative overrides | `INotableDateRuleOverrideProvider`, `RuleRemoval` | 🟡 Partial (`<Overrides>` Add/Patch/Remove at load; no scoped removal, no runtime mutation) |
-| 16 | Runtime mutable overrides + reload | `MutableNotableDateRuleOverrideProvider`, `Invalidate`/`Reload` | ⛔ Deferred (no event-driven reload) |
-| 17 | Imports / cross-resource cherry-pick | `<UseFrom>`/`<Use>`, `NotableDateRuleMerger`, use-directives | ⛔ Deferred |
-| 18 | Resource providers + path resolution | `Xml/JsonResourceNotableDateRuleProvider`, `ResourcePathResolver` | 🔵 Replaced (single-resource `NotableDateResourceLoader.Load`; provider chain deferred) |
-| 19 | Filter API | `NotableDateFilter` (14 factories + And/Or) | ⛔ Deferred |
-| 20 | Working-day / traversal / fiscal extensions | `NotableDate{Only,Time,TimeOffset}Extensions`, `…FiscalExtensions`, `NotableDateContext` | ⛔ Deferred (no v2 extension surface) |
-| 21 | Plugin model | `ExternalPluginLoader`, trust policies, plugin interfaces | ⛔ Deferred |
+| 16 | Runtime mutable overrides + reload | `MutableNotableDateRuleOverrideProvider`, `Invalidate`/`Reload` | ⛔ Deferred (resources immutable after load) |
+| 17 | Imports / cross-resource cherry-pick | `<UseFrom>`/`<Use>`, `NotableDateRuleMerger`, use-directives | ✅ Implemented (`<Imports>` resolved by a resolver: import-all / cherry-pick + override, policy merge, cycle detection) |
+| 18 | Resource providers + path resolution | `Xml/JsonResourceNotableDateRuleProvider`, `ResourcePathResolver` | 🔵 Replaced (loader + a caller-supplied resource resolver delegate; no provider/path-resolver types) |
+| 19 | Filter API | `NotableDateFilter` (14 factories + And/Or) | ✅ Implemented (`NotableDateFilter` + filtered `Resolve` overloads) |
+| 20 | Working-day / traversal / fiscal extensions | `NotableDate{Only,Time,TimeOffset}Extensions`, `…FiscalExtensions`, `NotableDateContext` | 🟡 Partial (`NotableDateOnlyExtensions` over the service; DateTime/DateTimeOffset + fiscal deferred) |
+| 21 | Plugin model | `ExternalPluginLoader`, trust policies, plugin interfaces | ✅ Implemented (`Bodu.Globalization.Calendar2.Plugins`: loader, trust-policy family, plugin interfaces, algorithm contribution) |
 | 22 | Localization hook | `INotableDateNameLocalizer` | ⛔ Deferred |
 | 23 | `TerritoryCode` value type | `TerritoryCode` (Parse/Contains, country+subdivision) | 🔵 Replaced (plain string + parent/child + `MatchSpecificity`) |
 | 24 | Non-Gregorian calendars | `CalendarType` on rule, `calendar` on algorithm | ✅ Implemented for fixed dates (Hijri, UmmAlQura, Hebrew, Persian, Chinese lunisolar via the BCL, with sweep / leap-month skip / Hebrew alias) |
 | 25 | Range pipeline internals | `NotableDateRangePipeline/Planner/Plan`, `RuleStaticAnalysis`/`Tier`, resolution cache | ⚪ Internal — replaced by inline two-phase resolve |
-| 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ⛔ Deferred (no v2 DI project) |
+| 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 12 ✅ Implemented · 5 🟡 Partial · 4 🔵 Replaced by design · 1 ⚪ Internal · 9 ⛔ Deferred (counting sub-rows).
+**Tally:** 15 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 4 ⛔ Deferred (counting sub-rows).
 
-The fixed core — model, identity, the full 6-strategy catalogue, XML load + validate, single-day &
-range resolution, adjustments/emission, territory shadowing, conflict-aware substitution, the
-algorithm catalogue, and non-Gregorian fixed dates — is **implemented**, and all three regional data
-packs are stood up. The deferred set is now dominated by the import graph, JSON ingestion, the filter
-API, and the extension/plugin/DI surfaces rather than gaps in the core engine or calendars.
+The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
+imports graph, the filter API, the `DateOnly` extension surface, the custom-algorithm registry, the
+plugin model, and DI registration are all **implemented**. The remaining deferred set is small and
+peripheral: custom adjustment handlers (area 9), the same-day collision resolver (area 12), runtime
+mutable overrides / reload (area 16), and the localization hook (area 22); the partials are the
+DateTime/DateTimeOffset/fiscal extension overloads (area 20) and the broader trigger/action matrix
+(area 8).
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -298,15 +300,22 @@ Ordered roughly by unblocking value, reconciled with `V1-TO-V2-TEST-PORT.md`:
    (only nakshatra-fixed Onam remains out of scope).
 2a. ~~**Regional data packs**~~ — ✅ **done**: all three packs migrated for every v1 territory (38
     countries), with multi-day `durationDays` spans on the statutory multi-day holidays.
-3. **JSON ingestion** — a JSON loader to match the shipped `NotableDates.v2.schema.json` (area 14).
-4. **Imports / cherry-pick** (`<UseFrom>`/`<Use>` + merge) and the **resource-provider chain** +
-   **path resolver** (areas 17–18).
-5. **Filter API** (area 19).
-6. **Same-day collision resolver** — wire `ResolutionPolicy.sameDayCollisionPolicy`/`DuplicatePolicy`
+3. ~~**JSON ingestion**~~ — ✅ **done** (`NotableDateJsonDocumentParser` + `LoadJson`).
+4. ~~**Imports / cherry-pick**~~ — ✅ **done** (`<Imports>` + a resource-resolver delegate; a typed
+   provider/path-resolver layer remains optional, area 18).
+5. ~~**Filter API**~~ — ✅ **done** (`NotableDateFilter` + filtered `Resolve`).
+6. ~~**Custom algorithm registry / plugin model / DI / extension surface**~~ — ✅ **done**
+   (`NotableDateAlgorithmRegistry`; `Bodu.Globalization.Calendar2.Plugins`;
+   `Bodu.Globalization.Calendar2.DependencyInjection`; `NotableDateOnlyExtensions`).
+7. ~~**Multi-day spans, tags, the twice-Islamic case, the full Hindu set**~~ — ✅ **done**.
+
+Remaining (small, peripheral):
+
+8. **Same-day collision resolver** — wire `ResolutionPolicy.sameDayCollisionPolicy`/`DuplicatePolicy`
    and add a custom-resolver hook (area 12).
-7. **Custom adjustment handlers** + the remaining triggers (`IfNonWorkingDay`, `IfBefore/AfterFixedDate`,
+9. **Custom adjustment handlers** + the remaining triggers (`IfNonWorkingDay`, `IfBefore/AfterFixedDate`,
    `IfLeapYear`, `IfNthOccurrenceInMonth`) and actions (`ReplaceWithNamedDate`/`ReplaceWithRule`,
    `Custom`) (areas 8–9).
-8. **Runtime mutable overrides + reload** (area 16); **multi-day spans** & **tags** on results (area 2).
-9. **Working-day / traversal / fiscal extension surface** + `TerritoryCode` value type (areas 20, 23).
-10. **Plugin model** (area 21), **localization hook** (area 22), **DI project** (area 26).
+10. **Runtime mutable overrides + reload** (area 16); **localization hook** (area 22); the
+    **DateTime/DateTimeOffset/fiscal extension** overloads and the `TerritoryCode` value type
+    (areas 20, 23).
