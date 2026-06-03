@@ -30,7 +30,7 @@ internal static class HinduLunarCalculator
     /// </summary>
     private static readonly Dictionary<string, (int SearchMonth, bool Krishna, int Tithi)> s_festivals = new(StringComparer.Ordinal)
     {
-        ["holi"] = (2, false, 15),       // Phalguna, Shukla 15 (Purnima).
+        ["holi"] = (3, false, 15),       // Phalguna, Shukla 15 (Purnima) — the March full moon.
         ["navaratri"] = (9, false, 1),   // Ashvin, Shukla 1.
         ["diwali"] = (10, true, 15),     // Kartik, Krishna 15 (Amavasya).
     };
@@ -67,6 +67,12 @@ internal static class HinduLunarCalculator
     /// <returns>The computed date, or <see langword="null" /> when no lunation is found.</returns>
     private static DateOnly? Compute(int searchMonth, bool krishna, int tithi, int year)
     {
+        // A bright-fortnight full moon (Purnima, tithi 15) is far more stably located by searching the full moon
+        // anchored in its Gregorian month than by counting tithis from a new moon, whose Gregorian month drifts across
+        // the year boundary and can select the previous lunation.
+        if (!krishna && tithi == 15)
+            return LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, searchMonth, 1));
+
         DateOnly? monthNewMoon = LunarPhaseCalculator.NewMoonOnOrAfter(new DateOnly(year, searchMonth, 1));
         if (monthNewMoon is null)
             return null;

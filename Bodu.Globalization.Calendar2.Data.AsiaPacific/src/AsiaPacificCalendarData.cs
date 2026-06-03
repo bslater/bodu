@@ -30,7 +30,7 @@ public static class AsiaPacificCalendarData
     /// Gets the country codes the Asia-Pacific pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "AU", "CN", "JP", "NZ" };
+    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "AU", "CN", "IN", "JP", "KR", "MY", "NZ", "SG" };
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.

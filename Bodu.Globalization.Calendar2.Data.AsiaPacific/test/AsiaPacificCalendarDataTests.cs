@@ -56,6 +56,22 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("NZ", 2024, "labour-day", "2024-10-28", false)]
     [DataRow("NZ", 2021, "christmas-day", "2021-12-27", true)]
     [DataRow("NZ", 2021, "boxing-day", "2021-12-28", true)]
+
+    // South Korea: Chinese lunisolar Seollal and Chuseok, plus fixed nationals.
+    [DataRow("KR", 2024, "seollal", "2024-02-10", false)]
+    [DataRow("KR", 2024, "chuseok", "2024-09-17", false)]
+    [DataRow("KR", 2024, "hangul-day", "2024-10-09", false)]
+
+    // Singapore: Chinese New Year, Easter-derived Good Friday, and fixed nationals.
+    [DataRow("SG", 2024, "chinese-new-year", "2024-02-10", false)]
+    [DataRow("SG", 2024, "good-friday", "2024-03-29", false)]
+    [DataRow("SG", 2024, "national-day", "2024-08-09", false)]
+
+    // India: Gregorian nationals, the fixed solar Makar Sankranti, and Easter-derived Good Friday.
+    [DataRow("IN", 2024, "republic-day", "2024-01-26", false)]
+    [DataRow("IN", 2024, "makar-sankranti", "2024-01-14", false)]
+    [DataRow("IN", 2024, "good-friday", "2024-03-29", false)]
+    [DataRow("IN", 2024, "gandhi-jayanti", "2024-10-02", false)]
     public void Resolve_AsiaPacificHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
         List<NotableDate> matches = AsiaPacificCalendarData.CreateService(territory)
@@ -82,5 +98,39 @@ public sealed class AsiaPacificCalendarDataTests
         Assert.AreEqual(new DateOnly(2020, 4, 27), wa.Date);
         Assert.IsTrue(wa.IsObserved);
         Assert.AreEqual("wa", wa.RuleId);
+    }
+
+    /// <summary>
+    /// Verifies that an Islamic or lunar-algorithm festival resolves to within two days of its gazetted date. The
+    /// tabular Hijri calendar and the astronomical lunar series differ from the locally proclaimed observance, so a
+    /// one- to two-day offset is expected and within tolerance.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The festival id to resolve.</param>
+    /// <param name="expected">The gazetted observed date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("MY", 2024, "hari-raya-aidilfitri", "2024-04-10")]
+    [DataRow("MY", 2024, "hari-raya-aidiladha", "2024-06-17")]
+    [DataRow("KR", 2024, "buddhas-birthday", "2024-05-15")]
+    [DataRow("SG", 2024, "vesak-day", "2024-05-22")]
+    [DataRow("SG", 2024, "deepavali", "2024-10-31")]
+    [DataRow("IN", 2024, "diwali", "2024-11-01")]
+    [DataRow("IN", 2024, "holi", "2024-03-25")]
+    [DataRow("IN", 2024, "eid-al-fitr", "2024-04-11")]
+    public void Resolve_LunarOrIslamicFestival_IsWithinToleranceOfKnownDate(string territory, int year, string notableDateId, string expected)
+    {
+        DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+
+        List<NotableDate> matches = AsiaPacificCalendarData.CreateService(territory)
+            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
+            .Where(r => r.NotableDateId == notableDateId)
+            .ToList();
+
+        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+
+        int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
+        Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
     }
 }

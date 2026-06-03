@@ -22,8 +22,12 @@
   <ItemGroup>
     <None Remove="Resources\region-au.xml" />
     <None Remove="Resources\region-cn.xml" />
+    <None Remove="Resources\region-in.xml" />
     <None Remove="Resources\region-jp.xml" />
+    <None Remove="Resources\region-kr.xml" />
+    <None Remove="Resources\region-my.xml" />
     <None Remove="Resources\region-nz.xml" />
+    <None Remove="Resources\region-sg.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,11 +37,23 @@
     <EmbeddedResource Include="Resources\region-cn.xml">
       <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-cn.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-in.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-in.xml</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\region-jp.xml">
       <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-jp.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-kr.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-kr.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-my.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-my.xml</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\region-nz.xml">
       <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-nz.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-sg.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-sg.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Indian notable-date resource, migrated from the v1 region-in.xml to the v2 cookbook schema. National holidays are
+  Gregorian; the solar festivals Makar Sankranti and Pongal are fixed (14 January); the Islamic festivals use the
+  tabular Hijri calendar; Good Friday derives from Easter; and the verified Hindu lunisolar festivals (Holi, Navaratri,
+  Diwali) use the lunar-phase algorithm. The remaining v1 Hindu festivals (Saraswati Puja, Maha Shivaratri, Ram Navami,
+  Raksha Bandhan, Janmashtami, Ganesh Chaturthi, Onam, Dussehra) are omitted pending verified lunar coordinates rather
+  than shipped with uncertain dates.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.in">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="makar-sankranti" displayName="Makar Sankranti" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="pongal" displayName="Pongal" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="republic-day" displayName="Republic Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="January" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="holi" displayName="Holi" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Algorithm key="holi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="good-friday" displayName="Good Friday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability fromYear="1583"><Territory code="IN" /></Applicability><Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="in" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability fromYear="1583"><Territory code="IN" /></Applicability><Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="eid-al-fitr" displayName="Eid al-Fitr" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability calendar="Hijri"><Territory code="IN" /></Applicability><Strategy><Fixed month="10" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="navaratri" displayName="Navaratri" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Algorithm key="navaratri" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="gandhi-jayanti" displayName="Gandhi Jayanti" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="October" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="diwali" displayName="Diwali" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="day-of-ashura" displayName="Day of Ashura" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability calendar="Hijri"><Territory code="IN" /></Applicability><Strategy><Fixed month="1" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="eid-al-adha" displayName="Eid al-Adha" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability calendar="Hijri"><Territory code="IN" /></Applicability><Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
