@@ -44,6 +44,10 @@
       href: financial/money.md
     - name: Working with exchange rates
       href: financial/exchange-rates.md
+    - name: Exchange-rate types (usage catalogue)
+      href: financial/exchange-types.md
+    - name: Exchange-rate lookups (worked dataset)
+      href: financial/exchange-rate-lookups.md
 - name: Bodu.Globalization.Calendar
   items:
     - name: Overview

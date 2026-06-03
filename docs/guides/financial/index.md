@@ -56,6 +56,13 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   `ExchangeRateLookupResult`, the composite fallback stack, the
   `TypedMoneyConversionResult<,>` audit record, and the
   `ExchangeRateSeriesBuilder` + `ExchangeRateTableBuilder` editing surface.
+- [Exchange-rate types — a usage-scenario catalogue](exchange-types.md) —
+  every FX type mapped to the scenario it was defined for, with a
+  one-line "reach for this when…" map and a decision walk-through.
+- [Exchange-rate lookups on a known dataset](exchange-rate-lookups.md) —
+  one fixed dataset run through every `ExchangeRateDateResolution`
+  policy, tolerance window, and the inverse / identity switches, with a
+  results matrix showing exactly how each option changes the answer.
 
 ## See also
 
