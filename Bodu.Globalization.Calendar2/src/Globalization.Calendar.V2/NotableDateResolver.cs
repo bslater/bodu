@@ -72,6 +72,7 @@ public sealed class NotableDateResolver
         ThrowHelper.ThrowIfGreaterThan(startInclusive, endInclusive);
 
         List<ResolvedNotableDate> results = new();
+        StrategyResolutionContext context = new(this._resource);
 
         int firstYear = Math.Max(1, startInclusive.Year - 1);
         int lastYear = Math.Min(9999, endInclusive.Year + 1);
@@ -88,7 +89,7 @@ public sealed class NotableDateResolver
                     if (!rule.Applicability.AppliesTo(territory, year))
                         continue;
 
-                    if (rule.Strategy.Calculate(year) is not DateOnly baseDate)
+                    if (rule.Strategy.Calculate(year, context) is not DateOnly baseDate)
                         continue;
 
                     this.EmitOccurrences(results, definition, rule, category, identity, baseDate, territory, startInclusive, endInclusive);

@@ -33,14 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Globalization.Calendar.V2\Fixtures\minimal.xml">
-      <LogicalName>Bodu.Globalization.Calendar.V2.Fixtures.minimal.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization.Calendar.V2\Fixtures\minimal-remove-pr-rule.xml">
-      <LogicalName>Bodu.Globalization.Calendar.V2.Fixtures.minimal-remove-pr-rule.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization.Calendar.V2\Fixtures\minimal-patch-pr-rule.xml">
-      <LogicalName>Bodu.Globalization.Calendar.V2.Fixtures.minimal-patch-pr-rule.xml</LogicalName>
+    <EmbeddedResource Include="Globalization.Calendar.V2\Fixtures\*.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Fixtures.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

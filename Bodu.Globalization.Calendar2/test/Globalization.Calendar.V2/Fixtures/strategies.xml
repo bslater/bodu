@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategies">
+
+  <NotableDates>
+
+    <!-- Fixed-date strategy -->
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us-fixed" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="us-independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us-fixed" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy><Fixed month="July" day="4" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- DayOfWeekInMonth strategy: nth weekday and last weekday -->
+    <NotableDate id="us-thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us-4th-thu-nov" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="us-labor-day" displayName="Labor Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us-1st-mon-sep" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="us-memorial-day" displayName="Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us-last-mon-may" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="us-mlk-day" displayName="Martin Luther King Jr. Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us-3rd-mon-jan" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- RelativeWeekdayInMonth strategy: the Tuesday after the first Monday in November -->
+    <NotableDate id="us-election-day" displayName="Election Day" category="Civic" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="us-tue-after-1st-mon-nov" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+          <Strategy>
+            <RelativeWeekdayInMonth month="November" dayOfWeek="Monday" weekOrdinal="First" relativeDayOfWeek="Tuesday" direction="After" />
+          </Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- WeekdayNearDate strategy: the Monday on or before 24 May (Canadian Victoria Day) -->
+    <NotableDate id="ca-victoria-day" displayName="Victoria Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="ca-mon-onorbefore-may-24" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="CA" /></Applicability>
+          <Strategy><WeekdayNearDate month="May" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Algorithm strategy: Western and Orthodox Easter -->
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="western" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><Algorithm key="western-easter" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-easter" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="orthodox" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><Algorithm key="orthodox-easter" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- OffsetFromRule strategy: Good Friday (Easter - 2) and Easter Monday (Easter + 1) -->
+    <NotableDate id="good-friday" displayName="Good Friday" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="western-minus-2" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="-2" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-monday" displayName="Easter Monday" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="western-plus-1" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

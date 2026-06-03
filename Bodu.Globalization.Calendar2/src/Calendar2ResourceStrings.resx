@@ -105,4 +105,13 @@
   <data name="Validation_UnresolvedAdjustmentPolicy" xml:space="preserve">
     <value>Rule '{0}' references undefined adjustment policy '{1}'.</value>
   </data>
+  <data name="Validation_OffsetReferenceNotFound" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': offset reference '{2}' resolves to no rule.</value>
+  </data>
+  <data name="Validation_OffsetReferenceAmbiguous" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': offset reference '{2}' is ambiguous; specify a ruleRef.</value>
+  </data>
+  <data name="Validation_UnknownAlgorithm" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': algorithm key '{2}' is not recognized.</value>
+  </data>
 </root>

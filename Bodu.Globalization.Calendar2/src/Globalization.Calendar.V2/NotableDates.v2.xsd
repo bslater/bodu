@@ -158,6 +158,11 @@
   <xs:complexType name="Strategy">
     <xs:choice minOccurs="1" maxOccurs="1">
       <xs:element name="Fixed" type="nd:FixedStrategy" />
+      <xs:element name="DayOfWeekInMonth" type="nd:DayOfWeekInMonthStrategy" />
+      <xs:element name="WeekdayNearDate" type="nd:WeekdayNearDateStrategy" />
+      <xs:element name="RelativeWeekdayInMonth" type="nd:RelativeWeekdayInMonthStrategy" />
+      <xs:element name="OffsetFromRule" type="nd:OffsetFromRuleStrategy" />
+      <xs:element name="Algorithm" type="nd:AlgorithmStrategy" />
     </xs:choice>
   </xs:complexType>
 
@@ -166,6 +171,37 @@
     <xs:attribute name="day" type="nd:dayValue" use="required" />
     <xs:attribute name="skipLeapMonth" type="xs:boolean" use="optional" />
     <xs:attribute name="sweepCalendarYears" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="DayOfWeekInMonthStrategy">
+    <xs:attribute name="month" type="xs:string" use="required" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="WeekdayNearDateStrategy">
+    <xs:attribute name="month" type="xs:string" use="required" />
+    <xs:attribute name="day" type="nd:dayValue" use="required" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="RelativeWeekdayInMonthStrategy">
+    <xs:attribute name="month" type="xs:string" use="required" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+    <xs:attribute name="relativeDayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="OffsetFromRuleStrategy">
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="optional" />
+    <xs:attribute name="offsetDays" type="xs:int" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="AlgorithmStrategy">
+    <xs:attribute name="key" type="xs:string" use="required" />
   </xs:complexType>
 
   <xs:complexType name="RuleAdjustments">
@@ -311,6 +347,29 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="Always" />
       <xs:enumeration value="FallsOn" />
+      <xs:enumeration value="IfWeekend" />
+      <xs:enumeration value="IfWeekday" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="weekOrdinal">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="First" />
+      <xs:enumeration value="Second" />
+      <xs:enumeration value="Third" />
+      <xs:enumeration value="Fourth" />
+      <xs:enumeration value="Fifth" />
+      <xs:enumeration value="Last" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="weekdayProximity">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Before" />
+      <xs:enumeration value="OnOrBefore" />
+      <xs:enumeration value="Nearest" />
+      <xs:enumeration value="OnOrAfter" />
+      <xs:enumeration value="After" />
     </xs:restriction>
   </xs:simpleType>
 

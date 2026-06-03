@@ -56,7 +56,9 @@
     "emissionMode": {
       "enum": [ "ActualOnly", "ObservedOnly", "ActualAndObserved", "ObservedAsAdditional", "Suppress" ]
     },
-    "adjustmentTrigger": { "enum": [ "Always", "FallsOn" ] },
+    "adjustmentTrigger": { "enum": [ "Always", "FallsOn", "IfWeekend", "IfWeekday" ] },
+    "weekOrdinal": { "enum": [ "First", "Second", "Third", "Fourth", "Fifth", "Last" ] },
+    "weekdayProximity": { "enum": [ "Before", "OnOrBefore", "Nearest", "OnOrAfter", "After" ] },
     "adjustmentAction": {
       "enum": [ "None", "AddDays", "MoveToNextWeekday", "MoveToPreviousWeekday", "MoveToNextWorkingDay", "MoveToPreviousWorkingDay", "Suppress" ]
     },
@@ -154,11 +156,69 @@
         "sweepCalendarYears": { "type": "boolean" }
       }
     },
+    "dayOfWeekInMonthStrategy": {
+      "type": "object",
+      "required": [ "month", "dayOfWeek", "weekOrdinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "weekOrdinal": { "$ref": "#/$defs/weekOrdinal" }
+      }
+    },
+    "weekdayNearDateStrategy": {
+      "type": "object",
+      "required": [ "month", "day", "dayOfWeek", "direction" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "day": { "type": "integer", "minimum": 1, "maximum": 31 },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "direction": { "$ref": "#/$defs/weekdayProximity" }
+      }
+    },
+    "relativeWeekdayInMonthStrategy": {
+      "type": "object",
+      "required": [ "month", "dayOfWeek", "weekOrdinal", "relativeDayOfWeek", "direction" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "weekOrdinal": { "$ref": "#/$defs/weekOrdinal" },
+        "relativeDayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "direction": { "$ref": "#/$defs/weekdayProximity" }
+      }
+    },
+    "offsetFromRuleStrategy": {
+      "type": "object",
+      "required": [ "notableDateRef", "offsetDays" ],
+      "additionalProperties": false,
+      "properties": {
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" },
+        "offsetDays": { "type": "integer" }
+      }
+    },
+    "algorithmStrategy": {
+      "type": "object",
+      "required": [ "key" ],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" }
+      }
+    },
     "strategy": {
       "type": "object",
       "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
       "properties": {
-        "fixed": { "$ref": "#/$defs/fixedStrategy" }
+        "fixed": { "$ref": "#/$defs/fixedStrategy" },
+        "dayOfWeekInMonth": { "$ref": "#/$defs/dayOfWeekInMonthStrategy" },
+        "weekdayNearDate": { "$ref": "#/$defs/weekdayNearDateStrategy" },
+        "relativeWeekdayInMonth": { "$ref": "#/$defs/relativeWeekdayInMonthStrategy" },
+        "offsetFromRule": { "$ref": "#/$defs/offsetFromRuleStrategy" },
+        "algorithm": { "$ref": "#/$defs/algorithmStrategy" }
       }
     },
     "rule": {

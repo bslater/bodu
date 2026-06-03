@@ -41,7 +41,7 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
     public int Day { get; }
 
     /// <inheritdoc />
-    public DateOnly? Calculate(int year)
+    public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
         if (year < 1 || year > 9999 || this.Day > DateTime.DaysInMonth(year, this.Month))
             return null;

@@ -49,6 +49,8 @@ public sealed class AdjustmentTrigger
         {
             AdjustmentTriggerType.Always => true,
             AdjustmentTriggerType.FallsOn => this.Weekdays.Contains(date.DayOfWeek),
+            AdjustmentTriggerType.IfWeekend => date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday,
+            AdjustmentTriggerType.IfWeekday => date.DayOfWeek is not DayOfWeek.Saturday and not DayOfWeek.Sunday,
             _ => false,
         };
 }

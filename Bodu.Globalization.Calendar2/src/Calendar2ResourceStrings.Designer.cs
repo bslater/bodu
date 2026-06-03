@@ -185,5 +185,32 @@ namespace Bodu {
                 return ResourceManager.GetString("Validation_UnresolvedAdjustmentPolicy", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': offset reference '{2}' resolves to no rule..
+        /// </summary>
+        internal static string Validation_OffsetReferenceNotFound {
+            get {
+                return ResourceManager.GetString("Validation_OffsetReferenceNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': offset reference '{2}' is ambiguous; specify a ruleRef..
+        /// </summary>
+        internal static string Validation_OffsetReferenceAmbiguous {
+            get {
+                return ResourceManager.GetString("Validation_OffsetReferenceAmbiguous", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': algorithm key '{2}' is not recognized..
+        /// </summary>
+        internal static string Validation_UnknownAlgorithm {
+            get {
+                return ResourceManager.GetString("Validation_UnknownAlgorithm", resourceCulture);
+            }
+        }
     }
 }

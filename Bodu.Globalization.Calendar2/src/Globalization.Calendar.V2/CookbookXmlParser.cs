@@ -300,7 +300,7 @@ internal static class CookbookXmlParser
     }
 
     /// <summary>
-    /// Parses a rule's strategy. The first cut supports the <c>Fixed</c> strategy only.
+    /// Parses a rule's strategy by dispatching on the single strategy child element.
     /// </summary>
     /// <param name="element">The <c>Strategy</c> element, or <see langword="null" />.</param>
     /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
@@ -309,14 +309,50 @@ internal static class CookbookXmlParser
     /// <returns>The parsed <see cref="IDateCalculationStrategy" />.</returns>
     private static IDateCalculationStrategy ParseStrategy(XElement? element, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        XElement? fixedElement = element?.Element(s_ns + "Fixed");
-        if (fixedElement is null)
+        XElement? child = element?.Elements().FirstOrDefault();
+        if (child is null)
             return new FixedDateStrategy(1, 1);
 
-        int month = ParseMonth(fixedElement.Attribute("month")?.Value, notableDateId, ruleId, diagnostics);
-        int day = ParseInt(fixedElement.Attribute("day")?.Value, 1);
+        switch (child.Name.LocalName)
+        {
+            case "Fixed":
+                return new FixedDateStrategy(
+                    ParseMonth(child.Attribute("month")?.Value, notableDateId, ruleId, diagnostics),
+                    Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31));
 
-        return new FixedDateStrategy(month, Math.Clamp(day, 1, 31));
+            case "DayOfWeekInMonth":
+                return new DayOfWeekInMonthStrategy(
+                    ParseMonth(child.Attribute("month")?.Value, notableDateId, ruleId, diagnostics),
+                    ParseEnum(child.Attribute("dayOfWeek")?.Value, DayOfWeek.Monday),
+                    ParseEnum(child.Attribute("weekOrdinal")?.Value, WeekOrdinal.First));
+
+            case "WeekdayNearDate":
+                return new WeekdayNearDateStrategy(
+                    ParseMonth(child.Attribute("month")?.Value, notableDateId, ruleId, diagnostics),
+                    Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31),
+                    ParseEnum(child.Attribute("dayOfWeek")?.Value, DayOfWeek.Monday),
+                    ParseEnum(child.Attribute("direction")?.Value, WeekdayProximity.OnOrAfter));
+
+            case "RelativeWeekdayInMonth":
+                return new RelativeWeekdayInMonthStrategy(
+                    ParseMonth(child.Attribute("month")?.Value, notableDateId, ruleId, diagnostics),
+                    ParseEnum(child.Attribute("dayOfWeek")?.Value, DayOfWeek.Monday),
+                    ParseEnum(child.Attribute("weekOrdinal")?.Value, WeekOrdinal.First),
+                    ParseEnum(child.Attribute("relativeDayOfWeek")?.Value, DayOfWeek.Monday),
+                    ParseEnum(child.Attribute("direction")?.Value, WeekdayProximity.After));
+
+            case "OffsetFromRule":
+                return new OffsetFromRuleStrategy(
+                    (string?)child.Attribute("notableDateRef") ?? string.Empty,
+                    string.IsNullOrEmpty((string?)child.Attribute("ruleRef")) ? null : (string?)child.Attribute("ruleRef"),
+                    ParseInt(child.Attribute("offsetDays")?.Value, 0));
+
+            case "Algorithm":
+                return new AlgorithmDateStrategy((string?)child.Attribute("key") ?? string.Empty);
+
+            default:
+                return new FixedDateStrategy(1, 1);
+        }
     }
 
     /// <summary>

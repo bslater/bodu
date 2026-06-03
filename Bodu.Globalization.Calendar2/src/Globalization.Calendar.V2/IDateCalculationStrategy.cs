@@ -22,9 +22,10 @@ public interface IDateCalculationStrategy
     /// Calculates the occurrence of the notable date in the supplied Gregorian year.
     /// </summary>
     /// <param name="year">The Gregorian year in which to calculate the occurrence.</param>
+    /// <param name="context">The resolution context used by referential strategies to resolve other rules.</param>
     /// <returns>
     /// The calculated occurrence, or <see langword="null" /> when the strategy produces no occurrence in
     /// <paramref name="year" /> (for example a 29 February rule in a non-leap year).
     /// </returns>
-    DateOnly? Calculate(int year);
+    DateOnly? Calculate(int year, StrategyResolutionContext context);
 }

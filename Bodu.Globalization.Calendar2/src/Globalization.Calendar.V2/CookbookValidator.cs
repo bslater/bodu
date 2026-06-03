@@ -71,7 +71,7 @@ internal static class CookbookValidator
                     string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_DuplicateNotableDateId, definition.Id)));
             }
 
-            ValidateRules(definition, knownPolicies, diagnostics);
+            ValidateRules(resource, definition, knownPolicies, diagnostics);
         }
     }
 
@@ -79,10 +79,12 @@ internal static class CookbookValidator
     /// Reports duplicate rule identifiers, unresolved adjustment references, inverted year bounds, and impossible fixed
     /// dates within a single concept.
     /// </summary>
+    /// <param name="resource">The resource being validated, used to resolve offset references.</param>
     /// <param name="definition">The concept to validate.</param>
     /// <param name="knownPolicies">The set of declared adjustment-policy identifiers.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
     private static void ValidateRules(
+        NotableDateResource resource,
         NotableDateDefinition definition,
         HashSet<string> knownPolicies,
         ICollection<NotableDateValidationDiagnostic> diagnostics)
@@ -112,7 +114,88 @@ internal static class CookbookValidator
 
             ValidateYearBounds(definition, rule, diagnostics);
             ValidateFixedDate(definition, rule, diagnostics);
+            ValidateStrategyReferences(resource, definition, rule, diagnostics);
         }
+    }
+
+    /// <summary>
+    /// Reports unresolved or ambiguous offset references and unrecognized algorithm keys.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="definition">The owning concept.</param>
+    /// <param name="rule">The rule to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateStrategyReferences(
+        NotableDateResource resource,
+        NotableDateDefinition definition,
+        NotableDateRule rule,
+        ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        switch (rule.Strategy)
+        {
+            case OffsetFromRuleStrategy offset:
+            {
+                string reference = string.IsNullOrEmpty(offset.RuleRef)
+                    ? offset.NotableDateRef
+                    : $"{offset.NotableDateRef}/{offset.RuleRef}";
+
+                int matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
+                if (matches == 0)
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL2-OFFSET-MISSING",
+                        string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
+                }
+                else if (matches > 1)
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL2-OFFSET-AMBIGUOUS",
+                        string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
+                }
+
+                break;
+            }
+
+            case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key):
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL2-ALGORITHM",
+                    string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_UnknownAlgorithm, definition.Id, rule.Id, algorithm.Key)));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Counts the rules an offset reference resolves to within the resource.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="notableDateRef">The referenced concept identifier.</param>
+    /// <param name="ruleRef">The referenced rule identifier, or <see langword="null" /> for the sole rule.</param>
+    /// <returns>The number of matching rules: 0 when missing, 1 when unambiguous, more than 1 when ambiguous.</returns>
+    private static int CountReferenceMatches(NotableDateResource resource, string notableDateRef, string? ruleRef)
+    {
+        NotableDateDefinition? target = null;
+        foreach (NotableDateDefinition candidate in resource.NotableDates)
+        {
+            if (string.Equals(candidate.Id, notableDateRef, StringComparison.Ordinal))
+            {
+                target = candidate;
+                break;
+            }
+        }
+
+        if (target is null)
+            return 0;
+
+        if (string.IsNullOrEmpty(ruleRef))
+            return target.Rules.Count;
+
+        return target.Rules.Count(r => string.Equals(r.Id, ruleRef, StringComparison.Ordinal));
     }
 
     /// <summary>

@@ -26,4 +26,14 @@ public enum AdjustmentTriggerType
     /// The adjustment applies when the calculated occurrence falls on one of the configured weekdays.
     /// </summary>
     FallsOn,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls on a Saturday or Sunday.
+    /// </summary>
+    IfWeekend,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls on a Monday through Friday.
+    /// </summary>
+    IfWeekday,
 }
