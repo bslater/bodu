@@ -17,6 +17,45 @@
       items:
         - name: WeekPattern
           href: core/week-pattern.md
+- name: Bodu.Extensions.Configuration.Text
+  href: extensions-configuration-text/
+  items:
+    - name: Overview
+      href: extensions-configuration-text/index.md
+- name: Bodu.Financial
+  href: financial/
+  items:
+    - name: Overview
+      href: financial/index.md
+    - name: Working with Money<TCurrency>
+      href: financial/money.md
+- name: Bodu.Globalization.Calendar
+  href: calendar/
+  items:
+    - name: Overview
+      href: calendar/index.md
+    - name: Bodu.Globalization.Calendar — Service
+      items:
+        - name: Using NotableDateService
+          href: calendar/notable-dates.md
+        - name: Authoring notable date rules
+          href: calendar/rule-authoring.md
+    - name: Bodu.Globalization.Calendar — Reference
+      items:
+        - name: Territories and regional composition
+          href: calendar/territories.md
+    - name: Bodu.Globalization.Calendar — Patterns
+      items:
+        - name: Working-day arithmetic
+          href: calendar/working-days.md
+    - name: Bodu.Globalization.Calendar.Algorithms
+      items:
+        - name: Date calculation algorithms
+          href: calendar/algorithms.md
+    - name: Bodu.Globalization.Calendar.Data.* — Data packs
+      items:
+        - name: Calendar data packs
+          href: calendar/data-packs.md
 - name: Bodu.IO.Hashing
   href: io-hashing/
   items:
@@ -48,6 +87,15 @@
       items:
         - name: Check digits overview
           href: io-hashing/check-digits.md
+- name: Bodu.Numerics
+  href: numerics/
+  items:
+    - name: Overview
+      href: numerics/index.md
+    - name: Working with Fraction<T>
+      href: numerics/fraction.md
+    - name: Working with Interval<T>
+      href: numerics/interval.md
 - name: Bodu.Security.Cryptography
   href: cryptography/
   items:
@@ -109,49 +157,11 @@
           href: cryptography/ascon-xof.md
         - name: ASCON authenticated encryption (AEAD)
           href: cryptography/ascon-aead.md
-- name: Bodu.Globalization.Calendar
-  href: calendar/
+- name: Bodu.Text.Configuration
+  href: text-configuration/
   items:
     - name: Overview
-      href: calendar/index.md
-    - name: Bodu.Globalization.Calendar — Service
-      items:
-        - name: Using NotableDateService
-          href: calendar/notable-dates.md
-        - name: Authoring notable date rules
-          href: calendar/rule-authoring.md
-    - name: Bodu.Globalization.Calendar — Reference
-      items:
-        - name: Territories and regional composition
-          href: calendar/territories.md
-    - name: Bodu.Globalization.Calendar — Patterns
-      items:
-        - name: Working-day arithmetic
-          href: calendar/working-days.md
-    - name: Bodu.Globalization.Calendar.Algorithms
-      items:
-        - name: Date calculation algorithms
-          href: calendar/algorithms.md
-    - name: Bodu.Globalization.Calendar.Data.* — Data packs
-      items:
-        - name: Calendar data packs
-          href: calendar/data-packs.md
-- name: Bodu.Numerics
-  href: numerics/
-  items:
-    - name: Overview
-      href: numerics/index.md
-    - name: Working with Fraction<T>
-      href: numerics/fraction.md
-    - name: Working with Interval<T>
-      href: numerics/interval.md
-- name: Bodu.Financial
-  href: financial/
-  items:
-    - name: Overview
-      href: financial/index.md
-    - name: Working with Money<TCurrency>
-      href: financial/money.md
+      href: text-configuration/index.md
 - name: Bodu.Text.Encoding
   href: text-encoding/
   items:
@@ -188,13 +198,3 @@
       items:
         - name: Streams and async I/O
           href: formats/streaming.md
-- name: Bodu.Text.Configuration
-  href: text-configuration/
-  items:
-    - name: Overview
-      href: text-configuration/index.md
-- name: Bodu.Extensions.Configuration.Text
-  href: extensions-configuration-text/
-  items:
-    - name: Overview
-      href: extensions-configuration-text/index.md

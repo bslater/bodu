@@ -15,22 +15,22 @@
       href: core/concepts.md
     - name: Getting started
       href: core/getting-started.md
-- name: Bodu.IO.Hashing
+- name: Bodu.Extensions.Configuration.Text
   items:
     - name: Introduction
-      href: io-hashing/index.md
+      href: extensions-configuration-text/index.md
     - name: Core concepts
-      href: io-hashing/concepts.md
+      href: extensions-configuration-text/concepts.md
     - name: Getting started
-      href: io-hashing/getting-started.md
-- name: Bodu.Security.Cryptography
+      href: extensions-configuration-text/getting-started.md
+- name: Bodu.Financial
   items:
     - name: Introduction
-      href: cryptography/index.md
+      href: financial/index.md
     - name: Core concepts
-      href: cryptography/concepts.md
+      href: financial/concepts.md
     - name: Getting started
-      href: cryptography/getting-started.md
+      href: financial/getting-started.md
 - name: Bodu.Globalization.Calendar
   items:
     - name: Introduction
@@ -39,6 +39,38 @@
       href: calendar/concepts.md
     - name: Getting started
       href: calendar/getting-started.md
+- name: Bodu.IO.Hashing
+  items:
+    - name: Introduction
+      href: io-hashing/index.md
+    - name: Core concepts
+      href: io-hashing/concepts.md
+    - name: Getting started
+      href: io-hashing/getting-started.md
+- name: Bodu.Numerics
+  items:
+    - name: Introduction
+      href: numerics/index.md
+    - name: Core concepts
+      href: numerics/concepts.md
+    - name: Getting started
+      href: numerics/getting-started.md
+- name: Bodu.Security.Cryptography
+  items:
+    - name: Introduction
+      href: cryptography/index.md
+    - name: Core concepts
+      href: cryptography/concepts.md
+    - name: Getting started
+      href: cryptography/getting-started.md
+- name: Bodu.Text.Configuration
+  items:
+    - name: Introduction
+      href: text-configuration/index.md
+    - name: Core concepts
+      href: text-configuration/concepts.md
+    - name: Getting started
+      href: text-configuration/getting-started.md
 - name: Bodu.Text.Encoding
   items:
     - name: Introduction
@@ -55,35 +87,5 @@
       href: formats/concepts.md
     - name: Getting started
       href: formats/getting-started.md
-- name: Bodu.Text.Configuration
-  items:
-    - name: Introduction
-      href: text-configuration/index.md
-    - name: Core concepts
-      href: text-configuration/concepts.md
-    - name: Getting started
-      href: text-configuration/getting-started.md
-- name: Bodu.Extensions.Configuration.Text
-  items:
-    - name: Introduction
-      href: extensions-configuration-text/index.md
-    - name: Core concepts
-      href: extensions-configuration-text/concepts.md
-    - name: Getting started
-      href: extensions-configuration-text/getting-started.md
-- name: Bodu.Numerics
-  items:
-    - name: Introduction
-      href: numerics/index.md
-    - name: Core concepts
-      href: numerics/concepts.md
-    - name: Getting started
-      href: numerics/getting-started.md
-- name: Bodu.Financial
-  items:
-    - name: Introduction
-      href: financial/index.md
-    - name: Core concepts
-      href: financial/concepts.md
-    - name: Getting started
-      href: financial/getting-started.md
+    - name: Parser policies
+      href: formats/parser-policies.md
