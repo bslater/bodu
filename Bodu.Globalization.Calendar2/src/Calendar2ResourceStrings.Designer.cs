@@ -99,6 +99,15 @@ namespace Bodu {
         /// <summary>
         ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
+        internal static string Op_Invalid_NoWorkingDayFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NoWorkingDayFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
+        /// </summary>
         internal static string Op_Invalid_DocumentValidationFailed {
             get {
                 return ResourceManager.GetString("Op_Invalid_DocumentValidationFailed", resourceCulture);
