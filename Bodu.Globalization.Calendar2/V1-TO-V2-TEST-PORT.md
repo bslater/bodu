@@ -19,7 +19,7 @@ Confirm, for every test in the v1 `Calendar.Test` project, whether its scenario 
 ## Summary
 
 v1: **1645 test methods** (686 `[DataRow]` rows) across **72 test areas** / 228 files.  
-v2 (today): **49 test methods** (59 `[DataRow]` rows).
+v2 (today): **50 test methods** (62 `[DataRow]` rows).
 
 | Disposition | v1 areas | v1 methods |
 |---|---:|---:|
@@ -53,7 +53,7 @@ v2 (today): **49 test methods** (59 `[DataRow]` rows).
 | `NotableDateRuleIdentityTests` | 11 | 0 | Covered | v2 NotableDateRuleIdentity (resourceId+notableDate.id+rule.id) exercised throughout the resolver tests. |
 | `NotableDateRuleParserKatTests` | 2 | 0 | Covered | Valid/invalid document load covered by SchemaValidationTests. |
 | `NotableDateRuleParserTests` | 112 | 11 | Covered | Strategy/attribute parse scenarios validated end-to-end by StrategyResolutionTests + SchemaValidationTests. Non-Gregorian month tokens, skipLeapMonth/sweepCalendarYears, and CLR-typed algorithms are deferred. |
-| `NotableDateServiceTests` | 194 | 16 | Covered | Observed-date modes, edge cases, reversed-range, coverage-day handling and conflict avoidance covered by NotableDateServiceTests/AdjustmentTests/AdjacentHolidayTests. Same-name shadowing, filters, reload and custom providers deferred. |
+| `NotableDateServiceTests` | 194 | 16 | Covered | Observed-date modes, edge cases, reversed-range, coverage-day handling and conflict avoidance covered by NotableDateServiceTests/AdjustmentTests/AdjacentHolidayTests; territory-specificity shadowing covered by AustraliaKnownAnswerTests. Filters, reload and custom providers deferred. |
 | `NotableDateTests` | 16 | 6 | Covered | v2 NotableDate result record exercised throughout the resolver tests. |
 | `ParsedNotableDateDocumentTests` | 4 | 0 | Covered | v2 ParsedNotableDateDocument produced by NotableDateDocumentParser and exercised via load tests. |
 | `RangeResolutionKatTests` | 1 | 0 | Covered | Range known-answer rows covered by the v2 range-query tests. |
@@ -118,12 +118,12 @@ v2 (today): **49 test methods** (59 `[DataRow]` rows).
 | `AdjustmentTests` | 10 | 0 | all emission modes, actions and triggers |
 | `AdjacentHolidayTests` | 3 | 0 | Christmas/Boxing conflict-avoiding substitution (2021 + 2016) |
 | `SchemaValidationTests` | 5 | 10 | valid load + 10 invalid documents rejected with the right diagnostic |
-| `AustraliaKnownAnswerTests` | 3 | 19 | ported AU static definitions vs v1 known answers |
+| `AustraliaKnownAnswerTests` | 4 | 22 | ported AU static definitions vs v1 known answers; WA/NT Anzac substitutes + a dedicated territory-shadowing test |
 | `UnitedStatesKnownAnswerTests` | 2 | 14 | ported US federal static definitions vs known answers |
 
 ## Deferred-feature roadmap (unblocks the Deferred rows)
 
-1. **Territory-specificity shadowing** — a narrower `AU-WA` rule shadows the broader `AU` rule for that territory. Unblocks subdivision/regional known answers (AU state Anzac substitutes + NSW trial, US state, GB regional).
+1. ~~**Territory-specificity shadowing**~~ — ✅ **done**: a narrower `AU-WA` rule now shadows the broader `AU` rule for that territory (`RuleApplicability.MatchSpecificity` + `NotableDateService.GatherCandidates`). Unblocked the AU state Anzac substitutes (WA/NT, now ported); remains available for the broader regional tables (NSW trial with adjustment-level year bounds, full US state, GB regional) once those data sets are ported.
 2. **Non-Gregorian calendars** — Hebrew / Islamic / Hindu / Persian / lunar; unblocks the `Global*ResourceTests` and the lunar/Buddhist/Hindu algorithm tests.
 3. **Imports** (`UseFrom`/`Use`/override-body merge) — unblocks the merger/inheritance/provider fixtures.
 4. **Filter API** — unblocks `NotableDateFilterTests`.
