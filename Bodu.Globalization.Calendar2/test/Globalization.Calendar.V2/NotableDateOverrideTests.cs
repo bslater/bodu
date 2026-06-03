@@ -19,13 +19,13 @@ public sealed class NotableDateOverrideTests
     [TestMethod]
     public void Override_RemoveRule_WhenTargetingPuertoRicoConstitutionDay_DoesNotRemoveUnitedStatesRule()
     {
-        NotableDateResolver resolver = new(MinimalCookbook.LoadWithRemoveOverride());
+        NotableDateService resolver = new(MinimalNotableDates.LoadWithRemoveOverride());
 
-        IReadOnlyList<ResolvedNotableDate> unitedStates = resolver.Resolve(new DateOnly(2026, 9, 17), "US");
+        IReadOnlyList<NotableDate> unitedStates = resolver.Resolve(new DateOnly(2026, 9, 17), "US");
         Assert.AreEqual(1, unitedStates.Count, "United States rule should survive the removal");
         Assert.AreEqual("us-fixed-sep-17", unitedStates[0].RuleId);
 
-        IReadOnlyList<ResolvedNotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
+        IReadOnlyList<NotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
         Assert.AreEqual(0, puertoRico.Count, "Puerto Rico rule should have been removed");
     }
 
@@ -36,13 +36,13 @@ public sealed class NotableDateOverrideTests
     [TestMethod]
     public void Override_PatchRule_WhenTargetingPuertoRicoConstitutionDay_DoesNotPatchUnitedStatesRule()
     {
-        NotableDateResolver resolver = new(MinimalCookbook.LoadWithPatchOverride());
+        NotableDateService resolver = new(MinimalNotableDates.LoadWithPatchOverride());
 
-        IReadOnlyList<ResolvedNotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
+        IReadOnlyList<NotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
         Assert.AreEqual(1, puertoRico.Count);
         Assert.AreEqual(NotableDateCategory.PublicHoliday, puertoRico[0].Category, "patched Puerto Rico category");
 
-        IReadOnlyList<ResolvedNotableDate> unitedStates = resolver.Resolve(new DateOnly(2026, 9, 17), "US");
+        IReadOnlyList<NotableDate> unitedStates = resolver.Resolve(new DateOnly(2026, 9, 17), "US");
         Assert.AreEqual(1, unitedStates.Count);
         Assert.AreEqual(NotableDateCategory.Observance, unitedStates[0].Category, "unchanged United States category");
     }

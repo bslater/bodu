@@ -20,8 +20,8 @@ public sealed class AdjustmentTests
     /// Builds a resolver over the adjustments fixture.
     /// </summary>
     /// <returns>A resolver for the adjustments fixture.</returns>
-    private static NotableDateResolver CreateResolver() =>
-        CookbookFixtures.Resolver("adjustments.xml");
+    private static NotableDateService CreateResolver() =>
+        NotableDateFixtures.Resolver("adjustments.xml");
 
     /// <summary>
     /// Verifies that the observed-only emission emits only the Monday observance and suppresses the weekend actual date.
@@ -30,11 +30,11 @@ public sealed class AdjustmentTests
     [TestCategory("Smoke")]
     public void Emission_ObservedOnly_EmitsObservedAndSuppressesActual()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
         Assert.AreEqual(0, Count(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "observed-only"), "actual suppressed");
 
-        ResolvedNotableDate observed = Single(resolver.Resolve(new DateOnly(2022, 1, 3), Territory), "observed-only");
+        NotableDate observed = Single(resolver.Resolve(new DateOnly(2022, 1, 3), Territory), "observed-only");
         Assert.IsTrue(observed.IsObserved);
         Assert.AreEqual(new DateOnly(2022, 1, 1), observed.ActualDate);
         Assert.AreEqual("weekend-next-monday-observed", observed.AdjustmentPolicyId);
@@ -46,8 +46,8 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Emission_ActualAndObserved_EmitsBothDates()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver()
-            .Resolve(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3), Territory)
+        IReadOnlyList<NotableDate> results = CreateResolver()
+            .Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3)), Territory)
             .Where(r => r.NotableDateId == "actual-and-observed")
             .ToList();
 
@@ -62,8 +62,8 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Emission_ObservedAsAdditional_EmitsActualPlusObserved()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver()
-            .Resolve(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3), Territory)
+        IReadOnlyList<NotableDate> results = CreateResolver()
+            .Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3)), Territory)
             .Where(r => r.NotableDateId == "observed-additional")
             .ToList();
 
@@ -78,9 +78,9 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Emission_ActualOnly_KeepsActualAndIgnoresObserved()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
-        ResolvedNotableDate actual = Single(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "actual-only");
+        NotableDate actual = Single(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "actual-only");
         Assert.IsFalse(actual.IsObserved);
         Assert.IsNull(actual.AdjustmentPolicyId);
 
@@ -93,11 +93,11 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Emission_Suppress_RemovesWeekendOccurrenceOnly()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
         Assert.AreEqual(0, Count(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "suppress-weekend"), "weekend suppressed");
 
-        ResolvedNotableDate weekday = Single(resolver.Resolve(new DateOnly(2026, 1, 1), Territory), "suppress-weekend");
+        NotableDate weekday = Single(resolver.Resolve(new DateOnly(2026, 1, 1), Territory), "suppress-weekend");
         Assert.IsFalse(weekday.IsObserved);
         Assert.AreEqual(new DateOnly(2026, 1, 1), weekday.Date);
     }
@@ -108,9 +108,9 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Action_AddDays_WithAlwaysTrigger_ShiftsEveryOccurrence()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
-        ResolvedNotableDate observed = Single(resolver.Resolve(new DateOnly(2026, 1, 2), Territory), "always-shift");
+        NotableDate observed = Single(resolver.Resolve(new DateOnly(2026, 1, 2), Territory), "always-shift");
         Assert.IsTrue(observed.IsObserved);
         Assert.AreEqual(new DateOnly(2026, 1, 1), observed.ActualDate);
 
@@ -124,7 +124,7 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Action_MoveToPreviousWeekday_MovesSundayBackToFriday()
     {
-        ResolvedNotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2022, 12, 30), Territory), "prev-friday");
+        NotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2022, 12, 30), Territory), "prev-friday");
 
         Assert.IsTrue(observed.IsObserved);
         Assert.AreEqual(new DateOnly(2022, 12, 30), observed.Date);
@@ -137,7 +137,7 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Action_MoveToNextWorkingDay_MovesWeekendForwardToMonday()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
         Assert.AreEqual(new DateOnly(2022, 1, 3), Single(resolver.Resolve(new DateOnly(2022, 1, 3), Territory), "next-working-day").Date);
         Assert.AreEqual(new DateOnly(2023, 1, 2), Single(resolver.Resolve(new DateOnly(2023, 1, 2), Territory), "next-working-day").Date);
@@ -149,7 +149,7 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Action_MoveToPreviousWorkingDay_MovesSaturdayBackToFriday()
     {
-        ResolvedNotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2021, 12, 31), Territory), "prev-working-day");
+        NotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2021, 12, 31), Territory), "prev-working-day");
 
         Assert.AreEqual(new DateOnly(2021, 12, 31), observed.Date);
         Assert.AreEqual(new DateOnly(2022, 1, 1), observed.ActualDate);
@@ -161,13 +161,13 @@ public sealed class AdjustmentTests
     [TestMethod]
     public void Trigger_IfWeekday_FiresOnWeekdaysOnly()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
-        ResolvedNotableDate weekday = Single(resolver.Resolve(new DateOnly(2026, 1, 3), Territory), "weekday-shift");
+        NotableDate weekday = Single(resolver.Resolve(new DateOnly(2026, 1, 3), Territory), "weekday-shift");
         Assert.IsTrue(weekday.IsObserved, "weekday occurrence shifted");
         Assert.AreEqual(new DateOnly(2026, 1, 1), weekday.ActualDate);
 
-        ResolvedNotableDate weekend = Single(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "weekday-shift");
+        NotableDate weekend = Single(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "weekday-shift");
         Assert.IsFalse(weekend.IsObserved, "weekend occurrence unchanged");
     }
 
@@ -177,9 +177,9 @@ public sealed class AdjustmentTests
     /// <param name="results">The resolver results.</param>
     /// <param name="notableDateId">The notable-date id to select.</param>
     /// <returns>The matching occurrence.</returns>
-    private static ResolvedNotableDate Single(IReadOnlyList<ResolvedNotableDate> results, string notableDateId)
+    private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
-        List<ResolvedNotableDate> matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
+        List<NotableDate> matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
         Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }
@@ -190,6 +190,6 @@ public sealed class AdjustmentTests
     /// <param name="results">The resolver results.</param>
     /// <param name="notableDateId">The notable-date id to count.</param>
     /// <returns>The number of matching occurrences.</returns>
-    private static int Count(IReadOnlyList<ResolvedNotableDate> results, string notableDateId) =>
+    private static int Count(IReadOnlyList<NotableDate> results, string notableDateId) =>
         results.Count(r => r.NotableDateId == notableDateId);
 }

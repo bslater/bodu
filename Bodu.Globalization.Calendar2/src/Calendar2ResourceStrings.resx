@@ -63,17 +63,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Arg_Invalid_CookbookContentEmpty" xml:space="preserve">
-    <value>The cookbook content cannot be empty or white-space.</value>
+  <data name="Arg_Invalid_DocumentContentEmpty" xml:space="preserve">
+    <value>The notable-date document content cannot be empty or white-space.</value>
   </data>
   <data name="Format_Invalid_XmlNotWellFormed" xml:space="preserve">
-    <value>The cookbook XML is not well-formed: {0}</value>
+    <value>The notable-date document XML is not well-formed: {0}</value>
   </data>
   <data name="Format_Invalid_XmlSchema" xml:space="preserve">
-    <value>The cookbook XML failed schema validation: {0}</value>
+    <value>The notable-date document XML failed schema validation: {0}</value>
   </data>
-  <data name="Op_Invalid_CookbookValidationFailed" xml:space="preserve">
-    <value>The cookbook failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details.</value>
+  <data name="Op_Invalid_DocumentValidationFailed" xml:space="preserve">
+    <value>The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details.</value>
   </data>
   <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
     <value>Duplicate adjustment-policy identifier '{0}'.</value>

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CookbookOverride.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateRuleOverride.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,7 +7,8 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Serves as the base for an ID-targeted override operation parsed from a cookbook's <c>Overrides</c> section.
+/// Serves as the base for an ID-targeted override operation parsed from a notable-date document's <c>Overrides</c>
+/// section.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -15,16 +16,16 @@ namespace Bodu.Globalization.Calendar.V2;
 /// they share a display name.
 /// </para>
 /// </remarks>
-internal abstract class CookbookOverride
+internal abstract class NotableDateRuleOverride
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CookbookOverride" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateRuleOverride" /> class.
     /// </summary>
     /// <param name="notableDateRef">The identifier of the targeted notable-date concept.</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="notableDateRef" /> is <see langword="null" />.
     /// </exception>
-    protected CookbookOverride(string notableDateRef)
+    protected NotableDateRuleOverride(string notableDateRef)
     {
         ThrowHelper.ThrowIfNull(notableDateRef);
 

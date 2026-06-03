@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  NotableDates.v2.xsd — revised Bodu calendar cookbook schema (v2).
+  NotableDates.v2.xsd — revised Bodu calendar document schema (v2).
 
-  This first cut models the engine-first minimal slice: fixed-date rules, territory
-  filtering, reusable adjustment policies, explicit emission modes, and ID-targeted
-  override operations. Additional strategies (DayOfWeekInMonth, WeekdayNearDate,
-  RelativeWeekdayInMonth, OffsetFromRule, Algorithm), imports, and inline adjustments
-  are reserved for a later phase and are intentionally absent here.
+  Models fixed-date, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth,
+  OffsetFromRule, and Algorithm strategies; reusable adjustment policies with explicit
+  trigger, action, and emission; territory filtering; and ID-targeted override
+  operations. Imports, inline adjustments, and non-Gregorian calendars are reserved for
+  a later phase.
 -->
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -346,7 +346,7 @@
   <xs:simpleType name="adjustmentTrigger">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Always" />
-      <xs:enumeration value="FallsOn" />
+      <xs:enumeration value="IfDayOfWeek" />
       <xs:enumeration value="IfWeekend" />
       <xs:enumeration value="IfWeekday" />
     </xs:restriction>

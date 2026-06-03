@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Provides a coarse-grained classification of a notable date in the revised (v2) cookbook model.
+/// Provides a coarse-grained classification of a notable date in the revised (v2) notable-date document model.
 /// </summary>
 /// <remarks>
 /// <para>

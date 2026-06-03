@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ResolvedNotableDate.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// The identifier of the adjustment policy that produced the observed date, if any.
 /// </param>
 /// <param name="AdjustmentReason">The reason recorded by the adjustment policy, if any.</param>
-public sealed record ResolvedNotableDate(
+public sealed record NotableDate(
     DateOnly Date,
     DateOnly? ActualDate,
     bool IsObserved,

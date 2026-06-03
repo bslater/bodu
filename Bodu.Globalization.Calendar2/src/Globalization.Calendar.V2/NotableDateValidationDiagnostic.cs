@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Represents a single diagnostic produced while loading and validating a cookbook resource.
+/// Represents a single diagnostic produced while loading and validating a notable-date document resource.
 /// </summary>
 /// <param name="Severity">The severity of the diagnostic.</param>
 /// <param name="Code">A short, stable code identifying the kind of diagnostic.</param>

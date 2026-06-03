@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CookbookOverrideApplier.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateRuleOverrideApplier.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// Applies ID-targeted override operations to a set of notable-date concepts, recording a diagnostic when an operation
 /// targets a concept or rule that does not exist.
 /// </summary>
-internal static class CookbookOverrideApplier
+internal static class NotableDateRuleOverrideApplier
 {
     /// <summary>
     /// Applies the supplied override operations and returns the effective notable-date concepts.
@@ -23,12 +23,12 @@ internal static class CookbookOverrideApplier
     /// <returns>The effective notable-date concepts after applying every override.</returns>
     public static List<NotableDateDefinition> Apply(
         IReadOnlyList<NotableDateDefinition> definitions,
-        IReadOnlyList<CookbookOverride> overrides,
+        IReadOnlyList<NotableDateRuleOverride> overrides,
         ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         List<NotableDateDefinition> working = definitions.ToList();
 
-        foreach (CookbookOverride operation in overrides)
+        foreach (NotableDateRuleOverride operation in overrides)
         {
             int index = working.FindIndex(d => string.Equals(d.Id, operation.NotableDateRef, StringComparison.Ordinal));
             if (index < 0)
@@ -55,7 +55,7 @@ internal static class CookbookOverrideApplier
     /// <returns>The updated concept, or the original concept when the operation could not be applied.</returns>
     private static NotableDateDefinition ApplyToDefinition(
         NotableDateDefinition definition,
-        CookbookOverride operation,
+        NotableDateRuleOverride operation,
         ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         switch (operation)

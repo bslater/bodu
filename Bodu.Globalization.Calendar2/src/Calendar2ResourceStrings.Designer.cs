@@ -61,16 +61,16 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The cookbook content cannot be empty or white-space..
+        ///   Looks up a localized string similar to The notable-date document content cannot be empty or white-space..
         /// </summary>
-        internal static string Arg_Invalid_CookbookContentEmpty {
+        internal static string Arg_Invalid_DocumentContentEmpty {
             get {
-                return ResourceManager.GetString("Arg_Invalid_CookbookContentEmpty", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_DocumentContentEmpty", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The cookbook XML is not well-formed: {0}.
+        ///   Looks up a localized string similar to The notable-date document XML is not well-formed: {0}.
         /// </summary>
         internal static string Format_Invalid_XmlNotWellFormed {
             get {
@@ -79,7 +79,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The cookbook XML failed schema validation: {0}.
+        ///   Looks up a localized string similar to The notable-date document XML failed schema validation: {0}.
         /// </summary>
         internal static string Format_Invalid_XmlSchema {
             get {
@@ -88,11 +88,11 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The cookbook failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
+        ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
-        internal static string Op_Invalid_CookbookValidationFailed {
+        internal static string Op_Invalid_DocumentValidationFailed {
             get {
-                return ResourceManager.GetString("Op_Invalid_CookbookValidationFailed", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_DocumentValidationFailed", resourceCulture);
             }
         }
 

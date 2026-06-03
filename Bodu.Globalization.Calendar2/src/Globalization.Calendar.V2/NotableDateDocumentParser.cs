@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CookbookXmlParser.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateDocumentParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,18 +12,18 @@ using System.Xml.Schema;
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Parses a cookbook XML document into its component model objects, validating it against the embedded XSD and
-/// collecting structural and semantic diagnostics.
+/// Parses a notable-date document XML document into its component model objects, validating it against the embedded XSD
+/// and collecting structural and semantic diagnostics.
 /// </summary>
-internal static class CookbookXmlParser
+internal static class NotableDateDocumentParser
 {
     /// <summary>
-    /// The manifest resource name of the embedded v2 cookbook XSD.
+    /// The manifest resource name of the embedded v2 notable-date document XSD.
     /// </summary>
     private const string SchemaResourceName = "Bodu.Globalization.Calendar.V2.NotableDates.v2.xsd";
 
     /// <summary>
-    /// The XML namespace of the v2 cookbook vocabulary.
+    /// The XML namespace of the v2 notable-date document vocabulary.
     /// </summary>
     private static readonly XNamespace s_ns = "urn:bodu:globalization:calendar";
 
@@ -37,13 +37,13 @@ internal static class CookbookXmlParser
     };
 
     /// <summary>
-    /// Parses and schema-validates a cookbook XML document.
+    /// Parses and schema-validates a notable-date document XML document.
     /// </summary>
-    /// <param name="xml">The cookbook XML content.</param>
+    /// <param name="xml">The notable-date document XML content.</param>
     /// <param name="diagnostics">The collection that receives structural and semantic diagnostics.</param>
-    /// <returns>The parsed <see cref="CookbookDocument" />.</returns>
+    /// <returns>The parsed <see cref="ParsedNotableDateDocument" />.</returns>
     /// <exception cref="FormatException"><paramref name="xml" /> is not well-formed XML.</exception>
-    public static CookbookDocument Parse(string xml, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public static ParsedNotableDateDocument Parse(string xml, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         XDocument document;
         try
@@ -67,9 +67,9 @@ internal static class CookbookXmlParser
         ResolutionPolicy resolutionPolicy = ParseResolutionPolicy(root.Element(s_ns + "ResolutionPolicy"));
         List<AdjustmentPolicy> adjustmentPolicies = ParseAdjustmentPolicies(root.Element(s_ns + "AdjustmentPolicies"));
         List<NotableDateDefinition> notableDates = ParseNotableDates(root.Element(s_ns + "NotableDates"), diagnostics);
-        List<CookbookOverride> overrides = ParseOverrides(root.Element(s_ns + "Overrides"), diagnostics);
+        List<NotableDateRuleOverride> overrides = ParseOverrides(root.Element(s_ns + "Overrides"), diagnostics);
 
-        return new CookbookDocument(resourceId, schemaVersion, resolutionPolicy, adjustmentPolicies, notableDates, overrides);
+        return new ParsedNotableDateDocument(resourceId, schemaVersion, resolutionPolicy, adjustmentPolicies, notableDates, overrides);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ internal static class CookbookXmlParser
     /// <param name="diagnostics">The collection that receives schema diagnostics.</param>
     private static void ValidateSchema(XDocument document, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        using Stream? schemaStream = typeof(CookbookXmlParser).Assembly.GetManifestResourceStream(SchemaResourceName);
+        using Stream? schemaStream = typeof(NotableDateDocumentParser).Assembly.GetManifestResourceStream(SchemaResourceName);
         if (schemaStream is null)
             return;
 
@@ -131,13 +131,27 @@ internal static class CookbookXmlParser
 
         foreach (XElement policy in element.Elements(s_ns + "AdjustmentPolicy"))
         {
+            XElement? trigger = policy.Element(s_ns + "Trigger");
+            XElement? action = policy.Element(s_ns + "Action");
+            XElement? emission = policy.Element(s_ns + "Emission");
+
+            IEnumerable<DayOfWeek> weekdays = trigger is null
+                ? Array.Empty<DayOfWeek>()
+                : trigger.Elements(s_ns + "Weekday").Select(w => ParseEnum(w.Attribute("value")?.Value, DayOfWeek.Monday));
+
             policies.Add(new AdjustmentPolicy(
                 (string?)policy.Attribute("id") ?? string.Empty,
                 ParseInt(policy.Attribute("priority")?.Value, 0),
                 ParseScope(policy.Element(s_ns + "Scope")),
-                ParseTrigger(policy.Element(s_ns + "Trigger")),
-                ParseAction(policy.Element(s_ns + "Action")),
-                ParseEmission(policy.Element(s_ns + "Emission"))));
+                ParseEnum(trigger?.Attribute("type")?.Value, AdjustmentTrigger.Always),
+                weekdays,
+                ParseEnum(action?.Attribute("type")?.Value, AdjustmentAction.None),
+                ParseNullableEnum<DayOfWeek>(action?.Attribute("dayOfWeek")?.Value),
+                ParseInt(action?.Attribute("days")?.Value, 0),
+                ParseNullableInt(action?.Attribute("maxSearchDays")?.Value),
+                ParseEnum(emission?.Attribute("mode")?.Value, EmissionMode.ActualOnly),
+                (string?)emission?.Attribute("reason"),
+                ParseNullableBool(emission?.Attribute("nonWorking")?.Value)));
         }
 
         return policies;
@@ -159,54 +173,6 @@ internal static class CookbookXmlParser
             element.Elements(s_ns + "Category").Select(c => ParseEnum(c.Attribute("value")?.Value, NotableDateCategory.None)),
             element.Elements(s_ns + "NotableDate").Select(n => (string?)n.Attribute("ref") ?? string.Empty),
             element.Elements(s_ns + "Rule").Select(r => (string?)r.Attribute("ruleRef") ?? string.Empty));
-    }
-
-    /// <summary>
-    /// Parses an adjustment trigger, falling back to <see cref="AdjustmentTriggerType.Always" /> when absent.
-    /// </summary>
-    /// <param name="element">The <c>Trigger</c> element, or <see langword="null" />.</param>
-    /// <returns>The parsed <see cref="AdjustmentTrigger" />.</returns>
-    private static AdjustmentTrigger ParseTrigger(XElement? element)
-    {
-        if (element is null)
-            return new AdjustmentTrigger(AdjustmentTriggerType.Always, Array.Empty<DayOfWeek>());
-
-        return new AdjustmentTrigger(
-            ParseEnum(element.Attribute("type")?.Value, AdjustmentTriggerType.Always),
-            element.Elements(s_ns + "Weekday").Select(w => ParseEnum(w.Attribute("value")?.Value, DayOfWeek.Monday)));
-    }
-
-    /// <summary>
-    /// Parses an adjustment action, falling back to <see cref="AdjustmentActionType.None" /> when absent.
-    /// </summary>
-    /// <param name="element">The <c>Action</c> element, or <see langword="null" />.</param>
-    /// <returns>The parsed <see cref="AdjustmentAction" />.</returns>
-    private static AdjustmentAction ParseAction(XElement? element)
-    {
-        if (element is null)
-            return new AdjustmentAction(AdjustmentActionType.None, null, 0, null);
-
-        return new AdjustmentAction(
-            ParseEnum(element.Attribute("type")?.Value, AdjustmentActionType.None),
-            ParseNullableEnum<DayOfWeek>(element.Attribute("dayOfWeek")?.Value),
-            ParseInt(element.Attribute("days")?.Value, 0),
-            ParseNullableInt(element.Attribute("maxSearchDays")?.Value));
-    }
-
-    /// <summary>
-    /// Parses an adjustment emission, falling back to <see cref="EmissionMode.ActualOnly" /> when absent.
-    /// </summary>
-    /// <param name="element">The <c>Emission</c> element, or <see langword="null" />.</param>
-    /// <returns>The parsed <see cref="AdjustmentEmission" />.</returns>
-    private static AdjustmentEmission ParseEmission(XElement? element)
-    {
-        if (element is null)
-            return new AdjustmentEmission(EmissionMode.ActualOnly, null, null);
-
-        return new AdjustmentEmission(
-            ParseEnum(element.Attribute("mode")?.Value, EmissionMode.ActualOnly),
-            (string?)element.Attribute("reason"),
-            ParseNullableBool(element.Attribute("nonWorking")?.Value));
     }
 
     /// <summary>
@@ -391,9 +357,9 @@ internal static class CookbookXmlParser
     /// <param name="element">The <c>Overrides</c> element, or <see langword="null" />.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed override operations.</returns>
-    private static List<CookbookOverride> ParseOverrides(XElement? element, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    private static List<NotableDateRuleOverride> ParseOverrides(XElement? element, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        List<CookbookOverride> overrides = new();
+        List<NotableDateRuleOverride> overrides = new();
         if (element is null)
             return overrides;
 

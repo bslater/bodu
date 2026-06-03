@@ -17,8 +17,8 @@ public sealed class StrategyResolutionTests
     /// Builds a resolver over the strategies fixture, which exercises one real holiday per strategy family.
     /// </summary>
     /// <returns>A resolver for the strategies fixture.</returns>
-    private static NotableDateResolver CreateResolver() =>
-        CookbookFixtures.Resolver("strategies.xml");
+    private static NotableDateService CreateResolver() =>
+        NotableDateFixtures.Resolver("strategies.xml");
 
     /// <summary>
     /// Verifies that a fixed-date rule resolves United States Independence Day to 4 July.
@@ -181,8 +181,8 @@ public sealed class StrategyResolutionTests
     /// <param name="ruleId">The expected rule id.</param>
     private static void AssertResolvesOn(DateOnly date, string territory, string notableDateId, string ruleId)
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(date, territory);
-        ResolvedNotableDate? match = results.FirstOrDefault(r => r.NotableDateId == notableDateId);
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(date, territory);
+        NotableDate? match = results.FirstOrDefault(r => r.NotableDateId == notableDateId);
 
         Assert.IsNotNull(match, $"Expected '{notableDateId}' on {date:yyyy-MM-dd} for {territory}.");
         Assert.AreEqual(date, match.Date, "emitted date");

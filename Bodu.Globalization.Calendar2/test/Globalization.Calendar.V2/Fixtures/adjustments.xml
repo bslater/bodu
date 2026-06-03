@@ -3,7 +3,7 @@
 
   <AdjustmentPolicies>
     <AdjustmentPolicy id="weekend-next-monday-observed" priority="100">
-      <Trigger type="FallsOn">
+      <Trigger type="IfDayOfWeek">
         <Weekday value="Saturday" />
         <Weekday value="Sunday" />
       </Trigger>
@@ -12,7 +12,7 @@
     </AdjustmentPolicy>
 
     <AdjustmentPolicy id="weekend-next-monday-both" priority="100">
-      <Trigger type="FallsOn">
+      <Trigger type="IfDayOfWeek">
         <Weekday value="Saturday" />
         <Weekday value="Sunday" />
       </Trigger>
@@ -21,7 +21,7 @@
     </AdjustmentPolicy>
 
     <AdjustmentPolicy id="weekend-next-monday-additional" priority="100">
-      <Trigger type="FallsOn">
+      <Trigger type="IfDayOfWeek">
         <Weekday value="Saturday" />
         <Weekday value="Sunday" />
       </Trigger>
@@ -30,7 +30,7 @@
     </AdjustmentPolicy>
 
     <AdjustmentPolicy id="weekend-next-monday-actual-only" priority="100">
-      <Trigger type="FallsOn">
+      <Trigger type="IfDayOfWeek">
         <Weekday value="Saturday" />
         <Weekday value="Sunday" />
       </Trigger>
@@ -51,7 +51,7 @@
     </AdjustmentPolicy>
 
     <AdjustmentPolicy id="weekend-prev-friday" priority="100">
-      <Trigger type="FallsOn">
+      <Trigger type="IfDayOfWeek">
         <Weekday value="Saturday" />
         <Weekday value="Sunday" />
       </Trigger>

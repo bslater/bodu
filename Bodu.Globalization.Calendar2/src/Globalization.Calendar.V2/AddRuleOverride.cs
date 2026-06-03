@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// <summary>
 /// Represents an override operation that adds a new rule to an existing notable-date concept.
 /// </summary>
-internal sealed class AddRuleOverride : CookbookOverride
+internal sealed class AddRuleOverride : NotableDateRuleOverride
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AddRuleOverride" /> class.

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:bodu:globalization:calendar:v2",
-  "title": "Bodu Notable Date Cookbook (v2)",
-  "description": "Companion JSON schema for the revised Bodu calendar cookbook. Mirrors NotableDates.v2.xsd. JSON ingestion is reserved for a later phase; the v1 loader consumes the XML form only.",
+  "title": "Bodu Notable Date Document (v2)",
+  "description": "Companion JSON schema for the revised Bodu calendar document. Mirrors NotableDates.v2.xsd. JSON ingestion is reserved for a later phase; the v1 loader consumes the XML form only.",
   "type": "object",
   "required": [ "schemaVersion", "resourceId", "notableDates" ],
   "additionalProperties": false,
@@ -56,7 +56,7 @@
     "emissionMode": {
       "enum": [ "ActualOnly", "ObservedOnly", "ActualAndObserved", "ObservedAsAdditional", "Suppress" ]
     },
-    "adjustmentTrigger": { "enum": [ "Always", "FallsOn", "IfWeekend", "IfWeekday" ] },
+    "adjustmentTrigger": { "enum": [ "Always", "IfDayOfWeek", "IfWeekend", "IfWeekday" ] },
     "weekOrdinal": { "enum": [ "First", "Second", "Third", "Fourth", "Fifth", "Last" ] },
     "weekdayProximity": { "enum": [ "Before", "OnOrBefore", "Nearest", "OnOrAfter", "After" ] },
     "adjustmentAction": {

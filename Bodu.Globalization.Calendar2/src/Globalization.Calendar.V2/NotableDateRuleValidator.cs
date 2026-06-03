@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CookbookValidator.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateRuleValidator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
 /// adjustment references, inverted year bounds, and impossible fixed dates.
 /// </summary>
-internal static class CookbookValidator
+internal static class NotableDateRuleValidator
 {
     /// <summary>
     /// The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.

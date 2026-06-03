@@ -7,7 +7,8 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Classifies the severity of a <see cref="NotableDateValidationDiagnostic" /> produced while loading a cookbook.
+/// Classifies the severity of a <see cref="NotableDateValidationDiagnostic" /> produced while loading a notable-date
+/// document.
 /// </summary>
 public enum NotableDateValidationSeverity
 {
@@ -22,7 +23,7 @@ public enum NotableDateValidationSeverity
     Warning,
 
     /// <summary>
-    /// A fatal issue that prevents the cookbook from loading successfully.
+    /// A fatal issue that prevents the notable-date document from loading successfully.
     /// </summary>
     Error,
 }

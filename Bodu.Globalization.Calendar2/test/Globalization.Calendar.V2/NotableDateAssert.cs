@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ResolvedNotableDateAssert.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateAssert.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,10 +7,10 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Provides field-by-field assertions over a <see cref="ResolvedNotableDate" /> so that test failures pinpoint the
+/// Provides field-by-field assertions over a <see cref="NotableDate" /> so that test failures pinpoint the
 /// differing field.
 /// </summary>
-internal static class ResolvedNotableDateAssert
+internal static class NotableDateAssert
 {
     /// <summary>
     /// Asserts that a resolved occurrence matches the expected field values.
@@ -26,7 +26,7 @@ internal static class ResolvedNotableDateAssert
     /// <param name="category">The expected category.</param>
     /// <param name="adjustmentPolicyId">The expected adjustment-policy id, or <see langword="null" />.</param>
     public static void AssertEqual(
-        ResolvedNotableDate actual,
+        NotableDate actual,
         DateOnly date,
         DateOnly? actualDate,
         bool isObserved,

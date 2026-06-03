@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateCookbook.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateResourceLoader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System.Text;
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Provides the entry points for loading a notable-date cookbook from XML into a validated
+/// Provides the entry points for loading a notable-date document from XML into a validated
 /// <see cref="NotableDateResource" />.
 /// </summary>
 /// <remarks>
@@ -20,28 +20,28 @@ namespace Bodu.Globalization.Calendar.V2;
 /// with a <see cref="NotableDateValidationException" /> that carries the full diagnostic set.
 /// </para>
 /// </remarks>
-public static class NotableDateCookbook
+public static class NotableDateResourceLoader
 {
     /// <summary>
-    /// Loads and validates a cookbook from its XML content.
+    /// Loads and validates a notable-date document from its XML content.
     /// </summary>
-    /// <param name="xml">The cookbook XML content.</param>
+    /// <param name="xml">The notable-date document XML content.</param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="xml" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="xml" /> is empty or white-space.</exception>
     /// <exception cref="FormatException"><paramref name="xml" /> is not well-formed XML.</exception>
     /// <exception cref="NotableDateValidationException">
-    /// The cookbook produced one or more error diagnostics.
+    /// The notable-date document produced one or more error diagnostics.
     /// </exception>
     public static NotableDateResource Load(string xml)
     {
         ThrowHelper.ThrowIfNull(xml);
-        if (string.IsNullOrWhiteSpace(xml)) throw new ArgumentException(Calendar2ResourceStrings.Arg_Invalid_CookbookContentEmpty, nameof(xml));
+        if (string.IsNullOrWhiteSpace(xml)) throw new ArgumentException(Calendar2ResourceStrings.Arg_Invalid_DocumentContentEmpty, nameof(xml));
 
         List<NotableDateValidationDiagnostic> diagnostics = new();
 
-        CookbookDocument document = CookbookXmlParser.Parse(xml, diagnostics);
-        List<NotableDateDefinition> definitions = CookbookOverrideApplier.Apply(document.NotableDates, document.Overrides, diagnostics);
+        ParsedNotableDateDocument document = NotableDateDocumentParser.Parse(xml, diagnostics);
+        List<NotableDateDefinition> definitions = NotableDateRuleOverrideApplier.Apply(document.NotableDates, document.Overrides, diagnostics);
 
         NotableDateResource resource = new(
             document.ResourceId,
@@ -50,13 +50,13 @@ public static class NotableDateCookbook
             document.AdjustmentPolicies,
             definitions);
 
-        CookbookValidator.Validate(resource, diagnostics);
+        NotableDateRuleValidator.Validate(resource, diagnostics);
 
         int errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
         if (errorCount > 0)
         {
             throw new NotableDateValidationException(
-                string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Op_Invalid_CookbookValidationFailed, errorCount),
+                string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Op_Invalid_DocumentValidationFailed, errorCount),
                 diagnostics);
         }
 
@@ -64,15 +64,15 @@ public static class NotableDateCookbook
     }
 
     /// <summary>
-    /// Loads and validates a cookbook from a stream of XML content.
+    /// Loads and validates a notable-date document from a stream of XML content.
     /// </summary>
-    /// <param name="stream">The stream containing the cookbook XML.</param>
+    /// <param name="stream">The stream containing the notable-date document XML.</param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The stream content is empty or white-space.</exception>
     /// <exception cref="FormatException">The stream content is not well-formed XML.</exception>
     /// <exception cref="NotableDateValidationException">
-    /// The cookbook produced one or more error diagnostics.
+    /// The notable-date document produced one or more error diagnostics.
     /// </exception>
     public static NotableDateResource Load(Stream stream)
     {

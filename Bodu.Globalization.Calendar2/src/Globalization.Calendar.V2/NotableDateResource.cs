@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Represents a fully loaded and validated cookbook resource: its resolution policy, reusable adjustment policies, and
-/// notable-date concepts.
+/// Represents a fully loaded and validated notable-date document resource: its resolution policy, reusable adjustment
+/// policies, and notable-date concepts.
 /// </summary>
 /// <remarks>
 /// <para>

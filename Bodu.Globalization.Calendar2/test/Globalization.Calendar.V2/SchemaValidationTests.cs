@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Verifies that the schema holds: well-formed, schema-valid cookbooks load, while malformed, schema-invalid, and
-/// semantically invalid cookbooks are rejected with the expected diagnostic.
+/// Verifies that the schema holds: well-formed, schema-valid notable-date documents load, while malformed, schema-invalid, and
+/// semantically invalid notable-date documents are rejected with the expected diagnostic.
 /// </summary>
 [TestClass]
 public sealed class SchemaValidationTests
@@ -19,7 +19,7 @@ public sealed class SchemaValidationTests
     [TestMethod]
     public void Load_WhenStrategiesFixtureIsValid_Succeeds()
     {
-        NotableDateResource resource = CookbookFixtures.Load("strategies.xml");
+        NotableDateResource resource = NotableDateFixtures.Load("strategies.xml");
 
         Assert.AreEqual(12, resource.NotableDates.Count, "notable-date count");
         Assert.AreEqual(0, resource.AdjustmentPolicies.Count, "adjustment-policy count");
@@ -31,7 +31,7 @@ public sealed class SchemaValidationTests
     [TestMethod]
     public void Load_WhenAdjustmentsFixtureIsValid_Succeeds()
     {
-        NotableDateResource resource = CookbookFixtures.Load("adjustments.xml");
+        NotableDateResource resource = NotableDateFixtures.Load("adjustments.xml");
 
         Assert.AreEqual(10, resource.NotableDates.Count, "notable-date count");
         Assert.AreEqual(10, resource.AdjustmentPolicies.Count, "adjustment-policy count");
@@ -43,11 +43,11 @@ public sealed class SchemaValidationTests
     [TestMethod]
     public void Load_WhenXmlIsNotWellFormed_ThrowsFormatException()
     {
-        string xml = CookbookFixtures.ReadText("invalid-not-wellformed.xml");
+        string xml = NotableDateFixtures.ReadText("invalid-not-wellformed.xml");
 
         _ = Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = NotableDateCookbook.Load(xml);
+            _ = NotableDateResourceLoader.Load(xml);
         });
     }
 
@@ -59,12 +59,12 @@ public sealed class SchemaValidationTests
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = NotableDateCookbook.Load("   ");
+            _ = NotableDateResourceLoader.Load("   ");
         });
     }
 
     /// <summary>
-    /// Verifies that an invalid cookbook is rejected with a <see cref="NotableDateValidationException" /> carrying the
+    /// Verifies that an invalid notable-date document is rejected with a <see cref="NotableDateValidationException" /> carrying the
     /// expected error diagnostic.
     /// </summary>
     /// <param name="fileName">The invalid fixture file name.</param>
@@ -80,13 +80,13 @@ public sealed class SchemaValidationTests
     [DataRow("invalid-unknown-algorithm.xml", "BODU-CAL2-ALGORITHM")]
     [DataRow("invalid-fromyear-after-toyear.xml", "BODU-CAL2-YEARS")]
     [DataRow("invalid-override-missing-rule.xml", "BODU-CAL2-OVERRIDE-RULE")]
-    public void Load_WhenCookbookIsInvalid_ThrowsWithExpectedDiagnostic(string fileName, string expectedCode)
+    public void Load_WhenDocumentIsInvalid_ThrowsWithExpectedDiagnostic(string fileName, string expectedCode)
     {
-        string xml = CookbookFixtures.ReadText(fileName);
+        string xml = NotableDateFixtures.ReadText(fileName);
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
-            _ = NotableDateCookbook.Load(xml);
+            _ = NotableDateResourceLoader.Load(xml);
         });
 
         Assert.IsTrue(

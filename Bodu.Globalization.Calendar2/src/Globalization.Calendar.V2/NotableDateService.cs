@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateResolver.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,75 +7,56 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Resolves notable-date occurrences from a loaded <see cref="NotableDateResource" /> for a requested territory and
-/// date or date range.
+/// Resolves notable-date occurrences from a loaded <see cref="NotableDateResource" /> for a requested territory and day
+/// or date range.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The resolver applies territory and year filtering, fixed-date strategy calculation, and adjustment policies, then
-/// emits occurrences according to each policy's emission mode. Inclusion is decided by the emitted (observed) date, so
-/// a single-day query and a range query covering the same dates return consistent results.
+/// The service applies territory and year filtering, strategy calculation, and adjustment policies, then emits
+/// occurrences according to each policy's emission mode. Inclusion is decided by the emitted (observed) date, so a
+/// single-day query and a range query covering the same dates return consistent results.
 /// </para>
 /// <para>
 /// To capture occurrences whose actual date lies just outside the requested window but whose observed date falls inside
-/// it, the resolver scans one civil year either side of the window and filters by the emitted date.
+/// it, the service scans one civil year either side of the window and filters by the emitted date.
 /// </para>
 /// </remarks>
-public sealed class NotableDateResolver
+public sealed class NotableDateService : INotableDateService
 {
     /// <summary>
-    /// The loaded resource the resolver draws occurrences from.
+    /// The loaded resource the service draws occurrences from.
     /// </summary>
     private readonly NotableDateResource _resource;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolver" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
-    /// <param name="resource">The loaded resource the resolver draws occurrences from.</param>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public NotableDateResolver(NotableDateResource resource)
+    public NotableDateService(NotableDateResource resource)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         this._resource = resource;
     }
 
-    /// <summary>
-    /// Resolves the notable-date occurrences emitted on a single day for the requested territory.
-    /// </summary>
-    /// <param name="date">The day to resolve.</param>
-    /// <param name="territory">The requested territory code.</param>
-    /// <returns>
-    /// The occurrences whose emitted date equals <paramref name="date" />; empty when there are none.
-    /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
-    public IReadOnlyList<ResolvedNotableDate> Resolve(DateOnly date, string territory) =>
-        this.Resolve(date, date, territory);
+    /// <inheritdoc />
+    public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory) =>
+        this.Resolve(new DateRange(date, date), territory);
 
-    /// <summary>
-    /// Resolves the notable-date occurrences emitted within an inclusive date range for the requested territory.
-    /// </summary>
-    /// <param name="startInclusive">The first day of the range, inclusive.</param>
-    /// <param name="endInclusive">The last day of the range, inclusive.</param>
-    /// <param name="territory">The requested territory code.</param>
-    /// <returns>
-    /// The occurrences whose emitted date falls within the range, ordered by date then identity; empty when there are
-    /// none.
-    /// </returns>
+    /// <inheritdoc />
     /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="startInclusive" /> is later than <paramref name="endInclusive" />.
-    /// </exception>
-    public IReadOnlyList<ResolvedNotableDate> Resolve(DateOnly startInclusive, DateOnly endInclusive, string territory)
+    /// <exception cref="ArgumentOutOfRangeException">The range start is later than its end.</exception>
+    public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory)
     {
         ThrowHelper.ThrowIfNull(territory);
-        ThrowHelper.ThrowIfGreaterThan(startInclusive, endInclusive);
+        ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
 
-        List<ResolvedNotableDate> results = new();
+        List<NotableDate> results = new();
         StrategyResolutionContext context = new(this._resource);
 
-        int firstYear = Math.Max(1, startInclusive.Year - 1);
-        int lastYear = Math.Min(9999, endInclusive.Year + 1);
+        int firstYear = Math.Max(1, range.StartDate.Year - 1);
+        int lastYear = Math.Min(9999, range.EndDate.Year + 1);
 
         foreach (NotableDateDefinition definition in this._resource.NotableDates)
         {
@@ -92,7 +73,7 @@ public sealed class NotableDateResolver
                     if (rule.Strategy.Calculate(year, context) is not DateOnly baseDate)
                         continue;
 
-                    this.EmitOccurrences(results, definition, rule, category, identity, baseDate, territory, startInclusive, endInclusive);
+                    this.EmitOccurrences(results, definition, rule, category, identity, baseDate, territory, range);
                 }
             }
         }
@@ -115,44 +96,42 @@ public sealed class NotableDateResolver
     /// <param name="identity">The full identity of the rule.</param>
     /// <param name="baseDate">The calculated (actual) occurrence date.</param>
     /// <param name="territory">The requested territory code.</param>
-    /// <param name="startInclusive">The first day of the range, inclusive.</param>
-    /// <param name="endInclusive">The last day of the range, inclusive.</param>
+    /// <param name="range">The inclusive range that controls emission inclusion.</param>
     private void EmitOccurrences(
-        List<ResolvedNotableDate> results,
+        List<NotableDate> results,
         NotableDateDefinition definition,
         NotableDateRule rule,
         NotableDateCategory category,
         NotableDateRuleIdentity identity,
         DateOnly baseDate,
         string territory,
-        DateOnly startInclusive,
-        DateOnly endInclusive)
+        DateRange range)
     {
         AdjustmentPolicy? winning = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
 
         if (winning is null)
         {
-            AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, startInclusive, endInclusive);
+            AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, range);
             return;
         }
 
-        DateOnly observed = winning.Action.Apply(baseDate);
-        string reason = winning.Emission.Reason ?? string.Empty;
+        DateOnly observed = winning.ApplyAction(baseDate);
+        string reason = winning.Reason ?? string.Empty;
 
-        switch (winning.Emission.Mode)
+        switch (winning.Emission)
         {
             case EmissionMode.ActualOnly:
-                AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, startInclusive, endInclusive);
+                AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, range);
                 break;
 
             case EmissionMode.ObservedOnly:
-                AddIfInRange(results, observed, baseDate, true, identity, definition.DisplayName, territory, category, winning.Id, reason, startInclusive, endInclusive);
+                AddIfInRange(results, observed, baseDate, true, identity, definition.DisplayName, territory, category, winning.Id, reason, range);
                 break;
 
             case EmissionMode.ActualAndObserved:
             case EmissionMode.ObservedAsAdditional:
-                AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, startInclusive, endInclusive);
-                AddIfInRange(results, observed, baseDate, true, identity, definition.DisplayName, territory, category, winning.Id, reason, startInclusive, endInclusive);
+                AddIfInRange(results, baseDate, baseDate, false, identity, definition.DisplayName, territory, category, null, null, range);
+                AddIfInRange(results, observed, baseDate, true, identity, definition.DisplayName, territory, category, winning.Id, reason, range);
                 break;
 
             case EmissionMode.Suppress:
@@ -194,7 +173,7 @@ public sealed class NotableDateResolver
 
         return candidates
             .OrderBy(p => p.Priority)
-            .FirstOrDefault(p => p.Trigger.IsTriggered(baseDate));
+            .FirstOrDefault(p => p.IsTriggered(baseDate));
     }
 
     /// <summary>
@@ -212,10 +191,9 @@ public sealed class NotableDateResolver
     /// The id of the adjustment policy that produced the observed date, if any.
     /// </param>
     /// <param name="reason">The reason recorded by the adjustment policy, if any.</param>
-    /// <param name="startInclusive">The first day of the range, inclusive.</param>
-    /// <param name="endInclusive">The last day of the range, inclusive.</param>
+    /// <param name="range">The inclusive range that controls inclusion.</param>
     private static void AddIfInRange(
-        List<ResolvedNotableDate> results,
+        List<NotableDate> results,
         DateOnly emitted,
         DateOnly actual,
         bool isObserved,
@@ -225,13 +203,12 @@ public sealed class NotableDateResolver
         NotableDateCategory category,
         string? adjustmentPolicyId,
         string? reason,
-        DateOnly startInclusive,
-        DateOnly endInclusive)
+        DateRange range)
     {
-        if (emitted < startInclusive || emitted > endInclusive)
+        if (!range.Contains(emitted))
             return;
 
-        results.Add(new ResolvedNotableDate(
+        results.Add(new NotableDate(
             emitted,
             actual,
             isObserved,

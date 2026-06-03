@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateResolverTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NotableDateServiceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,18 +7,18 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Verifies <see cref="NotableDateResolver" /> against the minimal cookbook: fixed-date resolution, observed-date
+/// Verifies <see cref="NotableDateService" /> against the minimal notable-date document: fixed-date resolution, observed-date
 /// adjustment, query-width consistency, and territory scoping.
 /// </summary>
 [TestClass]
-public sealed class NotableDateResolverTests
+public sealed class NotableDateServiceTests
 {
     /// <summary>
-    /// Builds a resolver over the baseline minimal cookbook.
+    /// Builds a resolver over the baseline minimal notable-date document.
     /// </summary>
-    /// <returns>A resolver for the minimal cookbook.</returns>
-    private static NotableDateResolver CreateResolver() =>
-        new(MinimalCookbook.Load());
+    /// <returns>A resolver for the minimal notable-date document.</returns>
+    private static NotableDateService CreateResolver() =>
+        new(MinimalNotableDates.Load());
 
     /// <summary>
     /// Verifies that New Year's Day resolves to its actual date with no adjustment when 1 January falls on a weekday.
@@ -28,10 +28,10 @@ public sealed class NotableDateResolverTests
     [TestCategory("Smoke")]
     public void Resolve_NewYearsDay_WhenWeekday_ReturnsActualDate()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 1, 1), "AU");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 1, 1), "AU");
 
         Assert.AreEqual(1, results.Count);
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 1, 1),
             actualDate: new DateOnly(2026, 1, 1),
@@ -51,10 +51,10 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_NewYearsDay_WhenWeekend_ReturnsObservedDate()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2022, 1, 3), "AU");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2022, 1, 3), "AU");
 
         Assert.AreEqual(1, results.Count);
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2022, 1, 3),
             actualDate: new DateOnly(2022, 1, 1),
@@ -73,7 +73,7 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_NewYearsDay_WhenObservedOnly_DoesNotReturnBaseDate()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2022, 1, 1), "AU");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2022, 1, 1), "AU");
 
         Assert.AreEqual(0, results.Count);
     }
@@ -85,17 +85,17 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_NewYearsDay_WhenSingleDayAndRangeQueriesUsed_ReturnsConsistentObservedResult()
     {
-        NotableDateResolver resolver = CreateResolver();
+        NotableDateService resolver = CreateResolver();
 
         Assert.AreEqual(0, resolver.Resolve(new DateOnly(2022, 1, 1), "AU").Count, "actual-day query");
 
-        IReadOnlyList<ResolvedNotableDate> observedDay = resolver.Resolve(new DateOnly(2022, 1, 3), "AU");
+        IReadOnlyList<NotableDate> observedDay = resolver.Resolve(new DateOnly(2022, 1, 3), "AU");
         Assert.AreEqual(1, observedDay.Count, "observed-day query");
         Assert.AreEqual(new DateOnly(2022, 1, 3), observedDay[0].Date);
 
-        IReadOnlyList<ResolvedNotableDate> range = resolver.Resolve(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3), "AU");
+        IReadOnlyList<NotableDate> range = resolver.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3)), "AU");
         Assert.AreEqual(1, range.Count, "range query");
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             range[0],
             date: new DateOnly(2022, 1, 3),
             actualDate: new DateOnly(2022, 1, 1),
@@ -114,10 +114,10 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_AnzacDay_WhenTerritoryIsAustralia_ReturnsAustralianRule()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "AU");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "AU");
 
         Assert.AreEqual(1, results.Count);
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 4, 25),
             actualDate: new DateOnly(2026, 4, 25),
@@ -136,10 +136,10 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_AnzacDay_WhenTerritoryIsNewZealand_ReturnsNewZealandRule()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "NZ");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "NZ");
 
         Assert.AreEqual(1, results.Count);
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 4, 25),
             actualDate: new DateOnly(2026, 4, 25),
@@ -158,7 +158,7 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_AnzacDay_WhenTerritoryIsUnitedStates_ReturnsNoResult()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "US");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "US");
 
         Assert.AreEqual(0, results.Count);
     }
@@ -169,10 +169,10 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_ConstitutionDay_WhenTerritoryIsUnitedStates_ReturnsSeptember17Rule()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 9, 17), "US");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 9, 17), "US");
 
         Assert.AreEqual(1, results.Count);
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 9, 17),
             actualDate: new DateOnly(2026, 9, 17),
@@ -191,10 +191,10 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_ConstitutionDay_WhenTerritoryIsPuertoRico_ReturnsJuly25Rule()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 7, 25), "PR");
+        IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 7, 25), "PR");
 
         Assert.AreEqual(1, results.Count);
-        ResolvedNotableDateAssert.AssertEqual(
+        NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 7, 25),
             actualDate: new DateOnly(2026, 7, 25),
@@ -214,8 +214,8 @@ public sealed class NotableDateResolverTests
     [TestMethod]
     public void Resolve_ConstitutionDay_WhenTerritoryIsPuertoRico_DoesNotReturnUnitedStatesRule()
     {
-        IReadOnlyList<ResolvedNotableDate> results = CreateResolver()
-            .Resolve(new DateOnly(2026, 7, 1), new DateOnly(2026, 9, 30), "PR");
+        IReadOnlyList<NotableDate> results = CreateResolver()
+            .Resolve(new DateRange(new DateOnly(2026, 7, 1), new DateOnly(2026, 9, 30)), "PR");
 
         Assert.AreEqual(1, results.Count);
         Assert.AreEqual(new DateOnly(2026, 7, 25), results[0].Date);

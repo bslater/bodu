@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// The exception thrown when a cookbook resource fails to load because one or more error-severity validation
-/// diagnostics were produced.
+/// The exception thrown when a notable-date document resource fails to load because one or more error-severity
+/// validation diagnostics were produced.
 /// </summary>
 public sealed class NotableDateValidationException : Exception
 {
@@ -46,7 +46,7 @@ public sealed class NotableDateValidationException : Exception
     /// diagnostics that caused the failure.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    /// <param name="diagnostics">The diagnostics produced while loading the cookbook.</param>
+    /// <param name="diagnostics">The diagnostics produced while loading the notable-date document.</param>
     /// <exception cref="ArgumentNullException"><paramref name="diagnostics" /> is <see langword="null" />.</exception>
     public NotableDateValidationException(string message, IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
         : base(message)
@@ -57,7 +57,7 @@ public sealed class NotableDateValidationException : Exception
     }
 
     /// <summary>
-    /// Gets the diagnostics produced while loading the cookbook.
+    /// Gets the diagnostics produced while loading the notable-date document.
     /// </summary>
     /// <returns>The diagnostics; empty when none were supplied.</returns>
     public IReadOnlyList<NotableDateValidationDiagnostic> Diagnostics { get; }

@@ -10,7 +10,7 @@
 
   <AdjustmentPolicies>
     <AdjustmentPolicy id="weekend-to-next-monday" priority="100">
-      <Trigger type="FallsOn">
+      <Trigger type="IfDayOfWeek">
         <Weekday value="Saturday" />
         <Weekday value="Sunday" />
       </Trigger>

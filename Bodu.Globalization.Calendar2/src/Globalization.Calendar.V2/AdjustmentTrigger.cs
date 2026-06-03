@@ -7,50 +7,27 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Describes the condition under which an adjustment policy fires for a calculated occurrence.
+/// Identifies the condition that determines whether an adjustment policy applies to a calculated occurrence.
 /// </summary>
-public sealed class AdjustmentTrigger
+public enum AdjustmentTrigger
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AdjustmentTrigger" /> class.
+    /// The adjustment always applies, regardless of the calculated occurrence.
     /// </summary>
-    /// <param name="type">The kind of condition the trigger evaluates.</param>
-    /// <param name="weekdays">
-    /// The weekdays the trigger reacts to, used by <see cref="AdjustmentTriggerType.FallsOn" />.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="weekdays" /> is <see langword="null" />.</exception>
-    public AdjustmentTrigger(AdjustmentTriggerType type, IEnumerable<DayOfWeek> weekdays)
-    {
-        ThrowHelper.ThrowIfNull(weekdays);
-
-        this.Type = type;
-        this.Weekdays = weekdays.ToArray();
-    }
+    Always = 0,
 
     /// <summary>
-    /// Gets the kind of condition the trigger evaluates.
+    /// The adjustment applies when the calculated occurrence falls on one of the policy's configured weekdays.
     /// </summary>
-    /// <returns>The configured <see cref="AdjustmentTriggerType" />.</returns>
-    public AdjustmentTriggerType Type { get; }
+    IfDayOfWeek,
 
     /// <summary>
-    /// Gets the weekdays the trigger reacts to.
+    /// The adjustment applies when the calculated occurrence falls on a Saturday or Sunday.
     /// </summary>
-    /// <returns>The configured weekdays; empty when the trigger does not use weekdays.</returns>
-    public IReadOnlyList<DayOfWeek> Weekdays { get; }
+    IfWeekend,
 
     /// <summary>
-    /// Determines whether the trigger fires for an occurrence on the supplied date.
+    /// The adjustment applies when the calculated occurrence falls on a Monday through Friday.
     /// </summary>
-    /// <param name="date">The calculated occurrence date.</param>
-    /// <returns><see langword="true" /> if the trigger fires; otherwise <see langword="false" />.</returns>
-    public bool IsTriggered(DateOnly date) =>
-        this.Type switch
-        {
-            AdjustmentTriggerType.Always => true,
-            AdjustmentTriggerType.FallsOn => this.Weekdays.Contains(date.DayOfWeek),
-            AdjustmentTriggerType.IfWeekend => date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday,
-            AdjustmentTriggerType.IfWeekday => date.DayOfWeek is not DayOfWeek.Saturday and not DayOfWeek.Sunday,
-            _ => false,
-        };
+    IfWeekday,
 }

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CookbookDocument.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ParsedNotableDateDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,12 +7,12 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Holds the parsed components of a cookbook before override application and final validation.
+/// Holds the parsed components of a notable-date document before override application and final validation.
 /// </summary>
-internal sealed class CookbookDocument
+internal sealed class ParsedNotableDateDocument
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CookbookDocument" /> class.
+    /// Initializes a new instance of the <see cref="ParsedNotableDateDocument" /> class.
     /// </summary>
     /// <param name="resourceId">The parsed resource identifier.</param>
     /// <param name="schemaVersion">The parsed schema version.</param>
@@ -20,13 +20,13 @@ internal sealed class CookbookDocument
     /// <param name="adjustmentPolicies">The parsed adjustment policies.</param>
     /// <param name="notableDates">The parsed notable-date concepts.</param>
     /// <param name="overrides">The parsed override operations.</param>
-    public CookbookDocument(
+    public ParsedNotableDateDocument(
         string resourceId,
         string schemaVersion,
         ResolutionPolicy resolutionPolicy,
         IReadOnlyList<AdjustmentPolicy> adjustmentPolicies,
         IReadOnlyList<NotableDateDefinition> notableDates,
-        IReadOnlyList<CookbookOverride> overrides)
+        IReadOnlyList<NotableDateRuleOverride> overrides)
     {
         this.ResourceId = resourceId;
         this.SchemaVersion = schemaVersion;
@@ -70,5 +70,5 @@ internal sealed class CookbookDocument
     /// Gets the parsed override operations.
     /// </summary>
     /// <returns>The override operations.</returns>
-    public IReadOnlyList<CookbookOverride> Overrides { get; }
+    public IReadOnlyList<NotableDateRuleOverride> Overrides { get; }
 }
