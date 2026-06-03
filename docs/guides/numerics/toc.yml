@@ -1,8 +1,8 @@
 - name: Overview
   href: index.md
-- name: Working with Fraction&lt;T&gt;
+- name: Working with Fraction<T>
   href: fraction.md
-- name: Formatting and parsing Fraction&lt;T&gt;
+- name: Formatting and parsing Fraction<T>
   href: formatting-and-parsing.md
-- name: Working with Interval&lt;T&gt;
+- name: Working with Interval<T>
   href: interval.md

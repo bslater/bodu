@@ -1,6 +1,6 @@
 - name: Overview
   href: index.md
-- name: Working with Money&lt;TCurrency&gt;
+- name: Working with Money<TCurrency>
   href: money.md
 - name: Working with exchange rates
   href: exchange-rates.md
