@@ -20,20 +20,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\region-de.xml" />
-    <None Remove="Resources\region-fr.xml" />
-    <None Remove="Resources\region-gb.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\region-de.xml">
-      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-de.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-fr.xml">
-      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-fr.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-gb.xml">
-      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.region-gb.xml</LogicalName>
+    <None Remove="Resources\*.xml" />
+    <EmbeddedResource Include="Resources\region-*.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

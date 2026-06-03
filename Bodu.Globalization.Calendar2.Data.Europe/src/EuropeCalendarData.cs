@@ -30,7 +30,11 @@ public static class EuropeCalendarData
     /// Gets the country codes the Europe pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "DE", "FR", "GB" };
+    public static IReadOnlyList<string> SupportedCountries { get; } = new[]
+    {
+        "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "GR", "HR",
+        "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
+    };
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.

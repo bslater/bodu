@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RO notable-date resource, migrated from the v1 region-ro.xml to the v2 cookbook schema by
+  tools/migrate_europe.py. UseFrom imports (europe-common, Christian, and global observances) are flattened
+  into self-contained rules.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ro">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="January" day="1" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="dormition-of-the-mother-of-god" displayName="Dormition of the Mother of God" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-easter-sunday" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-easter-monday" displayName="Orthodox Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="pentecost" displayName="Pentecost" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="pentecost-monday" displayName="Pentecost Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="day-after-new-years-day" displayName="Day after New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="January" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="union-day" displayName="Union Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1859"><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="January" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="childrens-day" displayName="Children's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="2017"><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="saint-andrews-day" displayName="Saint Andrew's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="November" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="great-union-day" displayName="Great Union Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1918"><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

@@ -63,6 +63,52 @@ public sealed class EuropeCalendarDataTests
     }
 
     /// <summary>
+    /// Verifies that every supported European country loads and validates (the loader throws on a validation error) and
+    /// resolves a non-empty set of holidays for a representative year.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
+    {
+        foreach (string country in EuropeCalendarData.SupportedCountries)
+        {
+            IReadOnlyList<NotableDate> holidays = EuropeCalendarData.CreateService(country)
+                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
+
+            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
+        }
+    }
+
+    /// <summary>
+    /// Verifies representative migrated holidays from the script-generated countries: Italian fixed nationals, the Greek
+    /// Orthodox Easter cycle, and the Irish weekend substitution.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    /// <param name="isObserved">Whether the emitted date is an in-lieu observation.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("IT", 2024, "epiphany", "2024-01-06", false)]
+    [DataRow("IT", 2024, "liberation-day", "2024-04-25", false)]
+    [DataRow("IT", 2024, "republic-day", "2024-06-02", false)]
+    [DataRow("IT", 2024, "immaculate-conception", "2024-12-08", false)]
+    [DataRow("GR", 2024, "orthodox-easter-monday", "2024-05-06", false)]
+    [DataRow("IE", 2024, "saint-patricks-day", "2024-03-18", true)]
+    public void Resolve_MigratedEuropeanHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
+    {
+        List<NotableDate> matches = EuropeCalendarData.CreateService(territory)
+            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
+            .Where(r => r.NotableDateId == notableDateId)
+            .ToList();
+
+        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
+        Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
+    }
+
+    /// <summary>
     /// Verifies that a Scotland-scoped holiday does not resolve for an England query, confirming subdivision filtering.
     /// </summary>
     [TestMethod]
