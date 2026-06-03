@@ -7,12 +7,14 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Calculates a notable date using a named, algorithm-backed computation such as Western or Orthodox Easter.
+/// Calculates a notable date using a named, algorithm-backed computation such as Easter, an equinox, a lunar-phase
+/// festival, or a gazetted date table.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The first cut recognizes the Easter keys only. An unrecognized key produces no occurrence; the loader reports it as
-/// a validation error so a missing algorithm surfaces during loading rather than as a silently absent date.
+/// An unrecognized key produces no occurrence; the loader reports it as a validation error so a missing algorithm
+/// surfaces during loading rather than as a silently absent date. Astronomical results are computed in the local time
+/// zone appropriate to the observance (for example Japan Standard Time for the Japanese equinox holidays).
 /// </para>
 /// </remarks>
 public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
@@ -28,12 +30,32 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
     public const string OrthodoxEasterKey = "orthodox-easter";
 
     /// <summary>
-    /// The set of algorithm keys the engine recognizes.
+    /// The UTC offset, in hours, of Japan Standard Time, used to date the Japanese equinox holidays.
+    /// </summary>
+    private const double JapanStandardTimeOffset = 9.0;
+
+    /// <summary>
+    /// The UTC offset, in hours, of China Standard Time, used to date Qingming.
+    /// </summary>
+    private const double ChinaStandardTimeOffset = 8.0;
+
+    /// <summary>
+    /// The set of algorithm keys the engine recognizes by a closed-form or tabular computation, excluding the Hindu
+    /// festival keys handled by <see cref="HinduLunarCalculator" />.
     /// </summary>
     private static readonly HashSet<string> s_knownKeys = new(StringComparer.Ordinal)
     {
         WesternEasterKey,
         OrthodoxEasterKey,
+        "vernal-equinox",
+        "autumnal-equinox",
+        "jp-vernal-equinox",
+        "jp-autumnal-equinox",
+        "qingming",
+        "vesak",
+        "asalha-puja",
+        "losar",
+        "matariki",
     };
 
     /// <summary>
@@ -60,7 +82,7 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
     /// <param name="key">The algorithm key to test.</param>
     /// <returns><see langword="true" /> if the key is recognized; otherwise <see langword="false" />.</returns>
     public static bool IsKnownKey(string key) =>
-        key is not null && s_knownKeys.Contains(key);
+        key is not null && (s_knownKeys.Contains(key) || HinduLunarCalculator.IsFestivalKey(key));
 
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
@@ -72,7 +94,16 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
         {
             WesternEasterKey => EasterCalculator.Western(year),
             OrthodoxEasterKey => EasterCalculator.Orthodox(year),
-            _ => null,
+            "vernal-equinox" => SolarTermCalculator.VernalEquinox(year, 0.0),
+            "autumnal-equinox" => SolarTermCalculator.AutumnalEquinox(year, 0.0),
+            "jp-vernal-equinox" => SolarTermCalculator.VernalEquinox(year, JapanStandardTimeOffset),
+            "jp-autumnal-equinox" => SolarTermCalculator.AutumnalEquinox(year, JapanStandardTimeOffset),
+            "qingming" => SolarTermCalculator.Qingming(year, ChinaStandardTimeOffset),
+            "vesak" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 5, 1)),
+            "asalha-puja" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 6, 15)),
+            "losar" => LunarPhaseCalculator.NewMoonOnOrAfter(new DateOnly(year, 1, 20)),
+            "matariki" => MatarikiCalendar.Resolve(year),
+            _ => HinduLunarCalculator.Resolve(this.Key, year),
         };
     }
 }
