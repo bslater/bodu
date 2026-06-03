@@ -32,7 +32,7 @@ the concrete v1 → v2 type mapping.
 | 3 | Single-day & range query | `INotableDateService.GetNotableDates(…)` ×6 | 🟡 Partial (`Resolve(DateOnly)`, `Resolve(DateRange)`; no by-year/filter overloads) |
 | 4 | Date-calculation strategies | `DateResolutionStrategy` (6 kinds) | ✅ Implemented (all 6: Fixed, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth, OffsetFromRule, Algorithm) |
 | 5 | Easter algorithms | Gregorian + Orthodox Easter | ✅ Implemented (`EasterCalculator`, Western + Orthodox) |
-| 6 | Lunar / lunisolar / solar-term algorithms | Vesak, Asalha, Qingming, Losar, HinduLunar, LunarPhase | ⛔ Deferred (need non-Gregorian + ephemeris machinery) |
+| 6 | Lunar / lunisolar / solar-term algorithms | Vesak, Asalha, Qingming, Losar, HinduLunar, LunarPhase | ✅ Implemented (Meeus equinox/lunar-phase + Matariki table; Hindu festivals limited to the verified set) |
 | 7 | Algorithm registry / dispatch | `INotableDateAlgorithmRegistry`, `NotableDateAlgorithmRegistry` | 🔵 Replaced (keys dispatched directly in `AlgorithmDateStrategy`; no public registry) |
 | 8 | Observance adjustments | `ObservanceAdjustment`, `AdjustmentTrigger`/`Action`, `ObservedDateMode` | 🟡 Partial (reusable `AdjustmentPolicy`; core triggers/actions + richer `EmissionMode`; some triggers/actions deferred) |
 | 9 | Custom adjustment handlers | `IAdjustmentHandler`, `AdjustmentHandlerRegistry` | ⛔ Deferred |
@@ -50,17 +50,41 @@ the concrete v1 → v2 type mapping.
 | 21 | Plugin model | `ExternalPluginLoader`, trust policies, plugin interfaces | ⛔ Deferred |
 | 22 | Localization hook | `INotableDateNameLocalizer` | ⛔ Deferred |
 | 23 | `TerritoryCode` value type | `TerritoryCode` (Parse/Contains, country+subdivision) | 🔵 Replaced (plain string + parent/child + `MatchSpecificity`) |
-| 24 | Non-Gregorian calendars | `CalendarType` on rule, `calendar` on algorithm | ⛔ Deferred (`CalendarSystem` enum is Gregorian-only) |
+| 24 | Non-Gregorian calendars | `CalendarType` on rule, `calendar` on algorithm | ✅ Implemented for fixed dates (Hijri, UmmAlQura, Hebrew, Persian, Chinese lunisolar via the BCL, with sweep / leap-month skip / Hebrew alias) |
 | 25 | Range pipeline internals | `NotableDateRangePipeline/Planner/Plan`, `RuleStaticAnalysis`/`Tier`, resolution cache | ⚪ Internal — replaced by inline two-phase resolve |
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ⛔ Deferred (no v2 DI project) |
+| 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | 🟡 Partial (all three v2 packs stood up; the applicable territories migrated — see below) |
 
-**Tally:** 9 ✅ Implemented · 5 🟡 Partial · 4 🔵 Replaced by design · 1 ⚪ Internal · 11 ⛔ Deferred (counting sub-rows).
+**Tally:** 11 ✅ Implemented · 6 🟡 Partial · 4 🔵 Replaced by design · 1 ⚪ Internal · 9 ⛔ Deferred (counting sub-rows).
 
 The fixed core — model, identity, the full 6-strategy catalogue, XML load + validate, single-day &
-range resolution, adjustments/emission, territory shadowing, and conflict-aware substitution — is
-**implemented**. The deferred set is dominated by breadth features (non-Gregorian calendars, the
-import graph, JSON ingestion, the filter API, the extension/plugin/DI surfaces) rather than gaps in
-the core engine.
+range resolution, adjustments/emission, territory shadowing, conflict-aware substitution, the
+algorithm catalogue, and non-Gregorian fixed dates — is **implemented**, and all three regional data
+packs are stood up. The deferred set is now dominated by the import graph, JSON ingestion, the filter
+API, and the extension/plugin/DI surfaces rather than gaps in the core engine or calendars.
+
+### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
+
+The v2 engine now ships the astronomical/lunisolar algorithm providers dispatched by
+`AlgorithmDateStrategy` key: Western/Orthodox Easter, the March/September equinoxes and Qingming
+(`SolarTermCalculator`, Meeus ch. 27, with a local-time offset), the new/full-moon series
+(`LunarPhaseCalculator`, Meeus ch. 49) backing Vesak / Asalha Puja / Losar, the gazetted Matariki
+table, and the verified Hindu festivals (Diwali, Holi, Navaratri) via `HinduLunarCalculator`.
+Regionally ambiguous and non-lunar Hindu festivals are intentionally omitted. Non-Gregorian
+**fixed dates** project onto the Gregorian year through `CalendarSystems` for the Hijri, Umm al-Qura,
+Hebrew, Persian, and Chinese lunisolar calendars (calendar-year sweep, Chinese leap-month skip, and
+the Hebrew leap-year month alias). Islamic/Hebrew/Persian dates use the BCL tabular calendars, so
+they match the BCL rather than local moon-sighting.
+
+### Regional data packs (area 27)
+
+All three v2 packs mirror the v1 data assemblies (embedded per-country resources + a
+`<Region>CalendarData` factory + a test project): **Americas** (US, CA), **AsiaPacific** (AU, CN,
+JP, NZ), and **Europe** (GB, FR, DE). Each region file is a self-contained v2-schema migration of
+its v1 counterpart with the `<UseFrom>` imports flattened into explicit rules. The remaining v1
+territories are deferred follow-on work of the same mechanical shape: AsiaPacific KR/MY/SG/IN (need
+the global Islamic/Hindu/lunar import sets flattened) and the long tail of European territories
+(Gregorian + Easter, sharing the `europe-common` pattern).
 
 ---
 
@@ -263,9 +287,14 @@ extensions) has no v2 counterpart; v2 ships `src` + `test` only.
 
 Ordered roughly by unblocking value, reconciled with `V1-TO-V2-TEST-PORT.md`:
 
-1. ~~**Territory-specificity shadowing**~~ — ✅ **done** (this revision).
-2. **Non-Gregorian calendars** (Hebrew / Islamic / Hindu / Persian / lunisolar) — unblocks area 6
-   algorithms and the `Global*ResourceTests` known-answer tables.
+1. ~~**Territory-specificity shadowing**~~ — ✅ **done**.
+2. ~~**Non-Gregorian calendars** + the algorithm catalogue~~ — ✅ **done** for fixed dates (Hijri /
+   Umm al-Qura / Hebrew / Persian / Chinese lunisolar) and the astronomical/lunisolar algorithms
+   (equinox, lunar-phase, Qingming, Matariki, verified Hindu festivals). Remaining: the
+   twice-in-a-Gregorian-year Islamic case (the sweep returns the earlier occurrence only) and the
+   unverified Hindu festivals.
+2a. **Regional data packs** — all three v2 packs stood up; migrate the remaining territories
+    (AsiaPacific KR/MY/SG/IN, the European long tail).
 3. **JSON ingestion** — a JSON loader to match the shipped `NotableDates.v2.schema.json` (area 14).
 4. **Imports / cherry-pick** (`<UseFrom>`/`<Use>` + merge) and the **resource-provider chain** +
    **path resolver** (areas 17–18).
