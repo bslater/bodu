@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fixture for the NotableDateFilter tests: distinct categories, tags, durations, and an observed substitute. -->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.filter">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="sunday-to-monday" priority="100">
+      <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" reason="Observed Monday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="new-year" displayName="New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="x"><Strategy><Fixed month="January" day="1" /></Strategy>
+        <Tags><Tag value="civic" /><Tag value="major" /></Tags>
+        <Adjustments><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="culture-fest" displayName="Culture Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="x"><Strategy><Fixed month="January" day="5" /></Strategy>
+        <Tags><Tag value="cultural" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="spring-week" displayName="Spring Week" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="x" durationDays="5"><Strategy><Fixed month="February" day="1" /></Strategy>
+        <Tags><Tag value="major" /></Tags></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

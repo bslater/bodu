@@ -20,6 +20,8 @@ namespace Bodu.Globalization.Calendar.V2;
 /// <param name="TerritoryCode">The territory the occurrence was resolved for.</param>
 /// <param name="Category">The effective category of the rule.</param>
 /// <param name="DurationDays">The number of days the occurrence spans, inclusive of the first day.</param>
+/// <param name="IsNonWorkingDay">Whether the occurrence is a non-working day.</param>
+/// <param name="Tags">The tags declared by the rule that produced the occurrence.</param>
 /// <param name="AdjustmentPolicyId">
 /// The identifier of the adjustment policy that produced the observed date, if any.
 /// </param>
@@ -33,6 +35,8 @@ public sealed record NotableDate(
     string TerritoryCode,
     NotableDateCategory Category,
     int DurationDays,
+    bool IsNonWorkingDay,
+    IReadOnlyList<string> Tags,
     string? AdjustmentPolicyId,
     string? AdjustmentReason)
 {

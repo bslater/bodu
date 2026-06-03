@@ -73,6 +73,25 @@ public sealed class NotableDateService : INotableDateService
             .ToArray();
     }
 
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
+    public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory, NotableDateFilter filter) =>
+        this.Resolve(new DateRange(date, date), territory, filter);
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">The range start is later than its end.</exception>
+    public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter)
+    {
+        ThrowHelper.ThrowIfNull(filter);
+
+        return this.Resolve(range, territory).Where(filter.Matches).ToArray();
+    }
+
     /// <summary>
     /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
     /// non-working occurrences.
@@ -114,10 +133,12 @@ public sealed class NotableDateService : INotableDateService
                     bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
                     int durationDays = Math.Max(1, rule.DurationDays ?? definition.DefaultDurationDays);
 
+                    IReadOnlyList<string> tags = rule.Tags.Count > 0 ? rule.Tags : definition.Tags;
+
                     foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
                     {
                         AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
-                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking, durationDays));
+                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking, durationDays, tags));
 
                         if (nonWorking)
                             occupied.Add(baseDate);
@@ -308,6 +329,8 @@ public sealed class NotableDateService : INotableDateService
             territory,
             candidate.Category,
             candidate.DurationDays,
+            candidate.NonWorking,
+            candidate.Tags,
             adjustmentPolicyId,
             string.IsNullOrEmpty(reason) ? null : reason));
     }
