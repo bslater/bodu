@@ -54,7 +54,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 - [Working with exchange rates](exchange-rates.md) — the FX provider
   stack: timeless vs. dated contracts, the audit-grade
   `ExchangeRateLookupResult`, the composite fallback stack, the
-  `MoneyConversionResult<,>` audit record, and the
+  `TypedMoneyConversionResult<,>` audit record, and the
   `ExchangeRateSeriesBuilder` + `ExchangeRateTableBuilder` editing surface.
 
 ## See also
