@@ -68,8 +68,37 @@ internal static class NotableDateDocumentParser
         List<AdjustmentPolicy> adjustmentPolicies = ParseAdjustmentPolicies(root.Element(s_ns + "AdjustmentPolicies"));
         List<NotableDateDefinition> notableDates = ParseNotableDates(root.Element(s_ns + "NotableDates"), diagnostics);
         List<NotableDateRuleOverride> overrides = ParseOverrides(root.Element(s_ns + "Overrides"), diagnostics);
+        List<NotableDateImport> imports = ParseImports(root.Element(s_ns + "Imports"));
 
-        return new ParsedNotableDateDocument(resourceId, schemaVersion, resolutionPolicy, adjustmentPolicies, notableDates, overrides);
+        return new ParsedNotableDateDocument(resourceId, schemaVersion, resolutionPolicy, adjustmentPolicies, notableDates, overrides, imports);
+    }
+
+    /// <summary>
+    /// Parses the import directives declared by the resource.
+    /// </summary>
+    /// <param name="element">The <c>Imports</c> element, or <see langword="null" />.</param>
+    /// <returns>The parsed import directives.</returns>
+    private static List<NotableDateImport> ParseImports(XElement? element)
+    {
+        List<NotableDateImport> imports = new();
+        if (element is null)
+            return imports;
+
+        foreach (XElement import in element.Elements(s_ns + "Import"))
+        {
+            List<NotableDateImportUse> uses = import.Elements(s_ns + "Use")
+                .Select(use => new NotableDateImportUse(
+                    (string?)use.Attribute("notableDateRef") ?? string.Empty,
+                    (string?)use.Attribute("as"),
+                    (string?)use.Attribute("territory"),
+                    ParseNullableEnum<NotableDateCategory>(use.Attribute("category")?.Value),
+                    ParseNullableBool(use.Attribute("nonWorking")?.Value)))
+                .ToList();
+
+            imports.Add(new NotableDateImport((string?)import.Attribute("resource") ?? string.Empty, uses));
+        }
+
+        return imports;
     }
 
     /// <summary>

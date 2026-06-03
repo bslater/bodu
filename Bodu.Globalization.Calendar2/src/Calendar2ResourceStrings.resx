@@ -120,4 +120,13 @@
   <data name="Validation_UnknownAlgorithm" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': algorithm key '{2}' is not recognized.</value>
   </data>
+  <data name="Validation_ImportResourceNotFound" xml:space="preserve">
+    <value>Import targets resource '{0}', which could not be resolved.</value>
+  </data>
+  <data name="Validation_ImportCycle" xml:space="preserve">
+    <value>Import of resource '{0}' forms a cycle and was skipped.</value>
+  </data>
+  <data name="Validation_ImportConceptNotFound" xml:space="preserve">
+    <value>Import from resource '{0}' targets concept '{1}', which it does not declare.</value>
+  </data>
 </root>

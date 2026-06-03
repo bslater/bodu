@@ -230,5 +230,32 @@ namespace Bodu {
                 return ResourceManager.GetString("Validation_UnknownAlgorithm", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import targets resource '{0}', which could not be resolved..
+        /// </summary>
+        internal static string Validation_ImportResourceNotFound {
+            get {
+                return ResourceManager.GetString("Validation_ImportResourceNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import of resource '{0}' forms a cycle and was skipped..
+        /// </summary>
+        internal static string Validation_ImportCycle {
+            get {
+                return ResourceManager.GetString("Validation_ImportCycle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import from resource '{0}' targets concept '{1}', which it does not declare..
+        /// </summary>
+        internal static string Validation_ImportConceptNotFound {
+            get {
+                return ResourceManager.GetString("Validation_ImportConceptNotFound", resourceCulture);
+            }
+        }
     }
 }

@@ -20,13 +20,15 @@ internal sealed class ParsedNotableDateDocument
     /// <param name="adjustmentPolicies">The parsed adjustment policies.</param>
     /// <param name="notableDates">The parsed notable-date concepts.</param>
     /// <param name="overrides">The parsed override operations.</param>
+    /// <param name="imports">The parsed import directives.</param>
     public ParsedNotableDateDocument(
         string resourceId,
         string schemaVersion,
         ResolutionPolicy resolutionPolicy,
         IReadOnlyList<AdjustmentPolicy> adjustmentPolicies,
         IReadOnlyList<NotableDateDefinition> notableDates,
-        IReadOnlyList<NotableDateRuleOverride> overrides)
+        IReadOnlyList<NotableDateRuleOverride> overrides,
+        IReadOnlyList<NotableDateImport> imports)
     {
         this.ResourceId = resourceId;
         this.SchemaVersion = schemaVersion;
@@ -34,6 +36,7 @@ internal sealed class ParsedNotableDateDocument
         this.AdjustmentPolicies = adjustmentPolicies;
         this.NotableDates = notableDates;
         this.Overrides = overrides;
+        this.Imports = imports;
     }
 
     /// <summary>
@@ -71,4 +74,10 @@ internal sealed class ParsedNotableDateDocument
     /// </summary>
     /// <returns>The override operations.</returns>
     public IReadOnlyList<NotableDateRuleOverride> Overrides { get; }
+
+    /// <summary>
+    /// Gets the parsed import directives.
+    /// </summary>
+    /// <returns>The import directives.</returns>
+    public IReadOnlyList<NotableDateImport> Imports { get; }
 }

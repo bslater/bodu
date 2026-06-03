@@ -43,7 +43,41 @@ internal static class NotableDateJsonDocumentParser
             ParseResolutionPolicy(GetProperty(root, "resolutionPolicy")),
             ParseAdjustmentPolicies(GetProperty(root, "adjustmentPolicies")),
             ParseNotableDates(GetProperty(root, "notableDates"), diagnostics),
-            ParseOverrides(GetProperty(root, "overrides"), diagnostics));
+            ParseOverrides(GetProperty(root, "overrides"), diagnostics),
+            ParseImports(GetProperty(root, "imports")));
+    }
+
+    /// <summary>
+    /// Parses the import directives declared by the resource.
+    /// </summary>
+    /// <param name="element">The <c>imports</c> array, or <see langword="null" />.</param>
+    /// <returns>The parsed import directives.</returns>
+    private static List<NotableDateImport> ParseImports(JsonElement? element)
+    {
+        List<NotableDateImport> imports = new();
+        if (element is not JsonElement array || array.ValueKind != JsonValueKind.Array)
+            return imports;
+
+        foreach (JsonElement import in array.EnumerateArray())
+        {
+            List<NotableDateImportUse> uses = new();
+            if (GetProperty(import, "uses") is JsonElement useArray && useArray.ValueKind == JsonValueKind.Array)
+            {
+                foreach (JsonElement use in useArray.EnumerateArray())
+                {
+                    uses.Add(new NotableDateImportUse(
+                        GetString(use, "notableDateRef") ?? string.Empty,
+                        GetString(use, "as"),
+                        GetString(use, "territory"),
+                        ParseNullableEnum<NotableDateCategory>(GetString(use, "category")),
+                        GetNullableBool(use, "nonWorking")));
+                }
+            }
+
+            imports.Add(new NotableDateImport(GetString(import, "resource") ?? string.Empty, uses));
+        }
+
+        return imports;
     }
 
     /// <summary>
