@@ -232,6 +232,11 @@ internal static class NotableDateRuleValidator
         if (rule.Strategy is not FixedDateStrategy strategy)
             return;
 
+        // Non-Gregorian month/day ranges vary by calendar (and a Hebrew alias defers the month), so the
+        // proleptic-Gregorian day-in-month check does not apply.
+        if (strategy.Calendar != CalendarSystem.Gregorian)
+            return;
+
         if (strategy.Month is < 1 or > 12)
             return;
 

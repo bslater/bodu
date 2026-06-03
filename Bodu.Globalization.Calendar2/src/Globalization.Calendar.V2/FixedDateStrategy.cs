@@ -7,12 +7,21 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Calculates a notable date that falls on a fixed Gregorian month and day every year, such as 1 January or 25 April.
+/// Calculates a notable date that falls on a fixed month and day every year, optionally expressed in a non-Gregorian
+/// calendar system such as the Islamic, Hebrew, Persian, or Chinese lunisolar calendar.
 /// </summary>
+/// <remarks>
+/// <para>
+/// For the Gregorian calendar the month and day are used directly. For a non-Gregorian system the month and day are
+/// interpreted in that system and projected onto the requested Gregorian year by <see cref="CalendarSystems" />, using
+/// a calendar-year sweep (for lunar and lunisolar systems whose year does not align with the Gregorian year) or a
+/// leap-month skip (for the Chinese lunisolar calendar).
+/// </para>
+/// </remarks>
 public sealed class FixedDateStrategy : IDateCalculationStrategy
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixedDateStrategy" /> class.
+    /// Initializes a new instance of the <see cref="FixedDateStrategy" /> class for the Gregorian calendar.
     /// </summary>
     /// <param name="month">The one-based month of the occurrence.</param>
     /// <param name="day">The one-based day of the occurrence.</param>
@@ -20,18 +29,43 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
     /// <paramref name="month" /> is not between 1 and 12, or <paramref name="day" /> is not between 1 and 31.
     /// </exception>
     public FixedDateStrategy(int month, int day)
+        : this(month, day, CalendarSystem.Gregorian, false, false, null)
     {
-        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
-        ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
-
-        this.Month = month;
-        this.Day = day;
     }
 
     /// <summary>
-    /// Gets the one-based month of the occurrence.
+    /// Initializes a new instance of the <see cref="FixedDateStrategy" /> class for a specified calendar system.
     /// </summary>
-    /// <returns>The month, where 1 is January and 12 is December.</returns>
+    /// <param name="month">The one-based month of the occurrence within the calendar system.</param>
+    /// <param name="day">The one-based day of the occurrence.</param>
+    /// <param name="calendar">The calendar system the month and day are expressed in.</param>
+    /// <param name="sweepCalendarYears">Whether to sweep overlapping calendar years to locate the Gregorian occurrence.</param>
+    /// <param name="skipLeapMonth">Whether a conventional Chinese month index skips an intercalary leap month.</param>
+    /// <param name="monthAlias">A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="day" /> is not between 1 and 31; or, for the Gregorian calendar, <paramref name="month" /> is not
+    /// between 1 and 12; or, for another calendar with no alias, <paramref name="month" /> is not between 1 and 13.
+    /// </exception>
+    public FixedDateStrategy(int month, int day, CalendarSystem calendar, bool sweepCalendarYears, bool skipLeapMonth, string? monthAlias)
+    {
+        ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
+        if (calendar == CalendarSystem.Gregorian)
+            ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        else if (monthAlias is null)
+            ThrowHelper.ThrowIfOutOfRange(month, 1, 13);
+
+        this.Month = month;
+        this.Day = day;
+        this.Calendar = calendar;
+        this.SweepCalendarYears = sweepCalendarYears;
+        this.SkipLeapMonth = skipLeapMonth;
+        this.MonthAlias = monthAlias;
+    }
+
+    /// <summary>
+    /// Gets the one-based month of the occurrence within its calendar system.
+    /// </summary>
+    /// <returns>The month, or <c>0</c> when a <see cref="MonthAlias" /> supplies it at resolution time.</returns>
     public int Month { get; }
 
     /// <summary>
@@ -40,12 +74,51 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
     /// <returns>The day of the month.</returns>
     public int Day { get; }
 
+    /// <summary>
+    /// Gets the calendar system the month and day are expressed in.
+    /// </summary>
+    /// <returns>The configured <see cref="CalendarSystem" />.</returns>
+    public CalendarSystem Calendar { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether overlapping calendar years are swept to locate the Gregorian occurrence.
+    /// </summary>
+    /// <returns><see langword="true" /> when the occurrence is located by sweeping calendar years.</returns>
+    public bool SweepCalendarYears { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether a conventional Chinese month index skips an intercalary leap month.
+    /// </summary>
+    /// <returns><see langword="true" /> when a conventional month index steps over a leap month.</returns>
+    public bool SkipLeapMonth { get; }
+
+    /// <summary>
+    /// Gets the Hebrew month alias whose number shifts in leap years.
+    /// </summary>
+    /// <returns>The alias, or <see langword="null" /> when the month is given numerically.</returns>
+    public string? MonthAlias { get; }
+
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
-        if (year < 1 || year > 9999 || this.Day > DateTime.DaysInMonth(year, this.Month))
+        if (year < 1 || year > 9999)
             return null;
 
-        return new DateOnly(year, this.Month, this.Day);
+        if (this.Calendar == CalendarSystem.Gregorian)
+        {
+            if (this.Month is < 1 or > 12 || this.Day > DateTime.DaysInMonth(year, this.Month))
+                return null;
+
+            return new DateOnly(year, this.Month, this.Day);
+        }
+
+        return CalendarSystems.ResolveFixed(
+            this.Calendar,
+            this.Month,
+            this.MonthAlias,
+            this.Day,
+            this.SweepCalendarYears,
+            this.SkipLeapMonth,
+            year);
     }
 }

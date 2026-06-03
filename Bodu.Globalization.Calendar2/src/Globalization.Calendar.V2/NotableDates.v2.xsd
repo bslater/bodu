@@ -313,6 +313,11 @@
   <xs:simpleType name="calendarName">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Gregorian" />
+      <xs:enumeration value="Hijri" />
+      <xs:enumeration value="UmmAlQura" />
+      <xs:enumeration value="Hebrew" />
+      <xs:enumeration value="Persian" />
+      <xs:enumeration value="ChineseLunisolar" />
     </xs:restriction>
   </xs:simpleType>
 

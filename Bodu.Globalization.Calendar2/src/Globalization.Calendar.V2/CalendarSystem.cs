@@ -11,8 +11,9 @@ namespace Bodu.Globalization.Calendar.V2;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The first cut of the v2 engine supports the proleptic Gregorian calendar only. Additional calendar systems (for
-/// example Hebrew or Islamic) are reserved for a later phase.
+/// A <see cref="FixedDateStrategy" /> expressed in a non-Gregorian system interprets its month and day in that system,
+/// then projects the occurrence onto the proleptic Gregorian calendar for resolution. Each value maps to a
+/// <see cref="System.Globalization.Calendar" /> provided by the base class library.
 /// </para>
 /// </remarks>
 public enum CalendarSystem
@@ -21,4 +22,29 @@ public enum CalendarSystem
     /// The proleptic Gregorian calendar.
     /// </summary>
     Gregorian = 0,
+
+    /// <summary>
+    /// The tabular Islamic (Hijri) calendar (<see cref="System.Globalization.HijriCalendar" />).
+    /// </summary>
+    Hijri = 1,
+
+    /// <summary>
+    /// The Umm al-Qura Islamic calendar used in Saudi Arabia (<see cref="System.Globalization.UmAlQuraCalendar" />).
+    /// </summary>
+    UmmAlQura = 2,
+
+    /// <summary>
+    /// The Hebrew (Jewish) lunisolar calendar (<see cref="System.Globalization.HebrewCalendar" />).
+    /// </summary>
+    Hebrew = 3,
+
+    /// <summary>
+    /// The Persian (Solar Hijri) calendar (<see cref="System.Globalization.PersianCalendar" />).
+    /// </summary>
+    Persian = 4,
+
+    /// <summary>
+    /// The Chinese lunisolar calendar (<see cref="System.Globalization.ChineseLunisolarCalendar" />).
+    /// </summary>
+    ChineseLunisolar = 5,
 }

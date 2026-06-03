@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Non-Gregorian calendar-system fixed-date fixtures for the v2 engine tests. Each concept is a global
+  fixed-date rule expressed in a non-Gregorian calendar, projected onto the Gregorian year by the engine
+  (calendar-year sweep for lunar/lunisolar systems, leap-month skip for the Chinese Mid-Autumn lunation).
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.calendars">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="chinese-new-year" displayName="Chinese New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="cn"><Applicability calendar="ChineseLunisolar" /><Strategy><Fixed month="1" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="mid-autumn" displayName="Mid-Autumn Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="cn"><Applicability calendar="ChineseLunisolar" /><Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rosh-hashanah" displayName="Rosh Hashanah" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Tishri" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="passover" displayName="Passover" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Nisan" day="15" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="nowruz" displayName="Nowruz" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="ir"><Applicability calendar="Persian" /><Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="islamic-new-year" displayName="Islamic New Year" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="sa"><Applicability calendar="Hijri" /><Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

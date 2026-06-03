@@ -235,6 +235,7 @@ internal static class NotableDateDocumentParser
     private static NotableDateRule ParseRule(XElement element, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         string id = (string?)element.Attribute("id") ?? string.Empty;
+        RuleApplicability applicability = ParseApplicability(element.Element(s_ns + "Applicability"));
 
         return new NotableDateRule(
             id,
@@ -242,8 +243,8 @@ internal static class NotableDateDocumentParser
             ParseNullableEnum<NotableDateCategory>(element.Attribute("category")?.Value),
             ParseNullableBool(element.Attribute("nonWorking")?.Value),
             ParseNullableInt(element.Attribute("durationDays")?.Value),
-            ParseApplicability(element.Element(s_ns + "Applicability")),
-            ParseStrategy(element.Element(s_ns + "Strategy"), notableDateId, id, diagnostics),
+            applicability,
+            ParseStrategy(element.Element(s_ns + "Strategy"), applicability.Calendar, notableDateId, id, diagnostics),
             ParseAdjustments(element.Element(s_ns + "Adjustments")),
             ParseTags(element.Element(s_ns + "Tags")));
     }
@@ -271,11 +272,12 @@ internal static class NotableDateDocumentParser
     /// Parses a rule's strategy by dispatching on the single strategy child element.
     /// </summary>
     /// <param name="element">The <c>Strategy</c> element, or <see langword="null" />.</param>
+    /// <param name="calendar">The calendar system the rule's applicability declares.</param>
     /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
     /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed <see cref="IDateCalculationStrategy" />.</returns>
-    private static IDateCalculationStrategy ParseStrategy(XElement? element, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    private static IDateCalculationStrategy ParseStrategy(XElement? element, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         XElement? child = element?.Elements().FirstOrDefault();
         if (child is null)
@@ -284,9 +286,16 @@ internal static class NotableDateDocumentParser
         switch (child.Name.LocalName)
         {
             case "Fixed":
+            {
+                (int month, string? monthAlias) = ParseFixedMonth(child.Attribute("month")?.Value, calendar, notableDateId, ruleId, diagnostics);
                 return new FixedDateStrategy(
-                    ParseMonth(child.Attribute("month")?.Value, notableDateId, ruleId, diagnostics),
-                    Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31));
+                    month,
+                    Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31),
+                    calendar,
+                    ParseBool(child.Attribute("sweepCalendarYears")?.Value, false),
+                    ParseBool(child.Attribute("skipLeapMonth")?.Value, false),
+                    monthAlias);
+            }
 
             case "DayOfWeekInMonth":
                 return new DayOfWeekInMonthStrategy(
@@ -404,6 +413,8 @@ internal static class NotableDateDocumentParser
         XElement? adjustmentsElement = operation.Element(s_ns + "Adjustments");
         XElement? tagsElement = operation.Element(s_ns + "Tags");
 
+        RuleApplicability? applicability = applicabilityElement is null ? null : ParseApplicability(applicabilityElement);
+
         return new PatchRuleOverride(
             notableDateRef,
             ruleRef,
@@ -411,8 +422,8 @@ internal static class NotableDateDocumentParser
             ParseNullableEnum<NotableDateCategory>(operation.Attribute("category")?.Value),
             ParseNullableBool(operation.Attribute("nonWorking")?.Value),
             ParseNullableInt(operation.Attribute("durationDays")?.Value),
-            applicabilityElement is null ? null : ParseApplicability(applicabilityElement),
-            strategyElement is null ? null : ParseStrategy(strategyElement, notableDateRef, ruleRef, diagnostics),
+            applicability,
+            strategyElement is null ? null : ParseStrategy(strategyElement, applicability?.Calendar ?? CalendarSystem.Gregorian, notableDateRef, ruleRef, diagnostics),
             adjustmentsElement is null ? null : ParseAdjustments(adjustmentsElement),
             tagsElement is null ? null : ParseTags(tagsElement));
     }
@@ -443,6 +454,63 @@ internal static class NotableDateDocumentParser
             string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
 
         return 1;
+    }
+
+    /// <summary>
+    /// Parses a fixed-strategy month for a given calendar system, returning either a numeric month or a Hebrew alias
+    /// whose number is resolved at calculation time.
+    /// </summary>
+    /// <param name="value">The raw month value.</param>
+    /// <param name="calendar">The calendar system the month is expressed in.</param>
+    /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
+    /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
+    /// <returns>
+    /// A tuple of the one-based month (or <c>0</c> when an alias supplies it) and an optional Hebrew month alias.
+    /// </returns>
+    private static (int Month, string? Alias) ParseFixedMonth(
+        string? value,
+        CalendarSystem calendar,
+        string notableDateId,
+        string ruleId,
+        ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (calendar == CalendarSystem.Gregorian)
+            return (ParseMonth(value, notableDateId, ruleId, diagnostics), null);
+
+        if (value is not null)
+        {
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 13)
+                return (numeric, null);
+
+            switch (value)
+            {
+                case "Tishri": return (1, null);
+                case "Heshvan": return (2, null);
+                case "Kislev": return (3, null);
+                case "Tevet": return (4, null);
+                case "Shevat": return (5, null);
+                case "AdarI": return (6, null);
+                case "AdarII":
+                case "LastAdar":
+                case "Nisan":
+                case "Iyar":
+                case "Sivan":
+                case "Tammuz":
+                case "Av":
+                case "Elul":
+                    return (0, value);
+                default:
+                    break;
+            }
+        }
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL2-MONTH",
+            string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
+
+        return (1, null);
     }
 
     /// <summary>
