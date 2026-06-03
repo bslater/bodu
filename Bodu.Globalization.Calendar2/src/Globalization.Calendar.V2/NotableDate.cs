@@ -19,6 +19,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// <param name="DisplayName">The display name of the notable-date concept.</param>
 /// <param name="TerritoryCode">The territory the occurrence was resolved for.</param>
 /// <param name="Category">The effective category of the rule.</param>
+/// <param name="DurationDays">The number of days the occurrence spans, inclusive of the first day.</param>
 /// <param name="AdjustmentPolicyId">
 /// The identifier of the adjustment policy that produced the observed date, if any.
 /// </param>
@@ -31,6 +32,7 @@ public sealed record NotableDate(
     string DisplayName,
     string TerritoryCode,
     NotableDateCategory Category,
+    int DurationDays,
     string? AdjustmentPolicyId,
     string? AdjustmentReason)
 {
@@ -47,4 +49,14 @@ public sealed record NotableDate(
     /// <returns>The rule id from <see cref="Identity" />.</returns>
     public string RuleId =>
         this.Identity.RuleId;
+
+    /// <summary>
+    /// Gets the last day the occurrence spans.
+    /// </summary>
+    /// <returns>
+    /// The inclusive end date, equal to <see cref="Date" /> for a single-day occurrence and
+    /// <c><see cref="Date" /> + <see cref="DurationDays" /> - 1</c> for a multi-day span.
+    /// </returns>
+    public DateOnly EndDate =>
+        this.Date.AddDays(Math.Max(1, this.DurationDays) - 1);
 }

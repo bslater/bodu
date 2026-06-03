@@ -83,18 +83,54 @@ internal static class CalendarSystems
         bool skipLeapMonth,
         int gregorianYear)
     {
+        IReadOnlyList<DateOnly> all = ResolveFixedAll(system, month, monthAlias, day, sweepCalendarYears, skipLeapMonth, gregorianYear);
+        return all.Count > 0 ? all[0] : null;
+    }
+
+    /// <summary>
+    /// Projects every occurrence of a fixed calendar-system month and day that falls within the requested Gregorian
+    /// year.
+    /// </summary>
+    /// <param name="system">The non-Gregorian calendar system the month and day are expressed in.</param>
+    /// <param name="month">The one-based month within the calendar system, ignored when <paramref name="monthAlias" /> is set.</param>
+    /// <param name="monthAlias">A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.</param>
+    /// <param name="day">The one-based day within the month.</param>
+    /// <param name="sweepCalendarYears">Whether to sweep the overlapping calendar years to locate the Gregorian occurrences.</param>
+    /// <param name="skipLeapMonth">Whether a conventional Chinese month index skips an intercalary leap month.</param>
+    /// <param name="gregorianYear">The Gregorian year to project onto.</param>
+    /// <returns>
+    /// The projected dates in chronological order. A short Islamic month and day can recur twice in one Gregorian year,
+    /// so the list may hold two occurrences; it is empty when none falls in the year.
+    /// </returns>
+    public static IReadOnlyList<DateOnly> ResolveFixedAll(
+        CalendarSystem system,
+        int month,
+        string? monthAlias,
+        int day,
+        bool sweepCalendarYears,
+        bool skipLeapMonth,
+        int gregorianYear)
+    {
         System.Globalization.Calendar? calendar = Resolve(system);
         if (calendar is null)
-            return null;
+            return Array.Empty<DateOnly>();
 
         if (skipLeapMonth && calendar is ChineseLunisolarCalendar chinese)
-            return ResolveChineseLeapMonthSkip(chinese, month, day, gregorianYear);
+            return Single(ResolveChineseLeapMonthSkip(chinese, month, day, gregorianYear));
 
         if (sweepCalendarYears)
             return ResolveCalendarYearSweep(calendar, month, monthAlias, day, gregorianYear);
 
-        return ResolveDirect(calendar, month, day, gregorianYear);
+        return Single(ResolveDirect(calendar, month, day, gregorianYear));
     }
+
+    /// <summary>
+    /// Wraps an optional date as a zero- or one-element read-only list.
+    /// </summary>
+    /// <param name="date">The date, or <see langword="null" />.</param>
+    /// <returns>An empty list when <paramref name="date" /> is <see langword="null" />; otherwise a single-element list.</returns>
+    private static IReadOnlyList<DateOnly> Single(DateOnly? date) =>
+        date is DateOnly value ? new[] { value } : Array.Empty<DateOnly>();
 
     /// <summary>
     /// Resolves a Hebrew month alias to its one-based month number for the supplied leap-year state.
@@ -141,33 +177,45 @@ internal static class CalendarSystems
     }
 
     /// <summary>
-    /// Sweeps the one or two calendar years overlapping the Gregorian year, returning the earliest occurrence whose
-    /// projected date falls within it.
+    /// Sweeps the calendar years overlapping the Gregorian year, returning every occurrence whose projected date falls
+    /// within it.
     /// </summary>
     /// <param name="calendar">The backing calendar.</param>
     /// <param name="month">The one-based month, ignored when <paramref name="monthAlias" /> is set.</param>
-    /// <param name="monthAlias">A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.</param>
+    /// <param name="monthAlias">
+    /// A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.
+    /// </param>
     /// <param name="day">The one-based day within the month.</param>
     /// <param name="gregorianYear">The Gregorian year to project onto.</param>
-    /// <returns>The projected Gregorian date, or <see langword="null" /> when no occurrence falls in the year.</returns>
-    private static DateOnly? ResolveCalendarYearSweep(
+    /// <returns>The projected dates in chronological order; empty when no occurrence falls in the year.</returns>
+    /// <remarks>
+    /// <para>
+    /// The upper bound is the calendar year containing 31 December, so a short Islamic month and day that recurs late
+    /// in the Gregorian year (about 355 days after an early-January occurrence) is captured as a second result.
+    /// </para>
+    /// </remarks>
+    private static IReadOnlyList<DateOnly> ResolveCalendarYearSweep(
         System.Globalization.Calendar calendar,
         int month,
         string? monthAlias,
         int day,
         int gregorianYear)
     {
-        int calYearForJan1;
+        int firstCalendarYear;
+        int lastCalendarYear;
         try
         {
-            calYearForJan1 = calendar.GetYear(new DateTime(gregorianYear, 1, 1));
+            firstCalendarYear = calendar.GetYear(new DateTime(gregorianYear, 1, 1));
+            lastCalendarYear = calendar.GetYear(new DateTime(gregorianYear, 12, 31));
         }
         catch (ArgumentOutOfRangeException)
         {
-            return null;
+            return Array.Empty<DateOnly>();
         }
 
-        for (int calendarYear = calYearForJan1; calendarYear <= calYearForJan1 + 1; calendarYear++)
+        List<DateOnly> matches = new();
+
+        for (int calendarYear = firstCalendarYear; calendarYear <= lastCalendarYear; calendarYear++)
         {
             int monthNumber;
             if (monthAlias is not null)
@@ -205,13 +253,11 @@ internal static class CalendarSystems
                 continue;
             }
 
-            if (candidate.Year != gregorianYear)
-                continue;
-
-            return DateOnly.FromDateTime(candidate);
+            if (candidate.Year == gregorianYear)
+                matches.Add(DateOnly.FromDateTime(candidate));
         }
 
-        return null;
+        return matches;
     }
 
     /// <summary>

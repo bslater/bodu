@@ -109,23 +109,41 @@ public sealed class NotableDateService : INotableDateService
                     if (rule.Applicability.MatchSpecificity(territory) != maxSpecificity)
                         continue;
 
-                    if (rule.Strategy.Calculate(year, context) is not DateOnly baseDate)
-                        continue;
-
                     NotableDateCategory category = rule.Category ?? definition.Category;
                     NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
                     bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
+                    int durationDays = Math.Max(1, rule.DurationDays ?? definition.DefaultDurationDays);
 
-                    AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
-                    candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking));
+                    foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
+                    {
+                        AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
+                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking, durationDays));
 
-                    if (nonWorking)
-                        occupied.Add(baseDate);
+                        if (nonWorking)
+                            occupied.Add(baseDate);
+                    }
                 }
             }
         }
 
         return candidates;
+    }
+
+    /// <summary>
+    /// Enumerates the calculated occurrences a strategy produces for a year: every occurrence of a fixed-date strategy
+    /// (a short Islamic month and day can recur twice in one Gregorian year) and the single occurrence of every other
+    /// strategy.
+    /// </summary>
+    /// <param name="strategy">The strategy to evaluate.</param>
+    /// <param name="year">The Gregorian year to calculate against.</param>
+    /// <param name="context">The resolution context for offset references.</param>
+    /// <returns>The calculated occurrences for the year.</returns>
+    private static IEnumerable<DateOnly> EnumerateBaseDates(IDateCalculationStrategy strategy, int year, StrategyResolutionContext context)
+    {
+        if (strategy is FixedDateStrategy fixedStrategy)
+            return fixedStrategy.CalculateAll(year, context);
+
+        return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : Array.Empty<DateOnly>();
     }
 
     /// <summary>
@@ -260,6 +278,12 @@ public sealed class NotableDateService : INotableDateService
     /// </param>
     /// <param name="reason">The reason recorded by the adjustment policy, if any.</param>
     /// <param name="range">The inclusive range that controls inclusion.</param>
+    /// <remarks>
+    /// <para>
+    /// A multi-day occurrence is included when any day of its span intersects the requested window, so a single-day
+    /// query for a day inside a multi-day holiday returns it.
+    /// </para>
+    /// </remarks>
     private static void AddIfInRange(
         List<NotableDate> results,
         DateOnly emitted,
@@ -271,7 +295,8 @@ public sealed class NotableDateService : INotableDateService
         string? reason,
         DateRange range)
     {
-        if (!range.Contains(emitted))
+        int spanEndDayNumber = emitted.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
+        if (emitted > range.EndDate || spanEndDayNumber < range.StartDate.DayNumber)
             return;
 
         results.Add(new NotableDate(
@@ -282,6 +307,7 @@ public sealed class NotableDateService : INotableDateService
             candidate.DisplayName,
             territory,
             candidate.Category,
+            candidate.DurationDays,
             adjustmentPolicyId,
             string.IsNullOrEmpty(reason) ? null : reason));
     }

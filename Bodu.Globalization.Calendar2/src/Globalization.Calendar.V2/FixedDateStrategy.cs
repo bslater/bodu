@@ -121,4 +121,31 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
             this.SkipLeapMonth,
             year);
     }
+
+    /// <summary>
+    /// Calculates every occurrence of the fixed date within the supplied Gregorian year.
+    /// </summary>
+    /// <param name="year">The Gregorian year to calculate against.</param>
+    /// <param name="context">The resolution context (unused; the date is self-contained).</param>
+    /// <returns>
+    /// The occurrences in chronological order. This is a single date for the Gregorian calendar, but a short Islamic
+    /// month and day can recur twice in one Gregorian year.
+    /// </returns>
+    public IReadOnlyList<DateOnly> CalculateAll(int year, StrategyResolutionContext context)
+    {
+        if (year < 1 || year > 9999)
+            return Array.Empty<DateOnly>();
+
+        if (this.Calendar == CalendarSystem.Gregorian)
+            return this.Calculate(year, context) is DateOnly date ? new[] { date } : Array.Empty<DateOnly>();
+
+        return CalendarSystems.ResolveFixedAll(
+            this.Calendar,
+            this.Month,
+            this.MonthAlias,
+            this.Day,
+            this.SweepCalendarYears,
+            this.SkipLeapMonth,
+            year);
+    }
 }

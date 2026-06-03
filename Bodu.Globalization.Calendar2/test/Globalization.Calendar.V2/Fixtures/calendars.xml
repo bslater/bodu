@@ -46,5 +46,11 @@
       </Rules>
     </NotableDate>
 
+    <NotableDate id="golden-week" displayName="Golden Week" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="x" durationDays="7"><Strategy><Fixed month="April" day="29" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
   </NotableDates>
 </NotableDateResource>

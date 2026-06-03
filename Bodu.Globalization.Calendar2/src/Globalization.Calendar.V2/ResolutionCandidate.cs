@@ -19,6 +19,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// </param>
 /// <param name="Priority">The selection priority of the owning rule, used for placement precedence.</param>
 /// <param name="NonWorking">Whether the occurrence is a non-working day that claims the days it occupies.</param>
+/// <param name="DurationDays">The number of days the occurrence spans, inclusive of the first day.</param>
 internal sealed record ResolutionCandidate(
     NotableDateRuleIdentity Identity,
     string DisplayName,
@@ -26,4 +27,5 @@ internal sealed record ResolutionCandidate(
     DateOnly BaseDate,
     AdjustmentPolicy? Policy,
     int Priority,
-    bool NonWorking);
+    bool NonWorking,
+    int DurationDays);
