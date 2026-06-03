@@ -8,6 +8,12 @@ title: Bodu.IO.Hashing — Introduction
 
 > **Adversary model: none.** Nothing in this library is safe against an attacker who can choose inputs. Use it for error detection, distribution, fingerprinting, and identifier validation — for anything security-sensitive, see [Bodu.Security.Cryptography](../cryptography/index.md).
 
+## The shape of the suite
+
+![Algorithm taxonomy across both libraries](../../images/diagrams/algorithm-taxonomy.svg)
+
+Nothing in this library is designed against an **adversary model**. Its fingerprints, checksums, and check digits are tuned for speed, even distribution, and the detection of accidental errors on *trusted* input — every one of them is trivially forgeable by anyone who controls the bytes. That is the line between this package and [Bodu.Security.Cryptography](../cryptography/index.md), whose ciphers, keyed hashes (MACs), and cryptographic digests are each designed so that even an attacker who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively cannot forge, invert, or find collisions. Cross that line the moment an attacker can influence the input or the result protects a security decision.
+
 The library is organized around three subfamilies, each in its own namespace.
 
 ![Bodu.IO.Hashing subfamilies — Fingerprints, Checksums, and Check digits over a shared NonCryptographicHashAlgorithm base](../../images/diagrams/io-hashing-families.svg)

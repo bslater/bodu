@@ -1,10 +1,11 @@
 - name: Overview
   href: index.md
 - name: Bodu.Core
-  href: core/
   items:
     - name: Overview
       href: core/index.md
+    - name: Choosing a collection
+      href: core/choosing-a-collection.md
     - name: Bodu.Collections.Generic
       items:
         - name: Circular buffer
@@ -13,12 +14,81 @@
           href: core/deque.md
         - name: Evicting dictionary
           href: core/evicting-dictionary.md
+        - name: Indexed priority queue
+          href: core/indexed-priority-queue.md
+        - name: Range-keyed lookups
+          href: core/range-dictionary.md
+    - name: Bodu.Collections.Generic.Concurrent
+      items:
+        - name: Concurrent collections
+          href: core/concurrent-collections.md
+    - name: Bodu.Buffers
+      items:
+        - name: Pooled buffer builder
+          href: core/pooled-buffer-builder.md
     - name: Bodu (root namespace)
       items:
         - name: WeekPattern
           href: core/week-pattern.md
+- name: Bodu.Extensions.Configuration.Text
+  items:
+    - name: Overview
+      href: extensions-configuration-text/index.md
+    - name: Configuration sources
+      href: extensions-configuration-text/configuration-sources.md
+- name: Bodu.Financial
+  items:
+    - name: Overview
+      href: financial/index.md
+    - name: Working with Money<TCurrency>
+      href: financial/money.md
+    - name: Working with exchange rates
+      href: financial/exchange-rates.md
+- name: Bodu.Globalization.Calendar
+  items:
+    - name: Overview
+      href: calendar/index.md
+    - name: Bodu.Globalization.Calendar — Service
+      items:
+        - name: Using NotableDateService
+          href: calendar/notable-dates.md
+        - name: Authoring notable date rules
+          href: calendar/rule-authoring.md
+        - name: Authoring with the notable-date builder
+          href: calendar/notable-date-builder.md
+    - name: Bodu.Globalization.Calendar — Reference
+      items:
+        - name: NotableDateRule and ObservanceAdjustment reference
+          href: calendar/rule-reference.md
+        - name: Territories and regional composition
+          href: calendar/territories.md
+        - name: Observance adjustment rules
+          href: calendar/adjustment-rules.md
+        - name: The resolution pipeline
+          href: calendar/resolution-pipeline.md
+        - name: Rule identity, priority, and observed-date resolution
+          href: calendar/identity-and-resolution.md
+        - name: Working with non-Gregorian calendars
+          href: calendar/non-gregorian-calendars.md
+    - name: Bodu.Globalization.Calendar — Patterns
+      items:
+        - name: Holiday patterns and examples
+          href: calendar/holiday-patterns.md
+        - name: Working-day arithmetic
+          href: calendar/working-days.md
+        - name: Building and extending the service
+          href: calendar/building-the-service.md
+        - name: Dependency injection
+          href: calendar/dependency-injection.md
+    - name: Bodu.Globalization.Calendar.Algorithms
+      items:
+        - name: Date calculation algorithms
+          href: calendar/algorithms.md
+    - name: Bodu.Globalization.Calendar.Data.* — Data packs
+      items:
+        - name: Calendar data packs
+          href: calendar/data-packs.md
 - name: Bodu.IO.Hashing
-  href: io-hashing/
   items:
     - name: Overview
       href: io-hashing/index.md
@@ -48,8 +118,17 @@
       items:
         - name: Check digits overview
           href: io-hashing/check-digits.md
+- name: Bodu.Numerics
+  items:
+    - name: Overview
+      href: numerics/index.md
+    - name: Working with Fraction<T>
+      href: numerics/fraction.md
+    - name: Formatting and parsing Fraction<T>
+      href: numerics/formatting-and-parsing.md
+    - name: Working with Interval<T>
+      href: numerics/interval.md
 - name: Bodu.Security.Cryptography
-  href: cryptography/
   items:
     - name: Overview
       href: cryptography/index.md
@@ -65,6 +144,8 @@
           href: cryptography/composing-primitives.md
     - name: Symmetric ciphers — Standard
       items:
+        - name: AES-family block ciphers
+          href: cryptography/aes-family.md
         - name: Using Skipjack
           href: cryptography/skipjack.md
         - name: Using Blowfish
@@ -77,6 +158,10 @@
           href: cryptography/threefish-512.md
         - name: Using Threefish-1024
           href: cryptography/threefish-1024.md
+    - name: Symmetric ciphers — Stream
+      items:
+        - name: Using stream ciphers
+          href: cryptography/stream-ciphers.md
     - name: Symmetric ciphers — AEAD
       items:
         - name: AEAD modes (AES + transform)
@@ -85,12 +170,20 @@
       items:
         - name: Hashing overview
           href: cryptography/hashing.md
+        - name: Using BLAKE
+          href: cryptography/blake.md
+        - name: Using Skein
+          href: cryptography/skein.md
         - name: Using Tiger
           href: cryptography/tiger.md
         - name: Using CubeHash
           href: cryptography/cubehash.md
         - name: Using Snefru
           href: cryptography/snefru.md
+        - name: Using Whirlpool
+          href: cryptography/whirlpool.md
+        - name: Using SHAKE (XOF)
+          href: cryptography/shake.md
         - name: Using Merkle trees
           href: cryptography/merkle-trees.md
     - name: Keyed hashes (MAC)
@@ -109,51 +202,17 @@
           href: cryptography/ascon-xof.md
         - name: ASCON authenticated encryption (AEAD)
           href: cryptography/ascon-aead.md
-- name: Bodu.Globalization.Calendar
-  href: calendar/
+- name: Bodu.Text.Configuration
   items:
     - name: Overview
-      href: calendar/index.md
-    - name: Bodu.Globalization.Calendar — Service
-      items:
-        - name: Using NotableDateService
-          href: calendar/notable-dates.md
-        - name: Authoring notable date rules
-          href: calendar/rule-authoring.md
-    - name: Bodu.Globalization.Calendar — Reference
-      items:
-        - name: Territories and regional composition
-          href: calendar/territories.md
-    - name: Bodu.Globalization.Calendar — Patterns
-      items:
-        - name: Working-day arithmetic
-          href: calendar/working-days.md
-    - name: Bodu.Globalization.Calendar.Algorithms
-      items:
-        - name: Date calculation algorithms
-          href: calendar/algorithms.md
-    - name: Bodu.Globalization.Calendar.Data.* — Data packs
-      items:
-        - name: Calendar data packs
-          href: calendar/data-packs.md
-- name: Bodu.Numerics
-  href: numerics/
-  items:
-    - name: Overview
-      href: numerics/index.md
-    - name: Working with Fraction<T>
-      href: numerics/fraction.md
-    - name: Working with Interval<T>
-      href: numerics/interval.md
-- name: Bodu.Financial
-  href: financial/
-  items:
-    - name: Overview
-      href: financial/index.md
-    - name: Working with Money<TCurrency>
-      href: financial/money.md
+      href: text-configuration/index.md
+    - name: Parsing and profiles
+      href: text-configuration/parsing-and-profiles.md
+    - name: Views and resolution
+      href: text-configuration/views-and-resolution.md
+    - name: Diagnostics
+      href: text-configuration/diagnostics.md
 - name: Bodu.Text.Encoding
-  href: text-encoding/
   items:
     - name: Overview
       href: text-encoding/index.md
@@ -174,7 +233,6 @@
         - name: The IBinaryEncoding interface
           href: text-encoding/binary-encodings-interface.md
 - name: Bodu.Text.Formats
-  href: formats/
   items:
     - name: Overview
       href: formats/index.md
@@ -184,17 +242,13 @@
           href: formats/bencode.md
         - name: The BencodedValue model
           href: formats/value-model.md
+        - name: Using delimited (CSV / TSV)
+          href: formats/delimited.md
+        - name: Using DotEnv
+          href: formats/dotenv.md
+        - name: Using INI
+          href: formats/ini.md
     - name: Bodu.Text.Formats — I/O
       items:
         - name: Streams and async I/O
           href: formats/streaming.md
-- name: Bodu.Text.Configuration
-  href: text-configuration/
-  items:
-    - name: Overview
-      href: text-configuration/index.md
-- name: Bodu.Extensions.Configuration.Text
-  href: extensions-configuration-text/
-  items:
-    - name: Overview
-      href: extensions-configuration-text/index.md
