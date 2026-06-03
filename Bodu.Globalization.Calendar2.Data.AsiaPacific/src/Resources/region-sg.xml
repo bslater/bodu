@@ -16,7 +16,7 @@
     </NotableDate>
 
     <NotableDate id="chinese-new-year" displayName="Chinese New Year" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="sg"><Applicability calendar="ChineseLunisolar"><Territory code="SG" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+      <Rules><Rule id="sg" durationDays="2"><Applicability calendar="ChineseLunisolar"><Territory code="SG" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="hari-raya-puasa" displayName="Hari Raya Puasa" category="PublicHoliday" defaultNonWorkingDay="true">

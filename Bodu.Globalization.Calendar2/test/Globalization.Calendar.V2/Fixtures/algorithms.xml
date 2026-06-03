@@ -41,5 +41,37 @@
       <Rules><Rule id="global"><Strategy><Algorithm key="navaratri" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <NotableDate id="ram-navami" displayName="Ram Navami" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="ram-navami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="raksha-bandhan" displayName="Raksha Bandhan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="global"><Strategy><Algorithm key="raksha-bandhan" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="janmashtami" displayName="Janmashtami" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="janmashtami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ganesh-chaturthi" displayName="Ganesh Chaturthi" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="ganesh-chaturthi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="dussehra" displayName="Dussehra" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="dussehra" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="karva-chauth" displayName="Karva Chauth" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="global"><Strategy><Algorithm key="karva-chauth" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="vasant-panchami" displayName="Vasant Panchami" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="global"><Strategy><Algorithm key="vasant-panchami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="maha-shivaratri" displayName="Maha Shivaratri" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="maha-shivaratri" /></Strategy></Rule></Rules>
+    </NotableDate>
+
   </NotableDates>
 </NotableDateResource>

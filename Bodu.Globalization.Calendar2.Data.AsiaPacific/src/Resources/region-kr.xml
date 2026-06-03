@@ -2,8 +2,8 @@
 <!--
   South Korean notable-date resource, migrated from the v1 region-kr.xml to the v2 cookbook schema. Seollal and Chuseok
   are expressed as fixed dates in the Chinese lunisolar calendar; Buddha's Birthday is the eighth day of the fourth
-  lunar month (the Korean reckoning, more accurate here than the full-moon Vesak the v1 file imported). The v1 multi-day
-  statutory periods (durationDays) are represented by their leading day.
+  lunar month (the Korean reckoning, more accurate here than the full-moon Vesak the v1 file imported). Seollal and
+  Chuseok carry their statutory three-day durationDays span.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.kr">
 
@@ -16,7 +16,7 @@
     </NotableDate>
 
     <NotableDate id="seollal" displayName="Seollal" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="kr"><Applicability calendar="ChineseLunisolar"><Territory code="KR" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+      <Rules><Rule id="kr" durationDays="3"><Applicability calendar="ChineseLunisolar"><Territory code="KR" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="independence-movement-day" displayName="Independence Movement Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -44,7 +44,7 @@
     </NotableDate>
 
     <NotableDate id="chuseok" displayName="Chuseok" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="kr"><Applicability calendar="ChineseLunisolar"><Territory code="KR" /></Applicability><Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
+      <Rules><Rule id="kr" durationDays="3"><Applicability calendar="ChineseLunisolar"><Territory code="KR" /></Applicability><Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="national-foundation-day" displayName="National Foundation Day" category="PublicHoliday" defaultNonWorkingDay="true">

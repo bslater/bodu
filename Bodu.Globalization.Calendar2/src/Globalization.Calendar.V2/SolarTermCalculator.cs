@@ -78,6 +78,27 @@ internal static class SolarTermCalculator
         JulianDayToLocalDate(ComputeEquinoxJulianDay(year, vernal: true) + QingmingDegreeDays, utcOffsetHours);
 
     /// <summary>
+    /// Returns the sun's apparent tropical ecliptic longitude at midnight Universal Time on the supplied date, using
+    /// the low-precision solar series from Jean Meeus, <em>Astronomical Algorithms</em> (chapter 25).
+    /// </summary>
+    /// <param name="date">The date to evaluate the sun's position for.</param>
+    /// <returns>The tropical ecliptic longitude in degrees, normalized to the range <c>[0, 360)</c>.</returns>
+    public static double SunTropicalLongitude(DateOnly date)
+    {
+        double t = (1721425.5 + date.DayNumber - J2000JulianDay) / 36525.0;
+        double meanLongitude = 280.46646 + (36000.76983 * t) + (0.0003032 * t * t);
+        double meanAnomaly = DegreesToRadians(357.52911 + (35999.05029 * t) - (0.0001537 * t * t));
+
+        double equationOfCentre =
+            ((1.914602 - (0.004817 * t) - (0.000014 * t * t)) * Math.Sin(meanAnomaly))
+            + ((0.019993 - (0.000101 * t)) * Math.Sin(2.0 * meanAnomaly))
+            + (0.000289 * Math.Sin(3.0 * meanAnomaly));
+
+        double longitude = (meanLongitude + equationOfCentre) % 360.0;
+        return longitude < 0.0 ? longitude + 360.0 : longitude;
+    }
+
+    /// <summary>
     /// Computes the Julian Ephemeris Day of an equinox using the Meeus mean polynomial plus the periodic correction.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>

@@ -82,4 +82,55 @@ public sealed class AlgorithmKnownAnswerTests
         int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
         Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
     }
+
+    /// <summary>
+    /// Verifies that every supported Hindu festival resolves to within two days of its published date across several
+    /// years, including the 2023 intercalary (adhika maasa) year, confirming the solar-anchored month selection.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_EveryHinduFestival_IsWithinToleranceAcrossYears()
+    {
+        (int Year, string Id, string Expected)[] knownAnswers =
+        {
+            (2024, "ram-navami", "2024-04-17"), (2024, "vasant-panchami", "2024-02-14"),
+            (2024, "maha-shivaratri", "2024-03-08"), (2024, "holi", "2024-03-25"),
+            (2024, "raksha-bandhan", "2024-08-19"), (2024, "janmashtami", "2024-08-26"),
+            (2024, "ganesh-chaturthi", "2024-09-07"), (2024, "navaratri", "2024-10-03"),
+            (2024, "dussehra", "2024-10-12"), (2024, "karva-chauth", "2024-10-20"),
+            (2024, "diwali", "2024-11-01"),
+            (2025, "vasant-panchami", "2025-02-02"), (2025, "maha-shivaratri", "2025-02-26"),
+            (2025, "holi", "2025-03-14"), (2025, "ram-navami", "2025-04-06"),
+            (2025, "raksha-bandhan", "2025-08-09"), (2025, "janmashtami", "2025-08-16"),
+            (2025, "navaratri", "2025-09-22"), (2025, "dussehra", "2025-10-02"),
+            (2025, "diwali", "2025-10-21"),
+            (2023, "holi", "2023-03-08"), (2023, "raksha-bandhan", "2023-08-31"),
+            (2023, "janmashtami", "2023-09-07"), (2023, "dussehra", "2023-10-24"),
+            (2023, "diwali", "2023-11-12"),
+        };
+
+        NotableDateService service = CreateService();
+        List<string> failures = new();
+
+        foreach ((int year, string id, string expected) in knownAnswers)
+        {
+            DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+            List<NotableDate> matches = service
+                .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "NZ")
+                .Where(r => r.NotableDateId == id)
+                .ToList();
+
+            if (matches.Count != 1)
+            {
+                failures.Add($"{id} {year}: expected one result, found {matches.Count}");
+                continue;
+            }
+
+            int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
+            if (deltaDays > 2)
+                failures.Add($"{id} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate} (off by {deltaDays})");
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures));
+    }
 }

@@ -7,14 +7,21 @@
 namespace Bodu.Globalization.Calendar.V2;
 
 /// <summary>
-/// Approximates the Gregorian date of a Hindu lunisolar festival from its lunar month, fortnight (paksha), and lunar
-/// day (tithi), using the new- and full-moon series of <see cref="LunarPhaseCalculator" />.
+/// Approximates the Gregorian date of a Hindu lunisolar festival from the amanta lunar month, fortnight, and lunar day
+/// (tithi) it falls on, using the new- and full-moon series of <see cref="LunarPhaseCalculator" /> anchored to the
+/// sun's sidereal sign.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The result is accurate to within a day or two for the modern era and may diverge in intercalary (adhika maasa)
-/// years. Only festivals whose lunar coordinates are independently verified are exposed by key; regionally ambiguous or
-/// non-lunar festivals (for example Onam) are intentionally omitted rather than shipped with uncertain dates.
+/// The amanta month a new moon begins is identified by the sidereal zodiac sign the sun occupies at that new moon, so a
+/// festival's lunation is selected by solar position rather than by a fixed Gregorian search month. A leap month
+/// (adhika maasa) — two consecutive new moons in the same sign — is detected and the festival is taken in the true
+/// (nija) month, so intercalary years resolve correctly.
+/// </para>
+/// <para>
+/// Results are accurate to within a day or two for the modern era. The Lahiri ayanamsa and the mean tithi length are
+/// approximations, so a festival whose tithi begins very near sunrise can differ by a day from a published panchanga.
+/// Festivals fixed by a nakshatra rather than a tithi (for example Onam) are not modelled here.
 /// </para>
 /// </remarks>
 internal static class HinduLunarCalculator
@@ -25,18 +32,34 @@ internal static class HinduLunarCalculator
     private const double TithiDays = 29.530588861 / 30.0;
 
     /// <summary>
-    /// The verified festival coordinates, keyed by algorithm key: the lunar month's Gregorian search month, whether the
-    /// festival falls in the dark (Krishna) fortnight, and the one-based tithi.
+    /// The festival coordinates keyed by algorithm key: the amanta lunar month (1 = Chaitra to 12 = Phalguna), the
+    /// offset in tithis from that month's new moon, and whether the festival is the full moon (Purnima) of the month.
     /// </summary>
-    private static readonly Dictionary<string, (int SearchMonth, bool Krishna, int Tithi)> s_festivals = new(StringComparer.Ordinal)
+    /// <remarks>
+    /// <para>
+    /// Festivals named in the purnimanta (northern) convention for the dark fortnight are expressed here in the
+    /// equivalent amanta month: a purnimanta "Month X dark fortnight" is the amanta month <c>X - 1</c>. The offset for
+    /// a bright-fortnight (shukla) tithi <c>T</c> is <c>T - 1</c>; for a dark-fortnight (krishna) tithi <c>T</c> it is
+    /// <c>14 + T</c>, so the closing new moon (krishna 15) is offset twenty-nine.
+    /// </para>
+    /// </remarks>
+    private static readonly Dictionary<string, (int Month, int Offset, bool Purnima)> s_festivals = new(StringComparer.Ordinal)
     {
-        ["holi"] = (3, false, 15),       // Phalguna, Shukla 15 (Purnima) — the March full moon.
-        ["navaratri"] = (9, false, 1),   // Ashvin, Shukla 1.
-        ["diwali"] = (10, true, 15),     // Kartik, Krishna 15 (Amavasya).
+        ["ram-navami"] = (1, 8, false),        // Chaitra shukla 9.
+        ["raksha-bandhan"] = (5, 0, true),     // Shravana purnima.
+        ["janmashtami"] = (5, 22, false),      // Amanta Shravana krishna 8 (purnimanta Bhadrapada).
+        ["ganesh-chaturthi"] = (6, 3, false),  // Bhadrapada shukla 4.
+        ["navaratri"] = (7, 0, false),         // Ashvin shukla 1.
+        ["dussehra"] = (7, 9, false),          // Ashvin shukla 10.
+        ["karva-chauth"] = (7, 18, false),     // Amanta Ashvin krishna 4 (purnimanta Kartik).
+        ["diwali"] = (8, 0, false),            // Kartik new moon (purnimanta Kartik krishna 15 / amavasya).
+        ["vasant-panchami"] = (11, 4, false),  // Magha shukla 5.
+        ["maha-shivaratri"] = (11, 28, false), // Amanta Magha krishna 14 (purnimanta Phalguna).
+        ["holi"] = (12, 0, true),              // Phalguna purnima.
     };
 
     /// <summary>
-    /// Determines whether the supplied algorithm key names a verified Hindu festival.
+    /// Determines whether the supplied algorithm key names a recognized Hindu festival.
     /// </summary>
     /// <param name="key">The algorithm key.</param>
     /// <returns><see langword="true" /> if the festival is recognized; otherwise <see langword="false" />.</returns>
@@ -51,40 +74,85 @@ internal static class HinduLunarCalculator
     /// <returns>The festival date, or <see langword="null" /> when the key is unknown or no date is found.</returns>
     public static DateOnly? Resolve(string key, int year)
     {
-        if (!s_festivals.TryGetValue(key, out (int SearchMonth, bool Krishna, int Tithi) festival))
+        if (!s_festivals.TryGetValue(key, out (int Month, int Offset, bool Purnima) festival))
             return null;
 
-        return Compute(festival.SearchMonth, festival.Krishna, festival.Tithi, year);
+        return Compute(festival.Month, festival.Offset, festival.Purnima, year);
     }
 
     /// <summary>
-    /// Computes the date of a tithi within a lunar month seeded near the supplied Gregorian search month.
+    /// Computes a festival by locating the new moon that begins its amanta month and adding the festival's tithi
+    /// offset.
     /// </summary>
-    /// <param name="searchMonth">The Gregorian month near which the lunar month's new moon falls.</param>
-    /// <param name="krishna"><see langword="true" /> for the dark fortnight (counted from the full moon).</param>
-    /// <param name="tithi">The one-based lunar day.</param>
-    /// <param name="year">The Gregorian year.</param>
-    /// <returns>The computed date, or <see langword="null" /> when no lunation is found.</returns>
-    private static DateOnly? Compute(int searchMonth, bool krishna, int tithi, int year)
+    /// <param name="amantaMonth">The amanta lunar month, 1 (Chaitra) to 12 (Phalguna).</param>
+    /// <param name="offsetTithis">The offset in tithis from the month's new moon.</param>
+    /// <param name="purnima">Whether the festival is the full moon of the month.</param>
+    /// <param name="year">The Gregorian year the festival should fall in.</param>
+    /// <returns>The festival date, or <see langword="null" /> when no matching lunation is found.</returns>
+    private static DateOnly? Compute(int amantaMonth, int offsetTithis, bool purnima, int year)
     {
-        // A bright-fortnight full moon (Purnima, tithi 15) is far more stably located by searching the full moon
-        // anchored in its Gregorian month than by counting tithis from a new moon, whose Gregorian month drifts across
-        // the year boundary and can select the previous lunation.
-        if (!krishna && tithi == 15)
-            return LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, searchMonth, 1));
+        // The sun is in this sidereal sign at the new moon that begins the month (Chaitra new moon sun in Pisces).
+        int targetSign = (((amantaMonth - 2) % 12) + 12) % 12;
 
-        DateOnly? monthNewMoon = LunarPhaseCalculator.NewMoonOnOrAfter(new DateOnly(year, searchMonth, 1));
-        if (monthNewMoon is null)
-            return null;
+        List<(DateOnly NewMoon, int Sign)> newMoons = GatherNewMoons(year);
 
-        if (!krishna)
-            return monthNewMoon.Value.AddDays((int)Math.Round((tithi - 1) * TithiDays));
+        for (int i = 0; i < newMoons.Count; i++)
+        {
+            if (newMoons[i].Sign != targetSign)
+                continue;
 
-        DateOnly fullMoonApprox = monthNewMoon.Value.AddDays((int)Math.Round((15 * TithiDays) - 2));
-        DateOnly? fullMoon = LunarPhaseCalculator.FullMoonOnOrAfter(fullMoonApprox);
-        if (fullMoon is null)
-            return null;
+            // Two consecutive new moons in the same sign make the first an intercalary (adhika) month; the festival
+            // falls in the second (nija) month, so skip the adhika occurrence.
+            if (i + 1 < newMoons.Count && newMoons[i + 1].Sign == targetSign)
+                continue;
 
-        return fullMoon.Value.AddDays((int)Math.Round((tithi - 1) * TithiDays));
+            DateOnly festival = purnima
+                ? LunarPhaseCalculator.FullMoonOnOrAfter(newMoons[i].NewMoon) ?? newMoons[i].NewMoon
+                : newMoons[i].NewMoon.AddDays((int)Math.Round(offsetTithis * TithiDays));
+
+            if (festival.Year == year)
+                return festival;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gathers the new moons spanning the requested Gregorian year, each paired with the sidereal zodiac sign the sun
+    /// occupies at that new moon.
+    /// </summary>
+    /// <param name="year">The Gregorian year, scanned with a margin either side to cover festivals near the boundaries.</param>
+    /// <returns>The chronological new moons and their solar signs.</returns>
+    private static List<(DateOnly NewMoon, int Sign)> GatherNewMoons(int year)
+    {
+        List<(DateOnly NewMoon, int Sign)> newMoons = new();
+
+        DateOnly cursor = new(Math.Max(1, year - 1), 11, 1);
+        DateOnly limit = new(Math.Min(9999, year + 1), 3, 1);
+
+        while (cursor < limit)
+        {
+            if (LunarPhaseCalculator.NewMoonOnOrAfter(cursor) is not DateOnly newMoon)
+                break;
+
+            newMoons.Add((newMoon, SiderealSunSign(newMoon)));
+            cursor = newMoon.AddDays(1);
+        }
+
+        return newMoons;
+    }
+
+    /// <summary>
+    /// Returns the sidereal zodiac sign of the sun on the supplied date, applying the Lahiri ayanamsa to the tropical
+    /// longitude.
+    /// </summary>
+    /// <param name="date">The date to evaluate.</param>
+    /// <returns>The zero-based sidereal sign, 0 (Aries) to 11 (Pisces).</returns>
+    private static int SiderealSunSign(DateOnly date)
+    {
+        double ayanamsa = 23.85 + (0.0139666 * (date.Year - 2000));
+        double sidereal = ((SolarTermCalculator.SunTropicalLongitude(date) - ayanamsa) % 360.0 + 360.0) % 360.0;
+
+        return (int)(sidereal / 30.0) % 12;
     }
 }

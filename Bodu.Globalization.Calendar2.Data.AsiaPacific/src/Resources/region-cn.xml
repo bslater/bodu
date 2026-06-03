@@ -3,7 +3,7 @@
   Chinese notable-date resource, migrated from the v1 region-cn.xml to the v2 cookbook schema. The lunar festivals are
   expressed as fixed dates in the Chinese lunisolar calendar (conventional month indices skip the intercalary leap
   month); Qingming uses the astronomical solar-term algorithm; the Winter Solstice festival is approximated by its
-  fixed Gregorian date. The v1 multi-day statutory periods (durationDays) are represented by their leading day.
+  fixed Gregorian date. Lunar New Year and National Day carry their seven-day statutory durationDays span.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.cn">
 
@@ -16,7 +16,7 @@
     </NotableDate>
 
     <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="cn"><Applicability calendar="ChineseLunisolar"><Territory code="CN" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+      <Rules><Rule id="cn" durationDays="7"><Applicability calendar="ChineseLunisolar"><Territory code="CN" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="lantern-festival" displayName="Lantern Festival" category="Cultural" defaultNonWorkingDay="false">
@@ -52,7 +52,7 @@
     </NotableDate>
 
     <NotableDate id="national-day" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="cn"><Applicability><Territory code="CN" /></Applicability><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+      <Rules><Rule id="cn" durationDays="7"><Applicability><Territory code="CN" /></Applicability><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="winter-solstice-festival" displayName="Winter Solstice Festival" category="Cultural" defaultNonWorkingDay="false">

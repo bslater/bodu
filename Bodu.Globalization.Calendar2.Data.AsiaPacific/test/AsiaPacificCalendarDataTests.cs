@@ -119,6 +119,12 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("IN", 2024, "diwali", "2024-11-01")]
     [DataRow("IN", 2024, "holi", "2024-03-25")]
     [DataRow("IN", 2024, "eid-al-fitr", "2024-04-11")]
+    [DataRow("IN", 2024, "maha-shivaratri", "2024-03-08")]
+    [DataRow("IN", 2024, "ram-navami", "2024-04-17")]
+    [DataRow("IN", 2024, "janmashtami", "2024-08-26")]
+    [DataRow("IN", 2024, "ganesh-chaturthi", "2024-09-07")]
+    [DataRow("IN", 2024, "dussehra", "2024-10-12")]
+    [DataRow("IN", 2024, "karva-chauth", "2024-10-20")]
     public void Resolve_LunarOrIslamicFestival_IsWithinToleranceOfKnownDate(string territory, int year, string notableDateId, string expected)
     {
         DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
@@ -132,5 +138,24 @@ public sealed class AsiaPacificCalendarDataTests
 
         int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
         Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
+    }
+
+    /// <summary>
+    /// Verifies that the Chinese seven-day Lunar New Year span carries its duration and is returned by a single-day
+    /// query for a day inside the span.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenQueryFallsInsideLunarNewYearSpan_ReturnsTheMultiDayOccurrence()
+    {
+        // Lunar New Year 2024 begins 10 February; query a working day partway through the seven-day span.
+        List<NotableDate> matches = AsiaPacificCalendarData.CreateService("CN")
+            .Resolve(new DateOnly(2024, 2, 13), "CN")
+            .Where(r => r.NotableDateId == "lunar-new-year")
+            .ToList();
+
+        Assert.AreEqual(1, matches.Count, "a day inside the span returns the occurrence");
+        Assert.AreEqual(new DateOnly(2024, 2, 10), matches[0].Date, "span start");
+        Assert.AreEqual(7, matches[0].DurationDays, "duration");
+        Assert.AreEqual(new DateOnly(2024, 2, 16), matches[0].EndDate, "span end");
     }
 }
