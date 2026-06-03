@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  NotableDates.v2.xsd — revised Bodu calendar cookbook schema (v2).
+
+  This first cut models the engine-first minimal slice: fixed-date rules, territory
+  filtering, reusable adjustment policies, explicit emission modes, and ID-targeted
+  override operations. Additional strategies (DayOfWeekInMonth, WeekdayNearDate,
+  RelativeWeekdayInMonth, OffsetFromRule, Algorithm), imports, and inline adjustments
+  are reserved for a later phase and are intentionally absent here.
+-->
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  targetNamespace="urn:bodu:globalization:calendar"
+  xmlns:nd="urn:bodu:globalization:calendar">
+
+  <xs:element name="NotableDateResource" type="nd:NotableDateResource" />
+
+  <xs:complexType name="NotableDateResource">
+    <xs:sequence>
+      <xs:element name="Metadata" type="nd:Metadata" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ResolutionPolicy" type="nd:ResolutionPolicy" minOccurs="0" maxOccurs="1" />
+      <xs:element name="AdjustmentPolicies" type="nd:AdjustmentPolicies" minOccurs="0" maxOccurs="1" />
+      <xs:element name="NotableDates" type="nd:NotableDates" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Overrides" type="nd:Overrides" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="schemaVersion" type="xs:string" use="required" />
+    <xs:attribute name="resourceId" type="nd:resourceIdentifier" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="Metadata">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Source" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ResolutionPolicy">
+    <xs:attribute name="duplicatePolicy" type="nd:duplicatePolicy" use="optional" default="Error" />
+    <xs:attribute name="sameDayCollisionPolicy" type="nd:collisionPolicy" use="optional" default="KeepAll" />
+    <xs:attribute name="spanCollisionPolicy" type="nd:collisionPolicy" use="optional" default="KeepAll" />
+    <xs:attribute name="priorityDirection" type="nd:priorityDirection" use="optional" default="HigherWins" />
+    <xs:attribute name="observedDateRangePolicy" type="nd:observedDateRangePolicy" use="optional" default="ObservedOccurrenceControlsInclusion" />
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentPolicies">
+    <xs:sequence>
+      <xs:element name="AdjustmentPolicy" type="nd:AdjustmentPolicy" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentPolicy">
+    <xs:sequence>
+      <xs:element name="Scope" type="nd:AdjustmentScope" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Trigger" type="nd:AdjustmentTrigger" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Action" type="nd:AdjustmentAction" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Emission" type="nd:AdjustmentEmission" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="id" type="nd:identifier" use="required" />
+    <xs:attribute name="priority" type="xs:int" use="optional" default="0" />
+    <xs:attribute name="description" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentScope">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Territory" type="nd:TerritoryRef" />
+      <xs:element name="Calendar" type="nd:CalendarRef" />
+      <xs:element name="Category" type="nd:CategoryRef" />
+      <xs:element name="NotableDate" type="nd:NotableDateScopeRef" />
+      <xs:element name="Rule" type="nd:RuleRef" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentTrigger">
+    <xs:sequence>
+      <xs:element name="Weekday" type="nd:WeekdayRef" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="type" type="nd:adjustmentTrigger" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentAction">
+    <xs:attribute name="type" type="nd:adjustmentAction" use="required" />
+    <xs:attribute name="days" type="xs:int" use="optional" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="optional" />
+    <xs:attribute name="maxSearchDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="skipWeekends" type="xs:boolean" use="optional" />
+    <xs:attribute name="skipNonWorkingDates" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentEmission">
+    <xs:attribute name="mode" type="nd:emissionMode" use="required" />
+    <xs:attribute name="reason" type="xs:string" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="NotableDates">
+    <xs:sequence>
+      <xs:element name="NotableDate" type="nd:NotableDate" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="NotableDate">
+    <xs:sequence>
+      <xs:element name="Tags" type="nd:Tags" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Rules" type="nd:Rules" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="id" type="nd:identifier" use="required" />
+    <xs:attribute name="displayName" type="xs:string" use="required" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="required" />
+    <xs:attribute name="defaultDurationDays" type="xs:positiveInteger" use="optional" default="1" />
+    <xs:attribute name="defaultNonWorkingDay" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="Tags">
+    <xs:sequence>
+      <xs:element name="Tag" type="nd:Tag" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Tag">
+    <xs:attribute name="value" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="Rules">
+    <xs:sequence>
+      <xs:element name="Rule" type="nd:Rule" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Rule">
+    <xs:sequence>
+      <xs:element name="Applicability" type="nd:Applicability" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Strategy" type="nd:Strategy" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Tags" type="nd:Tags" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Adjustments" type="nd:RuleAdjustments" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="id" type="nd:identifier" use="required" />
+    <xs:attribute name="priority" type="xs:int" use="optional" default="0" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="comment" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="Applicability">
+    <xs:sequence>
+      <xs:element name="Territory" type="nd:TerritoryRef" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="OnlyYear" type="nd:YearRef" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="ExceptYear" type="nd:YearRef" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="calendar" type="nd:calendarName" use="optional" default="Gregorian" />
+    <xs:attribute name="fromYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="toYear" type="xs:unsignedShort" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="Strategy">
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element name="Fixed" type="nd:FixedStrategy" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="FixedStrategy">
+    <xs:attribute name="month" type="xs:string" use="required" />
+    <xs:attribute name="day" type="nd:dayValue" use="required" />
+    <xs:attribute name="skipLeapMonth" type="xs:boolean" use="optional" />
+    <xs:attribute name="sweepCalendarYears" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="RuleAdjustments">
+    <xs:sequence>
+      <xs:element name="Adjustment" type="nd:AdjustmentRef" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AdjustmentRef">
+    <xs:attribute name="policyRef" type="nd:identifier" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="Overrides">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="AddRule" type="nd:AddRule" />
+      <xs:element name="PatchRule" type="nd:PatchRule" />
+      <xs:element name="RemoveRule" type="nd:RuleRef" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="AddRule">
+    <xs:sequence>
+      <xs:element name="Rule" type="nd:Rule" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="PatchRule">
+    <xs:sequence>
+      <xs:element name="Applicability" type="nd:Applicability" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Strategy" type="nd:Strategy" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Tags" type="nd:Tags" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Adjustments" type="nd:RuleAdjustments" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="required" />
+    <xs:attribute name="priority" type="xs:int" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="comment" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="TerritoryRef">
+    <xs:attribute name="code" type="nd:territoryCode" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="CalendarRef">
+    <xs:attribute name="name" type="nd:calendarName" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="CategoryRef">
+    <xs:attribute name="value" type="nd:notableDateCategory" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="NotableDateScopeRef">
+    <xs:attribute name="ref" type="nd:identifier" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="RuleRef">
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="WeekdayRef">
+    <xs:attribute name="value" type="nd:dayOfWeek" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="YearRef">
+    <xs:attribute name="value" type="xs:unsignedShort" use="required" />
+  </xs:complexType>
+
+  <xs:simpleType name="identifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z][a-z0-9]*(-[a-z0-9]+)*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="resourceIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z][a-z0-9]*([.-][a-z0-9]+)*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="territoryCode">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Z]{2}(-[A-Z0-9]{2,3})?" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dayValue">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:maxInclusive value="31" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dayOfWeek">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Monday" />
+      <xs:enumeration value="Tuesday" />
+      <xs:enumeration value="Wednesday" />
+      <xs:enumeration value="Thursday" />
+      <xs:enumeration value="Friday" />
+      <xs:enumeration value="Saturday" />
+      <xs:enumeration value="Sunday" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="calendarName">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Gregorian" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="notableDateCategory">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="PublicHoliday" />
+      <xs:enumeration value="BankHoliday" />
+      <xs:enumeration value="Observance" />
+      <xs:enumeration value="Remembrance" />
+      <xs:enumeration value="Cultural" />
+      <xs:enumeration value="Religious" />
+      <xs:enumeration value="Seasonal" />
+      <xs:enumeration value="Civic" />
+      <xs:enumeration value="School" />
+      <xs:enumeration value="Regional" />
+      <xs:enumeration value="Other" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="emissionMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ActualOnly" />
+      <xs:enumeration value="ObservedOnly" />
+      <xs:enumeration value="ActualAndObserved" />
+      <xs:enumeration value="ObservedAsAdditional" />
+      <xs:enumeration value="Suppress" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="adjustmentTrigger">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Always" />
+      <xs:enumeration value="FallsOn" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="adjustmentAction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="AddDays" />
+      <xs:enumeration value="MoveToNextWeekday" />
+      <xs:enumeration value="MoveToPreviousWeekday" />
+      <xs:enumeration value="MoveToNextWorkingDay" />
+      <xs:enumeration value="MoveToPreviousWorkingDay" />
+      <xs:enumeration value="Suppress" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="duplicatePolicy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Error" />
+      <xs:enumeration value="KeepFirst" />
+      <xs:enumeration value="KeepLast" />
+      <xs:enumeration value="Merge" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="collisionPolicy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="KeepAll" />
+      <xs:enumeration value="HighestPriorityOnly" />
+      <xs:enumeration value="CategoryPriority" />
+      <xs:enumeration value="Custom" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="priorityDirection">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="HigherWins" />
+      <xs:enumeration value="LowerWins" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="observedDateRangePolicy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ObservedOccurrenceControlsInclusion" />
+      <xs:enumeration value="ActualOccurrenceControlsInclusion" />
+      <xs:enumeration value="BothOccurrencesControlInclusion" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

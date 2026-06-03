@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_Invalid_CookbookContentEmpty" xml:space="preserve">
+    <value>The cookbook content cannot be empty or white-space.</value>
+  </data>
+  <data name="Format_Invalid_XmlNotWellFormed" xml:space="preserve">
+    <value>The cookbook XML is not well-formed: {0}</value>
+  </data>
+  <data name="Format_Invalid_XmlSchema" xml:space="preserve">
+    <value>The cookbook XML failed schema validation: {0}</value>
+  </data>
+  <data name="Op_Invalid_CookbookValidationFailed" xml:space="preserve">
+    <value>The cookbook failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details.</value>
+  </data>
+  <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
+    <value>Duplicate adjustment-policy identifier '{0}'.</value>
+  </data>
+  <data name="Validation_DuplicateNotableDateId" xml:space="preserve">
+    <value>Duplicate notable-date identifier '{0}'.</value>
+  </data>
+  <data name="Validation_DuplicateRuleId" xml:space="preserve">
+    <value>Duplicate rule identifier '{0}' within notable date '{1}'.</value>
+  </data>
+  <data name="Validation_FromYearAfterToYear" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': fromYear '{2}' must not be greater than toYear '{3}'.</value>
+  </data>
+  <data name="Validation_InvalidDayValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': day '{2}' is out of range for month '{3}'.</value>
+  </data>
+  <data name="Validation_InvalidMonthValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12.</value>
+  </data>
+  <data name="Validation_InvalidTerritoryCode" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid territory code.</value>
+  </data>
+  <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
+    <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
+  </data>
+  <data name="Validation_OverrideRuleNotFound" xml:space="preserve">
+    <value>Override operation targets rule '{0}' in notable date '{1}', which does not exist in the resolved resource.</value>
+  </data>
+  <data name="Validation_UnresolvedAdjustmentPolicy" xml:space="preserve">
+    <value>Rule '{0}' references undefined adjustment policy '{1}'.</value>
+  </data>
+</root>
