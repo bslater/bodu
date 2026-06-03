@@ -89,19 +89,32 @@ public sealed class NotableDateService : INotableDateService
 
         foreach (NotableDateDefinition definition in this._resource.NotableDates)
         {
-            foreach (NotableDateRule rule in definition.Rules)
+            for (int year = firstYear; year <= lastYear; year++)
             {
-                NotableDateCategory category = rule.Category ?? definition.Category;
-                NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
-                bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
-
-                for (int year = firstYear; year <= lastYear; year++)
+                // Within a concept, the most-specific territory match wins: a narrower rule (for example AU-WA)
+                // shadows a broader same-concept rule (AU) for that territory and year.
+                List<NotableDateRule> applicable = new();
+                int maxSpecificity = -1;
+                foreach (NotableDateRule rule in definition.Rules)
                 {
                     if (!rule.Applicability.AppliesTo(territory, year))
                         continue;
 
+                    applicable.Add(rule);
+                    maxSpecificity = Math.Max(maxSpecificity, rule.Applicability.MatchSpecificity(territory));
+                }
+
+                foreach (NotableDateRule rule in applicable)
+                {
+                    if (rule.Applicability.MatchSpecificity(territory) != maxSpecificity)
+                        continue;
+
                     if (rule.Strategy.Calculate(year, context) is not DateOnly baseDate)
                         continue;
+
+                    NotableDateCategory category = rule.Category ?? definition.Category;
+                    NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
+                    bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
 
                     AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
                     candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking));

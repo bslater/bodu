@@ -38,6 +38,9 @@ public sealed class AustraliaKnownAnswerTests
     [DataRow("AU", 2020, "australia-day", "2020-01-27", true)]
     [DataRow("AU", 2026, "anzac-day", "2026-04-25", false)]
     [DataRow("AU-VIC", 2026, "anzac-day", "2026-04-25", false)]
+    [DataRow("AU-WA", 2026, "anzac-day", "2026-04-27", true)]
+    [DataRow("AU-WA", 2020, "anzac-day", "2020-04-27", true)]
+    [DataRow("AU-NT", 2021, "anzac-day", "2021-04-26", true)]
     [DataRow("AU", 2024, "good-friday", "2024-03-29", false)]
     [DataRow("AU", 2024, "easter-monday", "2024-04-01", false)]
     [DataRow("AU", 2021, "christmas-day", "2021-12-27", true)]
@@ -93,6 +96,26 @@ public sealed class AustraliaKnownAnswerTests
             .Count(r => r.NotableDateId == "labour-day");
 
         Assert.AreEqual(0, count, "Labour Day is subdivision-scoped");
+    }
+
+    /// <summary>
+    /// Verifies that a narrower subdivision rule shadows the broader national rule for the same concept: a
+    /// <c>AU-WA</c> query resolves exactly one Anzac Day — the Western Australian weekend-substitute rule — rather
+    /// than emitting both it and the national rule, while <c>AU-VIC</c> (which has no subdivision rule) falls back to
+    /// the national rule with no substitute.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenSubdivisionRuleExists_ShadowsNationalRuleForThatTerritory()
+    {
+        NotableDate westernAustralia = SingleForYear("AU-WA", 2026, "anzac-day");
+        Assert.AreEqual(new DateOnly(2026, 4, 27), westernAustralia.Date, "WA substitute date");
+        Assert.IsTrue(westernAustralia.IsObserved, "WA substitute is observed");
+        Assert.AreEqual("wa", westernAustralia.RuleId, "WA rule shadows the national rule");
+
+        NotableDate victoria = SingleForYear("AU-VIC", 2026, "anzac-day");
+        Assert.AreEqual(new DateOnly(2026, 4, 25), victoria.Date, "VIC falls back to the national rule");
+        Assert.IsFalse(victoria.IsObserved, "national rule has no substitute");
+        Assert.AreEqual("au", victoria.RuleId, "VIC inherits the national rule");
     }
 
     /// <summary>

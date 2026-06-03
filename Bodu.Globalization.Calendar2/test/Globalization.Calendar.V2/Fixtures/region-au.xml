@@ -77,15 +77,25 @@
     </NotableDate>
 
     <!--
-      Anzac Day: national 25 April, no substitute. The per-subdivision weekend substitutes (WA, NT) and the NSW
-      2026-2027 trial are deferred: they require territory-specificity shadowing (a narrower AU-WA rule shadowing the
-      broader AU rule) and adjustment-level year bounds, neither of which v2 supports yet.
+      Anzac Day: national 25 April with no substitute. Western Australia and the Northern Territory observe a Monday
+      substitute when it falls on a weekend; their narrower AU-WA / AU-NT rules shadow the broader national AU rule for
+      those territories, while every other territory falls back to the national no-substitute rule.
     -->
     <NotableDate id="anzac-day" displayName="Anzac Day" category="Remembrance" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="au" priority="100">
           <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
           <Strategy><Fixed month="April" day="25" /></Strategy>
+        </Rule>
+        <Rule id="wa" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
+          <Strategy><Fixed month="April" day="25" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+        </Rule>
+        <Rule id="nt" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="AU-NT" /></Applicability>
+          <Strategy><Fixed month="April" day="25" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
         </Rule>
       </Rules>
     </NotableDate>

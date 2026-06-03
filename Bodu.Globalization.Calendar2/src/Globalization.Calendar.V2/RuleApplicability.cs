@@ -138,4 +138,33 @@ public sealed class RuleApplicability
 
         return false;
     }
+
+    /// <summary>
+    /// Returns the specificity of this rule's territory match against the supplied territory, used to let a narrower
+    /// rule shadow a broader same-concept rule.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <returns>
+    /// The length of the most specific matching territory code (an exact or parent match), <c>0</c> when the rule is
+    /// global (no territories), or <c>-1</c> when the rule does not match.
+    /// </returns>
+    public int MatchSpecificity(string territory)
+    {
+        ThrowHelper.ThrowIfNull(territory);
+
+        if (this.Territories.Count == 0)
+            return 0;
+
+        int best = -1;
+        foreach (string scoped in this.Territories)
+        {
+            if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase)
+                || territory.StartsWith(scoped + "-", StringComparison.OrdinalIgnoreCase))
+            {
+                best = Math.Max(best, scoped.Length);
+            }
+        }
+
+        return best;
+    }
 }
