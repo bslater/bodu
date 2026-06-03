@@ -51,6 +51,12 @@ jobs:
           grep -rEn 'Standard, PureIni|"PureIni"|`PureIni`' docs/ --include='*.md'
           exit 1
         fi
+        echo "Checking for HTML-escaped characters in TOC/YAML files (use raw < > & instead)..."
+        if grep -rEn '&lt;|&gt;|&amp;|&quot;|&#[0-9]+;' docs/ --include='*.yml' >/dev/null; then
+          echo "::error::Found HTML entities in docs/*.yml. DocFX HTML-encodes TOC 'name:' values, so pre-escaped entities are double-encoded and render literally (e.g. Fraction<T> shows as Fraction&lt;T&gt;). Use raw < > & characters."
+          grep -rEn '&lt;|&gt;|&amp;|&quot;|&#[0-9]+;' docs/ --include='*.yml'
+          exit 1
+        fi
         echo "All content audits passed."
 
     - name: Validate generated API output
