@@ -51,7 +51,7 @@ public static class AsiaPacificCalendarData
                 string.Format(CultureInfo.InvariantCulture, "No Asia-Pacific calendar resource for territory '{0}'.", territory),
                 nameof(territory));
 
-        return NotableDateResourceLoader.Load(stream);
+        return NotableDateResourceLoader.Load(stream, CommonNotableDateResources.Resolver);
     }
 
     /// <summary>

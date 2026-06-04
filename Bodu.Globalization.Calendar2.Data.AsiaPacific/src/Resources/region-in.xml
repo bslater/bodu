@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Indian notable-date resource, migrated from the v1 region-in.xml to the v2 cookbook schema. National holidays are
-  Gregorian; the solar festivals Makar Sankranti and Pongal are fixed (14 January); the Islamic festivals use the
-  tabular Hijri calendar; Good Friday derives from Easter; and the Hindu lunisolar festivals are computed by the
-  solar-anchored lunar algorithm (accurate to within a day or two, with intercalary years handled). Onam is omitted
-  because it is fixed by a nakshatra rather than a tithi and is not modelled by the lunar algorithm.
+  Indian notable-date resource, migrated from the v1 region-in.xml to the v2 cookbook schema. The shared Christian
+  observances (Easter Sunday, Good Friday, Christmas) are imported from the common christian-western catalogue with
+  India's religious, non-public overrides. National holidays are Gregorian; the solar festivals Makar Sankranti and
+  Pongal are fixed (14 January); the Islamic festivals use the tabular Hijri calendar; and the Hindu lunisolar festivals
+  are computed by the solar-anchored lunar algorithm (accurate to within a day or two, with intercalary years handled).
+  Onam is omitted because it is fixed by a nakshatra rather than a tithi and is not modelled by the lunar algorithm.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.in">
 
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="IN" />
+      <Use notableDateRef="good-friday" territory="IN" category="Religious" nonWorking="false" />
+      <Use notableDateRef="christmas-day" territory="IN" category="Religious" nonWorking="false" />
+    </Import>
+  </Imports>
 
   <NotableDates>
 
@@ -38,14 +47,6 @@
 
     <NotableDate id="ram-navami" displayName="Ram Navami" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Algorithm key="ram-navami" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="good-friday" displayName="Good Friday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="in"><Applicability fromYear="1583"><Territory code="IN" /></Applicability><Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="in" offsetDays="-2" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="in"><Applicability fromYear="1583"><Territory code="IN" /></Applicability><Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="eid-al-fitr" displayName="Eid al-Fitr" category="Religious" defaultNonWorkingDay="false">
@@ -94,10 +95,6 @@
 
     <NotableDate id="eid-al-adha" displayName="Eid al-Adha" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="in"><Applicability calendar="Hijri"><Territory code="IN" /></Applicability><Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="in"><Applicability><Territory code="IN" /></Applicability><Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>
