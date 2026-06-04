@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Western (Gregorian) Christian notable-date catalogue, migrated from the v1 christian-gregorian.xml to the v2 cookbook
+  schema. Easter Sunday is the computed anchor (valid from the 1583 Gregorian reform); the surrounding feasts are
+  offsets from it. A territory pack imports the concepts it observes and supplies its own territory scope, category,
+  non-working flag, and weekend adjustment through the import <Use> directive. The shared rules use the stable rule id
+  "default", so a territory-local rule that offsets from Easter references <OffsetFromRule ... ruleRef="default" />.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.christian-western">
+
+  <NotableDates>
+
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" /><Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="maundy-thursday" displayName="Maundy Thursday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ascension-day" displayName="Ascension Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="whit-sunday" displayName="Whit Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="whit-monday" displayName="Whit Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="corpus-christi" displayName="Corpus Christi" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="60" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="all-saints-day" displayName="All Saints' Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-eve" displayName="Christmas Eve" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
