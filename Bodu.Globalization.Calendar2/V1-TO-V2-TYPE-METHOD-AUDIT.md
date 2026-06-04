@@ -23,7 +23,7 @@ Every numbered capability area in the functional audit is implemented or a delib
 
 The following are the **only confirmed gaps** — members present in v1 with no v2 equivalent by name or concept. They are the actionable output of this audit.
 
-> **Resolution status (2026-06-04):** gaps **A1, A2, A3, A4, and B3 are now CLOSED** — implemented with tests. Each is marked ✅ in the tables below. Where the per-section detail tables further down still carry an `⛔ [GAP — review]` marker for one of these items, treat that marker as **superseded by this banner**. The remaining open items are **A5, B1, B2** (still ⛔).
+> **Resolution status (2026-06-04):** **all eight gaps are now CLOSED** — A1, A2, A3, A4, and B3 first, then A5, B1, and B2 — each implemented with tests and marked ✅ in the tables below. Where a per-section detail table further down still carries an `⛔ [GAP — review]` marker for one of these items, treat that marker as **superseded by this banner**. There are no known remaining gaps between the v1 surface and v2.
 
 ### A. Material capability gaps (a user-facing feature is absent)
 
@@ -33,21 +33,21 @@ The following are the **only confirmed gaps** — members present in v1 with no 
 | A2 ✅ | `NextNonWorkingDay`, `PreviousNonWorkingDay`, `EnumerateNonWorkingDays` (on `DateOnly` & `DateTime`) | The non-working-day mirror of the working-day traversal that v2 *does* ship. v2 has `NextWorkingDay`/`PreviousWorkingDay`/`EnumerateWorkingDays` but not the non-working counterparts. | Extensions |
 | A3 ✅ | `DateRange.Contains(DateRange)`, `DateRange.Intersects(DateRange)` | Range-vs-range containment and overlap tests. v2 `DateRange` only has `Contains(DateOnly)`. | Core (`DateRange`) |
 | A4 ✅ | `FileHashPluginTrustPolicy`, `StrongNamePluginTrustPolicy` | Two of the four built-in plugin trust policies. Worse for strong-name: v2 changed `PluginTrustContext.AssemblyName` from `AssemblyName` to `string`, dropping the public-key token, so a strong-name policy cannot even be reconstructed from the v2 context. A hash-allowlist can still be hand-rolled via `DelegatingPluginTrustPolicy` (the `FileHash` is still on the context). | Plugins |
-| A5 ⛔ | `INotableDateProvider` (`GetDates(int year, …)`, `SupportsYear`, `Min/MaxSupportedYear`) | The code-first extensibility seam that returns ready-made `NotableDate`s for a year. v2 plugins/algorithms contribute only an anchor `DateOnly`; full notable dates must be authored as resource rules. | Ingestion |
+| A5 ✅ | `INotableDateProvider` (`GetDates(int year, …)`, `SupportsYear`, `Min/MaxSupportedYear`) | The code-first extensibility seam that returns ready-made `NotableDate`s for a year. v2 plugins/algorithms contribute only an anchor `DateOnly`; full notable dates must be authored as resource rules. | Ingestion |
 
 ### B. Expressiveness gaps (the capability is narrower in v2)
 
 | # | v1 member | What is narrower | Where |
 |---|---|---|---|
-| B1 ⛔ | `ObservanceAdjustment.EffectiveFromYear` / `EffectiveToYear` | A v1 adjustment could be year-bounded directly. v2 `AdjustmentPolicy`/`AdjustmentScope` have no year bounds — only *rules* are year-scoped (via `RuleApplicability`), so a year-limited *observance shift* must be modelled as separate rules. | Core (`AdjustmentPolicy`) |
-| B2 ⛔ | `ObservanceAdjustment.HandlerParameters` | v1 custom adjustment handlers received an author-supplied `IReadOnlyDictionary<string,string>`. v2 custom trigger/action handlers receive `BaseDate`/`Territory`/`Policy`/occupied-set/resolution-context but **no author parameters**. | Core (`AdjustmentPolicy` / handler contexts) |
+| B1 ✅ | `ObservanceAdjustment.EffectiveFromYear` / `EffectiveToYear` | A v1 adjustment could be year-bounded directly. v2 `AdjustmentPolicy`/`AdjustmentScope` have no year bounds — only *rules* are year-scoped (via `RuleApplicability`), so a year-limited *observance shift* must be modelled as separate rules. | Core (`AdjustmentPolicy`) |
+| B2 ✅ | `ObservanceAdjustment.HandlerParameters` | v1 custom adjustment handlers received an author-supplied `IReadOnlyDictionary<string,string>`. v2 custom trigger/action handlers receive `BaseDate`/`Territory`/`Policy`/occupied-set/resolution-context but **no author parameters**. | Core (`AdjustmentPolicy` / handler contexts) |
 | B3 ✅ | `TerritoryCode.ParseList(string?)` | Comma-separated multi-territory parsing. The *capability* survives (rule applicability holds a territory list parsed at load), but the convenience parser on the value type is gone. | Core (`TerritoryCode`) |
 
 ### C. Deliberate omissions (documented design — not "missed")
 
 For completeness, the notable members intentionally dropped, each with a design rationale in the functional audit or an obvious replacement: the `IfNonWorkingDay` trigger (folded into `IfWeekend` + `skipNonWorkingDates`); `INotableDateRulePlugin` (v2 plugins contribute algorithms only, no rule providers); `NotableDateProvenance` and the whole `RangeResolution` pipeline (internal — replaced by the two-phase resolver); `NotableDateServiceOptions` (→ explicit ctor params); `INotableDateService.GetSupportedTerritories/Calendars`, `Invalidate`, `WorkingWeek` (immutable-resource / hard-coded weekend model); per-result `CalendarType` and `Comment` (carried on the rule); the v1 algorithm *provider* metadata and per-algorithm year-range guards (metadata authored on rules; guarding centralised to a 1–9999 clamp); CLR-typed algorithm references (`AlgorithmType`/`AlgorithmMonth`/`AlgorithmDay`); and `CalendarThrowHelper` (v2 uses `Bodu.ThrowHelper` + `Calendar2ResourceStrings`). Nakshatra-fixed **Onam** is the one intentionally unmodelled festival, and it never existed as a v1 type.
 
-> **Net:** of the entire v1 surface, eight members/families had no v2 equivalent. **Five are now closed** (A1 notable-date traversal, A2 non-working-day traversal, A3 `DateRange` set operations, A4 plugin trust policies, B3 territory-list parsing). **Three remain open** and warrant a design decision: **A5** (the code-first `INotableDateProvider` seam), **B1** (policy-level year bounds), and **B2** (custom-handler parameters). Everything else migrated, was replaced by design, or is internal plumbing.
+> **Net:** of the entire v1 surface, eight members/families had no v2 equivalent, and **all eight are now closed**: A1 notable-date traversal, A2 non-working-day traversal, A3 `DateRange` set operations, A4 plugin trust policies, B3 territory-list parsing, A5 the code-first `INotableDateProvider` seam, B1 policy-level year scope, and B2 custom-handler parameters. Everything else migrated, was replaced by design, or is internal plumbing — there are no known remaining gaps.
 
 ---
 ## Core engine, model & adjustment
@@ -411,7 +411,7 @@ For completeness, the notable members intentionally dropped, each with a design 
 |---|---|---|
 | `OnOrAfter`, `OnOrBefore`, `Nearest` | ✅ Migrated [1:1] | v2 adds strict **`Before`** and **`After`**. |
 
-**GAPS in this scope:** ✅ **closed** — `DateRange.Contains(DateRange)` & `Intersects(DateRange)` (A3) and `TerritoryCode.ParseList` (B3) were implemented on 2026-06-04. ⛔ **open** — `ObservanceAdjustment.EffectiveFromYear`/`EffectiveToYear` (B1) and `ObservanceAdjustment.HandlerParameters` (B2). All other ⛔ rows are deliberate-by-design.
+**GAPS in this scope:** ✅ **all closed (2026-06-04)** — `DateRange.Contains(DateRange)` & `Intersects(DateRange)` (A3) and `TerritoryCode.ParseList` (B3) implemented directly; `ObservanceAdjustment.EffectiveFromYear`/`EffectiveToYear` (B1) reintroduced as `AdjustmentScope` `FromYear`/`ToYear`/`OnlyYears`/`ExceptYears`; `ObservanceAdjustment.HandlerParameters` (B2) reintroduced as `AdjustmentPolicy.HandlerParameters` (surfaced via `context.Parameters`). All other ⛔ rows are deliberate-by-design.
 
 ---
 
@@ -671,7 +671,7 @@ For completeness, the notable members intentionally dropped, each with a design 
 | `RuleVariant` | ✅ [renamed→`RemoveRuleOverride.RuleRef`] | |
 | `CalendarType` | ✅ [reshaped→targeted rule id / `Applicability.Calendar`] | Each calendar variant is a distinct rule. |
 
-**GAPS in this scope:** `INotableDateProvider` (whole interface — `Min/MaxSupportedYear`, `SupportsYear`, `GetDates`) — gap A5: no v2 component produces ready-made `NotableDate`s per year in code; `INotableDateResourceProvider` supplies a whole resource (different concept) and `INotableDateAlgorithm` computes only the anchor date. Not covered by functional-audit area 18.
+**GAPS in this scope:** ✅ **closed (2026-06-04)** — `INotableDateProvider` (gap A5) is reintroduced as a code-first provider seam: `INotableDateProvider.GetNotableDates(DateRange, territory)` returns finished `NotableDate`s, registered through a provider-aware `NotableDateService` constructor and merged terminally into resolution (range-clamped, filtered, and subject to the same-day collision policy, but bypassing adjustments/overrides/specificity by design). The v2 shape is range-based rather than v1's per-year `GetDates`/`SupportsYear`/`Min`/`MaxSupportedYear`.
 
 ---
 
