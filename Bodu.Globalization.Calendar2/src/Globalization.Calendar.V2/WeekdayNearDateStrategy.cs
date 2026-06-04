@@ -63,6 +63,6 @@ public sealed class WeekdayNearDateStrategy : IDateCalculationStrategy
         if (year < 1 || year > 9999 || this.Day > DateTime.DaysInMonth(year, this.Month))
             return null;
 
-        return WeekdayMath.Seek(new DateOnly(year, this.Month, this.Day), this.DayOfWeek, this.Direction);
+        return WeekdayMath.SeekOrNull(new DateOnly(year, this.Month, this.Day), this.DayOfWeek, this.Direction);
     }
 }

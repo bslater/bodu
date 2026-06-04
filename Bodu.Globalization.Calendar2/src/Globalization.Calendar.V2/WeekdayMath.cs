@@ -85,6 +85,33 @@ internal static class WeekdayMath
         };
 
     /// <summary>
+    /// Seeks the target weekday relative to an anchor, returning <see langword="null" /> when the result would fall
+    /// outside the representable date range rather than throwing.
+    /// </summary>
+    /// <param name="anchor">The anchor date.</param>
+    /// <param name="dayOfWeek">The target weekday.</param>
+    /// <param name="proximity">The direction and inclusivity to apply.</param>
+    /// <returns>
+    /// The matching date, or <see langword="null" /> when the seek rolls past
+    /// <see cref="DateOnly.MinValue" />/<see cref="DateOnly.MaxValue" /> at the year extremes.
+    /// </returns>
+    /// <remarks>
+    /// A proximity seek moves the anchor by up to seven days, so at the first and last representable weeks of the
+    /// supported year range it can overflow; resolution treats that as "no occurrence" instead of failing the query.
+    /// </remarks>
+    public static DateOnly? SeekOrNull(DateOnly anchor, DayOfWeek dayOfWeek, WeekdayProximity proximity)
+    {
+        try
+        {
+            return Seek(anchor, dayOfWeek, proximity);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Returns the date of the nth (or last) occurrence of a weekday within a month.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>

@@ -61,7 +61,15 @@ public sealed class OffsetFromRuleStrategy : IDateCalculationStrategy
     {
         ThrowHelper.ThrowIfNull(context);
 
-        DateOnly? reference = context.ResolveReference(this.NotableDateRef, this.RuleRef, year);
-        return reference?.AddDays(this.OffsetDays);
+        if (context.ResolveReference(this.NotableDateRef, this.RuleRef, year) is not DateOnly reference)
+            return null;
+
+        // Guard the projection against rolling past the representable date range at the year extremes; the engine
+        // treats an out-of-range offset as "no occurrence" rather than failing the query.
+        long target = (long)reference.DayNumber + this.OffsetDays;
+        if (target < DateOnly.MinValue.DayNumber || target > DateOnly.MaxValue.DayNumber)
+            return null;
+
+        return DateOnly.FromDayNumber((int)target);
     }
 }

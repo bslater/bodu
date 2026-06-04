@@ -73,6 +73,6 @@ public sealed class RelativeWeekdayInMonthStrategy : IDateCalculationStrategy
         if (WeekdayMath.NthWeekdayInMonth(year, this.Month, this.DayOfWeek, this.WeekOrdinal) is not DateOnly anchor)
             return null;
 
-        return WeekdayMath.Seek(anchor, this.RelativeDayOfWeek, this.Direction);
+        return WeekdayMath.SeekOrNull(anchor, this.RelativeDayOfWeek, this.Direction);
     }
 }
