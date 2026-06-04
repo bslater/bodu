@@ -3,7 +3,8 @@
   United Kingdom notable-date resource, migrated from the v1 region-gb.xml to the v2 cookbook schema. Bank holidays
   roll to the next weekday when they fall on a weekend; Christmas and Boxing Day use the conflict-aware working-day
   substitute. National patron-saint days and the Scottish/Northern Irish holidays are scoped to their subdivisions.
-  Imported global, Christian, and family observances are flattened.
+  Shared civil and Christian observances are imported from the global-core and christian-western catalogues; concepts
+  scoped to multiple subdivisions (Easter Monday) remain inline. The remaining entries are territory-local.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.gb">
 
@@ -22,13 +23,25 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
-  <NotableDates>
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="GB">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="good-friday" territory="GB" />
+      <Use notableDateRef="easter-sunday" territory="GB" />
+      <Use notableDateRef="christmas-day" territory="GB">
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+      </Use>
+      <Use notableDateRef="boxing-day" territory="GB">
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+      </Use>
+    </Import>
+  </Imports>
 
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
+  <NotableDates>
 
     <NotableDate id="day-after-new-years-day" displayName="2 January" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability>
@@ -60,22 +73,12 @@
 
     <NotableDate id="mothering-sunday" displayName="Mothering Sunday" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability fromYear="1583"><Territory code="GB" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="gb" offsetDays="-21" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="gb"><Applicability fromYear="1583"><Territory code="GB" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="gb" offsetDays="-2" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="gb"><Applicability fromYear="1583"><Territory code="GB" /></Applicability>
-        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-21" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ew"><Applicability fromYear="1583"><Territory code="GB-ENG" /><Territory code="GB-WLS" /><Territory code="GB-NIR" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="gb" offsetDays="1" /></Strategy></Rule></Rules>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="saint-georges-day" displayName="Saint George's Day" category="Cultural" defaultNonWorkingDay="false">
@@ -125,18 +128,6 @@
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability>
         <Strategy><Fixed month="November" day="30" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability>
-        <Strategy><Fixed month="December" day="26" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

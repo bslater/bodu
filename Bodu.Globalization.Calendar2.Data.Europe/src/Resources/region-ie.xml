@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  IE notable-date resource, migrated from the v1 region-ie.xml to the v2 cookbook schema by
-  tools/migrate_europe.py. UseFrom imports (europe-common, Christian, and global observances) are flattened
-  into self-contained rules.
+  IE notable-date resource, migrated from the v1 region-ie.xml to the v2 cookbook schema. Shared civil and Christian
+  observances are imported from the global-core and christian-western catalogues; the remaining entries are
+  territory-local concepts defined inline.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ie">
 
@@ -16,29 +16,22 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="IE">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="IE" />
+      <Use notableDateRef="easter-monday" territory="IE" />
+      <Use notableDateRef="christmas-day" territory="IE">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+  </Imports>
+
   <NotableDates>
-
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="ie"><Applicability fromYear="1583"><Territory code="IE" /></Applicability>
-        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ie"><Applicability fromYear="1583"><Territory code="IE" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="ie" offsetDays="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
 
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>

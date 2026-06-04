@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  NL notable-date resource, migrated from the v1 region-nl.xml to the v2 cookbook schema by
-  tools/migrate_europe.py. UseFrom imports (europe-common, Christian, and global observances) are flattened
-  into self-contained rules.
+  NL notable-date resource, migrated from the v1 region-nl.xml to the v2 cookbook schema. Shared civil and Christian
+  observances are imported from the global-core and christian-western catalogues; the remaining entries are
+  territory-local concepts defined inline.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.nl">
 
@@ -16,48 +16,24 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="NL">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="NL" />
+      <Use notableDateRef="good-friday" territory="NL" category="Observance" nonWorking="false" />
+      <Use notableDateRef="easter-monday" territory="NL" />
+      <Use notableDateRef="ascension-day" territory="NL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-sunday" territory="NL" />
+      <Use notableDateRef="whit-monday" territory="NL" />
+      <Use notableDateRef="christmas-day" territory="NL" />
+    </Import>
+  </Imports>
+
   <NotableDates>
-
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="nl"><Applicability><Territory code="NL" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="nl"><Applicability fromYear="1583"><Territory code="NL" /></Applicability>
-        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="good-friday" displayName="Good Friday" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="nl"><Applicability fromYear="1583"><Territory code="NL" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="nl" offsetDays="-2" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="nl"><Applicability fromYear="1583"><Territory code="NL" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="nl" offsetDays="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="ascension-day" displayName="Ascension Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="nl"><Applicability fromYear="1583"><Territory code="NL" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="nl" offsetDays="39" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="whit-sunday" displayName="Whit Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="nl"><Applicability fromYear="1583"><Territory code="NL" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="nl" offsetDays="49" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="whit-monday" displayName="Whit Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="nl"><Applicability fromYear="1583"><Territory code="NL" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="nl" offsetDays="50" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="nl"><Applicability><Territory code="NL" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
-    </NotableDate>
 
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nl"><Applicability><Territory code="NL" /></Applicability>

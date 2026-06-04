@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  AT notable-date resource, migrated from the v1 region-at.xml to the v2 cookbook schema by
-  tools/migrate_europe.py. UseFrom imports (europe-common, Christian, and global observances) are flattened
-  into self-contained rules.
+  AT notable-date resource, migrated from the v1 region-at.xml to the v2 cookbook schema. Shared civil and Christian
+  observances are imported from the global-core and christian-western catalogues with per-territory overrides; the
+  remaining entries are territory-local concepts defined inline.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.at">
 
@@ -16,27 +16,28 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
-  <NotableDates>
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="AT">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="AT" />
+      <Use notableDateRef="easter-monday" territory="AT" />
+      <Use notableDateRef="ascension-day" territory="AT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-monday" territory="AT" />
+      <Use notableDateRef="corpus-christi" territory="AT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="AT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="AT" />
+    </Import>
+  </Imports>
 
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
+  <NotableDates>
 
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="at"><Applicability fromYear="1583"><Territory code="AT" /></Applicability>
-        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability fromYear="1583"><Territory code="AT" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="at" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="state-holiday" displayName="State Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -44,39 +45,14 @@
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <NotableDate id="ascension-day" displayName="Ascension Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability fromYear="1583"><Territory code="AT" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="at" offsetDays="39" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="whit-monday" displayName="Whit Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability fromYear="1583"><Territory code="AT" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="at" offsetDays="50" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="corpus-christi" displayName="Corpus Christi" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability fromYear="1583"><Territory code="AT" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="at" offsetDays="60" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <NotableDate id="all-saints-day" displayName="All Saints' Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
-        <Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
