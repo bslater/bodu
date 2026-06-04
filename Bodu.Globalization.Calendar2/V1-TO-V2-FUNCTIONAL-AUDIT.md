@@ -34,11 +34,11 @@ the concrete v1 → v2 type mapping.
 | 5 | Easter algorithms | Gregorian + Orthodox Easter | ✅ Implemented (`EasterCalculator`, Western + Orthodox) |
 | 6 | Lunar / lunisolar / solar-term algorithms | Vesak, Asalha, Qingming, Losar, HinduLunar, LunarPhase | ✅ Implemented (Meeus equinox/lunar-phase + Matariki table; full solar-anchored Hindu festival set bar nakshatra-fixed Onam) |
 | 7 | Algorithm registry / dispatch | `INotableDateAlgorithmRegistry`, `NotableDateAlgorithmRegistry` | ✅ Implemented (`INotableDateAlgorithm` + `NotableDateAlgorithmRegistry`, threaded through resolution and validation) |
-| 8 | Observance adjustments | `ObservanceAdjustment`, `AdjustmentTrigger`/`Action`, `ObservedDateMode` | 🟡 Partial (reusable `AdjustmentPolicy`; core triggers/actions + richer `EmissionMode`; some triggers/actions deferred) |
-| 9 | Custom adjustment handlers | `IAdjustmentHandler`, `AdjustmentHandlerRegistry` | ⛔ Deferred |
+| 8 | Observance adjustments | `ObservanceAdjustment`, `AdjustmentTrigger`/`Action`, `ObservedDateMode` | 🟡 Partial (reusable `AdjustmentPolicy`; 8/10 triggers, **full** action set incl. `ReplaceWithRule`+`Custom`, superset `EmissionMode`; only `IfNonWorkingDay` (folded into `IfWeekend`+skip) and a standalone Custom trigger absent) |
+| 9 | Custom adjustment handlers | `IAdjustmentHandler`, `AdjustmentHandlerRegistry` | ✅ Implemented (`IAdjustmentHandler` + `AdjustmentHandlerRegistry` + `AdjustmentHandlerContext`, threaded through resolution and validation) |
 | 10 | Conflict-aware substitution | tier pipeline + non-working context | 🔵 Replaced & **strengthened** (compute-then-place occupied-day set, opt-in `skipNonWorkingDates`) |
 | 11 | Territory specificity / shadowing | `ApplySameNameTerritoryShadowing` (the v1 *bug*) | ✅ Implemented (correct redesign: `RuleApplicability.MatchSpecificity`, most-specific match wins) |
-| 12 | Same-day collision resolution | `INotableDateCollisionResolver`, `DefaultNotableDateCollisionResolver` | ⛔ Deferred (`ResolutionPolicy.sameDayCollisionPolicy` parsed but unwired) |
+| 12 | Same-day collision resolution | `INotableDateCollisionResolver`, `DefaultNotableDateCollisionResolver` | ✅ Implemented (`sameDayCollisionPolicy` wired: KeepAll/HighestPriorityOnly/CategoryPriority/Custom + `INotableDateCollisionResolver` hook) |
 | 13 | XML ingestion + schema validation | `NotableDateRuleParser`, `NotableDates.xsd`, `NotableDateRuleValidator` | ✅ Implemented (new schema: `NotableDateDocumentParser`, `NotableDates.v2.xsd`, validator + diagnostics) |
 | 14 | JSON ingestion | `NotableDateRuleJsonParser`, `NotableDates.schema.json` | ✅ Implemented (`NotableDateJsonDocumentParser` + `LoadJson`; XML/JSON auto-detected for imports) |
 | 15 | Declarative overrides | `INotableDateRuleOverrideProvider`, `RuleRemoval` | 🟡 Partial (`<Overrides>` Add/Patch/Remove at load; no scoped removal, no runtime mutation) |
@@ -55,15 +55,14 @@ the concrete v1 → v2 type mapping.
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 15 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 4 ⛔ Deferred (counting sub-rows).
+**Tally:** 17 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 2 ⛔ Deferred (counting sub-rows).
 
 The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
 imports graph, the filter API, the `DateOnly` extension surface, the custom-algorithm registry, the
-plugin model, and DI registration are all **implemented**. The remaining deferred set is small and
-peripheral: custom adjustment handlers (area 9), the same-day collision resolver (area 12), runtime
-mutable overrides / reload (area 16), and the localization hook (area 22); the partials are the
-DateTime/DateTimeOffset/fiscal extension overloads (area 20) and the broader trigger/action matrix
-(area 8).
+custom adjustment-handler and same-day collision hooks, the plugin model, and DI registration are all
+**implemented**. The remaining deferred set is small and peripheral: runtime mutable overrides /
+reload (area 16) and the localization hook (area 22); the partials are the DateTime/DateTimeOffset/
+fiscal extension overloads (area 20) and the last two adjustment triggers (area 8).
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -130,8 +129,8 @@ inferred from a shared title — which is precisely what fixes the original bug 
 | `GetNotableDates(date, …)` | ✅ `Resolve(DateOnly, territory)` |
 | `GetNotableDates(start, end, …)` | ✅ `Resolve(DateRange, territory)` |
 | `GetNotableDates(year, …)` | ✅ idiom: `Resolve(new DateRange(Jan 1, Dec 31), …)` (no dedicated overload) |
-| `…(…, NotableDateFilter, …)` overloads | ⛔ filter API deferred (area 19) |
-| `IsWeekend`, `IsNonWorkingDay`, `IsHolidayNonWorkingDay`, `WorkingWeek` | ⛔ working-day surface deferred (area 20) |
+| `…(…, NotableDateFilter, …)` overloads | ✅ `Resolve(DateOnly/DateRange, territory, filter)` (area 19) |
+| `IsWeekend`, `IsNonWorkingDay`, `IsHolidayNonWorkingDay`, `WorkingWeek` | 🟡 `DateOnly` extensions (`IsWeekend`, `IsNonWorkingDay`, …) over the service (area 20) |
 | `Invalidate`, `Reload` | ⛔ deferred (area 16); v2 loads once, immutable |
 | `GetSupportedTerritories`, `GetSupportedCalendars` | ⛔ not exposed |
 
@@ -166,18 +165,24 @@ CLR-typed algorithm references (v2 dispatches by string key only).
   plugin-contributed algorithms) are replaced by direct key dispatch inside `AlgorithmDateStrategy`;
   there is no public registry to register into.
 
-### 8–9. Adjustments — 🟡 Partial; custom handlers ⛔ Deferred
+### 8–9. Adjustments — 🟡 Partial; custom handlers ✅ Implemented
 
 v1 attached a rich `ObservanceAdjustment` to each rule; v2 hoists adjustments into reusable,
 scope-matched `AdjustmentPolicy` objects referenced by rules — an improvement in authoring reuse.
 
 | Facet | v1 | v2 | Status |
 |---|---|---|---|
-| Triggers | Always, IfDayOfWeek, IfWeekend, IfWeekday, IfNonWorkingDay, IfBeforeFixedDate, IfAfterFixedDate, IfLeapYear, IfNthOccurrenceInMonth, Custom | Always, IfDayOfWeek, IfWeekend, IfWeekday | 🟡 core 4 of 10 |
-| Actions | None, AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay, ReplaceWithNamedDate, Custom | None, AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay, **MoveToPreviousWorkingDay**, **Suppress** | 🟡 + adds prev-working-day & suppress; ReplaceWithNamedDate/Custom deferred |
+| Triggers | Always, IfDayOfWeek, IfWeekend, IfWeekday, IfNonWorkingDay, IfBeforeFixedDate, IfAfterFixedDate, IfLeapYear, IfNthOccurrenceInMonth, Custom | Always, IfDayOfWeek, IfWeekend, IfWeekday, **IfLeapYear**, **IfBeforeFixedDate**, **IfAfterFixedDate**, **IfNthOccurrenceInMonth** | 🟡 8 of 10 (IfNonWorkingDay folded into IfWeekend+`skipNonWorkingDates`; no standalone Custom trigger) |
+| Actions | None, AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay, ReplaceWithNamedDate, Custom | None, AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay, **MoveToPreviousWorkingDay**, **ReplaceWithRule**, **Suppress**, **Custom** | ✅ full superset (`ReplaceWithRule` = v1 `ReplaceWithNamedDate`; + prev-working-day & suppress) |
 | Emission | `ObservedDateMode`: ActualOnly, ObservedOnly, ActualAndObserved | `EmissionMode`: ActualOnly, ObservedOnly, ActualAndObserved, **ObservedAsAdditional**, **Suppress** | ✅ superset |
 | Reason | `AdjustmentReason` record | `AdjustmentPolicyId` + reason string on `NotableDate` | ✅ re-shaped |
-| Custom handlers | `IAdjustmentHandler` + `AdjustmentHandlerRegistry` + context/result | — | ⛔ Deferred |
+| Custom handlers | `IAdjustmentHandler` + `AdjustmentHandlerRegistry` + context/result | `IAdjustmentHandler` + `AdjustmentHandlerRegistry` + `AdjustmentHandlerContext` | ✅ Implemented |
+
+`ReplaceWithRule` resolves the observed date from another rule's occurrence for the same year (via
+`StrategyResolutionContext.ResolveReference`); `Custom` dispatches to an `IAdjustmentHandler`
+registered on the service, falling back to the calculated date when no handler is bound. Both are
+validated at load (reference resolution / handler-key presence) and proven by `CustomAdjustmentTests`;
+the extended triggers are proven by `ExtendedTriggerTests`.
 
 ### 10. Conflict-aware substitution — 🔵 Replaced & strengthened
 
@@ -201,13 +206,13 @@ per-concept-per-year maximum. A narrower `AU-WA` rule shadows the broader `AU` r
 `AustraliaKnownAnswerTests.Resolve_WhenSubdivisionRuleExists_ShadowsNationalRuleForThatTerritory`
 plus the WA/NT Anzac substitute rows.
 
-### 12. Same-day collision resolution — ⛔ Deferred
+### 12. Same-day collision resolution — ✅ Implemented
 
-`INotableDateCollisionResolver` / `DefaultNotableDateCollisionResolver` /
-`NotableDateCollisionContext` (provenance → priority → category → name arbitration) are not ported.
-v2 parses `ResolutionPolicy.sameDayCollisionPolicy` (`CollisionPolicy`: KeepAll, HighestPriorityOnly,
-CategoryPriority, Custom) and `DuplicatePolicy` but does **not yet wire** them — current behaviour is
-KeepAll with a stable sort. No custom-resolver hook exists.
+v2 wires `ResolutionPolicy.sameDayCollisionPolicy` (`CollisionPolicy`: KeepAll, HighestPriorityOnly,
+CategoryPriority, Custom) in `NotableDateService.ApplySameDayCollisionPolicy`: occurrences sharing an
+emitted date are grouped and arbitrated by priority (honouring `PriorityDirection`), then by category
+rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the policy is `Custom`.
+`KeepAll` preserves the prior stable-sort behaviour. Proven by `CollisionResolutionTests`.
 
 ### 13–14. Ingestion & schema
 
@@ -241,21 +246,22 @@ KeepAll with a stable sort. No custom-resolver hook exists.
   `ResourcePathResolverOptions` are replaced by the single-resource `NotableDateResourceLoader.Load`.
   The multi-resource provider chain is tied to imports (area 17) and deferred with it.
 
-### 19–22. Surfaces not reproduced
+### 19–22. Filter, extensions, plugins, localization
 
-- **19. Filter API — ⛔** `NotableDateFilter` (`ForCategory`, `ForAnyCategory`, `IsNonWorkingDay`,
-  `WithName`, `WithTag`/`WithAnyTag`/`WithAllTags`, `WithMinDuration`, `InDateRange`, `WasAdjusted`,
-  `AllOf`/`AnyOf`, `And`/`Or`) has no v2 equivalent; v2 callers filter the returned list themselves.
-- **20. Extensions — ⛔** the ~22 working-day/traversal extension methods (`IsWorkingDay`,
-  `Next/Previous WorkingDay/NonWorkingDay`, `AddWorkingDays`, `WorkingDaysBetween`,
-  `SnapToWorkingDay[Backward]`/`SnapToNearestWorkingDay`, `Enumerate*`, `GetNotableDates[InMonth/InYear]`,
-  `IsNotableDate`) across `DateOnly`/`DateTime`/`DateTimeOffset`, the `NotableDateFiscalExtensions`
-  (first/last working day of fiscal year/quarter), and the ambient `NotableDateContext` are not
-  reproduced — v2 exposes only the resolver.
-- **21. Plugins — ⛔** `ExternalPluginLoader` (AssemblyLoadContext isolation), the trust-policy
-  family (`AllowAll`/`FileHash`/`StrongName`/`Composite`/`Delegating`), plugin interfaces
-  (`INotableDatePlugin`/`…RulePlugin`/`…AlgorithmPlugin`), `NotableDatePluginAttribute`, and the
-  plugin exception hierarchy are not ported.
+- **19. Filter API — ✅** `NotableDateFilter` is reproduced as a composable predicate (`ForCategory`,
+  `ForAnyCategory`, `IsNonWorkingDay`, `WasAdjusted`, `WithName`/`WithAnyName`, `WithId`,
+  `WithTag`/`WithAnyTag`/`WithAllTags`, `WithMinDuration`, `InDateRange`, `AllOf`/`AnyOf`,
+  `And`/`Or`/`Not`), surfaced through filtered `Resolve(date|range, territory, filter)` overloads.
+- **20. Extensions — 🟡 Partial** `NotableDateOnlyExtensions` reproduces the `DateOnly` working-day /
+  traversal surface over the service (`IsWeekend`, `IsWorkingDay`/`IsNonWorkingDay`, `IsNotableDate`,
+  `Next/Previous WorkingDay`, `AddWorkingDays`, `WorkingDaysBetween`,
+  `SnapToWorkingDay[Backward]`/`SnapToNearestWorkingDay`, `Enumerate*`, `GetNotableDates`). The
+  `DateTime`/`DateTimeOffset` overloads, the `NotableDateFiscalExtensions` (first/last working day of
+  fiscal year/quarter), and the ambient `NotableDateContext` are **deferred**.
+- **21. Plugins — ✅** `Bodu.Globalization.Calendar2.Plugins` ships `NotableDatePluginLoader`, the
+  trust-policy family (`AllowAll`/`Delegating`/`Composite`, `IPluginTrustPolicy`), plugin interfaces
+  (`INotableDatePlugin`/`INotableDateAlgorithmPlugin`), `NotableDatePluginAttribute`, and the plugin
+  exception hierarchy; algorithm plugins contribute into the `NotableDateAlgorithmRegistry`.
 - **22. Localization — ⛔** `INotableDateNameLocalizer.GetDisplayName(notableDate, culture)` has no
   v2 hook; `DisplayName` is a static property of the concept.
 

@@ -41,6 +41,11 @@ public sealed class NotableDateService : INotableDateService
     private readonly INotableDateCollisionResolver? _collisionResolver;
 
     /// <summary>
+    /// The custom adjustment-handler registry, consulted when an action is <see cref="AdjustmentAction.Custom" />.
+    /// </summary>
+    private readonly IAdjustmentHandlerRegistry? _handlers;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
@@ -73,12 +78,37 @@ public sealed class NotableDateService : INotableDateService
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms, INotableDateCollisionResolver? collisionResolver)
+        : this(resource, algorithms, collisionResolver, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry,
+    /// same-day collision resolver, and adjustment-handler registry.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(
+        NotableDateResource resource,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         this._resource = resource;
         this._algorithms = algorithms;
         this._collisionResolver = collisionResolver;
+        this._handlers = handlers;
     }
 
     /// <inheritdoc />
@@ -96,14 +126,15 @@ public sealed class NotableDateService : INotableDateService
         int firstYear = Math.Max(1, range.StartDate.Year - 1);
         int lastYear = Math.Min(9999, range.EndDate.Year + 1);
 
+        StrategyResolutionContext context = new(this._resource, this._algorithms);
         HashSet<DateOnly> occupied = new();
-        List<ResolutionCandidate> candidates = this.GatherCandidates(territory, firstYear, lastYear, occupied);
+        List<ResolutionCandidate> candidates = this.GatherCandidates(context, territory, firstYear, lastYear, occupied);
 
         candidates.Sort(CompareForPlacement);
 
         List<NotableDate> results = new();
         foreach (ResolutionCandidate candidate in candidates)
-            EmitCandidate(results, candidate, territory, occupied, range);
+            this.EmitCandidate(results, candidate, territory, occupied, range, context);
 
         List<NotableDate> ordered = results
             .OrderBy(r => r.Date)
@@ -240,14 +271,14 @@ public sealed class NotableDateService : INotableDateService
     /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
     /// non-working occurrences.
     /// </summary>
+    /// <param name="context">The resolution context for offset references.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="firstYear">The first civil year to scan.</param>
     /// <param name="lastYear">The last civil year to scan.</param>
     /// <param name="occupied">The occupied-day set to seed.</param>
     /// <returns>The calculated candidates.</returns>
-    private List<ResolutionCandidate> GatherCandidates(string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
+    private List<ResolutionCandidate> GatherCandidates(StrategyResolutionContext context, string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
     {
-        StrategyResolutionContext context = new(this._resource, this._algorithms);
         List<ResolutionCandidate> candidates = new();
 
         foreach (NotableDateDefinition definition in this._resource.NotableDates)
@@ -341,12 +372,14 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="territory">The requested territory code.</param>
     /// <param name="occupied">The occupied-day set, updated as observed dates are claimed.</param>
     /// <param name="range">The inclusive range that controls emission inclusion.</param>
-    private static void EmitCandidate(
+    /// <param name="context">The resolution context used by reference and custom actions.</param>
+    private void EmitCandidate(
         List<NotableDate> results,
         ResolutionCandidate candidate,
         string territory,
         HashSet<DateOnly> occupied,
-        DateRange range)
+        DateRange range,
+        StrategyResolutionContext context)
     {
         if (candidate.Policy is not AdjustmentPolicy policy)
         {
@@ -354,7 +387,7 @@ public sealed class NotableDateService : INotableDateService
             return;
         }
 
-        DateOnly observed = policy.ApplyAction(candidate.BaseDate, occupied.Contains);
+        DateOnly observed = this.ComputeObservedDate(policy, candidate, territory, occupied, context);
         string reason = policy.Reason ?? string.Empty;
 
         switch (policy.Emission)
@@ -381,6 +414,77 @@ public sealed class NotableDateService : INotableDateService
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Computes the observed date a policy's action produces for a candidate, dispatching reference and custom actions
+    /// to the resolution context and handler registry, and delegating every other action to the policy itself.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="occupied">The occupied-day set used by working-day searches.</param>
+    /// <param name="context">The resolution context for reference and custom actions.</param>
+    /// <returns>The observed date; the candidate's calculated date when the action makes no change.</returns>
+    private DateOnly ComputeObservedDate(
+        AdjustmentPolicy policy,
+        ResolutionCandidate candidate,
+        string territory,
+        HashSet<DateOnly> occupied,
+        StrategyResolutionContext context) =>
+        policy.Action switch
+        {
+            AdjustmentAction.ReplaceWithRule => ResolveReplacementDate(policy, candidate, context),
+            AdjustmentAction.Custom => this.InvokeCustomHandler(policy, candidate, territory, occupied, context),
+            _ => policy.ApplyAction(candidate.BaseDate, occupied.Contains),
+        };
+
+    /// <summary>
+    /// Resolves the observed date for a <see cref="AdjustmentAction.ReplaceWithRule" /> action by calculating the
+    /// referenced rule's occurrence for the candidate's year.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="context">The resolution context that resolves the reference.</param>
+    /// <returns>The referenced occurrence, or the candidate's calculated date when it cannot be resolved.</returns>
+    private static DateOnly ResolveReplacementDate(AdjustmentPolicy policy, ResolutionCandidate candidate, StrategyResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(policy.ActionNotableDateRef))
+            return candidate.BaseDate;
+
+        return context.ResolveReference(policy.ActionNotableDateRef, policy.ActionRuleRef, candidate.BaseDate.Year) ?? candidate.BaseDate;
+    }
+
+    /// <summary>
+    /// Resolves the observed date for a <see cref="AdjustmentAction.Custom" /> action by invoking the handler
+    /// registered under the policy's handler key.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="occupied">The occupied-day set the handler can query.</param>
+    /// <param name="context">The resolution context exposed to the handler.</param>
+    /// <returns>
+    /// The handler's observed date, or the candidate's calculated date when no handler is registered or the handler
+    /// declines to adjust.
+    /// </returns>
+    private DateOnly InvokeCustomHandler(
+        AdjustmentPolicy policy,
+        ResolutionCandidate candidate,
+        string territory,
+        HashSet<DateOnly> occupied,
+        StrategyResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(policy.ActionHandlerKey)
+            || this._handlers is null
+            || !this._handlers.TryGet(policy.ActionHandlerKey, out IAdjustmentHandler? handler)
+            || handler is null)
+        {
+            return candidate.BaseDate;
+        }
+
+        AdjustmentHandlerContext handlerContext = new(candidate.BaseDate, territory, policy, occupied.Contains, context);
+        return handler.Adjust(handlerContext) ?? candidate.BaseDate;
     }
 
     /// <summary>

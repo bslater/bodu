@@ -257,5 +257,41 @@ namespace Bodu {
                 return ResourceManager.GetString("Validation_ImportConceptNotFound", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Adjustment policy '{0}' uses a ReplaceWithRule action without a notableDateRef..
+        /// </summary>
+        internal static string Validation_ReplaceReferenceMissing {
+            get {
+                return ResourceManager.GetString("Validation_ReplaceReferenceMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Adjustment policy '{0}': ReplaceWithRule reference '{1}' resolves to no rule..
+        /// </summary>
+        internal static string Validation_ReplaceReferenceNotFound {
+            get {
+                return ResourceManager.GetString("Validation_ReplaceReferenceNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Adjustment policy '{0}': ReplaceWithRule reference '{1}' is ambiguous; specify a ruleRef..
+        /// </summary>
+        internal static string Validation_ReplaceReferenceAmbiguous {
+            get {
+                return ResourceManager.GetString("Validation_ReplaceReferenceAmbiguous", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Adjustment policy '{0}' uses a Custom action without a handlerKey..
+        /// </summary>
+        internal static string Validation_CustomHandlerKeyMissing {
+            get {
+                return ResourceManager.GetString("Validation_CustomHandlerKeyMissing", resourceCulture);
+            }
+        }
     }
 }

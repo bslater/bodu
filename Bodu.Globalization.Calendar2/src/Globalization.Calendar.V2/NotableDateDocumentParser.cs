@@ -185,7 +185,10 @@ internal static class NotableDateDocumentParser
                 ParseNullableBool(emission?.Attribute("nonWorking")?.Value),
                 ParseTriggerMonth(trigger?.Attribute("month")?.Value),
                 ParseNullableInt(trigger?.Attribute("day")?.Value),
-                ParseNullableEnum<WeekOrdinal>(trigger?.Attribute("weekOrdinal")?.Value)));
+                ParseNullableEnum<WeekOrdinal>(trigger?.Attribute("weekOrdinal")?.Value),
+                (string?)action?.Attribute("notableDateRef"),
+                (string?)action?.Attribute("ruleRef"),
+                (string?)action?.Attribute("handlerKey")));
         }
 
         return policies;

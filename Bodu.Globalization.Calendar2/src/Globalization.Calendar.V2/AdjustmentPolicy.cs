@@ -59,6 +59,16 @@ public sealed class AdjustmentPolicy
     /// <param name="triggerWeekOrdinal">
     /// The week ordinal for <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" />, or <see langword="null" />.
     /// </param>
+    /// <param name="actionNotableDateRef">
+    /// The referenced concept for <see cref="AdjustmentAction.ReplaceWithRule" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="actionRuleRef">
+    /// The referenced rule for <see cref="AdjustmentAction.ReplaceWithRule" />, or <see langword="null" /> to use the
+    /// referenced concept's sole rule.
+    /// </param>
+    /// <param name="actionHandlerKey">
+    /// The handler key for <see cref="AdjustmentAction.Custom" />, or <see langword="null" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id" />, <paramref name="scope" />, or <paramref name="triggerWeekdays" /> is
     /// <see langword="null" />.
@@ -80,7 +90,10 @@ public sealed class AdjustmentPolicy
         bool? nonWorking,
         int? triggerMonth = null,
         int? triggerDay = null,
-        WeekOrdinal? triggerWeekOrdinal = null)
+        WeekOrdinal? triggerWeekOrdinal = null,
+        string? actionNotableDateRef = null,
+        string? actionRuleRef = null,
+        string? actionHandlerKey = null)
     {
         ThrowHelper.ThrowIfNull(id);
         ThrowHelper.ThrowIfNull(scope);
@@ -103,6 +116,9 @@ public sealed class AdjustmentPolicy
         this.TriggerMonth = triggerMonth;
         this.TriggerDay = triggerDay;
         this.TriggerWeekOrdinal = triggerWeekOrdinal;
+        this.ActionNotableDateRef = actionNotableDateRef;
+        this.ActionRuleRef = actionRuleRef;
+        this.ActionHandlerKey = actionHandlerKey;
     }
 
     /// <summary>
@@ -209,6 +225,29 @@ public sealed class AdjustmentPolicy
     /// </summary>
     /// <returns>The configured ordinal, or <see langword="null" /> when unused.</returns>
     public WeekOrdinal? TriggerWeekOrdinal { get; }
+
+    /// <summary>
+    /// Gets the referenced concept whose occurrence supplies the observed date for
+    /// <see cref="AdjustmentAction.ReplaceWithRule" />.
+    /// </summary>
+    /// <returns>The referenced concept identifier, or <see langword="null" /> when unused.</returns>
+    public string? ActionNotableDateRef { get; }
+
+    /// <summary>
+    /// Gets the referenced rule whose occurrence supplies the observed date for
+    /// <see cref="AdjustmentAction.ReplaceWithRule" />.
+    /// </summary>
+    /// <returns>
+    /// The referenced rule identifier, or <see langword="null" /> to use the referenced concept's sole rule.
+    /// </returns>
+    public string? ActionRuleRef { get; }
+
+    /// <summary>
+    /// Gets the handler key that binds <see cref="AdjustmentAction.Custom" /> to a registered
+    /// <see cref="IAdjustmentHandler" />.
+    /// </summary>
+    /// <returns>The handler key, or <see langword="null" /> when unused.</returns>
+    public string? ActionHandlerKey { get; }
 
     /// <summary>
     /// Determines whether the policy fires for an occurrence on the supplied date.

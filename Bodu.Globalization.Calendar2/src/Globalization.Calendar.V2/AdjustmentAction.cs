@@ -48,7 +48,19 @@ public enum AdjustmentAction
     MoveToPreviousWorkingDay,
 
     /// <summary>
+    /// Replace the occurrence date with the date of another rule resolved for the same year, identified by the policy's
+    /// notable-date and rule references.
+    /// </summary>
+    ReplaceWithRule,
+
+    /// <summary>
     /// Suppress the occurrence entirely.
     /// </summary>
     Suppress,
+
+    /// <summary>
+    /// Delegate the observed-date computation to a caller-supplied <see cref="IAdjustmentHandler" /> resolved through the
+    /// policy's handler key.
+    /// </summary>
+    Custom,
 }

@@ -129,4 +129,16 @@
   <data name="Validation_ImportConceptNotFound" xml:space="preserve">
     <value>Import from resource '{0}' targets concept '{1}', which it does not declare.</value>
   </data>
+  <data name="Validation_ReplaceReferenceMissing" xml:space="preserve">
+    <value>Adjustment policy '{0}' uses a ReplaceWithRule action without a notableDateRef.</value>
+  </data>
+  <data name="Validation_ReplaceReferenceNotFound" xml:space="preserve">
+    <value>Adjustment policy '{0}': ReplaceWithRule reference '{1}' resolves to no rule.</value>
+  </data>
+  <data name="Validation_ReplaceReferenceAmbiguous" xml:space="preserve">
+    <value>Adjustment policy '{0}': ReplaceWithRule reference '{1}' is ambiguous; specify a ruleRef.</value>
+  </data>
+  <data name="Validation_CustomHandlerKeyMissing" xml:space="preserve">
+    <value>Adjustment policy '{0}' uses a Custom action without a handlerKey.</value>
+  </data>
 </root>

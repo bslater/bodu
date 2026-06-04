@@ -91,6 +91,9 @@
     <xs:attribute name="maxSearchDays" type="xs:positiveInteger" use="optional" />
     <xs:attribute name="skipWeekends" type="xs:boolean" use="optional" />
     <xs:attribute name="skipNonWorkingDates" type="xs:boolean" use="optional" />
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="optional" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="optional" />
+    <xs:attribute name="handlerKey" type="xs:string" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="AdjustmentEmission">
@@ -415,7 +418,9 @@
       <xs:enumeration value="MoveToPreviousWeekday" />
       <xs:enumeration value="MoveToNextWorkingDay" />
       <xs:enumeration value="MoveToPreviousWorkingDay" />
+      <xs:enumeration value="ReplaceWithRule" />
       <xs:enumeration value="Suppress" />
+      <xs:enumeration value="Custom" />
     </xs:restriction>
   </xs:simpleType>
 

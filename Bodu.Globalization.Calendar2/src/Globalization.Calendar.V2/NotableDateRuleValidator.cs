@@ -24,10 +24,13 @@ internal static class NotableDateRuleValidator
     /// </summary>
     /// <param name="resource">The resource to validate.</param>
     /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
-    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
     public static void Validate(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms = null)
     {
         ValidateAdjustmentPolicyIds(resource, diagnostics);
+        ValidateAdjustmentActions(resource, diagnostics);
         ValidateNotableDates(resource, diagnostics, algorithms);
     }
 
@@ -53,11 +56,82 @@ internal static class NotableDateRuleValidator
     }
 
     /// <summary>
+    /// Reports adjustment policies whose reference or custom actions are missing required targets or resolve
+    /// ambiguously.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentActions(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            switch (policy.Action)
+            {
+                case AdjustmentAction.ReplaceWithRule:
+                    ValidateReplaceWithRule(resource, policy, diagnostics);
+                    break;
+
+                case AdjustmentAction.Custom when string.IsNullOrEmpty(policy.ActionHandlerKey):
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL2-HANDLER-MISSING",
+                        string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_CustomHandlerKeyMissing, policy.Id)));
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reports a <see cref="AdjustmentAction.ReplaceWithRule" /> action whose reference is missing, unresolved, or
+    /// ambiguous.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="policy">The policy to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateReplaceWithRule(NotableDateResource resource, AdjustmentPolicy policy, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        string? notableDateRef = policy.ActionNotableDateRef;
+        if (string.IsNullOrEmpty(notableDateRef))
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL2-REPLACE-MISSING",
+                string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_ReplaceReferenceMissing, policy.Id)));
+            return;
+        }
+
+        string reference = string.IsNullOrEmpty(policy.ActionRuleRef)
+            ? notableDateRef
+            : $"{notableDateRef}/{policy.ActionRuleRef}";
+
+        int matches = CountReferenceMatches(resource, notableDateRef, policy.ActionRuleRef);
+        if (matches == 0)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL2-REPLACE-MISSING",
+                string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_ReplaceReferenceNotFound, policy.Id, reference)));
+        }
+        else if (matches > 1)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL2-REPLACE-AMBIGUOUS",
+                string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_ReplaceReferenceAmbiguous, policy.Id, reference)));
+        }
+    }
+
+    /// <summary>
     /// Reports duplicate concept identifiers and validates each concept's rules.
     /// </summary>
     /// <param name="resource">The resource to validate.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
     private static void ValidateNotableDates(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms)
     {
         HashSet<string> knownPolicies = new(resource.AdjustmentPolicies.Select(p => p.Id), StringComparer.Ordinal);
@@ -85,7 +159,9 @@ internal static class NotableDateRuleValidator
     /// <param name="definition">The concept to validate.</param>
     /// <param name="knownPolicies">The set of declared adjustment-policy identifiers.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
     private static void ValidateRules(
         NotableDateResource resource,
         NotableDateDefinition definition,
@@ -129,7 +205,9 @@ internal static class NotableDateRuleValidator
     /// <param name="definition">The owning concept.</param>
     /// <param name="rule">The rule to validate.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
     private static void ValidateStrategyReferences(
         NotableDateResource resource,
         NotableDateDefinition definition,
