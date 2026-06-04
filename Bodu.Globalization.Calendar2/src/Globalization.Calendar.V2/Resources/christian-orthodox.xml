@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Eastern Orthodox Christian notable-date catalogue, migrated from the v1 christian-orthodox.xml to the v2 cookbook
+  schema. Orthodox Easter Sunday is the computed anchor (algorithm key "orthodox-easter", the Julian paschalion returned
+  on the civil Gregorian calendar, valid from the 1583 Gregorian reform); the movable feasts are offsets from it, and the
+  fixed-date observances of the Orthodox Christmas and Theophany cycle are plain Gregorian dates. This catalogue is
+  self-contained: the offset rules reference the local orthodox-easter-sunday anchor with rule id "default". A territory
+  pack imports the concepts it observes and supplies its own territory scope, category, non-working flag, and adjustments.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.christian-orthodox">
+
+  <NotableDates>
+
+    <NotableDate id="orthodox-easter-sunday" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-christmas-eve" displayName="Orthodox Christmas Eve" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-christmas-day" displayName="Orthodox Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-new-year" displayName="Orthodox New Year" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-epiphany" displayName="Orthodox Epiphany" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-clean-monday" displayName="Orthodox Clean Monday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-48" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-lazarus-saturday" displayName="Orthodox Lazarus Saturday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-palm-sunday" displayName="Orthodox Palm Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-holy-thursday" displayName="Orthodox Holy Thursday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-good-friday" displayName="Orthodox Good Friday" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-holy-saturday" displayName="Orthodox Holy Saturday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-bright-week" displayName="Orthodox Bright Week" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="7"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="0" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-easter-monday" displayName="Orthodox Easter Monday" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-ascension-day" displayName="Orthodox Ascension Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-pentecost" displayName="Orthodox Pentecost" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-pentecost-monday" displayName="Orthodox Pentecost Monday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
