@@ -36,12 +36,17 @@ public sealed class NotableDateService : INotableDateService
     private readonly INotableDateAlgorithmRegistry? _algorithms;
 
     /// <summary>
+    /// The custom same-day collision resolver, consulted when the policy is <see cref="CollisionPolicy.Custom" />.
+    /// </summary>
+    private readonly INotableDateCollisionResolver? _collisionResolver;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(NotableDateResource resource)
-        : this(resource, null)
+        : this(resource, null, null)
     {
     }
 
@@ -52,11 +57,28 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms)
+        : this(resource, algorithms, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry and
+    /// same-day collision resolver.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms, INotableDateCollisionResolver? collisionResolver)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         this._resource = resource;
         this._algorithms = algorithms;
+        this._collisionResolver = collisionResolver;
     }
 
     /// <inheritdoc />
@@ -83,12 +105,117 @@ public sealed class NotableDateService : INotableDateService
         foreach (ResolutionCandidate candidate in candidates)
             EmitCandidate(results, candidate, territory, occupied, range);
 
-        return results
+        List<NotableDate> ordered = results
             .OrderBy(r => r.Date)
             .ThenBy(r => r.NotableDateId, StringComparer.Ordinal)
             .ThenBy(r => r.RuleId, StringComparer.Ordinal)
-            .ToArray();
+            .ToList();
+
+        return this.ApplySameDayCollisionPolicy(ordered);
     }
+
+    /// <summary>
+    /// Applies the resource's same-day collision policy to occurrences sharing an emitted date, keeping all of them,
+    /// the highest-priority occurrence(s), the highest-category-then-priority occurrence(s), or whatever a custom
+    /// resolver selects.
+    /// </summary>
+    /// <param name="ordered">The date-ordered occurrences.</param>
+    /// <returns>The occurrences surviving the policy, preserving order.</returns>
+    private IReadOnlyList<NotableDate> ApplySameDayCollisionPolicy(List<NotableDate> ordered)
+    {
+        CollisionPolicy policy = this._resource.ResolutionPolicy.SameDayCollisionPolicy;
+        if (policy == CollisionPolicy.KeepAll || ordered.Count < 2)
+            return ordered;
+
+        bool higherWins = this._resource.ResolutionPolicy.PriorityDirection == PriorityDirection.HigherWins;
+        List<NotableDate> kept = new();
+
+        int index = 0;
+        while (index < ordered.Count)
+        {
+            DateOnly date = ordered[index].Date;
+            int end = index;
+            while (end < ordered.Count && ordered[end].Date == date)
+                end++;
+
+            if (end - index == 1)
+            {
+                kept.Add(ordered[index]);
+            }
+            else
+            {
+                kept.AddRange(ResolveCollision(date, ordered.GetRange(index, end - index), policy, higherWins));
+            }
+
+            index = end;
+        }
+
+        return kept;
+    }
+
+    /// <summary>
+    /// Selects the occurrences to keep from a single same-day collision group.
+    /// </summary>
+    /// <param name="date">The emitted date the occurrences share.</param>
+    /// <param name="group">The colliding occurrences.</param>
+    /// <param name="policy">The same-day collision policy.</param>
+    /// <param name="higherWins">Whether a higher priority value wins.</param>
+    /// <returns>The kept occurrences.</returns>
+    private IReadOnlyList<NotableDate> ResolveCollision(DateOnly date, List<NotableDate> group, CollisionPolicy policy, bool higherWins)
+    {
+        switch (policy)
+        {
+            case CollisionPolicy.HighestPriorityOnly:
+                return KeepBestPriority(group, higherWins);
+
+            case CollisionPolicy.CategoryPriority:
+            {
+                int bestRank = group.Max(n => CategoryRank(n.Category));
+                List<NotableDate> topCategory = group.Where(n => CategoryRank(n.Category) == bestRank).ToList();
+                return KeepBestPriority(topCategory, higherWins);
+            }
+
+            case CollisionPolicy.Custom:
+                return this._collisionResolver?.Resolve(date, group) ?? group;
+
+            default:
+                return group;
+        }
+    }
+
+    /// <summary>
+    /// Keeps the occurrences whose priority is the best in the group for the configured direction.
+    /// </summary>
+    /// <param name="group">The occurrences to filter.</param>
+    /// <param name="higherWins">Whether a higher priority value wins.</param>
+    /// <returns>The best-priority occurrences.</returns>
+    private static List<NotableDate> KeepBestPriority(List<NotableDate> group, bool higherWins)
+    {
+        int best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
+        return group.Where(n => n.Priority == best).ToList();
+    }
+
+    /// <summary>
+    /// Returns the collision-precedence rank of a category, where a higher rank wins a category collision.
+    /// </summary>
+    /// <param name="category">The category to rank.</param>
+    /// <returns>The precedence rank.</returns>
+    private static int CategoryRank(NotableDateCategory category) =>
+        category switch
+        {
+            NotableDateCategory.PublicHoliday => 11,
+            NotableDateCategory.BankHoliday => 10,
+            NotableDateCategory.Remembrance => 9,
+            NotableDateCategory.Religious => 8,
+            NotableDateCategory.Civic => 7,
+            NotableDateCategory.Seasonal => 6,
+            NotableDateCategory.Cultural => 5,
+            NotableDateCategory.School => 4,
+            NotableDateCategory.Regional => 3,
+            NotableDateCategory.Observance => 2,
+            NotableDateCategory.Other => 1,
+            _ => 0,
+        };
 
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException">
@@ -345,6 +472,7 @@ public sealed class NotableDateService : INotableDateService
             candidate.DisplayName,
             territory,
             candidate.Category,
+            candidate.Priority,
             candidate.DurationDays,
             candidate.NonWorking,
             candidate.Tags,

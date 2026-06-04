@@ -19,6 +19,7 @@ namespace Bodu.Globalization.Calendar.V2;
 /// <param name="DisplayName">The display name of the notable-date concept.</param>
 /// <param name="TerritoryCode">The territory the occurrence was resolved for.</param>
 /// <param name="Category">The effective category of the rule.</param>
+/// <param name="Priority">The selection priority of the rule that produced the occurrence.</param>
 /// <param name="DurationDays">The number of days the occurrence spans, inclusive of the first day.</param>
 /// <param name="IsNonWorkingDay">Whether the occurrence is a non-working day.</param>
 /// <param name="Tags">The tags declared by the rule that produced the occurrence.</param>
@@ -34,6 +35,7 @@ public sealed record NotableDate(
     string DisplayName,
     string TerritoryCode,
     NotableDateCategory Category,
+    int Priority,
     int DurationDays,
     bool IsNonWorkingDay,
     IReadOnlyList<string> Tags,
