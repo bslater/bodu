@@ -30,4 +30,26 @@ public enum AdjustmentTrigger
     /// The adjustment applies when the calculated occurrence falls on a Monday through Friday.
     /// </summary>
     IfWeekday,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls in a Gregorian leap year.
+    /// </summary>
+    IfLeapYear,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls before the policy's comparison month and day in the
+    /// same year.
+    /// </summary>
+    IfBeforeFixedDate,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls after the policy's comparison month and day in the
+    /// same year.
+    /// </summary>
+    IfAfterFixedDate,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence is the configured nth weekday of its month.
+    /// </summary>
+    IfNthOccurrenceInMonth,
 }

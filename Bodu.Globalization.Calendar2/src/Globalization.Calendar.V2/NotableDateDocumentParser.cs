@@ -182,10 +182,30 @@ internal static class NotableDateDocumentParser
                 ParseBool(action?.Attribute("skipNonWorkingDates")?.Value, false),
                 ParseEnum(emission?.Attribute("mode")?.Value, EmissionMode.ActualOnly),
                 (string?)emission?.Attribute("reason"),
-                ParseNullableBool(emission?.Attribute("nonWorking")?.Value)));
+                ParseNullableBool(emission?.Attribute("nonWorking")?.Value),
+                ParseTriggerMonth(trigger?.Attribute("month")?.Value),
+                ParseNullableInt(trigger?.Attribute("day")?.Value),
+                ParseNullableEnum<WeekOrdinal>(trigger?.Attribute("weekOrdinal")?.Value)));
         }
 
         return policies;
+    }
+
+    /// <summary>
+    /// Parses a trigger comparison month expressed as a full English month name or an integer between 1 and 12.
+    /// </summary>
+    /// <param name="value">The raw month value, or <see langword="null" />.</param>
+    /// <returns>The one-based month, or <see langword="null" /> when absent or invalid.</returns>
+    private static int? ParseTriggerMonth(string? value)
+    {
+        if (value is null)
+            return null;
+
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
+            return numeric;
+
+        int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+        return index >= 0 ? index + 1 : null;
     }
 
     /// <summary>

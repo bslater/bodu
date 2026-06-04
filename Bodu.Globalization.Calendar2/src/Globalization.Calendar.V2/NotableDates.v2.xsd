@@ -79,6 +79,9 @@
       <xs:element name="Weekday" type="nd:WeekdayRef" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
     <xs:attribute name="type" type="nd:adjustmentTrigger" use="required" />
+    <xs:attribute name="month" type="xs:string" use="optional" />
+    <xs:attribute name="day" type="nd:dayValue" use="optional" />
+    <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="AdjustmentAction">
@@ -376,6 +379,10 @@
       <xs:enumeration value="IfDayOfWeek" />
       <xs:enumeration value="IfWeekend" />
       <xs:enumeration value="IfWeekday" />
+      <xs:enumeration value="IfLeapYear" />
+      <xs:enumeration value="IfBeforeFixedDate" />
+      <xs:enumeration value="IfAfterFixedDate" />
+      <xs:enumeration value="IfNthOccurrenceInMonth" />
     </xs:restriction>
   </xs:simpleType>
 

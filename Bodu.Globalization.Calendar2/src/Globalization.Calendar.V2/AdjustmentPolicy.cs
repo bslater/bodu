@@ -54,6 +54,11 @@ public sealed class AdjustmentPolicy
     /// <param name="emission">The emission mode applied when the policy fires.</param>
     /// <param name="reason">The reason recorded against an observed occurrence, if any.</param>
     /// <param name="nonWorking">The non-working-day flag applied to the observed occurrence, if specified.</param>
+    /// <param name="triggerMonth">The comparison month for the fixed-date triggers, or <see langword="null" />.</param>
+    /// <param name="triggerDay">The comparison day for the fixed-date triggers, or <see langword="null" />.</param>
+    /// <param name="triggerWeekOrdinal">
+    /// The week ordinal for <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" />, or <see langword="null" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id" />, <paramref name="scope" />, or <paramref name="triggerWeekdays" /> is
     /// <see langword="null" />.
@@ -72,7 +77,10 @@ public sealed class AdjustmentPolicy
         bool skipNonWorkingDates,
         EmissionMode emission,
         string? reason,
-        bool? nonWorking)
+        bool? nonWorking,
+        int? triggerMonth = null,
+        int? triggerDay = null,
+        WeekOrdinal? triggerWeekOrdinal = null)
     {
         ThrowHelper.ThrowIfNull(id);
         ThrowHelper.ThrowIfNull(scope);
@@ -92,6 +100,9 @@ public sealed class AdjustmentPolicy
         this.Emission = emission;
         this.Reason = reason;
         this.NonWorking = nonWorking;
+        this.TriggerMonth = triggerMonth;
+        this.TriggerDay = triggerDay;
+        this.TriggerWeekOrdinal = triggerWeekOrdinal;
     }
 
     /// <summary>
@@ -182,6 +193,24 @@ public sealed class AdjustmentPolicy
     public bool? NonWorking { get; }
 
     /// <summary>
+    /// Gets the comparison month for the fixed-date triggers.
+    /// </summary>
+    /// <returns>The one-based month, or <see langword="null" /> when unused.</returns>
+    public int? TriggerMonth { get; }
+
+    /// <summary>
+    /// Gets the comparison day for the fixed-date triggers.
+    /// </summary>
+    /// <returns>The one-based day, or <see langword="null" /> when unused.</returns>
+    public int? TriggerDay { get; }
+
+    /// <summary>
+    /// Gets the week ordinal for <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" />.
+    /// </summary>
+    /// <returns>The configured ordinal, or <see langword="null" /> when unused.</returns>
+    public WeekOrdinal? TriggerWeekOrdinal { get; }
+
+    /// <summary>
     /// Determines whether the policy fires for an occurrence on the supplied date.
     /// </summary>
     /// <param name="date">The calculated occurrence date.</param>
@@ -193,8 +222,45 @@ public sealed class AdjustmentPolicy
             AdjustmentTrigger.IfDayOfWeek => this.TriggerWeekdays.Contains(date.DayOfWeek),
             AdjustmentTrigger.IfWeekend => date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday,
             AdjustmentTrigger.IfWeekday => date.DayOfWeek is not DayOfWeek.Saturday and not DayOfWeek.Sunday,
+            AdjustmentTrigger.IfLeapYear => DateTime.IsLeapYear(date.Year),
+            AdjustmentTrigger.IfBeforeFixedDate => this.ComparesFixedDate(date, before: true),
+            AdjustmentTrigger.IfAfterFixedDate => this.ComparesFixedDate(date, before: false),
+            AdjustmentTrigger.IfNthOccurrenceInMonth => this.IsNthOccurrenceInMonth(date),
             _ => false,
         };
+
+    /// <summary>
+    /// Compares an occurrence to the policy's fixed comparison month and day within the same year.
+    /// </summary>
+    /// <param name="date">The calculated occurrence date.</param>
+    /// <param name="before"><see langword="true" /> to test strictly before; otherwise strictly after.</param>
+    /// <returns>The comparison result, or <see langword="false" /> when the comparison date is unconfigured.</returns>
+    private bool ComparesFixedDate(DateOnly date, bool before)
+    {
+        if (this.TriggerMonth is not int month || this.TriggerDay is not int day || month is < 1 or > 12)
+            return false;
+
+        int clampedDay = Math.Min(day, DateTime.DaysInMonth(date.Year, month));
+        DateOnly pivot = new(date.Year, month, clampedDay);
+
+        return before ? date < pivot : date > pivot;
+    }
+
+    /// <summary>
+    /// Determines whether an occurrence is the configured nth weekday of its month.
+    /// </summary>
+    /// <param name="date">The calculated occurrence date.</param>
+    /// <returns><see langword="true" /> when the occurrence matches the configured ordinal and weekday.</returns>
+    private bool IsNthOccurrenceInMonth(DateOnly date)
+    {
+        if (this.TriggerWeekdays.Count == 0 || this.TriggerWeekOrdinal is not WeekOrdinal ordinal || date.DayOfWeek != this.TriggerWeekdays[0])
+            return false;
+
+        if (ordinal == WeekOrdinal.Last)
+            return date.Day + 7 > DateTime.DaysInMonth(date.Year, date.Month);
+
+        return ((date.Day - 1) / 7) + 1 == (int)ordinal;
+    }
 
     /// <summary>
     /// Applies the policy's action to the supplied occurrence date.
