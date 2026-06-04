@@ -1,0 +1,11 @@
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="fixture.easter">
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+  <NotableDates>
+    <NotableDate id="western-easter" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="x"><Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+    <NotableDate id="orthodox-easter" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="x"><Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

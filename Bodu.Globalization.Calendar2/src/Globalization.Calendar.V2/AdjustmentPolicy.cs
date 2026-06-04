@@ -30,6 +30,11 @@ public sealed class AdjustmentPolicy
     private const int DefaultMaxSearchDays = 7;
 
     /// <summary>
+    /// The shared empty parameter map used when a policy declares no custom-handler parameters.
+    /// </summary>
+    private static readonly IReadOnlyDictionary<string, string> s_emptyParameters = new Dictionary<string, string>(0);
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AdjustmentPolicy" /> class.
     /// </summary>
     /// <param name="id">The stable identifier of the policy.</param>
@@ -72,6 +77,9 @@ public sealed class AdjustmentPolicy
     /// <param name="triggerHandlerKey">
     /// The handler key for <see cref="AdjustmentTrigger.Custom" />, or <see langword="null" />.
     /// </param>
+    /// <param name="handlerParameters">
+    /// The author-supplied parameters passed to custom trigger and action handlers, or <see langword="null" /> for none.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id" />, <paramref name="scope" />, or <paramref name="triggerWeekdays" /> is
     /// <see langword="null" />.
@@ -97,7 +105,8 @@ public sealed class AdjustmentPolicy
         string? actionNotableDateRef = null,
         string? actionRuleRef = null,
         string? actionHandlerKey = null,
-        string? triggerHandlerKey = null)
+        string? triggerHandlerKey = null,
+        IReadOnlyDictionary<string, string>? handlerParameters = null)
     {
         ThrowHelper.ThrowIfNull(id);
         ThrowHelper.ThrowIfNull(scope);
@@ -124,6 +133,7 @@ public sealed class AdjustmentPolicy
         this.ActionRuleRef = actionRuleRef;
         this.ActionHandlerKey = actionHandlerKey;
         this.TriggerHandlerKey = triggerHandlerKey;
+        this.HandlerParameters = handlerParameters ?? s_emptyParameters;
     }
 
     /// <summary>
@@ -260,6 +270,12 @@ public sealed class AdjustmentPolicy
     /// </summary>
     /// <returns>The handler key, or <see langword="null" /> when unused.</returns>
     public string? TriggerHandlerKey { get; }
+
+    /// <summary>
+    /// Gets the author-supplied parameters passed to custom trigger and action handlers.
+    /// </summary>
+    /// <returns>The parameter map; empty when the policy declares none. The engine treats the values as opaque.</returns>
+    public IReadOnlyDictionary<string, string> HandlerParameters { get; }
 
     /// <summary>
     /// Determines whether the policy fires for an occurrence on the supplied date.

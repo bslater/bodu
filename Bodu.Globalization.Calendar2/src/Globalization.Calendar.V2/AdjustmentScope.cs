@@ -27,13 +27,24 @@ public sealed class AdjustmentScope
     /// <param name="categories">The categories the policy is limited to, if any.</param>
     /// <param name="notableDateRefs">The notable-date concepts the policy is limited to, if any.</param>
     /// <param name="ruleRefs">The rules the policy is limited to, if any.</param>
-    /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
+    /// <param name="fromYear">The first year the policy applies, or <see langword="null" /> for no lower bound.</param>
+    /// <param name="toYear">The last year the policy applies, or <see langword="null" /> for no upper bound.</param>
+    /// <param name="onlyYears">The explicit inclusion years, or <see langword="null" /> for no restriction.</param>
+    /// <param name="exceptYears">The explicit exclusion years, or <see langword="null" /> for no exclusions.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territories" />, <paramref name="calendars" />, <paramref name="categories" />,
+    /// <paramref name="notableDateRefs" />, or <paramref name="ruleRefs" /> is <see langword="null" />.
+    /// </exception>
     public AdjustmentScope(
         IEnumerable<string> territories,
         IEnumerable<CalendarSystem> calendars,
         IEnumerable<NotableDateCategory> categories,
         IEnumerable<string> notableDateRefs,
-        IEnumerable<string> ruleRefs)
+        IEnumerable<string> ruleRefs,
+        int? fromYear = null,
+        int? toYear = null,
+        IEnumerable<int>? onlyYears = null,
+        IEnumerable<int>? exceptYears = null)
     {
         ThrowHelper.ThrowIfNull(territories);
         ThrowHelper.ThrowIfNull(calendars);
@@ -46,6 +57,10 @@ public sealed class AdjustmentScope
         this.Categories = categories.ToArray();
         this.NotableDateRefs = notableDateRefs.ToArray();
         this.RuleRefs = ruleRefs.ToArray();
+        this.FromYear = fromYear;
+        this.ToYear = toYear;
+        this.OnlyYears = onlyYears?.ToArray() ?? Array.Empty<int>();
+        this.ExceptYears = exceptYears?.ToArray() ?? Array.Empty<int>();
     }
 
     /// <summary>
@@ -90,23 +105,66 @@ public sealed class AdjustmentScope
     public IReadOnlyList<string> RuleRefs { get; }
 
     /// <summary>
-    /// Determines whether the policy may apply to a rule with the supplied attributes.
+    /// Gets the first year the policy applies.
+    /// </summary>
+    /// <returns>The lower year bound, or <see langword="null" /> when unbounded.</returns>
+    public int? FromYear { get; }
+
+    /// <summary>
+    /// Gets the last year the policy applies.
+    /// </summary>
+    /// <returns>The upper year bound, or <see langword="null" /> when unbounded.</returns>
+    public int? ToYear { get; }
+
+    /// <summary>
+    /// Gets the explicit inclusion years.
+    /// </summary>
+    /// <returns>The years the policy is restricted to; empty when unrestricted.</returns>
+    public IReadOnlyList<int> OnlyYears { get; }
+
+    /// <summary>
+    /// Gets the explicit exclusion years.
+    /// </summary>
+    /// <returns>The years the policy is suppressed for; empty when there are none.</returns>
+    public IReadOnlyList<int> ExceptYears { get; }
+
+    /// <summary>
+    /// Determines whether the policy may apply to a rule with the supplied attributes in the supplied year.
     /// </summary>
     /// <param name="territory">The territory being resolved.</param>
     /// <param name="calendar">The calendar system of the rule.</param>
     /// <param name="category">The effective category of the rule.</param>
     /// <param name="notableDateId">The identifier of the rule's notable-date concept.</param>
     /// <param name="ruleId">The identifier of the rule.</param>
+    /// <param name="year">The Gregorian year of the occurrence the policy would adjust.</param>
     /// <returns>
     /// <see langword="true" /> if every populated dimension is satisfied; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// The year dimensions combine like a rule's applicability: <see cref="FromYear" /> and <see cref="ToYear" /> bound
+    /// an inclusive range, <see cref="OnlyYears" /> further restricts to an explicit set when non-empty, and
+    /// <see cref="ExceptYears" /> removes individual years.
+    /// </remarks>
     public bool Matches(
         string territory,
         CalendarSystem calendar,
         NotableDateCategory category,
         string notableDateId,
-        string ruleId)
+        string ruleId,
+        int year)
     {
+        if (this.FromYear.HasValue && year < this.FromYear.Value)
+            return false;
+
+        if (this.ToYear.HasValue && year > this.ToYear.Value)
+            return false;
+
+        if (this.OnlyYears.Count > 0 && !this.OnlyYears.Contains(year))
+            return false;
+
+        if (this.ExceptYears.Contains(year))
+            return false;
+
         if (this.Territories.Count > 0 && !this.Territories.Any(t => MatchesTerritory(t, territory)))
             return false;
 

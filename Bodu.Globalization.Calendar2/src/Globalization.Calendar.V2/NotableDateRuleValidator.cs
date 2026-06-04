@@ -30,9 +30,29 @@ internal static class NotableDateRuleValidator
     public static void Validate(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms = null)
     {
         ValidateAdjustmentPolicyIds(resource, diagnostics);
+        ValidateAdjustmentPolicyScopes(resource, diagnostics);
         ValidateAdjustmentActions(resource, diagnostics);
         ValidateAdjustmentTriggers(resource, diagnostics);
         ValidateNotableDates(resource, diagnostics, algorithms);
+    }
+
+    /// <summary>
+    /// Reports adjustment policies whose scope declares a lower year bound after its upper year bound.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentPolicyScopes(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            if (policy.Scope.FromYear is int from && policy.Scope.ToYear is int to && from > to)
+            {
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL2-YEARS",
+                    string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_AdjustmentScopeFromYearAfterToYear, policy.Id, from, to)));
+            }
+        }
     }
 
     /// <summary>

@@ -51,6 +51,11 @@ public sealed class NotableDateService : INotableDateService
     private readonly IAdjustmentTriggerHandlerRegistry? _triggerHandlers;
 
     /// <summary>
+    /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
+    /// </summary>
+    private readonly IReadOnlyList<INotableDateProvider>? _providers;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
@@ -136,6 +141,39 @@ public sealed class NotableDateService : INotableDateService
         INotableDateCollisionResolver? collisionResolver,
         IAdjustmentHandlerRegistry? handlers,
         IAdjustmentTriggerHandlerRegistry? triggerHandlers)
+        : this(resource, algorithms, collisionResolver, handlers, triggerHandlers, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with the full set of collaborators,
+    /// including code-first notable-date providers.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <param name="triggerHandlers">
+    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <param name="providers">
+    /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(
+        NotableDateResource resource,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers,
+        IAdjustmentTriggerHandlerRegistry? triggerHandlers,
+        IEnumerable<INotableDateProvider>? providers)
     {
         ThrowHelper.ThrowIfNull(resource);
 
@@ -144,6 +182,7 @@ public sealed class NotableDateService : INotableDateService
         this._collisionResolver = collisionResolver;
         this._handlers = handlers;
         this._triggerHandlers = triggerHandlers;
+        this._providers = providers?.ToArray();
     }
 
     /// <inheritdoc />
@@ -170,6 +209,8 @@ public sealed class NotableDateService : INotableDateService
         List<NotableDate> results = new();
         foreach (ResolutionCandidate candidate in candidates)
             this.EmitCandidate(results, candidate, territory, occupied, range, context);
+
+        this.AddProviderOccurrences(results, range, territory);
 
         List<NotableDate> ordered = results
             .OrderBy(r => r.Date)
@@ -561,7 +602,7 @@ public sealed class NotableDateService : INotableDateService
             if (policy is null)
                 continue;
 
-            if (policy.Scope.Matches(territory, rule.Applicability.Calendar, category, definition.Id, rule.Id))
+            if (policy.Scope.Matches(territory, rule.Applicability.Calendar, category, definition.Id, rule.Id, baseDate.Year))
                 candidates.Add(policy);
         }
 
@@ -648,5 +689,40 @@ public sealed class NotableDateService : INotableDateService
             candidate.Tags,
             adjustmentPolicyId,
             string.IsNullOrEmpty(reason) ? null : reason));
+    }
+
+    /// <summary>
+    /// Appends the occurrences contributed by any registered code-first providers whose span intersects the requested
+    /// window. Provider occurrences are emitted as supplied and bypass the adjustment, override, and specificity
+    /// pipeline; they take part only in the subsequent ordering and same-day collision policy.
+    /// </summary>
+    /// <param name="results">The accumulating result list.</param>
+    /// <param name="range">The inclusive range that controls inclusion.</param>
+    /// <param name="territory">The requested territory code.</param>
+    private void AddProviderOccurrences(List<NotableDate> results, DateRange range, string territory)
+    {
+        if (this._providers is null)
+            return;
+
+        foreach (INotableDateProvider provider in this._providers)
+        {
+            foreach (NotableDate occurrence in provider.GetNotableDates(range, territory))
+            {
+                if (occurrence is not null && SpanIntersects(occurrence, range))
+                    results.Add(occurrence);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a provider occurrence's inclusive span intersects the requested window.
+    /// </summary>
+    /// <param name="occurrence">The provider occurrence.</param>
+    /// <param name="range">The inclusive range.</param>
+    /// <returns><see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.</returns>
+    private static bool SpanIntersects(NotableDate occurrence, DateRange range)
+    {
+        int spanEndDayNumber = occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
+        return occurrence.Date <= range.EndDate && spanEndDayNumber >= range.StartDate.DayNumber;
     }
 }

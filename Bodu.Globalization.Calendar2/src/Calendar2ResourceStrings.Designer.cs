@@ -160,6 +160,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Adjustment policy '{0}': scope fromYear '{1}' must not be greater than toYear '{2}'.
+        /// </summary>
+        internal static string Validation_AdjustmentScopeFromYearAfterToYear {
+            get {
+                return ResourceManager.GetString("Validation_AdjustmentScopeFromYearAfterToYear", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': day '{2}' is out of range for month '{3}'..
         /// </summary>
         internal static string Validation_InvalidDayValue {

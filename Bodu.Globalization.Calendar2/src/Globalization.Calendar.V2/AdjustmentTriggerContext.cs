@@ -68,4 +68,11 @@ public sealed class AdjustmentTriggerContext
     /// </summary>
     /// <returns>The <see cref="StrategyResolutionContext" />.</returns>
     public StrategyResolutionContext ResolutionContext { get; }
+
+    /// <summary>
+    /// Gets the author-supplied parameters declared by the policy.
+    /// </summary>
+    /// <returns>The policy's <see cref="AdjustmentPolicy.HandlerParameters" />; empty when none are declared.</returns>
+    public IReadOnlyDictionary<string, string> Parameters =>
+        this.Policy.HandlerParameters;
 }

@@ -58,6 +58,7 @@
       <xs:element name="Trigger" type="nd:AdjustmentTrigger" minOccurs="1" maxOccurs="1" />
       <xs:element name="Action" type="nd:AdjustmentAction" minOccurs="1" maxOccurs="1" />
       <xs:element name="Emission" type="nd:AdjustmentEmission" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Parameters" type="nd:HandlerParameters" minOccurs="0" maxOccurs="1" />
     </xs:sequence>
     <xs:attribute name="id" type="nd:identifier" use="required" />
     <xs:attribute name="priority" type="xs:int" use="optional" default="0" />
@@ -71,7 +72,11 @@
       <xs:element name="Category" type="nd:CategoryRef" />
       <xs:element name="NotableDate" type="nd:NotableDateScopeRef" />
       <xs:element name="Rule" type="nd:RuleRef" />
+      <xs:element name="OnlyYear" type="nd:YearRef" />
+      <xs:element name="ExceptYear" type="nd:YearRef" />
     </xs:choice>
+    <xs:attribute name="fromYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="toYear" type="xs:unsignedShort" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="AdjustmentTrigger">
@@ -101,6 +106,17 @@
     <xs:attribute name="mode" type="nd:emissionMode" use="required" />
     <xs:attribute name="reason" type="xs:string" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="HandlerParameters">
+    <xs:sequence>
+      <xs:element name="Param" type="nd:HandlerParam" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HandlerParam">
+    <xs:attribute name="key" type="xs:string" use="required" />
+    <xs:attribute name="value" type="xs:string" use="required" />
   </xs:complexType>
 
   <xs:complexType name="NotableDates">
