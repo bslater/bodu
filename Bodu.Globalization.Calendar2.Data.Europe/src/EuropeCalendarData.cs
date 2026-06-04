@@ -55,7 +55,7 @@ public static class EuropeCalendarData
                 string.Format(CultureInfo.InvariantCulture, "No Europe calendar resource for territory '{0}'.", territory),
                 nameof(territory));
 
-        return NotableDateResourceLoader.Load(stream);
+        return NotableDateResourceLoader.Load(stream, CommonNotableDateResources.Resolver);
     }
 
     /// <summary>

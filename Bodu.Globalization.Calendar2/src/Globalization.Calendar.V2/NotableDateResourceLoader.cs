@@ -102,6 +102,24 @@ public static class NotableDateResourceLoader
         Load(ReadToEnd(stream));
 
     /// <summary>
+    /// Loads and validates a notable-date document from a stream of XML content, resolving imports through the supplied
+    /// resolver.
+    /// </summary>
+    /// <param name="stream">The stream containing the notable-date document XML.</param>
+    /// <param name="resourceResolver">A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.</param>
+    /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">The stream content is empty or white-space.</exception>
+    /// <exception cref="FormatException">The stream content is not well-formed XML.</exception>
+    /// <exception cref="NotableDateValidationException">
+    /// The notable-date document produced one or more error diagnostics.
+    /// </exception>
+    public static NotableDateResource Load(Stream stream, Func<string, string?> resourceResolver) =>
+        Load(ReadToEnd(stream), resourceResolver);
+
+    /// <summary>
     /// Loads and validates a notable-date document from its JSON content.
     /// </summary>
     /// <param name="json">The notable-date document JSON content.</param>
@@ -303,8 +321,11 @@ public static class NotableDateResourceLoader
         NotableDateCategory category = use.Category ?? concept.Category;
         bool nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
 
+        bool overrideTerritory = !string.IsNullOrEmpty(use.Territory);
+        bool overrideAdjustments = use.AdjustmentPolicyRefs is not null;
+
         IReadOnlyList<NotableDateRule> rules = concept.Rules;
-        if (!string.IsNullOrEmpty(use.Territory))
+        if (overrideTerritory || overrideAdjustments)
         {
             rules = concept.Rules
                 .Select(r => new NotableDateRule(
@@ -313,9 +334,19 @@ public static class NotableDateResourceLoader
                     r.Category,
                     r.NonWorking,
                     r.DurationDays,
-                    new RuleApplicability(r.Applicability.Calendar, r.Applicability.FromYear, r.Applicability.ToYear, new[] { use.Territory! }, r.Applicability.OnlyYears, r.Applicability.ExceptYears),
+                    overrideTerritory
+                        ? new RuleApplicability(
+                            r.Applicability.Calendar,
+                            r.Applicability.FromYear,
+                            r.Applicability.ToYear,
+                            new[] { use.Territory! },
+                            r.Applicability.OnlyYears,
+                            r.Applicability.ExceptYears,
+                            r.Applicability.EveryYears,
+                            r.Applicability.AnchorYear)
+                        : r.Applicability,
                     r.Strategy,
-                    r.AdjustmentPolicyRefs,
+                    overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs,
                     r.Tags))
                 .ToList();
         }

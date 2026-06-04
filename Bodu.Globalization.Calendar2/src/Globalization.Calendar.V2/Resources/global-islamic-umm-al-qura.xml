@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Islamic (Hijri) notable-date catalogue, Umm al-Qura variant, migrated from the v1 global-islamic-umm-al-qura.xml to the
+  v2 cookbook schema. It declares the same six observances as global-islamic but resolves them against the Saudi Arabian
+  Umm al-Qura calendar (System.Globalization.UmAlQuraCalendar), the calendar of record for the Arabian Peninsula. Each
+  observance is a fixed date swept onto the requested Gregorian year. Consumers wanting tabular/portable Hijri dates use
+  global-islamic; consumers serving the Gulf region use this catalogue. A territory pack imports the concepts it observes.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-islamic-umm-al-qura">
+
+  <NotableDates>
+
+    <NotableDate id="ramadan" displayName="Ramadan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="30"><Applicability calendar="UmmAlQura" />
+        <Strategy><Fixed month="9" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="eid-al-fitr" displayName="Eid al-Fitr" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="3"><Applicability calendar="UmmAlQura" />
+        <Strategy><Fixed month="10" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="eid-al-adha" displayName="Eid al-Adha" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="4"><Applicability calendar="UmmAlQura" />
+        <Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="islamic-new-year" displayName="Islamic New Year" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="UmmAlQura" />
+        <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="day-of-ashura" displayName="Day of Ashura" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="UmmAlQura" />
+        <Strategy><Fixed month="1" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="mawlid-al-nabi" displayName="Mawlid al-Nabi" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="UmmAlQura" />
+        <Strategy><Fixed month="3" day="12" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

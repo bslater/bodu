@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Buddhist notable-date catalogue, migrated from the v1 global-buddhist.xml to the v2 cookbook schema. The Theravada
+  full-moon observances Vesak and Asalha Puja and the Tibetan New Year Losar are computed astronomically by the engine's
+  lunar-phase algorithms (the same keys the shipping region packs use). Parinirvana Day and Bodhi Day follow their most
+  widely observed fixed Gregorian conventions. Vassa (the Rains Retreat) begins the day after Asalha Puja and is authored
+  as a one-day OffsetFromRule from the local asalha-puja anchor, so this catalogue is self-contained. A territory pack
+  imports the concepts it observes and supplies its own territory scope, category, non-working flag, and duration.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-buddhist">
+
+  <NotableDates>
+
+    <NotableDate id="parinirvana-day" displayName="Parinirvana Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="February" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="losar" displayName="Losar" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="3"><Strategy><Algorithm key="losar" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="vesak" displayName="Vesak" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="vesak" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="asalha-puja" displayName="Asalha Puja" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="asalha-puja" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="vassa" displayName="Vassa" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="90">
+        <Strategy><OffsetFromRule notableDateRef="asalha-puja" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="bodhi-day" displayName="Bodhi Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

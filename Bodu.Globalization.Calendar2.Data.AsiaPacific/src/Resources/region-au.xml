@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Australian notable-date resource, migrated from the v1 region-au.xml to the v2 cookbook schema. Same-name
-  per-subdivision concepts (Labour Day, King's Birthday) become one concept with a rule per subdivision; weekend
-  substitution uses the conflict-aware MoveToNextWorkingDay action. Western Australia and the Northern Territory
-  observe an Anzac Day substitute via narrower rules that shadow the national rule.
+  Australian notable-date resource, migrated from the v1 region-au.xml to the v2 cookbook schema. Shared civil and
+  Christian observances (New Year's Day, Easter, Christmas, Boxing Day) are imported from the common catalogues with
+  per-territory overrides; the territory-specific rules remain inline. Same-name per-subdivision concepts (Labour Day,
+  King's Birthday) become one concept with a rule per subdivision; weekend substitution uses the conflict-aware
+  MoveToNextWorkingDay action. Western Australia and the Northern Territory observe an Anzac Day substitute via narrower
+  rules that shadow the national rule.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.au">
 
@@ -22,33 +24,31 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
-  <NotableDates>
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="AU">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="AU" />
+      <Use notableDateRef="good-friday" territory="AU" />
+      <Use notableDateRef="easter-monday" territory="AU" />
+      <Use notableDateRef="christmas-day" territory="AU">
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+      </Use>
+      <Use notableDateRef="boxing-day" territory="AU">
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+      </Use>
+    </Import>
+  </Imports>
 
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="au"><Applicability><Territory code="AU" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
+  <NotableDates>
 
     <NotableDate id="australia-day" displayName="Australia Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="au"><Applicability><Territory code="AU" /></Applicability>
         <Strategy><Fixed month="January" day="26" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="au"><Applicability fromYear="1583"><Territory code="AU" /></Applicability>
-        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="au"><Applicability fromYear="1583"><Territory code="AU" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="au" offsetDays="-2" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="au"><Applicability fromYear="1583"><Territory code="AU" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="au" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="anzac-day" displayName="Anzac Day" category="Remembrance" defaultNonWorkingDay="true">
@@ -87,18 +87,6 @@
     <NotableDate id="reconciliation-day" displayName="Reconciliation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="act"><Applicability fromYear="2018"><Territory code="AU-ACT" /></Applicability>
         <Strategy><WeekdayNearDate month="May" day="27" dayOfWeek="Monday" direction="OnOrAfter" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="au"><Applicability><Territory code="AU" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="au"><Applicability><Territory code="AU" /></Applicability>
-        <Strategy><Fixed month="December" day="26" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

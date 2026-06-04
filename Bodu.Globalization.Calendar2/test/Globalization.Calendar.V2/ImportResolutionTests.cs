@@ -111,6 +111,80 @@ public sealed class ImportResolutionTests
     }
 
     /// <summary>
+    /// Verifies that an import use's adjustment override replaces the source rule's adjustments, so the imported
+    /// concept observes the territory's own substitute rather than the source's.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenUseOverridesAdjustments_ReplacesSourceAdjustment()
+    {
+        const string Region = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.region">
+          <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+          <AdjustmentPolicies>
+            <AdjustmentPolicy id="prev-friday" priority="100">
+              <Trigger type="IfWeekend" />
+              <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
+              <Emission mode="ObservedOnly" reason="Observed Friday" />
+            </AdjustmentPolicy>
+          </AdjustmentPolicies>
+          <Imports>
+            <Import resource="global">
+              <Use notableDateRef="christmas" territory="US">
+                <Adjustments><Adjustment policyRef="prev-friday" /></Adjustments>
+              </Use>
+            </Import>
+          </Imports>
+          <NotableDates />
+        </NotableDateResource>
+        """;
+
+        NotableDateService service = new(NotableDateResourceLoader.Load(Region, Resolver(("global", Global))));
+
+        // 25 December 2021 is a Saturday; the override moves the observance back to Friday 24 December rather than the
+        // source weekend-roll's next-working-day Monday 27 December.
+        NotableDate christmas = service.Resolve(new DateOnly(2021, 12, 24), "US").Single(r => r.NotableDateId == "christmas");
+        Assert.IsTrue(christmas.IsObserved);
+        Assert.AreEqual(new DateOnly(2021, 12, 25), christmas.ActualDate);
+        Assert.AreEqual(0, service.Resolve(new DateOnly(2021, 12, 27), "US").Count(r => r.NotableDateId == "christmas"), "source weekend-roll replaced");
+    }
+
+    /// <summary>
+    /// Verifies that two territories importing the same shared concept can each supply their own adjustment override,
+    /// so the shared Christmas observes on different days per territory.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenRegionsOverrideAdjustmentsDifferently_EachObservesItsOwn()
+    {
+        static string Make(string territory, string policyId, string action, string dayOfWeek) => $$"""
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.region">
+          <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+          <AdjustmentPolicies>
+            <AdjustmentPolicy id="{{policyId}}" priority="100">
+              <Trigger type="IfWeekend" />
+              <Action type="{{action}}" dayOfWeek="{{dayOfWeek}}" />
+              <Emission mode="ObservedOnly" reason="Observed" />
+            </AdjustmentPolicy>
+          </AdjustmentPolicies>
+          <Imports>
+            <Import resource="global">
+              <Use notableDateRef="christmas" territory="{{territory}}">
+                <Adjustments><Adjustment policyRef="{{policyId}}" /></Adjustments>
+              </Use>
+            </Import>
+          </Imports>
+          <NotableDates />
+        </NotableDateResource>
+        """;
+
+        NotableDateService us = new(NotableDateResourceLoader.Load(Make("US", "prev-friday", "MoveToPreviousWeekday", "Friday"), Resolver(("global", Global))));
+        NotableDateService gb = new(NotableDateResourceLoader.Load(Make("GB", "next-monday", "MoveToNextWeekday", "Monday"), Resolver(("global", Global))));
+
+        // The shared Christmas (Saturday 25 December 2021) rolls back to Friday in the US and forward to Monday in GB.
+        Assert.AreEqual(new DateOnly(2021, 12, 24), us.Resolve(new DateOnly(2021, 12, 24), "US").Single(r => r.NotableDateId == "christmas").Date);
+        Assert.AreEqual(new DateOnly(2021, 12, 27), gb.Resolve(new DateOnly(2021, 12, 27), "GB").Single(r => r.NotableDateId == "christmas").Date);
+    }
+
+    /// <summary>
     /// Verifies that an import cycle fails the load with a validation error.
     /// </summary>
     [TestMethod]

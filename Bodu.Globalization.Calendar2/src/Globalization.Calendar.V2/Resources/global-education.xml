@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global education and literacy notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-education.xml to the v2 cookbook schema. These are internationally recognized education, literacy, and
+  knowledge-related observances; they are not universally public holidays. A territory pack imports only the concepts
+  it observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through the
+  import <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id
+  "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-education">
+
+  <NotableDates>
+
+    <NotableDate id="international-day-of-education" displayName="International Day of Education" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2019" /><Strategy><Fixed month="January" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-book-and-copyright-day" displayName="World Book and Copyright Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-literacy-day" displayName="International Literacy Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="September" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-teachers-day" displayName="World Teachers' Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="safer-internet-day" displayName="Safer Internet Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2004" /><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Tuesday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

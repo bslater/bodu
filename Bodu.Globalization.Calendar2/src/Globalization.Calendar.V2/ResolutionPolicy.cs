@@ -30,18 +30,24 @@ public sealed class ResolutionPolicy
     /// </param>
     /// <param name="priorityDirection">The direction in which numeric priority is interpreted.</param>
     /// <param name="observedDateRangePolicy">The occurrence that controls range-query inclusion.</param>
+    /// <param name="workingWeek">
+    /// The working week that defines which weekdays are working days, or <see langword="null" /> for the default
+    /// Monday-to-Friday working week (a Saturday and Sunday weekend).
+    /// </param>
     public ResolutionPolicy(
         DuplicatePolicy duplicatePolicy = DuplicatePolicy.Error,
         CollisionPolicy sameDayCollisionPolicy = CollisionPolicy.KeepAll,
         CollisionPolicy spanCollisionPolicy = CollisionPolicy.KeepAll,
         PriorityDirection priorityDirection = PriorityDirection.HigherWins,
-        ObservedDateRangePolicy observedDateRangePolicy = ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion)
+        ObservedDateRangePolicy observedDateRangePolicy = ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion,
+        WeekPattern? workingWeek = null)
     {
         this.DuplicatePolicy = duplicatePolicy;
         this.SameDayCollisionPolicy = sameDayCollisionPolicy;
         this.SpanCollisionPolicy = spanCollisionPolicy;
         this.PriorityDirection = priorityDirection;
         this.ObservedDateRangePolicy = observedDateRangePolicy;
+        this.WorkingWeek = workingWeek ?? WeekPattern.MondayToFriday;
     }
 
     /// <summary>
@@ -73,6 +79,16 @@ public sealed class ResolutionPolicy
     /// </summary>
     /// <returns>The configured <see cref="V2.ObservedDateRangePolicy" />.</returns>
     public ObservedDateRangePolicy ObservedDateRangePolicy { get; }
+
+    /// <summary>
+    /// Gets the working week that defines which weekdays are working days, and therefore which are weekend
+    /// (non-working) days for weekend-sensitive triggers and working-day searches.
+    /// </summary>
+    /// <returns>
+    /// The configured working-week pattern; <see cref="WeekPattern.MondayToFriday" /> when the resource leaves it
+    /// unspecified.
+    /// </returns>
+    public WeekPattern WorkingWeek { get; }
 
     /// <summary>
     /// Gets a <see cref="ResolutionPolicy" /> populated with the recommended default values.

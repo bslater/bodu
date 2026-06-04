@@ -92,6 +92,8 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("IfDayOfWeek", AdjustmentTrigger.IfDayOfWeek)]
     [DataRow("IfWeekend", AdjustmentTrigger.IfWeekend)]
     [DataRow("IfWeekday", AdjustmentTrigger.IfWeekday)]
+    [DataRow("IfNonWorkingDay", AdjustmentTrigger.IfNonWorkingDay)]
+    [DataRow("IfWorkingDay", AdjustmentTrigger.IfWorkingDay)]
     [DataRow("IfLeapYear", AdjustmentTrigger.IfLeapYear)]
     [DataRow("IfBeforeFixedDate", AdjustmentTrigger.IfBeforeFixedDate)]
     [DataRow("IfAfterFixedDate", AdjustmentTrigger.IfAfterFixedDate)]

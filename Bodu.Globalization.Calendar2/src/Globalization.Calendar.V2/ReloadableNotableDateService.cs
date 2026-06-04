@@ -133,6 +133,14 @@ public sealed class ReloadableNotableDateService : INotableDateService
     public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter) =>
         this.Current().Resolve(range, territory, filter);
 
+    /// <inheritdoc />
+    public IReadOnlyList<string> GetSupportedTerritories() =>
+        this.Current().GetSupportedTerritories();
+
+    /// <inheritdoc />
+    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
+        this.Current().GetSupportedCalendars();
+
     /// <summary>
     /// Returns the inner service for the resource currently in effect, rebuilding it when the provider has reloaded.
     /// </summary>

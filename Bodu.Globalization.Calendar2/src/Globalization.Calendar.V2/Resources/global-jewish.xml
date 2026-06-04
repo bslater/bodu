@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Jewish (Hebrew) notable-date catalogue, migrated from the v1 global-jewish.xml to the v2 cookbook schema. Four
+  observances anchor the catalogue as fixed dates in the Hebrew lunisolar calendar (System.Globalization.HebrewCalendar)
+  swept onto the requested Gregorian year: Rosh Hashanah, Passover, Purim (the LastAdar alias resolves to Adar II in leap
+  years and Adar I otherwise), and Hanukkah. Three further observances are exact, invariant Hebrew-calendar offsets and
+  are authored as OffsetFromRule rules from those anchors so the dependent date cannot drift. The durationDays values
+  follow the traditional diaspora observance; a territory pack may override them. This catalogue is self-contained.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-jewish">
+
+  <NotableDates>
+
+    <NotableDate id="purim" displayName="Purim" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Hebrew" />
+        <Strategy><Fixed month="LastAdar" day="14" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="passover" displayName="Passover" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="7"><Applicability calendar="Hebrew" />
+        <Strategy><Fixed month="Nisan" day="15" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="rosh-hashanah" displayName="Rosh Hashanah" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="2"><Applicability calendar="Hebrew" />
+        <Strategy><Fixed month="Tishri" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="hanukkah" displayName="Hanukkah" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="8"><Applicability calendar="Hebrew" />
+        <Strategy><Fixed month="Kislev" day="25" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="shavuot" displayName="Shavuot" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="passover" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="yom-kippur" displayName="Yom Kippur" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="sukkot" displayName="Sukkot" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="7">
+        <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

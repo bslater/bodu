@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Anchor notable-date catalogue, migrated from the v1 global-anchors.xml to the v2 cookbook schema. These concepts
+  define base dates intended for use as OffsetFromRule anchors in other catalogues, and as stand-alone reference dates.
+  Orthodox Easter is the computed Julian paschalion anchor (algorithm key "orthodox-easter"); Lunar New Year is the
+  first day of the first month of the Chinese lunisolar calendar (its fifteen-day festival span carried as durationDays);
+  Ramadan Start is the first day of the ninth month of the tabular Hijri calendar, swept onto the requested Gregorian
+  year. A territory pack imports the concepts it needs and supplies its own territory scope and overrides.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-anchors">
+
+  <NotableDates>
+
+    <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="15"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ramadan-start" displayName="Ramadan Start" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="30"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="9" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="orthodox-easter" displayName="Orthodox Easter" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

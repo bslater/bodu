@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Aggregate notable-date catalogue, migrated from the v1 global-all.xml to the v2 cookbook schema. It imports every other
+  bundled common catalogue with no <Use> directives, so each import contributes its full concept set, producing a broad,
+  country-neutral catalogue for consumers that want every shared observance at once. As in v1, this aggregate is the
+  appropriate place for import-all because it is intentionally broad; territory packs should cherry-pick individual
+  concepts instead. Concept identifiers that appear in more than one source (for example the Hijri festivals shared by the
+  tabular and Umm al-Qura Islamic catalogues, or Lunar New Year shared by the anchors and lunar catalogues) are
+  deduplicated on import, first source winning. The local <NotableDates /> is intentionally empty.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-all">
+
+  <Imports>
+    <Import resource="global-core" />
+    <Import resource="global-anchors" />
+    <Import resource="christian-western" />
+    <Import resource="christian-orthodox" />
+    <Import resource="global-cultural" />
+    <Import resource="global-education" />
+    <Import resource="global-environment" />
+    <Import resource="global-family" />
+    <Import resource="global-family-social" />
+    <Import resource="global-food" />
+    <Import resource="global-health" />
+    <Import resource="global-remembrance" />
+    <Import resource="global-science" />
+    <Import resource="global-social" />
+    <Import resource="global-un" />
+    <Import resource="global-animals" />
+    <Import resource="global-multiday-normalization" />
+    <Import resource="global-lunar" />
+    <Import resource="global-islamic" />
+    <Import resource="global-islamic-umm-al-qura" />
+    <Import resource="global-jewish" />
+    <Import resource="global-hindu" />
+    <Import resource="global-buddhist" />
+    <Import resource="global-persian" />
+    <Import resource="default-minimal" />
+  </Imports>
+
+  <NotableDates />
+
+</NotableDateResource>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global civil notable-date catalogue (Western / Gregorian calendar), migrated from the v1 global-core.xml to the v2
+  cookbook schema. These are commonly recognized civil observances, not universally public holidays. A territory pack
+  imports only the concepts it observes and supplies its own territory scope, category, non-working flag, and weekend
+  adjustment through the import <Use> directive; the shared concepts therefore carry the bare calculation strategy and
+  a representative default, never a territory-specific adjustment.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-core">
+
+  <NotableDates>
+
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="workers-day" displayName="International Workers' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="new-years-eve" displayName="New Year's Eve" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

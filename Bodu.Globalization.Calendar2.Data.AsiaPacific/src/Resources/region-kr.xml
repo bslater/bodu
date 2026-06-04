@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  South Korean notable-date resource, migrated from the v1 region-kr.xml to the v2 cookbook schema. Seollal and Chuseok
-  are expressed as fixed dates in the Chinese lunisolar calendar; Buddha's Birthday is the eighth day of the fourth
-  lunar month (the Korean reckoning, more accurate here than the full-moon Vesak the v1 file imported). Seollal and
-  Chuseok carry their statutory three-day durationDays span.
+  South Korean notable-date resource, migrated from the v1 region-kr.xml to the v2 cookbook schema. The shared New Year's
+  Day and Christmas Day are imported from the common global-core and christian-western catalogues; the national and lunar
+  holidays remain inline. Seollal and Chuseok are expressed as fixed dates in the Chinese lunisolar calendar; Buddha's
+  Birthday is the eighth day of the fourth lunar month (the Korean reckoning, more accurate here than the full-moon Vesak
+  the v1 file imported). Seollal and Chuseok carry their statutory three-day durationDays span.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.kr">
 
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDates>
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="KR" />
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="christmas-day" territory="KR" />
+    </Import>
+  </Imports>
 
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="kr"><Applicability><Territory code="KR" /></Applicability><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
+  <NotableDates>
 
     <NotableDate id="seollal" displayName="Seollal" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="kr" durationDays="3"><Applicability calendar="ChineseLunisolar"><Territory code="KR" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
@@ -53,10 +59,6 @@
 
     <NotableDate id="hangul-day" displayName="Hangul Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="kr"><Applicability><Territory code="KR" /></Applicability><Strategy><Fixed month="October" day="9" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="kr"><Applicability><Territory code="KR" /></Applicability><Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

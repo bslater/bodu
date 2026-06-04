@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global social and humanitarian notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-social.xml to the v2 cookbook schema. These are internationally recognized social, humanitarian, and
+  community-related observances; they are not universally public holidays. A territory pack imports only the concepts
+  it observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through the
+  import <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id
+  "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-social">
+
+  <NotableDates>
+
+    <NotableDate id="world-day-of-social-justice" displayName="World Day of Social Justice" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2009" /><Strategy><Fixed month="February" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-of-families" displayName="International Day of Families" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="May" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-against-homophobia-biphobia-and-transphobia" displayName="International Day Against Homophobia, Biphobia and Transphobia" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2005" /><Strategy><Fixed month="May" day="17" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="pride-month" displayName="Pride Month" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="30"><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-day-against-child-labour" displayName="World Day Against Child Labour" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2002" /><Strategy><Fixed month="June" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-refugee-day" displayName="World Refugee Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="June" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="nelson-mandela-international-day" displayName="Nelson Mandela International Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2010" /><Strategy><Fixed month="July" day="18" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-of-charity" displayName="International Day of Charity" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="September" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-of-older-persons" displayName="International Day of Older Persons" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-of-the-girl-child" displayName="International Day of the Girl Child" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="October" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-kindness-day" displayName="World Kindness Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1998" /><Strategy><Fixed month="November" day="13" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-mens-day" displayName="International Men's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1999" /><Strategy><Fixed month="November" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="universal-childrens-day" displayName="Universal Children's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1954" /><Strategy><Fixed month="November" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-of-persons-with-disabilities" displayName="International Day of Persons with Disabilities" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Persian (Solar Hijri) notable-date catalogue, migrated from the v1 global-persian.xml to the v2 cookbook schema. The
+  observances are expressed as fixed dates in the Persian calendar (System.Globalization.PersianCalendar) swept onto the
+  requested Gregorian year; sweepCalendarYears is required because the Persian year number differs from the Gregorian
+  year number by roughly 621. The .NET PersianCalendar yields the correct vernal-equinox-aligned date across the years
+  that matter to most consumers (roughly 1925-2088 CE). A territory pack imports the concepts it observes and supplies
+  its own territory scope, category, non-working flag, and duration.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-persian">
+
+  <NotableDates>
+
+    <NotableDate id="nowruz" displayName="Nowruz" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="13"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="sizdah-bedar" displayName="Sizdah Bedar" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="1" day="13" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="yalda-night" displayName="Yalda Night" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="9" day="30" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

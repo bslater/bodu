@@ -4,9 +4,10 @@
 
   Models fixed-date, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth,
   OffsetFromRule, and Algorithm strategies; reusable adjustment policies with explicit
-  trigger, action, and emission; territory filtering; and ID-targeted override
-  operations. Imports, inline adjustments, and non-Gregorian calendars are reserved for
-  a later phase.
+  trigger, action, and emission; territory and year filtering; cross-resource imports;
+  non-Gregorian calendars (Hijri, Umm al-Qura, Hebrew, Persian, Chinese lunisolar); and
+  ID-targeted override operations. Adjustments are referenced by policy id; inline
+  per-rule adjustment definitions are intentionally not modelled.
 -->
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -44,6 +45,7 @@
     <xs:attribute name="spanCollisionPolicy" type="nd:collisionPolicy" use="optional" default="KeepAll" />
     <xs:attribute name="priorityDirection" type="nd:priorityDirection" use="optional" default="HigherWins" />
     <xs:attribute name="observedDateRangePolicy" type="nd:observedDateRangePolicy" use="optional" default="ObservedOccurrenceControlsInclusion" />
+    <xs:attribute name="workingDays" type="nd:weekPattern" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="AdjustmentPolicies">
@@ -139,6 +141,9 @@
   </xs:complexType>
 
   <xs:complexType name="ImportUse">
+    <xs:sequence>
+      <xs:element name="Adjustments" type="nd:RuleAdjustments" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
     <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
     <xs:attribute name="as" type="nd:identifier" use="optional" />
     <xs:attribute name="territory" type="nd:territoryCode" use="optional" />
@@ -198,6 +203,8 @@
     <xs:attribute name="calendar" type="nd:calendarName" use="optional" default="Gregorian" />
     <xs:attribute name="fromYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="toYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="everyYears" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="anchorYear" type="xs:unsignedShort" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="Strategy">
@@ -399,11 +406,26 @@
       <xs:enumeration value="IfDayOfWeek" />
       <xs:enumeration value="IfWeekend" />
       <xs:enumeration value="IfWeekday" />
+      <xs:enumeration value="IfNonWorkingDay" />
+      <xs:enumeration value="IfWorkingDay" />
       <xs:enumeration value="IfLeapYear" />
       <xs:enumeration value="IfBeforeFixedDate" />
       <xs:enumeration value="IfAfterFixedDate" />
       <xs:enumeration value="IfNthOccurrenceInMonth" />
       <xs:enumeration value="Custom" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="weekPattern">
+    <xs:annotation>
+      <xs:documentation>
+        A seven-character working-week pattern in Sunday-first binary form, where each position from Sunday to Saturday
+        is '1' for a working day and '0' for a non-working (weekend) day. For example "0111110" denotes a
+        Monday-to-Friday working week and "1111100" a Sunday-to-Thursday working week.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[01]{7}" />
     </xs:restriction>
   </xs:simpleType>
 

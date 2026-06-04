@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global health notable-date catalogue (Western / Gregorian calendar), migrated from the v1 global-health.xml to the v2
+  cookbook schema. These are internationally recognized health and public-health observances; they are not universally
+  public holidays. A territory pack imports only the concepts it observes and supplies its own territory scope,
+  category, non-working flag, and weekend adjustment through the import <Use> directive; the shared concepts therefore
+  carry the bare calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-health">
+
+  <NotableDates>
+
+    <NotableDate id="world-cancer-day" displayName="World Cancer Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2000" /><Strategy><Fixed month="February" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-autism-awareness-day" displayName="World Autism Awareness Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2008" /><Strategy><Fixed month="April" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-health-day" displayName="World Health Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="April" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-no-tobacco-day" displayName="World No Tobacco Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1987" /><Strategy><Fixed month="May" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-blood-donor-day" displayName="World Blood Donor Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="June" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-hepatitis-day" displayName="World Hepatitis Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2008" /><Strategy><Fixed month="July" day="28" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-suicide-prevention-day" displayName="World Suicide Prevention Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2003" /><Strategy><Fixed month="September" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-mental-health-day" displayName="World Mental Health Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-diabetes-day" displayName="World Diabetes Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1991" /><Strategy><Fixed month="November" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-aids-day" displayName="World AIDS Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="breast-cancer-awareness-month" displayName="Breast Cancer Awareness Month" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="31"><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="movember" displayName="Movember" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="30"><Applicability fromYear="2003" /><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

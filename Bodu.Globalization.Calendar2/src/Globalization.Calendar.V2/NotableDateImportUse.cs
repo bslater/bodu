@@ -16,9 +16,14 @@ namespace Bodu.Globalization.Calendar.V2;
 /// <param name="NonWorking">
 /// An override for the imported concept's default non-working flag, or <see langword="null" /> to keep it.
 /// </param>
+/// <param name="AdjustmentPolicyRefs">
+/// The adjustment policy ids that replace those on every rule of the imported concept, or <see langword="null" /> to
+/// keep the source rules' adjustments. An empty list clears the source adjustments.
+/// </param>
 internal sealed record NotableDateImportUse(
     string NotableDateRef,
     string? As,
     string? Territory,
     NotableDateCategory? Category,
-    bool? NonWorking);
+    bool? NonWorking,
+    IReadOnlyList<string>? AdjustmentPolicyRefs);

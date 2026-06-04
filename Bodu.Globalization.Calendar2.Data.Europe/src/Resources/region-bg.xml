@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  BG notable-date resource, migrated from the v1 region-bg.xml to the v2 cookbook schema by
-  tools/migrate_europe.py. UseFrom imports (europe-common, Christian, and global observances) are flattened
-  into self-contained rules.
+  BG notable-date resource, migrated from the v1 region-bg.xml to the v2 cookbook schema. Shared civil and Christian
+  observances are imported from the global-core and christian-western catalogues; the Orthodox Easter cycle and the
+  remaining entries are territory-local concepts defined inline.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.bg">
 
@@ -16,27 +16,23 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
-  <NotableDates>
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="BG">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="christmas-eve" territory="BG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="BG" />
+    </Import>
+  </Imports>
 
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
+  <NotableDates>
 
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-eve" displayName="Christmas Eve" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
-        <Strategy><Fixed month="December" day="24" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">

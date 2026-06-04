@@ -52,7 +52,7 @@ public static class AmericasCalendarData
                 string.Format(CultureInfo.InvariantCulture, "No Americas calendar resource for territory '{0}'.", territory),
                 nameof(territory));
 
-        return NotableDateResourceLoader.Load(stream);
+        return NotableDateResourceLoader.Load(stream, CommonNotableDateResources.Resolver);
     }
 
     /// <summary>

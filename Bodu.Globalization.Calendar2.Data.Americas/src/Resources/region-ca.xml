@@ -22,13 +22,26 @@
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
-  <NotableDates>
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="CA">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="good-friday" territory="CA" />
+      <Use notableDateRef="easter-sunday" territory="CA" />
+      <Use notableDateRef="easter-monday" territory="CA" />
+      <Use notableDateRef="christmas-day" territory="CA">
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+      </Use>
+      <Use notableDateRef="boxing-day" territory="CA">
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+      </Use>
+    </Import>
+  </Imports>
 
-    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="January" day="1" /></Strategy>
-        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
+  <NotableDates>
 
     <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
@@ -63,21 +76,6 @@
     <NotableDate id="nova-scotia-heritage-day" displayName="Nova Scotia Heritage Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ns"><Applicability fromYear="2015"><Territory code="CA-NS" /></Applicability>
         <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ca"><Applicability fromYear="1583"><Territory code="CA" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="ca" offsetDays="-2" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability fromYear="1583"><Territory code="CA" /></Applicability>
-        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ca"><Applicability fromYear="1583"><Territory code="CA" /></Applicability>
-        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="ca" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
@@ -168,18 +166,6 @@
       <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
         <Strategy><Fixed month="November" day="11" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="December" day="25" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="December" day="26" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

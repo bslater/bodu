@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hindu notable-date catalogue, migrated from the v1 global-hindu.xml to the v2 cookbook schema. The solar harvest
+  festivals Makar Sankranti and Pongal are fixed on 14 January by modern civil-calendar convention; the lunisolar
+  festivals are computed by the engine's solar-anchored Hindu lunar algorithm (accurate to within a day or two, with
+  intercalary years handled), reusing the algorithm keys proven by the shipping India region pack. Saraswati Puja is
+  observed on Vasant Panchami and therefore uses the vasant-panchami algorithm. Onam is omitted because it is fixed by a
+  nakshatra rather than a tithi and is not modelled by the lunar algorithm. A territory pack imports what it observes.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-hindu">
+
+  <NotableDates>
+
+    <NotableDate id="makar-sankranti" displayName="Makar Sankranti" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="pongal" displayName="Pongal" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="4"><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="saraswati-puja" displayName="Saraswati Puja" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="vasant-panchami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="maha-shivaratri" displayName="Maha Shivaratri" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="maha-shivaratri" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="holi" displayName="Holi" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="2"><Strategy><Algorithm key="holi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ram-navami" displayName="Ram Navami" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="ram-navami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="raksha-bandhan" displayName="Raksha Bandhan" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="raksha-bandhan" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="janmashtami" displayName="Janmashtami" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="janmashtami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ganesh-chaturthi" displayName="Ganesh Chaturthi" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="10"><Strategy><Algorithm key="ganesh-chaturthi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="navaratri" displayName="Navaratri" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="9"><Strategy><Algorithm key="navaratri" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="dussehra" displayName="Dussehra" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="dussehra" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="karva-chauth" displayName="Karva Chauth" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="karva-chauth" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="diwali" displayName="Diwali" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="5"><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

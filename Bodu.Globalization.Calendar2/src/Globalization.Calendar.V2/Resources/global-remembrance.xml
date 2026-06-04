@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global remembrance notable-date catalogue (Western / Gregorian calendar), migrated from the v1 global-remembrance.xml
+  to the v2 cookbook schema. These are internationally recognized remembrance observances; they are not universally
+  public holidays. A territory pack imports only the concepts it observes and supplies its own territory scope,
+  category, non-working flag, and weekend adjustment through the import <Use> directive; the shared concepts therefore
+  carry the bare calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-remembrance">
+
+  <NotableDates>
+
+    <NotableDate id="international-holocaust-remembrance-day" displayName="International Holocaust Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="27" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-for-the-elimination-of-racial-discrimination" displayName="International Day for the Elimination of Racial Discrimination" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1966" /><Strategy><Fixed month="March" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-day-for-the-remembrance-of-the-slave-trade-and-its-abolition" displayName="International Day for the Remembrance of the Slave Trade and its Abolition" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1998" /><Strategy><Fixed month="August" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="remembrance-day" displayName="Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

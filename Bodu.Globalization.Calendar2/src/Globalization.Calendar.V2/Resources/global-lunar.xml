@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Chinese and East Asian lunisolar notable-date catalogue, migrated from the v1 global-lunar.xml to the v2 cookbook
+  schema. The lunar festivals are expressed as fixed dates in the Chinese lunisolar calendar
+  (System.Globalization.ChineseLunisolarCalendar); skipLeapMonth advances the conventional ordinal month past any
+  intercalary leap month in the same year. Qingming uses the engine's astronomical solar-term algorithm; the Winter
+  Solstice festival is approximated by its most frequent civil Gregorian date. Lantern Festival is a fixed fourteen-day
+  OffsetFromRule from the local Lunar New Year anchor, so this catalogue is self-contained. These patterns and the
+  qingming key are the same ones the shipping China region pack uses. A territory pack imports what it observes.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-lunar">
+
+  <NotableDates>
+
+    <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="lantern-festival" displayName="Lantern Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="lunar-new-year" ruleRef="default" offsetDays="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="qingming-festival" displayName="Qingming Festival" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="qingming" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="dragon-boat-festival" displayName="Dragon Boat Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="5" day="5" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="qixi-festival" displayName="Qixi Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="7" day="7" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="hungry-ghost-festival" displayName="Hungry Ghost Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="7" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="mid-autumn-festival" displayName="Mid-Autumn Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="double-ninth-festival" displayName="Double Ninth Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="9" day="9" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="winter-solstice-festival" displayName="Winter Solstice Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

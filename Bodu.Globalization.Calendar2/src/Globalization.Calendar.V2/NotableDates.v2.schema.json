@@ -56,7 +56,8 @@
     "emissionMode": {
       "enum": [ "ActualOnly", "ObservedOnly", "ActualAndObserved", "ObservedAsAdditional", "Suppress" ]
     },
-    "adjustmentTrigger": { "enum": [ "Always", "IfDayOfWeek", "IfWeekend", "IfWeekday" ] },
+    "adjustmentTrigger": { "enum": [ "Always", "IfDayOfWeek", "IfWeekend", "IfWeekday", "IfNonWorkingDay", "IfWorkingDay" ] },
+    "weekPattern": { "type": "string", "pattern": "^[01]{7}$" },
     "weekOrdinal": { "enum": [ "First", "Second", "Third", "Fourth", "Fifth", "Last" ] },
     "weekdayProximity": { "enum": [ "Before", "OnOrBefore", "Nearest", "OnOrAfter", "After" ] },
     "adjustmentAction": {
@@ -76,7 +77,8 @@
         "sameDayCollisionPolicy": { "$ref": "#/$defs/collisionPolicy" },
         "spanCollisionPolicy": { "$ref": "#/$defs/collisionPolicy" },
         "priorityDirection": { "$ref": "#/$defs/priorityDirection" },
-        "observedDateRangePolicy": { "$ref": "#/$defs/observedDateRangePolicy" }
+        "observedDateRangePolicy": { "$ref": "#/$defs/observedDateRangePolicy" },
+        "workingDays": { "$ref": "#/$defs/weekPattern" }
       }
     },
     "adjustmentScope": {
@@ -142,7 +144,9 @@
         "toYear": { "type": "integer", "minimum": 0, "maximum": 65535 },
         "territories": { "type": "array", "items": { "$ref": "#/$defs/territoryCode" } },
         "onlyYears": { "type": "array", "items": { "type": "integer" } },
-        "exceptYears": { "type": "array", "items": { "type": "integer" } }
+        "exceptYears": { "type": "array", "items": { "type": "integer" } },
+        "everyYears": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "anchorYear": { "type": "integer", "minimum": 0, "maximum": 65535 }
       }
     },
     "fixedStrategy": {
