@@ -303,8 +303,11 @@ public static class NotableDateResourceLoader
         NotableDateCategory category = use.Category ?? concept.Category;
         bool nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
 
+        bool overrideTerritory = !string.IsNullOrEmpty(use.Territory);
+        bool overrideAdjustments = use.AdjustmentPolicyRefs is not null;
+
         IReadOnlyList<NotableDateRule> rules = concept.Rules;
-        if (!string.IsNullOrEmpty(use.Territory))
+        if (overrideTerritory || overrideAdjustments)
         {
             rules = concept.Rules
                 .Select(r => new NotableDateRule(
@@ -313,9 +316,19 @@ public static class NotableDateResourceLoader
                     r.Category,
                     r.NonWorking,
                     r.DurationDays,
-                    new RuleApplicability(r.Applicability.Calendar, r.Applicability.FromYear, r.Applicability.ToYear, new[] { use.Territory! }, r.Applicability.OnlyYears, r.Applicability.ExceptYears),
+                    overrideTerritory
+                        ? new RuleApplicability(
+                            r.Applicability.Calendar,
+                            r.Applicability.FromYear,
+                            r.Applicability.ToYear,
+                            new[] { use.Territory! },
+                            r.Applicability.OnlyYears,
+                            r.Applicability.ExceptYears,
+                            r.Applicability.EveryYears,
+                            r.Applicability.AnchorYear)
+                        : r.Applicability,
                     r.Strategy,
-                    r.AdjustmentPolicyRefs,
+                    overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs,
                     r.Tags))
                 .ToList();
         }

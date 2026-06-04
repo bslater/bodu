@@ -92,13 +92,31 @@ internal static class NotableDateDocumentParser
                     (string?)use.Attribute("as"),
                     (string?)use.Attribute("territory"),
                     ParseNullableEnum<NotableDateCategory>(use.Attribute("category")?.Value),
-                    ParseNullableBool(use.Attribute("nonWorking")?.Value)))
+                    ParseNullableBool(use.Attribute("nonWorking")?.Value),
+                    ParseUseAdjustments(use)))
                 .ToList();
 
             imports.Add(new NotableDateImport((string?)import.Attribute("resource") ?? string.Empty, uses));
         }
 
         return imports;
+    }
+
+    /// <summary>
+    /// Parses the optional adjustment override declared by an import <c>Use</c>, returning the replacement policy ids
+    /// when an <c>Adjustments</c> element is present and <see langword="null" /> when it is absent.
+    /// </summary>
+    /// <param name="use">The <c>Use</c> element.</param>
+    /// <returns>The replacement adjustment policy ids, or <see langword="null" /> to keep the source rules' adjustments.</returns>
+    private static IReadOnlyList<string>? ParseUseAdjustments(XElement use)
+    {
+        XElement? adjustments = use.Element(s_ns + "Adjustments");
+        if (adjustments is null)
+            return null;
+
+        return adjustments.Elements(s_ns + "Adjustment")
+            .Select(adjustment => (string?)adjustment.Attribute("policyRef") ?? string.Empty)
+            .ToList();
     }
 
     /// <summary>

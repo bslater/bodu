@@ -70,7 +70,10 @@ internal static class NotableDateJsonDocumentParser
                         GetString(use, "as"),
                         GetString(use, "territory"),
                         ParseNullableEnum<NotableDateCategory>(GetString(use, "category")),
-                        GetNullableBool(use, "nonWorking")));
+                        GetNullableBool(use, "nonWorking"),
+                        GetProperty(use, "adjustments") is JsonElement adjustments && adjustments.ValueKind == JsonValueKind.Array
+                            ? adjustments.EnumerateArray().Select(adjustment => adjustment.GetString() ?? string.Empty).ToList()
+                            : null));
                 }
             }
 

@@ -141,6 +141,9 @@
   </xs:complexType>
 
   <xs:complexType name="ImportUse">
+    <xs:sequence>
+      <xs:element name="Adjustments" type="nd:RuleAdjustments" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
     <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
     <xs:attribute name="as" type="nd:identifier" use="optional" />
     <xs:attribute name="territory" type="nd:territoryCode" use="optional" />
