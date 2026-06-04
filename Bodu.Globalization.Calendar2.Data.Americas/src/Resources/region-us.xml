@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  United States notable-date resource, migrated from the v1 region-us.xml to the v2 cookbook schema. The v1 UseFrom
+  imports (global and Christian observances) are flattened into explicit, self-contained rules. Federal holidays that
+  fall on a weekend are observed in lieu: Saturday on the preceding Friday, Sunday on the following Monday.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.us">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="saturday-to-friday" priority="100">
+      <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /></Trigger>
+      <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
+      <Emission mode="ObservedOnly" reason="Observed Friday" />
+    </AdjustmentPolicy>
+    <AdjustmentPolicy id="sunday-to-monday" priority="100">
+      <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" reason="Observed Monday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="January" day="1" /></Strategy>
+        <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="mlk-day" displayName="Birthday of Martin Luther King, Jr." category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability fromYear="1986"><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="presidents-day" displayName="Presidents' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="st-patricks-day" displayName="St. Patrick's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="March" day="17" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="good-friday" displayName="Good Friday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1583"><Territory code="US" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="us" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1583"><Territory code="US" /></Applicability>
+        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="earth-day" displayName="Earth Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1970"><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="April" day="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="memorial-day" displayName="Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="flag-day" displayName="Flag Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="June" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="juneteenth" displayName="Juneteenth National Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability fromYear="2021"><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="June" day="19" /></Strategy>
+        <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="July" day="4" /></Strategy>
+        <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="labor-day" displayName="Labor Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="columbus-day" displayName="Columbus Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="indigenous-peoples-day" displayName="Indigenous Peoples' Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1992"><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="election-day" displayName="Election Day" category="Civic" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1845"><Territory code="US" /></Applicability>
+        <Strategy><RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday" relativeDayOfWeek="Tuesday" direction="After" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="veterans-day" displayName="Veterans Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="November" day="11" /></Strategy>
+        <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="black-friday" displayName="Black Friday" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="cyber-monday" displayName="Cyber Monday" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="pearl-harbor-day" displayName="Pearl Harbor Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1994"><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="December" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-eve" displayName="Christmas Eve" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="December" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="December" day="25" /></Strategy>
+        <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

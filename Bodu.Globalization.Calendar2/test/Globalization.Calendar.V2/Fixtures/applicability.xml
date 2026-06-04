@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixture for the RuleApplicability truth-table tests. Every concept isolates one
+  applicability dimension (year window, OnlyYear, ExceptYear, territory scope, or
+  territory shadowing) so a (territory, year) request can be asserted to emit, or not
+  emit, the rule. A fixed strategy on 1 July keeps the emitted date stable across years.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.applicability">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <!-- Bounded window 2020..2030 (inclusive) — global territory. -->
+    <NotableDate id="windowed" displayName="Windowed" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian" fromYear="2020" toYear="2030" />
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Lower bound only — applies from 2025 onward. -->
+    <NotableDate id="from-2025" displayName="From 2025" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian" fromYear="2025" />
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Upper bound only — applies up to and including 2025. -->
+    <NotableDate id="to-2025" displayName="To 2025" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian" toYear="2025" />
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Explicit inclusion years — only 2024 and 2026. -->
+    <NotableDate id="only-years" displayName="Only Years" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian">
+            <OnlyYear value="2024" />
+            <OnlyYear value="2026" />
+          </Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Explicit exclusion year — applies every year except 2025. -->
+    <NotableDate id="except-2025" displayName="Except 2025" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian">
+            <ExceptYear value="2025" />
+          </Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Window combined with an exclusion year inside the window. -->
+    <NotableDate id="windowed-except" displayName="Windowed Except" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian" fromYear="2020" toYear="2030">
+            <ExceptYear value="2025" />
+          </Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- National scope AU — matches AU and any AU-* subdivision, but not a foreign code. -->
+    <NotableDate id="national-au" displayName="National AU" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Subdivision-only scope AU-NSW — matches AU-NSW but not the national AU request. -->
+    <NotableDate id="subnational-nsw" displayName="Subnational NSW" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="r">
+          <Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <!--
+      Territory shadowing: one concept, a broad national AU rule and a narrow AU-NSW rule.
+      A NSW request emits only the narrower rule; any other AU request emits the national rule.
+    -->
+    <NotableDate id="shadowed" displayName="Shadowed" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="national" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+        <Rule id="nsw" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
+          <Strategy><Fixed month="July" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

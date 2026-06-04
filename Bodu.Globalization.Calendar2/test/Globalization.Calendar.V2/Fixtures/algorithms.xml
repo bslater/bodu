@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Algorithm-backed strategy fixtures for the v2 engine tests: solar terms (equinoxes, Qingming), lunar-phase
+  festivals (Vesak), a gazetted table (Matariki), and verified Hindu lunisolar festivals (Diwali, Holi, Navaratri).
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.algorithms">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="jp-vernal-equinox" displayName="Vernal Equinox Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Strategy><Algorithm key="jp-vernal-equinox" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="jp-autumnal-equinox" displayName="Autumnal Equinox Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jp"><Strategy><Algorithm key="jp-autumnal-equinox" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="qingming" displayName="Qingming Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cn"><Strategy><Algorithm key="qingming" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="vesak" displayName="Vesak" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="vesak" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="matariki" displayName="Matariki" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nz"><Applicability fromYear="2022"><Territory code="NZ" /></Applicability><Strategy><Algorithm key="matariki" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="diwali" displayName="Diwali" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="holi" displayName="Holi" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="holi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="navaratri" displayName="Navaratri" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="navaratri" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ram-navami" displayName="Ram Navami" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="ram-navami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="raksha-bandhan" displayName="Raksha Bandhan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="global"><Strategy><Algorithm key="raksha-bandhan" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="janmashtami" displayName="Janmashtami" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="janmashtami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="ganesh-chaturthi" displayName="Ganesh Chaturthi" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="ganesh-chaturthi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="dussehra" displayName="Dussehra" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="dussehra" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="karva-chauth" displayName="Karva Chauth" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="global"><Strategy><Algorithm key="karva-chauth" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="vasant-panchami" displayName="Vasant Panchami" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="global"><Strategy><Algorithm key="vasant-panchami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="maha-shivaratri" displayName="Maha Shivaratri" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="global"><Strategy><Algorithm key="maha-shivaratri" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

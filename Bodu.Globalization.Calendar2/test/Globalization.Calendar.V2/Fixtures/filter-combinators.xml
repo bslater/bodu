@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixture for the end-to-end NotableDateFilter combinator tests, ported from the v1
+  FilterCombinators rule set. Each concept occupies a distinct combination of category,
+  tag set, duration, and non-working flag so a single filter can demonstrably select or
+  reject specific concepts. Year-End Holiday (31 Dec) carries a weekend substitute so the
+  WasAdjusted filter has an observed occurrence to match in a year where 31 Dec is a weekend.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.filter-combinators">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="weekend-substitute" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="r"><Strategy><Fixed month="December" day="25" /></Strategy>
+        <Tags><Tag value="Christian" /><Tag value="Public" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="r"><Strategy><Fixed month="December" day="26" /></Strategy>
+        <Tags><Tag value="Christian" /><Tag value="Public" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="australia-day" displayName="Australia Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="r"><Strategy><Fixed month="January" day="26" /></Strategy>
+        <Tags><Tag value="Public" /><Tag value="Federal" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="hanukkah" displayName="Hanukkah" category="Religious" defaultNonWorkingDay="false" defaultDurationDays="8">
+      <Rules><Rule id="r"><Strategy><Fixed month="December" day="7" /></Strategy>
+        <Tags><Tag value="Jewish" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="lunar-festival" displayName="Lunar Festival" category="Cultural" defaultNonWorkingDay="false" defaultDurationDays="7">
+      <Rules><Rule id="r"><Strategy><Fixed month="February" day="17" /></Strategy>
+        <Tags><Tag value="Asian" /><Tag value="Festive" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="labour-day" displayName="Labour Day" category="Civic" defaultNonWorkingDay="true">
+      <Rules><Rule id="r"><Strategy><Fixed month="May" day="1" /></Strategy>
+        <Tags><Tag value="Workers" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="bank-holiday" displayName="Bank Holiday" category="BankHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="r"><Strategy><Fixed month="August" day="26" /></Strategy>
+        <Tags><Tag value="Public" /></Tags></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="year-end-holiday" displayName="Year-End Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="r"><Strategy><Fixed month="December" day="31" /></Strategy>
+        <Tags><Tag value="Public" /></Tags>
+        <Adjustments><Adjustment policyRef="weekend-substitute" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

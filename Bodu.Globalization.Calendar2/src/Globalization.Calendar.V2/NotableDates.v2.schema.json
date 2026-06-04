@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bodu:globalization:calendar:v2",
+  "title": "Bodu Notable Date Document (v2)",
+  "description": "Companion JSON schema for the revised Bodu calendar document. Mirrors NotableDates.v2.xsd. JSON ingestion is reserved for a later phase; the v1 loader consumes the XML form only.",
+  "type": "object",
+  "required": [ "schemaVersion", "resourceId", "notableDates" ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "resourceId": { "$ref": "#/$defs/resourceIdentifier" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "resolutionPolicy": { "$ref": "#/$defs/resolutionPolicy" },
+    "adjustmentPolicies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/adjustmentPolicy" }
+    },
+    "notableDates": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/notableDate" }
+    },
+    "overrides": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/override" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+    },
+    "resourceIdentifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*([.-][a-z0-9]+)*$"
+    },
+    "territoryCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}(-[A-Z0-9]{2,3})?$"
+    },
+    "dayOfWeek": {
+      "enum": [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ]
+    },
+    "calendarName": { "enum": [ "Gregorian" ] },
+    "notableDateCategory": {
+      "enum": [ "None", "PublicHoliday", "BankHoliday", "Observance", "Remembrance", "Cultural", "Religious", "Seasonal", "Civic", "School", "Regional", "Other" ]
+    },
+    "emissionMode": {
+      "enum": [ "ActualOnly", "ObservedOnly", "ActualAndObserved", "ObservedAsAdditional", "Suppress" ]
+    },
+    "adjustmentTrigger": { "enum": [ "Always", "IfDayOfWeek", "IfWeekend", "IfWeekday" ] },
+    "weekOrdinal": { "enum": [ "First", "Second", "Third", "Fourth", "Fifth", "Last" ] },
+    "weekdayProximity": { "enum": [ "Before", "OnOrBefore", "Nearest", "OnOrAfter", "After" ] },
+    "adjustmentAction": {
+      "enum": [ "None", "AddDays", "MoveToNextWeekday", "MoveToPreviousWeekday", "MoveToNextWorkingDay", "MoveToPreviousWorkingDay", "Suppress" ]
+    },
+    "duplicatePolicy": { "enum": [ "Error", "KeepFirst", "KeepLast", "Merge" ] },
+    "collisionPolicy": { "enum": [ "KeepAll", "HighestPriorityOnly", "CategoryPriority", "Custom" ] },
+    "priorityDirection": { "enum": [ "HigherWins", "LowerWins" ] },
+    "observedDateRangePolicy": {
+      "enum": [ "ObservedOccurrenceControlsInclusion", "ActualOccurrenceControlsInclusion", "BothOccurrencesControlInclusion" ]
+    },
+    "resolutionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duplicatePolicy": { "$ref": "#/$defs/duplicatePolicy" },
+        "sameDayCollisionPolicy": { "$ref": "#/$defs/collisionPolicy" },
+        "spanCollisionPolicy": { "$ref": "#/$defs/collisionPolicy" },
+        "priorityDirection": { "$ref": "#/$defs/priorityDirection" },
+        "observedDateRangePolicy": { "$ref": "#/$defs/observedDateRangePolicy" }
+      }
+    },
+    "adjustmentScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "territories": { "type": "array", "items": { "$ref": "#/$defs/territoryCode" } },
+        "calendars": { "type": "array", "items": { "$ref": "#/$defs/calendarName" } },
+        "categories": { "type": "array", "items": { "$ref": "#/$defs/notableDateCategory" } },
+        "notableDateRefs": { "type": "array", "items": { "$ref": "#/$defs/identifier" } },
+        "ruleRefs": { "type": "array", "items": { "$ref": "#/$defs/identifier" } }
+      }
+    },
+    "adjustmentPolicy": {
+      "type": "object",
+      "required": [ "id", "trigger", "action", "emission" ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "priority": { "type": "integer" },
+        "description": { "type": "string" },
+        "scope": { "$ref": "#/$defs/adjustmentScope" },
+        "trigger": {
+          "type": "object",
+          "required": [ "type" ],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "$ref": "#/$defs/adjustmentTrigger" },
+            "weekdays": { "type": "array", "items": { "$ref": "#/$defs/dayOfWeek" } }
+          }
+        },
+        "action": {
+          "type": "object",
+          "required": [ "type" ],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "$ref": "#/$defs/adjustmentAction" },
+            "days": { "type": "integer" },
+            "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+            "maxSearchDays": { "type": "integer", "minimum": 1 },
+            "skipWeekends": { "type": "boolean" },
+            "skipNonWorkingDates": { "type": "boolean" }
+          }
+        },
+        "emission": {
+          "type": "object",
+          "required": [ "mode" ],
+          "additionalProperties": false,
+          "properties": {
+            "mode": { "$ref": "#/$defs/emissionMode" },
+            "reason": { "type": "string" },
+            "nonWorking": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "calendar": { "$ref": "#/$defs/calendarName" },
+        "fromYear": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "toYear": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "territories": { "type": "array", "items": { "$ref": "#/$defs/territoryCode" } },
+        "onlyYears": { "type": "array", "items": { "type": "integer" } },
+        "exceptYears": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "fixedStrategy": {
+      "type": "object",
+      "required": [ "month", "day" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "day": { "type": "integer", "minimum": 1, "maximum": 31 },
+        "skipLeapMonth": { "type": "boolean" },
+        "sweepCalendarYears": { "type": "boolean" }
+      }
+    },
+    "dayOfWeekInMonthStrategy": {
+      "type": "object",
+      "required": [ "month", "dayOfWeek", "weekOrdinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "weekOrdinal": { "$ref": "#/$defs/weekOrdinal" }
+      }
+    },
+    "weekdayNearDateStrategy": {
+      "type": "object",
+      "required": [ "month", "day", "dayOfWeek", "direction" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "day": { "type": "integer", "minimum": 1, "maximum": 31 },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "direction": { "$ref": "#/$defs/weekdayProximity" }
+      }
+    },
+    "relativeWeekdayInMonthStrategy": {
+      "type": "object",
+      "required": [ "month", "dayOfWeek", "weekOrdinal", "relativeDayOfWeek", "direction" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "weekOrdinal": { "$ref": "#/$defs/weekOrdinal" },
+        "relativeDayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "direction": { "$ref": "#/$defs/weekdayProximity" }
+      }
+    },
+    "offsetFromRuleStrategy": {
+      "type": "object",
+      "required": [ "notableDateRef", "offsetDays" ],
+      "additionalProperties": false,
+      "properties": {
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" },
+        "offsetDays": { "type": "integer" }
+      }
+    },
+    "algorithmStrategy": {
+      "type": "object",
+      "required": [ "key" ],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "fixed": { "$ref": "#/$defs/fixedStrategy" },
+        "dayOfWeekInMonth": { "$ref": "#/$defs/dayOfWeekInMonthStrategy" },
+        "weekdayNearDate": { "$ref": "#/$defs/weekdayNearDateStrategy" },
+        "relativeWeekdayInMonth": { "$ref": "#/$defs/relativeWeekdayInMonthStrategy" },
+        "offsetFromRule": { "$ref": "#/$defs/offsetFromRuleStrategy" },
+        "algorithm": { "$ref": "#/$defs/algorithmStrategy" }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": [ "id", "strategy" ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "priority": { "type": "integer" },
+        "category": { "$ref": "#/$defs/notableDateCategory" },
+        "nonWorking": { "type": "boolean" },
+        "durationDays": { "type": "integer", "minimum": 1 },
+        "comment": { "type": "string" },
+        "applicability": { "$ref": "#/$defs/applicability" },
+        "strategy": { "$ref": "#/$defs/strategy" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "adjustments": { "type": "array", "items": { "$ref": "#/$defs/identifier" } }
+      }
+    },
+    "notableDate": {
+      "type": "object",
+      "required": [ "id", "displayName", "category", "rules" ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "displayName": { "type": "string" },
+        "category": { "$ref": "#/$defs/notableDateCategory" },
+        "defaultDurationDays": { "type": "integer", "minimum": 1 },
+        "defaultNonWorkingDay": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "rules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/rule" } }
+      }
+    },
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operation": { "enum": [ "AddRule", "PatchRule", "RemoveRule" ] },
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" },
+        "priority": { "type": "integer" },
+        "category": { "$ref": "#/$defs/notableDateCategory" },
+        "nonWorking": { "type": "boolean" },
+        "durationDays": { "type": "integer", "minimum": 1 },
+        "rule": { "$ref": "#/$defs/rule" }
+      },
+      "required": [ "operation", "notableDateRef" ]
+    }
+  }
+}

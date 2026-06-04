@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Malaysia notable-date resource, migrated from the v1 region-my.xml to the v2 cookbook schema. The v1 file defines the
+  two Islamic festivals imported from the global Islamic resource; they are expressed as fixed dates in the tabular
+  Hijri calendar (projected onto the Gregorian year), so the dates follow the base class library's tabular reckoning
+  rather than local moon-sighting. Each Hari Raya festival carries its two-day durationDays span.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.my">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="hari-raya-aidilfitri" displayName="Hari Raya Aidilfitri" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="my" durationDays="2"><Applicability calendar="Hijri"><Territory code="MY" /></Applicability>
+        <Strategy><Fixed month="10" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="hari-raya-aidiladha" displayName="Hari Raya Aidiladha" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="my" durationDays="2"><Applicability calendar="Hijri"><Territory code="MY" /></Applicability>
+        <Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

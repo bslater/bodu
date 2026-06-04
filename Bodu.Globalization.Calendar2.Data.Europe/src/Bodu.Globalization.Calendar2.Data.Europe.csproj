@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu.Globalization.Calendar.V2.Data</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <OutputType>Library</OutputType>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <Title>Bodu Calendar v2 Data — Europe</Title>
+    <Description>Notable-date resource pack for Bodu.Globalization.Calendar2 covering Europe (United Kingdom, France, Germany), migrated to the v2 cookbook schema. Additional European territories follow the same Gregorian/Easter pattern. Exposed through the EuropeCalendarData factory.</Description>
+    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;europe;gb;fr;de</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\*.xml" />
+    <EmbeddedResource Include="Resources\region-*.xml">
+      <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar2\src\Bodu.Globalization.Calendar2.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar2.Data.Europe.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

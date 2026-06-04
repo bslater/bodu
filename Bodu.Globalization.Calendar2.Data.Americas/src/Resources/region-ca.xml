@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Canadian notable-date resource, migrated from the v1 region-ca.xml to the v2 cookbook schema. The v1 UseFrom imports
+  (global, Christian, and family observances) are flattened into explicit rules. National rules use territory CA;
+  provincial rules use ISO 3166-2 subdivision codes. Weekend statutory holidays roll to the next weekday; Christmas and
+  Boxing Day use the conflict-aware working-day substitute so the second advances past the first.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ca">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+    <AdjustmentPolicy id="working-day-substitute" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="January" day="1" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="March" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="family-day" displayName="Family Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="ab"><Applicability fromYear="1990"><Territory code="CA-AB" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+        <Rule id="sk"><Applicability fromYear="2007"><Territory code="CA-SK" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+        <Rule id="on"><Applicability fromYear="2008"><Territory code="CA-ON" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+        <Rule id="bc"><Applicability fromYear="2013"><Territory code="CA-BC" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+        <Rule id="nb"><Applicability fromYear="2018"><Territory code="CA-NB" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="island-day" displayName="Islander Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pe"><Applicability fromYear="2009"><Territory code="CA-PE" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="louis-riel-day" displayName="Louis Riel Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mb"><Applicability fromYear="2008"><Territory code="CA-MB" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="nova-scotia-heritage-day" displayName="Nova Scotia Heritage Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ns"><Applicability fromYear="2015"><Territory code="CA-NS" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability fromYear="1583"><Territory code="CA" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="ca" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability fromYear="1583"><Territory code="CA" /></Applicability>
+        <Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability fromYear="1583"><Territory code="CA" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="ca" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="victoria-day" displayName="Victoria Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><WeekdayNearDate month="May" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="national-indigenous-peoples-day" displayName="National Indigenous Peoples Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability fromYear="1996"><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="June" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="fete-nationale-quebec" displayName="Fête nationale du Québec" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="qc"><Applicability><Territory code="CA-QC" /></Applicability>
+        <Strategy><Fixed month="June" day="24" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="canada-day" displayName="Canada Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="July" day="1" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="nunavut-day" displayName="Nunavut Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nu"><Applicability fromYear="1999"><Territory code="CA-NU" /></Applicability>
+        <Strategy><Fixed month="July" day="9" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="british-columbia-day" displayName="British Columbia Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="bc"><Applicability><Territory code="CA-BC" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="civic-holiday" displayName="Civic Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="general"><Applicability><Territory code="CA-ON" /><Territory code="CA-MB" /><Territory code="CA-SK" /><Territory code="CA-NU" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="heritage-day" displayName="Heritage Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ab"><Applicability><Territory code="CA-AB" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="new-brunswick-day" displayName="New Brunswick Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nb"><Applicability><Territory code="CA-NB" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="discovery-day" displayName="Discovery Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="yt"><Applicability><Territory code="CA-YT" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="truth-and-reconciliation-day" displayName="National Day for Truth and Reconciliation" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability fromYear="2021"><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="September" day="30" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="thanksgiving" displayName="Thanksgiving" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="remembrance-day" displayName="Remembrance Day" category="Remembrance" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="November" day="11" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="December" day="25" /></Strategy>
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy>
+        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

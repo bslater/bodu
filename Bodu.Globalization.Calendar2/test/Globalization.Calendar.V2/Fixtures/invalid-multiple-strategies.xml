@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A rule whose Strategy element declares two strategy children. The XSD permits exactly one strategy
+  choice (Strategy.choice maxOccurs="1"), so the document fails schema validation with BODU-CAL2-SCHEMA.
+  (In v1 multiple strategies on one rule threw during construction; v2 reports it as a schema diagnostic.)
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.multiple-strategies">
+  <NotableDates>
+    <NotableDate id="multi-strategy" displayName="Multiple Strategies" category="PublicHoliday">
+      <Rules>
+        <Rule id="r">
+          <Strategy>
+            <Fixed month="January" day="1" />
+            <Algorithm key="western-easter" />
+          </Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>
