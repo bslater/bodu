@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global animal and wildlife notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-animals.xml to the v2 cookbook schema. These are internationally recognized animal welfare and wildlife
+  conservation observances; they are not universally public holidays. A territory pack imports only the concepts it
+  observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through the import
+  <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-animals">
+
+  <NotableDates>
+
+    <NotableDate id="world-wildlife-day" displayName="World Wildlife Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2014" /><Strategy><Fixed month="March" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-bee-day" displayName="World Bee Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2018" /><Strategy><Fixed month="May" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-tiger-day" displayName="International Tiger Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2010" /><Strategy><Fixed month="July" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-cat-day" displayName="International Cat Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2002" /><Strategy><Fixed month="August" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-elephant-day" displayName="World Elephant Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="August" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="international-dog-day" displayName="International Dog Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="world-animal-day" displayName="World Animal Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1931" /><Strategy><Fixed month="October" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
