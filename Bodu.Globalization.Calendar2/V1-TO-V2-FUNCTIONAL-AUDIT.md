@@ -46,7 +46,7 @@ the concrete v1 → v2 type mapping.
 | 17 | Imports / cross-resource cherry-pick | `<UseFrom>`/`<Use>`, `NotableDateRuleMerger`, use-directives | ✅ Implemented (`<Imports>` resolved by a resolver: import-all / cherry-pick + override, policy merge, cycle detection) |
 | 18 | Resource providers + path resolution | `Xml/JsonResourceNotableDateRuleProvider`, `ResourcePathResolver` | 🔵 Replaced (loader + a caller-supplied resource resolver delegate; no provider/path-resolver types) |
 | 19 | Filter API | `NotableDateFilter` (14 factories + And/Or) | ✅ Implemented (`NotableDateFilter` + filtered `Resolve` overloads) |
-| 20 | Working-day / traversal / fiscal extensions | `NotableDate{Only,Time,TimeOffset}Extensions`, `…FiscalExtensions`, `NotableDateContext` | 🟡 Partial (`NotableDateOnlyExtensions` over the service; DateTime/DateTimeOffset + fiscal deferred) |
+| 20 | Working-day / traversal / fiscal extensions | `NotableDate{Only,Time,TimeOffset}Extensions`, `…FiscalExtensions`, `NotableDateContext` | ✅ Implemented (`DateOnly`/`DateTime`/`DateTimeOffset` + `NotableDateFiscalExtensions`; ambient `NotableDateContext` replaced by explicit service passing) |
 | 21 | Plugin model | `ExternalPluginLoader`, trust policies, plugin interfaces | ✅ Implemented (`Bodu.Globalization.Calendar2.Plugins`: loader, trust-policy family, plugin interfaces, algorithm contribution) |
 | 22 | Localization hook | `INotableDateNameLocalizer` | ✅ Implemented (`INotableDateNameLocalizer` + `NotableDateNameLocalizer` + `Localize` extensions, parent-culture/invariant fallback) |
 | 23 | `TerritoryCode` value type | `TerritoryCode` (Parse/Contains, country+subdivision) | 🔵 Replaced (plain string + parent/child + `MatchSpecificity`) |
@@ -55,13 +55,13 @@ the concrete v1 → v2 type mapping.
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 19 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
+**Tally:** 20 ✅ Implemented · 3 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
 
 The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
-imports graph, the filter API, the `DateOnly` extension surface, the custom-algorithm registry, the
-custom adjustment-handler and same-day collision hooks, runtime reload, the localization hook, the
-plugin model, and DI registration are all **implemented**. No capability is now fully deferred; the
-remaining partials are the DateTime/DateTimeOffset/fiscal extension overloads (area 20), the last two
+imports graph, the filter API, the full working-day extension surface (`DateOnly`/`DateTime`/
+`DateTimeOffset` + fiscal), the custom-algorithm registry, the custom adjustment-handler and same-day
+collision hooks, runtime reload, the localization hook, the plugin model, and DI registration are all
+**implemented**. No capability is now fully deferred; the remaining partials are the last two
 adjustment triggers (area 8), the by-year query overload (area 3), and scoped override removal
 (area 15).
 
@@ -131,7 +131,7 @@ inferred from a shared title — which is precisely what fixes the original bug 
 | `GetNotableDates(start, end, …)` | ✅ `Resolve(DateRange, territory)` |
 | `GetNotableDates(year, …)` | ✅ idiom: `Resolve(new DateRange(Jan 1, Dec 31), …)` (no dedicated overload) |
 | `…(…, NotableDateFilter, …)` overloads | ✅ `Resolve(DateOnly/DateRange, territory, filter)` (area 19) |
-| `IsWeekend`, `IsNonWorkingDay`, `IsHolidayNonWorkingDay`, `WorkingWeek` | 🟡 `DateOnly` extensions (`IsWeekend`, `IsNonWorkingDay`, …) over the service (area 20) |
+| `IsWeekend`, `IsNonWorkingDay`, `IsHolidayNonWorkingDay`, `WorkingWeek` | ✅ `DateOnly`/`DateTime`/`DateTimeOffset` extensions over the service (area 20) |
 | `Invalidate`, `Reload` | ✅ `MutableNotableDateResourceProvider.Reload` + `ReloadableNotableDateService` (area 16) |
 | `GetSupportedTerritories`, `GetSupportedCalendars` | ⛔ not exposed |
 
@@ -259,12 +259,15 @@ rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the
   `ForAnyCategory`, `IsNonWorkingDay`, `WasAdjusted`, `WithName`/`WithAnyName`, `WithId`,
   `WithTag`/`WithAnyTag`/`WithAllTags`, `WithMinDuration`, `InDateRange`, `AllOf`/`AnyOf`,
   `And`/`Or`/`Not`), surfaced through filtered `Resolve(date|range, territory, filter)` overloads.
-- **20. Extensions — 🟡 Partial** `NotableDateOnlyExtensions` reproduces the `DateOnly` working-day /
-  traversal surface over the service (`IsWeekend`, `IsWorkingDay`/`IsNonWorkingDay`, `IsNotableDate`,
-  `Next/Previous WorkingDay`, `AddWorkingDays`, `WorkingDaysBetween`,
-  `SnapToWorkingDay[Backward]`/`SnapToNearestWorkingDay`, `Enumerate*`, `GetNotableDates`). The
-  `DateTime`/`DateTimeOffset` overloads, the `NotableDateFiscalExtensions` (first/last working day of
-  fiscal year/quarter), and the ambient `NotableDateContext` are **deferred**.
+- **20. Extensions — ✅** the working-day / traversal surface is reproduced over `DateOnly`
+  (`NotableDateOnlyExtensions`), `DateTime` (`NotableDateTimeExtensions`), and `DateTimeOffset`
+  (`NotableDateTimeOffsetExtensions`) — `IsWeekend`, `IsWorkingDay`/`IsNonWorkingDay`, `IsNotableDate`,
+  `Next/Previous WorkingDay`, `SnapToWorkingDay[Backward]`/`SnapToNearestWorkingDay`, `AddWorkingDays`,
+  `WorkingDaysBetween`, `Enumerate*`, `GetNotableDates` — with the `DateTime`/`DateTimeOffset` traversal
+  results preserving the time-of-day (and kind/offset). `NotableDateFiscalExtensions` adds the
+  first/last working day of the fiscal year and quarter (configurable start month). The ambient
+  `NotableDateContext` is intentionally **not** reproduced: every extension takes the service and
+  territory explicitly.
 - **21. Plugins — ✅** `Bodu.Globalization.Calendar2.Plugins` ships `NotableDatePluginLoader`, the
   trust-policy family (`AllowAll`/`Delegating`/`Composite`, `IPluginTrustPolicy`), plugin interfaces
   (`INotableDatePlugin`/`INotableDateAlgorithmPlugin`), `NotableDatePluginAttribute`, and the plugin
