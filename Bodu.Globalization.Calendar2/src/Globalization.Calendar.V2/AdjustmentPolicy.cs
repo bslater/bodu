@@ -278,17 +278,24 @@ public sealed class AdjustmentPolicy
     public IReadOnlyDictionary<string, string> HandlerParameters { get; }
 
     /// <summary>
-    /// Determines whether the policy fires for an occurrence on the supplied date.
+    /// Determines whether the policy fires for an occurrence on the supplied date, evaluating weekend-sensitive
+    /// triggers against the supplied working week.
     /// </summary>
     /// <param name="date">The calculated occurrence date.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns><see langword="true" /> if the trigger fires; otherwise <see langword="false" />.</returns>
-    public bool IsTriggered(DateOnly date) =>
+    /// <remarks>
+    /// The <see cref="AdjustmentTrigger.IfNonWorkingDay" /> and <see cref="AdjustmentTrigger.IfWorkingDay" /> triggers
+    /// also depend on whether another non-working occurrence claims the date, which this method cannot determine alone;
+    /// they are evaluated by the resolving service and never fire here.
+    /// </remarks>
+    public bool IsTriggered(DateOnly date, WeekPattern workingWeek) =>
         this.Trigger switch
         {
             AdjustmentTrigger.Always => true,
             AdjustmentTrigger.IfDayOfWeek => this.TriggerWeekdays.Contains(date.DayOfWeek),
-            AdjustmentTrigger.IfWeekend => date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday,
-            AdjustmentTrigger.IfWeekday => date.DayOfWeek is not DayOfWeek.Saturday and not DayOfWeek.Sunday,
+            AdjustmentTrigger.IfWeekend => !workingWeek.Contains(date.DayOfWeek),
+            AdjustmentTrigger.IfWeekday => workingWeek.Contains(date.DayOfWeek),
             AdjustmentTrigger.IfLeapYear => DateTime.IsLeapYear(date.Year),
             AdjustmentTrigger.IfBeforeFixedDate => this.ComparesFixedDate(date, before: true),
             AdjustmentTrigger.IfAfterFixedDate => this.ComparesFixedDate(date, before: false),
@@ -330,15 +337,17 @@ public sealed class AdjustmentPolicy
     }
 
     /// <summary>
-    /// Applies the policy's action to the supplied occurrence date.
+    /// Applies the policy's action to the supplied occurrence date, evaluating weekend skips against the supplied
+    /// working week.
     /// </summary>
     /// <param name="date">The calculated occurrence date.</param>
     /// <param name="isOccupied">
     /// A predicate reporting whether a candidate day is already claimed by another non-working occurrence.
     /// </param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns>The transformed (observed) date; the input date when the action makes no change.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="isOccupied" /> is <see langword="null" />.</exception>
-    public DateOnly ApplyAction(DateOnly date, Func<DateOnly, bool> isOccupied)
+    public DateOnly ApplyAction(DateOnly date, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
     {
         ThrowHelper.ThrowIfNull(isOccupied);
 
@@ -347,8 +356,8 @@ public sealed class AdjustmentPolicy
             AdjustmentAction.AddDays => date.AddDays(this.ActionDays),
             AdjustmentAction.MoveToNextWeekday => this.ActionWeekday is DayOfWeek next ? WeekdayMath.OnOrAfter(date, next) : date,
             AdjustmentAction.MoveToPreviousWeekday => this.ActionWeekday is DayOfWeek previous ? WeekdayMath.OnOrBefore(date, previous) : date,
-            AdjustmentAction.MoveToNextWorkingDay => this.SeekWorkingDay(date, step: 1, isOccupied),
-            AdjustmentAction.MoveToPreviousWorkingDay => this.SeekWorkingDay(date, step: -1, isOccupied),
+            AdjustmentAction.MoveToNextWorkingDay => this.SeekWorkingDay(date, step: 1, isOccupied, workingWeek),
+            AdjustmentAction.MoveToPreviousWorkingDay => this.SeekWorkingDay(date, step: -1, isOccupied, workingWeek),
             _ => date,
         };
     }
@@ -360,13 +369,14 @@ public sealed class AdjustmentPolicy
     /// <param name="date">The starting date.</param>
     /// <param name="step">The direction of travel: <c>+1</c> forward, <c>-1</c> backward.</param>
     /// <param name="isOccupied">A predicate reporting whether a candidate day is already claimed.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns>The first working day found, or the last scanned day when the bound is reached.</returns>
-    private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied)
+    private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
     {
         int bound = this.MaxSearchDays ?? DefaultMaxSearchDays;
 
         DateOnly cursor = date.AddDays(step);
-        for (int i = 0; i < bound && this.IsBlocked(cursor, isOccupied); i++)
+        for (int i = 0; i < bound && this.IsBlocked(cursor, isOccupied, workingWeek); i++)
             cursor = cursor.AddDays(step);
 
         return cursor;
@@ -377,8 +387,9 @@ public sealed class AdjustmentPolicy
     /// </summary>
     /// <param name="date">The candidate day.</param>
     /// <param name="isOccupied">A predicate reporting whether the day is already claimed.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns><see langword="true" /> if the day is blocked; otherwise <see langword="false" />.</returns>
-    private bool IsBlocked(DateOnly date, Func<DateOnly, bool> isOccupied) =>
-        (this.SkipWeekends && date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+    private bool IsBlocked(DateOnly date, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek) =>
+        (this.SkipWeekends && !workingWeek.Contains(date.DayOfWeek))
         || (this.SkipNonWorkingDates && isOccupied(date));
 }

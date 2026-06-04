@@ -22,14 +22,28 @@ public enum AdjustmentTrigger
     IfDayOfWeek,
 
     /// <summary>
-    /// The adjustment applies when the calculated occurrence falls on a Saturday or Sunday.
+    /// The adjustment applies when the calculated occurrence falls on a weekend: a day outside the resource's working
+    /// week (Saturday or Sunday by default).
     /// </summary>
     IfWeekend,
 
     /// <summary>
-    /// The adjustment applies when the calculated occurrence falls on a Monday through Friday.
+    /// The adjustment applies when the calculated occurrence falls on a working day within the resource's working week
+    /// (Monday through Friday by default).
     /// </summary>
     IfWeekday,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls on a non-working day: a day outside the resource's
+    /// working week, or a day already claimed by another non-working occurrence.
+    /// </summary>
+    IfNonWorkingDay,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls on a working day within the resource's working week
+    /// that is not claimed by another non-working occurrence.
+    /// </summary>
+    IfWorkingDay,
 
     /// <summary>
     /// The adjustment applies when the calculated occurrence falls in a Gregorian leap year.

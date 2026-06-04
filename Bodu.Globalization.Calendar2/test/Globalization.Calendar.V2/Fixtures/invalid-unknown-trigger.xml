@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  An adjustment policy whose trigger uses the v1 token "IfNonWorkingDay", which is not part of the v2
-  adjustmentTrigger enumeration. The document fails schema validation with BODU-CAL2-SCHEMA.
+  An adjustment policy whose trigger uses the token "IfFullMoon", which is not part of the v2 adjustmentTrigger
+  enumeration. The document fails schema validation with BODU-CAL2-SCHEMA.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.unknown-trigger">
   <AdjustmentPolicies>
     <AdjustmentPolicy id="p">
-      <Trigger type="IfNonWorkingDay" />
+      <Trigger type="IfFullMoon" />
       <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
       <Emission mode="ObservedOnly" />
     </AdjustmentPolicy>

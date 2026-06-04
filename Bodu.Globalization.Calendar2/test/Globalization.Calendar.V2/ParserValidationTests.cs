@@ -172,8 +172,7 @@ public sealed class ParserValidationTests
     }
 
     /// <summary>
-    /// Verifies that an unknown adjustment trigger token (the v1-only <c>IfNonWorkingDay</c>) is rejected with a schema
-    /// diagnostic.
+    /// Verifies that an unknown adjustment trigger token (<c>IfFullMoon</c>) is rejected with a schema diagnostic.
     /// </summary>
     [TestMethod]
     public void Load_WhenTriggerIsUnknown_ShouldThrowSchemaDiagnostic()

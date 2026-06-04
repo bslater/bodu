@@ -144,8 +144,18 @@ internal static class NotableDateDocumentParser
             ParseEnum(element.Attribute("sameDayCollisionPolicy")?.Value, CollisionPolicy.KeepAll),
             ParseEnum(element.Attribute("spanCollisionPolicy")?.Value, CollisionPolicy.KeepAll),
             ParseEnum(element.Attribute("priorityDirection")?.Value, PriorityDirection.HigherWins),
-            ParseEnum(element.Attribute("observedDateRangePolicy")?.Value, ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion));
+            ParseEnum(element.Attribute("observedDateRangePolicy")?.Value, ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
+            ParseWorkingWeek(element.Attribute("workingDays")?.Value));
     }
+
+    /// <summary>
+    /// Parses a Sunday-first seven-character working-week pattern, falling back to the default working week when the
+    /// value is absent or blank.
+    /// </summary>
+    /// <param name="value">The working-week pattern, or <see langword="null" />.</param>
+    /// <returns>The parsed <see cref="WeekPattern" />, or <see langword="null" /> when unspecified.</returns>
+    private static WeekPattern? ParseWorkingWeek(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : WeekPattern.Parse(value);
 
     /// <summary>
     /// Parses the reusable adjustment policies declared by the resource.

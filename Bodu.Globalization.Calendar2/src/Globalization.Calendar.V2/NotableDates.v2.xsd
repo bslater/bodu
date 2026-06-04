@@ -45,6 +45,7 @@
     <xs:attribute name="spanCollisionPolicy" type="nd:collisionPolicy" use="optional" default="KeepAll" />
     <xs:attribute name="priorityDirection" type="nd:priorityDirection" use="optional" default="HigherWins" />
     <xs:attribute name="observedDateRangePolicy" type="nd:observedDateRangePolicy" use="optional" default="ObservedOccurrenceControlsInclusion" />
+    <xs:attribute name="workingDays" type="nd:weekPattern" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="AdjustmentPolicies">
@@ -402,11 +403,26 @@
       <xs:enumeration value="IfDayOfWeek" />
       <xs:enumeration value="IfWeekend" />
       <xs:enumeration value="IfWeekday" />
+      <xs:enumeration value="IfNonWorkingDay" />
+      <xs:enumeration value="IfWorkingDay" />
       <xs:enumeration value="IfLeapYear" />
       <xs:enumeration value="IfBeforeFixedDate" />
       <xs:enumeration value="IfAfterFixedDate" />
       <xs:enumeration value="IfNthOccurrenceInMonth" />
       <xs:enumeration value="Custom" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="weekPattern">
+    <xs:annotation>
+      <xs:documentation>
+        A seven-character working-week pattern in Sunday-first binary form, where each position from Sunday to Saturday
+        is '1' for a working day and '0' for a non-working (weekend) day. For example "0111110" denotes a
+        Monday-to-Friday working week and "1111100" a Sunday-to-Thursday working week.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[01]{7}" />
     </xs:restriction>
   </xs:simpleType>
 

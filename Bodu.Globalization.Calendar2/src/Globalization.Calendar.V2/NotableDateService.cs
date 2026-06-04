@@ -372,9 +372,18 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="lastYear">The last civil year to scan.</param>
     /// <param name="occupied">The occupied-day set to seed.</param>
     /// <returns>The calculated candidates.</returns>
+    /// <remarks>
+    /// The phase runs in two sub-passes so that the non-working-day triggers evaluate against the complete picture.
+    /// The first sub-pass enumerates every applicable occurrence, seeding the occupied-day set and tallying the actual
+    /// dates of non-working occurrences. The second sub-pass selects the firing adjustment policy for each occurrence,
+    /// at which point a <see cref="AdjustmentTrigger.IfNonWorkingDay" /> or <see cref="AdjustmentTrigger.IfWorkingDay" />
+    /// trigger can see every other holiday that shares the actual date, regardless of enumeration order.
+    /// </remarks>
     private List<ResolutionCandidate> GatherCandidates(StrategyResolutionContext context, string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
     {
         List<ResolutionCandidate> candidates = new();
+        List<(NotableDateDefinition Definition, NotableDateRule Rule)> sources = new();
+        Dictionary<DateOnly, int> actualNonWorkingCounts = new();
 
         foreach (NotableDateDefinition definition in this._resource.NotableDates)
         {
@@ -407,14 +416,32 @@ public sealed class NotableDateService : INotableDateService
 
                     foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
                     {
-                        AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory, context);
-                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking, durationDays, tags));
+                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, null, rule.Priority, nonWorking, durationDays, tags));
+                        sources.Add((definition, rule));
 
                         if (nonWorking)
+                        {
                             occupied.Add(baseDate);
+                            actualNonWorkingCounts[baseDate] = actualNonWorkingCounts.GetValueOrDefault(baseDate) + 1;
+                        }
                     }
                 }
             }
+        }
+
+        WeekPattern workingWeek = this._resource.ResolutionPolicy.WorkingWeek;
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            ResolutionCandidate candidate = candidates[i];
+            (NotableDateDefinition definition, NotableDateRule rule) = sources[i];
+
+            // A day is occupied "by another" when a non-working occurrence other than this one shares the date; the
+            // candidate's own contribution to the tally is discounted so a lone holiday never collides with itself.
+            bool OccupiedByAnother(DateOnly day) =>
+                actualNonWorkingCounts.GetValueOrDefault(day) > (candidate.NonWorking && day == candidate.BaseDate ? 1 : 0);
+
+            AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, candidate.Category, candidate.BaseDate, territory, context, workingWeek, OccupiedByAnother);
+            candidates[i] = candidate with { Policy = policy };
         }
 
         return candidates;
@@ -531,7 +558,7 @@ public sealed class NotableDateService : INotableDateService
         {
             AdjustmentAction.ReplaceWithRule => ResolveReplacementDate(policy, candidate, context),
             AdjustmentAction.Custom => this.InvokeCustomHandler(policy, candidate, territory, occupied, context),
-            _ => policy.ApplyAction(candidate.BaseDate, occupied.Contains),
+            _ => policy.ApplyAction(candidate.BaseDate, occupied.Contains, this._resource.ResolutionPolicy.WorkingWeek),
         };
 
     /// <summary>
@@ -604,6 +631,10 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="baseDate">The calculated (actual) occurrence date.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="context">The resolution context exposed to custom triggers.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
+    /// <param name="occupiedByAnother">
+    /// A predicate reporting whether a non-working occurrence other than this one falls on the supplied date.
+    /// </param>
     /// <returns>The winning <see cref="AdjustmentPolicy" />, or <see langword="null" /> when none fires.</returns>
     private AdjustmentPolicy? SelectAdjustmentPolicy(
         NotableDateDefinition definition,
@@ -611,7 +642,9 @@ public sealed class NotableDateService : INotableDateService
         NotableDateCategory category,
         DateOnly baseDate,
         string territory,
-        StrategyResolutionContext context)
+        StrategyResolutionContext context,
+        WeekPattern workingWeek,
+        Func<DateOnly, bool> occupiedByAnother)
     {
         List<AdjustmentPolicy> candidates = new();
 
@@ -627,36 +660,56 @@ public sealed class NotableDateService : INotableDateService
 
         return candidates
             .OrderBy(p => p.Priority)
-            .FirstOrDefault(p => this.IsPolicyTriggered(p, baseDate, territory, context));
+            .FirstOrDefault(p => this.IsPolicyTriggered(p, baseDate, territory, context, workingWeek, occupiedByAnother));
     }
 
     /// <summary>
-    /// Determines whether a policy fires for a base date, dispatching to a registered
-    /// <see cref="IAdjustmentTriggerHandler" /> for the <see cref="AdjustmentTrigger.Custom" /> trigger and to the
-    /// policy's built-in evaluation otherwise.
+    /// Determines whether a policy fires for a base date, dispatching the non-working-day triggers and the
+    /// <see cref="AdjustmentTrigger.Custom" /> trigger to the resolver state they depend on, and the remaining triggers
+    /// to the policy's built-in evaluation.
     /// </summary>
     /// <param name="policy">The candidate policy.</param>
     /// <param name="baseDate">The calculated (actual) occurrence date.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="context">The resolution context exposed to a custom trigger handler.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
+    /// <param name="occupiedByAnother">
+    /// A predicate reporting whether a non-working occurrence other than this one falls on the supplied date.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> if the policy fires; otherwise <see langword="false" />. A custom trigger whose handler
     /// is unregistered does not fire.
     /// </returns>
-    private bool IsPolicyTriggered(AdjustmentPolicy policy, DateOnly baseDate, string territory, StrategyResolutionContext context)
+    private bool IsPolicyTriggered(
+        AdjustmentPolicy policy,
+        DateOnly baseDate,
+        string territory,
+        StrategyResolutionContext context,
+        WeekPattern workingWeek,
+        Func<DateOnly, bool> occupiedByAnother)
     {
-        if (policy.Trigger != AdjustmentTrigger.Custom)
-            return policy.IsTriggered(baseDate);
-
-        if (string.IsNullOrEmpty(policy.TriggerHandlerKey)
-            || this._triggerHandlers is null
-            || !this._triggerHandlers.TryGet(policy.TriggerHandlerKey, out IAdjustmentTriggerHandler? handler)
-            || handler is null)
+        switch (policy.Trigger)
         {
-            return false;
-        }
+            case AdjustmentTrigger.IfNonWorkingDay:
+                return !workingWeek.Contains(baseDate.DayOfWeek) || occupiedByAnother(baseDate);
 
-        return handler.ShouldAdjust(new AdjustmentTriggerContext(baseDate, territory, policy, context));
+            case AdjustmentTrigger.IfWorkingDay:
+                return workingWeek.Contains(baseDate.DayOfWeek) && !occupiedByAnother(baseDate);
+
+            case AdjustmentTrigger.Custom:
+                if (string.IsNullOrEmpty(policy.TriggerHandlerKey)
+                    || this._triggerHandlers is null
+                    || !this._triggerHandlers.TryGet(policy.TriggerHandlerKey, out IAdjustmentTriggerHandler? handler)
+                    || handler is null)
+                {
+                    return false;
+                }
+
+                return handler.ShouldAdjust(new AdjustmentTriggerContext(baseDate, territory, policy, context));
+
+            default:
+                return policy.IsTriggered(baseDate, workingWeek);
+        }
     }
 
     /// <summary>

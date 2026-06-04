@@ -114,8 +114,18 @@ internal static class NotableDateJsonDocumentParser
             ParseEnum(GetString(policy, "sameDayCollisionPolicy"), CollisionPolicy.KeepAll),
             ParseEnum(GetString(policy, "spanCollisionPolicy"), CollisionPolicy.KeepAll),
             ParseEnum(GetString(policy, "priorityDirection"), PriorityDirection.HigherWins),
-            ParseEnum(GetString(policy, "observedDateRangePolicy"), ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion));
+            ParseEnum(GetString(policy, "observedDateRangePolicy"), ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
+            ParseWorkingWeek(GetString(policy, "workingDays")));
     }
+
+    /// <summary>
+    /// Parses a Sunday-first seven-character working-week pattern, falling back to the default working week when the
+    /// value is absent or blank.
+    /// </summary>
+    /// <param name="value">The working-week pattern, or <see langword="null" />.</param>
+    /// <returns>The parsed <see cref="WeekPattern" />, or <see langword="null" /> when unspecified.</returns>
+    private static WeekPattern? ParseWorkingWeek(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : WeekPattern.Parse(value);
 
     /// <summary>
     /// Parses the reusable adjustment policies declared by the resource.
