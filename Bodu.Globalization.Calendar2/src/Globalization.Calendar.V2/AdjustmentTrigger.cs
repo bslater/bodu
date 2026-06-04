@@ -52,4 +52,10 @@ public enum AdjustmentTrigger
     /// The adjustment applies when the calculated occurrence is the configured nth weekday of its month.
     /// </summary>
     IfNthOccurrenceInMonth,
+
+    /// <summary>
+    /// The adjustment applies when a caller-supplied <see cref="IAdjustmentTriggerHandler" />, bound through the
+    /// policy's trigger handler key, reports that it should fire.
+    /// </summary>
+    Custom,
 }

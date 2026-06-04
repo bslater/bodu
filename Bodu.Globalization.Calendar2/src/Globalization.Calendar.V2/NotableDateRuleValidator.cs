@@ -31,6 +31,7 @@ internal static class NotableDateRuleValidator
     {
         ValidateAdjustmentPolicyIds(resource, diagnostics);
         ValidateAdjustmentActions(resource, diagnostics);
+        ValidateAdjustmentTriggers(resource, diagnostics);
         ValidateNotableDates(resource, diagnostics, algorithms);
     }
 
@@ -80,6 +81,26 @@ internal static class NotableDateRuleValidator
 
                 default:
                     break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reports adjustment policies whose <see cref="AdjustmentTrigger.Custom" /> trigger is missing its required
+    /// handler key.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentTriggers(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            if (policy.Trigger == AdjustmentTrigger.Custom && string.IsNullOrEmpty(policy.TriggerHandlerKey))
+            {
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL2-TRIGGER-HANDLER-MISSING",
+                    string.Format(CultureInfo.InvariantCulture, Calendar2ResourceStrings.Validation_CustomTriggerHandlerKeyMissing, policy.Id)));
             }
         }
     }

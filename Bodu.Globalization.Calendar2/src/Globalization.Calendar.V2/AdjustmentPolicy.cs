@@ -69,6 +69,9 @@ public sealed class AdjustmentPolicy
     /// <param name="actionHandlerKey">
     /// The handler key for <see cref="AdjustmentAction.Custom" />, or <see langword="null" />.
     /// </param>
+    /// <param name="triggerHandlerKey">
+    /// The handler key for <see cref="AdjustmentTrigger.Custom" />, or <see langword="null" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id" />, <paramref name="scope" />, or <paramref name="triggerWeekdays" /> is
     /// <see langword="null" />.
@@ -93,7 +96,8 @@ public sealed class AdjustmentPolicy
         WeekOrdinal? triggerWeekOrdinal = null,
         string? actionNotableDateRef = null,
         string? actionRuleRef = null,
-        string? actionHandlerKey = null)
+        string? actionHandlerKey = null,
+        string? triggerHandlerKey = null)
     {
         ThrowHelper.ThrowIfNull(id);
         ThrowHelper.ThrowIfNull(scope);
@@ -119,6 +123,7 @@ public sealed class AdjustmentPolicy
         this.ActionNotableDateRef = actionNotableDateRef;
         this.ActionRuleRef = actionRuleRef;
         this.ActionHandlerKey = actionHandlerKey;
+        this.TriggerHandlerKey = triggerHandlerKey;
     }
 
     /// <summary>
@@ -248,6 +253,13 @@ public sealed class AdjustmentPolicy
     /// </summary>
     /// <returns>The handler key, or <see langword="null" /> when unused.</returns>
     public string? ActionHandlerKey { get; }
+
+    /// <summary>
+    /// Gets the handler key that binds <see cref="AdjustmentTrigger.Custom" /> to a registered
+    /// <see cref="IAdjustmentTriggerHandler" />.
+    /// </summary>
+    /// <returns>The handler key, or <see langword="null" /> when unused.</returns>
+    public string? TriggerHandlerKey { get; }
 
     /// <summary>
     /// Determines whether the policy fires for an occurrence on the supplied date.

@@ -141,4 +141,7 @@
   <data name="Validation_CustomHandlerKeyMissing" xml:space="preserve">
     <value>Adjustment policy '{0}' uses a Custom action without a handlerKey.</value>
   </data>
+  <data name="Validation_CustomTriggerHandlerKeyMissing" xml:space="preserve">
+    <value>Adjustment policy '{0}' uses a Custom trigger without a handlerKey.</value>
+  </data>
 </root>

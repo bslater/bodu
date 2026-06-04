@@ -158,7 +158,8 @@ internal static class NotableDateJsonDocumentParser
                 trigger is JsonElement two ? ParseNullableEnum<WeekOrdinal>(GetString(two, "weekOrdinal")) : null,
                 action is JsonElement an ? GetString(an, "notableDateRef") : null,
                 action is JsonElement ar ? GetString(ar, "ruleRef") : null,
-                action is JsonElement ah ? GetString(ah, "handlerKey") : null));
+                action is JsonElement ah ? GetString(ah, "handlerKey") : null,
+                trigger is JsonElement th ? GetString(th, "handlerKey") : null));
         }
 
         return policies;

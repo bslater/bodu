@@ -41,6 +41,11 @@ public sealed class ReloadableNotableDateService : INotableDateService
     private readonly IAdjustmentHandlerRegistry? _handlers;
 
     /// <summary>
+    /// The custom trigger-handler registry passed to each rebuilt inner service.
+    /// </summary>
+    private readonly IAdjustmentTriggerHandlerRegistry? _triggerHandlers;
+
+    /// <summary>
     /// Guards the paired update of <see cref="_inner" /> and <see cref="_builtFrom" />.
     /// </summary>
     private readonly object _gate = new();
@@ -79,6 +84,26 @@ public sealed class ReloadableNotableDateService : INotableDateService
         INotableDateAlgorithmRegistry? algorithms,
         INotableDateCollisionResolver? collisionResolver,
         IAdjustmentHandlerRegistry? handlers)
+        : this(provider, algorithms, collisionResolver, handlers, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReloadableNotableDateService" /> class with custom extensibility
+    /// registries, including a trigger-handler registry, propagated to each rebuilt inner service.
+    /// </summary>
+    /// <param name="provider">The provider supplying the resource currently in effect.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">The collision resolver consulted for a custom collision policy, or <see langword="null" />.</param>
+    /// <param name="handlers">The adjustment-handler registry consulted for a custom action, or <see langword="null" />.</param>
+    /// <param name="triggerHandlers">The trigger-handler registry consulted for a custom trigger, or <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
+    public ReloadableNotableDateService(
+        INotableDateResourceProvider provider,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers,
+        IAdjustmentTriggerHandlerRegistry? triggerHandlers)
     {
         ThrowHelper.ThrowIfNull(provider);
 
@@ -86,9 +111,10 @@ public sealed class ReloadableNotableDateService : INotableDateService
         this._algorithms = algorithms;
         this._collisionResolver = collisionResolver;
         this._handlers = handlers;
+        this._triggerHandlers = triggerHandlers;
 
         this._builtFrom = provider.Current;
-        this._inner = new NotableDateService(this._builtFrom, algorithms, collisionResolver, handlers);
+        this._inner = new NotableDateService(this._builtFrom, algorithms, collisionResolver, handlers, triggerHandlers);
     }
 
     /// <inheritdoc />
@@ -119,7 +145,7 @@ public sealed class ReloadableNotableDateService : INotableDateService
         {
             if (!ReferenceEquals(current, this._builtFrom))
             {
-                this._inner = new NotableDateService(current, this._algorithms, this._collisionResolver, this._handlers);
+                this._inner = new NotableDateService(current, this._algorithms, this._collisionResolver, this._handlers, this._triggerHandlers);
                 this._builtFrom = current;
             }
 

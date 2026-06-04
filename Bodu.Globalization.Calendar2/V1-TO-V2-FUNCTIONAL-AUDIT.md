@@ -34,7 +34,7 @@ the concrete v1 → v2 type mapping.
 | 5 | Easter algorithms | Gregorian + Orthodox Easter | ✅ Implemented (`EasterCalculator`, Western + Orthodox) |
 | 6 | Lunar / lunisolar / solar-term algorithms | Vesak, Asalha, Qingming, Losar, HinduLunar, LunarPhase | ✅ Implemented (Meeus equinox/lunar-phase + Matariki table; full solar-anchored Hindu festival set bar nakshatra-fixed Onam) |
 | 7 | Algorithm registry / dispatch | `INotableDateAlgorithmRegistry`, `NotableDateAlgorithmRegistry` | ✅ Implemented (`INotableDateAlgorithm` + `NotableDateAlgorithmRegistry`, threaded through resolution and validation) |
-| 8 | Observance adjustments | `ObservanceAdjustment`, `AdjustmentTrigger`/`Action`, `ObservedDateMode` | 🟡 Partial (reusable `AdjustmentPolicy`; 8/10 triggers, **full** action set incl. `ReplaceWithRule`+`Custom`, superset `EmissionMode`; only `IfNonWorkingDay` (folded into `IfWeekend`+skip) and a standalone Custom trigger absent) |
+| 8 | Observance adjustments | `ObservanceAdjustment`, `AdjustmentTrigger`/`Action`, `ObservedDateMode` | ✅ Implemented (reusable `AdjustmentPolicy`; full trigger set incl. `Custom`, full action set incl. `ReplaceWithRule`+`Custom`, superset `EmissionMode`; only `IfNonWorkingDay` is folded into `IfWeekend`+skip by design) |
 | 9 | Custom adjustment handlers | `IAdjustmentHandler`, `AdjustmentHandlerRegistry` | ✅ Implemented (`IAdjustmentHandler` + `AdjustmentHandlerRegistry` + `AdjustmentHandlerContext`, threaded through resolution and validation) |
 | 10 | Conflict-aware substitution | tier pipeline + non-working context | 🔵 Replaced & **strengthened** (compute-then-place occupied-day set, opt-in `skipNonWorkingDates`) |
 | 11 | Territory specificity / shadowing | `ApplySameNameTerritoryShadowing` (the v1 *bug*) | ✅ Implemented (correct redesign: `RuleApplicability.MatchSpecificity`, most-specific match wins) |
@@ -55,16 +55,17 @@ the concrete v1 → v2 type mapping.
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 21 ✅ Implemented · 2 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
+**Tally:** 22 ✅ Implemented · 1 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
 
 The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
 imports graph, the filter API, the full query surface (single-day / range / by-year /
 month / year), the full working-day extension surface (`DateOnly`/`DateTime`/`DateTimeOffset` +
-fiscal), the custom-algorithm registry, the custom adjustment-handler and same-day collision hooks,
-runtime reload, the localization hook, the plugin model, and DI registration are all **implemented**.
-No capability is fully deferred; the two remaining partials are the last two adjustment triggers
-(area 8 — `IfNonWorkingDay` folded into `IfWeekend`+skip, and a standalone Custom trigger) and scoped
-override removal by year/territory (area 15 — covered today by `PatchRule` on applicability).
+fiscal), the custom-algorithm registry, the **full adjustment trigger and action sets** (including the
+`Custom` trigger and action hooks), the same-day collision hook, runtime reload, the localization hook,
+the plugin model, and DI registration are all **implemented**. No capability is deferred. The single
+remaining partial is scoped override removal by year/territory (area 15 — already achievable today by
+`PatchRule` on a rule's applicability); the `IfNonWorkingDay` trigger is folded into
+`IfWeekend`+`skipNonWorkingDates` by design.
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -167,18 +168,19 @@ CLR-typed algorithm references (v2 dispatches by string key only).
   plugin-contributed algorithms) are replaced by direct key dispatch inside `AlgorithmDateStrategy`;
   there is no public registry to register into.
 
-### 8–9. Adjustments — 🟡 Partial; custom handlers ✅ Implemented
+### 8–9. Adjustments — ✅ Implemented
 
 v1 attached a rich `ObservanceAdjustment` to each rule; v2 hoists adjustments into reusable,
 scope-matched `AdjustmentPolicy` objects referenced by rules — an improvement in authoring reuse.
 
 | Facet | v1 | v2 | Status |
 |---|---|---|---|
-| Triggers | Always, IfDayOfWeek, IfWeekend, IfWeekday, IfNonWorkingDay, IfBeforeFixedDate, IfAfterFixedDate, IfLeapYear, IfNthOccurrenceInMonth, Custom | Always, IfDayOfWeek, IfWeekend, IfWeekday, **IfLeapYear**, **IfBeforeFixedDate**, **IfAfterFixedDate**, **IfNthOccurrenceInMonth** | 🟡 8 of 10 (IfNonWorkingDay folded into IfWeekend+`skipNonWorkingDates`; no standalone Custom trigger) |
+| Triggers | Always, IfDayOfWeek, IfWeekend, IfWeekday, IfNonWorkingDay, IfBeforeFixedDate, IfAfterFixedDate, IfLeapYear, IfNthOccurrenceInMonth, Custom | Always, IfDayOfWeek, IfWeekend, IfWeekday, **IfLeapYear**, **IfBeforeFixedDate**, **IfAfterFixedDate**, **IfNthOccurrenceInMonth**, **Custom** | ✅ full set (IfNonWorkingDay folded into IfWeekend+`skipNonWorkingDates` by design; `Custom` dispatches to `IAdjustmentTriggerHandler` via `AdjustmentTriggerHandlerRegistry`) |
 | Actions | None, AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay, ReplaceWithNamedDate, Custom | None, AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextWorkingDay, **MoveToPreviousWorkingDay**, **ReplaceWithRule**, **Suppress**, **Custom** | ✅ full superset (`ReplaceWithRule` = v1 `ReplaceWithNamedDate`; + prev-working-day & suppress) |
 | Emission | `ObservedDateMode`: ActualOnly, ObservedOnly, ActualAndObserved | `EmissionMode`: ActualOnly, ObservedOnly, ActualAndObserved, **ObservedAsAdditional**, **Suppress** | ✅ superset |
 | Reason | `AdjustmentReason` record | `AdjustmentPolicyId` + reason string on `NotableDate` | ✅ re-shaped |
 | Custom handlers | `IAdjustmentHandler` + `AdjustmentHandlerRegistry` + context/result | `IAdjustmentHandler` + `AdjustmentHandlerRegistry` + `AdjustmentHandlerContext` | ✅ Implemented |
+| Custom triggers | `Custom` trigger + predicate handler | `IAdjustmentTriggerHandler` + `AdjustmentTriggerHandlerRegistry` + `AdjustmentTriggerContext` (lenient: unregistered ⇒ no fire; missing key ⇒ validation error) | ✅ Implemented |
 
 `ReplaceWithRule` resolves the observed date from another rule's occurrence for the same year (via
 `StrategyResolutionContext.ResolveReference`); `Custom` dispatches to an `IAdjustmentHandler`
@@ -329,13 +331,14 @@ Ordered roughly by unblocking value, reconciled with `V1-TO-V2-TEST-PORT.md`:
    `Bodu.Globalization.Calendar2.DependencyInjection`; `NotableDateOnlyExtensions`).
 7. ~~**Multi-day spans, tags, the twice-Islamic case, the full Hindu set**~~ — ✅ **done**.
 
-Remaining (small, peripheral):
+8. ~~**Same-day collision resolver**~~ — ✅ **done** (`ResolutionPolicy.sameDayCollisionPolicy`/
+   `DuplicatePolicy` + `INotableDateCollisionResolver` hook, area 12).
+9. ~~**Custom adjustment handlers** + the remaining triggers and actions~~ — ✅ **done** (full trigger
+   set incl. `Custom` via `IAdjustmentTriggerHandler`; full action set incl. `ReplaceWithRule`+`Custom`;
+   `IfNonWorkingDay` folded into `IfWeekend`+skip by design, areas 8–9).
+10. ~~**Runtime mutable overrides + reload** (area 16); **localization hook** (area 22); the
+    **DateTime/DateTimeOffset/fiscal extension** overloads~~ — ✅ **done**. The `TerritoryCode` value
+    type (area 23) is **replaced by design** with plain territory strings + specificity matching.
 
-8. **Same-day collision resolver** — wire `ResolutionPolicy.sameDayCollisionPolicy`/`DuplicatePolicy`
-   and add a custom-resolver hook (area 12).
-9. **Custom adjustment handlers** + the remaining triggers (`IfNonWorkingDay`, `IfBefore/AfterFixedDate`,
-   `IfLeapYear`, `IfNthOccurrenceInMonth`) and actions (`ReplaceWithNamedDate`/`ReplaceWithRule`,
-   `Custom`) (areas 8–9).
-10. **Runtime mutable overrides + reload** (area 16); **localization hook** (area 22); the
-    **DateTime/DateTimeOffset/fiscal extension** overloads and the `TerritoryCode` value type
-    (areas 20, 23).
+Remaining (small, peripheral): scoped override removal by year/territory (area 15), already achievable
+via `PatchRule` on a rule's applicability.

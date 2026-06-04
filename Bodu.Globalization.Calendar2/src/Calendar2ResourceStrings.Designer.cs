@@ -293,5 +293,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Validation_CustomHandlerKeyMissing", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Adjustment policy '{0}' uses a Custom trigger without a handlerKey..
+        /// </summary>
+        internal static string Validation_CustomTriggerHandlerKeyMissing {
+            get {
+                return ResourceManager.GetString("Validation_CustomTriggerHandlerKeyMissing", resourceCulture);
+            }
+        }
     }
 }

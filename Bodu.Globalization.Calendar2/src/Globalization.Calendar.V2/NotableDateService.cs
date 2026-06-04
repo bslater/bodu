@@ -46,6 +46,11 @@ public sealed class NotableDateService : INotableDateService
     private readonly IAdjustmentHandlerRegistry? _handlers;
 
     /// <summary>
+    /// The custom trigger-handler registry, consulted when a trigger is <see cref="AdjustmentTrigger.Custom" />.
+    /// </summary>
+    private readonly IAdjustmentTriggerHandlerRegistry? _triggerHandlers;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
@@ -102,6 +107,35 @@ public sealed class NotableDateService : INotableDateService
         INotableDateAlgorithmRegistry? algorithms,
         INotableDateCollisionResolver? collisionResolver,
         IAdjustmentHandlerRegistry? handlers)
+        : this(resource, algorithms, collisionResolver, handlers, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry,
+    /// same-day collision resolver, adjustment-handler registry, and trigger-handler registry.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <param name="triggerHandlers">
+    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(
+        NotableDateResource resource,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers,
+        IAdjustmentTriggerHandlerRegistry? triggerHandlers)
     {
         ThrowHelper.ThrowIfNull(resource);
 
@@ -109,6 +143,7 @@ public sealed class NotableDateService : INotableDateService
         this._algorithms = algorithms;
         this._collisionResolver = collisionResolver;
         this._handlers = handlers;
+        this._triggerHandlers = triggerHandlers;
     }
 
     /// <inheritdoc />
@@ -312,7 +347,7 @@ public sealed class NotableDateService : INotableDateService
 
                     foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
                     {
-                        AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory);
+                        AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, category, baseDate, territory, context);
                         candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, policy, rule.Priority, nonWorking, durationDays, tags));
 
                         if (nonWorking)
@@ -508,13 +543,15 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="category">The effective category of the rule.</param>
     /// <param name="baseDate">The calculated (actual) occurrence date.</param>
     /// <param name="territory">The requested territory code.</param>
+    /// <param name="context">The resolution context exposed to custom triggers.</param>
     /// <returns>The winning <see cref="AdjustmentPolicy" />, or <see langword="null" /> when none fires.</returns>
     private AdjustmentPolicy? SelectAdjustmentPolicy(
         NotableDateDefinition definition,
         NotableDateRule rule,
         NotableDateCategory category,
         DateOnly baseDate,
-        string territory)
+        string territory,
+        StrategyResolutionContext context)
     {
         List<AdjustmentPolicy> candidates = new();
 
@@ -530,7 +567,36 @@ public sealed class NotableDateService : INotableDateService
 
         return candidates
             .OrderBy(p => p.Priority)
-            .FirstOrDefault(p => p.IsTriggered(baseDate));
+            .FirstOrDefault(p => this.IsPolicyTriggered(p, baseDate, territory, context));
+    }
+
+    /// <summary>
+    /// Determines whether a policy fires for a base date, dispatching to a registered
+    /// <see cref="IAdjustmentTriggerHandler" /> for the <see cref="AdjustmentTrigger.Custom" /> trigger and to the
+    /// policy's built-in evaluation otherwise.
+    /// </summary>
+    /// <param name="policy">The candidate policy.</param>
+    /// <param name="baseDate">The calculated (actual) occurrence date.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="context">The resolution context exposed to a custom trigger handler.</param>
+    /// <returns>
+    /// <see langword="true" /> if the policy fires; otherwise <see langword="false" />. A custom trigger whose handler
+    /// is unregistered does not fire.
+    /// </returns>
+    private bool IsPolicyTriggered(AdjustmentPolicy policy, DateOnly baseDate, string territory, StrategyResolutionContext context)
+    {
+        if (policy.Trigger != AdjustmentTrigger.Custom)
+            return policy.IsTriggered(baseDate);
+
+        if (string.IsNullOrEmpty(policy.TriggerHandlerKey)
+            || this._triggerHandlers is null
+            || !this._triggerHandlers.TryGet(policy.TriggerHandlerKey, out IAdjustmentTriggerHandler? handler)
+            || handler is null)
+        {
+            return false;
+        }
+
+        return handler.ShouldAdjust(new AdjustmentTriggerContext(baseDate, territory, policy, context));
     }
 
     /// <summary>

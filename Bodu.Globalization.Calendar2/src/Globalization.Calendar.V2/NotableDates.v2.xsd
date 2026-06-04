@@ -82,6 +82,7 @@
     <xs:attribute name="month" type="xs:string" use="optional" />
     <xs:attribute name="day" type="nd:dayValue" use="optional" />
     <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="optional" />
+    <xs:attribute name="handlerKey" type="xs:string" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="AdjustmentAction">
@@ -386,6 +387,7 @@
       <xs:enumeration value="IfBeforeFixedDate" />
       <xs:enumeration value="IfAfterFixedDate" />
       <xs:enumeration value="IfNthOccurrenceInMonth" />
+      <xs:enumeration value="Custom" />
     </xs:restriction>
   </xs:simpleType>
 
