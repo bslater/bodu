@@ -48,4 +48,18 @@ public interface INotableDateService
     /// <param name="filter">The filter that emitted occurrences must satisfy.</param>
     /// <returns>The matching occurrences, ordered by date then identity.</returns>
     IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter);
+
+    /// <summary>
+    /// Gets the distinct territories any rule in the resource is scoped to.
+    /// </summary>
+    /// <returns>
+    /// The scoped territory codes in case-insensitive ascending order; empty when every rule is global (unscoped).
+    /// </returns>
+    IReadOnlyList<string> GetSupportedTerritories();
+
+    /// <summary>
+    /// Gets the distinct calendar systems any rule in the resource is expressed in.
+    /// </summary>
+    /// <returns>The calendar systems in use, in ascending order.</returns>
+    IReadOnlyList<CalendarSystem> GetSupportedCalendars();
 }

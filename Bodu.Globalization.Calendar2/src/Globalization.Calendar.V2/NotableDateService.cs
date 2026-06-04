@@ -343,6 +343,25 @@ public sealed class NotableDateService : INotableDateService
         return this.Resolve(range, territory).Where(filter.Matches).ToArray();
     }
 
+    /// <inheritdoc />
+    public IReadOnlyList<string> GetSupportedTerritories() =>
+        this._resource.NotableDates
+            .SelectMany(definition => definition.Rules)
+            .SelectMany(rule => rule.Applicability.Territories)
+            .Where(territory => !string.IsNullOrWhiteSpace(territory))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+    /// <inheritdoc />
+    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
+        this._resource.NotableDates
+            .SelectMany(definition => definition.Rules)
+            .Select(rule => rule.Applicability.Calendar)
+            .Distinct()
+            .OrderBy(calendar => calendar)
+            .ToArray();
+
     /// <summary>
     /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
     /// non-working occurrences.
