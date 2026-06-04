@@ -41,7 +41,7 @@ the concrete v1 → v2 type mapping.
 | 12 | Same-day collision resolution | `INotableDateCollisionResolver`, `DefaultNotableDateCollisionResolver` | ✅ Implemented (`sameDayCollisionPolicy` wired: KeepAll/HighestPriorityOnly/CategoryPriority/Custom + `INotableDateCollisionResolver` hook) |
 | 13 | XML ingestion + schema validation | `NotableDateRuleParser`, `NotableDates.xsd`, `NotableDateRuleValidator` | ✅ Implemented (new schema: `NotableDateDocumentParser`, `NotableDates.v2.xsd`, validator + diagnostics) |
 | 14 | JSON ingestion | `NotableDateRuleJsonParser`, `NotableDates.schema.json` | ✅ Implemented (`NotableDateJsonDocumentParser` + `LoadJson`; XML/JSON auto-detected for imports) |
-| 15 | Declarative overrides | `INotableDateRuleOverrideProvider`, `RuleRemoval` | 🟡 Partial (`<Overrides>` Add/Patch/Remove at load; no scoped removal, no runtime mutation) |
+| 15 | Declarative overrides | `INotableDateRuleOverrideProvider`, `RuleRemoval` | ✅ Implemented (`<Overrides>` Add/Patch/Remove at load; scoped removal via `PatchRule`+`ExceptYear` or `AddRule` shadow+`Suppress`; runtime mutation via reload, area 16) |
 | 16 | Runtime mutable overrides + reload | `MutableNotableDateRuleOverrideProvider`, `Invalidate`/`Reload` | ✅ Implemented (`MutableNotableDateResourceProvider` + `ReloadableNotableDateService`; reload swaps the resource, `AddReloadableNotableDateService` for DI) |
 | 17 | Imports / cross-resource cherry-pick | `<UseFrom>`/`<Use>`, `NotableDateRuleMerger`, use-directives | ✅ Implemented (`<Imports>` resolved by a resolver: import-all / cherry-pick + override, policy merge, cycle detection) |
 | 18 | Resource providers + path resolution | `Xml/JsonResourceNotableDateRuleProvider`, `ResourcePathResolver` | 🔵 Replaced (loader + a caller-supplied resource resolver delegate; no provider/path-resolver types) |
@@ -55,17 +55,18 @@ the concrete v1 → v2 type mapping.
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 22 ✅ Implemented · 1 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
+**Tally:** 23 ✅ Implemented · 0 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
 
-The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
-imports graph, the filter API, the full query surface (single-day / range / by-year /
-month / year), the full working-day extension surface (`DateOnly`/`DateTime`/`DateTimeOffset` +
-fiscal), the custom-algorithm registry, the **full adjustment trigger and action sets** (including the
-`Custom` trigger and action hooks), the same-day collision hook, runtime reload, the localization hook,
-the plugin model, and DI registration are all **implemented**. No capability is deferred. The single
-remaining partial is scoped override removal by year/territory (area 15 — already achievable today by
-`PatchRule` on a rule's applicability); the `IfNonWorkingDay` trigger is folded into
-`IfWeekend`+`skipNonWorkingDates` by design.
+Every numbered capability area is now **implemented** or **replaced by design** — none is partial or
+deferred. The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion,
+the imports graph, the filter API, the full query surface (single-day / range / by-year / month /
+year), the full working-day extension surface (`DateOnly`/`DateTime`/`DateTimeOffset` + fiscal), the
+custom-algorithm registry, the **full adjustment trigger and action sets** (including the `Custom`
+trigger and action hooks), declarative overrides (including year- and territory-scoped removal), the
+same-day collision hook, runtime reload, the localization hook, the plugin model, and DI registration
+are all implemented. The three 🔵 areas are deliberate redesigns (string territories with specificity
+matching in place of a `TerritoryCode` value type; the single-resource loader in place of the v1
+provider chain); the `IfNonWorkingDay` trigger is folded into `IfWeekend`+`skipNonWorkingDates`.
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -234,11 +235,14 @@ rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the
 
 ### 15–18. Overrides, imports, providers
 
-- **15. Declarative overrides — 🟡** v2 parses an `<Overrides>` block into
+- **15. Declarative overrides — ✅** v2 parses an `<Overrides>` block into
   `AddRuleOverride` / `PatchRuleOverride` / `RemoveRuleOverride` and applies them at load via
   `NotableDateRuleOverrideApplier` (an override whose target matches zero rules is an error). v1's
-  `RuleRemoval` scoping (by year/territory) is not reproduced — v2 removes/patches by exact rule
-  identity.
+  `RuleRemoval` scoping (by year/territory) is reproduced through the more general applicability model
+  rather than a dedicated removal verb: a **year-scoped** removal is a `PatchRule` whose replacement
+  applicability adds the year to `ExceptYear`; a **territory-scoped** removal is an `AddRule` injecting
+  a more-specific rule (e.g. `AU-NSW` over `AU`) whose policy emits `Suppress`, so specificity shadowing
+  drops the parent occurrence for that subterritory alone. Both idioms are proven by `ScopedRemovalTests`.
 - **16. Runtime mutable overrides + reload — ✅** a `NotableDateResource` stays immutable, but
   `MutableNotableDateResourceProvider` swaps the resource currently in effect and
   `ReloadableNotableDateService` (an `INotableDateService`) rebuilds its resolution state on the next
@@ -340,5 +344,6 @@ Ordered roughly by unblocking value, reconciled with `V1-TO-V2-TEST-PORT.md`:
     **DateTime/DateTimeOffset/fiscal extension** overloads~~ — ✅ **done**. The `TerritoryCode` value
     type (area 23) is **replaced by design** with plain territory strings + specificity matching.
 
-Remaining (small, peripheral): scoped override removal by year/territory (area 15), already achievable
-via `PatchRule` on a rule's applicability.
+Remaining: none. Scoped override removal (area 15) is covered by `PatchRule`+`ExceptYear` (year-scoped)
+and `AddRule` shadow+`Suppress` (territory-scoped), both proven by `ScopedRemovalTests`. Every numbered
+area is implemented or a deliberate design replacement.
