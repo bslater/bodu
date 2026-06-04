@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixed, DayOfWeekInMonth, and OffsetFromRule strategy fixtures for the v2 engine tests (ported from the v1
+  NotableDateRuleResolverTests Fixed / DayOfWeekInMonth / OffsetFromAnchor matrices). Year-bounded concepts
+  exercise the applicability window; the offset concepts exercise single-link, multi-link, anchor-bounded,
+  and circular references. A circular offset chain loads successfully (each reference resolves to exactly one
+  rule) but produces no occurrence because the resolver breaks the cycle.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategy.fixed-offset">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <!-- Fixed Gregorian month and day. -->
+    <NotableDate id="fixed-new-year" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><Fixed month="January" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Fixed with a lower year bound: applies only from 2030. -->
+    <NotableDate id="fixed-from-2030" displayName="Future Holiday" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Applicability fromYear="2030" /><Strategy><Fixed month="January" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Fixed with an upper year bound: applies only through 2020. -->
+    <NotableDate id="fixed-to-2020" displayName="Sunset Holiday" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Applicability toYear="2020" /><Strategy><Fixed month="January" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Fixed with both bounds: the applicability window truth table (2020-2030 inclusive). -->
+    <NotableDate id="fixed-window-2020-2030" displayName="Windowed Holiday" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Applicability fromYear="2020" toYear="2030" /><Strategy><Fixed month="January" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- DayOfWeekInMonth: the second Sunday of May. -->
+    <NotableDate id="dow-2nd-sun-may" displayName="Second Sunday of May" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- OffsetFromRule anchor: a plain Fixed rule referenced by offset concepts. -->
+    <NotableDate id="offset-anchor" displayName="Anchor" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><Fixed month="April" day="10" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Single-link offset: two days before the anchor. -->
+    <NotableDate id="offset-minus-2" displayName="Two Days Earlier" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><OffsetFromRule notableDateRef="offset-anchor" ruleRef="r" offsetDays="-2" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Multi-link offset chain: anchor -> minus-2 -> minus-2-plus-5 (net +3 from the anchor). -->
+    <NotableDate id="offset-chain-plus-5" displayName="Chained Offset" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><OffsetFromRule notableDateRef="offset-minus-2" ruleRef="r" offsetDays="5" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Circular offset chain: a -> b -> a. Loads (each reference resolves), but the resolver breaks the cycle. -->
+    <NotableDate id="offset-cycle-a" displayName="Cycle A" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><OffsetFromRule notableDateRef="offset-cycle-b" ruleRef="r" offsetDays="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="offset-cycle-b" displayName="Cycle B" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><OffsetFromRule notableDateRef="offset-cycle-a" ruleRef="r" offsetDays="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

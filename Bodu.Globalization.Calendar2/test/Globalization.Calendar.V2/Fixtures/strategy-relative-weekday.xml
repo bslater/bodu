@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RelativeWeekdayInMonth strategy known-answer fixtures for the v2 engine tests (ported from the v1
+  NotableDateRuleResolverTests.RelativeWeekdayInMonth matrices). Each concept pins one anchor configuration
+  (month, anchor weekday, week ordinal, relative weekday, proximity) so a test can resolve a single-day
+  window on the expected Gregorian date and assert the strategy lands exactly there. Concepts whose anchor
+  ordinal does not exist, or whose relative positioning rolls outside the representable range, intentionally
+  produce no occurrence.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategy.relative-weekday">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <!-- United States Election Day: the Tuesday on or after the first Monday of November. -->
+    <NotableDate id="rel-election" displayName="Election Day" category="Civic" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="November" dayOfWeek="Monday" weekOrdinal="First" relativeDayOfWeek="Tuesday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Sweep matrix: one concept per distinct anchor/relative/proximity configuration. -->
+    <NotableDate id="rel-sweep-01" displayName="Sweep 01" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" relativeDayOfWeek="Friday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-02" displayName="Sweep 02" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" relativeDayOfWeek="Tuesday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-03" displayName="Sweep 03" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" relativeDayOfWeek="Saturday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-04" displayName="Sweep 04" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" relativeDayOfWeek="Friday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-05" displayName="Sweep 05" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" relativeDayOfWeek="Tuesday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-06" displayName="Sweep 06" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" relativeDayOfWeek="Sunday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-07" displayName="Sweep 07" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" relativeDayOfWeek="Monday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-08" displayName="Sweep 08" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" relativeDayOfWeek="Monday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-09" displayName="Sweep 09" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" relativeDayOfWeek="Monday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-10" displayName="Sweep 10" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="February" dayOfWeek="Thursday" weekOrdinal="Fourth" relativeDayOfWeek="Thursday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Fifth Thursday of February anchor: exists only in a leap February that begins on a Thursday. -->
+    <NotableDate id="rel-sweep-11" displayName="Sweep 11" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="February" dayOfWeek="Thursday" weekOrdinal="Fifth" relativeDayOfWeek="Thursday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-sweep-12" displayName="Sweep 12" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="February" dayOfWeek="Thursday" weekOrdinal="Last" relativeDayOfWeek="Sunday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Backward across the calendar-year boundary: first Monday 1 Jan 2024 -> Fri 29 Dec 2023. -->
+    <NotableDate id="rel-sweep-13" displayName="Sweep 13" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="January" dayOfWeek="Monday" weekOrdinal="First" relativeDayOfWeek="Friday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Forward across the calendar-year boundary: last Monday 30 Dec 2024 -> Wed 1 Jan 2025. -->
+    <NotableDate id="rel-sweep-14" displayName="Sweep 14" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="December" dayOfWeek="Monday" weekOrdinal="Last" relativeDayOfWeek="Wednesday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Anchor ordinal does not exist (a fifth weekday in a month with only four). -->
+    <NotableDate id="rel-null-mon-feb" displayName="No Fifth Monday Feb" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="February" dayOfWeek="Monday" weekOrdinal="Fifth" relativeDayOfWeek="Tuesday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-null-thu-feb" displayName="No Fifth Thursday Feb" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="February" dayOfWeek="Thursday" weekOrdinal="Fifth" relativeDayOfWeek="Tuesday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="rel-null-wed-apr" displayName="No Fifth Wednesday Apr" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><RelativeWeekdayInMonth month="April" dayOfWeek="Wednesday" weekOrdinal="Fifth" relativeDayOfWeek="Tuesday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

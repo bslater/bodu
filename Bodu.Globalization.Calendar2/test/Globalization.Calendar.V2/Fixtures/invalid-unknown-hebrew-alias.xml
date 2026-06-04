@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A Hebrew fixed-date rule whose month token is not a recognised Hebrew month name or alias. The parser
+  reports the unknown month as an error diagnostic, so the document fails to load. (In v1 an unrecognised
+  alias resolved to null at resolution time; v2 reports it during load.)
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.hebrew-alias">
+  <NotableDates>
+    <NotableDate id="unknown-alias" displayName="Unknown Alias" category="Religious">
+      <Rules>
+        <Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Smarchadar" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

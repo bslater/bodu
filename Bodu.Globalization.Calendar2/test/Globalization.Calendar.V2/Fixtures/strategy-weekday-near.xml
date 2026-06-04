@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  WeekdayNearDate strategy known-answer fixtures for the v2 engine tests (ported from the v1
+  NotableDateRuleResolverTests.WeekdayNearDate matrices). Each concept pins one configuration (reference
+  month and day, target weekday, proximity) so a test can resolve a single-day window on the expected
+  Gregorian date. Concepts whose reference (year, month, day) is not a valid Gregorian date produce no
+  occurrence in years where the reference does not exist (for example 29 February in a common year).
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategy.weekday-near">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <!-- Saturday on or after 20 June (Nordic Midsummer Day). -->
+    <NotableDate id="near-sat-onorafter-jun-20" displayName="Midsummer Day" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="June" day="20" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Saturday on or after 21 June (on-the-day reference). -->
+    <NotableDate id="near-sat-onorafter-jun-21" displayName="Saturday Anchor" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="June" day="21" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Saturday on or after 31 October (window straddles the month boundary). -->
+    <NotableDate id="near-sat-onorafter-oct-31" displayName="All Saints Window" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="October" day="31" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Wednesday on or before 22 November (German Repentance Day). -->
+    <NotableDate id="near-wed-onorbefore-nov-22" displayName="Repentance Day" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="November" day="22" dayOfWeek="Wednesday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Wednesday on or before 20 November (on-the-day reference). -->
+    <NotableDate id="near-wed-onorbefore-nov-20" displayName="Wednesday Anchor" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="November" day="20" dayOfWeek="Wednesday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Wednesday nearest 20 November (on-the-day reference). -->
+    <NotableDate id="near-wed-nearest-nov-20" displayName="Wednesday Nearest" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="November" day="20" dayOfWeek="Wednesday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Monday nearest 1 November (forward closer). -->
+    <NotableDate id="near-mon-nearest-nov-1" displayName="Monday Nearest Nov 1" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="November" day="1" dayOfWeek="Monday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Monday nearest 6 November (backward closer). -->
+    <NotableDate id="near-mon-nearest-nov-6" displayName="Monday Nearest Nov 6" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="November" day="6" dayOfWeek="Monday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Sunday nearest 6 November (backward closer). -->
+    <NotableDate id="near-sun-nearest-nov-6" displayName="Sunday Nearest Nov 6" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="November" day="6" dayOfWeek="Sunday" direction="Nearest" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Monday on or after 31 December (forward across the year boundary). -->
+    <NotableDate id="near-mon-onorafter-dec-31" displayName="Monday After Year End" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="December" day="31" dayOfWeek="Monday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Friday on or before 1 January (backward across the year boundary). -->
+    <NotableDate id="near-fri-onorbefore-jan-1" displayName="Friday Before Year Start" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="January" day="1" dayOfWeek="Friday" direction="OnOrBefore" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Reference date that never exists (30 February): produces no occurrence. -->
+    <NotableDate id="near-feb-30" displayName="Invalid Reference" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="February" day="30" dayOfWeek="Monday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Reference date that exists only in leap years (29 February): Saturday on or after. -->
+    <NotableDate id="near-feb-29" displayName="Leap Window" category="Other" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="r"><Strategy><WeekdayNearDate month="February" day="29" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

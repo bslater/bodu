@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hebrew month-alias fixtures for the v2 engine tests (ported from the v1
+  NotableDateRuleResolverTests.HebrewAlias tests). Each concept is a global Hebrew fixed-date rule on day 1
+  using one supported month token, resolved by a calendar-year sweep across Gregorian 2026 (Hebrew 5786
+  regular and 5787 leap) so every alias arm is exercised. The simple months (Tishri..AdarI) are numeric
+  indices; the leap-shifting months (LastAdar..Elul) are aliases whose index depends on whether the Hebrew
+  year has thirteen months.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategy.hebrew-alias">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="alias-tishri" displayName="Tishri" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Tishri" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-heshvan" displayName="Heshvan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Heshvan" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-kislev" displayName="Kislev" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Kislev" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-tevet" displayName="Tevet" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Tevet" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-shevat" displayName="Shevat" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Shevat" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-adar-i" displayName="Adar I" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="AdarI" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-last-adar" displayName="Last Adar" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="LastAdar" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-nisan" displayName="Nisan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Nisan" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-iyar" displayName="Iyar" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Iyar" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-sivan" displayName="Sivan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Sivan" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-tammuz" displayName="Tammuz" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Tammuz" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-av" displayName="Av" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Av" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="alias-elul" displayName="Elul" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="r"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Elul" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

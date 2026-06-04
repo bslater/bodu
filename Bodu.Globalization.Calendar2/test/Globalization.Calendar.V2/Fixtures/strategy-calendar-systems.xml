@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Non-Gregorian fixed-date strategy fixtures for the v2 engine tests (ported from the v1
+  NotableDateRuleResolverTests CalendarType / SkipLeapMonth / SweepCalendarYears matrices and the Hebrew alias
+  tests). Each concept is a global fixed-date rule expressed in a non-Gregorian calendar and projected onto
+  the Gregorian year by the engine. The Chinese conventional-month festivals skip the intercalary leap month;
+  the Hebrew, Islamic, and Umm al-Qura observances sweep the overlapping calendar years.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategy.calendar-systems">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <!-- Chinese lunisolar Lunar New Year: month 1, day 1. -->
+    <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="cn"><Applicability calendar="ChineseLunisolar" /><Strategy><Fixed month="1" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Dragon Boat Festival: conventional month 5, day 5 (skips the intercalary leap month). -->
+    <NotableDate id="dragon-boat" displayName="Dragon Boat Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="cn"><Applicability calendar="ChineseLunisolar" /><Strategy><Fixed month="5" day="5" skipLeapMonth="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Mid-Autumn Festival: conventional month 8, day 15 (skips the intercalary leap month). -->
+    <NotableDate id="mid-autumn-festival" displayName="Mid-Autumn Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="cn"><Applicability calendar="ChineseLunisolar" /><Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Double Ninth Festival: conventional month 9, day 9 (skips the intercalary leap month). -->
+    <NotableDate id="double-ninth" displayName="Double Ninth Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="cn"><Applicability calendar="ChineseLunisolar" /><Strategy><Fixed month="9" day="9" skipLeapMonth="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Hebrew Rosh Hashanah: 1 Tishri. -->
+    <NotableDate id="rosh-hashanah" displayName="Rosh Hashanah" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Tishri" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Hebrew Passover: 15 Nisan (Nisan shifts from month 7 to month 8 in a leap Hebrew year). -->
+    <NotableDate id="passover" displayName="Passover" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Nisan" day="15" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Hebrew Hanukkah: 25 Kislev (month 3) authored as an explicit integer. -->
+    <NotableDate id="hanukkah" displayName="Hanukkah" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="3" day="25" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Hebrew Purim: 14 LastAdar (month 6 in a common year, month 7 in a leap year). -->
+    <NotableDate id="purim" displayName="Purim" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="LastAdar" day="14" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Hebrew AdarII: 14 AdarII (exists only in a leap Hebrew year). -->
+    <NotableDate id="purim-adar-ii" displayName="Purim (Adar II)" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="AdarII" day="14" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Hebrew Av: 9 Av (Tisha B'Av), alias whose index shifts in a leap year. -->
+    <NotableDate id="tisha-bav" displayName="Tisha B'Av" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="il"><Applicability calendar="Hebrew" /><Strategy><Fixed month="Av" day="9" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Islamic (Hijri) Eid al-Adha: 10 Dhu al-Hijjah (month 12). -->
+    <NotableDate id="eid-al-adha" displayName="Eid al-Adha" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="sa"><Applicability calendar="Hijri" /><Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Umm al-Qura Islamic New Year: 1 Muharram (month 1). -->
+    <NotableDate id="umm-al-qura-new-year" displayName="Islamic New Year (Umm al-Qura)" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="sa"><Applicability calendar="UmmAlQura" /><Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
