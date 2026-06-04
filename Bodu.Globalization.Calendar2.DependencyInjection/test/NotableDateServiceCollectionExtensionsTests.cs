@@ -89,4 +89,34 @@ public sealed class NotableDateServiceCollectionExtensionsTests
             _ = new ServiceCollection().AddNotableDateService((NotableDateResource)null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that the reloadable registration resolves a service whose results follow a runtime reload performed
+    /// through the registered provider.
+    /// </summary>
+    [TestMethod]
+    public void AddReloadableNotableDateService_AfterProviderReload_ReflectsNewResource()
+    {
+        const string februaryXml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.di">
+          <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+          <NotableDates>
+            <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+              <Rules><Rule id="x"><Strategy><Fixed month="February" day="1" /></Strategy></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        ServiceProvider provider = new ServiceCollection()
+            .AddReloadableNotableDateService(NotableDateResourceLoader.Load(Xml))
+            .BuildServiceProvider();
+
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+        Assert.AreEqual(new DateOnly(2026, 1, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+
+        provider.GetRequiredService<MutableNotableDateResourceProvider>().Reload(NotableDateResourceLoader.Load(februaryXml));
+
+        Assert.AreEqual(new DateOnly(2026, 2, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+    }
 }

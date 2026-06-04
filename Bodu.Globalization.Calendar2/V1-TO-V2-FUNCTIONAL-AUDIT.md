@@ -42,7 +42,7 @@ the concrete v1 → v2 type mapping.
 | 13 | XML ingestion + schema validation | `NotableDateRuleParser`, `NotableDates.xsd`, `NotableDateRuleValidator` | ✅ Implemented (new schema: `NotableDateDocumentParser`, `NotableDates.v2.xsd`, validator + diagnostics) |
 | 14 | JSON ingestion | `NotableDateRuleJsonParser`, `NotableDates.schema.json` | ✅ Implemented (`NotableDateJsonDocumentParser` + `LoadJson`; XML/JSON auto-detected for imports) |
 | 15 | Declarative overrides | `INotableDateRuleOverrideProvider`, `RuleRemoval` | 🟡 Partial (`<Overrides>` Add/Patch/Remove at load; no scoped removal, no runtime mutation) |
-| 16 | Runtime mutable overrides + reload | `MutableNotableDateRuleOverrideProvider`, `Invalidate`/`Reload` | ⛔ Deferred (resources immutable after load) |
+| 16 | Runtime mutable overrides + reload | `MutableNotableDateRuleOverrideProvider`, `Invalidate`/`Reload` | ✅ Implemented (`MutableNotableDateResourceProvider` + `ReloadableNotableDateService`; reload swaps the resource, `AddReloadableNotableDateService` for DI) |
 | 17 | Imports / cross-resource cherry-pick | `<UseFrom>`/`<Use>`, `NotableDateRuleMerger`, use-directives | ✅ Implemented (`<Imports>` resolved by a resolver: import-all / cherry-pick + override, policy merge, cycle detection) |
 | 18 | Resource providers + path resolution | `Xml/JsonResourceNotableDateRuleProvider`, `ResourcePathResolver` | 🔵 Replaced (loader + a caller-supplied resource resolver delegate; no provider/path-resolver types) |
 | 19 | Filter API | `NotableDateFilter` (14 factories + And/Or) | ✅ Implemented (`NotableDateFilter` + filtered `Resolve` overloads) |
@@ -55,14 +55,14 @@ the concrete v1 → v2 type mapping.
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 17 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 2 ⛔ Deferred (counting sub-rows).
+**Tally:** 18 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 1 ⛔ Deferred (counting sub-rows).
 
 The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
 imports graph, the filter API, the `DateOnly` extension surface, the custom-algorithm registry, the
-custom adjustment-handler and same-day collision hooks, the plugin model, and DI registration are all
-**implemented**. The remaining deferred set is small and peripheral: runtime mutable overrides /
-reload (area 16) and the localization hook (area 22); the partials are the DateTime/DateTimeOffset/
-fiscal extension overloads (area 20) and the last two adjustment triggers (area 8).
+custom adjustment-handler and same-day collision hooks, runtime reload, the plugin model, and DI
+registration are all **implemented**. The only fully deferred capability is the localization hook
+(area 22); the partials are the DateTime/DateTimeOffset/fiscal extension overloads (area 20) and the
+last two adjustment triggers (area 8).
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -131,7 +131,7 @@ inferred from a shared title — which is precisely what fixes the original bug 
 | `GetNotableDates(year, …)` | ✅ idiom: `Resolve(new DateRange(Jan 1, Dec 31), …)` (no dedicated overload) |
 | `…(…, NotableDateFilter, …)` overloads | ✅ `Resolve(DateOnly/DateRange, territory, filter)` (area 19) |
 | `IsWeekend`, `IsNonWorkingDay`, `IsHolidayNonWorkingDay`, `WorkingWeek` | 🟡 `DateOnly` extensions (`IsWeekend`, `IsNonWorkingDay`, …) over the service (area 20) |
-| `Invalidate`, `Reload` | ⛔ deferred (area 16); v2 loads once, immutable |
+| `Invalidate`, `Reload` | ✅ `MutableNotableDateResourceProvider.Reload` + `ReloadableNotableDateService` (area 16) |
 | `GetSupportedTerritories`, `GetSupportedCalendars` | ⛔ not exposed |
 
 Inclusion is decided by the **emitted** date in both v1 and v2, so single-day and range queries
@@ -223,9 +223,10 @@ rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the
   (same `urn:bodu:globalization:calendar` namespace family). `ParsedNotableDateDocument` is preserved
   as an intermediate. The XSD carries the full forward-looking vocabulary; the runtime validator
   enforces the implemented subset.
-- **14. JSON — 🟡** v2 ships `NotableDates.v2.schema.json` (the schema artifact), but
-  `NotableDateResourceLoader.Load` accepts XML only. v1's `NotableDateRuleJsonParser` (a first-class
-  equal to XML, with mixed-format import graphs) has no v2 loader yet.
+- **14. JSON — ✅** v2 ships `NotableDates.v2.schema.json` and `NotableDateJsonDocumentParser` +
+  `NotableDateResourceLoader.LoadJson`, a first-class equal to the XML loader. The JSON shape mirrors
+  the XML vocabulary one-to-one (camelCase strategy discriminators, a `rules[].adjustments` array),
+  and import graphs auto-detect JSON vs. XML per resource (`ParseAny`).
 
 ### 15–18. Overrides, imports, providers
 
@@ -234,12 +235,17 @@ rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the
   `NotableDateRuleOverrideApplier` (an override whose target matches zero rules is an error). v1's
   `RuleRemoval` scoping (by year/territory) is not reproduced — v2 removes/patches by exact rule
   identity.
-- **16. Runtime mutable overrides + reload — ⛔** `MutableNotableDateRuleOverrideProvider`
-  (`AddRule`/`RemoveRule`/`Clear` + `Changed` event) and `INotableDateService.Invalidate`/`Reload`
-  are not ported; v2 resources are immutable after load.
-- **17. Imports / cherry-pick — ⛔** the entire `<UseFrom>`/`<UseAll>`/`<Use>` graph,
-  `NotableDateRuleUseDirective`/`UseGroup`, `NotableDateRuleMerger` override-body merge, and
-  `ClearFields`/`ClearTags`/`ClearAdjustments` semantics are deferred.
+- **16. Runtime mutable overrides + reload — ✅** a `NotableDateResource` stays immutable, but
+  `MutableNotableDateResourceProvider` swaps the resource currently in effect and
+  `ReloadableNotableDateService` (an `INotableDateService`) rebuilds its resolution state on the next
+  query, so a long-lived consumer — including the `AddReloadableNotableDateService` DI singleton —
+  observes reloaded data. Runtime override mutation is performed by loading a fresh resource (whose
+  `<Overrides>` are applied at load) and calling `Reload`. Proven by `ReloadableNotableDateServiceTests`.
+- **17. Imports / cherry-pick — ✅** `<Imports>`/`<Import>`/`<Use>` are resolved recursively by
+  `NotableDateResourceLoader` against a caller-supplied resource resolver: import-all or per-concept
+  cherry-pick with rename (`as`) and territory/category/non-working overrides (`ApplyUse`), adjustment
+  policy and concept merging (local wins on conflict), and cycle / missing-resource / missing-concept
+  diagnostics.
 - **18. Providers + path resolution — 🔵** v1's `INotableDateRuleProvider`,
   `Xml/JsonResourceNotableDateRuleProvider`, `NotableDateRuleResourceProviderBase` (assembly-chain
   search, format dispatch, flatten pipeline) and `IResourcePathResolver`/`ResourcePathResolver`/

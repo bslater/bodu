@@ -55,4 +55,33 @@ public static class NotableDateServiceCollectionExtensions
         services.AddSingleton<INotableDateService>(provider => new NotableDateService(resourceFactory(provider)));
         return services;
     }
+
+    /// <summary>
+    /// Registers a reloadable <see cref="INotableDateService" /> over a <see cref="MutableNotableDateResourceProvider" />
+    /// so the resolved data can be swapped at runtime.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="initialResource">The resource the service resolves against until it is reloaded.</param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// The provider is registered as a singleton under both <see cref="MutableNotableDateResourceProvider" /> and
+    /// <see cref="INotableDateResourceProvider" />; injecting the former lets a caller reload the resource, after which
+    /// the resolved <see cref="INotableDateService" /> reflects the new data on its next query.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="initialResource" /> is <see langword="null" />.
+    /// </exception>
+    public static IServiceCollection AddReloadableNotableDateService(this IServiceCollection services, NotableDateResource initialResource)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(initialResource);
+
+        MutableNotableDateResourceProvider provider = new(initialResource);
+        services.AddSingleton(provider);
+        services.AddSingleton<INotableDateResourceProvider>(provider);
+        services.AddSingleton<INotableDateService>(_ => new ReloadableNotableDateService(provider));
+        return services;
+    }
 }
