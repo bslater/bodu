@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Australian public holidays, ported from the v1 region-au.xml static definition to the
-  v2 cookbook schema. UseFrom imports are flattened into explicit rules; same-name
-  concepts (Labour Day, King's Birthday) become one NotableDate with a rule per
-  subdivision; weekend substitution uses the conflict-aware MoveToNextWorkingDay action.
+  ================================================================================================================
+  Australia (AU) — self-contained engine-test fixture
+  ================================================================================================================
+
+  A full inline port of the v1 region-au.xml to the v2 cookbook schema. Unlike the shipping AsiaPacific data pack
+  (which imports shared concepts from the common catalogues), this fixture is loaded WITHOUT a resource resolver,
+  so every concept — including the civil, Christian, family, and cultural observances the data pack imports — is
+  declared inline here.
+
+  It exercises the engine surface the Australian calendar relies on: Fixed and DayOfWeekInMonth strategies, the
+  Easter algorithm with OffsetFromRule derivations, WeekdayNearDate, year-bound applicability, per-subdivision
+  territory shadowing, weekend substitution (plain and conflict-aware), and — via the NSW Anzac Day trial — the
+  ObservedAsAdditional emission mode.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.au">
 
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
-    <!-- Weekend roll to the next weekday (skips weekends only). -->
-    <AdjustmentPolicy id="weekend-roll" priority="100">
+    <!-- Plain weekend roll to the next weekday (skips weekends only). -->
+    <AdjustmentPolicy id="weekend-roll" priority="100"
+                      description="If the holiday falls on a weekend, observe it on the following Monday.">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
       <Emission mode="ObservedOnly" reason="Substitute public holiday" />
     </AdjustmentPolicy>
 
-    <!-- Substitute to the next working day, skipping weekends and days already taken by another holiday. -->
-    <AdjustmentPolicy id="working-day-substitute" priority="100">
+    <!-- Conflict-aware substitute: skips weekends AND days already taken by another holiday (Christmas/Boxing chain). -->
+    <AdjustmentPolicy id="working-day-substitute" priority="100"
+                      description="Weekend substitute that skips weekends and days already claimed by another holiday.">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
       <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+
+    <!-- NSW Anzac trial: keep 25 April AND emit an additional Monday when it lands on a weekend. -->
+    <AdjustmentPolicy id="anzac-additional-monday" priority="100"
+                      description="Emit an extra Monday public holiday when Anzac Day falls on a weekend, keeping 25 April.">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedAsAdditional" reason="Additional Anzac Day public holiday (NSW 2026-2027 trial)" />
     </AdjustmentPolicy>
   </AdjustmentPolicies>
 
   <NotableDates>
 
-    <!-- National fixed-date holidays with weekend substitution. -->
+    <!--
+      National fixed-date public holidays with weekend substitution. New Year's Day and Australia Day roll to the
+      next Monday when they land on a weekend.
+    -->
     <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="au" priority="100">
@@ -48,7 +70,10 @@
       </Rules>
     </NotableDate>
 
-    <!-- Easter family (algorithm + offsets). -->
+    <!--
+      Easter family. Easter Sunday is computed by the Western (Gregorian) Easter algorithm; Good Friday, Easter
+      Saturday, and Easter Monday derive from it by a fixed day offset (OffsetFromRule referencing rule id "western").
+    -->
     <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules>
         <Rule id="western" priority="100">
@@ -67,6 +92,15 @@
       </Rules>
     </NotableDate>
 
+    <NotableDate id="easter-saturday" displayName="Easter Saturday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="au" priority="100" comment="Day before Easter Sunday; a public holiday in most states.">
+          <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="-1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
     <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="au" priority="100">
@@ -77,30 +111,50 @@
     </NotableDate>
 
     <!--
-      Anzac Day: national 25 April with no substitute. Western Australia and the Northern Territory observe a Monday
-      substitute when it falls on a weekend; their narrower AU-WA / AU-NT rules shadow the broader national AU rule for
-      those territories, while every other territory falls back to the national no-substitute rule.
+      Anzac Day — 25 April. National rule has no substitute; WA and NT grant a substitute Monday on a weekend; the
+      NSW 2026-2027 trial grants an ADDITIONAL Monday (25 April retained). The per-subdivision rules shadow the
+      national rule only for their territory and (for NSW) only within the trial window. See the data pack
+      region-au.xml header for the full trial provenance.
     -->
     <NotableDate id="anzac-day" displayName="Anzac Day" category="Remembrance" defaultNonWorkingDay="true">
       <Rules>
-        <Rule id="au" priority="100">
+        <Rule id="au" priority="100" comment="National Anzac Day, fixed to 25 April with no weekend substitute.">
           <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
           <Strategy><Fixed month="April" day="25" /></Strategy>
         </Rule>
-        <Rule id="wa" priority="100">
+        <Rule id="wa" priority="100" comment="Western Australia observes a substitute Monday when 25 April is a weekend.">
           <Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
           <Strategy><Fixed month="April" day="25" /></Strategy>
           <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
         </Rule>
-        <Rule id="nt" priority="100">
+        <Rule id="nt" priority="100" comment="Northern Territory observes a substitute Monday when 25 April is a weekend.">
           <Applicability calendar="Gregorian"><Territory code="AU-NT" /></Applicability>
           <Strategy><Fixed month="April" day="25" /></Strategy>
           <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+        </Rule>
+        <!--
+          NSW Anzac Day weekend-substitute trial — 2026 and 2027 only. The 2026-2027 applicability bound means the
+          year-aware specificity shadowing routes AU-NSW through this rule (additional Monday) only in those years
+          and falls back to the national "au" rule otherwise.
+        -->
+        <Rule id="nsw" priority="100" comment="NSW 2026-2027 trial: extra Monday public holiday when Anzac Day is on a weekend.">
+          <Applicability calendar="Gregorian" fromYear="2026" toYear="2027"><Territory code="AU-NSW" /></Applicability>
+          <Strategy><Fixed month="April" day="25" /></Strategy>
+          <Adjustments><Adjustment policyRef="anzac-additional-monday" /></Adjustments>
         </Rule>
       </Rules>
     </NotableDate>
 
     <!-- Christmas and Boxing Day use the conflict-aware substitute so Boxing Day advances past Christmas's Monday. -->
+    <NotableDate id="christmas-eve" displayName="Christmas Eve" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100">
+          <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="December" day="24" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
     <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="au" priority="100">
@@ -121,75 +175,242 @@
       </Rules>
     </NotableDate>
 
-    <!-- Labour Day: one concept, a rule per subdivision with different dates (demonstrates multi-rule territory filtering). -->
+    <!--
+      National cultural, family, and Indigenous observances (widely marked, not public holidays). Father's Day is
+      the Australian first-Sunday-in-September form, not the global third-Sunday-in-June.
+    -->
+    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="February" day="14" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="harmony-day" displayName="Harmony Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="March" day="21" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="april-fools-day" displayName="April Fool's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="April" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="national-sorry-day" displayName="National Sorry Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="May" day="26" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- Seven-day spans: a single-day query for any day inside the span returns the occurrence. -->
+    <NotableDate id="national-reconciliation-week" displayName="National Reconciliation Week" category="Observance" defaultNonWorkingDay="false" defaultDurationDays="7">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="May" day="27" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="mabo-day" displayName="Mabo Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="June" day="3" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="naidoc-week" displayName="NAIDOC Week" category="Observance" defaultNonWorkingDay="false" defaultDurationDays="7">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="July" dayOfWeek="Sunday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100" comment="Australia/NZ observe Father's Day on the first Sunday of September.">
+          <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="r-u-ok-day" displayName="R U OK? Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Thursday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="October" day="31" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="remembrance-day" displayName="Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="au" priority="100"><Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+          <Strategy><Fixed month="November" day="11" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!--
+      Per-subdivision public holidays sharing one concept. The engine matches the rule whose territory equals the
+      requested subdivision, so an "AU" national query returns none of these.
+    -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
-        <Rule id="nsw" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
-        </Rule>
-        <Rule id="act" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-ACT" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
-        </Rule>
-        <Rule id="sa" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-SA" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
-        </Rule>
-        <Rule id="qld" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-QLD" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
-        </Rule>
-        <Rule id="vic" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy>
-        </Rule>
-        <Rule id="wa" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
-        </Rule>
+        <Rule id="nsw" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+        <Rule id="act" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-ACT" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+        <Rule id="sa" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-SA" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+        <Rule id="qld" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-QLD" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+        <Rule id="vic" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="wa" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
       </Rules>
     </NotableDate>
 
-    <!-- King's Birthday: per-subdivision dates, including WA's last Monday in September and QLD's October date from 2016. -->
+    <!--
+      King's Birthday — second Monday in June across most states; WA observes the last Monday in September and QLD
+      the first Monday in October from 2016 (the fromYear bound suppresses earlier QLD years).
+    -->
     <NotableDate id="kings-birthday" displayName="King's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
-        <Rule id="nsw" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy>
-        </Rule>
-        <Rule id="vic" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy>
-        </Rule>
-        <Rule id="wa" priority="100">
+        <Rule id="nsw" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="vic" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="sa" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-SA" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="tas" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-TAS" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="nt" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-NT" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="act" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-ACT" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="wa" priority="100" comment="WA proclaims it for (about) the last Monday in September; approximated.">
           <Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy>
-        </Rule>
-        <Rule id="qld" priority="100">
+          <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule>
+        <Rule id="qld" priority="100" comment="Moved to October from 2016; earlier years observed it in June.">
           <Applicability calendar="Gregorian" fromYear="2016"><Territory code="AU-QLD" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
-        </Rule>
+          <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
       </Rules>
     </NotableDate>
 
-    <!-- Victorian Melbourne Cup Day: first Tuesday in November. -->
+    <!-- State and territory-specific public holidays. -->
+    <NotableDate id="bank-holiday" displayName="Bank Holiday" category="BankHoliday" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="nsw" priority="100" comment="Banks and the financial sector only; not a general public holiday.">
+          <Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="adelaide-cup-day" displayName="Adelaide Cup Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="sa" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-SA" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="canberra-day" displayName="Canberra Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="act" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-ACT" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="eight-hours-day" displayName="Eight Hours Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="tas" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-TAS" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="may-day" displayName="May Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="nt" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-NT" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="western-australia-day" displayName="Western Australia Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="wa" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="royal-queensland-show" displayName="Royal Queensland Show" category="Regional" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="qld" priority="100" comment="Brisbane metropolitan area only — not observed state-wide.">
+          <Applicability calendar="Gregorian"><Territory code="AU-QLD" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Wednesday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="picnic-day" displayName="Picnic Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="nt" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-NT" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="afl-grand-final-friday" displayName="AFL Grand Final Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="vic" priority="100" comment="Proclaimed annually since 2015; date varies. Approximated as the last Friday in September.">
+          <Applicability calendar="Gregorian" fromYear="2015"><Territory code="AU-VIC" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Friday" weekOrdinal="Last" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
     <NotableDate id="melbourne-cup-day" displayName="Melbourne Cup Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
-        <Rule id="vic" priority="100">
-          <Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
-          <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Tuesday" weekOrdinal="First" /></Strategy>
-        </Rule>
+        <Rule id="vic" priority="100"><Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Tuesday" weekOrdinal="First" /></Strategy></Rule>
       </Rules>
     </NotableDate>
 
-    <!-- ACT Reconciliation Day: first Monday on or after 27 May, introduced 2018. -->
+    <NotableDate id="recreation-day" displayName="Recreation Day" category="Regional" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="tas" priority="100" comment="Northern Tasmania only, in lieu of Royal Hobart Show Day in the south.">
+          <Applicability calendar="Gregorian"><Territory code="AU-TAS" /></Applicability>
+          <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- ACT Reconciliation Day: first Monday on or after 27 May, introduced 2018. Strategy: WeekdayNearDate. -->
     <NotableDate id="reconciliation-day" displayName="Reconciliation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
-        <Rule id="act" priority="100">
+        <Rule id="act" priority="100" comment="Introduced 2018; first Monday on or after 27 May.">
           <Applicability calendar="Gregorian" fromYear="2018"><Territory code="AU-ACT" /></Applicability>
-          <Strategy><WeekdayNearDate month="May" day="27" dayOfWeek="Monday" direction="OnOrAfter" /></Strategy>
-        </Rule>
+          <Strategy><WeekdayNearDate month="May" day="27" dayOfWeek="Monday" direction="OnOrAfter" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- SA Proclamation Day: 26 December in lieu of Boxing Day, with a weekend roll. -->
+    <NotableDate id="proclamation-day" displayName="Proclamation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="sa" priority="100" comment="Observed on 26 December in lieu of Boxing Day in South Australia.">
+          <Applicability calendar="Gregorian"><Territory code="AU-SA" /></Applicability>
+          <Strategy><Fixed month="December" day="26" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule>
       </Rules>
     </NotableDate>
 
