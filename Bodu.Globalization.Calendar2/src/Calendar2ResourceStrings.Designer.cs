@@ -302,5 +302,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Validation_CustomTriggerHandlerKeyMissing", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to '{0}' is not a valid territory code; expected a two-letter country optionally followed by a hyphen and a one-to-three alphanumeric subdivision..
+        /// </summary>
+        internal static string Format_Invalid_TerritoryCode {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TerritoryCode", resourceCulture);
+            }
+        }
     }
 }

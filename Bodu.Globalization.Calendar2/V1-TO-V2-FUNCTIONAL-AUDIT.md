@@ -49,24 +49,25 @@ the concrete v1 → v2 type mapping.
 | 20 | Working-day / traversal / fiscal extensions | `NotableDate{Only,Time,TimeOffset}Extensions`, `…FiscalExtensions`, `NotableDateContext` | ✅ Implemented (`DateOnly`/`DateTime`/`DateTimeOffset` + `NotableDateFiscalExtensions`; ambient `NotableDateContext` replaced by explicit service passing) |
 | 21 | Plugin model | `ExternalPluginLoader`, trust policies, plugin interfaces | ✅ Implemented (`Bodu.Globalization.Calendar2.Plugins`: loader, trust-policy family, plugin interfaces, algorithm contribution) |
 | 22 | Localization hook | `INotableDateNameLocalizer` | ✅ Implemented (`INotableDateNameLocalizer` + `NotableDateNameLocalizer` + `Localize` extensions, parent-culture/invariant fallback) |
-| 23 | `TerritoryCode` value type | `TerritoryCode` (Parse/Contains, country+subdivision) | 🔵 Replaced (plain string + parent/child + `MatchSpecificity`) |
+| 23 | `TerritoryCode` value type | `TerritoryCode` (Parse/Contains, country+subdivision) | ✅ Implemented (`TerritoryCode` struct: Parse/TryParse, Country/Subdivision/Parent, Contains, equality, string conversions; interops with the string engine) |
 | 24 | Non-Gregorian calendars | `CalendarType` on rule, `calendar` on algorithm | ✅ Implemented for fixed dates (Hijri, UmmAlQura, Hebrew, Persian, Chinese lunisolar via the BCL, with sweep / leap-month skip / Hebrew alias) |
 | 25 | Range pipeline internals | `NotableDateRangePipeline/Planner/Plan`, `RuleStaticAnalysis`/`Tier`, resolution cache | ⚪ Internal — replaced by inline two-phase resolve |
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 23 ✅ Implemented · 0 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
+**Tally:** 24 ✅ Implemented · 0 🟡 Partial · 2 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
 
 Every numbered capability area is now **implemented** or **replaced by design** — none is partial or
-deferred. The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion,
-the imports graph, the filter API, the full query surface (single-day / range / by-year / month /
-year), the full working-day extension surface (`DateOnly`/`DateTime`/`DateTimeOffset` + fiscal), the
-custom-algorithm registry, the **full adjustment trigger and action sets** (including the `Custom`
-trigger and action hooks), declarative overrides (including year- and territory-scoped removal), the
-same-day collision hook, runtime reload, the localization hook, the plugin model, and DI registration
-are all implemented. The three 🔵 areas are deliberate redesigns (string territories with specificity
-matching in place of a `TerritoryCode` value type; the single-resource loader in place of the v1
-provider chain); the `IfNonWorkingDay` trigger is folded into `IfWeekend`+`skipNonWorkingDates`.
+deferred. The core engine, all calendar systems (Gregorian plus Hijri / UmmAlQura / Hebrew / Persian /
+Chinese lunisolar), the full algorithm catalogue, all three data packs, JSON ingestion, the imports
+graph, the filter API, the full query surface (single-day / range / by-year / month / year), the full
+working-day extension surface (`DateOnly`/`DateTime`/`DateTimeOffset` + fiscal), the `TerritoryCode`
+value type, the custom-algorithm registry, the **full adjustment trigger and action sets** (including
+the `Custom` trigger and action hooks), declarative overrides (including year- and territory-scoped
+removal), the same-day collision hook, runtime reload, the localization hook, the plugin model, and DI
+registration are all implemented. The two remaining 🔵 areas are deliberate redesigns: the
+compute-then-place conflict model (area 10) and the single-resource loader in place of the v1 provider
+chain (area 18). The `IfNonWorkingDay` trigger is folded into `IfWeekend`+`skipNonWorkingDates`.
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -124,7 +125,7 @@ inferred from a shared title — which is precisely what fixes the original bug 
 | `Name`, `DisplayName` | `DisplayName` + `NotableDateId`/`RuleId` (from `Identity`) |
 | `WasAdjusted`, `AdjustmentReason` (record) | `IsObserved`, `ActualDate`, `AdjustmentPolicyId`, `AdjustmentReason` (string) |
 | `Category`, `IsNonWorkingDay`, `TerritoryCode` | `Category`, `TerritoryCode` (non-working tracked on the rule/occupied set) |
-| `Priority`, `Tags`, `Comment`, `CalendarType` | carried on the rule, not the result; tags/comment deferred; Gregorian-only |
+| `Priority`, `Tags`, `Comment`, `CalendarType` | carried on the rule, not the result; multi-calendar via `CalendarSystem` (area 24) |
 
 ### 3. Single-day & range query — ✅ Implemented
 
@@ -287,14 +288,17 @@ rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the
 
 ### 23–24. Territory & calendar value types
 
-- **23. `TerritoryCode` — 🔵** v1's `TerritoryCode` value type (`Parse`/`TryParse`/`ParseList`/
-  `Contains`, `Country`/`Subdivision`/`HasSubdivision`) is replaced by plain `string` territory codes
-  with parent/child matching (`RuleApplicability.MatchesTerritory`) and specificity ranking
-  (`MatchSpecificity`). The matching *behaviour* is implemented; the value type is not adopted.
-- **24. Non-Gregorian calendars — ⛔** v1 carried a `CalendarType` per rule and a `calendar`
-  parameter on every algorithm (Hebrew/Islamic/Hindu/Persian/Chinese). v2's `CalendarSystem` enum is
-  **Gregorian-only** and the validator rejects anything else. This is the single largest deferred
-  capability and gates the `Global*ResourceTests` and the lunar/lunisolar algorithms (area 6).
+- **23. `TerritoryCode` — ✅** v1's `TerritoryCode` value type is reintroduced as a validated
+  `readonly struct`: `Parse`/`TryParse` (two-letter country + optional 1–3 alphanumeric subdivision,
+  upper-normalized), `Country`/`Subdivision`/`IsSubdivision`/`Parent` decomposition, `Contains`
+  (parent/child containment matching the engine's `MatchesTerritory` semantics), full value equality,
+  and `string` conversions (explicit parse in, implicit canonical out). It is an **opt-in** type: the
+  engine still accepts plain `string` territories, and a `TerritoryCode` flows straight into the string
+  surface through its implicit conversion. Proven by `TerritoryCodeTests`.
+- **24. Non-Gregorian calendars — ✅** `CalendarSystem` carries `Gregorian`, `Hijri`, `UmmAlQura`,
+  `Hebrew`, `Persian`, and `ChineseLunisolar`; fixed-date strategies resolve each via the BCL calendars
+  (with the multi-occurrence sweep, leap-month skip, and Hebrew alias), and the validator applies the
+  calendar-appropriate month/day checks rather than the proleptic-Gregorian one.
 
 ### 25. Range pipeline internals — ⚪ Internal — not reproduced
 
@@ -341,8 +345,9 @@ Ordered roughly by unblocking value, reconciled with `V1-TO-V2-TEST-PORT.md`:
    set incl. `Custom` via `IAdjustmentTriggerHandler`; full action set incl. `ReplaceWithRule`+`Custom`;
    `IfNonWorkingDay` folded into `IfWeekend`+skip by design, areas 8–9).
 10. ~~**Runtime mutable overrides + reload** (area 16); **localization hook** (area 22); the
-    **DateTime/DateTimeOffset/fiscal extension** overloads~~ — ✅ **done**. The `TerritoryCode` value
-    type (area 23) is **replaced by design** with plain territory strings + specificity matching.
+    **DateTime/DateTimeOffset/fiscal extension** overloads; the **`TerritoryCode` value type**
+    (area 23)~~ — ✅ **done** (`TerritoryCode` is a validated opt-in struct that interops with the
+    string engine).
 
 Remaining: none. Scoped override removal (area 15) is covered by `PatchRule`+`ExceptYear` (year-scoped)
 and `AddRule` shadow+`Suppress` (territory-scoped), both proven by `ScopedRemovalTests`. Every numbered
