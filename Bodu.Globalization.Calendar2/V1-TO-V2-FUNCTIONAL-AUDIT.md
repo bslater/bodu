@@ -48,21 +48,22 @@ the concrete v1 → v2 type mapping.
 | 19 | Filter API | `NotableDateFilter` (14 factories + And/Or) | ✅ Implemented (`NotableDateFilter` + filtered `Resolve` overloads) |
 | 20 | Working-day / traversal / fiscal extensions | `NotableDate{Only,Time,TimeOffset}Extensions`, `…FiscalExtensions`, `NotableDateContext` | 🟡 Partial (`NotableDateOnlyExtensions` over the service; DateTime/DateTimeOffset + fiscal deferred) |
 | 21 | Plugin model | `ExternalPluginLoader`, trust policies, plugin interfaces | ✅ Implemented (`Bodu.Globalization.Calendar2.Plugins`: loader, trust-policy family, plugin interfaces, algorithm contribution) |
-| 22 | Localization hook | `INotableDateNameLocalizer` | ⛔ Deferred |
+| 22 | Localization hook | `INotableDateNameLocalizer` | ✅ Implemented (`INotableDateNameLocalizer` + `NotableDateNameLocalizer` + `Localize` extensions, parent-culture/invariant fallback) |
 | 23 | `TerritoryCode` value type | `TerritoryCode` (Parse/Contains, country+subdivision) | 🔵 Replaced (plain string + parent/child + `MatchSpecificity`) |
 | 24 | Non-Gregorian calendars | `CalendarType` on rule, `calendar` on algorithm | ✅ Implemented for fixed dates (Hijri, UmmAlQura, Hebrew, Persian, Chinese lunisolar via the BCL, with sweep / leap-month skip / Hebrew alias) |
 | 25 | Range pipeline internals | `NotableDateRangePipeline/Planner/Plan`, `RuleStaticAnalysis`/`Tier`, resolution cache | ⚪ Internal — replaced by inline two-phase resolve |
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 18 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 1 ⛔ Deferred (counting sub-rows).
+**Tally:** 19 ✅ Implemented · 4 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
 
 The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
 imports graph, the filter API, the `DateOnly` extension surface, the custom-algorithm registry, the
-custom adjustment-handler and same-day collision hooks, runtime reload, the plugin model, and DI
-registration are all **implemented**. The only fully deferred capability is the localization hook
-(area 22); the partials are the DateTime/DateTimeOffset/fiscal extension overloads (area 20) and the
-last two adjustment triggers (area 8).
+custom adjustment-handler and same-day collision hooks, runtime reload, the localization hook, the
+plugin model, and DI registration are all **implemented**. No capability is now fully deferred; the
+remaining partials are the DateTime/DateTimeOffset/fiscal extension overloads (area 20), the last two
+adjustment triggers (area 8), the by-year query overload (area 3), and scoped override removal
+(area 15).
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -268,8 +269,11 @@ rank, or delegated to a caller-supplied `INotableDateCollisionResolver` when the
   trust-policy family (`AllowAll`/`Delegating`/`Composite`, `IPluginTrustPolicy`), plugin interfaces
   (`INotableDatePlugin`/`INotableDateAlgorithmPlugin`), `NotableDatePluginAttribute`, and the plugin
   exception hierarchy; algorithm plugins contribute into the `NotableDateAlgorithmRegistry`.
-- **22. Localization — ⛔** `INotableDateNameLocalizer.GetDisplayName(notableDate, culture)` has no
-  v2 hook; `DisplayName` is a static property of the concept.
+- **22. Localization — ✅** `INotableDateNameLocalizer.GetDisplayName(notableDate, culture)` is
+  reproduced, with a dictionary-backed `NotableDateNameLocalizer` (keyed by concept id + culture, with
+  `fr-FR` → `fr` → invariant fallback) and `NotableDate.Localize(localizer, culture)` /
+  `IReadOnlyList<NotableDate>.Localize(…)` extensions that return occurrences with localized
+  `DisplayName`. Resolution stays culture-agnostic; localization is applied on demand.
 
 ### 23–24. Territory & calendar value types
 
