@@ -29,7 +29,7 @@ the concrete v1 → v2 type mapping.
 |---|---|---|---|
 | 1 | Concept/rule model & identity | `NotableDateRule`, `NotableDateRuleIdentity` (name-keyed) | ✅ Implemented (re-shaped: concept → rule, identity = resourceId+id+ruleId) |
 | 2 | Resolved-occurrence result | `NotableDate` (DateTime) | ✅ Implemented (re-shaped: `DateOnly`, `IsObserved`+`ActualDate`, stable `Identity`) |
-| 3 | Single-day & range query | `INotableDateService.GetNotableDates(…)` ×6 | 🟡 Partial (`Resolve(DateOnly/DateRange)` plus filtered overloads; no by-year overload or interface working-day predicates) |
+| 3 | Single-day & range query | `INotableDateService.GetNotableDates(…)` ×6 | ✅ Implemented (`Resolve(DateOnly/DateRange)` + filtered + by-year `Resolve(year, territory)` + `GetNotableDatesIn{Month,Year}`; working-day predicates as extensions) |
 | 4 | Date-calculation strategies | `DateResolutionStrategy` (6 kinds) | ✅ Implemented (all 6: Fixed, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth, OffsetFromRule, Algorithm) |
 | 5 | Easter algorithms | Gregorian + Orthodox Easter | ✅ Implemented (`EasterCalculator`, Western + Orthodox) |
 | 6 | Lunar / lunisolar / solar-term algorithms | Vesak, Asalha, Qingming, Losar, HinduLunar, LunarPhase | ✅ Implemented (Meeus equinox/lunar-phase + Matariki table; full solar-anchored Hindu festival set bar nakshatra-fixed Onam) |
@@ -55,15 +55,16 @@ the concrete v1 → v2 type mapping.
 | 26 | DI registration | `Bodu.Globalization.Calendar.DependencyInjection` (sibling project) | ✅ Implemented (`Bodu.Globalization.Calendar2.DependencyInjection`, `AddNotableDateService`) |
 | 27 | Regional data packs | `Bodu.Globalization.Calendar.Data.{Americas,AsiaPacific,Europe}` | ✅ Implemented (all three v2 packs; every v1 territory migrated — see below) |
 
-**Tally:** 20 ✅ Implemented · 3 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
+**Tally:** 21 ✅ Implemented · 2 🟡 Partial · 3 🔵 Replaced by design · 1 ⚪ Internal · 0 ⛔ Deferred (counting sub-rows).
 
 The core engine, calendars, full algorithm catalogue, all three data packs, JSON ingestion, the
-imports graph, the filter API, the full working-day extension surface (`DateOnly`/`DateTime`/
-`DateTimeOffset` + fiscal), the custom-algorithm registry, the custom adjustment-handler and same-day
-collision hooks, runtime reload, the localization hook, the plugin model, and DI registration are all
-**implemented**. No capability is now fully deferred; the remaining partials are the last two
-adjustment triggers (area 8), the by-year query overload (area 3), and scoped override removal
-(area 15).
+imports graph, the filter API, the full query surface (single-day / range / by-year /
+month / year), the full working-day extension surface (`DateOnly`/`DateTime`/`DateTimeOffset` +
+fiscal), the custom-algorithm registry, the custom adjustment-handler and same-day collision hooks,
+runtime reload, the localization hook, the plugin model, and DI registration are all **implemented**.
+No capability is fully deferred; the two remaining partials are the last two adjustment triggers
+(area 8 — `IfNonWorkingDay` folded into `IfWeekend`+skip, and a standalone Custom trigger) and scoped
+override removal by year/territory (area 15 — covered today by `PatchRule` on applicability).
 
 ### Algorithm catalogue & non-Gregorian calendars (areas 6, 24)
 
@@ -123,13 +124,13 @@ inferred from a shared title — which is precisely what fixes the original bug 
 | `Category`, `IsNonWorkingDay`, `TerritoryCode` | `Category`, `TerritoryCode` (non-working tracked on the rule/occupied set) |
 | `Priority`, `Tags`, `Comment`, `CalendarType` | carried on the rule, not the result; tags/comment deferred; Gregorian-only |
 
-### 3. Single-day & range query — 🟡 Partial
+### 3. Single-day & range query — ✅ Implemented
 
 | v1 `INotableDateService` member | v2 |
 |---|---|
 | `GetNotableDates(date, …)` | ✅ `Resolve(DateOnly, territory)` |
 | `GetNotableDates(start, end, …)` | ✅ `Resolve(DateRange, territory)` |
-| `GetNotableDates(year, …)` | ✅ idiom: `Resolve(new DateRange(Jan 1, Dec 31), …)` (no dedicated overload) |
+| `GetNotableDates(year, …)` | ✅ `Resolve(year, territory)` extension (plus `GetNotableDatesInMonth`/`InYear`) |
 | `…(…, NotableDateFilter, …)` overloads | ✅ `Resolve(DateOnly/DateRange, territory, filter)` (area 19) |
 | `IsWeekend`, `IsNonWorkingDay`, `IsHolidayNonWorkingDay`, `WorkingWeek` | ✅ `DateOnly`/`DateTime`/`DateTimeOffset` extensions over the service (area 20) |
 | `Invalidate`, `Reload` | ✅ `MutableNotableDateResourceProvider.Reload` + `ReloadableNotableDateService` (area 16) |

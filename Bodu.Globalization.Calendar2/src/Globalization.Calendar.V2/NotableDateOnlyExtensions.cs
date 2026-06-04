@@ -296,6 +296,36 @@ public static class NotableDateOnlyExtensions
     }
 
     /// <summary>
+    /// Resolves the notable dates emitted in the calendar month that contains the date for the territory.
+    /// </summary>
+    /// <param name="date">A date within the month to resolve.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrences must satisfy.</param>
+    /// <returns>The emitted occurrences in the month, ordered by date then identity.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static IReadOnlyList<NotableDate> GetNotableDatesInMonth(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
+        new DateOnly(date.Year, date.Month, 1)
+            .EnumerateNotableDates(new DateOnly(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month)), service, territory, filter);
+
+    /// <summary>
+    /// Resolves the notable dates emitted in the calendar year that contains the date for the territory.
+    /// </summary>
+    /// <param name="date">A date within the year to resolve.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrences must satisfy.</param>
+    /// <returns>The emitted occurrences in the year, ordered by date then identity.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static IReadOnlyList<NotableDate> GetNotableDatesInYear(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
+        new DateOnly(date.Year, 1, 1)
+            .EnumerateNotableDates(new DateOnly(date.Year, 12, 31), service, territory, filter);
+
+    /// <summary>
     /// Steps from a date in the given direction until the first working day is reached.
     /// </summary>
     /// <param name="date">The starting date.</param>
