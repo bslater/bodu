@@ -25,6 +25,8 @@ The following are the **only confirmed gaps** — members present in v1 with no 
 
 > **Resolution status (2026-06-04):** **all eight gaps are now CLOSED** — A1, A2, A3, A4, and B3 first, then A5, B1, and B2 — each implemented with tests and marked ✅ in the tables below. Where a per-section detail table further down still carries an `⛔ [GAP — review]` marker for one of these items, treat that marker as **superseded by this banner**. There are no known remaining gaps between the v1 surface and v2.
 
+> **Second-pass addendum (2026-06-04):** a separate second-pass type-matrix review re-opened **four members this audit had filed under *deliberate omission*** (Section C) — `everyYears` recurrence, `INotableDateService.GetSupportedTerritories/Calendars`, the configurable working week, and the `IfNonWorkingDay` trigger. On review these were reclassified as genuine parity gaps and **implemented**; Section C, the affected per-member rows, and the new **Second-pass review** section below are updated to ✅. See that section for the rebuttal of the review's inflated headline count.
+
 ### A. Material capability gaps (a user-facing feature is absent)
 
 | # | v1 member(s) | What is lost | Where |
@@ -45,9 +47,33 @@ The following are the **only confirmed gaps** — members present in v1 with no 
 
 ### C. Deliberate omissions (documented design — not "missed")
 
-For completeness, the notable members intentionally dropped, each with a design rationale in the functional audit or an obvious replacement: the `IfNonWorkingDay` trigger (folded into `IfWeekend` + `skipNonWorkingDates`); `INotableDateRulePlugin` (v2 plugins contribute algorithms only, no rule providers); `NotableDateProvenance` and the whole `RangeResolution` pipeline (internal — replaced by the two-phase resolver); `NotableDateServiceOptions` (→ explicit ctor params); `INotableDateService.GetSupportedTerritories/Calendars`, `Invalidate`, `WorkingWeek` (immutable-resource / hard-coded weekend model); per-result `CalendarType` and `Comment` (carried on the rule); the v1 algorithm *provider* metadata and per-algorithm year-range guards (metadata authored on rules; guarding centralised to a 1–9999 clamp); CLR-typed algorithm references (`AlgorithmType`/`AlgorithmMonth`/`AlgorithmDay`); and `CalendarThrowHelper` (v2 uses `Bodu.ThrowHelper` + `Calendar2ResourceStrings`). Nakshatra-fixed **Onam** is the one intentionally unmodelled festival, and it never existed as a v1 type.
+For completeness, the notable members intentionally dropped, each with a design rationale in the functional audit or an obvious replacement: `INotableDateRulePlugin` (v2 plugins contribute algorithms only, no rule providers); `NotableDateProvenance` and the whole `RangeResolution` pipeline (internal — replaced by the two-phase resolver); `NotableDateServiceOptions` (→ explicit ctor params); `INotableDateService.Invalidate` (immutable-resource model); per-result `CalendarType` and `Comment` (carried on the rule); the v1 algorithm *provider* metadata and per-algorithm year-range guards (metadata authored on rules; guarding centralised to a 1–9999 clamp); CLR-typed algorithm references (`AlgorithmType`/`AlgorithmMonth`/`AlgorithmDay`); and `CalendarThrowHelper` (v2 uses `Bodu.ThrowHelper` + `Calendar2ResourceStrings`). Nakshatra-fixed **Onam** is the one intentionally unmodelled festival, and it never existed as a v1 type.
 
 > **Net:** of the entire v1 surface, eight members/families had no v2 equivalent, and **all eight are now closed**: A1 notable-date traversal, A2 non-working-day traversal, A3 `DateRange` set operations, A4 plugin trust policies, B3 territory-list parsing, A5 the code-first `INotableDateProvider` seam, B1 policy-level year scope, and B2 custom-handler parameters. Everything else migrated, was replaced by design, or is internal plumbing — there are no known remaining gaps.
+
+---
+
+## Second-pass review: rebuttal & reconciliation
+
+A separate **second-pass type-matrix report** (`calendar_second_pass_type_matrix_report.md`) re-compared the v1 surface against v2 and reported a large block of "absent" types. Most of that headline is a **measurement artifact**; but the review did correctly surface four genuine functional-parity omissions this audit had filed under *deliberate*, and those four are now implemented. This section records both so the two documents reconcile.
+
+### Measurement artifacts (not real gaps)
+
+1. **Missing projects in the compared snapshot.** The report measured against a v2 snapshot containing only the core assembly. The plugin types it flagged "absent" all ship in **`Bodu.Globalization.Calendar2.Plugins`**, and the territory data it flagged "absent" ships as the **`region-*.xml` packs across the three `Bodu.Globalization.Calendar2.Data.*` bundles** (Americas / AsiaPacific / Europe). Re-running the comparison against the full solution removes those rows.
+2. **Source-compatibility conflated with functional parity.** The report's PASS/FAIL keyed on a member surviving *by name and shape*. v2 deliberately reshapes the surface (`DateTime`→`DateOnly`, name-keyed→id-keyed identity, enum-discriminator→polymorphic strategy, ambient context→explicit service, inline adjustment→reusable policy). Counting each reshape as a FAIL inflates the count; the per-member dispositions in this audit already record these as ✅ *[reshaped]* / 🔵 *[replaced]*.
+
+### Genuine omissions it surfaced — now CLOSED (2026-06-04)
+
+The review's signal value was four items this audit had classified as **deliberate omissions** that, on maintainer review, were reclassified as genuine parity gaps and implemented with tests:
+
+| Item | v1 capability | v2 closure |
+|---|---|---|
+| **`everyYears` recurrence** | Periodic rule cadence (e.g. every fourth year) anchored to a base year. | `RuleApplicability` gained `everyYears` / `anchorYear` (XSD + JSON schema + both parsers); the cadence is enforced in `AppliesTo`. |
+| **`GetSupportedTerritories` / `GetSupportedCalendars`** | Service introspection of the scoped territory and calendar surface. | Re-added to `INotableDateService`, delegated through `ReloadableNotableDateService`. |
+| **Configurable working week** | A `WorkingWeek` (`WeekPattern`) so a non-Western territory can define its own weekend. | Resource-level `ResolutionPolicy.WorkingWeek` (`workingDays` Sunday-first pattern, default Mon–Fri); consumed by `IfWeekend` / `IfWeekday` and the working-day search instead of a hard-coded Saturday/Sunday. |
+| **`IfNonWorkingDay` trigger** | Trigger on "the occurrence lands on a non-working day", not only a fixed weekend. | Re-added to the `AdjustmentTrigger` enum (plus a symmetric `IfWorkingDay`), evaluated against the complete set of actual non-working dates so a holiday colliding with another holiday — not just a weekend — fires it. |
+
+Section C above and the affected per-member rows (`AdjustmentTrigger.IfNonWorkingDay`; `INotableDateService.WorkingWeek` / `GetSupported*`) are updated to ✅ to match.
 
 ---
 ## Core engine, model & adjustment
@@ -119,7 +145,7 @@ For completeness, the notable members intentionally dropped, each with a design 
 | v1 member | v2 disposition | Notes |
 |---|---|---|
 | `Always`, `IfDayOfWeek`, `IfWeekend`, `IfWeekday`, `IfBeforeFixedDate`, `IfAfterFixedDate`, `IfLeapYear`, `IfNthOccurrenceInMonth`, `Custom` | ✅ Migrated | All present in v2 (order differs). |
-| `IfNonWorkingDay` | 🔵 Replaced [deliberate] | Folded into `IfWeekend` + `skipNonWorkingDates` by design (functional audit area 8). |
+| `IfNonWorkingDay` | ✅ Migrated [reshaped] | Re-added to the v2 `AdjustmentTrigger` enum (2026-06-04). Fires when the occurrence falls outside the resource working week or on a day already claimed by another non-working occurrence; a symmetric `IfWorkingDay` was added alongside it. |
 
 ### CachingCalculationAnchorResolver (sealed class, internal)
 **Type disposition:** ⚪ Internal — performance plumbing (area 25); not reproduced. v2 resolves offset anchors inline via `StrategyResolutionContext.ResolveReference` (cycle-guarded `HashSet`, no caching).
@@ -152,7 +178,7 @@ For completeness, the notable members intentionally dropped, each with a design 
 | `ThrowIfKeyNullOrWhiteSpace` | 🔵 Replaced | v2 registries call `ThrowHelper.ThrowIfNull(key)` only (no whitespace guard). |
 | `ThrowIfAnchorRuleNameNullOrWhiteSpace` | ⛔ Not migrated [deliberate] | No anchor-by-name path in v2. |
 | `ThrowIfYearOutOfRange` | ⚪ Internal | No dedicated calendar year guard; year validation is implicit / via `DateOnly`. |
-| `ThrowIfWorkingWeekUndefined`, `ThrowIfWorkingWeekEmpty` | ⛔ Not migrated [deliberate] | v2 hard-codes Sat/Sun weekend; no `WorkingDaysOfWeek`/`WeekPattern` parameter. |
+| `ThrowIfWorkingWeekUndefined`, `ThrowIfWorkingWeekEmpty` | ⛔ Not migrated [deliberate] | v2 carries the working week as resource-level `ResolutionPolicy.WorkingWeek` (`WeekPattern`, default Mon–Fri) rather than a per-call parameter, so these argument guards have no call site. |
 | `ThrowIfUnsupportedCalendarType` | ⛔ Not migrated [deliberate] | v2 uses the `CalendarSystem` enum + `CalendarSystems`, not CLR calendar-type validation. |
 | `CalendarThrowHelper.NetStandard.cs` partial | ⛔ Not migrated [deliberate] | v2 targets `net8.0` only; no netstandard companion. |
 
@@ -237,7 +263,7 @@ For completeness, the notable members intentionally dropped, each with a design 
 
 | v1 member | v2 disposition | Notes |
 |---|---|---|
-| `WorkingWeek` (`WeekPattern`) property | ⛔ Not migrated [deliberate] | v2 has no configurable working week; Sat/Sun weekend hard-coded. |
+| `WorkingWeek` (`WeekPattern`) property | ✅ Migrated [moved→`ResolutionPolicy.WorkingWeek`] | Re-added (2026-06-04) as resource-level config (`workingDays` Sunday-first pattern; default Mon–Fri) consumed by the weekend triggers and the working-day search, rather than a mutable service property. |
 | `IsWeekend(DateTime)` | ✅ Migrated [moved→`NotableDate*Extensions`] | Working-day predicates moved off the service to extensions (area 20). |
 | `IsNonWorkingDay(DateTime, string?, Type?)` | ✅ Migrated [moved→extension] | Territory required, no `Type?` calendar param. |
 | `IsHolidayNonWorkingDay(...)` (default impl) | ✅ Migrated [moved→extension] | Covered by `IsNotableDate`/working-day extensions. |
@@ -246,8 +272,8 @@ For completeness, the notable members intentionally dropped, each with a design 
 | `GetNotableDates(DateTime date, …)` ×2 | ✅ Migrated [reshaped→`Resolve(DateOnly, territory[, filter])`] | On the interface. |
 | `Invalidate()` | ⛔ Not migrated [deliberate] | Immutable resource model; reload is a separate type. |
 | `Reload()` | ✅ Migrated [moved→`ReloadableNotableDateService.Reload` + `MutableNotableDateResourceProvider`] | Not on `INotableDateService` (area 16). |
-| `GetSupportedTerritories()` | ⛔ Not migrated [deliberate] | Functional audit area 3: "not exposed". |
-| `GetSupportedCalendars()` | ⛔ Not migrated [deliberate] | As above. |
+| `GetSupportedTerritories()` | ✅ Migrated [1:1] | Re-added to `INotableDateService` (2026-06-04): distinct scoped territory codes, case-insensitive ascending. |
+| `GetSupportedCalendars()` | ✅ Migrated [1:1] | Re-added (2026-06-04): distinct calendar systems any rule is expressed in, ascending. |
 
 ### NotableDate (sealed record, public)
 **Type disposition:** ✅ Migrated [reshaped: DateTime→DateOnly] — v2 `NotableDate` positional record.
@@ -341,7 +367,7 @@ For completeness, the notable members intentionally dropped, each with a design 
 | v1 member | v2 disposition | Notes |
 |---|---|---|
 | ctors (rule-provider chain + `WeekPattern`/`WorkingDaysOfWeek` + `NotableDateServiceOptions`) | ✅ Migrated [reshaped] | v2 ctors take a single immutable `NotableDateResource` + optional `INotableDateAlgorithmRegistry`/`INotableDateCollisionResolver`/`IAdjustmentHandlerRegistry`/`IAdjustmentTriggerHandlerRegistry` (5 overloads). No rule-provider chain, no working-week, no options bag. |
-| `GetNotableDates(...)` ×6, `IsWeekend`/`IsNonWorkingDay`/`IsHolidayNonWorkingDay`, `Invalidate`/`Reload`, `WorkingWeek`, `GetSupported*`, `Validate` | see `INotableDateService` rows | `Resolve` overloads + extensions; predicates → extensions; reload → `ReloadableNotableDateService`; supported-* dropped; validation → `NotableDateRuleValidator`. |
+| `GetNotableDates(...)` ×6, `IsWeekend`/`IsNonWorkingDay`/`IsHolidayNonWorkingDay`, `Invalidate`/`Reload`, `WorkingWeek`, `GetSupported*`, `Validate` | see `INotableDateService` rows | `Resolve` overloads + extensions; predicates → extensions; reload → `ReloadableNotableDateService`; working week → `ResolutionPolicy.WorkingWeek`; supported-* re-added on the interface; validation → `NotableDateRuleValidator`. |
 | (per-request range-pipeline cache) | ⚪ Internal | v2 resolves inline, two-phase, no cache (area 25). |
 
 ### NotableDateServiceOptions (sealed class, public)
