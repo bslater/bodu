@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Persian (Solar Hijri) calendar-system known-answer fixtures, ported from the v1 global-persian.xml resource.
+  Each observance is a global Fixed rule expressed in the Persian calendar and projected onto the Gregorian year by
+  the engine's calendar-year sweep (sweepCalendarYears). Expected dates are sourced from the Iranian civil calendar
+  (time.ir / Astronomical Applications Department) and reproduced by the base class library's PersianCalendar.
+  Authored months and days mirror v1 exactly:
+    Nowruz       01/01 (durationDays 13)
+    Sizdah Bedar 01/13
+    Yalda Night  09/30
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="fixture.persian">
+
+  <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+
+  <NotableDates>
+
+    <NotableDate id="nowruz" displayName="Nowruz" category="Cultural" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="ir" durationDays="13"><Applicability calendar="Persian" /><Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="sizdah-bedar" displayName="Sizdah Bedar" category="Cultural" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="ir"><Applicability calendar="Persian" /><Strategy><Fixed month="1" day="13" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="yalda-night" displayName="Yalda Night" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="ir"><Applicability calendar="Persian" /><Strategy><Fixed month="9" day="30" sweepCalendarYears="true" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixture for multi-day-span Resolve scenarios. All rules are global so any territory resolves them.
+    year-end-festival : Fixed 30 December, durationDays 7  (span 30 Dec .. 5 Jan, wraps the year boundary)
+    year-long-programme: Fixed 1 January 2026 only, durationDays 365 (blankets the whole of 2026)
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.resolve-spans">
+
+  <NotableDates>
+
+    <NotableDate id="year-end-festival" displayName="Year-End Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="dec-30" priority="100" durationDays="7">
+          <Applicability calendar="Gregorian" />
+          <Strategy><Fixed month="December" day="30" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="year-long-programme" displayName="Year-Long Programme" category="Cultural" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="jan-1-2026" priority="100" durationDays="365">
+          <Applicability calendar="Gregorian" fromYear="2026" toYear="2026" />
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
