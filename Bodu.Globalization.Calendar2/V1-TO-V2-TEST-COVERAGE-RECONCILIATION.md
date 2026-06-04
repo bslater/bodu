@@ -74,3 +74,38 @@ Port in the priority order above, one batch per commit, each batch adapted to v2
 (`DateOnly`, explicit `(service, territory)`, id-keyed identity, resource-authored fixtures,
 `[DynamicData]` KAT records per the repo test guidelines). N/A buckets are explicitly **not** ported.
 Progress is tracked by re-running the v2 suite after each batch.
+
+## Outcome
+
+Completed across two parallel waves. The v2 suite grew from **270 to 1,646** green tests: Easter KAT
+(Gregorian + Julian, 561), calendar-system KATs (Islamic/UmmAlQura/Jewish/Persian), resolve/leap
+scenarios, strategy-resolution matrices, adjustment trigger/action matrices, filter + applicability
+truth tables, working-day/traversal/fiscal extension matrices, and parser enum/month/validation/
+field-mapping. The remaining distance to v1's ~3009 is the N/A buckets above (internal pipeline,
+replaced provider/override/path-resolver layers, ambient `NotableDateContext`, CLR-typed calendar/
+algorithm) plus the deliberate-difference collapses below. The port also surfaced two robustness bugs
+(weekday/offset strategies threw at year 1/9999), now fixed to skip gracefully.
+
+## Deliberate v2 semantic differences (documented during the port)
+
+The port asserts v2 behaviour where it intentionally diverges from v1; these are by design, not gaps:
+
+- **`OffsetFromRule` does not honour the referenced rule's year bounds.** A dependent resolves the
+  anchor's strategy regardless of the anchor rule's `FromYear`/`ToYear`/`OnlyYears`/`ExceptYears`, so it
+  emits even in years the anchor's own window would exclude (v1 produced nothing). Kept by decision.
+- **String filter predicates are case-sensitive** (`WithTag`/`WithName`/`WithId`/`WithAnyTag`/
+  `WithAllTags`/`WithAnyName`, `StringComparison.Ordinal`); v1 was case-insensitive.
+- **Filtering is single-stage** `NotableDateFilter.Matches(NotableDate)` applied post-resolution; v1's
+  two-stage `IsRuleEligible`/`IsMatch` distinction is gone. `InDateRange` matches the occurrence's
+  `Date` (a `DateOnly`) only — no time-stripping, no span-overlap. Filter factories validate `null`
+  only (no empty/whitespace/negative throws).
+- **Territory containment is one-directional** in resolution/extensions: a parent rule (`AU`) matches a
+  child query (`AU-NSW`), but a child rule does not match a parent query.
+- **`AdarII` is a leap-dependent alias** (`Month = 0` + alias), not numeric Hebrew month 7.
+- **Validation surfaces as `NotableDateValidationException.Diagnostics`** with stable `BODU-CAL2-*`
+  codes (schema faults → `BODU-CAL2-SCHEMA`), rather than v1's per-fault typed exceptions.
+- **Extensions take an explicit `(service, territory)`** (no ambient context); `Next`/`Previous`
+  traversal is single-step (no `count`; use `AddWorkingDays`); `DateTimeOffset` overloads are
+  offset-based (no `TimeZoneInfo`).
+- **Weekday/offset strategies skip gracefully** (yield no occurrence) at the year-1/9999 representable
+  bounds instead of throwing.
