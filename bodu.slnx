@@ -34,6 +34,16 @@
   <Folder Name="/Bodu.Globalization.Calendar2/">
     <Project Path="Bodu.Globalization.Calendar2\src\Bodu.Globalization.Calendar2.csproj" />
     <Project Path="Bodu.Globalization.Calendar2\test\Bodu.Globalization.Calendar2.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Data.Americas\src\Bodu.Globalization.Calendar2.Data.Americas.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Data.Americas\test\Bodu.Globalization.Calendar2.Data.Americas.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Data.AsiaPacific\src\Bodu.Globalization.Calendar2.Data.AsiaPacific.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Data.AsiaPacific\test\Bodu.Globalization.Calendar2.Data.AsiaPacific.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Data.Europe\src\Bodu.Globalization.Calendar2.Data.Europe.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Data.Europe\test\Bodu.Globalization.Calendar2.Data.Europe.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.DependencyInjection\src\Bodu.Globalization.Calendar2.DependencyInjection.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.DependencyInjection\test\Bodu.Globalization.Calendar2.DependencyInjection.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Plugins\src\Bodu.Globalization.Calendar2.Plugins.csproj" />
+    <Project Path="Bodu.Globalization.Calendar2.Plugins\test\Bodu.Globalization.Calendar2.Plugins.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.IO.Hashing/">
     <Project Path="Bodu.IO.Hashing\src\Bodu.IO.Hashing.csproj" />
