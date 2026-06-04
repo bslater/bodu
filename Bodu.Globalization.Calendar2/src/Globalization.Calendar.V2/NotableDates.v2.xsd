@@ -4,9 +4,10 @@
 
   Models fixed-date, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth,
   OffsetFromRule, and Algorithm strategies; reusable adjustment policies with explicit
-  trigger, action, and emission; territory filtering; and ID-targeted override
-  operations. Imports, inline adjustments, and non-Gregorian calendars are reserved for
-  a later phase.
+  trigger, action, and emission; territory and year filtering; cross-resource imports;
+  non-Gregorian calendars (Hijri, Umm al-Qura, Hebrew, Persian, Chinese lunisolar); and
+  ID-targeted override operations. Adjustments are referenced by policy id; inline
+  per-rule adjustment definitions are intentionally not modelled.
 -->
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
