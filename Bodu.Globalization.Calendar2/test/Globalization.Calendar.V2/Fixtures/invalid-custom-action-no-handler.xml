@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  An adjustment policy with a Custom action but no handler key. The XSD allows the handler key to be absent,
+  so the semantic validator reports the missing binding with BODU-CAL2-HANDLER-MISSING.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.custom-action">
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="p">
+      <Trigger type="Always" />
+      <Action type="Custom" />
+      <Emission mode="ObservedOnly" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+  <NotableDates>
+    <NotableDate id="x" displayName="X" category="PublicHoliday">
+      <Rules><Rule id="r"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

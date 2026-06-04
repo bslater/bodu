@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Two adjustment policies share the identifier "dup". The XSD cannot express identity uniqueness, so the
+  semantic validator reports the collision with BODU-CAL2-DUP-POLICY.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.duplicate-policy">
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="dup">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" />
+    </AdjustmentPolicy>
+    <AdjustmentPolicy id="dup">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
+      <Emission mode="ObservedOnly" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+  <NotableDates>
+    <NotableDate id="x" displayName="X" category="PublicHoliday">
+      <Rules><Rule id="r"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>
