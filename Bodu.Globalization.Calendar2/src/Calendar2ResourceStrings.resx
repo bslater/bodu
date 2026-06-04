@@ -96,6 +96,9 @@
   <data name="Validation_FromYearAfterToYear" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': fromYear '{2}' must not be greater than toYear '{3}'.</value>
   </data>
+  <data name="Validation_AdjustmentScopeFromYearAfterToYear" xml:space="preserve">
+    <value>Adjustment policy '{0}': scope fromYear '{1}' must not be greater than toYear '{2}'.</value>
+  </data>
   <data name="Validation_InvalidDayValue" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': day '{2}' is out of range for month '{3}'.</value>
   </data>

@@ -159,10 +159,28 @@ internal static class NotableDateJsonDocumentParser
                 action is JsonElement an ? GetString(an, "notableDateRef") : null,
                 action is JsonElement ar ? GetString(ar, "ruleRef") : null,
                 action is JsonElement ah ? GetString(ah, "handlerKey") : null,
-                trigger is JsonElement th ? GetString(th, "handlerKey") : null));
+                trigger is JsonElement th ? GetString(th, "handlerKey") : null,
+                ParseHandlerParameters(GetProperty(policy, "parameters"))));
         }
 
         return policies;
+    }
+
+    /// <summary>
+    /// Parses the custom-handler parameter map declared by a policy as a JSON object of string values.
+    /// </summary>
+    /// <param name="element">The <c>parameters</c> object, or <see langword="null" />.</param>
+    /// <returns>The parameter map, or <see langword="null" /> when none are declared.</returns>
+    private static IReadOnlyDictionary<string, string>? ParseHandlerParameters(JsonElement? element)
+    {
+        if (element is not JsonElement parameters || parameters.ValueKind != JsonValueKind.Object)
+            return null;
+
+        Dictionary<string, string> result = new(StringComparer.Ordinal);
+        foreach (JsonProperty property in parameters.EnumerateObject())
+            result[property.Name] = property.Value.ValueKind == JsonValueKind.String ? property.Value.GetString() ?? string.Empty : property.Value.ToString();
+
+        return result.Count > 0 ? result : null;
     }
 
     /// <summary>
@@ -197,7 +215,11 @@ internal static class NotableDateJsonDocumentParser
             StringArray(scope, "calendars").Select(c => ParseEnum(c, CalendarSystem.Gregorian)),
             StringArray(scope, "categories").Select(c => ParseEnum(c, NotableDateCategory.None)),
             StringArray(scope, "notableDateRefs"),
-            StringArray(scope, "ruleRefs"));
+            StringArray(scope, "ruleRefs"),
+            GetNullableInt(scope, "fromYear"),
+            GetNullableInt(scope, "toYear"),
+            IntArray(scope, "onlyYears"),
+            IntArray(scope, "exceptYears"));
     }
 
     /// <summary>

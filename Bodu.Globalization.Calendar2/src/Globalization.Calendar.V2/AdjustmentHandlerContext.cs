@@ -73,6 +73,13 @@ public sealed class AdjustmentHandlerContext
     public StrategyResolutionContext ResolutionContext { get; }
 
     /// <summary>
+    /// Gets the author-supplied parameters declared by the policy.
+    /// </summary>
+    /// <returns>The policy's <see cref="AdjustmentPolicy.HandlerParameters" />; empty when none are declared.</returns>
+    public IReadOnlyDictionary<string, string> Parameters =>
+        this.Policy.HandlerParameters;
+
+    /// <summary>
     /// Determines whether a candidate day is already claimed by another non-working occurrence.
     /// </summary>
     /// <param name="date">The candidate day to test.</param>

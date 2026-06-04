@@ -189,10 +189,32 @@ internal static class NotableDateDocumentParser
                 (string?)action?.Attribute("notableDateRef"),
                 (string?)action?.Attribute("ruleRef"),
                 (string?)action?.Attribute("handlerKey"),
-                (string?)trigger?.Attribute("handlerKey")));
+                (string?)trigger?.Attribute("handlerKey"),
+                ParseHandlerParameters(policy.Element(s_ns + "Parameters"))));
         }
 
         return policies;
+    }
+
+    /// <summary>
+    /// Parses the custom-handler parameter map declared by a policy.
+    /// </summary>
+    /// <param name="element">The <c>Parameters</c> element, or <see langword="null" />.</param>
+    /// <returns>The parameter map, or <see langword="null" /> when none are declared.</returns>
+    private static IReadOnlyDictionary<string, string>? ParseHandlerParameters(XElement? element)
+    {
+        if (element is null)
+            return null;
+
+        Dictionary<string, string> parameters = new(StringComparer.Ordinal);
+        foreach (XElement param in element.Elements(s_ns + "Param"))
+        {
+            string key = (string?)param.Attribute("key") ?? string.Empty;
+            if (key.Length > 0)
+                parameters[key] = (string?)param.Attribute("value") ?? string.Empty;
+        }
+
+        return parameters.Count > 0 ? parameters : null;
     }
 
     /// <summary>
@@ -227,7 +249,11 @@ internal static class NotableDateDocumentParser
             element.Elements(s_ns + "Calendar").Select(c => ParseEnum(c.Attribute("name")?.Value, CalendarSystem.Gregorian)),
             element.Elements(s_ns + "Category").Select(c => ParseEnum(c.Attribute("value")?.Value, NotableDateCategory.None)),
             element.Elements(s_ns + "NotableDate").Select(n => (string?)n.Attribute("ref") ?? string.Empty),
-            element.Elements(s_ns + "Rule").Select(r => (string?)r.Attribute("ruleRef") ?? string.Empty));
+            element.Elements(s_ns + "Rule").Select(r => (string?)r.Attribute("ruleRef") ?? string.Empty),
+            ParseNullableInt(element.Attribute("fromYear")?.Value),
+            ParseNullableInt(element.Attribute("toYear")?.Value),
+            element.Elements(s_ns + "OnlyYear").Select(y => ParseInt(y.Attribute("value")?.Value, 0)),
+            element.Elements(s_ns + "ExceptYear").Select(y => ParseInt(y.Attribute("value")?.Value, 0)));
     }
 
     /// <summary>
