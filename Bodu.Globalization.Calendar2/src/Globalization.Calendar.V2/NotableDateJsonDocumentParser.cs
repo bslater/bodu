@@ -310,7 +310,9 @@ internal static class NotableDateJsonDocumentParser
             GetNullableInt(applicability, "toYear"),
             StringArray(applicability, "territories"),
             IntArray(applicability, "onlyYears"),
-            IntArray(applicability, "exceptYears"));
+            IntArray(applicability, "exceptYears"),
+            GetNullableInt(applicability, "everyYears"),
+            GetNullableInt(applicability, "anchorYear"));
     }
 
     /// <summary>

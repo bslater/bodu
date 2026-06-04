@@ -199,6 +199,8 @@
     <xs:attribute name="calendar" type="nd:calendarName" use="optional" default="Gregorian" />
     <xs:attribute name="fromYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="toYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="everyYears" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="anchorYear" type="xs:unsignedShort" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="Strategy">

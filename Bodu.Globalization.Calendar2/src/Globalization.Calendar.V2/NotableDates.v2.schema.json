@@ -142,7 +142,9 @@
         "toYear": { "type": "integer", "minimum": 0, "maximum": 65535 },
         "territories": { "type": "array", "items": { "$ref": "#/$defs/territoryCode" } },
         "onlyYears": { "type": "array", "items": { "type": "integer" } },
-        "exceptYears": { "type": "array", "items": { "type": "integer" } }
+        "exceptYears": { "type": "array", "items": { "type": "integer" } },
+        "everyYears": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "anchorYear": { "type": "integer", "minimum": 0, "maximum": 65535 }
       }
     },
     "fixedStrategy": {

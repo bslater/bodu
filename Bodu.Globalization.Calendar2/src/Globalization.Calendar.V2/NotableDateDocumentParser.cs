@@ -344,7 +344,9 @@ internal static class NotableDateDocumentParser
             ParseNullableInt(element.Attribute("toYear")?.Value),
             element.Elements(s_ns + "Territory").Select(t => (string?)t.Attribute("code") ?? string.Empty),
             element.Elements(s_ns + "OnlyYear").Select(y => ParseInt(y.Attribute("value")?.Value, 0)),
-            element.Elements(s_ns + "ExceptYear").Select(y => ParseInt(y.Attribute("value")?.Value, 0)));
+            element.Elements(s_ns + "ExceptYear").Select(y => ParseInt(y.Attribute("value")?.Value, 0)),
+            ParseNullableInt(element.Attribute("everyYears")?.Value),
+            ParseNullableInt(element.Attribute("anchorYear")?.Value));
     }
 
     /// <summary>

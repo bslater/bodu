@@ -30,6 +30,11 @@ public sealed class RuleApplicability
     /// <param name="territories">The explicit territories the rule applies to.</param>
     /// <param name="onlyYears">The explicit inclusion years, or an empty sequence for no restriction.</param>
     /// <param name="exceptYears">The explicit exclusion years, or an empty sequence for no exclusions.</param>
+    /// <param name="everyYears">The recurrence interval in years, or <see langword="null" /> for an annual rule.</param>
+    /// <param name="anchorYear">
+    /// The year the recurrence interval is measured from, or <see langword="null" /> to anchor on
+    /// <paramref name="fromYear" /> (or year zero when also unbounded).
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="territories" />, <paramref name="onlyYears" />, or <paramref name="exceptYears" /> is
     /// <see langword="null" />.
@@ -40,7 +45,9 @@ public sealed class RuleApplicability
         int? toYear,
         IEnumerable<string> territories,
         IEnumerable<int> onlyYears,
-        IEnumerable<int> exceptYears)
+        IEnumerable<int> exceptYears,
+        int? everyYears = null,
+        int? anchorYear = null)
     {
         ThrowHelper.ThrowIfNull(territories);
         ThrowHelper.ThrowIfNull(onlyYears);
@@ -52,6 +59,8 @@ public sealed class RuleApplicability
         this.Territories = territories.ToArray();
         this.OnlyYears = onlyYears.ToArray();
         this.ExceptYears = exceptYears.ToArray();
+        this.EveryYears = everyYears;
+        this.AnchorYear = anchorYear;
     }
 
     /// <summary>
@@ -91,6 +100,23 @@ public sealed class RuleApplicability
     public IReadOnlyList<int> ExceptYears { get; }
 
     /// <summary>
+    /// Gets the recurrence interval in years.
+    /// </summary>
+    /// <returns>
+    /// The cadence (for example <c>4</c> for every fourth year), or <see langword="null" /> for an annual rule.
+    /// </returns>
+    public int? EveryYears { get; }
+
+    /// <summary>
+    /// Gets the anchor year the recurrence interval is measured from.
+    /// </summary>
+    /// <returns>
+    /// The anchor year, or <see langword="null" /> to anchor on <see cref="FromYear" /> (or year zero when also
+    /// unbounded).
+    /// </returns>
+    public int? AnchorYear { get; }
+
+    /// <summary>
     /// Determines whether the rule applies to the supplied territory and Gregorian year.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>
@@ -111,6 +137,13 @@ public sealed class RuleApplicability
 
         if (this.ExceptYears.Contains(year))
             return false;
+
+        if (this.EveryYears is int interval && interval > 1)
+        {
+            int anchor = this.AnchorYear ?? this.FromYear ?? 0;
+            if ((((year - anchor) % interval) + interval) % interval != 0)
+                return false;
+        }
 
         return this.MatchesTerritory(territory);
     }
