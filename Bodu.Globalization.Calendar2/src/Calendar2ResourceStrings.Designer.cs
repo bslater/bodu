@@ -106,6 +106,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to No non-working day was found within the search limit..
+        /// </summary>
+        internal static string Op_Invalid_NoNonWorkingDayFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NoNonWorkingDayFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
         internal static string Op_Invalid_DocumentValidationFailed {

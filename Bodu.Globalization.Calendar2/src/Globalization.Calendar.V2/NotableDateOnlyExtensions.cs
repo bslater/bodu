@@ -326,6 +326,136 @@ public static class NotableDateOnlyExtensions
             .EnumerateNotableDates(new DateOnly(date.Year, 12, 31), service, territory, filter);
 
     /// <summary>
+    /// Returns the first non-working day strictly after the date.
+    /// </summary>
+    /// <param name="date">The starting date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The next non-working day.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
+    public static DateOnly NextNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+        StepNonWorking(date, 1, service, territory, workingWeek);
+
+    /// <summary>
+    /// Returns the first non-working day strictly before the date.
+    /// </summary>
+    /// <param name="date">The starting date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The previous non-working day.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
+    public static DateOnly PreviousNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+        StepNonWorking(date, -1, service, territory, workingWeek);
+
+    /// <summary>
+    /// Lazily enumerates the non-working days in the inclusive range, in ascending order.
+    /// </summary>
+    /// <param name="start">The inclusive start date.</param>
+    /// <param name="end">The inclusive end date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The non-working days in the range.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static IEnumerable<DateOnly> EnumerateNonWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
+    {
+        ThrowHelper.ThrowIfNull(service);
+        ThrowHelper.ThrowIfNull(territory);
+
+        return Iterator();
+
+        IEnumerable<DateOnly> Iterator()
+        {
+            for (DateOnly cursor = start; cursor <= end; cursor = cursor.AddDays(1))
+            {
+                if (cursor.IsNonWorkingDay(service, territory, workingWeek))
+                    yield return cursor;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the earliest notable date emitted strictly after the date for the territory.
+    /// </summary>
+    /// <param name="date">The reference date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrence must satisfy.</param>
+    /// <returns>The next matching occurrence, or <see langword="null" /> when none exists up to the maximum year.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static NotableDate? NextNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)
+    {
+        ThrowHelper.ThrowIfNull(service);
+        ThrowHelper.ThrowIfNull(territory);
+
+        for (int year = date.Year; year <= DateOnly.MaxValue.Year; year++)
+        {
+            foreach (NotableDate notable in ResolveYear(year, service, territory, filter))
+            {
+                if (notable.Date > date)
+                    return notable;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the most recent notable date emitted strictly before the date for the territory.
+    /// </summary>
+    /// <param name="date">The reference date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrence must satisfy.</param>
+    /// <returns>The previous matching occurrence, or <see langword="null" /> when none exists down to the minimum year.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static NotableDate? PreviousNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)
+    {
+        ThrowHelper.ThrowIfNull(service);
+        ThrowHelper.ThrowIfNull(territory);
+
+        for (int year = date.Year; year >= DateOnly.MinValue.Year; year--)
+        {
+            IReadOnlyList<NotableDate> resolved = ResolveYear(year, service, territory, filter);
+            for (int i = resolved.Count - 1; i >= 0; i--)
+            {
+                if (resolved[i].Date < date)
+                    return resolved[i];
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Resolves the notable dates emitted in a calendar year for the territory, ordered by date then identity.
+    /// </summary>
+    /// <param name="year">The calendar year to resolve.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrences must satisfy.</param>
+    /// <returns>The emitted occurrences in the year.</returns>
+    private static IReadOnlyList<NotableDate> ResolveYear(int year, INotableDateService service, string territory, NotableDateFilter? filter)
+    {
+        DateRange range = new(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31));
+        return filter is null ? service.Resolve(range, territory) : service.Resolve(range, territory, filter);
+    }
+
+    /// <summary>
     /// Steps from a date in the given direction until the first working day is reached.
     /// </summary>
     /// <param name="date">The starting date.</param>
@@ -351,5 +481,33 @@ public static class NotableDateOnlyExtensions
         }
 
         throw new InvalidOperationException(Calendar2ResourceStrings.Op_Invalid_NoWorkingDayFound);
+    }
+
+    /// <summary>
+    /// Steps from a date in the given direction until the first non-working day is reached.
+    /// </summary>
+    /// <param name="date">The starting date.</param>
+    /// <param name="direction">The step direction, <c>1</c> forward or <c>-1</c> backward.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The first non-working day strictly past the starting date in the direction.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
+    private static DateOnly StepNonWorking(DateOnly date, int direction, INotableDateService service, string territory, WeekPattern? workingWeek)
+    {
+        ThrowHelper.ThrowIfNull(service);
+        ThrowHelper.ThrowIfNull(territory);
+
+        for (int probe = 0; probe < TraversalGuard; probe++)
+        {
+            date = date.AddDays(direction);
+            if (date.IsNonWorkingDay(service, territory, workingWeek))
+                return date;
+        }
+
+        throw new InvalidOperationException(Calendar2ResourceStrings.Op_Invalid_NoNonWorkingDayFound);
     }
 }

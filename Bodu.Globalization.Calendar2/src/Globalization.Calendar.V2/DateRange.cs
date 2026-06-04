@@ -38,4 +38,26 @@ public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
     /// </returns>
     public bool Contains(DateOnly date) =>
         date >= this.StartDate && date <= this.EndDate;
+
+    /// <summary>
+    /// Determines whether the range fully contains the supplied range.
+    /// </summary>
+    /// <param name="other">The range to test for containment.</param>
+    /// <returns>
+    /// <see langword="true" /> when both ranges are well-formed and every day of <paramref name="other" /> falls within
+    /// this range; otherwise <see langword="false" />.
+    /// </returns>
+    public bool Contains(DateRange other) =>
+        this.IsValid && other.IsValid && this.StartDate <= other.StartDate && other.EndDate <= this.EndDate;
+
+    /// <summary>
+    /// Determines whether the range shares at least one day with the supplied range.
+    /// </summary>
+    /// <param name="other">The range to test for overlap.</param>
+    /// <returns>
+    /// <see langword="true" /> when both ranges are well-formed and overlap on at least one day; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    public bool Intersects(DateRange other) =>
+        this.IsValid && other.IsValid && this.StartDate <= other.EndDate && other.StartDate <= this.EndDate;
 }

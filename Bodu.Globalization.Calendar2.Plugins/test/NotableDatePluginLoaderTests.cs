@@ -140,4 +140,30 @@ public sealed class NotableDatePluginLoaderTests
             _ = NotableDatePluginLoader.LoadFrom(typeof(string).Assembly, new AllowAllPluginTrustPolicy());
         });
     }
+
+    /// <summary>
+    /// Verifies that the loader populates the trust context with the assembly name and the strong-name public-key token
+    /// (lowercase hexadecimal, or <see langword="null" /> when the assembly is not signed).
+    /// </summary>
+    [TestMethod]
+    public void LoadFrom_ShouldPopulateTrustContextWithNameAndToken()
+    {
+        PluginTrustContext? captured = null;
+        IPluginTrustPolicy policy = new DelegatingPluginTrustPolicy(context =>
+        {
+            captured = context;
+            return PluginTrustResult.Trusted();
+        });
+
+        _ = NotableDatePluginLoader.LoadFrom(TestAssembly, policy);
+
+        byte[]? tokenBytes = TestAssembly.GetName().GetPublicKeyToken();
+        string? expectedToken = tokenBytes is null || tokenBytes.Length == 0
+            ? null
+            : Convert.ToHexString(tokenBytes).ToLowerInvariant();
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(TestAssembly.GetName().Name, captured!.AssemblyName);
+        Assert.AreEqual(expectedToken, captured.PublicKeyToken);
+    }
 }

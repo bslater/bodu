@@ -81,6 +81,9 @@
   <data name="Op_Invalid_NoWorkingDayFound" xml:space="preserve">
     <value>No working day was found within the search limit.</value>
   </data>
+  <data name="Op_Invalid_NoNonWorkingDayFound" xml:space="preserve">
+    <value>No non-working day was found within the search limit.</value>
+  </data>
   <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
     <value>Duplicate adjustment-policy identifier '{0}'.</value>
   </data>

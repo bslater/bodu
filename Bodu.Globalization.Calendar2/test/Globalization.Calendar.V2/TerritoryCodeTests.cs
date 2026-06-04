@@ -192,4 +192,52 @@ public sealed class TerritoryCodeTests
         Assert.AreEqual(1, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-NSW")).Count);
         Assert.AreEqual(0, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-VIC")).Count);
     }
+
+    /// <summary>
+    /// Verifies that a comma-separated list parses every entry in source order, normalizing case.
+    /// </summary>
+    [TestMethod]
+    public void ParseList_WhenCommaSeparated_ShouldParseAllInOrder()
+    {
+        IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU, au-nsw ,US-CA");
+
+        CollectionAssert.AreEqual(
+            new[] { "AU", "AU-NSW", "US-CA" },
+            codes.Select(c => c.ToString()).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" />, empty, or white-space input yields an empty list.
+    /// </summary>
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("   ")]
+    [TestMethod]
+    public void ParseList_WhenNullEmptyOrWhitespace_ShouldReturnEmpty(string? value)
+    {
+        Assert.AreEqual(0, TerritoryCode.ParseList(value).Count);
+    }
+
+    /// <summary>
+    /// Verifies that blank entries between commas are ignored.
+    /// </summary>
+    [TestMethod]
+    public void ParseList_WhenBlankEntries_ShouldIgnoreThem()
+    {
+        IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU,, ,AU-NSW");
+
+        Assert.AreEqual(2, codes.Count);
+    }
+
+    /// <summary>
+    /// Verifies that any malformed non-blank entry throws <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseList_WhenAnyEntryInvalid_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = TerritoryCode.ParseList("AU, not-a-code");
+        });
+    }
 }

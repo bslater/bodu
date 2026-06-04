@@ -222,6 +222,87 @@ public static class NotableDateTimeExtensions
         DateOnly.FromDateTime(start).EnumerateNotableDates(DateOnly.FromDateTime(end), service, territory, filter);
 
     /// <summary>
+    /// Returns the first non-working day strictly after the date, preserving the time-of-day and kind.
+    /// </summary>
+    /// <param name="date">The starting date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The next non-working day at the original time-of-day.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
+    public static DateTime NextNonWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+        WithTimeOf(date, DateOnly.FromDateTime(date).NextNonWorkingDay(service, territory, workingWeek));
+
+    /// <summary>
+    /// Returns the first non-working day strictly before the date, preserving the time-of-day and kind.
+    /// </summary>
+    /// <param name="date">The starting date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The previous non-working day at the original time-of-day.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
+    public static DateTime PreviousNonWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+        WithTimeOf(date, DateOnly.FromDateTime(date).PreviousNonWorkingDay(service, territory, workingWeek));
+
+    /// <summary>
+    /// Lazily enumerates the non-working days in the inclusive range, in ascending order, each at the start's
+    /// time-of-day and kind.
+    /// </summary>
+    /// <param name="start">The inclusive start date.</param>
+    /// <param name="end">The inclusive end date.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
+    /// <returns>The non-working days in the range at the start's time-of-day.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static IEnumerable<DateTime> EnumerateNonWorkingDays(this DateTime start, DateTime end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
+    {
+        TimeOnly time = TimeOnly.FromDateTime(start);
+        DateTimeKind kind = start.Kind;
+
+        return DateOnly.FromDateTime(start)
+            .EnumerateNonWorkingDays(DateOnly.FromDateTime(end), service, territory, workingWeek)
+            .Select(day => day.ToDateTime(time, kind));
+    }
+
+    /// <summary>
+    /// Returns the earliest notable date emitted strictly after the date for the territory.
+    /// </summary>
+    /// <param name="date">The reference date whose date component is used.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrence must satisfy.</param>
+    /// <returns>The next matching occurrence, or <see langword="null" /> when none exists up to the maximum year.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static NotableDate? NextNotableDate(this DateTime date, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
+        DateOnly.FromDateTime(date).NextNotableDate(service, territory, filter);
+
+    /// <summary>
+    /// Returns the most recent notable date emitted strictly before the date for the territory.
+    /// </summary>
+    /// <param name="date">The reference date whose date component is used.</param>
+    /// <param name="service">The service used to resolve notable dates.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="filter">An optional filter the occurrence must satisfy.</param>
+    /// <returns>The previous matching occurrence, or <see langword="null" /> when none exists down to the minimum year.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
+    public static NotableDate? PreviousNotableDate(this DateTime date, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
+        DateOnly.FromDateTime(date).PreviousNotableDate(service, territory, filter);
+
+    /// <summary>
     /// Reattaches the time-of-day and kind of an original <see cref="DateTime" /> to a computed date.
     /// </summary>
     /// <param name="original">The original value supplying the time-of-day and kind.</param>

@@ -163,6 +163,32 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     }
 
     /// <summary>
+    /// Parses a comma-separated list of territory codes.
+    /// </summary>
+    /// <param name="value">The comma-separated codes, which may be <see langword="null" />.</param>
+    /// <returns>
+    /// The parsed codes in source order, or an empty list when <paramref name="value" /> is <see langword="null" />,
+    /// empty, or white space. Blank entries between commas are ignored.
+    /// </returns>
+    /// <exception cref="FormatException">Any non-blank entry is not a valid territory code.</exception>
+    /// <remarks>
+    /// This parser is strict: every non-blank entry must be a valid code, otherwise the call throws. Use
+    /// <see cref="TryParse" /> per entry when leniency is required.
+    /// </remarks>
+    public static IReadOnlyList<TerritoryCode> ParseList(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return [];
+
+        string[] parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        TerritoryCode[] result = new TerritoryCode[parts.Length];
+        for (int i = 0; i < parts.Length; i++)
+            result[i] = Parse(parts[i]);
+
+        return result;
+    }
+
+    /// <summary>
     /// Determines whether this code is, or is the parent of, the supplied code.
     /// </summary>
     /// <param name="other">The candidate code.</param>

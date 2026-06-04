@@ -70,4 +70,22 @@
   <data name="Op_Invalid_PluginType" xml:space="preserve">
     <value>The plugin type '{0}' does not implement INotableDatePlugin.</value>
   </data>
+  <data name="Op_NotTrusted_PluginAssemblyNameMissing" xml:space="preserve">
+    <value>The plugin assembly name is missing.</value>
+  </data>
+  <data name="Op_NotTrusted_PluginHashUnavailable" xml:space="preserve">
+    <value>The plugin assembly '{0}' has no file hash available to verify.</value>
+  </data>
+  <data name="Op_NotTrusted_PluginAssemblyNotAllowed" xml:space="preserve">
+    <value>The plugin assembly '{0}' is not in the file-hash allowlist.</value>
+  </data>
+  <data name="Op_NotTrusted_PluginHashMismatch" xml:space="preserve">
+    <value>The plugin assembly '{0}' file hash does not match the pinned value.</value>
+  </data>
+  <data name="Op_NotTrusted_PluginNotStrongNamed" xml:space="preserve">
+    <value>The plugin assembly is not strong-named.</value>
+  </data>
+  <data name="Op_NotTrusted_PluginTokenNotAllowed" xml:space="preserve">
+    <value>The plugin assembly public-key token '{0}' is not in the allowlist.</value>
+  </data>
 </root>

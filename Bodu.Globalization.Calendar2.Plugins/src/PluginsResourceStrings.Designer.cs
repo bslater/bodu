@@ -89,5 +89,59 @@ namespace Bodu.Globalization.Calendar.V2.Plugins {
                 return ResourceManager.GetString("Op_Invalid_PluginType", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin assembly name is missing.
+        /// </summary>
+        internal static string Op_NotTrusted_PluginAssemblyNameMissing {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginAssemblyNameMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin assembly '{0}' has no file hash available to verify.
+        /// </summary>
+        internal static string Op_NotTrusted_PluginHashUnavailable {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginHashUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin assembly '{0}' is not in the file-hash allowlist.
+        /// </summary>
+        internal static string Op_NotTrusted_PluginAssemblyNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginAssemblyNotAllowed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin assembly '{0}' file hash does not match the pinned value.
+        /// </summary>
+        internal static string Op_NotTrusted_PluginHashMismatch {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginHashMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin assembly is not strong-named.
+        /// </summary>
+        internal static string Op_NotTrusted_PluginNotStrongNamed {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginNotStrongNamed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin assembly public-key token '{0}' is not in the allowlist.
+        /// </summary>
+        internal static string Op_NotTrusted_PluginTokenNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginTokenNotAllowed", resourceCulture);
+            }
+        }
     }
 }

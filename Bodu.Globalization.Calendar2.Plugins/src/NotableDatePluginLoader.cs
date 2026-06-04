@@ -41,11 +41,13 @@ public static class NotableDatePluginLoader
         ThrowHelper.ThrowIfNull(assembly);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
-        string name = assembly.GetName().Name ?? assembly.FullName ?? "<unknown>";
+        AssemblyName assemblyName = assembly.GetName();
+        string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
         string? path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
         byte[]? hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
+        string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
 
-        PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash));
+        PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash, token));
         if (!trust.IsTrusted)
         {
             throw new PluginNotTrustedException(
@@ -157,4 +159,12 @@ public static class NotableDatePluginLoader
         using FileStream stream = File.OpenRead(path);
         return SHA256.HashData(stream);
     }
+
+    /// <summary>
+    /// Formats a strong-name public-key token as lowercase hexadecimal.
+    /// </summary>
+    /// <param name="token">The token bytes, or <see langword="null" /> when the assembly is not strong-named.</param>
+    /// <returns>The lowercase-hex token, or <see langword="null" /> when there is no token.</returns>
+    private static string? FormatPublicKeyToken(byte[]? token) =>
+        token is null || token.Length == 0 ? null : Convert.ToHexString(token).ToLowerInvariant();
 }
