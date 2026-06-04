@@ -80,4 +80,30 @@ public sealed class CommonResourcesTests
         Assert.IsTrue(newYear.IsObserved);
         Assert.AreEqual(new DateOnly(2023, 1, 1), newYear.ActualDate);
     }
+
+    /// <summary>
+    /// Verifies that every bundled common catalogue parses and passes semantic validation when loaded through the
+    /// shared resolver, so an authoring error in any catalogue fails the build.
+    /// </summary>
+    [TestMethod]
+    public void AllBundledCatalogues_LoadAndValidate()
+    {
+        System.Reflection.Assembly assembly = typeof(CommonNotableDateResources).Assembly;
+        const string prefix = "Bodu.Globalization.Calendar.V2.Resources.";
+        List<string> catalogues = assembly.GetManifestResourceNames()
+            .Where(name => name.StartsWith(prefix, StringComparison.Ordinal) && name.EndsWith(".xml", StringComparison.Ordinal))
+            .Select(name => name[prefix.Length..^4])
+            .ToList();
+
+        Assert.IsTrue(catalogues.Count >= 2, "expected the bundled catalogues to be embedded");
+
+        foreach (string catalogue in catalogues)
+        {
+            string? content = CommonNotableDateResources.Resolve(catalogue);
+            Assert.IsNotNull(content, $"catalogue '{catalogue}' did not resolve");
+
+            NotableDateResource resource = NotableDateResourceLoader.Load(content!, CommonNotableDateResources.Resolver);
+            Assert.IsTrue(resource.NotableDates.Count > 0, $"catalogue '{catalogue}' has no concepts");
+        }
+    }
 }
