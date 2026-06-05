@@ -4,1009 +4,323 @@ title: Holiday patterns and examples
 
 # Holiday patterns and examples
 
-This page provides end-to-end examples for common real-world holiday types. Each section
-shows the `NotableDateRule` in both C# and XML form, explains why a particular strategy and
-adjustment combination is used, and calls out variations to watch for.
+This page collects end-to-end worked patterns for common real-world holiday shapes. Each section pairs a short rule-document snippet on the cookbook schema with a one-to-three-line snippet that loads it and resolves the result. Every sample compiles against the v2 API: territories are plain strings, by-year resolution is the `service.Resolve(year, territory)` extension, and `NotableDate.DisplayName` carries the name.
 
-For field definitions, see [NotableDateRule and ObservanceAdjustment reference](rule-reference.md).
-For the full adjustment trigger and action catalogues, see [Observance adjustment rules](adjustment-rules.md).
+For the element-by-element field reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md). For the adjustment trigger / action / emission catalogues, see [Observance adjustment rules](adjustment-rules.md). For how documents are assembled and loaded, see [Authoring notable date rules](rule-authoring.md).
 
----
-
-## Fixed-date national holidays
-
-Fixed-date holidays fall on the same month and day every year. `Strategy = Fixed` with
-`Month` and `Day` is the correct choice. No adjustment is required unless the territory
-substitutes the holiday when it falls on a weekend.
-
-### Christmas Day (global, no substitution)
-
-```csharp
-using System.Collections.Immutable;
-using Bodu.Globalization.Calendar;
-
-NotableDateRule christmas = new NotableDateRule
-{
-    Name            = "Christmas Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 12,
-    Day             = 25,
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Christian"),
-};
-```
-
-```xml
-<NotableDate name="Christmas Day">
-  <Rule name="Christmas Day"
-        category="Holiday"
-        nonWorking="true">
-    <Fixed month="December" day="25" />
-    <Tag>Christian</Tag>
-  </Rule>
-</NotableDate>
-```
-
-### New Year's Day with weekend substitution
-
-Many territories substitute a Monday when New Year's Day falls on a Saturday or Sunday.
-A single `IfWeekend → MoveToNextWeekday` adjustment covers both cases because
-`MoveToNextWeekday` always advances to the following Monday.
-
-```csharp
-using System.Collections.Immutable;
-using Bodu.Globalization.Calendar;
-
-NotableDateRule newYearsDay = new NotableDateRule
-{
-    Name            = "New Year's Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 1,
-    Day             = 1,
-    IsNonWorkingDay = true,
-    Adjustments     = ImmutableArray.Create(new ObservanceAdjustment
-    {
-        Key     = "weekend-roll",
-        Trigger = AdjustmentTrigger.IfWeekend,
-        Action  = AdjustmentAction.MoveToNextWeekday,
-    }),
-};
-```
-
-```xml
-<NotableDate name="New Year's Day">
-  <Rule name="New Year's Day"
-        category="Holiday"
-        nonWorking="true">
-    <Fixed month="January" day="1" />
-    <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-  </Rule>
-</NotableDate>
-```
-
----
-
-## Fixed-date with jurisdiction-specific substitution
-
-Different territories apply different substitution rules to the same underlying date.
-Model each jurisdiction as a separate `<Rule>` element (or a separate `NotableDateRule` in
-C#) under the same canonical notable-date name.
-
-### Australia Day (AU) — Saturday or Sunday moves to Monday
-
-```csharp
-NotableDateRule australiaDay = new NotableDateRule
-{
-    Name            = "Australia Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 1,
-    Day             = 26,
-    TerritoryCode   = "AU",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("NationalHoliday"),
-    Adjustments     = ImmutableArray.Create(new ObservanceAdjustment
-    {
-        Key     = "weekend-roll",
-        Trigger = AdjustmentTrigger.IfWeekend,
-        Action  = AdjustmentAction.MoveToNextWeekday,
-    }),
-};
-```
-
-### UK Christmas Day — two-step UK bank holiday roll
-
-UK legislation gives each calendar day its own substitute, so Saturday and Sunday produce
-different outcomes. Two `IfDayOfWeek` adjustments with different priorities model this:
-
-```csharp
-NotableDateRule ukChristmas = new NotableDateRule
-{
-    Name            = "Christmas Day",
-    RuleName        = "Christmas Day (UK)",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 12,
-    Day             = 25,
-    TerritoryCode   = "GB",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Christian", "BankHoliday"),
-    Adjustments     = ImmutableArray.Create(
-        new ObservanceAdjustment
-        {
-            Key       = "sat-to-mon",
-            Priority  = 1,
-            Trigger   = AdjustmentTrigger.IfDayOfWeek,
-            DayOfWeek = DayOfWeek.Saturday,
-            Action    = AdjustmentAction.AddDays,
-            OffsetDays = 2,  // Saturday + 2 → Monday
-        },
-        new ObservanceAdjustment
-        {
-            Key       = "sun-to-tue",
-            Priority  = 2,
-            Trigger   = AdjustmentTrigger.IfDayOfWeek,
-            DayOfWeek = DayOfWeek.Sunday,
-            Action    = AdjustmentAction.AddDays,
-            OffsetDays = 2,  // Sunday + 2 → Tuesday
-        }
-    ),
-};
-```
-
-```xml
-<NotableDate name="Christmas Day">
-  <!-- UK bank holiday roll: Saturday → Monday; Sunday → Tuesday -->
-  <Rule name="Christmas Day (UK)"
-        category="Holiday"
-        territory="GB"
-        nonWorking="true">
-    <Fixed month="December" day="25" />
-    <Tag>Christian</Tag>
-    <Tag>BankHoliday</Tag>
-    <Adjustment key="sat-to-mon" priority="1"
-                when="IfDayOfWeek" dayOfWeek="Saturday"
-                action="AddDays" days="2" />
-    <Adjustment key="sun-to-tue" priority="2"
-                when="IfDayOfWeek" dayOfWeek="Sunday"
-                action="AddDays" days="2" />
-  </Rule>
-</NotableDate>
-```
-
-### US "observed" pattern — Saturday → Friday, Sunday → Monday
-
-The federal US convention shifts Saturday holidays to the preceding Friday and Sunday
-holidays to the following Monday:
-
-```csharp
-NotableDateRule usIndependenceDay = new NotableDateRule
-{
-    Name            = "Independence Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 7,
-    Day             = 4,
-    TerritoryCode   = "US",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Federal"),
-    Adjustments     = ImmutableArray.Create(
-        new ObservanceAdjustment
-        {
-            Key       = "sat-to-fri",
-            Priority  = 1,
-            Trigger   = AdjustmentTrigger.IfDayOfWeek,
-            DayOfWeek = DayOfWeek.Saturday,
-            Action    = AdjustmentAction.MoveToPreviousWeekday,
-        },
-        new ObservanceAdjustment
-        {
-            Key       = "sun-to-mon",
-            Priority  = 2,
-            Trigger   = AdjustmentTrigger.IfDayOfWeek,
-            DayOfWeek = DayOfWeek.Sunday,
-            Action    = AdjustmentAction.MoveToNextWeekday,
-        }
-    ),
-};
-```
-
-```xml
-<NotableDate name="Independence Day">
-  <Rule name="Independence Day (US)"
-        category="Holiday"
-        territory="US"
-        nonWorking="true">
-    <Fixed month="July" day="4" />
-    <Tag>Federal</Tag>
-    <Adjustment key="sat-to-fri" priority="1"
-                when="IfDayOfWeek" dayOfWeek="Saturday"
-                action="MoveToPreviousWeekday" />
-    <Adjustment key="sun-to-mon" priority="2"
-                when="IfDayOfWeek" dayOfWeek="Sunday"
-                action="MoveToNextWeekday" />
-  </Rule>
-</NotableDate>
-```
-
----
-
-## Floating weekday-of-month holidays
-
-Some holidays are defined as the *n*th occurrence of a particular weekday in a given month
-rather than a fixed calendar date. Use `Strategy = DayOfWeekInMonth` with `Month`,
-`DayOfWeek`, and `WeekOrdinal`.
-
-### Third Monday in January — Martin Luther King Jr. Day (US)
-
-```csharp
-using Bodu.Extensions;
-using Bodu.Globalization.Calendar;
-
-NotableDateRule mlkDay = new NotableDateRule
-{
-    Name            = "Martin Luther King Jr. Day",
-    Strategy        = DateResolutionStrategy.DayOfWeekInMonth,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 1,
-    DayOfWeek       = DayOfWeek.Monday,
-    WeekOrdinal     = WeekOfMonthOrdinal.Third,
-    TerritoryCode   = "US",
-    IsNonWorkingDay = true,
-    FirstYear       = 1986,
-    Tags            = ImmutableHashSet.Create("Federal"),
-};
-```
-
-```xml
-<NotableDate name="Martin Luther King Jr. Day">
-  <Rule name="Martin Luther King Jr. Day"
-        category="Holiday"
-        territory="US"
-        nonWorking="true"
-        firstYear="1986">
-    <DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" />
-    <Tag>Federal</Tag>
-  </Rule>
-</NotableDate>
-```
-
-### Fourth Thursday in November — Thanksgiving (US)
-
-```csharp
-NotableDateRule thanksgiving = new NotableDateRule
-{
-    Name            = "Thanksgiving Day",
-    Strategy        = DateResolutionStrategy.DayOfWeekInMonth,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 11,
-    DayOfWeek       = DayOfWeek.Thursday,
-    WeekOrdinal     = WeekOfMonthOrdinal.Fourth,
-    TerritoryCode   = "US",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Federal"),
-};
-```
-
-```xml
-<NotableDate name="Thanksgiving Day">
-  <Rule name="Thanksgiving Day (US)"
-        category="Holiday"
-        territory="US"
-        nonWorking="true">
-    <DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
-    <Tag>Federal</Tag>
-  </Rule>
-</NotableDate>
-```
-
-### Second Monday in October — Thanksgiving (CA)
-
-Canada's Thanksgiving falls on the second Monday in October — a different month and ordinal
-from the US holiday but the same strategy:
-
-```csharp
-NotableDateRule canadaThanksgiving = new NotableDateRule
-{
-    Name            = "Thanksgiving Day",
-    RuleName        = "Thanksgiving Day (Canada)",
-    Strategy        = DateResolutionStrategy.DayOfWeekInMonth,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 10,
-    DayOfWeek       = DayOfWeek.Monday,
-    WeekOrdinal     = WeekOfMonthOrdinal.Second,
-    TerritoryCode   = "CA",
-    IsNonWorkingDay = true,
-};
-```
-
-### Last Monday in August — UK Summer Bank Holiday (England and Wales)
-
-`WeekOrdinal = Last` resolves to the final occurrence of the weekday in the month,
-regardless of whether it is the fourth or fifth:
-
-```csharp
-NotableDateRule ukSummerBankHoliday = new NotableDateRule
-{
-    Name            = "Summer Bank Holiday",
-    Strategy        = DateResolutionStrategy.DayOfWeekInMonth,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 8,
-    DayOfWeek       = DayOfWeek.Monday,
-    WeekOrdinal     = WeekOfMonthOrdinal.Last,
-    TerritoryCode   = "GB-ENG",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("BankHoliday"),
-};
-```
-
-```xml
-<NotableDate name="Summer Bank Holiday">
-  <Rule name="Summer Bank Holiday (England and Wales)"
-        category="Holiday"
-        territory="GB-ENG"
-        nonWorking="true">
-    <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Last" />
-    <Tag>BankHoliday</Tag>
-  </Rule>
-</NotableDate>
-```
-
----
-
-## Weekday near a reference date
-
-Some holidays are a weekday positioned relative to a fixed reference date rather than an
-*n*th-of-the-month occurrence: "the Saturday between 20 and 26 June", "the Wednesday before
-23 November", or "the Monday nearest to" a date. These cannot be expressed with
-`DayOfWeekInMonth` because the target is not a fixed ordinal — and the All Saints' window even
-straddles a month boundary. Use `Strategy = WeekdayNearDate` with `Month`, `Day`, `DayOfWeek`,
-and a `WeekdayProximity` direction (`OnOrAfter`, `OnOrBefore`, or `Nearest`). The reference
-date plus the direction defines the seven-day window in which the single matching weekday is
-selected.
-
-### Midsummer Day (SE, FI) — the Saturday on or after 20 June
-
-The Saturday falling between 20 and 26 June is the first Saturday on or after 20 June.
+Throughout, a snippet shows just the relevant document fragment. A complete document wraps the fragments in `<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="...">`, with `<AdjustmentPolicies>` before `<NotableDates>`. To run a fragment, load it and build a service:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-NotableDateRule midsummerDay = new NotableDateRule
-{
-    Name             = "Midsummer Day",
-    Strategy         = DateResolutionStrategy.WeekdayNearDate,
-    Category         = NotableDateCategory.Holiday,
-    Month            = 6,
-    Day              = 20,
-    DayOfWeek        = DayOfWeek.Saturday,
-    WeekdayProximity = WeekdayProximity.OnOrAfter,
-    IsNonWorkingDay  = true,
-};
-```
-
-```xml
-<NotableDate name="Midsummer Day">
-  <Rule name="Midsummer Day" category="Holiday" nonWorking="true">
-    <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
-  </Rule>
-</NotableDate>
-```
-
-### Repentance Day (DE-SN) — the Wednesday before 23 November
-
-Buß- und Bettag is the Wednesday before 23 November, i.e. the Wednesday on or before 22
-November. It is a public holiday only in Saxony.
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-NotableDateRule repentanceDay = new NotableDateRule
-{
-    Name             = "Repentance Day",
-    Strategy         = DateResolutionStrategy.WeekdayNearDate,
-    Category         = NotableDateCategory.Holiday,
-    Month            = 11,
-    Day              = 22,
-    DayOfWeek        = DayOfWeek.Wednesday,
-    WeekdayProximity = WeekdayProximity.OnOrBefore,
-    TerritoryCode    = "DE-SN",
-    IsNonWorkingDay  = true,
-};
-```
-
-```xml
-<NotableDate name="Repentance Day">
-  <Rule name="Repentance Day" category="Holiday" territory="DE-SN" nonWorking="true">
-    <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
-  </Rule>
-</NotableDate>
-```
-
-### Monday nearest to a date — the `Nearest` direction
-
-`Nearest` selects the closest occurrence of the weekday in either direction. Because the
-forward and backward distances to the same weekday always sum to seven, they are never equal,
-so the result is unambiguous.
-
-```xml
-<NotableDate name="Example Observed Day">
-  <Rule name="Example Observed Day" category="Observance">
-    <WeekdayNearDate dayOfWeek="Monday" month="October" day="9" direction="Nearest" />
-  </Rule>
-</NotableDate>
+NotableDateResource resource = NotableDateResourceLoader.Load(xml);   // add CommonNotableDateResources.Resolver if the document imports
+NotableDateService  service  = new NotableDateService(resource);
 ```
 
 ---
 
-## Weekday relative to an ordinal weekday in a month
+## Fixed-date holiday
 
-Some dates are defined relative to an *n*th weekday of a month rather than to a fixed calendar
-date — "the Tuesday **after the first Monday** in November". Use `Strategy = RelativeWeekdayInMonth`:
-the anchor is a `DayOfWeekInMonth`-style ordinal weekday (`month` + `weekOrdinal` + `dayOfWeek`),
-and `relativeDayOfWeek` + `direction` position the target weekday on or after, on or before, or
-nearest to that anchor.
-
-### US Election Day — the Tuesday after the first Monday in November
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-NotableDateRule electionDay = new NotableDateRule
-{
-    Name              = "Election Day",
-    Strategy          = DateResolutionStrategy.RelativeWeekdayInMonth,
-    Category          = NotableDateCategory.Civic,
-    Month             = 11,
-    DayOfWeek         = DayOfWeek.Monday,
-    WeekOrdinal       = WeekOfMonthOrdinal.First,
-    RelativeDayOfWeek = DayOfWeek.Tuesday,
-    WeekdayProximity  = WeekdayProximity.OnOrAfter,
-    TerritoryCode     = "US",
-};
-```
+A holiday on the same month and day every year uses `<Fixed>`. No adjustment is needed unless the territory substitutes the day when it falls on a weekend.
 
 ```xml
-<NotableDate name="Election Day">
-  <Rule name="Election Day" category="Civic" territory="US">
-    <RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
-                            relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
-  </Rule>
+<NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="default">
+      <Tags><Tag value="christian" /></Tags>
+      <Strategy><Fixed month="December" day="25" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
+```
+
+```csharp
+IReadOnlyList<NotableDate> onDay = service.Resolve(new DateOnly(2026, 12, 25), "US");
+Console.WriteLine(onDay[0].DisplayName);   // Christmas Day
 ```
 
 ---
 
-## Offsets from another holiday
+## Weekend substitution via a reusable adjustment policy
 
-`Strategy = OffsetFromAnchor` is not limited to Easter — the anchor can be **any** named rule.
-A date defined relative to another holiday should offset from that holiday so it tracks any
-change to the anchor, rather than re-deriving the anchor's date independently. The day-after and
-Monday-after retail observances tied to US Thanksgiving (the fourth Thursday of November) are the
-canonical example.
+A substitution is authored once as an `<AdjustmentPolicy>` and referenced from any rule by `policyRef`. The policy pairs a `<Trigger>` (when it fires) with an `<Action>` (what it does) and an `<Emission>` (what is emitted).
+
+### AU / NZ — Saturday or Sunday moves to Monday
+
+A single `IfWeekend` trigger covers both weekend days; `MoveToNextWorkingDay` advances to the following Monday, and `ObservedOnly` means the single occurrence moves.
+
+```xml
+<AdjustmentPolicies>
+  <AdjustmentPolicy id="weekend-roll" priority="100"
+                    description="If the holiday falls on a weekend, observe it on the following Monday.">
+    <Trigger type="IfWeekend" />
+    <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+    <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+  </AdjustmentPolicy>
+</AdjustmentPolicies>
+
+<NotableDates>
+  <NotableDate id="australia-day" displayName="Australia Day" category="PublicHoliday" defaultNonWorkingDay="true">
+    <Rules>
+      <Rule id="au">
+        <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+        <Strategy><Fixed month="January" day="26" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Rule>
+    </Rules>
+  </NotableDate>
+</NotableDates>
+```
 
 ```csharp
-using Bodu.Globalization.Calendar;
+// 26 January 2025 is a Sunday → observed on Monday 27 January.
+NotableDate auDay = service.Resolve(2025, "AU").Single(d => d.RuleId == "australia-day");
+Console.WriteLine($"{auDay.Date} observed={auDay.IsObserved} (actual {auDay.ActualDate})");
+```
 
-// Black Friday — the day after Thanksgiving.
-NotableDateRule blackFriday = new NotableDateRule
-{
-    Name           = "Black Friday",
-    Strategy       = DateResolutionStrategy.OffsetFromAnchor,
-    Category       = NotableDateCategory.Cultural,
-    AnchorRuleName = "Thanksgiving",
-    OffsetDays     = 1,
-    TerritoryCode  = "US",
-};
+### UK — Saturday and Sunday each get their own substitute
 
-// Cyber Monday — the Monday after Thanksgiving (four days on).
-NotableDateRule cyberMonday = new NotableDateRule
-{
-    Name           = "Cyber Monday",
-    Strategy       = DateResolutionStrategy.OffsetFromAnchor,
-    Category       = NotableDateCategory.Cultural,
-    AnchorRuleName = "Thanksgiving",
-    OffsetDays     = 4,
-    TerritoryCode  = "US",
-};
+UK bank-holiday law gives Saturday and Sunday different outcomes. A general weekend roll already lands both on the next working day, but where the law keeps the nominal day *and* grants an additional substitute, use `ObservedAsAdditional` so both occurrences are emitted.
+
+```xml
+<AdjustmentPolicy id="uk-substitute" priority="100"
+                  description="Grant an additional substitute public holiday when the day falls on a weekend.">
+  <Trigger type="IfWeekend" />
+  <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
+  <Emission mode="ObservedAsAdditional" reason="Substitute bank holiday" />
+</AdjustmentPolicy>
 ```
 
 ```xml
-<NotableDate name="Black Friday">
-  <Rule name="Black Friday" category="Cultural" territory="US">
-    <OffsetFromAnchor name="Thanksgiving" offset="1" />
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Cyber Monday">
-  <Rule name="Cyber Monday" category="Cultural" territory="US">
-    <OffsetFromAnchor name="Thanksgiving" offset="4" />
-  </Rule>
+<NotableDate id="christmas-day" displayName="Christmas Day" category="BankHoliday" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="gb">
+      <Applicability calendar="Gregorian"><Territory code="GB" /></Applicability>
+      <Strategy><Fixed month="December" day="25" /></Strategy>
+      <Adjustments><Adjustment policyRef="uk-substitute" /></Adjustments>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
 
-> [!TIP]
-> Prefer `OffsetFromAnchor` over `RelativeWeekdayInMonth` when an anchor rule already exists:
-> "the Monday after Thanksgiving" tracks the Thanksgiving rule, whereas re-deriving it as "the
-> Monday after the fourth Thursday of November" would silently diverge if the anchor ever moved.
+```csharp
+IReadOnlyList<NotableDate> gbXmas = service.Resolve(2027, "GB")
+    .Where(d => d.RuleId == "christmas-day").ToList();   // 25 Dec 2027 is a Saturday → nominal + substitute Monday
+```
+
+### US — Saturday moves to Friday, Sunday moves to Monday
+
+The federal US convention shifts Saturday holidays to the preceding Friday and Sunday holidays to the following Monday. That is two directions, so author two policies and reference both; first-match by priority selects the one whose trigger fires.
+
+```xml
+<AdjustmentPolicies>
+  <AdjustmentPolicy id="us-saturday-to-friday" priority="1"
+                    description="A Saturday holiday is observed on the preceding Friday.">
+    <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /></Trigger>
+    <Action type="MoveToPreviousWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="3" />
+    <Emission mode="ObservedOnly" reason="Observed (Saturday holiday)" />
+  </AdjustmentPolicy>
+
+  <AdjustmentPolicy id="us-sunday-to-monday" priority="2"
+                    description="A Sunday holiday is observed on the following Monday.">
+    <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
+    <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="3" />
+    <Emission mode="ObservedOnly" reason="Observed (Sunday holiday)" />
+  </AdjustmentPolicy>
+</AdjustmentPolicies>
+
+<NotableDates>
+  <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+    <Rules>
+      <Rule id="us">
+        <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="July" day="4" /></Strategy>
+        <Adjustments>
+          <Adjustment policyRef="us-saturday-to-friday" />
+          <Adjustment policyRef="us-sunday-to-monday" />
+        </Adjustments>
+      </Rule>
+    </Rules>
+  </NotableDate>
+</NotableDates>
+```
+
+```csharp
+// 4 July 2026 is a Saturday → observed on Friday 3 July.
+NotableDate july4 = service.Resolve(2026, "US").Single(d => d.RuleId == "independence-day");
+Console.WriteLine($"{july4.Date} (actual {july4.ActualDate})");
+```
+
+The full trigger / action / emission catalogue, and the AU/NZ, UK, and US patterns in depth, are in [Observance adjustment rules](adjustment-rules.md).
 
 ---
 
-## Easter and Easter-relative dates
+## Floating weekday-of-month holiday
 
-Easter Sunday is determined by the Gregorian or Orthodox computus algorithm. Easter-relative
-dates use `Strategy = OffsetFromAnchor` to express their position in days relative to Easter
-Sunday.
-
-### Registering the algorithm
-
-Before Easter-relative rules can resolve, the Easter algorithm must be registered:
-
-```csharp
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Algorithms;
-
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday", new EasterSundayNotableDateAlgorithm());
-```
-
-### Easter Sunday (Gregorian)
-
-```csharp
-NotableDateRule easterSunday = new NotableDateRule
-{
-    Name            = "Easter Sunday",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Holiday,
-    AlgorithmKey    = "easter-sunday",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Christian"),
-};
-```
+A holiday defined as the *n*th occurrence of a weekday in a month uses `<DayOfWeekInMonth>` with a <xref:Bodu.Globalization.Calendar.WeekOrdinal> (`First`…`Fifth`, `Last`).
 
 ```xml
-<NotableDate name="Easter Sunday">
-  <Rule name="Easter Sunday"
-        category="Holiday"
-        nonWorking="true">
-    <Algorithm key="easter-sunday" />
-    <Tag>Christian</Tag>
-  </Rule>
+<NotableDate id="thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="us">
+      <Applicability calendar="Gregorian"><Territory code="US" /></Applicability>
+      <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
-
-### Easter cluster — Good Friday through Whit Monday
-
-The following rules express the complete Western Easter cluster. The anchor for each is
-`Easter Sunday`; each rule carries a signed `OffsetDays`:
-
-| Holiday | Offset | Notes |
-|---|---|---|
-| Good Friday | −2 | Non-working in most Christian-tradition territories |
-| Easter Saturday | −1 | Non-working in some AU states |
-| Easter Sunday | 0 | The algorithm anchor |
-| Easter Monday | +1 | Non-working in most territories |
-| Ascension Thursday | +39 | Non-working in some European territories |
-| Pentecost Sunday | +49 | |
-| Whit Monday | +50 | Non-working in some European territories |
 
 ```csharp
-NotableDateRule goodFriday = new NotableDateRule
-{
-    Name            = "Good Friday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = -2,
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Christian"),
-};
-
-NotableDateRule easterMonday = new NotableDateRule
-{
-    Name            = "Easter Monday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = 1,
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Christian"),
-};
-
-NotableDateRule ascensionThursday = new NotableDateRule
-{
-    Name            = "Ascension Thursday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Religious,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = 39,
-    Tags            = ImmutableHashSet.Create("Christian"),
-};
-
-NotableDateRule whitMonday = new NotableDateRule
-{
-    Name            = "Whit Monday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = 50,
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Christian"),
-};
+NotableDate thanksgiving = service.Resolve(2026, "US").Single(d => d.RuleId == "thanksgiving");
+Console.WriteLine(thanksgiving.Date);   // 26 November 2026
 ```
 
-```xml
-<NotableDate name="Good Friday">
-  <Rule name="Good Friday" category="Holiday" nonWorking="true">
-    <OffsetFromAnchor name="Easter Sunday" offset="-2" />
-    <Tag>Christian</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Easter Monday">
-  <Rule name="Easter Monday" category="Holiday" nonWorking="true">
-    <OffsetFromAnchor name="Easter Sunday" offset="1" />
-    <Tag>Christian</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Ascension Thursday">
-  <Rule name="Ascension Thursday" category="Religious">
-    <OffsetFromAnchor name="Easter Sunday" offset="39" />
-    <Tag>Christian</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Whit Monday">
-  <Rule name="Whit Monday" category="Holiday" nonWorking="true">
-    <OffsetFromAnchor name="Easter Sunday" offset="50" />
-    <Tag>Christian</Tag>
-  </Rule>
-</NotableDate>
-```
-
-### Orthodox Easter
-
-The `OrthodoxEasterSundayNotableDateProvider` computes Easter Sunday per the Julian
-computus and projects the result to a Gregorian date. Register it under a distinct key to
-keep it separate from the Gregorian Easter algorithm:
-
-```csharp
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday",          new EasterSundayNotableDateAlgorithm())
-    .Register("orthodox-easter-sunday", new OrthodoxEasterSundayNotableDateAlgorithm());
-
-// Orthodox Easter Sunday rule
-NotableDateRule orthodoxEaster = new NotableDateRule
-{
-    Name            = "Orthodox Easter Sunday",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Religious,
-    AlgorithmKey    = "orthodox-easter-sunday",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Orthodox", "Christian"),
-};
-```
+`weekOrdinal="Last"` resolves to the final occurrence regardless of whether it is the fourth or fifth — the shape used for the UK Summer Bank Holiday (last Monday in August) and the WA King's Birthday (last Monday in September).
 
 ---
 
-## Lunar and algorithmic dates
+## The Easter cluster
 
-Lunar and lunisolar holidays require algorithmic calculation. Register the appropriate
-`INotableDateAlgorithm` and wire it via `AlgorithmKey`.
-
-### Chinese New Year (Lunar New Year)
-
-Chinese New Year falls on the second new moon after the winter solstice, which can land in
-either January or February of the Gregorian year. `SweepCalendarYears = true` ensures the
-resolver checks both the current and adjacent Gregorian years when projecting from the
-Chinese calendar:
-
-```csharp
-NotableDateRule lunarNewYear = new NotableDateRule
-{
-    Name              = "Lunar New Year",
-    Strategy          = DateResolutionStrategy.Algorithm,
-    Category          = NotableDateCategory.Cultural,
-    AlgorithmKey      = "lunar-new-year",
-    IsNonWorkingDay   = true,
-    SweepCalendarYears = true,
-    Tags              = ImmutableHashSet.Create("Chinese", "LunarCalendar"),
-};
-```
+Easter Sunday is computed by the `<Algorithm key="western-easter">` strategy (or `orthodox-easter` for the Julian computus). Good Friday and Easter Monday hang off it with `<OffsetFromRule>`, so they track the anchor rather than re-deriving it.
 
 ```xml
-<NotableDate name="Lunar New Year">
-  <Rule name="Lunar New Year"
-        category="Cultural"
-        nonWorking="true"
-        sweepCalendarYears="true">
-    <Algorithm key="lunar-new-year" />
-    <Tag>Chinese</Tag>
-    <Tag>LunarCalendar</Tag>
-  </Rule>
+<NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="default"><Strategy><Algorithm key="western-easter" /></Strategy></Rule>
+  </Rules>
+</NotableDate>
+
+<NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="default">
+      <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy>
+    </Rule>
+  </Rules>
+</NotableDate>
+
+<NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="default">
+      <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
 
-### Diwali (Hindu lunar)
-
-`HinduLunarNotableDateAlgorithm` accepts `AlgorithmMonth` and `AlgorithmDay` as hints for
-identifying the target festival within the Hindu panchanga:
-
 ```csharp
-NotableDateRule diwali = new NotableDateRule
-{
-    Name              = "Diwali",
-    Strategy          = DateResolutionStrategy.Algorithm,
-    Category          = NotableDateCategory.Religious,
-    AlgorithmKey      = "diwali",
-    AlgorithmMonth    = 8,   // Kartik (month 8 in the Hindu lunar calendar)
-    AlgorithmDay      = 1,   // Amavasya (new moon day)
-    SweepCalendarYears = true,
-    Tags              = ImmutableHashSet.Create("Hindu"),
-};
+IReadOnlyList<NotableDate> easter = service.Resolve(2026, "AU")
+    .Where(d => d.Tags.Count == 0 && d.RuleId is "good-friday" or "easter-sunday" or "easter-monday").ToList();
+// Good Friday 3 Apr, Easter Sunday 5 Apr, Easter Monday 6 Apr 2026.
 ```
 
-### Vesak (Buddha's Birthday)
-
-```csharp
-NotableDateRule vesak = new NotableDateRule
-{
-    Name            = "Vesak",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Religious,
-    AlgorithmKey    = "vesak",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("Buddhist"),
-};
-```
-
-```xml
-<NotableDate name="Vesak">
-  <Rule name="Vesak" category="Religious" nonWorking="true">
-    <Algorithm key="vesak" />
-    <Tag>Buddhist</Tag>
-  </Rule>
-</NotableDate>
-```
-
-### Qingming (Tomb-Sweeping Day)
-
-Qingming falls on the solar term 15° after the Spring Equinox — typically 4 or 5 April:
-
-```csharp
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("qingming", new QingmingNotableDateAlgorithm());
-
-NotableDateRule qingming = new NotableDateRule
-{
-    Name            = "Qingming",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Cultural,
-    AlgorithmKey    = "qingming",
-    IsNonWorkingDay = true,
-    TerritoryCode   = "CN",
-};
-```
+Extend the cluster with the same shape: Easter Saturday is `offsetDays="-1"`, Ascension Thursday `offsetDays="39"`, Whit Monday `offsetDays="50"`. The two Easter keys are also exposed as constants `AlgorithmDateStrategy.WesternEasterKey` and `OrthodoxEasterKey`. See [Date calculation algorithms](algorithms.md).
 
 ---
 
-## Multi-day events
+## A lunar / algorithmic date
 
-Set `DurationDays` to the number of calendar days the event spans, inclusive of the anchor
-date. `NotableDate.EndDate` is set to `Date + DurationDays - 1`.
-
-### Hanukkah (8 days)
-
-The anchor is the first day of Hanukkah. The algorithm produces the first night's date; the
-event spans eight days:
-
-```csharp
-NotableDateRule hanukkah = new NotableDateRule
-{
-    Name         = "Hanukkah",
-    Strategy     = DateResolutionStrategy.Algorithm,
-    Category     = NotableDateCategory.Religious,
-    AlgorithmKey = "hanukkah",
-    DurationDays = 8,
-    Tags         = ImmutableHashSet.Create("Jewish"),
-};
-```
+Lunisolar festivals cannot be expressed as calendar arithmetic, so they use `<Algorithm key="...">`. The bundled calculators back the keys; no registration is needed for built-in keys.
 
 ```xml
-<NotableDate name="Hanukkah">
-  <Rule name="Hanukkah" category="Religious" durationDays="8">
-    <Algorithm key="hanukkah" />
-    <Tag>Jewish</Tag>
-  </Rule>
+<NotableDate id="vesak" displayName="Vesak" category="Religious" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="default">
+      <Applicability calendar="Gregorian"><Territory code="MY" /></Applicability>
+      <Strategy><Algorithm key="vesak" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
 
-### Easter weekend (Good Friday to Easter Monday — 4 days)
-
-Express the multi-day span as a single rule anchored on Good Friday:
-
 ```csharp
-NotableDateRule easterWeekend = new NotableDateRule
-{
-    Name            = "Easter Weekend",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = -2,    // anchor on Good Friday
-    DurationDays    = 4,     // Good Friday + Easter Saturday + Easter Sunday + Easter Monday
-    IsNonWorkingDay = true,
-};
+NotableDate vesak = service.Resolve(2026, "MY").Single(d => d.RuleId == "vesak");
+Console.WriteLine($"{vesak.Date}  {vesak.DisplayName}");
 ```
 
-Multi-day events are included in range queries when **any** day of their span falls within
-the queried range:
-
-```csharp
-// Returns Easter Weekend even if 'from' is Easter Saturday
-IReadOnlyList<NotableDate> results = service.GetNotableDates(
-    new DateTime(2026, 4, 4),   // Easter Saturday 2026
-    new DateTime(2026, 4, 10));
-```
+Diwali (`diwali`), Holi (`holi`), Qingming (`qingming`), Losar (`losar`), and the other Hindu and Buddhist festival keys follow the same shape. A fixed date in a non-Gregorian calendar (Chinese New Year, Nowruz, Passover) is authored differently — see [Working with non-Gregorian calendars](non-gregorian-calendars.md).
 
 ---
 
-## Subdivision-level variants
+## A multi-day event
 
-When a holiday has different rules in different sub-regions, model each variant as a
-separate `<Rule>` element scoped to its territory under the same `<NotableDate>` parent.
-
-### Boxing Day across Australian states
-
-Boxing Day is observed nationally in Australia, but the Northern Territory applies a
-standard weekend roll, while other states use a non-working-day check to avoid collision
-with Christmas Day substitutes:
+Set `durationDays` (on the rule, or `defaultDurationDays` on the concept) to the number of calendar days the event spans, inclusive of the start date. `NotableDate.EndDate` is then `Date + DurationDays − 1`.
 
 ```xml
-<NotableDate name="Boxing Day">
-
-  <!-- Northern Territory: simple weekend roll -->
-  <Rule name="Boxing Day (NT)"
-        category="Holiday"
-        territory="AU-NT"
-        nonWorking="true">
-    <Fixed month="December" day="26" />
-    <Adjustment key="nt-weekend-roll"
-                when="IfWeekend" action="MoveToNextWeekday" />
-  </Rule>
-
-  <!-- All other Australian states: skip past any non-working day to the next working day -->
-  <Rule name="Boxing Day (AU)"
-        category="Holiday"
-        territory="AU"
-        nonWorking="true">
-    <Fixed month="December" day="26" />
-    <Adjustment key="au-nonworking-roll"
-                when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
-  </Rule>
-
+<NotableDate id="national-reconciliation-week" displayName="National Reconciliation Week"
+             category="Observance" defaultNonWorkingDay="false" defaultDurationDays="7">
+  <Rules>
+    <Rule id="au">
+      <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+      <Strategy><Fixed month="May" day="27" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
 
-When resolving for `"AU-NT"`, the first rule matches by containment. If its trigger fires,
-the second rule is still evaluated independently (rules are not mutually exclusive between
-territories — they are separate rules under the same name). To ensure the NT rule takes
-precedence, assign it a lower `Priority` value than the general AU rule.
+```csharp
+// A single-day query for any day inside the span returns the occurrence.
+NotableDate week = service.Resolve(new DateOnly(2026, 5, 30), "AU")
+    .Single(d => d.RuleId == "national-reconciliation-week");
+Console.WriteLine($"{week.Date} – {week.EndDate} ({week.DurationDays} days)");
+```
 
-### Scotland vs England bank holidays
+A multi-day occurrence is included in a range query when its span intersects the window; which occurrence controls inclusion is governed by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>.
 
-Scotland has different bank holidays from England and Wales. Model them as separately scoped
-rules under the same `<NotableDate>` name, using `GB-SCT` and `GB-ENG` territory codes:
+---
+
+## A subdivision variant
+
+When sub-regions observe a holiday on different dates, declare one concept with one `<Rule>` per subdivision, each scoped with `<Territory>`. The engine selects the most-specific rule for the requested territory, so an `AU-VIC` query resolves the Victorian rule and a national `AU` query resolves none of the subdivision rules.
 
 ```xml
-<NotableDate name="St Andrew's Day">
-  <Rule name="St Andrew's Day (Scotland)"
-        category="Holiday"
-        territory="GB-SCT"
-        nonWorking="true"
-        firstYear="2007">
-    <Fixed month="November" day="30" />
-    <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-  </Rule>
+<NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="nsw">
+      <Applicability calendar="Gregorian"><Territory code="AU-NSW" /></Applicability>
+      <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
+    </Rule>
+    <Rule id="vic">
+      <Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
+      <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy>
+    </Rule>
+    <Rule id="wa">
+      <Applicability calendar="Gregorian"><Territory code="AU-WA" /></Applicability>
+      <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
 
----
+```csharp
+NotableDate vicLabour = service.Resolve(2026, "AU-VIC").Single(d => d.RuleId == "labour-day");
+Console.WriteLine($"{vicLabour.Date}  {vicLabour.DisplayName} (Victoria)");
+```
 
-## Year-bounded and occurrence-filtered rules
+A rule scoped to a country (`<Territory code="AU" />`) also resolves for every subdivision query, so national and regional rules compose: a national rule plus a subdivision-specific shadow rule both surface for the subdivision under the resource's collision policy. See [Territories and regional composition](territories.md).
 
-### Rule active from a specific year onwards
+### Year-bounded subdivision variant
+
+Combine `<Territory>` with `fromYear` / `toYear` (or `<OnlyYear>` / `<ExceptYear>`) on `<Applicability>` to gate a rule to specific years — for example a trial public holiday active only in 2026–2027:
+
+```xml
+<Rule id="nsw">
+  <Applicability calendar="Gregorian" fromYear="2026" toYear="2027"><Territory code="AU-NSW" /></Applicability>
+  <Strategy><Fixed month="April" day="25" /></Strategy>
+  <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+</Rule>
+```
 
 ```csharp
-// National holiday established by legislation effective 2007
-NotableDateRule founderDay = new NotableDateRule
-{
-    Name            = "Founder's Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 10,
-    Day             = 3,
-    TerritoryCode   = "GH",
-    IsNonWorkingDay = true,
-    FirstYear       = 2007,
-};
-```
-
-### Rule active for a specific year range only
-
-```csharp
-// Special bank holiday for a platinum jubilee, year 2022 only
-NotableDateRule jubileeBankHoliday = new NotableDateRule
-{
-    Name            = "Platinum Jubilee Bank Holiday",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 6,
-    Day             = 3,
-    TerritoryCode   = "GB",
-    IsNonWorkingDay = true,
-    FirstYear       = 2022,
-    LastYear        = 2022,
-};
-```
-
-### Rule applying to specific years only (OccurrenceYears)
-
-Use `OccurrenceYears` when the applicable years are not a continuous range — for example,
-an event that occurred in 2002, 2012, 2022, and 2032:
-
-```csharp
-NotableDateRule diamondJubilee = new NotableDateRule
-{
-    Name             = "Diamond Jubilee Bank Holiday",
-    Strategy         = DateResolutionStrategy.Fixed,
-    Category         = NotableDateCategory.Holiday,
-    Month            = 6,
-    Day              = 5,
-    TerritoryCode    = "GB",
-    IsNonWorkingDay  = true,
-    OccurrenceYears  = ImmutableHashSet.Create(2002, 2012, 2022, 2032),
-};
-```
-
----
-
-## Priority and collision
-
-When two rules resolve to the same date in a given year, both appear in the result by
-default. The `DefaultNotableDateCollisionResolver` keeps all distinct entries, ordered by
-category then name. Supply a custom `INotableDateCollisionResolver` to change this.
-
-### ANZAC Day and Easter Monday coinciding
-
-In some years ANZAC Day (25 April, Australia) and Easter Monday fall on the same date. Both
-are independent rules with their own substitution logic. The default resolver keeps both:
-
-```
-25 Apr 2038 — ANZAC Day    (IsNonWorkingDay=true)
-25 Apr 2038 — Easter Monday (IsNonWorkingDay=true)
-```
-
-Both entries are returned by `GetNotableDates`. To keep only one, supply a
-`PriorityCollisionResolver` (see [Building and extending the service](building-the-service.md#inotabledatecollisionresolver)):
-
-```csharp
-// Rule with lower Priority value wins
-NotableDateRule anzacDay = new NotableDateRule
-{
-    Name     = "ANZAC Day",
-    Priority = 10,   // wins over default priority 100
-    // ...
-};
+IReadOnlyList<NotableDate> nsw2026 = service.Resolve(2026, "AU-NSW");   // includes the trial rule
+IReadOnlyList<NotableDate> nsw2030 = service.Resolve(2030, "AU-NSW");   // outside the window — excluded
 ```
 
 ---
 
 ## Where to go next
 
-- [NotableDateRule and ObservanceAdjustment reference](rule-reference.md) — field definitions for every property used above.
-- [Observance adjustment rules](adjustment-rules.md) — the full trigger and action catalogues.
-- [The resolution pipeline](resolution-pipeline.md) — how rules are processed to produce `NotableDate` results.
-- [Building and extending the service](building-the-service.md) — assembling a service with registries, override providers, and collision resolvers.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the element-by-element field reference for every fragment above.
+- [Observance adjustment rules](adjustment-rules.md) — the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
+- [Authoring notable date rules](rule-authoring.md) — assembling whole documents, importing the common catalogues, and overrides.
+- [Date calculation algorithms](algorithms.md) — the six strategies and the built-in `<Algorithm>` keys.
+- [Working with non-Gregorian calendars](non-gregorian-calendars.md) — fixed dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.

@@ -4,447 +4,241 @@ title: Authoring notable date rules
 
 # Authoring notable date rules
 
-`NotableDateService` resolves dates from one or more `INotableDateRuleProvider` sources. There are three ways to supply rules, and they can be combined freely in a single service instance:
+In v2 there is exactly one way to define a notable date: author a **rule document** on the cookbook schema (`urn:bodu:globalization:calendar`) as XML or JSON, then load it into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource> with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. There is no in-code rule-object model and no rule-provider interface — a rule is a `<Rule>` element, and a service is built over the loaded resource.
 
-| Approach | Best for |
-|---|---|
-| **In-code objects** | Tests, dynamic rules, generated rule sets. |
-| **XML resource files** | Large or versioned rule sets shared across assemblies. |
-| **Satellite assemblies** | Distributing rule sets as an independent NuGet package or selectively loading market-specific rules at runtime. |
+This guide walks the document model top to bottom: the `<NotableDateResource>` root and its child order, how a `<NotableDate>` concept carries one or more `<Rule>` recipes, the six `<Strategy>` elements, importing the bundled common catalogues with `<Imports>`, and ID-targeted edits with `<Overrides>`. For the vocabulary it assumes (document vs. resource, concept vs. rule, nominal vs. observed, territory containment) read [Core concepts](../../docs/calendar/concepts.md) first. For the per-element field reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md).
 
-![Rule authoring — three provider approaches](../../images/diagrams/calendar-rule-authoring.svg)
+![Rule authoring — authored document loaded into an immutable resource](../../images/diagrams/calendar-rule-authoring.svg)
 
 ---
 
-## Approach 1 — In-code rule objects
+## Document structure
 
-### Implementing INotableDateRuleProvider
+A document is a single `<NotableDateResource>` element. It declares the schema namespace, a `schemaVersion`, and a `resourceId`, and contains its child sections **in this order**:
 
-Implement the single-method `INotableDateRuleProvider` interface and return `NotableDateRule` instances from `LoadRules`:
+| Child element | Required | Purpose |
+|---|---|---|
+| `<Metadata>` | No | `Name`, `Description`, and zero or more `Source` provenance entries. |
+| `<ResolutionPolicy>` | No | Resource-level duplicate / collision / observed-date policy and the working week. |
+| `<AdjustmentPolicies>` | No | Reusable, named adjustment policies referenced by rules via `policyRef`. |
+| `<Imports>` | No | Pulls concepts in from the bundled common catalogues. |
+| `<NotableDates>` | No | The locally declared concepts (each with one or more rules). |
+| `<Overrides>` | No | ID-targeted `AddRule` / `PatchRule` / `RemoveRule` edits applied at load time. |
 
-```csharp
-using Bodu.Globalization.Calendar;
-
-public sealed class InMemoryRuleProvider : INotableDateRuleProvider
-{
-    private readonly IReadOnlyList<NotableDateRule> _rules;
-
-    public InMemoryRuleProvider(params NotableDateRule[] rules) =>
-        _rules = rules;
-
-    public IEnumerable<NotableDateRule> LoadRules() => _rules;
-}
-```
-
-### Authoring rules — Fixed date
-
-A fixed-date rule specifies a month and day. Add an `ObservanceAdjustment` to shift the date when it falls on a weekend:
-
-```csharp
-using System.Collections.Immutable;
-using Bodu.Globalization.Calendar;
-
-NotableDateRule australiaDay = new NotableDateRule
-{
-    Name            = "Australia Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 1,
-    Day             = 26,
-    TerritoryCode   = "AU",
-    IsNonWorkingDay = true,
-    Tags            = ImmutableHashSet.Create("NationalHoliday"),
-    Adjustments     = ImmutableArray.Create(new ObservanceAdjustment
-    {
-        Key    = "weekend-roll",
-        Trigger = AdjustmentTrigger.IfWeekend,
-        Action  = AdjustmentAction.MoveToNextWeekday,
-    }),
-};
-```
-
-### Authoring rules — Nth weekday of month
-
-Specify `DayOfWeek` and `WeekOrdinal` (from `Bodu.Extensions.WeekOfMonthOrdinal`):
-
-```csharp
-using Bodu.Extensions;
-using Bodu.Globalization.Calendar;
-
-// Third Monday in January (US Martin Luther King Jr. Day).
-NotableDateRule mlkDay = new NotableDateRule
-{
-    Name            = "Martin Luther King Jr. Day",
-    Strategy        = DateResolutionStrategy.DayOfWeekInMonth,
-    Category        = NotableDateCategory.Holiday,
-    Month           = 1,
-    DayOfWeek       = DayOfWeek.Monday,
-    WeekOrdinal     = WeekOfMonthOrdinal.Third,
-    TerritoryCode   = "US",
-    IsNonWorkingDay = true,
-    FirstYear       = 1986,
-};
-```
-
-### Authoring rules — Offset from an anchor
-
-An `OffsetFromAnchor` rule is resolved relative to another rule's date. The anchor must appear in the same provider or in a provider registered earlier in the list:
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-// Good Friday — 2 days before Easter Sunday.
-NotableDateRule goodFriday = new NotableDateRule
-{
-    Name            = "Good Friday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = -2,
-    IsNonWorkingDay = true,
-};
-
-// Easter Monday — 1 day after Easter Sunday.
-NotableDateRule easterMonday = new NotableDateRule
-{
-    Name            = "Easter Monday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = 1,
-    IsNonWorkingDay = true,
-};
-```
-
-### Authoring rules — Algorithm
-
-Algorithm rules delegate date calculation to a registered `INotableDateAlgorithm`. Supply the registry key and register the implementation when building `NotableDateService`:
-
-```csharp
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Algorithms;
-
-NotableDateRule easterSunday = new NotableDateRule
-{
-    Name            = "Easter Sunday",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Holiday,
-    AlgorithmKey    = "easter-sunday",
-    IsNonWorkingDay = true,
-};
-```
-
-### Wiring up a provider
-
-Pass the provider to `NotableDateService` via `ruleProviders`. Multiple providers can be combined; their rule sets are merged in order:
-
-```csharp
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Algorithms;
-
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday", new EasterSundayNotableDateAlgorithm());
-
-var provider = new InMemoryRuleProvider(easterSunday, goodFriday, easterMonday, australiaDay);
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
-```
-
----
-
-## Approach 2 — XML resource files
-
-XML resources are the recommended format for large or shared rule sets. The file is schema-validated, supports composition via `<UseFrom>` directives, and can be updated independently of code.
-
-### Document structure
-
-Every rule file must declare the `urn:bodu:globalization:calendar` namespace:
+A minimal document declares a single fixed-date concept:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <!-- UseFrom directives and NotableDate elements go here. -->
-
-</NotableDates>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="demo">
+  <NotableDates>
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="default">
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>
 ```
 
-### Declaring a rule — Fixed date
+`id` values follow the schema's identifier pattern — lowercase, digits, and hyphens (`new-years-day`, `good-friday`). `resourceId` additionally allows dots (`data.au`, `common.global-buddhist`).
 
-Each `<NotableDate>` element groups one or more `<Rule>` variants under a canonical name. Rules apply globally unless `territory` restricts them:
+---
+
+## Concepts and rules
+
+A `<NotableDate>` is one notable-date **concept** — an `id`, a `displayName`, a default `category`, and a `<Rules>` block of one or more `<Rule>` recipes. Optional concept-level attributes set defaults the rules inherit: `defaultNonWorkingDay` marks the concept as a closure, and `defaultDurationDays` gives multi-day events their span.
 
 ```xml
-<NotableDate name="Australia Day">
-  <Rule name="Fixed Australia Day With Weekend Roll"
-        category="Holiday"
-        territory="AU"
-        nonWorking="true"
-        comment="Substitute Monday observed when 26 January falls on a weekend.">
-    <Fixed month="January" day="26" />
-    <Tag>NationalHoliday</Tag>
-    <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-  </Rule>
+<NotableDate id="anzac-day" displayName="Anzac Day" category="Remembrance" defaultNonWorkingDay="true">
+  <Tags>
+    <Tag value="national" />
+  </Tags>
+  <Rules>
+    <Rule id="default">
+      <Strategy><Fixed month="April" day="25" /></Strategy>
+    </Rule>
+  </Rules>
 </NotableDate>
 ```
 
-**`<Rule>` attributes**
+A `<Rule>` is one calculation recipe. Its required `id` distinguishes it from its siblings under the same concept; the optional attributes (`priority`, `category`, `nonWorking`, `durationDays`, `comment`) override the concept defaults for that recipe. A rule contains, **in order**:
 
-| Attribute | Required | Description |
-|---|---|---|
-| `name` | Yes | Variant identifier within the notable date. Required when a notable date has multiple `<Rule>` elements. |
-| `category` | Yes | `Holiday`, `Observance`, `Remembrance`, `Cultural`, `Seasonal`, or `Other`. |
-| `territory` | No | ISO 3166-1 alpha-2 code or subdivision (e.g. `AU`, `AU-NSW`). Omit for global scope. |
-| `nonWorking` | No | `true` if this date is a non-working day. |
-| `firstYear` | No | Inclusive first year the rule applies. |
-| `lastYear` | No | Inclusive last year the rule applies. |
-| `durationDays` | No | Multi-day span (default: `1`). |
-| `priority` | No | Tie-break priority when multiple rules resolve to the same date (default: `100`). |
-| `comment` | No | Authoring annotation — not surfaced to consumers. |
-
-### Strategy elements
-
-Each `<Rule>` contains exactly one strategy element (see [Choosing a strategy](rule-reference.md#choosing-a-strategy) for which to pick):
-
-**`<Fixed>`** — fixed month and day:
+1. an optional `<Applicability>` (calendar, year bounds, territory scope);
+2. exactly one `<Strategy>` (the calculation);
+3. an optional `<Tags>` block;
+4. an optional `<Adjustments>` block of `policyRef` references.
 
 ```xml
-<Fixed month="December" day="25" />
-```
-
-For rules authored against a non-Gregorian calendar (`calendarType` set on the parent
-`<Rule>`), additional attributes control how the calendar's month/day projects to a
-Gregorian date — `sweepCalendarYears="true"` for Hijri, Umm al-Qura, Hebrew, and Persian;
-`skipLeapMonth="true"` for Chinese lunisolar. See
-[Working with non-Gregorian calendars](non-gregorian-calendars.md) for a per-calendar
-authoring checklist and worked examples.
-
-```xml
-<!-- Ramadan: 1 Ramadan in the Umm al-Qura calendar -->
-<Rule name="ramadan" calendarType="System.Globalization.UmAlQuraCalendar">
-  <Fixed month="9" day="1" sweepCalendarYears="true" />
+<Rule id="au" priority="100" comment="National; substitute Monday when 26 January falls on a weekend.">
+  <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+  <Strategy><Fixed month="January" day="26" /></Strategy>
+  <Tags><Tag value="national" /></Tags>
+  <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
 </Rule>
 ```
 
-**`<DayOfWeekInMonth>`** — nth occurrence of a weekday in a month:
+A concept holds several rules when the same date is observed differently across subdivisions or years — for example one Labour-Day rule per Australian state, each scoped to its subdivision and carrying its own `<Strategy>`. The engine resolves the most-specific rule that applies to the requested territory and year. See [NotableDateRule and adjustment-policy reference](rule-reference.md) for every attribute.
 
-```xml
-<!-- Third Monday in January -->
-<DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" />
-```
+---
 
-`weekOrdinal` accepts: `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`.
+## The six strategy elements
 
-**`<OffsetFromAnchor>`** — days relative to another rule's resolved date:
+Every rule carries exactly one `<Strategy>` child, and that child is exactly one of six elements. Each maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>:
 
-```xml
-<!-- Good Friday: 2 days before Easter Sunday -->
-<OffsetFromAnchor name="Easter Sunday" offset="-2" />
-```
-
-**`<WeekdayNearDate>`** — a weekday positioned relative to a fixed reference date; `direction` is `OnOrAfter`, `OnOrBefore`, or `Nearest`:
-
-```xml
-<!-- Midsummer Day: the Saturday on or after 20 June -->
-<WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
-
-<!-- Repentance Day: the Wednesday on or before 22 November -->
-<WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
-```
-
-**`<RelativeWeekdayInMonth>`** — a target weekday (`relativeDayOfWeek`) positioned, via `direction`, relative to an anchor that is the `weekOrdinal`-th `dayOfWeek` of the month:
-
-```xml
-<!-- US Election Day: the Tuesday on or after the first Monday in November -->
-<RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday"
-                        relativeDayOfWeek="Tuesday" direction="OnOrAfter" />
-```
-
-**`<Algorithm>`** — delegated to a registered algorithm; identified by key or assembly-qualified type name:
-
-```xml
-<Algorithm key="easter-sunday"
-           type="Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm, Bodu.Globalization.Calendar" />
-```
-
-### Adjustments and tags
-
-`<Adjustment>` elements shift the anchor date when a trigger condition fires. Multiple adjustments are evaluated in `priority` order (ascending):
-
-```xml
-<NotableDate name="Christmas Day">
-  <Rule name="Christmas Day With Substitute" category="Holiday" nonWorking="true">
-    <Fixed month="December" day="25" />
-    <Tag>Christian</Tag>
-    <!-- Move to the next working day when Christmas falls on a Saturday or Sunday. -->
-    <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
-  </Rule>
-</NotableDate>
-```
-
-**Common `when` / `action` values**
-
-| `when` | Fires when… |
+| `<Strategy>` element | What it computes |
 |---|---|
-| `IfWeekend` | The date falls on a weekend (per the configured `WorkingDaysOfWeek`). |
-| `IfWeekday` | The date falls on a weekday. |
-| `IfNonWorkingDay` | The date is already a non-working day (weekend or another notable date). |
-| `IfDayOfWeek` | The date falls on the weekday specified by an additional `dayOfWeek` attribute. |
-| `Always` | Unconditionally. |
+| `<Fixed>` | A specific month + day every year (e.g. 1 January), optionally in a non-Gregorian calendar. |
+| `<DayOfWeekInMonth>` | The *n*th or last weekday in a month (e.g. fourth Thursday in November). |
+| `<WeekdayNearDate>` | A weekday on / before / after / nearest a fixed reference date (e.g. the Monday on or before 24 May). |
+| `<RelativeWeekdayInMonth>` | A weekday positioned relative to a weekday-in-month anchor (e.g. the Tuesday after the first Monday in November). |
+| `<OffsetFromRule>` | A signed day-offset from another rule's occurrence (e.g. Easter Sunday − 2 = Good Friday). |
+| `<Algorithm>` | Delegated to a named algorithm key for astronomical / ecclesiastical dates (Easter, Vesak, Diwali, …). |
 
-| `action` | Effect |
-|---|---|
-| `MoveToNextWeekday` | Advance to the next weekday. |
-| `MoveToPreviousWeekday` | Retreat to the previous weekday. |
-| `MoveToNextWorkingDay` | Advance past all non-working days to the next working day. *(The legacy token `MoveToNextNonWorkingDay` is still accepted by the parsers as an alias.)* |
-| `AddDays` | Add a fixed `offset` in days (negative moves backwards). |
-
-### Composing rule sets with UseFrom
-
-`<UseFrom>` imports rules from another resource file. Imported rules must be explicitly opted in via `<UseAll>` (import everything) or individual `<Use>` directives (cherry-pick by name). This keeps composition intentional — adding a rule to a shared library does not cascade into consumers automatically.
-
-**`<UseAll>`** — opt in to every rule in the referenced file:
+A one-line example of each:
 
 ```xml
-<UseFrom resource="./global-core.xml">
-  <UseAll />
-</UseFrom>
+<Strategy><Fixed month="January" day="1" /></Strategy>
+<Strategy><DayOfWeekInMonth month="11" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy>
+<Strategy><WeekdayNearDate month="5" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy>
+<Strategy><RelativeWeekdayInMonth month="11" dayOfWeek="Monday" weekOrdinal="First"
+                                  relativeDayOfWeek="Tuesday" direction="After" /></Strategy>
+<Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy>
+<Strategy><Algorithm key="western-easter" /></Strategy>
 ```
 
-**`<Use>`** — cherry-pick a named rule and optionally apply overrides:
+`month` accepts either a number (`1`–`12`) or an English month name (`January`). `weekOrdinal` is a <xref:Bodu.Globalization.Calendar.WeekOrdinal> value (`First`…`Fifth`, `Last`); `direction` is a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`). For per-element attribute tables and worked examples see [NotableDateRule and adjustment-policy reference](rule-reference.md); for the `<Algorithm>` key catalogue and custom algorithms see [Date calculation algorithms](algorithms.md).
+
+---
+
+## Adjustment policies
+
+A weekend-substitution or "move-to-next-working-day" shift is authored once as a reusable `<AdjustmentPolicy>` in `<AdjustmentPolicies>`, then referenced from any rule via `<Adjustment policyRef="...">`. Adjustments are **always** referenced by id — there are no inline per-rule adjustment definitions.
 
 ```xml
-<UseFrom resource="./christian-gregorian.xml">
-  <!-- Adopt Easter Sunday as-is, scoped to AU. -->
-  <Use name="Easter Sunday" territory="AU" />
-
-  <!-- Adopt Good Friday as a non-working holiday for AU. -->
-  <Use name="Good Friday" territory="AU" nonWorking="true" />
-
-  <!-- Adopt Holy Saturday as "Easter Saturday" for AU. The override body targets the
-       inherited variant by ruleName and layers on an adjustment; category is omitted
-       because it is optional, so this is a partial override. -->
-  <Use name="Holy Saturday" as="Easter Saturday" territory="AU" nonWorking="true">
-    <Rule ruleName="Holy Saturday">
-      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
-    </Rule>
-  </Use>
-</UseFrom>
+<AdjustmentPolicies>
+  <AdjustmentPolicy id="weekend-roll" priority="100"
+                    description="If the holiday falls on a weekend, observe it on the following Monday.">
+    <Trigger type="IfWeekend" />
+    <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+    <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+  </AdjustmentPolicy>
+</AdjustmentPolicies>
 ```
 
-The `name` attribute on a `<Use>` directive is the **canonical** notable-date name being imported. The nested override `<Rule>` body targets a specific inherited **variant** by `ruleName` (the rule-level identifier); the legacy `name` attribute is still accepted as an alias. Both `ruleName` and `category` are optional, so an override body may apply a partial change — for example, only adjusting `priority` or appending an `<Adjustment>` — without re-declaring the strategy or category. When a flat scalar on `<Use>` and the same scalar on the nested `<Rule>` both appear, the innermost (nested `<Rule>`) value wins. To rename the imported rule locally, use the directive's `as` attribute rather than the body's `ruleName`.
-
-**`clearInherited="true"`** — drop all inherited rule variants and rebuild from the directive body alone. The replacement is seeded only with the canonical name (the same value the directive imports); its strategy and category are **not** inherited, so the body must declare them explicitly rather than relying on a partial override:
+A policy pairs a `<Trigger>` (when it fires) with an `<Action>` (what it does) and an `<Emission>` (whether the actual day, the observed day, or both are emitted), plus an optional `<Scope>` that limits it to a territory, calendar, category, or year range. A rule opts in by reference:
 
 ```xml
-<UseFrom resource="./christian-gregorian.xml">
-  <Use name="Christmas Day" territory="AU-NT" clearInherited="true">
-    <Rule ruleName="NT Christmas Day" category="Holiday" nonWorking="true">
-      <Fixed month="December" day="25" />
-      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </Use>
-</UseFrom>
+<Rule id="au">
+  <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+  <Strategy><Fixed month="January" day="26" /></Strategy>
+  <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+</Rule>
 ```
 
-**`clear="…"`** — reset specific inherited *nullable* fields back to their unset state. Without this, a `<Use>` override can only *set* a field; it cannot return an inherited non-null value to `null`. Supply a whitespace- or comma-separated list of field names. The clearable fields are `territory`, `calendarType`, `firstYear`, `lastYear`, `occurrenceYears`, `nonWorking`, and `comment`:
+The full trigger, action, emission, and scope vocabulary — and the worked weekend-substitution patterns for AU/NZ, the UK, and the US — are covered in [Observance adjustment rules](adjustment-rules.md) and [Holiday patterns and examples](holiday-patterns.md).
+
+---
+
+## Importing the common catalogues
+
+A regional document rarely starts from scratch. The base package ships a set of **common catalogues** — `global-core`, `christian-western`, `global-family`, `global-remembrance`, `global-cultural`, `global-buddhist`, `global-hindu`, and friends — that carry the bare calculation strategy for shared concepts. An `<Import>` pulls those concepts in; the local document supplies the territory scope, category, non-working flag, and any adjustment.
 
 ```xml
-<UseFrom resource="./global-core.xml">
-  <!-- Adopt a globally-scoped rule but drop the inherited firstYear/lastYear window
-       so it applies in every year for this consumer. -->
-  <Use name="International Workers' Day" clear="firstYear, lastYear" />
-</UseFrom>
+<Imports>
+  <Import resource="global-core">
+    <Use notableDateRef="new-years-day" territory="AU">
+      <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+    </Use>
+  </Import>
+
+  <Import resource="christian-western">
+    <Use notableDateRef="good-friday"   territory="AU" />
+    <Use notableDateRef="easter-sunday" territory="AU" />
+    <Use notableDateRef="easter-monday" territory="AU" />
+    <Use notableDateRef="christmas-day" territory="AU">
+      <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
+    </Use>
+  </Import>
+</Imports>
 ```
 
-Clearing is applied before the override body's own values are merged, so a field named in `clear` that is *also* set on the same directive ends up with the directive's value (the clear is superseded by the explicit set).
+Each `<Import resource="...">` names a catalogue. Inside it, a `<Use>` directive cherry-picks one concept by `notableDateRef` and may:
 
-`resource` paths use forward slashes. Relative paths resolve from the directory of the declaring file; absolute paths (starting with `/`) resolve from the root of the manifest resource namespace.
+- rename it locally with `as`,
+- re-scope it to a `territory`,
+- override the `category` or `nonWorking` flag,
+- attach adjustment policies via a nested `<Adjustments>` block.
 
-### Embedding as a resource
+An `<Import>` with **no** `<Use>` children imports every concept in the catalogue. When a local concept and an imported concept share an `id`, the **local** one wins. The catalogue names accepted by the resolver include `default-minimal`, `global-core`, `global-all`, `christian-western`, `christian-orthodox`, `global-islamic`, `global-hindu`, `global-jewish`, `global-buddhist`, `global-cultural`, `global-remembrance`, and the UN / health / science / education / environment / food / family / social families.
 
-Add the XML file as an `<EmbeddedResource>` item in the project file. The manifest resource name is derived by replacing path separators with dots:
+### Loading a document that imports
 
-```xml
-<ItemGroup>
-  <EmbeddedResource Include="Calendar\Resources\my-rules.xml" />
-</ItemGroup>
-```
-
-### Loading the provider
-
-Construct `XmlResourceNotableDateRuleProvider` with the logical path (forward-slash delimited) and a `ResourcePathResolver` to handle `<UseFrom>` path resolution:
+`<Imports>` are resolved by a `Func<string,string?>` passed to the loader. <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> exposes that resolver over the bundled catalogues — pass `CommonNotableDateResources.Resolver`:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-var provider = new XmlResourceNotableDateRuleProvider(
-    "MyApp/Calendar/Resources/my-rules.xml",
-    new ResourcePathResolver());
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+NotableDateResource resource =
+    NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
+NotableDateService service = new NotableDateService(resource);
 ```
 
-The logical path `"MyApp/Calendar/Resources/my-rules.xml"` is mapped to the manifest resource name `MyApp.Calendar.Resources.my-rules.xml`. Ensure the embedded resource path in the `.csproj` produces that manifest name (typically by placing the file under `MyApp/Calendar/Resources/` relative to the project root).
+A document with **no** `<Imports>` loads with the single-argument overload, `NotableDateResourceLoader.Load(xml)`. The companion `Bodu.Globalization.Calendar.Data.*` packs are built exactly this way — each region resource imports from the common catalogues and is loaded through the same resolver. See [Calendar data packs](data-packs.md).
 
 ---
 
-## XML vs. JSON parity
+## ID-targeted overrides
 
-`JsonResourceNotableDateRuleProvider` accepts the same document model as the XML provider — rule body, `use` directives, removals, override layering, and adjustments. The choice between formats is presentation-only; the same parser pipeline normalises both into `ParsedNotableDateDocument` before resolution. Mix the two freely in a single service — XML for one provider, JSON for another.
+`<Overrides>` are edits applied at load time, after imports are resolved, targeted by id. They let a regional document tweak an imported concept without forking it. Three operations are available:
 
-The mapping is straightforward:
-
-| XML | JSON |
-|---|---|
-| `<NotableDates>` root | `{ "notableDates": [ ... ] }` |
-| `<NotableDate name="…">` | object with `"name"` |
-| `<Rule …>` | object inside `"rules"` |
-| `<Fixed month="…" day="…" />` | `"fixed": { "month": "…", "day": … }` |
-| `<DayOfWeekInMonth month="…" dayOfWeek="…" weekOrdinal="…" />` | `"dayOfWeekInMonth": { "month": "…", "dayOfWeek": "…", "weekOrdinal": "…" }` |
-| `<OffsetFromAnchor name="…" offset="…" />` | `"offsetFromAnchor": { "name": "…", "offset": … }` |
-| `<WeekdayNearDate dayOfWeek="…" month="…" day="…" direction="…" />` | `"weekdayNearDate": { "dayOfWeek": "…", "month": "…", "day": …, "direction": "…" }` |
-| `<RelativeWeekdayInMonth month="…" weekOrdinal="…" dayOfWeek="…" relativeDayOfWeek="…" direction="…" />` | `"relativeWeekdayInMonth": { "month": "…", "weekOrdinal": "…", "dayOfWeek": "…", "relativeDayOfWeek": "…", "direction": "…" }` |
-| `<Algorithm key="…" />` | `"algorithm": { "key": "…" }` |
-| `<Tag>…</Tag>` | `"tags": [ "…" ]` |
-| `<Adjustment key="…" when="…" action="…" />` | object inside `"adjustments"` |
-| `<UseFrom resource="…">` + `<Use name="…" />` | `"useFrom": { "resource": "…", "uses": [ { "name": "…" } ] }` |
-
-### The same rule rendered in both formats
+- **`<AddRule notableDateRef="...">`** wraps a new `<Rule>` and appends it to an existing concept.
+- **`<PatchRule notableDateRef="..." ruleRef="...">`** replaces parts of an existing rule. The targeting attributes are required; scalar attributes (`priority`, `category`, `nonWorking`, `durationDays`, `comment`) patch in place, and a nested `<Applicability>`, `<Strategy>`, `<Tags>`, or `<Adjustments>` replaces that section wholesale.
+- **`<RemoveRule notableDateRef="..." ruleRef="..."/>`** deletes a single rule.
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<NotableDates xmlns="urn:bodu:globalization:calendar">
-  <NotableDate name="King's Birthday">
-    <Rule name="October Variant" category="Holiday" firstYear="2016">
-      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
-      <Tag>SourceOctober</Tag>
+<Overrides>
+  <!-- Suppress an imported rule for this consumer … -->
+  <RemoveRule notableDateRef="boxing-day" ruleRef="default" />
+
+  <!-- … bump another rule's priority and re-scope it … -->
+  <PatchRule notableDateRef="labour-day" ruleRef="default" priority="200">
+    <Applicability calendar="Gregorian"><Territory code="AU-VIC" /></Applicability>
+  </PatchRule>
+
+  <!-- … and add a company event to an existing concept. -->
+  <AddRule notableDateRef="company-founding-day">
+    <Rule id="hq">
+      <Applicability calendar="Gregorian"><Territory code="AU" /></Applicability>
+      <Strategy><Fixed month="June" day="15" /></Strategy>
     </Rule>
-  </NotableDate>
-</NotableDates>
+  </AddRule>
+</Overrides>
 ```
+
+Overrides run during loading and produce a normal immutable resource. *Runtime* change (swapping the rule set after the service is built) is a separate mechanism: load a new resource and hand it to a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, then resolve through a <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>. See [Using NotableDateService](notable-dates.md#pattern-8--swap-the-rule-set-at-runtime).
+
+---
+
+## Authoring in JSON
+
+JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>'s `LoadJson` overloads (`LoadJson(json)`, `LoadJson(json, resolver)`, `LoadJson(Stream)`). The element names map directly to JSON property names:
 
 ```json
 {
+  "schemaVersion": "1.0",
+  "resourceId": "demo",
   "notableDates": [
     {
-      "name": "King's Birthday",
+      "id": "new-years-day",
+      "displayName": "New Year's Day",
+      "category": "PublicHoliday",
+      "defaultNonWorkingDay": true,
       "rules": [
         {
-          "name": "October Variant",
-          "category": "Holiday",
-          "firstYear": 2016,
-          "dayOfWeekInMonth": {
-            "month": "October",
-            "dayOfWeek": "Monday",
-            "weekOrdinal": "First"
-          },
-          "tags": [ "SourceOctober" ]
+          "id": "default",
+          "strategy": { "fixed": { "month": "January", "day": 1 } }
         }
       ]
     }
@@ -452,157 +246,42 @@ The mapping is straightforward:
 }
 ```
 
-### Loading a JSON provider
-
-`JsonResourceNotableDateRuleProvider` mirrors the XML provider's constructors — supply a logical resource path, a `ResourcePathResolver`, and (optionally) an assembly chain:
-
 ```csharp
 using Bodu.Globalization.Calendar;
 
-var provider = new JsonResourceNotableDateRuleProvider(
-    "MyApp/Calendar/Resources/my-rules.json",
-    new ResourcePathResolver());
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+NotableDateResource resource = NotableDateResourceLoader.LoadJson(json, CommonNotableDateResources.Resolver);
 ```
-
-Embed the JSON file the same way as XML — `<EmbeddedResource Include="…" />` in the `.csproj` — and the logical-to-manifest mapping rules in [Embedding as a resource](#embedding-as-a-resource) apply unchanged. Cross-format `useFrom` directives work too: a JSON rule file can reference an XML resource and vice versa, as long as the resolver finds them.
 
 ---
 
-## Approach 3 — Companion data assemblies
+## Validation
 
-Embedding rule XML in a separate assembly keeps rules and application code independently versioned. This is useful for distributing a rule library, loading market-specific calendars on demand, or shrinking the main assembly. Bodu ships official region packs that follow exactly this shape — see [Calendar data packs](data-packs.md) for the prebuilt Americas, Europe, and Asia-Pacific assemblies.
-
-### Setting up the companion project
-
-Create a class library that contains only the embedded XML resources. The `<LogicalName>` override is what lets cross-assembly cherry-picks line up cleanly — pin each XML to the same logical path the consuming rule files expect:
-
-```xml
-<!-- MyApp.CalendarRules.csproj -->
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>MyApp.CalendarRules</AssemblyName>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\my-rules.xml">
-      <LogicalName>MyApp.CalendarRules.Resources.my-rules.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-apac.xml">
-      <LogicalName>MyApp.CalendarRules.Resources.region-apac.xml</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-</Project>
-```
-
-### Loading from a single companion assembly
-
-Pass the assembly as the third constructor argument. The logical path resolves relative to that assembly's manifest resource namespace:
-
-```csharp
-using System.Reflection;
-using Bodu.Globalization.Calendar;
-
-Assembly rulesAssembly = Assembly.Load("MyApp.CalendarRules");
-
-var provider = new XmlResourceNotableDateRuleProvider(
-    "MyApp/CalendarRules/Resources/my-rules.xml",
-    new ResourcePathResolver(),
-    assembly: rulesAssembly);
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
-```
-
-### Cross-assembly cherry-picks
-
-`XmlResourceNotableDateRuleProvider` accepts an ordered chain of assemblies. The provider walks the chain in order on each manifest lookup, so a `<UseFrom>` directive declared in one assembly can resolve its target from another:
-
-```csharp
-var provider = new XmlResourceNotableDateRuleProvider(
-    "MyApp/CalendarRules/Resources/region-apac.xml",
-    new ResourcePathResolver(),
-    new[] {
-        typeof(MyAppRules).Assembly,           // pack-local rules win first
-        typeof(NotableDateService).Assembly,   // global anchors fall back to the main library
-    });
-```
-
-This is the mechanism that lets the official `Bodu.Globalization.Calendar.Data.*` packs cherry-pick from the main library's `global-*.xml` and `christian-*.xml` files even though those files live in a different DLL. If your custom rules reference rules in another assembly, list every assembly in the chain rather than wiring up several providers.
-
----
-
-## Runtime overrides
-
-`INotableDateRuleOverrideProvider` layers additions and removals on top of the base rule set at runtime, without modifying the source XML or in-code providers. Override providers are evaluated after all base providers:
+Loading parses the document, resolves `<Imports>`, applies `<Overrides>`, assembles the concepts, and runs semantic validation. Any **error**-severity diagnostic throws a <xref:Bodu.Globalization.Calendar.NotableDateValidationException>; its `Diagnostics` collection carries every <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> ( `Severity`, `Code`, `Message`), so informational and warning diagnostics are visible even when the load succeeds:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
+try
 {
-    public IEnumerable<RuleRemoval> GetRemovals()
-    {
-        // Suppress Boxing Day for 2026 only.
-        yield return new RuleRemoval("Boxing Day", FromYear: 2026, ToYear: 2026);
-    }
-
-    public IEnumerable<NotableDateRule> GetAdditions()
-    {
-        yield return new NotableDateRule
-        {
-            Name            = "Company Founding Day",
-            Strategy        = DateResolutionStrategy.Fixed,
-            Category        = NotableDateCategory.Observance,
-            Month           = 6,
-            Day             = 15,
-            IsNonWorkingDay = true,
-        };
-    }
+    NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
+}
+catch (NotableDateValidationException ex)
+{
+    foreach (NotableDateValidationDiagnostic d in ex.Diagnostics)
+        Console.WriteLine($"{d.Severity} {d.Code}: {d.Message}");
 }
 ```
 
-Register override providers via the `overrideProviders` constructor parameter:
-
-```csharp
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions
-    {
-        OverrideProviders = new[] { new CompanyCalendarOverrides() },
-    });
-```
-
-After changing override state, call `Invalidate()` to clear the resolved cache:
-
-```csharp
-service.Invalidate();       // Clear all years.
-service.Invalidate(2026);   // Clear 2026 only.
-```
+Typical errors include a duplicate concept or rule id, an unknown adjustment `policyRef`, an unknown `<Algorithm>` key, an impossible fixed date, or a `fromYear` after `toYear`.
 
 ---
 
-## Choosing an approach
-
-| | In-Code | XML Files | Companion Assembly |
-|---|---|---|---|
-| Schema validation | Manual | Yes (XSD) | Yes (XSD) |
-| Versioning | With code | Independent | Independent |
-| Cherry-pick composition | Manual | `<UseFrom>` / `<Use>` | `<UseFrom>` / `<Use>` (across assembly chain) |
-| Runtime overhead | Minimal | Parse + cache on first use | Parse + cache on first use |
-| Suitable for large rule sets | Impractical | Yes | Yes |
-| Independent deployment | No | No | Yes |
-
-Use in-code objects for unit tests or small dynamic rule sets. Use XML resource files when authoring dozens or more rules within the same project. Use companion assemblies to distribute rule sets as a separate package or to load regional calendars on demand — and check whether one of the official [calendar data packs](data-packs.md) already covers your region before authoring your own.
-
 ## Where to go next
 
-- [Using NotableDateService](notable-dates.md) — filtering, territory queries, overrides, and caching.
-- [Date calculation algorithms](algorithms.md) — registering built-in algorithms and implementing custom ones.
+- [Using NotableDateService](notable-dates.md) — loading resources, querying by date / range / year, and filtering.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference for the document model.
+- [Date calculation algorithms](algorithms.md) — the six strategies, the built-in `<Algorithm>` keys, and custom algorithms.
+- [Observance adjustment rules](adjustment-rules.md) — the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
+- [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
+- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific resources, built from these same imports.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

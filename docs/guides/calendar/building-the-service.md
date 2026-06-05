@@ -4,716 +4,295 @@ title: Building and extending the service
 
 # Building and extending the service
 
-`NotableDateService` is assembled by composing a set of registries, providers, and
-extension-point implementations via its constructor. This page describes every constructor
-parameter, each registry and factory type, and all the extension interfaces — so you can
-wire up exactly the capabilities your application requires.
+A <xref:Bodu.Globalization.Calendar.NotableDateService> is built over a single immutable, already-validated <xref:Bodu.Globalization.Calendar.NotableDateResource>. The simplest construction takes just the resource; richer scenarios supply optional collaborators through the constructor's overloads. This page walks the constructor surface, the runtime-swap pair, code-first providers, display-name localization, and the trust-gated plugin system.
 
----
+For the vocabulary used below (resource vs. document, rule vs. resolved date, nominal vs. observed) see [Core concepts](../../docs/calendar/concepts.md).
 
-## NotableDateService constructor parameters
+## Constructing the service
 
-| Parameter | Type | Default | Purpose |
-|---|---|---|---|
-| `ruleProviders` | `IEnumerable<INotableDateRuleProvider>?` | `null` | Ordered list of rule providers. Rules are merged in registration order. When `null` or empty, the service loads the embedded minimal rule set (New Year's Day only). |
-| `workingDaysOfWeek` | `WorkingDaysOfWeek` | `MondayToFriday` | Defines the working week — and therefore which days are weekends. Affects `IsWeekend`, `IsNonWorkingDay`, `IfWeekend` trigger evaluation, and all working-day extension methods. An overload accepts a `WeekPattern` instead for irregular weeks. |
-| `overrideProviders` | `IEnumerable<INotableDateRuleOverrideProvider>?` | `null` | Override providers that add or remove rules on top of the base rule set without modifying the source XML. Evaluated after all base providers. |
-| `algorithmRegistry` | `INotableDateAlgorithmRegistry?` | `null` | Registry of `INotableDateAlgorithm` instances looked up by string key. Required when any rule uses `Strategy = DateResolutionStrategy.Algorithm`. |
-| `adjustmentHandlers` | `IAdjustmentHandlerRegistry?` | `null` | Registry of `IAdjustmentHandler` instances. Required when any adjustment uses `Trigger = Custom` or `Action = Custom`. |
-| `collisionResolver` | `INotableDateCollisionResolver?` | `null` | Resolves conflicts when multiple rules produce the same calendar date. Defaults to `DefaultNotableDateCollisionResolver`. |
-| `nameLocalizer` | `INotableDateNameLocalizer?` | `null` | Translates `NotableDate.DisplayName` for a given `CultureInfo`. When `null`, `DisplayName` falls back to `Name`. |
-| `plugins` | `IEnumerable<INotableDatePlugin>?` | `null` | External plugins loaded via `ExternalPluginLoader`. Each plugin can contribute additional rule providers and algorithm registrations. |
-
-### Minimal construction
+The base constructor takes the loaded resource:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-// Loads only the built-in minimal rule set (New Year's Day)
-var service = new NotableDateService();
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
+NotableDateService  service  = new NotableDateService(resource);
 ```
 
-### Typical construction with a data pack
+Behaviour that used to live in a service-options object is carried by the resource itself — its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). The constructor overloads add optional collaborators, in this fixed order:
+
+| Parameter | Type | Purpose |
+|---|---|---|
+| `resource` | `NotableDateResource` | The loaded, validated resource the service draws occurrences from. Required. |
+| `algorithms` | `INotableDateAlgorithmRegistry?` | A custom algorithm registry for `<Algorithm key="…">` rules. `null` uses the built-in keys only. |
+| `collisionResolver` | `INotableDateCollisionResolver?` | Consulted only when the resource's same-day collision policy is `CollisionPolicy.Custom`. |
+| `handlers` | `IAdjustmentHandlerRegistry?` | Consulted when an adjustment **action** is `AdjustmentAction.Custom`. |
+| `triggerHandlers` | `IAdjustmentTriggerHandlerRegistry?` | Consulted when an adjustment **trigger** is `AdjustmentTrigger.Custom`. |
+| `providers` | `IEnumerable<INotableDateProvider>?` | Code-first providers that contribute finished occurrences. |
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday", new EasterSundayNotableDateAlgorithm());
+// A custom algorithm backs a <Algorithm key="pi-day"> rule in the resource.
+var algorithms = new NotableDateAlgorithmRegistry()
+    .Register("pi-day", new PiDayAlgorithm());
 
-var provider = new XmlResourceNotableDateRuleProvider(
-    "MyApp/Calendar/Resources/holidays.xml",
-    new ResourcePathResolver());
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
+NotableDateService service = new NotableDateService(resource, algorithms);
 ```
 
-### Service options
-
-`NotableDateServiceOptions` carries the registries above plus two policy switches that shape
-resolution and authoring safety:
-
-| Option | Type | Default | Purpose |
-|---|---|---|---|
-| `ObservedDates` | `ObservedDateMode` | `ObservedOnly` | Whether the service emits the observed (adjusted) date, the actual (calculated) date, or both when an adjustment shifts a date. Applied consistently regardless of query-window width. See [Observed-date modes](identity-and-resolution.md#observed-date-modes). |
-| `ValidateRules` | `bool` | `false` | When `true`, the constructor runs the strict-validation pass and throws `InvalidOperationException` if any `Error`-severity diagnostics are produced, surfacing authoring mistakes eagerly. See [Validating a rule set](identity-and-resolution.md#validating-a-rule-set). |
+To supply a later collaborator while leaving an earlier one at its default, pass `null` for the ones you do not need:
 
 ```csharp
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions
-    {
-        AlgorithmRegistry = registry,
-        ObservedDates     = ObservedDateMode.ActualAndObserved,  // emit nominal *and* substitute
-        ValidateRules     = true,                                // fail fast on authoring errors
-    });
+NotableDateService service = new NotableDateService(
+    resource,
+    algorithms:        algorithms,
+    collisionResolver: null,                       // use the resource's policy as-authored
+    handlers:          customActions,
+    triggerHandlers:   null,
+    providers:         new[] { new CompanyEventsProvider() });
 ```
 
-To inspect diagnostics without throwing, call `service.Validate()`, which returns the
-`NotableDateValidationDiagnostic` list directly (the same pass `ValidateRules` runs at
-construction).
+### Custom algorithm registry
 
----
-
-## NotableDateAlgorithmRegistry
-
-`NotableDateAlgorithmRegistry` is a thread-safe, in-memory registry that maps string keys
-to `INotableDateAlgorithm` instances. It supports fluent chaining so all registrations can
-be expressed in a single expression.
-
-### Fluent API
+A <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> maps string keys to <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> instances and chains fluently. The same registry instance should be handed to the loader (so the document validates) and to the service (so resolution can look the key up):
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday",          new EasterSundayNotableDateAlgorithm())
-    .Register("orthodox-easter-sunday", new OrthodoxEasterSundayNotableDateAlgorithm())
-    .Register("qingming",               new QingmingNotableDateAlgorithm())
-    .Register("vesak",                  new VesakNotableDateAlgorithm())
-    .Register("losar",                  new LosarNotableDateAlgorithm())
-    .Register("asalha-puja",            new AsalhaPujaNotableDateAlgorithm());
-```
-
-### Key vs type lookup
-
-Rules reference algorithms in two ways:
-
-- **`AlgorithmKey`** — a plain string key registered via `Register`. Preferred. Case-insensitive.
-- **`AlgorithmType`** — an assembly-qualified type name. Used as a fallback when `AlgorithmKey`
-  is not present in the registry. The type is activated via reflection; the type must have a
-  public parameterless constructor.
-
-Prefer key-based lookup: it decouples the rule document from assembly names and makes the
-registry the single point of registration.
-
-### Checking registration
-
-```csharp
-if (registry.Contains("easter-sunday"))
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
 {
-    // Safe to use rules that reference this key
+    public DateOnly? Calculate(int year) => new DateOnly(year, 3, 14);
 }
+
+var registry = new NotableDateAlgorithmRegistry()
+    .Register("pi-day", new PiDayAlgorithm());
+
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);
+NotableDateService  service  = new NotableDateService(resource, registry);
 ```
 
-### Implementing INotableDateAlgorithm
+Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) need no registration. See [Date calculation algorithms](algorithms.md).
+
+### Custom collision resolver
+
+When the resource declares `<ResolutionPolicy sameDayCollisionPolicy="Custom">`, the service delegates same-day reconciliation to your <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver>. It receives the day and the colliding occurrences and returns the set to keep:
 
 ```csharp
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.RangeResolution;
 
-// Second Sunday in May — Mother's Day
-public sealed class MothersDayAlgorithm : INotableDateAlgorithm
+public sealed class HighestPriorityResolver : INotableDateCollisionResolver
 {
-    public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
+    public IReadOnlyList<NotableDate> Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)
     {
-        DateTime firstOfMay = new DateTime(year, 5, 1);
-        int daysToSunday = ((int)DayOfWeek.Sunday - (int)firstOfMay.DayOfWeek + 7) % 7;
-        return firstOfMay.AddDays(daysToSunday + 7); // second Sunday
-    }
-}
-```
+        if (colliding.Count <= 1)
+            return colliding;
 
-Register and wire to a rule:
-
-```csharp
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("mothers-day", new MothersDayAlgorithm());
-
-NotableDateRule mothersDay = new NotableDateRule
-{
-    Name         = "Mother's Day",
-    Strategy     = DateResolutionStrategy.Algorithm,
-    Category     = NotableDateCategory.Observance,
-    AlgorithmKey = "mothers-day",
-};
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { new InMemoryRuleProvider(mothersDay) },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
-```
-
----
-
-## AdjustmentHandlerRegistry
-
-`AdjustmentHandlerRegistry` is a thread-safe registry that maps string keys to
-`IAdjustmentHandler` instances. It follows the same fluent pattern as
-`NotableDateAlgorithmRegistry`.
-
-### Fluent API
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
-    .Register("corporate-closure",   new CorporateClosureHandler())
-    .Register("next-working-day",    new NextWorkingDayHandler());
-
-var service = new NotableDateService(
-    ruleProviders:      new[] { provider },
-    workingDaysOfWeek:  WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
-```
-
-### IAdjustmentHandler contract
-
-```csharp
-public interface IAdjustmentHandler
-{
-    AdjustmentHandlerResult Apply(AdjustmentHandlerContext context);
-}
-```
-
-`AdjustmentHandlerContext` provides:
-
-| Property | Type | Description |
-|---|---|---|
-| `CurrentDate` | `DateTime` | The current anchor date (before this adjustment). |
-| `Rule` | `NotableDateRule` | The rule being resolved. |
-| `Adjustment` | `ObservanceAdjustment` | The adjustment being evaluated. |
-| `TerritoryCode` | `TerritoryCode?` | The territory the rule is being resolved for. |
-| `Year` | `int` | The year being resolved. |
-| `Parameters` | `IReadOnlyDictionary<string,string>` | Contents of `ObservanceAdjustment.HandlerParameters`. |
-| `GenerationContext` | `NotableDateGenerationContext` | Access to `IsNonWorkingDay(date, territory)` and `ResolveByName(ruleName)` for working-day and cross-rule dependencies. |
-
-`AdjustmentHandlerResult` factory methods:
-
-```csharp
-// Handler handled the adjustment; return the adjusted date
-AdjustmentHandlerResult.Handled(DateTime adjustedDate)
-
-// Handler declines; the next adjustment in the chain is evaluated
-AdjustmentHandlerResult.NotHandled()
-```
-
-### Example handler
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-public sealed class NextWorkingDayHandler : IAdjustmentHandler
-{
-    public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context)
-    {
-        DateTime candidate = context.CurrentDate.AddDays(1);
-
-        for (int i = 0; i < 7; i++)
-        {
-            if (!context.GenerationContext.IsNonWorkingDay(candidate, context.TerritoryCode))
-                return AdjustmentHandlerResult.Handled(candidate);
-
-            candidate = candidate.AddDays(1);
-        }
-
-        return AdjustmentHandlerResult.NotHandled();
-    }
-}
-```
-
-Wire to an adjustment:
-
-```csharp
-new ObservanceAdjustment
-{
-    Key        = "shift-to-next-working-day",
-    Trigger    = AdjustmentTrigger.IfNonWorkingDay,
-    Action     = AdjustmentAction.Custom,
-    HandlerKey = "next-working-day",
-}
-```
-
----
-
-## NotableDateFilter — factory methods and composition
-
-`NotableDateFilter` is a composable two-stage predicate. See [The resolution pipeline — Stage 8](resolution-pipeline.md#stage-8--filter-gate-filtered-queries-only) for an explanation of rule-level and date-level gates.
-
-### Factory method reference
-
-| Factory method | Gate | Description |
-|---|---|---|
-| `ForCategory(category)` | Rule-level | Matches rules whose `Category` equals the given value. |
-| `ForAnyCategory(categories)` | Rule-level | Matches rules whose `Category` is in the provided set. |
-| `WithTag(tag)` | Rule-level | Matches rules whose `Tags` contains the given tag. |
-| `WithAnyTag(tags)` | Rule-level | Matches rules whose `Tags` contains at least one of the given tags. |
-| `WithAllTags(tags)` | Rule-level | Matches rules whose `Tags` contains all of the given tags. |
-| `WithName(name)` | Rule-level | Matches rules whose `Name` equals the given value (case-insensitive). |
-| `WithAnyName(names)` | Rule-level | Matches rules whose `Name` is in the provided set. |
-| `IsNonWorkingDay()` | Rule-level | Matches rules where `IsNonWorkingDay = true`. |
-| `InDateRange(start, end)` | Date-level | Matches resolved dates within the inclusive range. |
-| `WasAdjusted()` | Date-level | Matches dates where `WasAdjusted = true`. |
-| `WithMinDuration(days)` | Date-level | Matches dates where `DurationDays >= days`. |
-
-### Composition
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-// And: both predicates must match
-NotableDateFilter nonWorkingHolidays = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
-    .And(NotableDateFilter.IsNonWorkingDay());
-
-// Or: either predicate matches
-NotableDateFilter holidayOrObservance = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
-    .Or(NotableDateFilter.ForCategory(NotableDateCategory.Observance));
-
-// AllOf: equivalent to chained And
-NotableDateFilter federalNonWorking = NotableDateFilter.AllOf(
-    NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
-    NotableDateFilter.IsNonWorkingDay(),
-    NotableDateFilter.WithTag("Federal"));
-
-// AnyOf: equivalent to chained Or
-NotableDateFilter anyReligious = NotableDateFilter.AnyOf(
-    NotableDateFilter.WithTag("Christian"),
-    NotableDateFilter.WithTag("Jewish"),
-    NotableDateFilter.WithTag("Muslim"));
-
-// Combined rule-level and date-level
-NotableDateFilter easterWeek2026 = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
-    .And(NotableDateFilter.InDateRange(
-        new DateTime(2026, 3, 30),
-        new DateTime(2026, 4, 7)));
-```
-
-### Using a filter
-
-```csharp
-IReadOnlyList<NotableDate> results = service.GetNotableDates(
-    year:          2026,
-    filter:        nonWorkingHolidays,
-    territoryCode: "GB");
-```
-
----
-
-## INotableDateRuleOverrideProvider
-
-Override providers layer additions and removals on top of the base rule set at runtime.
-Implement `INotableDateRuleOverrideProvider` and pass instances via `overrideProviders`.
-
-### Interface
-
-```csharp
-public interface INotableDateRuleOverrideProvider
-{
-    IEnumerable<RuleRemoval> GetRemovals();
-    IEnumerable<NotableDateRule> GetAdditions();
-}
-```
-
-`RuleRemoval` identifies a rule by name with optional year bounds:
-
-```csharp
-// Remove "Boxing Day" for 2026 only
-new RuleRemoval("Boxing Day", FromYear: 2026, ToYear: 2026)
-
-// Remove "Temporary Holiday" for all years
-new RuleRemoval("Temporary Holiday")
-```
-
-### Example
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
-{
-    public IEnumerable<RuleRemoval> GetRemovals()
-    {
-        // Suppress Boxing Day for the company calendar in 2026
-        yield return new RuleRemoval("Boxing Day", FromYear: 2026, ToYear: 2026);
-    }
-
-    public IEnumerable<NotableDateRule> GetAdditions()
-    {
-        // Add a company-specific non-working day
-        yield return new NotableDateRule
-        {
-            Name            = "Company Founding Day",
-            Strategy        = DateResolutionStrategy.Fixed,
-            Category        = NotableDateCategory.Observance,
-            Month           = 6,
-            Day             = 15,
-            IsNonWorkingDay = true,
-        };
-    }
-}
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { baseProvider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions
-    {
-        OverrideProviders = new[] { new CompanyCalendarOverrides() },
-    });
-```
-
-### Cache invalidation and reload
-
-The service maintains two distinct caches:
-
-- The **per-year resolved-date cache** — cleared by `Invalidate()` (all years) or `Invalidate(int year)` (one year). Use these after a configuration change that does not alter the rule set itself (for example, switching the active culture if you also use a localizer that varies output by year).
-- The **effective rule set** — built once at construction from every registered base provider and override provider, and cached on the service. Use `Reload()` to re-query every registered <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, rebuild the merged rule set, and clear the per-year cache in one call.
-
-```csharp
-// Per-year cache only:
-service.Invalidate();       // clear all years
-service.Invalidate(2026);   // clear one year only
-
-// Effective rule set + per-year cache:
-service.Reload();           // re-snapshot overrides, rebuild merged rules, drop cached years
-```
-
-Base <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider> sources are *not* re-queried by `Reload()` — they are considered load-time inputs. If you need to swap a base provider you must construct a new service.
-
-### MutableNotableDateRuleOverrideProvider — runtime add / remove
-
-If your application needs to add or remove notable-date rules after the service is alive — for example, a one-off "company closed for stocktake" entry, or rules authored through a CMS — use <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider>. It is a thread-safe `INotableDateRuleOverrideProvider` with mutation methods and a `Changed` event:
-
-```csharp
-var overrides = new MutableNotableDateRuleOverrideProvider();
-
-var service = new NotableDateService(
-    ruleProviders:    new[] { baseProvider },
-    workingWeek:      WeekPattern.MondayToFriday,
-    options:          new NotableDateServiceOptions { OverrideProviders = new[] { overrides } });
-
-// Wire the auto-reload so mutations take effect on the next query:
-overrides.Changed += (_, _) => service.Reload();
-
-overrides.AddRule(new NotableDateRule
-{
-    Name            = "Stocktake Day",
-    Strategy        = DateResolutionStrategy.Fixed,
-    Category        = NotableDateCategory.Observance,
-    Month           = 6,
-    Day             = 30,
-    IsNonWorkingDay = true,
-});
-
-overrides.RemoveRule(name: "Boxing Day", fromYear: 2026, toYear: 2026);
-overrides.Clear();   // drop every authored addition and removal
-```
-
-`AddRule` / `RemoveRule` / `Clear` each raise `Changed` exactly once. The `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `Changed` to `Reload()` automatically when the mutable provider is registered through its builder (see [Calendar dependency injection](dependency-injection.md)).
-
-### Enumerating supported territories and calendars
-
-The service exposes two discovery methods so consumers can introspect the loaded rule set without having to know the territory / calendar codes up front:
-
-```csharp
-IReadOnlyCollection<string> territories = service.GetSupportedTerritories();
-IReadOnlyCollection<Type>   calendars   = service.GetSupportedCalendars();
-
-foreach (string code in territories)
-{
-    Console.WriteLine($"{code}: {service.GetNotableDates(2026, code).Count} dates in 2026");
-}
-```
-
-Both methods project over the *effective* rule set and refresh after `Reload()`. Rules without an explicit `TerritoryCode` (global rules) contribute no entry; territory codes are deduplicated case-insensitively. The collections are typical inputs for UI pickers and for sanity-checking that a deployed data pack is actually loaded.
-
----
-
-## INotableDateNameLocalizer
-
-`INotableDateNameLocalizer` translates `NotableDate.DisplayName` for a given `CultureInfo`.
-When registered, `DisplayName` returns the localised name instead of the canonical English
-`Name`.
-
-### Interface
-
-```csharp
-public interface INotableDateNameLocalizer
-{
-    string GetDisplayName(NotableDate notableDate, CultureInfo? culture);
-}
-```
-
-### Example — resource-file-based localiser
-
-```csharp
-using System.Globalization;
-using System.Resources;
-using Bodu.Globalization.Calendar;
-
-public sealed class ResourceFileNameLocalizer : INotableDateNameLocalizer
-{
-    private readonly ResourceManager _resources;
-
-    public ResourceFileNameLocalizer(ResourceManager resources) =>
-        _resources = resources;
-
-    public string GetDisplayName(NotableDate notableDate, CultureInfo? culture)
-    {
-        string? localised = _resources.GetString(notableDate.Name, culture);
-        return localised ?? notableDate.Name;
-    }
-}
-
-var localizer = new ResourceFileNameLocalizer(
-    new ResourceManager("MyApp.Resources.HolidayNames", typeof(Program).Assembly));
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { NameLocalizer = localizer });
-```
-
-When a caller requests `NotableDate.DisplayName`, the service invokes
-`GetDisplayName(date, Thread.CurrentThread.CurrentUICulture)` and returns the result. If the
-localiser returns `null` or throws, `DisplayName` falls back to `Name`.
-
----
-
-## INotableDateCollisionResolver
-
-`INotableDateCollisionResolver` is called when two or more rules resolve to the same
-calendar day. The resolver receives a `NotableDateCollisionContext` describing the day, the
-overlapping occurrences, and their provenance, and returns the list to include in the output.
-
-### Interface
-
-```csharp
-public interface INotableDateCollisionResolver
-{
-    IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context);
-}
-```
-
-`NotableDateCollisionContext` exposes:
-
-| Member | Type | Description |
-|---|---|---|
-| `Day` | `DateTime` | The shared calendar day (time-of-day truncated). |
-| `Overlapping` | `IReadOnlyList<NotableDate>` | The notable dates that cover `Day`. |
-| `Provenances` | `IReadOnlyList<NotableDateProvenance>` | Parallel to `Overlapping` — where each occurrence came from (`Imported`, `Local`, or `RuntimeOverride`). |
-
-### Default behaviour
-
-`DefaultNotableDateCollisionResolver` removes exact duplicates and preserves all distinct
-entries, ordered by **provenance** (strongest first), then ascending `NotableDate.Priority`
-(lower wins), then `Category`, then `Name`. Both entries are returned when two unrelated
-holidays land on the same date — hosts that want a single winner take `Overlapping[0]` after
-resolution. See [Priority and same-day collisions](identity-and-resolution.md#priority-and-same-day-collisions)
-for the full precedence ladder.
-
-### Example — keep highest-priority entry only
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-public sealed class HighestPriorityCollisionResolver : INotableDateCollisionResolver
-{
-    public IReadOnlyList<NotableDate> Resolve(NotableDateCollisionContext context)
-    {
-        if (context.Overlapping.Count <= 1)
-            return context.Overlapping;
-
-        // Lower Priority number = higher precedence
-        NotableDate winner = context.Overlapping
-            .OrderBy(d => d.Priority)
-            .ThenBy(d => (int)d.Category)
-            .ThenBy(d => d.Name, StringComparer.Ordinal)
-            .First();
-
+        NotableDate winner = colliding.OrderByDescending(d => d.Priority).First();
         return new[] { winner };
     }
 }
 
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { CollisionResolver = new HighestPriorityCollisionResolver() });
+NotableDateService service = new NotableDateService(resource, algorithms: null, collisionResolver: new HighestPriorityResolver());
 ```
 
----
+The built-in policies (`KeepAll`, `HighestPriorityOnly`, `CategoryPriority`) cover most needs and require no resolver; reach for `Custom` only for bespoke precedence. See [Identity and resolution](identity-and-resolution.md).
 
-## Plugin system
+### Custom adjustment handlers
 
-The plugin system allows external assemblies to contribute rule providers and algorithm
-registrations without modifying the consuming application. Plugins are loaded via
-`ExternalPluginLoader` with a configurable trust policy.
-
-### Plugin interfaces
-
-A plugin assembly must declare the `[NotableDatePlugin]` assembly attribute pointing to its
-plugin class. The class implements one or both plugin interfaces:
+Adjustment policies normally use built-in triggers and actions. When a policy declares `<Trigger type="Custom" handlerKey="…">` or `<Action type="Custom" handlerKey="…">`, the service looks the key up in the handler registries you pass:
 
 ```csharp
-// Contributes additional rule providers
-public interface INotableDateRulePlugin : INotableDatePlugin
+using Bodu.Globalization.Calendar;
+
+var actions = new AdjustmentHandlerRegistry()
+    .Register("skip-to-payday", new SkipToPaydayHandler());
+
+var triggers = new AdjustmentTriggerHandlerRegistry()
+    .Register("if-school-term", new IfSchoolTermTrigger());
+
+NotableDateService service = new NotableDateService(
+    resource, algorithms: null, collisionResolver: null, handlers: actions, triggerHandlers: triggers);
+```
+
+An <xref:Bodu.Globalization.Calendar.IAdjustmentHandler> implements `DateOnly? Adjust(AdjustmentHandlerContext)`; an <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> implements `bool ShouldAdjust(AdjustmentTriggerContext)`. See [Observance adjustment rules](adjustment-rules.md) for the trigger / action catalogues and the context members.
+
+## Code-first providers
+
+When a source cannot be expressed as an authored rule — occurrences pulled from a database, an HR system, or computed by bespoke logic — implement <xref:Bodu.Globalization.Calendar.INotableDateProvider> and register it through the `providers` parameter. A provider returns finished <xref:Bodu.Globalization.Calendar.NotableDate> occurrences for a requested range and territory:
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+public sealed class CompanyEventsProvider : INotableDateProvider
 {
-    IEnumerable<INotableDateRuleProvider> GetRuleProviders();
-}
-
-// Contributes named algorithm registrations
-public interface INotableDateAlgorithmPlugin : INotableDatePlugin
-{
-    IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms();
-}
-```
-
-Both interfaces extend `INotableDatePlugin`:
-
-```csharp
-public interface INotableDatePlugin
-{
-    string Name    { get; }
-    Version Version { get; }
-}
-```
-
-### Loading a plugin
-
-```csharp
-using Bodu.Globalization.Calendar.Plugins;
-
-// Allow all plugins (development or trusted environment only)
-IPluginTrustPolicy trust = new AllowAllPluginTrustPolicy();
-
-ExternalPluginLoader loader = new ExternalPluginLoader(trust);
-INotableDatePlugin plugin = loader.Load("/path/to/MyCalendarPlugin.dll");
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { baseProvider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
-```
-
-### Trust policies
-
-| Policy class | Behaviour |
-|---|---|
-| `AllowAllPluginTrustPolicy` | Trusts every plugin unconditionally. Suitable only for development environments. |
-| `FileHashPluginTrustPolicy` | Allowlist by SHA-256 file hash. Rejects assemblies whose hash is not in the allowlist. |
-| `StrongNamePluginTrustPolicy` | Allowlist by strong name (public key token + assembly name). |
-| `CompositePluginTrustPolicy` | Combines multiple policies with configurable AND / OR semantics. |
-| `DelegatingPluginTrustPolicy` | Wraps a custom `Func<PluginTrustContext, PluginTrustResult>` delegate. |
-
-```csharp
-using Bodu.Globalization.Calendar.Plugins;
-
-// Only allow plugins signed with a specific key token
-IPluginTrustPolicy policy = new StrongNamePluginTrustPolicy(
-    allowedPublicKeyTokens: new[] { "aabbccddeeff0011" });
-
-// Or combine policies: must pass both hash check AND strong-name check
-IPluginTrustPolicy combined = new CompositePluginTrustPolicy(
-    mode:     CompositePluginTrustMode.All,
-    policies: new IPluginTrustPolicy[]
+    public IEnumerable<NotableDate> GetNotableDates(DateRange range, string territory)
     {
-        new FileHashPluginTrustPolicy(allowedHashes: new[] { "sha256:abc123..." }),
-        new StrongNamePluginTrustPolicy(allowedPublicKeyTokens: new[] { "aabbccddeeff0011" }),
-    });
+        var foundingDay = new DateOnly(range.StartDate.Year, 6, 15);
+        if (range.StartDate <= foundingDay && foundingDay <= range.EndDate)
+            yield return new NotableDate(
+                Date:        foundingDay,
+                ActualDate:  foundingDay,
+                IsObserved:  false,
+                Identity:    new NotableDateRuleIdentity("company-events", "company-founding-day", "default"),
+                DisplayName: "Company Founding Day",
+                TerritoryCode: territory,
+                Category:    NotableDateCategory.Civic,
+                Priority:    0,
+                DurationDays: 1,
+                IsNonWorkingDay: true,
+                Tags:        Array.Empty<string>(),
+                AdjustmentPolicyId: null,
+                AdjustmentReason:   null);
+    }
+}
+
+NotableDateService service = new NotableDateService(
+    resource, algorithms: null, collisionResolver: null, handlers: null, triggerHandlers: null,
+    providers: new[] { new CompanyEventsProvider() });
 ```
 
-Each plugin is loaded into its own `AssemblyLoadContext` for isolation. Untrusted plugins
-throw `PluginNotTrustedException`. Plugins that lack the `[NotableDatePlugin]` assembly
-attribute throw `PluginMissingAttributeException`.
+Provider occurrences are *terminal*: the service intersects them with the requested range and applies any query filter, but they do **not** pass through adjustment policies or declarative overrides — a provider that needs an observed-date shift must compute it itself. They do take part in the final ordering and the resource's same-day collision policy alongside resource occurrences.
 
----
+## Swapping the rule set at runtime
 
-## Putting it all together
+A resource is immutable, so a *live* change means loading a new resource and swapping it in. Build the service over a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> via <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>; the reloadable service rereads the provider's `Current` on each query:
 
-The following example assembles a service with two rule providers, a weekend definition, a
-full algorithm registry, a custom adjustment handler, an override provider, a name
-localiser, and a custom collision resolver:
+```csharp
+using Bodu.Globalization.Calendar;
+
+var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
+INotableDateService service = new ReloadableNotableDateService(provider);
+
+// later, when the rules change — the live service picks it up atomically on the next query:
+provider.Reload(NotableDateResourceLoader.Load(updatedXml, CommonNotableDateResources.Resolver));
+```
+
+`ReloadableNotableDateService` accepts the same optional collaborators as `NotableDateService` (custom algorithm registry, collision resolver, adjustment-handler registries) after the provider argument. The pairing is what the DI companion's `AddReloadableNotableDateService` registers for you — see [Calendar dependency injection](dependency-injection.md).
+
+## Localizing display names
+
+Resolution stays culture-agnostic: each <xref:Bodu.Globalization.Calendar.NotableDate> carries the invariant `DisplayName` authored in the resource. To present culture-specific names, implement <xref:Bodu.Globalization.Calendar.INotableDateNameLocalizer> and apply it to resolved occurrences with the `Localize` extensions on <xref:Bodu.Globalization.Calendar.NotableDateLocalizationExtensions>:
 
 ```csharp
 using System.Globalization;
 using System.Resources;
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Algorithms;
 
-// 1. Algorithm registry
-NotableDateAlgorithmRegistry algorithms = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday",          new EasterSundayNotableDateAlgorithm())
-    .Register("orthodox-easter-sunday", new OrthodoxEasterSundayNotableDateAlgorithm())
-    .Register("qingming",               new QingmingNotableDateAlgorithm())
-    .Register("vesak",                  new VesakNotableDateAlgorithm())
-    .Register("mothers-day",            new MothersDayAlgorithm());
+public sealed class ResxNameLocalizer : INotableDateNameLocalizer
+{
+    private readonly ResourceManager _resources;
 
-// 2. Custom adjustment handler registry
-AdjustmentHandlerRegistry adjustmentHandlers = new AdjustmentHandlerRegistry()
-    .Register("next-working-day", new NextWorkingDayHandler());
+    public ResxNameLocalizer(ResourceManager resources) =>
+        _resources = resources;
 
-// 3. Rule providers — base rules then region-specific pack
-XmlResourceNotableDateRuleProvider globalRules = new XmlResourceNotableDateRuleProvider(
-    "MyApp/Calendar/Resources/global-core.xml",
-    new ResourcePathResolver());
+    // Return null to fall back to the occurrence's existing display name.
+    public string? GetDisplayName(NotableDate notableDate, CultureInfo culture) =>
+        _resources.GetString(notableDate.NotableDateId, culture);
+}
 
-XmlResourceNotableDateRuleProvider apacRules = new XmlResourceNotableDateRuleProvider(
-    "MyApp/Calendar/Resources/apac-holidays.xml",
-    new ResourcePathResolver());
-
-// 4. Runtime overrides
-CompanyCalendarOverrides overrides = new CompanyCalendarOverrides();
-
-// 5. Name localiser (optional)
-ResourceFileNameLocalizer localizer = new ResourceFileNameLocalizer(
+var localizer = new ResxNameLocalizer(
     new ResourceManager("MyApp.Resources.HolidayNames", typeof(Program).Assembly));
 
-// 6. Collision resolver (optional — replace default)
-HighestPriorityCollisionResolver collisionResolver = new HighestPriorityCollisionResolver();
-
-// 7. Assemble the service
-NotableDateService service = new NotableDateService(
-    ruleProviders:     new[] { globalRules, apacRules },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions
-    {
-        OverrideProviders  = new[] { overrides },
-        AlgorithmRegistry  = algorithms,
-        AdjustmentHandlers = adjustmentHandlers,
-        CollisionResolver  = collisionResolver,
-        NameLocalizer      = localizer,
-    });
-
-// 8. Query
-IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, "AU");
-
-foreach (NotableDate date in dates)
-    Console.WriteLine($"{date.Date:d MMM yyyy}  {date.DisplayName}");
+IReadOnlyList<NotableDate> dates = service
+    .Resolve(2026, "FR")
+    .Localize(localizer, CultureInfo.GetCultureInfo("fr-FR"));   // display names now French
 ```
 
----
+`Localize` returns a copy with the localized `DisplayName` (or the original occurrence when the localizer returns `null`), so the localization step is opt-in and never mutates resolution output. A single-occurrence overload (`notableDate.Localize(localizer, culture)`) is also available.
+
+## Plugin system
+
+The optional `Bodu.Globalization.Calendar.Plugins` package loads **external assemblies** that contribute custom date-calculation algorithms, behind an explicit, **deny-by-default** trust gate. A plugin assembly advertises itself with an assembly-level attribute; the host evaluates it against a trust policy *before* any plugin type is activated, then registers the plugin's algorithms into a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> for use by `<Algorithm key="…">` rules.
+
+### Authoring a plugin
+
+A plugin implements <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> and is named by an assembly-level <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute>:
+
+```csharp
+using Bodu.Globalization.Calendar.Algorithms;
+using Bodu.Globalization.Calendar.Plugins;
+
+[assembly: NotableDatePlugin(typeof(Contoso.Holidays.ContosoPlugin))]
+
+namespace Contoso.Holidays;
+
+public sealed class ContosoPlugin : INotableDateAlgorithmPlugin
+{
+    public string  Name    => "Contoso.Holidays";
+    public Version Version => new(1, 0, 0);
+
+    public IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms()
+    {
+        yield return new("contoso-founders-day", new FoundersDayAlgorithm());
+    }
+}
+```
+
+### Loading and registering
+
+<xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> evaluates trust, activates the plugin, and registers its algorithms. `LoadFrom(Assembly, …)` loads from an already-loaded assembly; `LoadFrom(string assemblyPath, …)` loads the file into a dedicated `AssemblyLoadContext`:
+
+```csharp
+using System.Reflection;
+using Bodu.Globalization.Calendar.Algorithms;
+using Bodu.Globalization.Calendar.Plugins;
+
+// Trust only assemblies whose strong-name public-key token is on the allow-list.
+IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(allowedPublicKeyTokens);
+
+Assembly assembly = Assembly.LoadFrom("Contoso.Holidays.dll");
+INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(assembly, trust);   // throws if untrusted
+
+var registry = new NotableDateAlgorithmRegistry();
+int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
+
+// The registry now backs <Algorithm key="contoso-founders-day"> rules:
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver, registry);
+NotableDateService  service  = new NotableDateService(resource, registry);
+```
+
+### Trust policies
+
+Trust is decided by an <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy>, whose `Evaluate(PluginTrustContext)` returns a <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustResult> (`PluginTrustResult.Trusted()` or `PluginTrustResult.Rejected(reason)`). The bundled policies:
+
+| Policy | Behaviour |
+|---|---|
+| <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> | Trusts every assembly. Development / tests only. |
+| <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy> | Allow-list by strong-name public-key token. |
+| <xref:Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy> | Allow-list by SHA-256 file hash. |
+| <xref:Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy> | Combines policies with AND / short-circuit semantics. |
+| <xref:Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy> | Decides with a `Func<PluginTrustContext, PluginTrustResult>` delegate. |
+
+```csharp
+using Bodu.Globalization.Calendar.Plugins;
+
+// Must pass both a hash check AND a strong-name check.
+IPluginTrustPolicy policy = new CompositePluginTrustPolicy(
+    new FileHashPluginTrustPolicy(allowedHashes),
+    new StrongNamePluginTrustPolicy(allowedPublicKeyTokens));
+```
+
+> [!WARNING]
+> <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> trusts every assembly and is intended for development and tests only. Use a strong-name, file-hash, or composite policy in production.
+
+### Plugin exceptions
+
+The loader signals failure with the <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginException> hierarchy:
+
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException> — the trust policy rejected the assembly; it is never activated.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException> — the assembly lacks a `[assembly: NotableDatePlugin(…)]` attribute.
+- <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException> — the named plugin type could not be instantiated.
+
+See the [Plugins package reference](../../apidoc/Bodu.Globalization.Calendar.Plugins.md) for the full type list.
 
 ## Where to go next
 
-- [NotableDateRule and ObservanceAdjustment reference](rule-reference.md) — field definitions for rule and adjustment authoring.
-- [Observance adjustment rules](adjustment-rules.md) — trigger and action catalogues, custom handlers.
-- [The resolution pipeline](resolution-pipeline.md) — how the service processes the types described here.
-- [Holiday patterns and examples](holiday-patterns.md) — end-to-end examples for common holiday types.
-- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, and companion assemblies.
+- [Using NotableDateService](notable-dates.md) — query patterns, filters, and range queries.
+- [Calendar dependency injection](dependency-injection.md) — registering the service (and the reloadable pair) through `IServiceCollection`.
+- [Date calculation algorithms](algorithms.md) — built-in keys and implementing `INotableDateAlgorithm`.
+- [Observance adjustment rules](adjustment-rules.md) — triggers, actions, and custom adjustment handlers.
+- [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
+- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
