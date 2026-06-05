@@ -92,6 +92,28 @@
       items:
         - name: Calendar data packs
           href: calendar/data-packs.md
+    - name: Bodu.Globalization.Calendar.V2 — Notable-date catalogue
+      items:
+        - name: Catalogue overview
+          href: calendar/catalogue/index.md
+        - name: Civil and Christian catalogues
+          href: calendar/catalogue/theme-civil-and-christian.md
+        - name: Non-Gregorian religious catalogues
+          href: calendar/catalogue/theme-religious-non-gregorian.md
+        - name: Cultural, family, and remembrance catalogues
+          href: calendar/catalogue/theme-cultural-and-family.md
+        - name: Awareness and themed observances
+          href: calendar/catalogue/theme-awareness.md
+        - name: Aggregate and utility catalogues
+          href: calendar/catalogue/theme-aggregates.md
+        - name: Americas region packs
+          href: calendar/catalogue/region-americas.md
+        - name: Asia-Pacific region packs
+          href: calendar/catalogue/region-asia-pacific.md
+        - name: Europe region packs
+          href: calendar/catalogue/region-europe.md
+        - name: Cross-region comparison matrix
+          href: calendar/catalogue/comparison-matrix.md
 - name: Bodu.IO.Hashing
   items:
     - name: Overview
