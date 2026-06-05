@@ -61,6 +61,10 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("JP", 2024, "autumnal-equinox-day", "2024-09-22", false)]
     [DataRow("JP", 2024, "culture-day", "2024-11-03", false)]
 
+    // Japan: multi-day period markers restored by the entry-level migration audit (durationDays spans).
+    [DataRow("JP", 2024, "golden-week", "2024-04-29", false)]
+    [DataRow("JP", 2024, "obon", "2024-08-13", false)]
+
     // China: Chinese lunisolar fixed dates, an offset-from-rule, and the Qingming solar term.
     [DataRow("CN", 2024, "lunar-new-year", "2024-02-10", false)]
     [DataRow("CN", 2024, "lantern-festival", "2024-02-24", false)]

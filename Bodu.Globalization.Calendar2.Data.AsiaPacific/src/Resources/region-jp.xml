@@ -2,9 +2,9 @@
 <!--
   Japanese notable-date resource, migrated from the v1 region-jp.xml to the v2 cookbook schema. The shared New Year's Day
   is imported from the common global-core catalogue; Bodhi Day and the remaining national holidays are defined inline.
-  The Vernal and Autumnal Equinox Days are computed astronomically in Japan Standard Time. The v1 multi-day "Golden
-  Week" and "Obon" period markers (durationDays) are omitted pending multi-day span support; their constituent public
-  holidays remain individually defined.
+  The Vernal and Autumnal Equinox Days are computed astronomically in Japan Standard Time. The multi-day "Golden Week"
+  and "Obon" period markers are modelled with durationDays spans; their constituent public holidays remain individually
+  defined.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.jp">
 
@@ -71,6 +71,11 @@
       ============================================================================================================
     -->
 
+    <!-- Golden Week — the late-April to early-May holiday period, conventionally spanning 29 April to 5 May. Modelled as a 7-day cultural span anchored on 29 April; its constituent public holidays (Showa Day, Constitution Memorial Day, Greenery Day, Children's Day) are defined separately below. Strategy: Fixed day-of-month with a durationDays span. -->
+    <NotableDate id="golden-week" displayName="Golden Week" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="jp" durationDays="7"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="April" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!--
       Showa Day — 29 April, commemorating the Showa-era emperor. Took its current name and form in 2007 (previously
       Greenery Day), so the fromYear bound excludes earlier years. Strategy: Fixed day-of-month.
@@ -117,6 +122,11 @@
     -->
     <NotableDate id="mountain-day" displayName="Mountain Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="jp"><Applicability fromYear="2016"><Territory code="JP" /></Applicability><Strategy><Fixed month="August" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Obon — the Buddhist ancestral festival, commonly observed 13-15 August across much of Japan; a widely observed period rather than a statutory public holiday. Modelled as a 3-day cultural span anchored on 13 August. Strategy: Fixed day-of-month with a durationDays span. -->
+    <NotableDate id="obon" displayName="Obon" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="jp" durationDays="3"><Applicability><Territory code="JP" /></Applicability><Strategy><Fixed month="August" day="13" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--

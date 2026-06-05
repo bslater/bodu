@@ -79,6 +79,7 @@
       <Use notableDateRef="good-friday" territory="CA" />
       <Use notableDateRef="easter-sunday" territory="CA" />
       <Use notableDateRef="easter-monday" territory="CA" />
+      <Use notableDateRef="christmas-eve" territory="CA" />
       <Use notableDateRef="christmas-day" territory="CA">
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
       </Use>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  europe-common — pan-European common notable-date hub
+  ================================================================================================================
+
+  Reinstated from the v1 europe-common.xml. This is the single consolidation point the European region packs import
+  their shared observances from, instead of each pack importing the common catalogues (global-core,
+  christian-western, global-family, global-cultural) separately and re-declaring the common Catholic feasts.
+
+  How this resource is built:
+
+    * The shared civil, Western Christian, family, and cultural concepts are RE-EXPORTED here from the common
+      catalogues. They carry their catalogue defaults (category, non-working flag, calculation strategy); a region
+      pack supplies its own territory scope and, where required, overrides the category, non-working flag, or
+      weekend adjustment on its own import <Use> directive. The v2 import resolver resolves europe-common's own
+      imports transitively, so a region that imports a concept from here receives the fully resolved catalogue rule.
+
+    * The common Catholic fixed-date feasts the main catalogues do not carry — Assumption of Mary and Immaculate
+      Conception — are DEFINED INLINE here as the single European source of truth, so the Catholic member states
+      cherry-pick them uniformly rather than each re-declaring them.
+
+  Anchor note: any Easter-derived date a country adopts (Good Friday, Easter Monday, Ascension Day, Whit Sunday,
+  Whit Monday, Corpus Christi) resolves against the Easter Sunday anchor, which is re-exported here too. Importing
+  the offset feast pulls the anchor transitively. Orthodox-tradition countries (Bulgaria, Cyprus, Greece, Romania)
+  instead import the Orthodox Easter cycle directly from christian-orthodox and do not use this Western anchor.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.europe-common">
+
+  <Imports>
+    <!--
+      Civil core. International Workers' Day (1 May) is re-exported under its global canonical name; a country that
+      uses a distinct local name (France's "Fête du Travail") declares its own rule instead of importing this one.
+    -->
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" />
+      <Use notableDateRef="workers-day" />
+      <Use notableDateRef="new-years-eve" />
+    </Import>
+    <!--
+      Western Christian feasts and the Easter anchor. Re-exported with their catalogue defaults: the public holidays
+      (Good Friday, Easter Monday, Whit Monday, Boxing Day, Christmas Day) carry nonWorking="true"; the rest are
+      working religious observances. A country that observes one of the working feasts as a non-working public
+      holiday sets category="PublicHoliday" nonWorking="true" on its own <Use>.
+    -->
+    <Import resource="christian-western">
+      <Use notableDateRef="epiphany" />
+      <Use notableDateRef="easter-sunday" />
+      <Use notableDateRef="good-friday" />
+      <Use notableDateRef="easter-monday" />
+      <Use notableDateRef="ascension-day" />
+      <Use notableDateRef="whit-sunday" />
+      <Use notableDateRef="whit-monday" />
+      <Use notableDateRef="corpus-christi" />
+      <Use notableDateRef="all-saints-day" />
+      <Use notableDateRef="all-souls-day" />
+      <Use notableDateRef="christmas-eve" />
+      <Use notableDateRef="christmas-day" />
+      <Use notableDateRef="boxing-day" />
+    </Import>
+    <!--
+      Family observances (recognition-only working days by default). A country that observes a different date — for
+      example France's last-Sunday-in-May Mother's Day or the United Kingdom's Mothering Sunday — declares its own
+      rule instead of importing these.
+    -->
+    <Import resource="global-family">
+      <Use notableDateRef="mothers-day" />
+      <Use notableDateRef="fathers-day" />
+    </Import>
+    <!-- Cultural observances (recognition-only). -->
+    <Import resource="global-cultural">
+      <Use notableDateRef="valentines-day" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      Common Catholic fixed-date feasts not carried by the main catalogues, defined here as the single European
+      source of truth so the Catholic member states can cherry-pick them uniformly. Re-exported as working religious
+      observances by default; a member state that observes one as a non-working public holiday sets
+      category="PublicHoliday" nonWorking="true" on its own <Use>.
+    -->
+
+    <!-- Assumption of Mary — 15 August, the Assumption of the Blessed Virgin Mary; a public holiday across Catholic Europe (and, as the Dormition of the Theotokos, in Orthodox countries such as Greece and Romania). Strategy: Fixed date. -->
+    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Immaculate Conception — 8 December, the Immaculate Conception of the Blessed Virgin Mary; a public holiday in several Catholic member states (Austria, Italy, Malta, Portugal, Spain). Strategy: Fixed date. -->
+    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

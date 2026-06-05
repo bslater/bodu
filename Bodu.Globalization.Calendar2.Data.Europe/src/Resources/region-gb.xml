@@ -55,27 +55,35 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day is a UK bank holiday with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to the United Kingdom. New Year's
+      Day rolls to the next working day when it falls on a weekend; Christmas Day and Boxing Day fall on consecutive
+      days, so they take the conflict-aware working-day substitute to keep their in-lieu days from colliding. Good
+      Friday and Easter Sunday supply the Easter anchor that the inline Easter Monday and Mothering Sunday offset
+      from. Easter Monday is England/Wales/NI-only and is declared inline below.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="GB">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday and Easter Sunday derive from the Easter anchor in the shared catalogue.
-      Christmas Day and Boxing Day fall on consecutive days, so they take the conflict-aware substitute to keep
-      their in-lieu days from colliding. Easter Monday is England/Wales/NI-only and is declared inline below.
-    -->
-    <Import resource="christian-western">
-      <Use notableDateRef="good-friday" territory="GB" />
+      <Use notableDateRef="valentines-day" territory="GB" />
       <Use notableDateRef="easter-sunday" territory="GB" />
+      <Use notableDateRef="good-friday" territory="GB" />
+      <Use notableDateRef="christmas-eve" territory="GB" />
       <Use notableDateRef="christmas-day" territory="GB">
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
       </Use>
       <Use notableDateRef="boxing-day" territory="GB">
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
       </Use>
+      <Use notableDateRef="fathers-day" territory="GB" />
+    </Import>
+    <!--
+      Global observances not part of the European common set, imported from the broad global-all aggregate: April
+      Fool's Day and Remembrance Day (11 November, distinct from the inline Remembrance Sunday on the second Sunday).
+    -->
+    <Import resource="global-all">
+      <Use notableDateRef="april-fools-day" territory="GB" />
+      <Use notableDateRef="remembrance-day" territory="GB" />
     </Import>
   </Imports>
 
@@ -100,11 +108,6 @@
     <!-- Burns Night — 25 January, Scottish cultural celebration of the poet Robert Burns; not a public holiday. -->
     <NotableDate id="burns-night" displayName="Burns Night" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability><Strategy><Fixed month="January" day="25" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Valentine's Day — 14 February, widely observed nationally; not a public holiday. -->
-    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Saint David's Day — 1 March, the Welsh patron-saint day; observed in Wales, not a statutory holiday. -->
@@ -163,11 +166,6 @@
     <!-- Spring Bank Holiday — last Monday in May, observed across the UK. Strategy: DayOfWeekInMonth (last Monday). -->
     <NotableDate id="spring-bank-holiday" displayName="Spring Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Father's Day — third Sunday in June; an observance, not a public holiday. Strategy: DayOfWeekInMonth (third Sunday). -->
-    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Battle of the Boyne (Orangemen's Day) — 12 July, a public holiday in Northern Ireland only, with a weekend roll. -->

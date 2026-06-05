@@ -21,7 +21,8 @@
 
   <ItemGroup>
     <None Remove="Resources\*.xml" />
-    <EmbeddedResource Include="Resources\region-*.xml">
+    <!-- Region packs and the shared europe-common hub they import from. -->
+    <EmbeddedResource Include="Resources\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.V2.Data.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>

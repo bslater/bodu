@@ -92,14 +92,70 @@
     </NotableDate>
 
     <!--
+      Lenten and post-Pentecost movable feasts. These complete the Easter-derived cluster carried by the v1
+      christian-gregorian.xml catalogue so a territory pack can cherry-pick them by import. Each offsets from the
+      Easter Sunday anchor and is a working religious observance by default.
+    -->
+
+    <!-- Shrove Tuesday — Mardi Gras, the day before Lent begins. Strategy: OffsetFromRule, 47 days before Easter Sunday. -->
+    <NotableDate id="shrove-tuesday" displayName="Shrove Tuesday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-47" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ash Wednesday — the first day of Lent. Strategy: OffsetFromRule, 46 days before Easter Sunday. -->
+    <NotableDate id="ash-wednesday" displayName="Ash Wednesday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-46" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Palm Sunday — the Sunday before Easter, opening Holy Week. Strategy: OffsetFromRule, 7 days before Easter Sunday. -->
+    <NotableDate id="palm-sunday" displayName="Palm Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Holy Saturday — the day before Easter Sunday, closing Holy Week. Strategy: OffsetFromRule, 1 day before Easter Sunday. -->
+    <NotableDate id="holy-saturday" displayName="Holy Saturday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Trinity Sunday — the Sunday after Pentecost. Strategy: OffsetFromRule, 56 days after Easter Sunday. -->
+    <NotableDate id="trinity-sunday" displayName="Trinity Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="56" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
       ============================================================================================================
       Fixed-date feasts
       ============================================================================================================
     -->
 
+    <!-- Epiphany — 6 January, the manifestation of Christ to the Magi. Strategy: Fixed day-of-month. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Candlemas — 2 February, the Presentation of Christ at the Temple. Strategy: Fixed day-of-month. -->
+    <NotableDate id="candlemas" displayName="Candlemas" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="February" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Annunciation — 25 March, the announcement to Mary of the Incarnation. Strategy: Fixed day-of-month. -->
+    <NotableDate id="annunciation" displayName="Annunciation" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!-- All Saints' Day — 1 November, honoring all saints. Strategy: Fixed day-of-month. -->
     <NotableDate id="all-saints-day" displayName="All Saints' Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- All Souls' Day — 2 November, commemoration of the faithful departed. Strategy: Fixed day-of-month. -->
+    <NotableDate id="all-souls-day" displayName="All Souls' Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Christmas Eve — 24 December, the day before Christmas; a cultural observance rather than a public holiday. -->

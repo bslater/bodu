@@ -4,20 +4,20 @@
   France (FR) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-fr.xml to the v2 cookbook schema. All rules are scoped to territory "FR"; France has
-  no subdivision-specific holidays in this pack (the Alsace-Moselle local feasts are not modelled).
+  Migrated from the v1 region-fr.xml to the v2 cookbook schema. National rules are scoped to territory "FR"; the
+  Alsace-Moselle local feasts (Good Friday and Saint Stephen's Day) are scoped to the départements that observe
+  them (FR-67 Bas-Rhin, FR-68 Haut-Rhin, FR-57 Moselle).
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given an FR territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances are IMPORTED from the europe-common hub and scoped to France. Ascension, the
+      Assumption, and All Saints' are statutory public holidays in France, so they override to PublicHoliday with
+      nonWorking="true"; Whit Sunday (Pentecost), Christmas Eve, Valentine's Day, and Father's Day are recognition
+      observances. France does NOT roll weekend public holidays onto the following Monday, so no adjustment policy
+      is declared or referenced.
 
-    * France does NOT roll weekend public holidays onto the following Monday, so no adjustment policy is declared
-      and none is referenced.
-
-    * France-specific concepts (Labour Day, V-E Day, Bastille Day, Armistice Day, and the widely marked cultural
-      days) are declared INLINE below.
+    * France-specific concepts (Labour Day, V-E Day, Bastille Day, Armistice Day, the last-Sunday Mother's Day, the
+      cultural days) and the Alsace-Moselle regional feasts are declared INLINE below.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.fr">
 
@@ -29,23 +29,28 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January); imported with its shared fixed-date strategy and no weekend roll.
+      Shared European observances, imported from the europe-common hub and scoped to France. Easter Monday (+1),
+      Ascension (+39), Whit Sunday (+49), and Whit Monday (+50) derive from the Easter Sunday anchor that the hub
+      re-exports. Ascension, the Assumption (15 August), and All Saints' (1 November) are statutory public holidays
+      in France; Whit Sunday, Christmas Eve, Valentine's Day, and Father's Day are recognition observances.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="FR" />
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday (+1), Ascension (+39), and Whit Monday (+50) derive from the Easter
-      Sunday anchor in the shared catalogue. Ascension and All Saints' (1 November) are re-scoped to PublicHoliday
-      with nonWorking="true" because they are statutory holidays in France. Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
+      <Use notableDateRef="valentines-day" territory="FR" />
       <Use notableDateRef="easter-sunday" territory="FR" />
       <Use notableDateRef="easter-monday" territory="FR" />
       <Use notableDateRef="ascension-day" territory="FR" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-sunday" territory="FR" />
       <Use notableDateRef="whit-monday" territory="FR" />
+      <Use notableDateRef="assumption-of-mary" territory="FR" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="all-saints-day" territory="FR" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-eve" territory="FR" />
       <Use notableDateRef="christmas-day" territory="FR" />
+      <Use notableDateRef="fathers-day" territory="FR" />
+    </Import>
+    <!-- Global cultural observance not part of the European common set. -->
+    <Import resource="global-cultural">
+      <Use notableDateRef="april-fools-day" territory="FR" />
     </Import>
   </Imports>
 
@@ -56,11 +61,6 @@
       Cultural and civic observances (widely marked, not public holidays)
       ============================================================================================================
     -->
-
-    <!-- Valentine's Day — 14 February; widely observed, not a public holiday. -->
-    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
-    </NotableDate>
 
     <!-- International Women's Day — 8 March; an observance, not a public holiday. -->
     <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
@@ -83,7 +83,7 @@
       ============================================================================================================
     -->
 
-    <!-- Fête du Travail (Labour Day) — 1 May; a statutory public holiday. Strategy: Fixed date. -->
+    <!-- Fête du Travail (Labour Day) — 1 May; a statutory public holiday. Declared inline under its French name rather than imported as the global "International Workers' Day". Strategy: Fixed date. -->
     <NotableDate id="labour-day" displayName="Fête du Travail" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
@@ -98,19 +98,28 @@
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="July" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Assumption of Mary — 15 August, a Marian feast and statutory public holiday. Strategy: Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <!-- Armistice Day — 11 November, marking the 1918 armistice; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="armistice-day" displayName="Armistice Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="November" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Stephen's Day — 26 December; a public holiday in the Alsace-Moselle départements (modelled nationally here, matching the v1 data). Strategy: Fixed date. -->
+    <!--
+      ============================================================================================================
+      Alsace-Moselle regional public holidays (FR-67 Bas-Rhin, FR-68 Haut-Rhin, FR-57 Moselle)
+      ============================================================================================================
+      Two extra statutory holidays apply only in the three Concordat départements. Subdivision-scoped, so a plain
+      "FR" national query returns neither.
+    -->
+
+    <!-- Good Friday — a public holiday in the Alsace-Moselle départements only. Strategy: OffsetFromRule, 2 days before the imported Easter Sunday anchor. -->
+    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="alsace-moselle"><Applicability fromYear="1583"><Territory code="FR-67" /><Territory code="FR-68" /><Territory code="FR-57" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Stephen's Day — 26 December, a public holiday in the Alsace-Moselle départements only. Strategy: Fixed date. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="fr-am"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+      <Rules><Rule id="alsace-moselle"><Applicability><Territory code="FR-67" /><Territory code="FR-68" /><Territory code="FR-57" /></Applicability><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>
