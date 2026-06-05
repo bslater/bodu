@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Slovakia (SK) notable-date resource using the Western / Gregorian calendar.
+
+  Public holidays and days of rest (štátne sviatky a dni pracovného pokoja).
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="SK"; Slovakia-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" as="Day of the Establishment of the Slovak Republic" territory="SK" />
+    <Use name="Epiphany" territory="SK" />
+    <Use name="Easter Sunday" territory="SK" />
+    <Use name="Good Friday" territory="SK" />
+    <Use name="Easter Monday" territory="SK" />
+    <Use name="International Workers' Day" as="Labour Day" territory="SK" />
+    <Use name="All Saints' Day" territory="SK" />
+    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="SK" />
+    <Use name="Christmas Day" territory="SK" />
+    <Use name="Boxing Day" as="Saint Stephen's Day" territory="SK" />
+  </UseFrom>
+
+  <!--
+    National Slovak holidays. Slovakia's Marian public holiday is the 15
+    September feast of Our Lady of Sorrows (patroness of Slovakia), not the
+    15 August Assumption, so it is declared explicitly here.
+  -->
+
+  <NotableDate name="Day of Our Lady of Sorrows">
+    <Rule name="fixed-sep-15-sk" category="Holiday" territory="SK" nonWorking="true"
+          comment="Sedembolestná Panna Mária. Feast of Our Lady of Sorrows, patroness of Slovakia, observed on 15 September.">
+      <Fixed month="September" day="15" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Day of Victory over Fascism">
+    <Rule name="fixed-may-08-sk" category="Holiday" territory="SK" nonWorking="true" firstYear="1945"
+          comment="Deň víťazstva nad fašizmom. Marks the end of the Second World War in Europe on 8 May 1945.">
+      <Fixed month="May" day="8" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saints Cyril and Methodius Day">
+    <Rule name="fixed-jul-05-sk" category="Holiday" territory="SK" nonWorking="true"
+          comment="Sviatok svätého Cyrila a Metoda. Honors the Byzantine missionaries who brought Christianity and literacy to the Slavs.">
+      <Fixed month="July" day="5" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Slovak National Uprising Anniversary">
+    <Rule name="fixed-aug-29-sk" category="Holiday" territory="SK" nonWorking="true" firstYear="1944"
+          comment="Výročie Slovenského národného povstania. Commemorates the 1944 uprising against Nazi Germany and its collaborators.">
+      <Fixed month="August" day="29" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Constitution Day">
+    <Rule name="fixed-sep-01-sk" category="Holiday" territory="SK" nonWorking="true" firstYear="1992"
+          comment="Deň Ústavy Slovenskej republiky. Marks the adoption of the Constitution of the Slovak Republic on 1 September 1992.">
+      <Fixed month="September" day="1" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Struggle for Freedom and Democracy Day">
+    <Rule name="fixed-nov-17-sk" category="Holiday" territory="SK" nonWorking="true"
+          comment="Deň boja za slobodu a demokraciu. Commemorates the student demonstrations of 1939 and 1989 against totalitarian rule.">
+      <Fixed month="November" day="17" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

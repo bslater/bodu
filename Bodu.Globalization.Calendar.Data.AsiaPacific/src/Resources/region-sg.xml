@@ -1,49 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Singapore notable-date resource. -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<!--
+  Singapore notable-date resource, migrated from the v1 region-sg.xml to the v2 cookbook schema. The shared civil and
+  Christian observances (New Year's Day, Easter Sunday, Good Friday, Christmas) are imported from the common global-core
+  and christian-western catalogues; the remaining multi-religious public holidays draw on three further calendars:
+  Chinese lunisolar (Chinese New Year), tabular Hijri (the two Hari Raya festivals), and astronomical lunar/lunisolar
+  algorithms (Vesak, Deepavali). Islamic and lunisolar dates follow the engine's computed reckoning and may differ by a
+  day or two from the gazetted dates.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.sg">
 
-  <UseFrom resource="./global-lunar.xml">
-    <Use name="Lunar New Year" as="Chinese New Year" territory="SG" nonWorking="true" durationDays="2" />
-  </UseFrom>
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <UseFrom resource="./global-islamic.xml">
-    <Use name="Eid al-Fitr" as="Hari Raya Puasa" territory="SG" nonWorking="true" />
-    <Use name="Eid al-Adha" as="Hari Raya Haji" territory="SG" nonWorking="true" />
-  </UseFrom>
+  <Imports>
+    <!--
+      Civil core. New Year's Day (1 January, Gregorian) is a public holiday in Singapore.
+    -->
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="SG" />
+    </Import>
+    <!--
+      Western Christian feasts, re-scoped to Singapore. Good Friday and Christmas Day are public holidays; Easter
+      Sunday is imported as the computed anchor. All are imported as-is with an SG territory scope.
+    -->
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="SG" />
+      <Use notableDateRef="good-friday" territory="SG" />
+      <Use notableDateRef="christmas-day" territory="SG" />
+    </Import>
+  </Imports>
 
-  <UseFrom resource="./global-hindu.xml">
-    <Use name="Diwali" as="Deepavali" territory="SG" nonWorking="true" />
-  </UseFrom>
+  <NotableDates>
 
-  <UseFrom resource="./global-buddhist.xml">
-    <Use name="Vesak" territory="SG" nonWorking="true" />
-  </UseFrom>
+    <!--
+      Singapore's remaining public holidays span its major communities, drawing on three further calendars: the
+      Chinese lunisolar calendar (Chinese New Year), the tabular Hijri calendar (the two Hari Raya festivals), and
+      astronomical lunar/lunisolar algorithms (Vesak, Deepavali). The Islamic and computed dates follow the engine's
+      reckoning and may differ by a day or two from the gazetted dates.
+    -->
 
-  <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Good Friday" territory="SG" nonWorking="true" />
-    <Use name="Christmas Day" territory="SG" nonWorking="true" />
-  </UseFrom>
+    <!--
+      Chinese New Year — first day of the first month of the Chinese lunisolar calendar (lunar 1/1). A two-day public
+      holiday, expressed via durationDays="2". Strategy: Fixed lunisolar month/day.
+    -->
+    <NotableDate id="chinese-new-year" displayName="Chinese New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg" durationDays="2"><Applicability calendar="ChineseLunisolar"><Territory code="SG" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="New Year's Day">
-    <Rule name="fixed-jan-01-sg" category="Holiday" territory="SG" nonWorking="true">
-      <Fixed month="January" day="1" />
-      <Tag>Singapore</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      Hari Raya Puasa (Eid al-Fitr) — the festival ending Ramadan, on 1 Shawwal in the Hijri calendar. Fixed in the
+      Hijri calendar; sweepCalendarYears="true" projects the occurrence onto the surrounding Gregorian year. Tabular
+      reckoning, not moon-sighting. Strategy: Fixed Hijri month/day.
+    -->
+    <NotableDate id="hari-raya-puasa" displayName="Hari Raya Puasa" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg"><Applicability calendar="Hijri"><Territory code="SG" /></Applicability><Strategy><Fixed month="10" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Labour Day">
-    <Rule name="fixed-may-01-sg" category="Holiday" territory="SG" nonWorking="true">
-      <Fixed month="May" day="1" />
-      <Tag>Singapore</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Labour Day — 1 May (Gregorian), a public holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg"><Applicability><Territory code="SG" /></Applicability><Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="National Day">
-    <Rule name="fixed-aug-09-sg" category="Holiday" territory="SG" nonWorking="true">
-      <Fixed month="August" day="9" />
-      <Tag>Singapore</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      Vesak Day — the Buddhist festival on the full moon of the lunar month Vesakha (around May), a public holiday.
+      Computed astronomically. Strategy: Algorithm (computed; may differ by a day or two from the gazetted date).
+    -->
+    <NotableDate id="vesak-day" displayName="Vesak Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg"><Applicability><Territory code="SG" /></Applicability><Strategy><Algorithm key="vesak" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-</NotableDates>
+    <!--
+      Hari Raya Haji (Eid al-Adha) — the festival of sacrifice, on 10 Dhu al-Hijja in the Hijri calendar. Fixed in
+      the Hijri calendar; sweepCalendarYears="true" projects the occurrence onto the surrounding Gregorian year.
+      Tabular reckoning, not moon-sighting. Strategy: Fixed Hijri month/day.
+    -->
+    <NotableDate id="hari-raya-haji" displayName="Hari Raya Haji" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg"><Applicability calendar="Hijri"><Territory code="SG" /></Applicability><Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day — 9 August, marking Singapore's 1965 independence, a public holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg"><Applicability><Territory code="SG" /></Applicability><Strategy><Fixed month="August" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Deepavali (Diwali) — the Hindu festival of lights (new moon of Kartika, October/November), a public holiday.
+      Computed by the same lunar algorithm as the Indian Diwali. Strategy: Algorithm (computed; may differ by a day
+      or two from the gazetted date).
+    -->
+    <NotableDate id="deepavali" displayName="Deepavali" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sg"><Applicability><Territory code="SG" /></Applicability><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

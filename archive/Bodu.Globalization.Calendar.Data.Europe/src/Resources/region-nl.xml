@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Netherlands (NL) notable-date resource using the Western / Gregorian calendar.
+
+  Official public holidays (algemeen erkende feestdagen). Good Friday and
+  Liberation Day are officially recognized but are not generally paid days off,
+  so they are modelled as recognition-only observances. King's Day moves to the
+  preceding Saturday when 27 April falls on a Sunday.
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="NL"; Netherlands-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="NL" />
+    <Use name="Easter Sunday" territory="NL" />
+    <Use name="Good Friday" category="Observance" nonWorking="false" territory="NL" />
+    <Use name="Easter Monday" territory="NL" />
+    <Use name="Ascension Day" territory="NL" />
+    <Use name="Pentecost Sunday" as="Whit Sunday" territory="NL" />
+    <Use name="Whit Monday" territory="NL" />
+    <Use name="Christmas Day" territory="NL" />
+    <Use name="Boxing Day" as="Second Day of Christmas" territory="NL" />
+  </UseFrom>
+
+  <!--
+    National Dutch holidays and observances.
+  -->
+
+  <NotableDate name="King's Day">
+    <Rule name="fixed-apr-27-nl" category="Holiday" territory="NL" nonWorking="true" firstYear="2014"
+          comment="Koningsdag. Celebrates the birthday of King Willem-Alexander on 27 April. When 27 April falls on a Sunday, the holiday is brought forward to Saturday 26 April.">
+      <Fixed month="April" day="27" />
+      <Tag>National</Tag>
+      <Adjustment key="sunday-to-saturday" when="IfDayOfWeek" dayOfWeek="Sunday" action="MoveToPreviousWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Liberation Day">
+    <Rule name="fixed-may-05-nl" category="Observance" territory="NL" firstYear="1945"
+          comment="Bevrijdingsdag. Marks the end of the German occupation of the Netherlands in 1945. A paid day off in the public sector and, by collective agreement, once every five years for most other workers.">
+      <Fixed month="May" day="5" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

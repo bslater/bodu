@@ -1,84 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <OutputType>Library</OutputType>
-    <OutputType>Library</OutputType>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <DefineConstants>$(DefineConstants);NET6_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <DefineConstants>$(DefineConstants);NET7_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
-  <!--
-    CalendarThrowHelper is split into a CallerArgumentExpression variant and a NetStandard variant:
-      - CalendarThrowHelper.*NetStandard.cs       : compiled for netstandard2.0 / netstandard2.1,
-                                                    where CallerArgumentExpressionAttribute is unavailable.
-      - CalendarThrowHelper.*CallerExpression.cs  : compiled for all other targets (net5.0+),
-                                                    where CallerArgumentExpressionAttribute is supported.
-  -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <Compile Remove="Globalization.Calendar\CalendarThrowHelper.*CallerExpression.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-    <Compile Remove="Globalization.Calendar\CalendarThrowHelper.*NetStandard.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Globalization.Calendar\CalendarDayProviderBase.cs" />
-    <Compile Remove="Globalization.Calendar\CalendarDayProviderExtensions.cs" />
-    <Compile Remove="Globalization.Calendar\CalendarDayProviderRegistry.cs" />
-    <Compile Remove="Globalization.Calendar\CalendarProviderConfig.cs" />
-    <Compile Remove="Globalization.Calendar\DefaultCalendarDayProvider.cs" />
-    <Compile Remove="Globalization.Calendar\ICalendarDayProvider.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Globalization.Calendar.Resources\christian-gregorian.xml" />
-    <None Remove="Globalization.Calendar.Resources\christian-orthodox.xml" />
-    <None Remove="Globalization.Calendar.Resources\default-minimal.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-all.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-core.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-cultural.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-education.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-environment.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-health.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-remembrance.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-social.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-un.xml" />
-    <None Remove="Globalization.Calendar\NotableDates.xsd" />
-    <None Remove="Globalization.Calendar\NotableDates.schema.json" />
-    <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-buddhist.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-family.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-food.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-hindu.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-islamic.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-islamic-umm-al-qura.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-jewish.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-lunar.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-persian.xml" />
-    <None Remove="Globalization.Calendar.Resources\global-science.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
@@ -87,45 +19,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Globalization.Calendar.Resources\christian-gregorian.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\christian-orthodox.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\default-minimal.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-all.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-core.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-cultural.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-education.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-environment.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-health.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-remembrance.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-social.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-un.xml" />
-    <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization.Calendar\NotableDates.schema.json">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-animals.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-buddhist.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-family.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-food.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-hindu.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic-umm-al-qura.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-persian.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JsonSchema.Net" Version="7.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
-    
+
+  <ItemGroup>
+    <EmbeddedResource Include="Globalization.Calendar\NotableDates.v2.xsd">
+      <LogicalName>Bodu.Globalization.Calendar.NotableDates.v2.xsd</LogicalName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\NotableDates.v2.schema.json">
+      <LogicalName>Bodu.Globalization.Calendar.NotableDates.v2.schema.json</LogicalName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Resources\*.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="CalendarResourceStrings.resx">
       <LastGenOutput>CalendarResourceStrings.Designer.cs</LastGenOutput>

@@ -58,11 +58,9 @@
           href: calendar/notable-dates.md
         - name: Authoring notable date rules
           href: calendar/rule-authoring.md
-        - name: Authoring with the notable-date builder
-          href: calendar/notable-date-builder.md
     - name: Bodu.Globalization.Calendar — Reference
       items:
-        - name: NotableDateRule and ObservanceAdjustment reference
+        - name: NotableDateRule and adjustment-policy reference
           href: calendar/rule-reference.md
         - name: Territories and regional composition
           href: calendar/territories.md
@@ -92,7 +90,7 @@
       items:
         - name: Calendar data packs
           href: calendar/data-packs.md
-    - name: Bodu.Globalization.Calendar.V2 — Notable-date catalogue
+    - name: Bodu.Globalization.Calendar — Notable-date catalogue
       items:
         - name: Catalogue overview
           href: calendar/catalogue/index.md

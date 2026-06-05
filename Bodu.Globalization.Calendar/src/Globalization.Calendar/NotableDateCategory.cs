@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCategory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,17 +7,12 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides a coarse-grained classification of a notable date.
+/// Provides a coarse-grained classification of a notable date in the revised (v2) notable-date document model.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="NotableDateCategory" /> assigns a notable date to a single primary category. For finer-grained or
-/// overlapping classifications (for example a date that is simultaneously <c>Holiday</c> and <c>Christian</c>), use the
-/// <c>NotableDate.Tags</c> collection in addition to the category.
-/// </para>
-/// <para>
-/// The enumeration replaces the earlier <c>NotableDateKind</c> type and uses <c>Category</c> to avoid clashing with
-/// <see cref="DateTimeKind" />.
+/// A category is a presentation and grouping aid, not an identity. A notable date is identified by its stable id; two
+/// notable dates may share a category freely. A rule may override the category inherited from its parent notable date.
 /// </para>
 /// </remarks>
 public enum NotableDateCategory
@@ -30,11 +25,15 @@ public enum NotableDateCategory
     /// <summary>
     /// A public holiday, typically recognized with an official day off work or school.
     /// </summary>
-    Holiday,
+    PublicHoliday,
 
     /// <summary>
-    /// A secular or cultural observance that may or may not involve public closure, and does not belong to a more
-    /// specific category.
+    /// A bank or financial-institution holiday, which may differ from the public holiday schedule.
+    /// </summary>
+    BankHoliday,
+
+    /// <summary>
+    /// A secular or cultural observance that does not belong to a more specific category.
     /// </summary>
     Observance,
 
@@ -59,25 +58,17 @@ public enum NotableDateCategory
     Seasonal,
 
     /// <summary>
-    /// A civic or national commemoration, such as a constitution day or independence memorial, that may not carry a
-    /// statutory day off.
+    /// A civic or national commemoration that may not carry a statutory day off.
     /// </summary>
     Civic,
 
     /// <summary>
-    /// A bank or financial-institution holiday on which banks and financial markets are closed, which may differ from
-    /// the public holiday schedule.
-    /// </summary>
-    Bank,
-
-    /// <summary>
-    /// A school holiday or term boundary observed by educational institutions, which may not coincide with public
-    /// holidays.
+    /// A school holiday or term boundary observed by educational institutions.
     /// </summary>
     School,
 
     /// <summary>
-    /// An observance specific to a subnational region, state, or province that does not apply nationally.
+    /// An observance specific to a subnational region, state, or province.
     /// </summary>
     Regional,
 

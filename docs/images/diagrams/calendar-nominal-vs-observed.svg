@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="no-t no-d">
   <title id="no-t">Nominal date vs. observed date — Christmas Day 2027</title>
-  <desc id="no-d">In 2027 the nominal date for Christmas Day is Saturday 25 December — a weekend. The IfWeekend adjustment trigger fires and the MoveToNextWeekday action shifts the holiday to the observed date Monday 27 December. NotableDate.Date holds the observed date; the original nominal date is preserved in NotableDate.AdjustmentReason and NotableDate.WasAdjusted is true.</desc>
+  <desc id="no-d">In 2027 the nominal date for Christmas Day is Saturday 25 December — a weekend. The IfWeekend adjustment trigger fires and the MoveToNextWeekday action shifts the holiday to the observed date Monday 27 December. NotableDate.Date holds the observed date; the original nominal date is preserved in NotableDate.ActualDate and NotableDate.IsObserved is true.</desc>
 
   <defs>
     <style>
@@ -84,7 +84,7 @@
     <!-- Adjustment arrow (curved) from nominal box (right edge) to observed box (left edge) -->
     <path class="wp" d="M 310 111 C 360 150, 420 150, 450 111" marker-end="url(#ap)"/>
     <text class="sub" fill="#C4B5FD" x="380" y="170" text-anchor="middle" font-weight="700">IfWeekend → MoveToNextWeekday</text>
-    <text class="mut" x="380" y="184" text-anchor="middle">ObservanceAdjustment fires; WasAdjusted = true; AdjustmentReason preserves 25 Dec</text>
+    <text class="mut" x="380" y="184" text-anchor="middle">AdjustmentPolicy fires; IsObserved = true; ActualDate preserves 25 Dec</text>
 
     <!-- Legend at bottom -->
     <g transform="translate(40 210)">

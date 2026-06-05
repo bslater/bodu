@@ -1,162 +1,243 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryCodeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the parsing, canonicalisation, containment, and list-splitting semantics of
-/// <see cref="TerritoryCode" />.
+/// Verifies <see cref="TerritoryCode" /> parsing, normalization, decomposition, containment, equality, conversions, and
+/// interoperation with the string-based resolution surface.
 /// </summary>
 [TestClass]
 public sealed class TerritoryCodeTests
 {
     /// <summary>
-    /// Verifies that <see cref="TerritoryCode.TryParse(string?, out TerritoryCode)" /> returns
-    /// <see langword="true" /> and normalises the result to upper case for every well-formed
-    /// input — covering country-only, country-subdivision, mixed case, surrounding whitespace,
-    /// and three-character subdivision codes (e.g. <c>AU-NSW</c>, <c>US-CA</c>).
+    /// Verifies that a bare country parses to a country-only code.
     /// </summary>
-    [DataRow("AU", "AU", null)]
-    [DataRow("au", "AU", null)]
-    [DataRow("  au  ", "AU", null)]
-    [DataRow("AU-NSW", "AU", "NSW")]
-    [DataRow("au-nsw", "AU", "NSW")]
-    [DataRow("  au-nsw  ", "AU", "NSW")]
-    [DataRow("US-CA", "US", "CA")]
-    [DataRow("DE-1", "DE", "1")]
-    [DataRow("FR-IDF", "FR", "IDF")]
     [TestMethod]
-    public void TryParse_WhenInputIsValid_ShouldReturnCanonicalForm(string input, string expectedCountry, string? expectedSubdivision)
+    public void Parse_WhenCountryOnly_ShouldDecomposeToCountry()
     {
-        Assert.IsTrue(TerritoryCode.TryParse(input, out TerritoryCode result));
-        Assert.AreEqual(expectedCountry, result.Country);
-        Assert.AreEqual(expectedSubdivision, result.Subdivision);
-        Assert.AreEqual(expectedSubdivision is not null, result.HasSubdivision);
+        TerritoryCode code = TerritoryCode.Parse("AU");
+
+        Assert.AreEqual("AU", code.Country);
+        Assert.IsNull(code.Subdivision);
+        Assert.IsFalse(code.IsSubdivision);
+        Assert.IsFalse(code.IsEmpty);
     }
 
     /// <summary>
-    /// Verifies that malformed inputs — wrong-length country codes, invalid characters,
-    /// empty/whitespace/null inputs, and malformed subdivisions — all cause
-    /// <see cref="TerritoryCode.TryParse(string?, out TerritoryCode)" /> to return
-    /// <see langword="false" />.
+    /// Verifies that a subdivision code decomposes into its country and subdivision parts.
     /// </summary>
-    [DataRow("")]
-    [DataRow(null!)]
-    [DataRow("   ")]
+    [TestMethod]
+    public void Parse_WhenSubdivision_ShouldDecomposeToCountryAndSubdivision()
+    {
+        TerritoryCode code = TerritoryCode.Parse("AU-NSW");
+
+        Assert.AreEqual("AU", code.Country);
+        Assert.AreEqual("NSW", code.Subdivision);
+        Assert.IsTrue(code.IsSubdivision);
+        Assert.AreEqual("AU", code.Parent.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that parsing normalizes the country and subdivision to upper case.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenLowerCase_ShouldNormalizeToUpper()
+    {
+        TerritoryCode code = TerritoryCode.Parse("au-nsw");
+
+        Assert.AreEqual("AU-NSW", code.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that malformed codes throw <see cref="FormatException" /> naming the offending value.
+    /// </summary>
     [DataRow("A")]
     [DataRow("AUS")]
-    [DataRow("AU!")]
     [DataRow("A1")]
-    [DataRow("12")]
     [DataRow("AU-")]
-    [DataRow("AU-TOOLONG")]
+    [DataRow("AU-NSWX")]
+    [DataRow("AU-NSW-X")]
     [DataRow("-NSW")]
-    [DataRow("BAD!")]
-    [DataRow("A-B-C")]
-    [DataRow("AU-!")]
-    [DataRow("AU-NS!")]
     [TestMethod]
-    public void TryParse_WhenInputIsInvalid_ShouldReturnFalse(string? input) => Assert.IsFalse(TerritoryCode.TryParse(input, out _));
-
-    /// <summary>
-    /// Verifies that <see cref="TerritoryCode.Parse(string)" /> returns the same canonical form
-    /// as <see cref="TerritoryCode.TryParse(string?, out TerritoryCode)" /> for valid input.
-    /// </summary>
-    [TestMethod]
-    public void Parse_WhenInputIsValid_ShouldReturnCanonicalForm()
+    public void Parse_WhenMalformed_ShouldThrowFormatException(string value)
     {
-        var parsed = TerritoryCode.Parse("au-nsw");
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = TerritoryCode.Parse(value);
+        });
 
-        Assert.AreEqual("AU", parsed.Country);
-        Assert.AreEqual("NSW", parsed.Subdivision);
+        Assert.IsTrue(ex.Message.Contains(value, StringComparison.Ordinal));
     }
 
     /// <summary>
-    /// Verifies that <see cref="TerritoryCode.Parse(string)" /> throws
-    /// <see cref="FormatException" /> for invalid input, and that the raw input is surfaced in
-    /// the message.
+    /// Verifies that parsing a <see langword="null" /> code throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputIsInvalid_ShouldThrowExactly()
+    public void Parse_WhenNull_ShouldThrowArgumentNullException()
     {
-        FormatException ex = Assert.ThrowsExactly<FormatException>(() => TerritoryCode.Parse("BAD!"));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = TerritoryCode.Parse(null!);
+        });
 
-        Assert.IsTrue(ex.Message.Contains("BAD!", StringComparison.Ordinal));
+        Assert.AreEqual("value", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies the full containment matrix for <see cref="TerritoryCode.Contains(TerritoryCode)" /> —
-    /// a country contains itself and its subdivisions, a subdivision contains only itself, and
-    /// unrelated territories never contain each other.
+    /// Verifies that <see cref="TerritoryCode.TryParse" /> reports failure and yields the default for invalid input.
     /// </summary>
-    [DataRow("AU", "AU", true)]
-    [DataRow("AU", "AU-NSW", true)]
-    [DataRow("AU", "AU-QLD", true)]
-    [DataRow("AU-NSW", "AU-NSW", true)]
-    [DataRow("AU-NSW", "AU", false)]
-    [DataRow("AU-NSW", "AU-QLD", false)]
-    [DataRow("AU", "NZ", false)]
-    [DataRow("AU", "NZ-AUK", false)]
-    [DataRow("AU-NSW", "NZ-AUK", false)]
-    [DataRow("au", "AU-NSW", true)]
-    [DataRow("AU-nsw", "au-NSW", true)]
     [TestMethod]
-    public void Contains_TruthTable(string left, string right, bool expected)
+    public void TryParse_WhenInvalid_ShouldReturnFalseAndDefault()
     {
-        var leftTerritory = TerritoryCode.Parse(left);
-        var rightTerritory = TerritoryCode.Parse(right);
-
-        Assert.AreEqual(expected, leftTerritory.Contains(rightTerritory));
+        Assert.IsFalse(TerritoryCode.TryParse("nope!", out TerritoryCode result));
+        Assert.IsTrue(result.IsEmpty);
     }
 
     /// <summary>
-    /// Verifies that <see cref="TerritoryCode.ParseList(string?)" /> splits a comma-separated
-    /// list, trims entries, drops invalid ones, and returns canonical forms.
+    /// Verifies that <see cref="TerritoryCode.TryParse" /> reports failure for <see langword="null" /> and empty input.
     /// </summary>
     [TestMethod]
-    public void ParseList_WhenMixedValidAndInvalid_ShouldReturnValidEntriesOnly()
+    public void TryParse_WhenNullOrEmpty_ShouldReturnFalse()
     {
-        IReadOnlyList<TerritoryCode> list = TerritoryCode.ParseList("AU, NZ, BAD!, US-CA");
-
-        Assert.AreEqual(3, list.Count);
-        Assert.AreEqual("AU", list[0].ToString());
-        Assert.AreEqual("NZ", list[1].ToString());
-        Assert.AreEqual("US-CA", list[2].ToString());
+        Assert.IsFalse(TerritoryCode.TryParse(null, out _));
+        Assert.IsFalse(TerritoryCode.TryParse(string.Empty, out _));
     }
 
     /// <summary>
-    /// Verifies that <see cref="TerritoryCode.ParseList(string?)" /> returns an empty sequence
-    /// for null, empty, or whitespace input.
+    /// Verifies that a country contains itself and its subdivisions, but a subdivision contains neither its parent nor a
+    /// sibling, and unrelated countries never contain each other.
     /// </summary>
-    [DataRow(null!)]
+    [TestMethod]
+    public void Contains_ShouldFollowParentChildSemantics()
+    {
+        TerritoryCode au = TerritoryCode.Parse("AU");
+        TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
+        TerritoryCode vic = TerritoryCode.Parse("AU-VIC");
+        TerritoryCode us = TerritoryCode.Parse("US");
+
+        Assert.IsTrue(au.Contains(au));
+        Assert.IsTrue(au.Contains(nsw));
+        Assert.IsTrue(nsw.Contains(nsw));
+
+        Assert.IsFalse(nsw.Contains(au));
+        Assert.IsFalse(nsw.Contains(vic));
+        Assert.IsFalse(au.Contains(us));
+        Assert.IsFalse(default(TerritoryCode).Contains(au));
+        Assert.IsFalse(au.Contains(default));
+    }
+
+    /// <summary>
+    /// Verifies that equality is case-insensitive after normalization and that equal codes share a hash code.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenSameCodeDifferentCase_ShouldBeEqual()
+    {
+        TerritoryCode a = TerritoryCode.Parse("au-nsw");
+        TerritoryCode b = TerritoryCode.Parse("AU-NSW");
+
+        Assert.IsTrue(a == b);
+        Assert.IsFalse(a != b);
+        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+        Assert.AreNotEqual(a, TerritoryCode.Parse("AU-VIC"));
+    }
+
+    /// <summary>
+    /// Verifies that the default value renders as the empty string and is empty.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenDefault_ShouldBeEmpty()
+    {
+        TerritoryCode code = default;
+
+        Assert.AreEqual(string.Empty, code.ToString());
+        Assert.IsTrue(code.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that the explicit string conversion parses and the implicit conversion yields the canonical form.
+    /// </summary>
+    [TestMethod]
+    public void Conversions_ShouldRoundTripThroughCanonicalForm()
+    {
+        TerritoryCode code = (TerritoryCode)"au-nsw";
+        string canonical = code;
+
+        Assert.AreEqual("AU-NSW", canonical);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TerritoryCode" /> flows into the string-based resolution surface via its implicit
+    /// conversion and resolves a subdivision-scoped occurrence.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenPassedTerritoryCode_ShouldResolveThroughStringSurface()
+    {
+        const string xml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.territory-interop">
+          <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+          <NotableDates>
+            <NotableDate id="state-holiday" displayName="State Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
+              <Rules><Rule id="x"><Applicability><Territory code="AU-NSW" /></Applicability><Strategy><Fixed month="January" day="26" /></Strategy></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        NotableDateService service = new(NotableDateResourceLoader.Load(xml));
+
+        Assert.AreEqual(1, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-NSW")).Count);
+        Assert.AreEqual(0, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-VIC")).Count);
+    }
+
+    /// <summary>
+    /// Verifies that a comma-separated list parses every entry in source order, normalizing case.
+    /// </summary>
+    [TestMethod]
+    public void ParseList_WhenCommaSeparated_ShouldParseAllInOrder()
+    {
+        IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU, au-nsw ,US-CA");
+
+        CollectionAssert.AreEqual(
+            new[] { "AU", "AU-NSW", "US-CA" },
+            codes.Select(c => c.ToString()).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" />, empty, or white-space input yields an empty list.
+    /// </summary>
+    [DataRow(null)]
     [DataRow("")]
     [DataRow("   ")]
     [TestMethod]
-    public void ParseList_WhenNullOrWhitespace_ShouldReturnEmpty(string? input)
+    public void ParseList_WhenNullEmptyOrWhitespace_ShouldReturnEmpty(string? value)
     {
-        IReadOnlyList<TerritoryCode> list = TerritoryCode.ParseList(input);
-
-        Assert.AreEqual(0, list.Count);
+        Assert.AreEqual(0, TerritoryCode.ParseList(value).Count);
     }
 
     /// <summary>
-    /// Verifies that <see cref="TerritoryCode.ToString" /> round-trips canonical forms for both
-    /// country-only and country-subdivision representations.
+    /// Verifies that blank entries between commas are ignored.
     /// </summary>
-    [DataRow("AU", "AU")]
-    [DataRow("au", "AU")]
-    [DataRow("au-nsw", "AU-NSW")]
-    [DataRow("AU-NSW", "AU-NSW")]
-    [DataRow("us-ca", "US-CA")]
     [TestMethod]
-    public void ToString_ShouldReturnCanonicalForm(string input, string expected)
+    public void ParseList_WhenBlankEntries_ShouldIgnoreThem()
     {
-        var parsed = TerritoryCode.Parse(input);
+        IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU,, ,AU-NSW");
 
-        Assert.AreEqual(expected, parsed.ToString());
+        Assert.AreEqual(2, codes.Count);
+    }
+
+    /// <summary>
+    /// Verifies that any malformed non-blank entry throws <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseList_WhenAnyEntryInvalid_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = TerritoryCode.ParseList("AU, not-a-code");
+        });
     }
 }

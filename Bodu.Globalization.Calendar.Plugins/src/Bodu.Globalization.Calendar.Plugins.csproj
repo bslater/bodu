@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu.Globalization.Calendar.Plugins</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <Title>Bodu Calendar — Plugins</Title>
+    <Description>External plugin model for Bodu.Globalization.Calendar: trust-gated loading of assemblies that contribute custom INotableDateAlgorithm implementations.</Description>
+    <PackageTags>$(PackageTags);calendar;notable-dates;plugins;extensibility</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="PluginsResourceStrings.resx">
+      <LastGenOutput>PluginsResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="PluginsResourceStrings.Designer.cs">
+      <DependentUpon>PluginsResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.Plugins.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

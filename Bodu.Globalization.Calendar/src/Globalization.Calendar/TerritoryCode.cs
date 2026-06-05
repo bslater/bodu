@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryCode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,228 +9,247 @@ using System.Globalization;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Represents an ISO 3166-1 alpha-2 country code with an optional ISO 3166-2 subdivision code (e.g. <c>AU</c> or
-/// <c>AU-NSW</c>).
+/// Represents a validated territory code composed of an ISO 3166-1 alpha-2 country and an optional subdivision (for
+/// example <c>AU</c> or <c>AU-NSW</c>), with parent/child containment semantics matching the resolution engine.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="TerritoryCode" /> is the canonical representation of regional scoping for notable date rules, observance
-/// adjustments, and queries. It supersedes ad-hoc string comparisons and removes ambiguity when matching parent
-/// territories against subdivisions.
+/// The engine accepts territories as plain strings; this value type is an opt-in convenience that parses, normalizes,
+/// and decomposes a code, and interoperates with the string surface through an implicit conversion to its canonical
+/// form. A country-only code is a parent of every subdivision sharing its country: <c>AU</c> contains <c>AU-NSW</c>,
+/// mirroring how a subnational query matches a rule scoped to its parent territory.
 /// </para>
 /// <para>
-/// A territory is considered to <em>contain</em> another when it is the parent country and the other is one of its
-/// subdivisions, or when the two are identical. Comparisons are performed case-insensitively against the canonical
-/// upper-case form.
+/// The default value is empty (<see cref="IsEmpty" /> is <see langword="true" />); it parses no code, contains nothing,
+/// and renders as the empty string.
 /// </para>
 /// </remarks>
-/// <example>
-/// <para>
-/// Parse and compare territory codes:
-/// </para>
-/// <code>
-///<![CDATA[
-/// Parse a country-level territory:
-/// if (TerritoryCode.TryParse("AU", out TerritoryCode australia))
-///     Console.WriteLine(australia.Country);        // "AU"
-///
-/// Parse a subdivision:
-/// TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
-/// Console.WriteLine(nsw.HasSubdivision);           // true
-/// Console.WriteLine(nsw.Subdivision);              // "NSW"
-/// Console.WriteLine(nsw);                          // "AU-NSW"
-///
-/// Containment: AU contains AU-NSW but not NZ:
-/// Console.WriteLine(australia.Contains(nsw));      // true
-/// Console.WriteLine(nsw.Contains(australia));      // false
-///
-/// Parse a comma-separated list (invalid entries are silently skipped):
-/// IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU, AU-NSW, AU-VIC");
-///]]>
-/// </code>
-/// </example>
-public readonly record struct TerritoryCode
+public readonly struct TerritoryCode : IEquatable<TerritoryCode>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TerritoryCode" /> class from a parsed country and optional
-    /// subdivision.
+    /// The normalized uppercase country part, or <see langword="null" /> for the default (empty) value.
     /// </summary>
-    /// <param name="country">The two-letter ISO 3166-1 alpha-2 country code in upper case.</param>
-    /// <param name="subdivision">
-    /// Optional ISO 3166-2 subdivision code in upper case, or <see langword="null" /> for no subdivision.
-    /// </param>
+    private readonly string? _country;
+
+    /// <summary>
+    /// The normalized uppercase subdivision part, or <see langword="null" /> when the code is country-only.
+    /// </summary>
+    private readonly string? _subdivision;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TerritoryCode" /> struct from already-validated, normalized parts.
+    /// </summary>
+    /// <param name="country">The normalized uppercase country part.</param>
+    /// <param name="subdivision">The normalized uppercase subdivision part, or <see langword="null" />.</param>
     private TerritoryCode(string country, string? subdivision)
     {
-        Country = country;
-        Subdivision = subdivision;
+        this._country = country;
+        this._subdivision = subdivision;
     }
 
     /// <summary>
-    /// Gets the two-letter ISO 3166-1 alpha-2 country code (e.g. <c>AU</c>, <c>US</c>).
+    /// Gets a value indicating whether this is the default (empty) code.
     /// </summary>
-    /// <returns>
-    /// The upper-case two-letter country code. Never <see langword="null" /> for an initialized value.
-    /// </returns>
-    public string Country { get; }
+    /// <returns><see langword="true" /> when no code is held; otherwise <see langword="false" />.</returns>
+    public bool IsEmpty =>
+        this._country is null;
 
     /// <summary>
-    /// Gets the optional ISO 3166-2 subdivision code (e.g. <c>NSW</c>, <c>CA</c>), or <see langword="null" /> when the
-    /// territory refers to the country as a whole.
+    /// Gets the country part of the code.
     /// </summary>
-    /// <returns>The upper-case subdivision code, or <see langword="null" /> for a country-level territory.</returns>
-    public string? Subdivision { get; }
+    /// <returns>The uppercase two-letter country, or the empty string for the default value.</returns>
+    public string Country =>
+        this._country ?? string.Empty;
 
     /// <summary>
-    /// Gets a value indicating whether this territory refers to a subdivision rather than a whole country.
+    /// Gets the subdivision part of the code.
     /// </summary>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="Subdivision" /> is non-<see langword="null" />; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    public bool HasSubdivision => Subdivision is not null;
+    /// <returns>The uppercase subdivision, or <see langword="null" /> when the code is country-only.</returns>
+    public string? Subdivision =>
+        this._subdivision;
 
     /// <summary>
-    /// Attempts to parse a string into a <see cref="TerritoryCode" />.
+    /// Gets a value indicating whether the code names a subdivision rather than a bare country.
     /// </summary>
-    /// <param name="value">The candidate value, in the form <c>CC</c> or <c>CC-SUB</c>. Whitespace is trimmed.</param>
-    /// <param name="result">When this method returns <see langword="true" />, contains the parsed territory.</param>
+    /// <returns><see langword="true" /> when a subdivision is present; otherwise <see langword="false" />.</returns>
+    public bool IsSubdivision =>
+        this._subdivision is not null;
+
+    /// <summary>
+    /// Gets the parent country code for a subdivision.
+    /// </summary>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="value" /> represents a valid territory; otherwise,
-    /// <see langword="false" />.
+    /// The country-only <see cref="TerritoryCode" /> for a subdivision, the same code when it is already country-only,
+    /// or the default value when this code is empty.
     /// </returns>
+    public TerritoryCode Parent =>
+        this._country is null ? default : new TerritoryCode(this._country, null);
+
+    /// <summary>
+    /// Converts a string to a <see cref="TerritoryCode" />, throwing when the string is not a valid code.
+    /// </summary>
+    /// <param name="value">The code to convert.</param>
+    /// <returns>The parsed code.</returns>
+    public static explicit operator TerritoryCode(string value) =>
+        Parse(value);
+
+    /// <summary>
+    /// Converts a <see cref="TerritoryCode" /> to its canonical string form.
+    /// </summary>
+    /// <param name="code">The code to convert.</param>
+    /// <returns>The canonical code string, accepted directly by the string-based resolution surface.</returns>
+    public static implicit operator string(TerritoryCode code) =>
+        code.ToString();
+
+    /// <summary>
+    /// Determines whether two codes are equal.
+    /// </summary>
+    /// <param name="left">The first code.</param>
+    /// <param name="right">The second code.</param>
+    /// <returns><see langword="true" /> when the codes are equal; otherwise <see langword="false" />.</returns>
+    public static bool operator ==(TerritoryCode left, TerritoryCode right) =>
+        left.Equals(right);
+
+    /// <summary>
+    /// Determines whether two codes are not equal.
+    /// </summary>
+    /// <param name="left">The first code.</param>
+    /// <param name="right">The second code.</param>
+    /// <returns><see langword="true" /> when the codes differ; otherwise <see langword="false" />.</returns>
+    public static bool operator !=(TerritoryCode left, TerritoryCode right) =>
+        !left.Equals(right);
+
+    /// <summary>
+    /// Parses a territory code, throwing when it is malformed.
+    /// </summary>
+    /// <param name="value">The code to parse.</param>
+    /// <returns>The parsed code.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="value" /> is not a two-letter country optionally followed by a hyphen and a one-to-three
+    /// alphanumeric subdivision.
+    /// </exception>
+    public static TerritoryCode Parse(string value)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        if (!TryParse(value, out TerritoryCode result))
+            throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_TerritoryCode, value));
+
+        return result;
+    }
+
+    /// <summary>
+    /// Attempts to parse a territory code without throwing.
+    /// </summary>
+    /// <param name="value">The code to parse, which may be <see langword="null" />.</param>
+    /// <param name="result">When this method returns, the parsed code, or the default value on failure.</param>
+    /// <returns><see langword="true" /> when parsing succeeds; otherwise <see langword="false" />.</returns>
     public static bool TryParse(string? value, out TerritoryCode result)
     {
         result = default;
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrEmpty(value))
             return false;
 
-        ReadOnlySpan<char> span = value.AsSpan().Trim();
-        var dashIndex = span.IndexOf('-');
+        int dash = value.IndexOf('-', StringComparison.Ordinal);
+        string country = dash < 0 ? value : value.Substring(0, dash);
+        string? subdivision = dash < 0 ? null : value.Substring(dash + 1);
 
-        ReadOnlySpan<char> countrySpan = dashIndex >= 0 ? span.Slice(0, dashIndex) : span;
-        ReadOnlySpan<char> subSpan = dashIndex >= 0 ? span.Slice(dashIndex + 1) : [];
-
-        if (countrySpan.Length != 2 || !IsAllAsciiLetters(countrySpan))
+        if (!IsValidCountry(country) || (subdivision is not null && !IsValidSubdivision(subdivision)))
             return false;
 
-        if (dashIndex >= 0 && (subSpan.Length < 1 || subSpan.Length > 3 || !IsAllAsciiAlphanumeric(subSpan)))
-            return false;
-
-        var country = countrySpan.ToString().ToUpperInvariant();
-        var subdivision = dashIndex >= 0 ? subSpan.ToString().ToUpperInvariant() : null;
-
-        result = new TerritoryCode(country, subdivision);
+        result = new TerritoryCode(country.ToUpperInvariant(), subdivision?.ToUpperInvariant());
         return true;
     }
 
     /// <summary>
-    /// Parses a string into a <see cref="TerritoryCode" />.
+    /// Parses a comma-separated list of territory codes.
     /// </summary>
-    /// <param name="value">The candidate value, in the form <c>CC</c> or <c>CC-SUB</c>.</param>
-    /// <returns>The parsed territory.</returns>
-    /// <exception cref="FormatException">
-    /// Thrown when <paramref name="value" /> is not a valid ISO 3166 territory code.
-    /// </exception>
-    public static TerritoryCode Parse(string value)
-    {
-        return TryParse(value, out TerritoryCode result)
-            ? result
-            : throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_TerritoryCode, value));
-    }
-
-    /// <summary>
-    /// Parses a comma-separated list of territory codes into a sequence of <see cref="TerritoryCode" /> values.
-    /// </summary>
-    /// <param name="value">The comma-separated list, or <see langword="null" />/empty for an empty result.</param>
-    /// <returns>The parsed territories. Invalid entries are skipped silently.</returns>
+    /// <param name="value">The comma-separated codes, which may be <see langword="null" />.</param>
+    /// <returns>
+    /// The parsed codes in source order, or an empty list when <paramref name="value" /> is <see langword="null" />,
+    /// empty, or white space. Blank entries between commas are ignored.
+    /// </returns>
+    /// <exception cref="FormatException">Any non-blank entry is not a valid territory code.</exception>
+    /// <remarks>
+    /// This parser is strict: every non-blank entry must be a valid code, otherwise the call throws. Use
+    /// <see cref="TryParse" /> per entry when leniency is required.
+    /// </remarks>
     public static IReadOnlyList<TerritoryCode> ParseList(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
             return [];
 
-        var parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var list = new List<TerritoryCode>(parts.Length);
-        foreach (var part in parts)
-        {
-            if (TryParse(part, out TerritoryCode parsed))
-                list.Add(parsed);
-        }
+        string[] parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        TerritoryCode[] result = new TerritoryCode[parts.Length];
+        for (int i = 0; i < parts.Length; i++)
+            result[i] = Parse(parts[i]);
 
-        return list;
+        return result;
     }
 
     /// <summary>
-    /// Determines whether this territory contains <paramref name="other" />.
+    /// Determines whether this code is, or is the parent of, the supplied code.
     /// </summary>
-    /// <param name="other">The territory to test for containment.</param>
+    /// <param name="other">The candidate code.</param>
     /// <returns>
-    /// <see langword="true" /> if the two territories are equal, or if this territory is a country and
-    /// <paramref name="other" /> is one of its subdivisions; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the codes are equal, or this code is a bare country and <paramref name="other" />
+    /// is a subdivision of it; otherwise <see langword="false" />.
     /// </returns>
-    /// <remarks>
-    /// <para>
-    /// <c>AU</c> contains both <c>AU</c> and <c>AU-NSW</c>, but never <c>AUT</c> or <c>NZ</c>.
-    /// </para>
-    /// <para>
-    /// <c>AU-NSW</c> contains only <c>AU-NSW</c>.
-    /// </para>
-    /// </remarks>
     public bool Contains(TerritoryCode other)
     {
-        if (!string.Equals(Country, other.Country, StringComparison.OrdinalIgnoreCase))
+        if (this.IsEmpty || other.IsEmpty)
             return false;
 
-        // Country-only contains both itself and any subdivision.
-        if (Subdivision is null)
+        if (this.Equals(other))
             return true;
 
-        // Subdivision matches exactly only when the other has the same subdivision.
-        return string.Equals(Subdivision, other.Subdivision, StringComparison.OrdinalIgnoreCase);
+        return !this.IsSubdivision && string.Equals(this._country, other._country, StringComparison.Ordinal);
     }
 
+    /// <inheritdoc />
+    public bool Equals(TerritoryCode other) =>
+        string.Equals(this._country, other._country, StringComparison.Ordinal)
+        && string.Equals(this._subdivision, other._subdivision, StringComparison.Ordinal);
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) =>
+        obj is TerritoryCode other && this.Equals(other);
+
+    /// <inheritdoc />
+    public override int GetHashCode() =>
+        HashCode.Combine(this._country, this._subdivision);
+
     /// <summary>
-    /// Returns the canonical string form of the territory (<c>CC</c> or <c>CC-SUB</c>).
+    /// Returns the canonical string form of the code.
     /// </summary>
-    /// <returns>The canonical string representation.</returns>
+    /// <returns>The country, the country and subdivision joined by a hyphen, or the empty string when default.</returns>
     public override string ToString() =>
-        Subdivision is null ? Country : $"{Country}-{Subdivision}";
+        this._country is null ? string.Empty
+        : this._subdivision is null ? this._country
+        : string.Concat(this._country, "-", this._subdivision);
 
     /// <summary>
-    /// Returns <see langword="true" /> if every character in <paramref name="value" /> is an ASCII letter (A–Z or a–z).
+    /// Determines whether a string is a valid two-letter country part.
     /// </summary>
-    /// <param name="value">The character span to test.</param>
-    /// <returns>
-    /// <see langword="true" /> if all characters are ASCII letters; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool IsAllAsciiLetters(ReadOnlySpan<char> value)
-    {
-        foreach (var c in value)
-        {
-            if (c is < 'A' or > 'Z')
-            {
-                if (c is < 'a' or > 'z')
-                    return false;
-            }
-        }
-
-        return true;
-    }
+    /// <param name="value">The candidate country.</param>
+    /// <returns><see langword="true" /> when valid; otherwise <see langword="false" />.</returns>
+    private static bool IsValidCountry(string value) =>
+        value.Length == 2 && char.IsAsciiLetter(value[0]) && char.IsAsciiLetter(value[1]);
 
     /// <summary>
-    /// Returns <see langword="true" /> if every character in <paramref name="value" /> is an ASCII letter or digit.
+    /// Determines whether a string is a valid one-to-three alphanumeric subdivision part.
     /// </summary>
-    /// <param name="value">The character span to test.</param>
-    /// <returns>
-    /// <see langword="true" /> if all characters are ASCII alphanumerics; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool IsAllAsciiAlphanumeric(ReadOnlySpan<char> value)
+    /// <param name="value">The candidate subdivision.</param>
+    /// <returns><see langword="true" /> when valid; otherwise <see langword="false" />.</returns>
+    private static bool IsValidSubdivision(string value)
     {
-        foreach (var c in value)
+        if (value.Length is < 1 or > 3)
+            return false;
+
+        foreach (char c in value)
         {
-            var isUpper = c is >= 'A' and <= 'Z';
-            var isLower = c is >= 'a' and <= 'z';
-            var isDigit = c is >= '0' and <= '9';
-            if (!isUpper && !isLower && !isDigit)
+            if (!char.IsAsciiLetterOrDigit(c))
                 return false;
         }
 

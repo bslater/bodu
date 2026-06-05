@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  United Kingdom notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent United Kingdom public holidays and widely observed
+  cultural dates. National rules use territory="GB"; country-specific rules
+  use their ISO subdivision territory codes (GB-ENG, GB-WLS, GB-SCT, GB-NIR).
+
+  Country-specific rules explicitly import only the inherited global and
+  Christian dates that the United Kingdom observes, and override naming,
+  territory, nonWorking, adjustment, or tagging behavior where required.
+
+  Note on family observances:
+    - Mothering Sunday (the UK equivalent of Mother's Day) falls on the
+      fourth Sunday of Lent, 21 days before Easter Sunday. It is defined
+      here rather than imported from global-family.xml because both the
+      name and the date differ from the internationally observed second
+      Sunday in May.
+    - Father's Day is observed on the third Sunday in June, consistent
+      with the global default defined in global-family.xml.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Common European observances, inherited from europe-common.xml. Christmas
+    Day re-adds the United Kingdom's substitute-day behavior (when 25 December
+    is a non-working day, the bank holiday moves to the next non-working day).
+    Boxing Day is declared locally below because it carries the same bank-holiday
+    substitution. Father's Day uses the inherited third-Sunday-in-June form;
+    Mothering Sunday is declared separately below (fourth Sunday of Lent).
+  -->
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="Valentine's Day" territory="GB" />
+    <Use name="Good Friday" territory="GB" />
+    <Use name="Easter Sunday" territory="GB" />
+    <Use name="Easter Monday" territory="GB" />
+    <Use name="Christmas Eve" territory="GB" />
+    <Use name="Christmas Day" territory="GB">
+      <Rule name="fixed-dec-25-nonworking-roll-gb" category="Holiday" nonWorking="true">
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextWorkingDay" />
+      </Rule>
+    </Use>
+    <Use name="Father's Day" territory="GB" />
+  </UseFrom>
+
+  <!--
+    Observances not part of the pan-European common set, inherited from the
+    main library globals.
+  -->
+
+  <UseFrom resource="./global-all.xml">
+    <Use name="International Women's Day" territory="GB" />
+    <Use name="April Fool's Day" territory="GB" />
+    <Use name="Halloween" territory="GB" />
+    <Use name="Remembrance Day" territory="GB" />
+  </UseFrom>
+
+  <!--
+    National United Kingdom holidays and observances.
+  -->
+
+  <NotableDate name="New Year's Day">
+    <Rule name="fixed-jan-01-weekend-roll-gb" category="Holiday" territory="GB" nonWorking="true">
+      <Fixed month="January" day="1" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Mothering Sunday">
+    <Rule name="offset-easter-sunday-21-gb"
+          category="Cultural"
+          territory="GB"
+          firstYear="1583"
+          comment="Observed on the fourth Sunday of Lent (Laetare Sunday), 21 days before Easter Sunday. A longstanding British and Irish tradition distinct from the internationally observed Mother's Day on the second Sunday in May. Historically, it was the day when people returned to their 'mother church'; today it is celebrated as a day to honor mothers.">
+      <OffsetFromAnchor name="Easter Sunday" offset="-21" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Early May Bank Holiday">
+    <Rule name="weekday-1st-mon-may-gb" category="Holiday" territory="GB" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Spring Bank Holiday">
+    <Rule name="weekday-last-mon-may-gb" category="Holiday" territory="GB" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Bonfire Night">
+    <Rule name="fixed-nov-05-gb" category="Cultural" territory="GB"
+          comment="Also known as Guy Fawkes Night. Commemorates the foiling of the Gunpowder Plot of 5 November 1605, when Guy Fawkes and co-conspirators were discovered attempting to blow up the Houses of Parliament. Marked with bonfires, fireworks, and the burning of 'Guy' effigies.">
+      <Fixed month="November" day="5" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Remembrance Sunday">
+    <Rule name="weekday-2nd-sun-nov-gb"
+          category="Observance"
+          territory="GB"
+          comment="Observed on the Sunday closest to 11 November (Armistice Day), which falls on the second Sunday of November each year. The principal national act of remembrance is held at the Cenotaph in Whitehall, London. Distinct from Remembrance Day (11 November), which is also observed in the UK.">
+      <DayOfWeekInMonth month="November" dayOfWeek="Sunday" weekOrdinal="Second" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Boxing Day">
+    <Rule name="fixed-dec-26-weekend-roll-gb" category="Holiday" territory="GB" nonWorking="true">
+      <Fixed month="December" day="26" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    England holidays and observances.
+  -->
+
+  <NotableDate name="Saint George's Day">
+    <Rule name="fixed-apr-23-gb-eng" category="Cultural" territory="GB-ENG"
+          comment="Patron saint's day of England, observed on 23 April, the traditional date of the death of Saint George (c. 303 AD). Widely observed as an English cultural day, though not a bank holiday.">
+      <Fixed month="April" day="23" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Wales holidays and observances.
+  -->
+
+  <NotableDate name="Saint David's Day">
+    <Rule name="fixed-mar-01-gb-wls" category="Cultural" territory="GB-WLS"
+          comment="Dydd Gŵyl Dewi Sant. Patron saint's day of Wales, observed on 1 March, the traditional date of the death of Saint David (Dewi Sant) in 589 AD. Widely observed in Wales as a national day with parades and the wearing of daffodils or leeks; not a bank holiday.">
+      <Fixed month="March" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Scotland holidays and observances.
+  -->
+
+  <NotableDate name="2 January">
+    <Rule name="fixed-jan-02-weekend-roll-gb-sct" category="Holiday" territory="GB-SCT" nonWorking="true">
+      <Fixed month="January" day="2" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Burns Night">
+    <Rule name="fixed-jan-25-gb-sct" category="Cultural" territory="GB-SCT"
+          comment="Celebrates the life and poetry of Robert Burns, Scotland's national poet, born 25 January 1759. Marked with traditional suppers of haggis, neeps, and tatties, accompanied by readings of Burns's poetry and the singing of Auld Lang Syne.">
+      <Fixed month="January" day="25" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Summer Bank Holiday (Scotland)">
+    <Rule name="weekday-1st-mon-aug-gb-sct" category="Holiday" territory="GB-SCT" nonWorking="true">
+      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saint Andrew's Day">
+    <Rule name="fixed-nov-30-weekend-roll-gb-sct" category="Holiday" territory="GB-SCT" nonWorking="true"
+          comment="Scotland's national day, honoring its patron saint Andrew the Apostle. Established as a bank holiday in Scotland by the St Andrew's Day Bank Holiday (Scotland) Act 2007, first observed on 30 November 2007.">
+      <Fixed month="November" day="30" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Northern Ireland holidays and observances.
+  -->
+
+  <NotableDate name="Saint Patrick's Day">
+    <Rule name="fixed-mar-17-weekend-roll-gb-nir" category="Holiday" territory="GB-NIR" nonWorking="true"
+          comment="A bank holiday in Northern Ireland only, honoring the patron saint of Ireland on the traditional date of his death (17 March, c. 461 AD). Also widely observed as a cultural celebration throughout the rest of the UK and Ireland.">
+      <Fixed month="March" day="17" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Battle of the Boyne">
+    <Rule name="fixed-jul-12-weekend-roll-gb-nir" category="Holiday" territory="GB-NIR" nonWorking="true"
+          comment="Also known as Orangemen's Day or The Twelfth. Commemorates the Battle of the Boyne on 11 July 1690 (Old Style; 1 July Julian), in which William of Orange defeated James II. The public holiday falls on 12 July.">
+      <Fixed month="July" day="12" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    England, Wales, and Northern Ireland holidays and observances.
+  -->
+
+  <NotableDate name="Summer Bank Holiday">
+    <Rule name="weekday-last-mon-aug-gb-eng" category="Holiday" territory="GB-ENG,GB-WLS,GB-NIR" nonWorking="true">
+      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Last" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

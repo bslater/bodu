@@ -2,67 +2,47 @@
 uid: Bodu.Globalization.Calendar.Data
 ---
 
-![Bodu.Globalization.Calendar](~/images/hero-calendar.svg)
+# Bodu.Globalization.Calendar.Data
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Data** is the namespace shared by the three regional calendar data bundles — `Bodu.Globalization.Calendar.Data.Americas`, `Bodu.Globalization.Calendar.Data.AsiaPacific`, and `Bodu.Globalization.Calendar.Data.Europe`. Each bundle ships embedded XML resources containing curated, per-country notable-date rules, exposed through a static factory class with identical shape: per-country `Create<Country>Provider()` methods, a `CreateProviders()` enumeration, and an advanced `CreateProvider(resourceName)` escape hatch.
+The **Bodu.Globalization.Calendar.Data.*** companion packages ship curated public-holiday resources for national and subdivision territories, authored on the v2 cookbook schema and built on the bundled common catalogues. They live in three independently versioned assemblies — **Americas**, **AsiaPacific**, and **Europe** — all exposing types in the `Bodu.Globalization.Calendar.Data` namespace, so a consumer pulls in only the regions it needs.
 
-The bundles are independent NuGet packages so consumers pull in only the regions they need. They are otherwise drop-in: register their providers with `NotableDateService` and the rules flow through the resolution pipeline like any other.
+Each pack loads a country's embedded `region-<cc>.xml`, resolves its `<Imports>` against the common catalogues (Europe additionally serves its own `europe-common` hub), validates, and hands back a <xref:Bodu.Globalization.Calendar.NotableDateResource> — or a <xref:Bodu.Globalization.Calendar.NotableDateService> pre-wired over it.
 
 ## Static documentation
 
-- **[`Bodu.Globalization.Calendar` introduction](~/docs/calendar/index.md)** — how the bundles fit into the broader surface.
-- **[Calendar data packs guide](~/guides/calendar/data-packs.md)** — installation, registration, and per-bundle coverage.
+- **[Calendar data packs](~/guides/calendar/data-packs.md)** — per-pack install commands, territory coverage, and composition patterns.
+- **[Territories and regional composition](~/guides/calendar/territories.md)** — country / subdivision containment and how regional rules compose.
+- **[Notable-date catalogue](~/guides/calendar/catalogue/index.md)** — the generated list of which dates each region ships.
 
-## Bundle factories
+## Key types
 
-Each bundle exposes a single static factory class with parallel shape:
+Three static factories, identical in shape:
 
-| Bundle | Factory class | Per-country providers |
-|---|---|---|
-| Americas | <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData> | United States, Canada |
-| AsiaPacific | <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData> | Australia, China, India, Japan, South Korea, Malaysia, New Zealand, Singapore |
-| Europe | <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData> | Germany, Spain, France, United Kingdom, Ireland, Italy, Netherlands, Sweden |
+- <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData> — `SupportedCountries` = `CA`, `US`.
+- <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData> — `SupportedCountries` = `AU`, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
+- <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData> — 28 EU/EEA territories (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`).
 
-Each factory class follows the same shape:
+Each exposes:
 
-- `static Assembly DataAssembly` — the bundle's host assembly.
-- `static INotableDateRuleProvider Create<Country>Provider()` — one method per supported country, returning an <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> configured against the bundle's embedded XML resource.
-- `static IEnumerable<INotableDateRuleProvider> CreateProviders()` — yields every supported country's provider in a stable order.
-- `static INotableDateRuleProvider CreateProvider(string resourceName)` — advanced escape hatch for loading a named resource directly. Use the public `<Country>ResourceName` constants to pass the canonical resource path.
-- `static string <Country>ResourceName` — public constant naming each embedded resource (e.g. `AmericasCalendarData.UnitedStatesResourceName` = `"Bodu/Globalization/Calendar/Resources/region-us.xml"`).
+- `static IReadOnlyList<string> SupportedCountries { get; }` — the countries the pack carries.
+- `static NotableDateResource LoadResource(string territory)` — load the resource for a country or one of its subdivisions (e.g. `"US"`, `"CA-ON"`, `"AU-WA"`, `"GB-SCT"`). Throws `ArgumentException` when the country is not in the pack.
+- `static NotableDateService CreateService(string territory)` — equivalent to `new NotableDateService(LoadResource(territory))`.
 
-## Example
+A subdivision argument selects its country's resource; the full territory is honoured when you query, so national and subdivision rules compose.
+
+## Minimal sample
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data;
+using Bodu.Globalization.Calendar.Data.Americas;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-// Single country.
-var service = new NotableDateService(
-    ruleProviders: new[] { AmericasCalendarData.CreateUnitedStatesProvider() });
+// A service for United States federal + state coverage:
+NotableDateService us = AmericasCalendarData.CreateService("US");
+IReadOnlyList<NotableDate> y2026 = us.Resolve(2026, "US");
 
-// Multiple regions composed.
-var multi = new NotableDateService(
-    ruleProviders: AmericasCalendarData.CreateProviders()
-        .Concat(EuropeCalendarData.CreateProviders())
-        .Concat(AsiaPacificCalendarData.CreateProviders()));
-
-// Selective subset.
-var selective = new NotableDateService(
-    ruleProviders: new[]
-    {
-        AmericasCalendarData.CreateUnitedStatesProvider(),
-        EuropeCalendarData.CreateUnitedKingdomProvider(),
-        AsiaPacificCalendarData.CreateAustraliaProvider(),
-    });
+// Or just the resource, e.g. to register through DI or compose with custom collaborators:
+NotableDateResource au = AsiaPacificCalendarData.LoadResource("AU-WA");
 ```
-
-## Notes
-
-- **Assembly-chain resolution.** Each provider is configured with an assembly chain `[DataAssembly, typeof(NotableDateService).Assembly]`, so `<UseFrom>` directives in region-specific rule files resolve their dependencies from the bundle first and the main library second.
-- **Algorithm dependencies.** The Asia-Pacific bundle declares several rules that delegate to `INotableDateAlgorithm` implementations (Hindu festivals, Vesak, Asalha Puja, Losar, Qingming, Lunar New Year). The algorithms ship with the main `Bodu.Globalization.Calendar` package; missing algorithms silently produce no occurrences. Use <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmRegistry> to register custom or replacement algorithms.
-- **Per-country resources are independent.** Each `Create<Country>Provider()` returns its own provider instance — order them appropriately in your service constructor; providers are merged in registration order.
-- **Independent release cadence.** Each bundle is its own NuGet package and ships independently of the main `Bodu.Globalization.Calendar` library — a refresh of Australian public holiday rules does not require a main-library re-release.
-- **See also:** the [Calendar data packs guide](~/guides/calendar/data-packs.md), the [territories guide](~/guides/calendar/territories.md), the [`NotableDateService` reference](~/guides/calendar/notable-dates.md).

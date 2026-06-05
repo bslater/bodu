@@ -1,59 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Sweden (SE) notable-date resource using the Western / Gregorian calendar.
+  ================================================================================================================
+  Sweden (SE) — notable-date resource pack
+  ================================================================================================================
 
-  Public holidays (allmänna helgdagar) plus the de-facto-closed Christmas Eve.
-  Midsummer Day and All Saints' Day each fall on the Saturday within a fixed
-  seven-day window and are expressed with the WeekdayNearDate strategy (the
-  Saturday on or after the window's first day).
+  Migrated from the v1 region-se.xml to the v2 cookbook schema. All rules are scoped to territory "SE".
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="SE"; Sweden-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared European observances are IMPORTED from the europe-common hub and given an SE territory scope through the
+      import <Use> directive. The shared catalogue carries only the bare calculation strategy; the territory supplies
+      the local observance.
+
+    * Sweden-specific concepts (Epiphany, May Day, Second Day of Christmas, Midsummer Day, All Saints' Day, and the
+      National Day) are declared INLINE below. As in Finland, Swedish Midsummer and All Saints' float to a Saturday,
+      so they use the WeekdayNearDate strategy rather than a fixed date.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="SE" />
-    <Use name="Epiphany" territory="SE" />
-    <Use name="Easter Sunday" territory="SE" />
-    <Use name="Good Friday" territory="SE" />
-    <Use name="Easter Monday" territory="SE" />
-    <Use name="International Workers' Day" as="May Day" territory="SE" />
-    <Use name="Ascension Day" territory="SE" />
-    <Use name="Pentecost Sunday" as="Whit Sunday" territory="SE" />
-    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="SE" />
-    <Use name="Christmas Day" territory="SE" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="SE" />
-    <Use name="New Year's Eve" territory="SE" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.se">
 
   <!--
-    National Swedish holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Midsummer Day">
-    <Rule name="weekday-sat-onorafter-jun-20-se" category="Holiday" territory="SE" nonWorking="true"
-          comment="Midsommardagen. The Saturday falling between 20 and 26 June.">
-      <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
-      <Tag>Cultural</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="All Saints' Day">
-    <Rule name="weekday-sat-onorafter-oct-31-se" category="Holiday" territory="SE" nonWorking="true"
-          comment="Alla helgons dag. The Saturday falling between 31 October and 6 November.">
-      <WeekdayNearDate dayOfWeek="Saturday" month="October" day="31" direction="OnOrAfter" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Sweden. New Year's Day (1
+      January) carries a weekend roll to the next working day; New Year's Eve (31 December) is a widely marked
+      observance. Good Friday (-2), Easter Monday (+1), Ascension (+39), and Whit Sunday (+49) derive from the
+      Easter Sunday anchor the hub re-exports. Ascension and Christmas Eve (24 December) are re-scoped to non-working
+      public holidays; Christmas Eve is the principal Swedish Christmas day off. Christmas Day (25 December) is
+      fixed.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="SE">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="new-years-eve" territory="SE" />
+      <Use notableDateRef="easter-sunday" territory="SE" />
+      <Use notableDateRef="good-friday" territory="SE" />
+      <Use notableDateRef="easter-monday" territory="SE" />
+      <Use notableDateRef="ascension-day" territory="SE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-sunday" territory="SE" />
+      <Use notableDateRef="christmas-eve" territory="SE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="SE" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="National Day of Sweden">
-    <Rule name="fixed-jun-06-se" category="Holiday" territory="SE" nonWorking="true" firstYear="2005"
-          comment="Sveriges nationaldag. Commemorates the election of Gustav Vasa as king in 1523 and the adoption of the 1809 constitution. A public holiday since 2005.">
-      <Fixed month="June" day="6" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-</NotableDates>
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany (Trettondedag jul) — 6 January; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+        <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- May Day (Första maj) — 1 May, an international workers' day; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="may-day" displayName="May Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas (Annandag jul) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Midsummer Day (Midsommardagen) — the Saturday falling between 20 and 26 June (the Saturday on or after 20
+      June). A public holiday; the eve is the more widely celebrated day. Strategy: WeekdayNearDate (Saturday on or
+      after 20 June).
+    -->
+    <NotableDate id="midsummer-day" displayName="Midsummer Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+        <Strategy><WeekdayNearDate month="June" day="20" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      All Saints' Day (Alla helgons dag) — the Saturday falling between 31 October and 6 November (the Saturday on
+      or after 31 October). Sweden observes it on a floating Saturday rather than the fixed 1 November feast. A
+      public holiday. Strategy: WeekdayNearDate (Saturday on or after 31 October).
+    -->
+    <NotableDate id="all-saints-day" displayName="All Saints' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+        <Strategy><WeekdayNearDate month="October" day="31" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day of Sweden (Sveriges nationaldag) — 6 June, commemorating the 1523 election of Gustav Vasa and the 1809 constitution; became a public holiday in 2005, so the fromYear="2005" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="national-day-of-sweden" displayName="National Day of Sweden" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability fromYear="2005"><Territory code="SE" /></Applicability>
+        <Strategy><Fixed month="June" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

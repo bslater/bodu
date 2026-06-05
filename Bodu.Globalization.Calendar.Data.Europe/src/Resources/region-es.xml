@@ -1,47 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Spain (ES) notable-date resource using the Western / Gregorian calendar.
+  ================================================================================================================
+  Spain (ES) — notable-date resource pack
+  ================================================================================================================
 
-  National public holidays (fiestas nacionales). Spain's seventeen autonomous
-  communities each add regional holidays under their ISO 3166-2 subdivision
-  codes; only the national set is modelled here.
+  Migrated from the v1 region-es.xml to the v2 cookbook schema. All rules are scoped to territory "ES"; the
+  holidays that vary by autonomous community (comunidad autónoma) are not modelled — only the nationwide set.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="ES"; Spain-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared European observances — including the common Catholic feasts (the Assumption and the Immaculate
+      Conception) — are IMPORTED from the europe-common hub and given an ES territory scope through the import
+      <Use> directive. The hub carries the resolved calculation strategy; the territory supplies the local
+      observance.
+
+    * Spain-specific concepts (Epiphany, Labour Day, the National Day, and Constitution Day) are declared INLINE
+      below.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
+  Note that Easter Monday is observed only in some communities (e.g. Catalonia) and is therefore not imported here;
+  Good Friday (Viernes Santo) is the nationwide Holy Week public holiday.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="ES" />
-    <Use name="Epiphany" territory="ES" />
-    <Use name="Easter Sunday" territory="ES" />
-    <Use name="Good Friday" territory="ES" />
-    <Use name="International Workers' Day" as="Labour Day" territory="ES" />
-    <Use name="Assumption of Mary" territory="ES" />
-    <Use name="All Saints' Day" territory="ES" />
-    <Use name="Immaculate Conception" territory="ES" />
-    <Use name="Christmas Day" territory="ES" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.es">
 
   <!--
-    National Spanish holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="National Day of Spain">
-    <Rule name="fixed-oct-12-es" category="Holiday" territory="ES" nonWorking="true"
-          comment="Fiesta Nacional de España. Commemorates the arrival of Christopher Columbus in the Americas on 12 October 1492. Also observed as the feast of the Virgen del Pilar.">
-      <Fixed month="October" day="12" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Constitution Day">
-    <Rule name="fixed-dec-06-es" category="Holiday" territory="ES" nonWorking="true"
-          comment="Día de la Constitución. Marks the referendum of 6 December 1978 that approved the current Spanish Constitution.">
-      <Fixed month="December" day="6" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Spain. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend. Good Friday (-2, Viernes Santo) derives
+      from the Easter Sunday anchor the hub re-exports and is the nationwide Holy Week holiday. All Saints' (1
+      November) is re-scoped to a non-working public holiday. The Assumption (15 August) and Immaculate Conception
+      (8 December) are the common Catholic feasts the hub defines inline. Christmas Day (25 December) is fixed.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="ES">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="ES" />
+      <Use notableDateRef="good-friday" territory="ES" />
+      <Use notableDateRef="assumption-of-mary" territory="ES" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="ES" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="ES" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="ES" />
+    </Import>
+  </Imports>
 
-</NotableDates>
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany (Día de Reyes) — 6 January; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
+        <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Labour Day (Día del Trabajador) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day of Spain (Fiesta Nacional / Día de la Hispanidad) — 12 October; the national day and a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="national-day-of-spain" displayName="National Day of Spain" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
+        <Strategy><Fixed month="October" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Constitution Day (Día de la Constitución) — 6 December, marking the 1978 constitution; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
+        <Strategy><Fixed month="December" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

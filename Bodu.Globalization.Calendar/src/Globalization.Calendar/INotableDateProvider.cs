@@ -1,95 +1,39 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using SysGlobal = System.Globalization;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Produces fully-populated <see cref="NotableDate" /> instances for a specific notable event, year by year — a
-/// self-contained alternative to authoring a <see cref="NotableDateRule" /> in XML or JSON when the calculation and
-/// metadata are best expressed directly in code.
+/// Contributes fully-formed notable-date occurrences to a <see cref="NotableDateService" /> in code, for sources that
+/// cannot be expressed as authored resource rules.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="INotableDateProvider" /> differs from <see cref="INotableDateAlgorithm" /> in scope and responsibility:
-/// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <see cref="INotableDateAlgorithm" /> computes only the <em>anchor date</em> for a year. Surrounding metadata (
-/// <see cref="NotableDate.Name" />, <see cref="NotableDate.Category" />, <see cref="NotableDate.Tags" />, territory,
-/// duration) is supplied by the <see cref="NotableDateRule" /> that references the algorithm. This is the preferred
-/// extensibility seam when the same calculation is reused by multiple rules (Easter Sunday, Easter Monday via offset,
-/// Good Friday via offset).
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <see cref="INotableDateProvider" /> bundles both the calculation and the metadata into a single self-describing
-/// component. It returns ready-made <see cref="NotableDate" /> values complete with name, category, tags, calendar
-/// binding, and non-working flag. Use it when a notable event has no useful presence in the rule store (it is computed
-/// dynamically, sourced from an external service, or unique to a particular host).
-/// </description>
-/// </item>
-/// </list>
-/// <para>
-/// Implementations should report the supported year range via <see cref="MinSupportedYear" /> and
-/// <see cref="MaxSupportedYear" />, validate the optional calendar argument, and return an empty list rather than
-/// throwing for years outside their supported range or for calendar combinations they cannot service.
+/// A provider returns finished <see cref="NotableDate" /> occurrences — date and all metadata — for a requested window
+/// and territory, complementing the resource-authored rules. It is the code-first counterpart to authoring a rule, and
+/// is registered with the service through the provider-aware constructor.
 /// </para>
 /// <para>
-/// The built-in base type <c>EasterSundayNotableDateProviderBase</c> demonstrates a typical implementation: it caches
-/// the computed date per year and returns a single <see cref="NotableDate" /> with provider-defined name, category, and
-/// tags.
+/// Provider occurrences are <b>terminal</b>: the service emits them as supplied (after intersecting them with the
+/// requested range and applying any query filter), so they do <b>not</b> pass through adjustment policies, declarative
+/// overrides, territory specificity, or the occupied-day interaction that resource rules participate in. They do take
+/// part in the final date ordering and the resource's same-day collision policy alongside resource occurrences. A
+/// provider that needs observed-date shifting must compute it itself.
 /// </para>
 /// </remarks>
 public interface INotableDateProvider
 {
     /// <summary>
-    /// Gets the earliest year for which the provider can produce a <see cref="NotableDate" />.
+    /// Produces the notable-date occurrences that fall within the requested range for the territory.
     /// </summary>
-    /// <returns>The inclusive minimum year supported by the provider.</returns>
-    int MinSupportedYear { get; }
-
-    /// <summary>
-    /// Gets the latest year for which the provider can produce a <see cref="NotableDate" />.
-    /// </summary>
-    /// <returns>The inclusive maximum year supported by the provider.</returns>
-    int MaxSupportedYear { get; }
-
-    /// <summary>
-    /// Returns a value indicating whether the specified <paramref name="year" /> is supported by the provider.
-    /// </summary>
-    /// <param name="year">The year to test.</param>
+    /// <param name="range">The inclusive range being resolved.</param>
+    /// <param name="territory">The requested territory code.</param>
     /// <returns>
-    /// <see langword="true" /> if the provider can resolve dates for the specified <paramref name="year" />; otherwise,
-    /// <see langword="false" />.
+    /// The occurrences the provider contributes; an empty sequence when it has none. Occurrences whose span does not
+    /// intersect <paramref name="range" /> are ignored by the service.
     /// </returns>
-    bool SupportsYear(int year);
-
-    /// <summary>
-    /// Resolves all notable dates produced by the provider for the specified <paramref name="year" />.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Most providers emit a single <see cref="NotableDate" /> per year. Providers that produce a family of related
-    /// occurrences (for example a multi-day festival exposed as a series of individual <see cref="NotableDate" />
-    /// entries rather than a single span) may return more than one element.
-    /// </para>
-    /// </remarks>
-    /// <param name="year">The year for which notable dates should be resolved.</param>
-    /// <param name="calendar">
-    /// Optional. A calendar context associated with the resolved dates. Providers may reject unsupported calendar
-    /// types.
-    /// </param>
-    /// <returns>A read-only list of resolved notable dates for the specified year.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
-    /// <exception cref="NotSupportedException">
-    /// Thrown when the specified <paramref name="calendar" /> type is not supported by the provider.
-    /// </exception>
-    IReadOnlyList<NotableDate> GetDates(int year, SysGlobal.Calendar? calendar = null);
+    IEnumerable<NotableDate> GetNotableDates(DateRange range, string territory);
 }

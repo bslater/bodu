@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="ra-t ra-d">
   <title id="ra-t">Rule authoring — three provider approaches</title>
-  <desc id="ra-d">Three approaches supply rules to NotableDateService. In-Code Objects implement INotableDateRuleProvider directly. XML Resource Files use XmlResourceNotableDateRuleProvider with an embedded .xml file. Satellite Assemblies use the same provider but pass a separate assembly. All three are passed via the ruleProviders constructor parameter. Optional runtime overrides implement INotableDateRuleOverrideProvider and are passed via NotableDateServiceOptions.OverrideProviders.</desc>
+  <desc id="ra-d">Three approaches supply rules to NotableDateService. In-Code Objects build a NotableDateResource directly. XML Resource Files load through NotableDateResourceLoader from an embedded .xml file. Satellite Assemblies use the same loader but pass a separate assembly. All three produce the NotableDateResource passed to the constructor. Optional runtime overrides live in the document's Overrides section.</desc>
 
   <defs>
     <style>
@@ -46,13 +46,13 @@
     <rect class="pan" width="800" height="240" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Rule authoring — three provider approaches</text>
+    <text class="ttl" x="16" y="20">Rule authoring — three loading approaches</text>
 
     <!-- In-Code Objects -->
     <g transform="translate(16 50)">
       <rect class="ic" width="214" height="40" rx="5"/>
       <text class="lbl" fill="#2DD4BF" x="107" y="14">In-Code Objects</text>
-      <text class="sub" x="107" y="27">INotableDateRuleProvider</text>
+      <text class="sub" x="107" y="27">NotableDateResource</text>
       <text class="mut" x="107" y="39">custom C# implementation</text>
     </g>
 
@@ -60,7 +60,7 @@
     <g transform="translate(16 102)">
       <rect class="xf" width="214" height="40" rx="5"/>
       <text class="lbl" fill="#93C5FD" x="107" y="14">XML Resource Files</text>
-      <text class="sub" x="107" y="27">XmlResourceNotableDateRuleProvider</text>
+      <text class="sub" x="107" y="27">NotableDateResourceLoader</text>
       <text class="mut" x="107" y="39">embedded .xml — same assembly</text>
     </g>
 
@@ -68,7 +68,7 @@
     <g transform="translate(16 154)">
       <rect class="sa" width="214" height="40" rx="5"/>
       <text class="lbl" fill="#C4B5FD" x="107" y="14">Satellite Assembly</text>
-      <text class="sub" x="107" y="27">XmlResourceNotableDateRuleProvider</text>
+      <text class="sub" x="107" y="27">NotableDateResourceLoader</text>
       <text class="mut" x="107" y="39">assembly: separate project</text>
     </g>
 
@@ -76,7 +76,7 @@
     <g transform="translate(16 207)">
       <rect class="ov" width="214" height="32" rx="5"/>
       <text class="lbl" fill="#94A3B8" x="107" y="13">Runtime Overrides</text>
-      <text class="sub" x="107" y="26">INotableDateRuleOverrideProvider</text>
+      <text class="sub" x="107" y="26">document Overrides section</text>
     </g>
     <text class="mut" x="123" y="248" text-anchor="middle">optional</text>
 
@@ -90,11 +90,11 @@
     <g transform="translate(270 78)">
       <rect class="svc" width="288" height="100" rx="5"/>
       <text class="lbl" x="144" y="18">NotableDateService</text>
-      <text class="sub" x="144" y="36">ruleProviders: INotableDateRuleProvider[]</text>
-      <text class="sub" x="144" y="51">workingWeek: WeekPattern (or WorkingDaysOfWeek)</text>
-      <text class="sub" x="144" y="66">options: NotableDateServiceOptions { OverrideProviders, … }</text>
+      <text class="sub" x="144" y="36">resource: NotableDateResource</text>
+      <text class="sub" x="144" y="51">workingWeek: WeekPattern (in ResolutionPolicy)</text>
+      <text class="sub" x="144" y="66">collaborators { algorithms, handlers, … }</text>
       <text class="mut" x="144" y="82">AlgorithmRegistry · AdjustmentHandlers · Plugins · …</text>
-      <text class="mut" x="144" y="95">per-year cache (ConcurrentDictionary)</text>
+      <text class="mut" x="144" y="95">immutable resource · resolved per query</text>
     </g>
 
     <!-- Arrow: service → output -->
@@ -103,7 +103,7 @@
     <!-- Output box -->
     <g transform="translate(594 108)">
       <rect class="out" width="180" height="40" rx="5"/>
-      <text class="lbl" fill="#FBBF24" x="90" y="15">GetNotableDates(…)</text>
+      <text class="lbl" fill="#FBBF24" x="90" y="15">Resolve(…)</text>
       <text class="sub" x="90" y="29">IReadOnlyList&lt;NotableDate&gt;</text>
     </g>
   </g>

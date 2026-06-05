@@ -4,212 +4,291 @@ title: Date calculation algorithms
 
 # Date calculation algorithms
 
-Several notable dates cannot be expressed as a fixed month / day or an *n*th weekday-of-month — their position in the calendar depends on astronomical or ecclesiastical calculations. **Bodu.Globalization.Calendar** ships built-in implementations for the most common cases.
+Every <xref:Bodu.Globalization.Calendar.NotableDateRule> finds its *nominal* date for a year through exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The loader maps each `<Strategy>` element in a rule document to one of the six built-in strategies. Five compute a date from calendar arithmetic; the sixth — `<Algorithm>` — delegates to a named astronomical or ecclesiastical calculator that cannot be expressed as a formula (Easter, the equinoxes, Vesak, Diwali, Qingming, …).
 
-For the conceptual distinction between *algorithm* and *fixed rule*, see [Core concepts — Algorithm vs. fixed rule](../../docs/calendar/concepts.md#algorithm-vs-fixed-rule).
+This guide covers the six strategy kinds and the `<Strategy>` element each maps to, the full set of built-in `<Algorithm>` keys, `AlgorithmDateStrategy.IsKnownKey`, how to implement and register a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>, and how `<OffsetFromRule>` resolves another rule's date through the strategy resolution context.
 
-## Built-in algorithms
+For the conceptual distinction between *algorithm* and *fixed rule*, see [Core concepts — Algorithm vs. fixed rule](../../docs/calendar/concepts.md#algorithm-vs-fixed-rule). For the namespace overview, see the [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms).
 
-The following classes implement <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm> and can be registered in a `NotableDateAlgorithmRegistry` for use by rules with `Strategy = DateResolutionStrategy.Algorithm`:
+---
 
-| Class | Date it computes | Notes |
+## The six strategy kinds
+
+A `<Rule>` element carries exactly one `<Strategy>` child, and that child is exactly one of the elements below. Each maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> implementation. You rarely construct these by hand — the loader builds them from the document — but they are the vocabulary the engine resolves against. The strategy contract is a single method, `DateOnly? Calculate(int year, StrategyResolutionContext context)`, returning `null` when the rule produces no occurrence for that year.
+
+| `<Strategy>` element | Strategy type | What it computes |
 |---|---|---|
-| `EasterSundayNotableDateAlgorithm` | Easter Sunday | Gregorian computus for years ≥ 1583; Julian computus otherwise. |
-| `HinduLunarNotableDateAlgorithm` | Hindu lunar festivals (Diwali, Holi, …) | Approximate Gregorian projection of a Hindu panchanga date. |
-| `LosarNotableDateAlgorithm` | Losar (Tibetan New Year) | Tibetan lunisolar calculation. |
-| `VesakNotableDateAlgorithm` | Vesak (Buddha's birthday) | Full-moon calculation per Theravāda tradition. |
-| `AsalhaPujaNotableDateAlgorithm` | Asalha Puja (Dhamma Day) | Full moon of the 8th lunar month. |
-| `QingmingNotableDateAlgorithm` | Qingming (Tomb-Sweeping Day) | Solar term 15° after the Spring Equinox (typically 4–5 April). |
+| `<Fixed>` | <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> | A specific month + day every year, optionally in a non-Gregorian calendar. |
+| `<DayOfWeekInMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy> | The *n*th or last weekday in a month. |
+| `<RelativeWeekdayInMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy> | A weekday positioned relative to a weekday-in-month anchor. |
+| `<WeekdayNearDate>` | <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy> | A weekday on / before / after / nearest a fixed reference date. |
+| `<OffsetFromRule>` | <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> | A signed day-offset from another rule's occurrence. |
+| `<Algorithm>` | <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> | Dispatch to a named algorithm key. |
 
-The `Bodu.Globalization.Calendar.Providers` namespace contains two `INotableDateProvider` implementations — `GregorianEasterSundayNotableDateProvider` and `OrthodoxEasterSundayNotableDateProvider` — which can be used directly when you want to compute Easter dates outside the rule-resolution pipeline.
+### `<Fixed>` — a fixed month and day
 
-## Registering algorithms
+The most common strategy: the same calendar position every year. `month` is a number 1–12 or an English month name; `day` is the day of month. An invalid combination (e.g. 29 February in a non-leap year) yields no occurrence for that year and the rule is skipped.
 
-Rules reference algorithms by string key via `NotableDateRule.AlgorithmKey`. Register the corresponding instance in a `NotableDateAlgorithmRegistry` and supply it to `NotableDateService`:
+```xml
+<NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday">
+  <Rules>
+    <Rule id="default">
+      <Strategy><Fixed month="January" day="1" /></Strategy>
+    </Rule>
+  </Rules>
+</NotableDate>
+```
+
+`<Fixed>` also expresses dates in a non-Gregorian calendar via the enclosing `<Applicability calendar="...">` (`Hijri`, `UmmAlQura`, `Hebrew`, `Persian`, `ChineseLunisolar`). Because a short Hijri month can recur twice in a single Gregorian year, <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> additionally exposes `CalculateAll`; the optional `skipLeapMonth` and `sweepCalendarYears` attributes tune lunisolar projection. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+
+### `<DayOfWeekInMonth>` — the *n*th weekday in a month
+
+Driven by <xref:Bodu.Globalization.Calendar.WeekOrdinal> (`First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`). `Fifth` yields no occurrence in months that lack a fifth instance; `Last` always selects the final occurrence.
+
+```xml
+<!-- US Thanksgiving — the fourth Thursday in November. -->
+<Rule id="default">
+  <Strategy><DayOfWeekInMonth month="11" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy>
+</Rule>
+```
+
+### `<RelativeWeekdayInMonth>` — a weekday relative to an anchor weekday
+
+Locates a weekday-in-month anchor (the `weekOrdinal`-th `dayOfWeek` of `month`), then steps to a `relativeDayOfWeek` positioned by `direction` (a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value) from it.
+
+```xml
+<!-- US Election Day — the Tuesday after the first Monday in November. -->
+<Rule id="default">
+  <Strategy>
+    <RelativeWeekdayInMonth month="11" dayOfWeek="Monday" weekOrdinal="First"
+                            relativeDayOfWeek="Tuesday" direction="After" />
+  </Strategy>
+</Rule>
+```
+
+### `<WeekdayNearDate>` — a weekday near a fixed date
+
+Driven by <xref:Bodu.Globalization.Calendar.WeekdayProximity> (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`) relative to the `month`/`day` reference.
+
+```xml
+<!-- Victoria Day (CA) — the Monday on or before 24 May. -->
+<Rule id="default">
+  <Strategy><WeekdayNearDate month="5" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy>
+</Rule>
+```
+
+### `<OffsetFromRule>` — a signed offset from another rule
+
+References another concept's rule via `notableDateRef` (and optional `ruleRef`) and adds a signed `offsetDays`. This is how the Easter cluster is authored: Good Friday and Easter Monday hang off Easter Sunday. The referenced rule is resolved first; references are resolved cycle-safely within the resource.
+
+```xml
+<NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious">
+  <Rules>
+    <Rule id="default"><Strategy><Algorithm key="western-easter" /></Strategy></Rule>
+  </Rules>
+</NotableDate>
+
+<NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday">
+  <Rules>
+    <Rule id="default">
+      <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy>
+    </Rule>
+  </Rules>
+</NotableDate>
+
+<NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday">
+  <Rules>
+    <Rule id="default">
+      <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy>
+    </Rule>
+  </Rules>
+</NotableDate>
+```
+
+The referenced algorithm runs once per year per resolution, regardless of how many offset rules consume it. See [Rule references](../../docs/calendar/concepts.md#rule-references-offset-from-rule) and the [resolution context](#cross-rule-references-and-the-resolution-context) below.
+
+### `<Algorithm>` — dispatch to a named calculator
+
+For dates that cannot be expressed as calendar arithmetic. The `key` attribute names a built-in calculator (below) or a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> registered in a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>.
+
+```xml
+<Rule id="default">
+  <Strategy><Algorithm key="western-easter" /></Strategy>
+</Rule>
+```
+
+---
+
+## Built-in algorithm keys
+
+<xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> resolves a string key to a bundled astronomical or gazetted calculator. The calculators behind these keys are an internal implementation detail reached only through the key — there is no public class to instantiate; reference the key from a rule document instead.
+
+The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy>: `WesternEasterKey` (`"western-easter"`) and `OrthodoxEasterKey` (`"orthodox-easter"`).
+
+| Key | Date it computes |
+|---|---|
+| `western-easter` | Easter Sunday by the Gregorian computus. |
+| `orthodox-easter` | Easter Sunday by the Julian computus, projected onto the Gregorian calendar. |
+| `vernal-equinox` | The astronomical March (vernal) equinox. |
+| `autumnal-equinox` | The astronomical September (autumnal) equinox. |
+| `jp-vernal-equinox` | Japan's gazetted Vernal Equinox Day (Shunbun no Hi). |
+| `jp-autumnal-equinox` | Japan's gazetted Autumnal Equinox Day (Shūbun no Hi). |
+| `qingming` | Qingming (Tomb-Sweeping Day) — the solar term 15° after the March equinox, typically 4–5 April. |
+| `vesak` | Vesak (Buddha's birthday) — the full-moon observance in the Theravāda tradition. |
+| `asalha-puja` | Asalha Puja (Dhamma Day) — the full moon of the eighth lunar month. |
+| `losar` | Losar (Tibetan New Year) — the Tibetan lunisolar new year. |
+| `matariki` | Matariki — the Māori new year, set by the gazetted public-holiday calendar. |
+| `ram-navami` | Ram Navami — the Hindu festival of Rama's birth. |
+| `raksha-bandhan` | Raksha Bandhan. |
+| `janmashtami` | Krishna Janmashtami. |
+| `ganesh-chaturthi` | Ganesh Chaturthi. |
+| `navaratri` | The first day of Navaratri. |
+| `dussehra` | Dussehra (Vijayadashami). |
+| `karva-chauth` | Karva Chauth. |
+| `diwali` | Diwali (Deepavali). |
+| `vasant-panchami` | Vasant Panchami. |
+| `maha-shivaratri` | Maha Shivaratri. |
+| `holi` | Holi. |
+
+`AlgorithmDateStrategy.IsKnownKey(key)` reports whether a key is built in:
 
 ```csharp
-using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 
-// Build a registry with fluent chaining:
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("easter-sunday", new EasterSundayNotableDateAlgorithm())
-    .Register("qingming",      new QingmingNotableDateAlgorithm());
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { new XmlResourceNotableDateRuleProvider(
-                           "MyApp/Calendar/Resources/rules.xml",
-                           new ResourcePathResolver()) },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
+bool builtIn = AlgorithmDateStrategy.IsKnownKey("western-easter");          // true
+bool custom  = AlgorithmDateStrategy.IsKnownKey("pi-day");                  // false — needs a registry
 ```
 
-Most built-in algorithm rules are already defined in the embedded global XML rule set and do not need to be registered manually when using the default `NotableDateService()` constructor.
+A key that `IsKnownKey` does not recognise is resolved against the custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> supplied at load and construction time. An unregistered, unknown key surfaces as an error-severity validation diagnostic — and a `NotableDateValidationException` — when the document is loaded.
 
-## Using an algorithm in a rule
-
-Rules that require an algorithm set `Strategy = DateResolutionStrategy.Algorithm` and identify the algorithm via `AlgorithmKey`. Rules that derive from an algorithmic anchor use `DateResolutionStrategy.OffsetFromAnchor` and reference the anchor's `Name`:
-
-```csharp
-using Bodu.Globalization.Calendar;
-
-// Easter Sunday — resolved via the registered "easter-sunday" algorithm.
-NotableDateRule easterSunday = new NotableDateRule
-{
-    Name            = "Easter Sunday",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Holiday,
-    AlgorithmKey    = "easter-sunday",
-    IsNonWorkingDay = true,
-};
-
-// Easter Monday — offset 1 day from Easter Sunday.
-NotableDateRule easterMonday = new NotableDateRule
-{
-    Name            = "Easter Monday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = 1,
-    IsNonWorkingDay = true,
-};
-
-// Good Friday — 2 days before Easter Sunday.
-NotableDateRule goodFriday = new NotableDateRule
-{
-    Name            = "Good Friday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = -2,
-    IsNonWorkingDay = true,
-};
-```
-
-## Computing Easter directly
-
-Use the provider classes when you want Easter dates without setting up a full `NotableDateService`:
-
-```csharp
-using Bodu.Globalization.Calendar.Providers;
-
-// Gregorian (Western) Easter:
-var gregorian = new GregorianEasterSundayNotableDateProvider();
-IReadOnlyList<NotableDate> easterDates = gregorian.GetDates(2026);
-Console.WriteLine(easterDates[0].Date); // 2026-04-05
-
-// Orthodox Easter (Julian projection to Gregorian):
-var orthodox = new OrthodoxEasterSundayNotableDateProvider();
-IReadOnlyList<NotableDate> orthDates = orthodox.GetDates(2026);
-Console.WriteLine(orthDates[0].Date); // 2026-04-12
-```
-
-## Qingming (solar term)
-
-Qingming falls on the solar term 15° after the Spring Equinox — typically 4 or 5 April. `QingmingNotableDateAlgorithm` implements `INotableDateAlgorithm` and can be called directly:
-
-```csharp
-using Bodu.Globalization.Calendar.Algorithms;
-
-var qingming = new QingmingNotableDateAlgorithm();
-DateTime? date = qingming.GetDate(2026);
-Console.WriteLine(date); // 2026-04-04
-```
+---
 
 ## Implementing a custom algorithm
 
-Implement `INotableDateAlgorithm` to add a calculation not covered by the built-in set. The single method `GetDate` receives the target year and an optional calendar system, and returns a `DateTime?` (`null` when the date cannot be determined for that year):
+Implement <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> to add a calculator the built-in set does not cover. The single method `Calculate` receives the target year and returns a `DateOnly?` — return `null` for years the algorithm does not support.
 
 ```csharp
-using Bodu.Globalization.Calendar;
+using System;
+using Bodu.Globalization.Calendar.Algorithms;
 
-// Mother's Day: second Sunday in May.
+// Pi Day — 14 March every year.
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
+{
+    public DateOnly? Calculate(int year) => new DateOnly(year, 3, 14);
+}
+```
+
+A more realistic example computes a weekday-relative date:
+
+```csharp
+using System;
+using Bodu.Globalization.Calendar.Algorithms;
+
+// Mother's Day (US) — the second Sunday in May.
 public sealed class MothersDayAlgorithm : INotableDateAlgorithm
 {
-    public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
+    public DateOnly? Calculate(int year)
     {
-        DateTime firstOfMay = new DateTime(year, 5, 1);
+        DateOnly firstOfMay = new DateOnly(year, 5, 1);
         int daysToFirstSunday = ((int)DayOfWeek.Sunday - (int)firstOfMay.DayOfWeek + 7) % 7;
         return firstOfMay.AddDays(daysToFirstSunday + 7);
     }
 }
 ```
 
-Register it and wire up a rule:
+### Registering the algorithm
 
-```csharp
-using Bodu.Globalization.Calendar;
-
-NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
-    .Register("mothers-day", new MothersDayAlgorithm());
-
-NotableDateRule mothersDay = new NotableDateRule
-{
-    Name         = "Mother's Day",
-    Strategy     = DateResolutionStrategy.Algorithm,
-    Category     = NotableDateCategory.Observance,
-    AlgorithmKey = "mothers-day",
-};
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { new InMemoryRuleProvider(mothersDay) },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
-```
-
-## Algorithms as anchors
-
-Many holidays are not themselves algorithmic but are defined as a fixed offset from one. The Easter cluster is the canonical case — Good Friday, Easter Monday, Whit Monday, and Pentecost are all *Easter Sunday plus or minus N days* — and the library models this with the **algorithm-as-anchor** pattern:
-
-1. Define one rule whose strategy is `Algorithm` (or any other strategy that produces a useful base date). Give it a `Name`.
-2. Define each dependent rule with strategy `OffsetFromAnchor`, set `AnchorRuleName` to the algorithm rule's name, and set `OffsetDays` to the signed day-offset.
-
-The pipeline resolves the algorithm rule first, then feeds its resolved date into each offset rule. The algorithm runs only once per year per service, regardless of how many offset rules consume it.
+Register each instance under the key the rule document references, using the chainable <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>. The same registry must be passed to **both** the loader (so the key passes validation) and the <xref:Bodu.Globalization.Calendar.NotableDateService> constructor (so it resolves at query time):
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 
-// Anchor — Easter Sunday, computed by the algorithm registry.
-NotableDateRule easterSunday = new NotableDateRule
-{
-    Name            = "Easter Sunday",
-    Strategy        = DateResolutionStrategy.Algorithm,
-    Category        = NotableDateCategory.Holiday,
-    AlgorithmKey    = "easter-sunday",
-    IsNonWorkingDay = true,
-};
+INotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+    .Register("pi-day",      new PiDayAlgorithm())
+    .Register("mothers-day", new MothersDayAlgorithm());
 
-// Dependents — fixed offsets from the anchor.
-NotableDateRule goodFriday = new NotableDateRule
-{
-    Name            = "Good Friday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = -2,
-    IsNonWorkingDay = true,
-};
+// Pass the registry to the loader so "pi-day"/"mothers-day" are whitelisted during validation …
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);
 
-NotableDateRule whitMonday = new NotableDateRule
-{
-    Name            = "Whit Monday",
-    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
-    Category        = NotableDateCategory.Holiday,
-    AnchorRuleName  = "Easter Sunday",
-    OffsetDays      = 50,
-    IsNonWorkingDay = true,
-};
+// … and to the service so AlgorithmDateStrategy can resolve them at query time.
+NotableDateService service = new NotableDateService(resource, registry);
 ```
 
-Anchors are not limited to algorithms — any resolved rule with a `Name` can serve as one. Use this when a date naturally derives from another (e.g. a custom *Founders Week Friday* defined as *Founders Day + 2*) or when authoring tests that compose related dates from a single fixture rule.
+The custom registry implements <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry> (`Contains(key)` and `TryGet(key, out algorithm)`), the same lookup surface the engine consults at resolution time. The rule document references the key exactly like a built-in one:
 
-For the strategy contract see [NotableDateRule and ObservanceAdjustment reference](rule-reference.md); for resolution ordering and cycle detection see [The resolution pipeline](resolution-pipeline.md).
+```xml
+<NotableDate id="pi-day" displayName="Pi Day" category="Observance">
+  <Rules>
+    <Rule id="default"><Strategy><Algorithm key="pi-day" /></Strategy></Rule>
+  </Rules>
+</NotableDate>
+```
+
+Resolve as usual — by-year resolution is the `service.Resolve(year, territory)` extension:
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+IReadOnlyList<NotableDate> dates = service.Resolve(2026, "US");
+
+foreach (NotableDate date in dates)
+    Console.WriteLine($"{date.Date:d MMM yyyy}  {date.DisplayName}");
+// → 14 Mar 2026  Pi Day, 10 May 2026  Mother's Day, …
+```
+
+> **Packaging algorithms for reuse.** When a custom calculator ships in its own assembly, expose it as an <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> and load it through the trust-gated `NotableDatePluginLoader` rather than referencing the type directly. See [Building and extending the service — Plugin system](building-the-service.md#plugin-system).
+
+---
+
+## Cross-rule references and the resolution context
+
+`<OffsetFromRule>` and custom strategies that need another rule's date receive a <xref:Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext>. It carries the custom algorithm registry (`.Algorithms`) and resolves a referenced rule's occurrence for a year, cycle-safely:
+
+```csharp
+using Bodu.Globalization.Calendar.Algorithms;
+
+// context is supplied by the engine to IDateCalculationStrategy.Calculate(year, context).
+DateOnly? easter = context.ResolveReference("easter-sunday", "default", 2026);
+// → the resolved Easter Sunday date for 2026, or null when the reference produces no occurrence.
+```
+
+`ResolveReference(notableDateRef, ruleRef, year)` is the same machinery <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> uses; a self-referential or mutually-referential chain is detected and reported rather than looping. When the referenced rule produces no occurrence for the year, `ResolveReference` returns `null` and the offset rule produces no occurrence in turn.
+
+A `StrategyResolutionContext` can also be constructed directly over a resource (and, optionally, an algorithm registry) when you want to evaluate a reference outside a running query:
+
+```csharp
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+var context = new StrategyResolutionContext(resource, registry);
+DateOnly? easterSunday2026 = context.ResolveReference("easter-sunday", "default", 2026);
+```
+
+---
+
+## Loading bundled algorithm-backed concepts
+
+Most algorithm-backed dates are already authored in the bundled common catalogues and data packs, so you rarely register the built-in keys yourself. Importing `christian-western` brings in Easter and its offset cluster; `global-buddhist` brings in Vesak and Asalha Puja; `global-hindu` brings in the Hindu-festival keys. Pass <xref:Bodu.Globalization.Calendar.CommonNotableDateResources>'s resolver so `<Imports>` resolve:
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+NotableDateResource resource = NotableDateResourceLoader.Load(
+    myDocumentXml, CommonNotableDateResources.Resolver);
+NotableDateService service = new NotableDateService(resource);
+```
+
+See [Authoring notable date rules](rule-authoring.md) for imports and overrides, and the [Calendar data packs](data-packs.md) for the ready-made regional resources.
+
+---
 
 ## Where to go next
 
 - [Core concepts](../../docs/calendar/concepts.md) — vocabulary used across this guide.
-- [Using NotableDateService](notable-dates.md) — loading rules, override layers, and caching.
-- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML / JSON resource files, satellite assemblies, and runtime overrides.
-- [NotableDateRule and ObservanceAdjustment reference](rule-reference.md) — field-by-field reference, including the strategy contract.
-- [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
+- [Using NotableDateService](notable-dates.md) — loading resources, querying by date / range / year, and filtering.
+- [Authoring notable date rules](rule-authoring.md) — documents, imports, and overrides.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element strategy contracts.
+- [The resolution pipeline](resolution-pipeline.md) — resolution ordering and reference cycle detection.
+- [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
+- [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms) — full type reference.

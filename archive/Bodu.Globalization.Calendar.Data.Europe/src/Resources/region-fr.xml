@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  French notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent French public holidays and widely observed cultural
+  dates. National rules use territory="FR"; regional rules use their ISO
+  subdivision territory codes.
+
+  Country-specific rules explicitly import only the inherited global and
+  Christian dates that France observes, and override naming, territory,
+  nonWorking, adjustment, or tagging behavior where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Common European observances, inherited from europe-common.xml. France does
+    not observe Labour Day under the global "International Workers' Day" name —
+    it is declared locally below as "Fête du Travail" — so that entry is not
+    inherited here.
+  -->
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="FR" />
+    <Use name="Valentine's Day" territory="FR" />
+    <Use name="Easter Sunday" territory="FR" />
+    <Use name="Easter Monday" territory="FR" />
+    <Use name="Ascension Day" territory="FR" />
+    <Use name="Pentecost Sunday" territory="FR" />
+    <Use name="Whit Monday" territory="FR" />
+    <Use name="Christmas Eve" territory="FR" />
+    <Use name="Christmas Day" territory="FR" />
+    <Use name="Father's Day" territory="FR" />
+  </UseFrom>
+
+  <!--
+    Observances not part of the pan-European common set, inherited from the
+    main library globals. Mother's Day falls on the last Sunday in May in
+    France, differing from the global second-Sunday-in-May default, so it is
+    declared separately below rather than inherited.
+  -->
+
+  <UseFrom resource="./global-all.xml">
+    <Use name="International Women's Day" territory="FR" />
+    <Use name="April Fool's Day" territory="FR" />
+  </UseFrom>
+
+  <!--
+    National French holidays and observances.
+  -->
+
+  <NotableDate name="Fête du Travail">
+    <Rule name="fixed-may-01-fr"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true"
+          comment="France's International Workers' Day is locally named Fête du Travail.">
+      <Fixed month="May" day="1" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Victory in Europe Day">
+    <Rule name="fixed-may-08-fr"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
+      <Fixed month="May" day="8" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Bastille Day">
+    <Rule name="fixed-jul-14-fr"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
+      <Fixed month="July" day="14" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Assumption of Mary">
+    <Rule name="fixed-aug-15-fr"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
+      <Fixed month="August" day="15" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="All Saints' Day">
+    <Rule name="fixed-nov-01-fr"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
+      <Fixed month="November" day="1" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Armistice Day">
+    <Rule name="fixed-nov-11-fr"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
+      <Fixed month="November" day="11" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Widely observed French cultural and family observances.
+  -->
+
+  <NotableDate name="Mother's Day">
+    <Rule name="weekday-last-sun-may-fr"
+          category="Observance"
+          territory="FR"
+          comment="La Fête des Mères. Observed on the last Sunday in May. When the last Sunday of May coincides with Pentecost Sunday, the observance moves to the first Sunday of June by long-standing convention; this edge case is not automatically resolved by this rule.">
+      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Last" />
+      <Tag>Approximate</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Music Day">
+    <Rule name="fixed-jun-21-fr"
+          category="Cultural"
+          territory="FR"
+          firstYear="1982"
+          comment="Fête de la Musique. Launched in France by the Ministry of Culture in 1982; now celebrated worldwide on 21 June. Free public performances are held throughout France on the summer solstice.">
+      <Fixed month="June" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Alsace-Moselle regional holidays and observances.
+  -->
+
+  <NotableDate name="Good Friday (Alsace-Moselle)">
+    <Rule name="offset-easter-sunday-2-fr-67"
+          category="Holiday"
+          territory="FR-67,FR-68,FR-57"
+          nonWorking="true">
+      <OffsetFromAnchor name="Easter Sunday" offset="-2" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saint Stephen's Day">
+    <Rule name="fixed-dec-26-fr-67"
+          category="Holiday"
+          territory="FR-67,FR-68,FR-57"
+          nonWorking="true">
+      <Fixed month="December" day="26" />
+      <Tag>Christian</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

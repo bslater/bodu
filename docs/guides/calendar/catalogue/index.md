@@ -4,7 +4,7 @@ title: Notable-date catalogue
 
 # Notable-date catalogue
 
-What notable dates the **v2** calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar2` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).
+What notable dates the **v2** calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).
 
 Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. European packs import through the `europe-common` hub, which itself re-exports from the catalogues. The pages below present the same data along two axes.
 
@@ -49,5 +49,5 @@ See also the [cross-region comparison matrix](comparison-matrix.md).
 
 ---
 
-*Generated from the v2 notable-date XML resources by `Bodu.Globalization.Calendar2/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar.V2> namespace.
+*Generated from the v2 notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 

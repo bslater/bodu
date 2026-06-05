@@ -1,0 +1,162 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <OutputType>Library</OutputType>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <Title>Bodu Calendar Data — Europe</Title>
+    <Description>Notable-date rule pack for Bodu.Globalization.Calendar covering the United Kingdom and all 27 European Union member states. Each country ships as an independently loadable embedded XML rule set; the dates common across Europe are defined once in europe-common.xml and inherited via Use directives. Layered over the main library through the static EuropeCalendarData factory.</Description>
+    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;europe;eu;gb;at;be;bg;hr;cy;cz;dk;ee;fi;fr;de;gr;hu;ie;it;lv;lt;lu;mt;nl;pl;pt;ro;sk;si;es;se</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\europe-common.xml" />
+    <None Remove="Resources\region-at.xml" />
+    <None Remove="Resources\region-be.xml" />
+    <None Remove="Resources\region-bg.xml" />
+    <None Remove="Resources\region-cy.xml" />
+    <None Remove="Resources\region-cz.xml" />
+    <None Remove="Resources\region-de.xml" />
+    <None Remove="Resources\region-dk.xml" />
+    <None Remove="Resources\region-ee.xml" />
+    <None Remove="Resources\region-es.xml" />
+    <None Remove="Resources\region-fi.xml" />
+    <None Remove="Resources\region-fr.xml" />
+    <None Remove="Resources\region-gb.xml" />
+    <None Remove="Resources\region-gr.xml" />
+    <None Remove="Resources\region-hr.xml" />
+    <None Remove="Resources\region-hu.xml" />
+    <None Remove="Resources\region-ie.xml" />
+    <None Remove="Resources\region-it.xml" />
+    <None Remove="Resources\region-lt.xml" />
+    <None Remove="Resources\region-lu.xml" />
+    <None Remove="Resources\region-lv.xml" />
+    <None Remove="Resources\region-mt.xml" />
+    <None Remove="Resources\region-nl.xml" />
+    <None Remove="Resources\region-pl.xml" />
+    <None Remove="Resources\region-pt.xml" />
+    <None Remove="Resources\region-ro.xml" />
+    <None Remove="Resources\region-se.xml" />
+    <None Remove="Resources\region-si.xml" />
+    <None Remove="Resources\region-sk.xml" />
+  </ItemGroup>
+
+  <!--
+    Region XMLs and the shared europe-common.xml are embedded under the
+    historical `Bodu.Globalization.Calendar.Resources.*` manifest path so that
+    relative `<UseFrom resource="./europe-common.xml">` and
+    `<UseFrom resource="./global-all.xml">` directives resolve against the pack
+    (for europe-common) and the main library's globals via the provider's
+    assembly chain, without any XML path edits.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\europe-common.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.europe-common.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-at.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-at.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-be.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-be.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-bg.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-bg.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-cy.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-cy.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-cz.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-cz.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-de.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-de.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-dk.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-dk.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-ee.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-ee.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-es.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-es.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-fi.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-fi.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-fr.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-fr.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-gb.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-gb.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-gr.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-gr.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-hr.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-hr.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-hu.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-hu.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-ie.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-ie.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-it.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-it.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-lt.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-lt.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-lu.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-lu.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-lv.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-lv.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-mt.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-mt.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-nl.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-nl.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-pl.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-pl.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-pt.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-pt.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-ro.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-ro.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-se.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-se.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-si.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-si.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-sk.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.region-sk.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.Data.Europe.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

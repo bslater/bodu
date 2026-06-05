@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Globalization.Calendar.Plugin1.TestAssembly\**" />
+    <Compile Remove="Globalization.Calendar.Plugin2.TestAssembly\**" />
+    <EmbeddedResource Remove="Globalization.Calendar.Plugin1.TestAssembly\**" />
+    <EmbeddedResource Remove="Globalization.Calendar.Plugin2.TestAssembly\**" />
+    <None Remove="Globalization.Calendar.Plugin1.TestAssembly\**" />
+    <None Remove="Globalization.Calendar.Plugin2.TestAssembly\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Core\test\Bodu.Core.Test.csproj" />
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data.Europe\src\Bodu.Globalization.Calendar.Data.Europe.csproj" />
+    <ProjectReference Include="..\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
+
+  <!--
+    Test-only plugin assemblies referenced so they build alongside the test project and their DLLs end up in
+    the test output directory (copy-local semantics). Tests load them from disk via ExternalPluginLoader; the
+    compile-time reference is harmless because no test code uses the plugin types directly (they're reached
+    only through reflection after the loader materialises them into an isolated AssemblyLoadContext).
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\test-plugins\Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj" />
+    <ProjectReference Include="..\test-plugins\Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj" />
+    <ProjectReference Include="..\test-plugins\Globalization.Calendar.Plugin3.TestAssembly\Bodu.Globalization.Calendar.Plugin3.TestAssembly.csproj" />
+    <ProjectReference Include="..\test-plugins\Globalization.Calendar.Plugin4.TestAssembly\Bodu.Globalization.Calendar.Plugin4.TestAssembly.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <!--
+    XML fixtures embedded in the test assembly and loaded via XmlResourceNotableDateRuleProvider.
+    These drive paths (circular-reference detection, flattenedCache hit, documentCache hit,
+    FindSourceRule miss) that cannot be triggered by the production-embedded XML resources.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\CircularA.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.CircularA.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\CircularB.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.CircularB.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\Source.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.Source.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\DupReferrer.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.DupReferrer.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MissingNameReferrer.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MissingNameReferrer.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleSource.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleSource.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleBroadcast.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleBroadcast.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleTargeted.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleTargeted.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleClearInherited.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleClearInherited.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\Source.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.Source.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleSource.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleSource.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MixedJsonRefXml.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MixedJsonRefXml.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MixedXmlRefJson.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MixedXmlRefJson.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MissingNameReferrer.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MissingNameReferrer.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\CircularJsonA.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.CircularJsonA.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\CircularJsonB.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.CircularJsonB.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

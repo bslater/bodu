@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Data.Europe.csproj" />
+  </ItemGroup>
+
+  <!--
+    Shared KAT infrastructure linked from the main Calendar test project. Avoids a cross-test-project
+    reference while letting all Data.* test packs reuse the TerritoryNotableDateKnownAnswer record and the
+    shared assertion / display-name helpers.
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\TerritoryNotableDateKnownAnswer.cs" Link="Infrastructure\TerritoryNotableDateKnownAnswer.cs" />
+    <Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\RuleCatalogueExpectation.cs" Link="Infrastructure\RuleCatalogueExpectation.cs" />
+    <Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\TerritoryNotableDateAssertions.cs" Link="Infrastructure\TerritoryNotableDateAssertions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>

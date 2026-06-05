@@ -1,54 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Hungary (HU) notable-date resource using the Western / Gregorian calendar.
+  Hungary (HU) — notable-date resource pack.
 
-  National public holidays (munkaszüneti napok).
+  Migrated from the v1 region-hu.xml to the v2 cookbook schema. All rules are scoped to territory "HU"; Hungary has
+  no subdivision-specific public holidays.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="HU"; Hungary-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Good Friday, Easter Monday, Whit
+      Sunday, Whit Monday, All Saints' Day, Christmas Day) are IMPORTED from the europe-common hub and given an HU
+      territory scope through the import <Use> directive. The movable feasts (Good Friday, Easter Monday, Whit Sunday,
+      Whit Monday) derive from the WESTERN Easter Sunday anchor the hub re-exports.
+    * Hungary-specific national and civic days are declared INLINE below as fixed dates.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="HU" />
-    <Use name="Easter Sunday" territory="HU" />
-    <Use name="Good Friday" territory="HU" />
-    <Use name="Easter Monday" territory="HU" />
-    <Use name="International Workers' Day" as="Labour Day" territory="HU" />
-    <Use name="Pentecost Sunday" as="Whit Sunday" territory="HU" />
-    <Use name="Whit Monday" territory="HU" />
-    <Use name="All Saints' Day" territory="HU" />
-    <Use name="Christmas Day" territory="HU" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="HU" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.hu">
 
   <!--
-    National Hungarian holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="1848 Revolution Memorial Day">
-    <Rule name="fixed-mar-15-hu" category="Holiday" territory="HU" nonWorking="true" firstYear="1848"
-          comment="Az 1848-as forradalom ünnepe. Commemorates the Hungarian Revolution of 1848 against Habsburg rule.">
-      <Fixed month="March" day="15" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="State Foundation Day">
-    <Rule name="fixed-aug-20-hu" category="Holiday" territory="HU" nonWorking="true"
-          comment="Az államalapítás ünnepe. Honors Saint Stephen, founder of the Hungarian state, and the foundation of the Kingdom of Hungary around the year 1000.">
-      <Fixed month="August" day="20" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Hungary. New Year's Day
+      (1 January) carries a weekend roll to the next working day. Good Friday, Easter Monday, Whit Sunday, and Whit
+      Monday all derive from the Easter Sunday anchor (OffsetFromRule strategies the hub re-exports). All Saints' Day
+      is re-scoped to a non-working public holiday for Hungary; Christmas Day is imported with its shared fixed-date
+      strategy.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="HU">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="HU" />
+      <Use notableDateRef="good-friday" territory="HU" />
+      <Use notableDateRef="easter-monday" territory="HU" />
+      <Use notableDateRef="whit-sunday" territory="HU" />
+      <Use notableDateRef="whit-monday" territory="HU" />
+      <Use notableDateRef="all-saints-day" territory="HU" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="HU" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="1956 Revolution Memorial Day">
-    <Rule name="fixed-oct-23-hu" category="Holiday" territory="HU" nonWorking="true" firstYear="1956"
-          comment="Az 1956-os forradalom ünnepe. Commemorates the Hungarian Revolution of 1956 and the proclamation of the Third Hungarian Republic in 1989.">
-      <Fixed month="October" day="23" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-</NotableDates>
+    <!--
+      ============================================================================================================
+      Fixed civic and Christian feasts
+      ============================================================================================================
+    -->
+
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hu"><Applicability><Territory code="HU" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hu"><Applicability><Territory code="HU" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      National and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- 1848 Revolution Memorial Day — 15 March, commemorating the 1848 Hungarian Revolution. fromYear 1848 excludes earlier years. -->
+    <NotableDate id="revolution-memorial-day-1848" displayName="1848 Revolution Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hu"><Applicability fromYear="1848"><Territory code="HU" /></Applicability>
+        <Strategy><Fixed month="March" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- State Foundation Day (Saint Stephen's Day) — 20 August, marking the founding of the Hungarian state. Fixed date. -->
+    <NotableDate id="state-foundation-day" displayName="State Foundation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hu"><Applicability><Territory code="HU" /></Applicability>
+        <Strategy><Fixed month="August" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- 1956 Revolution Memorial Day (Republic Day) — 23 October, commemorating the 1956 Hungarian Revolution. fromYear 1956 excludes earlier years. -->
+    <NotableDate id="revolution-memorial-day-1956" displayName="1956 Revolution Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hu"><Applicability fromYear="1956"><Territory code="HU" /></Applicability>
+        <Strategy><Fixed month="October" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

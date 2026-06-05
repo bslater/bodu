@@ -4,288 +4,239 @@ title: Using NotableDateService
 
 # Using NotableDateService
 
-`NotableDateService` is the main entry point for resolving notable dates — public holidays, observances, religious festivals, regional events — for a given year and territory. It loads rules from one or more `INotableDateRuleProvider` sources, layers optional override providers on top, and caches resolved `NotableDate` instances per year in a thread-safe `ConcurrentDictionary`.
+`NotableDateService` is the main entry point for resolving notable dates — public holidays, observances, religious festivals, regional events — for a given date, range, or year and territory. It is built over an immutable, already-validated `NotableDateResource` and resolves `NotableDate` occurrences on demand.
 
-For the vocabulary used below (rule vs. resolved date, nominal vs. observed, territory containment, …) see [Core concepts](../../docs/calendar/concepts.md).
+For the vocabulary used below (document vs. resource, rule vs. resolved date, nominal vs. observed, territory containment, …) see [Core concepts](../../docs/calendar/concepts.md).
 
-## Pattern 1 — bare default service
+## Pattern 1 — a minimal service from a bundled catalogue
 
-The parameterless constructor loads only the embedded **default-minimal** rule set (currently just New Year's Day) so a service can be created without referencing any companion data pack. This is suitable for smoke tests, demos, or apps that supply their own rule providers exclusively.
+Load one of the bundled common catalogues to create a service without referencing a companion data pack — handy for smoke tests and demos. `default-minimal` carries just New Year's Day:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-var service = new NotableDateService();
+NotableDateResource resource = NotableDateResourceLoader.Load(
+    CommonNotableDateResources.Resolve("default-minimal")!);
+var service = new NotableDateService(resource);
 
-IReadOnlyList<NotableDate> dates = service.GetNotableDates(DateTime.Today.Year);
+IReadOnlyList<NotableDate> dates = service.Resolve(DateTime.Today.Year, "XX");
 // → New Year's Day on 1 January
 ```
 
-Region-specific public holidays — US federal holidays, UK bank holidays, Australian state observances, and so on — ship in dedicated `Bodu.Globalization.Calendar.Data.*` companion assemblies. See [Calendar data packs](data-packs.md) for the full list.
+Region-specific public holidays ship in dedicated `Bodu.Globalization.Calendar.Data.*` companion assemblies. See [Calendar data packs](data-packs.md).
 
 ## Pattern 2 — load a data pack and filter by territory
 
-Pass providers from one of the companion data packs to query a specific country or sub-region. Each pack exposes a static `<Pack>CalendarData` factory with per-country `Create*Provider()` and bulk `CreateProviders()` helpers:
+Each pack exposes a static factory with `CreateService(territory)` (and `LoadResource(territory)` if you want the resource alone):
 
 ```csharp
-using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService(
-    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+// Loads Australia's resource (imports resolved against the bundled catalogues).
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
-// All notable dates for Australia in 2026.
-IReadOnlyList<NotableDate> auDates = service.GetNotableDates(2026, territoryCode: "AU");
-
-// New South Wales only.
-IReadOnlyList<NotableDate> nswDates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
+// By-year resolution is an extension (NotableDateServiceExtensions.Resolve):
+IReadOnlyList<NotableDate> auDates  = service.Resolve(2026, "AU");
+IReadOnlyList<NotableDate> nswDates = service.Resolve(2026, "AU-NSW");
 
 foreach (NotableDate date in nswDates)
-    Console.WriteLine($"{date.Date:d MMM yyyy}  {date.Name}");
+    Console.WriteLine($"{date.Date:d MMM yyyy}  {date.DisplayName}");
 ```
 
-`TerritoryCode` containment applies: a query for `"AU-NSW"` returns dates scoped to `AU` *and* `AU-NSW` (plus any unscoped global rules), but not other states. See [Territories and regional composition](territories.md) for the full containment model.
+`TerritoryCode` containment applies: a query for `"AU-NSW"` returns dates scoped to `AU` *and* `AU-NSW` (plus any unscoped rules), but not other states. See [Territories and regional composition](territories.md).
 
-All examples below assume a service constructed with the relevant data pack — typically `AmericasCalendarData`, `EuropeCalendarData`, or `AsiaPacificCalendarData` — as shown in Pattern 2.
+All examples below assume a service constructed with the relevant data pack.
 
 ## Pattern 3 — filter by category
 
-`NotableDateFilter` is a composable predicate built from static factory methods. Pass it to the filtered overload of `GetNotableDates`:
+`NotableDateFilter` is a composable predicate built from static factory methods. Pass it to the filtered `Resolve` overloads:
 
 ```csharp
-using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.Europe;
 
-var service = new NotableDateService(
-    ruleProviders:     new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+NotableDateService service = EuropeCalendarData.CreateService("GB");
 
 // Only public holidays for Great Britain.
-NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
-IReadOnlyList<NotableDate> holidays = service.GetNotableDates(2026, publicFilter, "GB");
+NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+IReadOnlyList<NotableDate> holidays = service.Resolve(2026, "GB", publicFilter);
 
 // Non-working public holidays — combine predicates with And:
 NotableDateFilter nonWorkingFilter = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
+    .ForCategory(NotableDateCategory.PublicHoliday)
     .And(NotableDateFilter.IsNonWorkingDay());
+IReadOnlyList<NotableDate> nonWorking = service.Resolve(2026, "GB", nonWorkingFilter);
 
-IReadOnlyList<NotableDate> nonWorking = service.GetNotableDates(2026, nonWorkingFilter, "GB");
-
-// Multiple categories with Or:
-NotableDateFilter culturalOrObservance = NotableDateFilter
-    .ForCategory(NotableDateCategory.Cultural)
-    .Or(NotableDateFilter.ForCategory(NotableDateCategory.Observance));
+// Multiple categories in one call:
+NotableDateFilter culturalOrObservance =
+    NotableDateFilter.ForAnyCategory(NotableDateCategory.Cultural, NotableDateCategory.Observance);
 ```
 
 ## Pattern 4 — query a date range
 
 ```csharp
-using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService(
-    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
-DateTime from = new DateTime(2026, 3, 1);
-DateTime to   = new DateTime(2026, 4, 30);
-
-IReadOnlyList<NotableDate> spring = service.GetNotableDates(from, to, "AU");
+var window = new DateRange(new DateOnly(2026, 3, 1), new DateOnly(2026, 4, 30));
+IReadOnlyList<NotableDate> autumn = service.Resolve(window, "AU");
 ```
 
-Multi-day events (e.g. Easter — `DurationDays > 1`) are included when *any* day of their span intersects the query window.
+Multi-day events (`DurationDays > 1`) are included when their span intersects the query window; which occurrence (actual or observed) controls inclusion is governed by the resource's [`ObservedDateRangePolicy`](identity-and-resolution.md).
 
 ## Pattern 5 — query a single day
 
 ```csharp
-using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService(
-    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
-DateTime anzacDay = new DateTime(2026, 4, 25);
-IReadOnlyList<NotableDate> onDay = service.GetNotableDates(anzacDay, "AU");
+IReadOnlyList<NotableDate> onDay = service.Resolve(new DateOnly(2026, 4, 25), "AU");  // ANZAC Day
 ```
 
-This overload also returns multi-day spans whose nominal date lies on a preceding day but whose span covers the queried date. The answer is **window-independent** — a single-day query agrees with that same day inside a wider range query — and whether an adjusted occurrence supersedes its nominal date or both are returned is governed by [`ObservedDateMode`](identity-and-resolution.md#observed-date-modes).
+This overload also returns multi-day spans whose nominal date lies on a preceding day but whose span covers the queried date.
 
 ## Pattern 6 — check non-working days and weekends
 
+These are working-day extension methods in `Bodu.Extensions` (over `DateOnly`, `DateTime`, and `DateTimeOffset`):
+
 ```csharp
-using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
+using Bodu.Extensions;
 
-var service = new NotableDateService(
-    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+DateOnly christmas = new DateOnly(2026, 12, 25);
 
-DateTime christmas = new DateTime(2026, 12, 25);
-
-// True when the date is Saturday or Sunday under the configured weekend definition.
-bool isWeekend = service.IsWeekend(christmas);
-
-// True when the date is a weekend or a notable date flagged IsNonWorkingDay for the territory.
-bool isNonWorking    = service.IsNonWorkingDay(christmas, "AU");
-bool isNonWorkingNSW = service.IsNonWorkingDay(christmas, "AU-NSW");
+bool isWeekend       = christmas.IsWeekend();                       // weekend per the default Mon–Fri working week
+bool isNonWorking    = christmas.IsNonWorkingDay(service, "AU");    // weekend or a non-working notable date
+bool isNonWorkingNSW = christmas.IsNonWorkingDay(service, "AU-NSW");
 ```
 
 For full working-day arithmetic (`IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, `SnapToWorkingDay`, `WorkingDaysBetween`, …) see [Working-day arithmetic](working-days.md).
 
-## Pattern 7 — layer custom override rules
+## Pattern 7 — ID-targeted overrides at load time
 
-Override providers add, remove, or patch rules on top of the base rule set without modifying the source XML. Implement `INotableDateRuleOverrideProvider` and pass instances via the `overrideProviders` constructor parameter:
+Because a resource is immutable, edits to imported concepts are authored as ID-targeted `<Overrides>` in the document and applied during loading — add a rule, patch one, or remove one:
+
+```xml
+<Overrides>
+  <!-- Suppress a base rule … -->
+  <RemoveRule notableDateRef="boxing-day" ruleRef="default" />
+  <!-- … and add a company event. -->
+  <AddRule notableDateRef="company-founding-day">
+    <Rule id="default"><Strategy><Fixed month="June" day="15" /></Strategy></Rule>
+  </AddRule>
+</Overrides>
+```
+
+See [Authoring notable date rules](rule-authoring.md) for the full override vocabulary.
+
+## Pattern 8 — swap the rule set at runtime
+
+A *live* change means loading a new resource and swapping it in. Build the service over a `MutableNotableDateResourceProvider` via `ReloadableNotableDateService`:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-// Suppress Boxing Day for 2026 and inject a company event.
-public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
-{
-    public IEnumerable<RuleRemoval> GetRemovals()
-    {
-        yield return new RuleRemoval("Boxing Day", FromYear: 2026, ToYear: 2026);
-    }
+var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
+INotableDateService service = new ReloadableNotableDateService(provider);
 
-    public IEnumerable<NotableDateRule> GetAdditions()
-    {
-        yield return new NotableDateRule
-        {
-            Name            = "Company Founding Day",
-            Strategy        = DateResolutionStrategy.Fixed,
-            Category        = NotableDateCategory.Observance,
-            Month           = 6,
-            Day             = 15,
-            IsNonWorkingDay = true,
-        };
-    }
-}
-
-// Wire it up:
-var provider = new XmlResourceNotableDateRuleProvider(
-    "MyApp/Calendar/Resources/holidays-base.xml",
-    new ResourcePathResolver());
-
-var service = new NotableDateService(
-    ruleProviders:     new[] { provider },
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions
-    {
-        OverrideProviders = new[] { new CompanyCalendarOverrides() },
-    });
-```
-
-## Pattern 8 — cache invalidation
-
-The service caches resolved dates per year. Call `Invalidate` when override providers change:
-
-```csharp
-// Clear the cached result for a specific year.
-service.Invalidate(2026);
-
-// Clear the entire cache.
-service.Invalidate();
+// later, when the rules change — the live service picks it up atomically:
+provider.Reload(NotableDateResourceLoader.Load(updatedXml));
 ```
 
 ## Working with `NotableDate` results
 
-`NotableDate` is an immutable record. Key properties:
+`NotableDate` is an immutable record. Key members:
 
-| Property | Description |
+| Member | Description |
 |---|---|
-| `Date` | The observed date — the post-adjustment date consumers should display. |
-| `EndDate` | The inclusive last day (`Date + DurationDays - 1`). |
+| `Date` | The emitted (observed) date — the post-adjustment date to display. |
+| `ActualDate` | The originally calculated (nominal) date. |
+| `IsObserved` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
+| `EndDate` | The inclusive last day (`Date + DurationDays − 1`). |
 | `DurationDays` | Span in days (1 for single-day events). |
-| `Name` | Canonical English name. |
-| `DisplayName` | Name qualified with territory and calendar suffix when scoped. |
+| `DisplayName` | The display name (subject to optional localisation). |
 | `Category` | `NotableDateCategory` value. |
-| `Priority` | Tie-break weight carried from the rule (lower wins). Used by the collision resolver when several dates share a day. |
-| `TerritoryCode` | Territory the date applies to, or `null` for global. |
+| `Priority` | Tie-break weight carried from the rule; consulted by the collision policy when several dates share a day. |
+| `TerritoryCode` | The territory the date applies to. |
 | `IsNonWorkingDay` | Whether the date is flagged as a non-working day. |
-| `WasAdjusted` | Whether the observed date was shifted from its nominal date by an `ObservanceAdjustment`. |
-| `AdjustmentReason` | Original nominal date and adjustment details when `WasAdjusted` is `true`. |
-| `Tags` | Optional non-exclusive classification tags (e.g. `"Christian"`, `"Federal"`). |
+| `AdjustmentPolicyId`, `AdjustmentReason` | Which adjustment policy moved the date, and why (when `IsObserved`). |
+| `Identity` (`NotableDateId`, `RuleId`) | The originating concept and rule. |
+| `Tags` | Optional non-exclusive classification tags. |
 
 ```csharp
-foreach (NotableDate date in service.GetNotableDates(2026, "AU"))
+foreach (NotableDate date in service.Resolve(2026, "AU"))
 {
     Console.WriteLine($"{date.Date:d}  {date.DisplayName}");
 
     if (date.DurationDays > 1)
         Console.WriteLine($"  Multi-day: ends {date.EndDate:d}");
 
-    if (date.WasAdjusted)
-        Console.WriteLine($"  Shifted from nominal {date.AdjustmentReason!.OriginalDate:d}");
+    if (date.IsObserved)
+        Console.WriteLine($"  Observed (nominal was {date.ActualDate:d}, via {date.AdjustmentPolicyId})");
 }
 ```
 
-## How the filter works
+## Composing filters
 
-![NotableDateFilter two-stage gate evaluation](../../images/diagrams/calendar-filter-gates.svg)
+![NotableDateFilter composition](../../images/diagrams/calendar-filter-gates.svg)
 
-Filtered queries apply the predicate in two stages:
-
-1. **Primary gate (rule-level)** — evaluated against each `NotableDateRule` *before* the date is resolved. Rules that fail are skipped entirely, avoiding the cost of algorithm invocation and adjustment evaluation. Factory methods such as `ForCategory`, `WithTag`, `WithName`, and `IsNonWorkingDay` operate at this stage.
-
-2. **Secondary gate (date-level)** — evaluated against the materialized `NotableDate` *after* resolution. Factory methods such as `InDateRange`, `WasAdjusted`, and `WithMinDuration` operate here because their result is not known until the date is computed.
-
-Filtered queries bypass the per-year cache so that unfiltered queries continue to return complete cached results.
+`NotableDateFilter` is a predicate over resolved occurrences (`Matches(NotableDate)`). Build one from the static factories and combine them:
 
 ```csharp
-// Efficient: ForCategory is rule-level, so non-matching rules are never resolved.
-NotableDateFilter filter = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
+// Category + non-working:
+NotableDateFilter nonWorkingHolidays = NotableDateFilter
+    .ForCategory(NotableDateCategory.PublicHoliday)
     .And(NotableDateFilter.IsNonWorkingDay());
 
-// Date-level: every rule is resolved; the gate acts after resolution.
+// Observed (adjusted) occurrences only:
 NotableDateFilter adjusted = NotableDateFilter.WasAdjusted();
 
-// Combined: category pre-screens rules, date-range post-screens resolved dates.
+// Category pre-screen + date-range:
 NotableDateFilter easterWeek = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
-    .And(NotableDateFilter.InDateRange(
-        new DateTime(2026, 4, 1),
-        new DateTime(2026, 4, 14)));
+    .ForCategory(NotableDateCategory.PublicHoliday)
+    .And(NotableDateFilter.InDateRange(new DateOnly(2026, 4, 1), new DateOnly(2026, 4, 14)));
 
 // AllOf / AnyOf for multi-filter composition:
 NotableDateFilter combined = NotableDateFilter.AllOf(
-    NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
+    NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday),
     NotableDateFilter.IsNonWorkingDay(),
-    NotableDateFilter.WithTag("Federal"));
+    NotableDateFilter.WithTag("national"));
 ```
+
+The factory set: `ForCategory`, `ForAnyCategory`, `WithName`, `WithAnyName`, `WithId`, `WithTag`, `WithAnyTag`, `WithAllTags`, `WithMinDuration`, `IsNonWorkingDay`, `WasAdjusted`, `InDateRange`, combined with `And`, `Or`, `Not`, `AllOf`, `AnyOf`.
 
 ## Understanding the resolution pipeline
 
+Loading turns a document into a resource; querying turns a resource into occurrences:
+
 ```
-INotableDateRuleProvider(s)              → base rules
-  + INotableDateRuleOverrideProvider(s)  → layered effective rules
-      → DateResolutionStrategy dispatch (Fixed / DayOfWeekInMonth / OffsetFromAnchor / Algorithm)
-          → INotableDateAlgorithm.Calculate(year)  (for Algorithm strategy)
-              → nominal date
-                  → ObservanceAdjustment pipeline (IAdjustmentHandler registry)
-                      → observed NotableDate  [cached per year]
+NotableDateResourceLoader.Load(xml[, resolver][, algorithms])
+   parse → resolve <Imports> → apply <Overrides> → assemble → validate
+      → immutable NotableDateResource
+NotableDateService.Resolve(date | range | year, territory[, filter])
+   strategy → nominal date → adjustment policies → observed date
+      → duplicate/collision settlement → emission → NotableDate set
 ```
 
-1. **Rule loading** — base providers (<xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>) supply the initial rule list; override providers (<xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>) add, remove (`RuleRemoval`), or patch rules on top.
-2. **Nominal-date resolution** — each rule's <xref:Bodu.Globalization.Calendar.DateResolutionStrategy> is dispatched to the matching logic: fixed date, *n*th weekday-of-month, offset from another rule, or a named <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm> resolved through the algorithm registry.
-3. **Adjustment** — the <xref:Bodu.Globalization.Calendar.ObservanceAdjustment> chain on the rule is run by the <xref:Bodu.Globalization.Calendar.IAdjustmentHandlerRegistry>, shifting the nominal date when a trigger condition matches (e.g. falls on a weekend) to produce the observed date.
-4. **Caching** — the resolved list for each year is stored in a thread-safe `ConcurrentDictionary` and reused on subsequent unfiltered calls. `Invalidate()` clears the whole cache; `Invalidate(year)` clears one year.
+1. **Load** — `NotableDateResourceLoader` parses the document, resolves `<Imports>` through the supplied resolver, applies `<Overrides>`, assembles the definitions, and runs semantic validation, throwing `NotableDateValidationException` on any error-severity diagnostic.
+2. **Resolve** — for each applicable rule the <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> computes the nominal date; the referenced <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> shifts it to the observed date when a trigger matches.
+3. **Settle** — the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> reconciles duplicates and same-day collisions and decides which occurrences are emitted.
 
-See [The resolution pipeline](resolution-pipeline.md) for the full eight-stage walk-through with a concrete Christmas Day 2027 trace.
+See [The resolution pipeline](resolution-pipeline.md) for the full walk-through with a concrete trace.
 
 ## Where to go next
 
 - [Core concepts](../../docs/calendar/concepts.md) — the vocabulary used throughout this guide.
 - [Territories and regional composition](territories.md) — how `TerritoryCode` and containment govern query results.
 - [Working-day arithmetic](working-days.md) — `IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, snap operations.
-- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific companion assemblies and how to compose them.
-- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML / JSON resource files, companion assemblies, and runtime overrides.
-- [Date calculation algorithms](algorithms.md) — the built-in algorithm types and how to implement a custom one.
+- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific companion assemblies.
+- [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
+- [Date calculation algorithms](algorithms.md) — the built-in keys and how to implement a custom algorithm.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

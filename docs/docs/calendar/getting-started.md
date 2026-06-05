@@ -4,7 +4,7 @@ title: Bodu.Globalization.Calendar — Getting started
 
 # Bodu.Globalization.Calendar — Getting started
 
-Unfamiliar with terms like *rule*, *nominal date*, *anchor*, or *territory*? Read [Core concepts](concepts.md) first.
+Unfamiliar with terms like *document*, *resource*, *rule*, *nominal date*, or *territory*? Read [Core concepts](concepts.md) first.
 
 ## Install
 
@@ -19,79 +19,73 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 # Optional Microsoft.Extensions.DependencyInjection integration:
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 
-# Optional fluent rule-authoring API:
-dotnet add package Bodu.Globalization.Calendar.Builder
+# Optional trust-gated external algorithm plugins:
+dotnet add package Bodu.Globalization.Calendar.Plugins
 ```
 
 See the [package matrix](../package-matrix.md) for the full taxonomy and the [Calendar package family diagram](index.md#calendar-package-family) for how the runtime and companions compose.
 
-Targets `net8.0`. The base package contains the resolution engine and the built-in algorithms; the data packs contain region-specific rule sets.
+Targets `net8.0`. The base package contains the resolution engine, the built-in algorithms, and a set of bundled common catalogues; the data packs contain region-specific rule sets.
 
 ## Minimal samples
 
-### Resolve Easter Sunday
+### Load a document and resolve
+
+A rule document is XML (or JSON) on the cookbook schema. Load it into an immutable resource, build a service, and resolve:
 
 ```csharp
-using Bodu.Globalization.Calendar.Algorithms;
+using Bodu.Globalization.Calendar;
 
-var algorithm = new EasterSundayNotableDateAlgorithm();
-DateTime easter2026 = algorithm.Calculate(2026);
-// 2026-04-05
+const string xml = """
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="demo">
+  <NotableDates>
+    <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="default"><Strategy><Fixed month="January" day="1" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>
+""";
 
-DateTime goodFriday2026 = easter2026.AddDays(-2);
+NotableDateResource resource = NotableDateResourceLoader.Load(xml);   // parsed + validated; throws NotableDateValidationException on error
+NotableDateService  service  = new NotableDateService(resource);
+
+IReadOnlyList<NotableDate> jan = service.Resolve(new DateOnly(2026, 1, 1), "US");
+Console.WriteLine(jan[0].DisplayName);                                // New Year's Day
 ```
 
-The Gregorian Computus is used for years from 1583 onward; earlier years fall back to the Julian algorithm.
-
-### Resolve Lunar New Year (Losar)
+A document that uses `<Imports>` must be loaded with a resolver so import names can be fetched — pass `CommonNotableDateResources.Resolver` to pull from the bundled catalogues:
 
 ```csharp
-using Bodu.Globalization.Calendar.Algorithms;
-
-var algorithm = new LosarNotableDateAlgorithm();
-DateTime losar2026 = algorithm.Calculate(2026);
+NotableDateResource resource =
+    NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
 ```
-
-Other built-in algorithms: `HinduLunarNotableDateAlgorithm`, `VesakNotableDateAlgorithm`, `AsalhaPujaNotableDateAlgorithm`, `QingmingNotableDateAlgorithm`.
 
 ### Resolve all notable dates for a year and territory
+
+The companion data packs do the load-and-import wiring for you:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-INotableDateRuleProvider auRules = AsiaPacificCalendarData.CreateAustraliaProvider();
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
-INotableDateService service = new NotableDateService(
-    ruleProviders:    [ auRules ],
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
+// By-year resolution is an extension method (NotableDateServiceExtensions):
+IReadOnlyList<NotableDate> nsw2026 = service.Resolve(2026, "AU-NSW");
 
-IReadOnlyList<NotableDate> nsw2026 =
-    service.GetNotableDates(year: 2026, territoryCode: "AU-NSW");
-
-foreach (NotableDate date in nsw2026.Where(d => d.Category == NotableDateCategory.Holiday))
-{
-    Console.WriteLine($"{date.Date:yyyy-MM-dd}  {date.Name}");
-}
+foreach (NotableDate d in nsw2026.Where(x => x.Category == NotableDateCategory.PublicHoliday))
+    Console.WriteLine($"{d.Date:yyyy-MM-dd}  {d.DisplayName}");
 ```
 
-The parameterless `new NotableDateService()` constructor loads only the embedded `default-minimal.xml` rule set (currently New Year's Day). For region-specific holidays, pass one of the `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` providers from the companion data packs.
-
-### Working-day arithmetic over a `DateOnly`
+Resolve a single day or an arbitrary range with the instance methods:
 
 ```csharp
-using Bodu.Globalization.Calendar;
-using Bodu.Extensions;                       // NotableDateOnlyExtensions
-
-DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-
-bool       isHoliday = today.IsNotableDate(service, "AU-NSW");
-DateOnly   nextOpen  = today.NextWorkingDay(service, "AU-NSW");
-DateOnly   inFive    = today.AddWorkingDays(service, 5, "AU-NSW");
-int        between   = today.WorkingDaysBetween(inFive, service, "AU-NSW");
+IReadOnlyList<NotableDate> onDay = service.Resolve(new DateOnly(2026, 1, 26), "AU-NSW");
+IReadOnlyList<NotableDate> q1    = service.Resolve(
+    new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 3, 31)), "AU-NSW");
 ```
-
-The same operations exist over `DateTime` via `NotableDateTimeExtensions` (also in `Bodu.Extensions`).
 
 ### Filter by category and date range
 
@@ -99,66 +93,80 @@ The same operations exist over `DateTime` via `NotableDateTimeExtensions` (also 
 using Bodu.Globalization.Calendar;
 
 NotableDateFilter filter = NotableDateFilter
-    .ForCategory(NotableDateCategory.Holiday)
-    .Or(NotableDateFilter.ForCategory(NotableDateCategory.Cultural))
-    .And(NotableDateFilter.InDateRange(new DateTime(2026, 1, 1), new DateTime(2026, 12, 31)));
+    .ForAnyCategory(NotableDateCategory.PublicHoliday, NotableDateCategory.Cultural)
+    .And(NotableDateFilter.InDateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 30)));
 
-IReadOnlyList<NotableDate> dates = service.GetNotableDates(
-    startDate:    new DateTime(2026, 1, 1),
-    endDate:      new DateTime(2026, 12, 31),
-    filter:       filter,
-    territoryCode: "GB-ENG");
+IReadOnlyList<NotableDate> firstHalf = service.Resolve(2026, "AU-NSW", filter);
 ```
 
-`NotableDateFilter` is built via static factory methods (`ForCategory`, `WithTag`, `WithName`, `InDateRange`, `IsNonWorkingDay`, `WasAdjusted`, …) and combined with `And`, `Or`, `AllOf`, `AnyOf`. Predicates that depend only on the rule (`ForCategory`, `WithTag`, `WithName`, `IsNonWorkingDay`) are evaluated as a primary gate *before* the date is resolved.
+`NotableDateFilter` is built via static factory methods (`ForCategory`, `ForAnyCategory`, `WithName`, `WithId`, `WithTag`, `WithMinDuration`, `IsNonWorkingDay`, `WasAdjusted`, `InDateRange`, …) and combined with `And`, `Or`, `Not`, `AllOf`, `AnyOf`.
 
-### Layer runtime overrides
+### Working-day arithmetic over a `DateOnly`
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
+using Bodu.Extensions;                       // NotableDateOnlyExtensions — not auto-imported
 
-INotableDateRuleProvider          auRules   = AsiaPacificCalendarData.CreateAustraliaProvider();
-INotableDateRuleOverrideProvider  overrides = new MyCorporateOverrideProvider(); // implements INotableDateRuleOverrideProvider
+DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
-INotableDateService service = new NotableDateService(
-    ruleProviders:     [ auRules ],
-    workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-    options: new NotableDateServiceOptions { OverrideProviders = [ overrides ] });
+bool     isHoliday = today.IsNotableDate(service, "AU-NSW");
+bool     isOpen    = today.IsWorkingDay(service, "AU-NSW");
+DateOnly nextOpen  = today.NextWorkingDay(service, "AU-NSW");
+DateOnly inFive    = today.AddWorkingDays(5, service, "AU-NSW");
+int      between   = today.WorkingDaysBetween(inFive, service, "AU-NSW");
 ```
 
-Override providers can add new rules (via `INotableDateRuleProvider.LoadRules`), remove a base rule by name and territory (via `GetRemovals` returning `RuleRemoval` values), or layer adjustment overrides. Implement <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> directly, store overrides in your own XML / JSON file and load them through <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> / <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>, or use the runtime-mutable <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider> when rules need to be added or removed while the service is alive — paired with `service.Reload()` to take effect.
+The same operations exist over `DateTime` and `DateTimeOffset` (`NotableDateTimeExtensions`, `NotableDateTimeOffsetExtensions`, also in `Bodu.Extensions`). Every method accepts an optional `Bodu.Core` `WeekPattern` to override the default Monday–Friday working week — e.g. `today.NextWorkingDay(service, "AE", WeekPattern.SundayToThursday)`.
+
+### Register a custom algorithm
+
+When a date is computed rather than fixed, implement <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> and reference it from the rule by key:
+
+```csharp
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
+{
+    public DateOnly? Calculate(int year) => new DateOnly(year, 3, 14);
+}
+
+var registry = new NotableDateAlgorithmRegistry().Register("pi-day", new PiDayAlgorithm());
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);  // xml has <Algorithm key="pi-day" />
+NotableDateService  service  = new NotableDateService(resource, registry);
+```
+
+Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) need no registration. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
+
+### Swap the rule set at runtime
+
+A resource is immutable, so runtime change means loading a new resource and swapping it in:
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
+INotableDateService service = new ReloadableNotableDateService(provider);
+
+// later, when the rules change:
+provider.Reload(NotableDateResourceLoader.Load(updatedXml));   // the live service picks it up
+```
 
 ### Register through dependency injection
 
-When the host is an ASP.NET Core application (or any `IServiceCollection`-based composition root), install the optional `Bodu.Globalization.Calendar.DependencyInjection` package and register the service idiomatically:
+When the host is an ASP.NET Core application (or any `IServiceCollection`-based composition root), install `Bodu.Globalization.Calendar.DependencyInjection` and register the service:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services
-    .AddNotableDates(builder.Configuration)                       // binds "NotableDates" section
-    .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
-    .AddOverrideProvider(new MutableNotableDateRuleOverrideProvider())
-    .RegisterAsAmbientDefault();                                  // also assigns NotableDateContext.Default
+builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
+// or a factory: builder.Services.AddNotableDateService(sp => AsiaPacificCalendarData.LoadResource("AU"));
+// or reloadable:  builder.Services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 ```
 
-`appsettings.json`:
-
-```json
-{
-  "NotableDates": {
-    "WorkingDays": "MondayToFriday",
-    "DefaultTerritoryCode": "AU-NSW",
-    "RegisterAsAmbientDefault": true
-  }
-}
-```
-
-See the [Calendar dependency injection guide](../../guides/calendar/dependency-injection.md) for the full builder reference, the `PostConfigure` projection hook for projecting from consumer-defined POCOs, and the runtime-mutable override workflow.
+`INotableDateService` is registered as a singleton. See the [Calendar dependency injection guide](../../guides/calendar/dependency-injection.md) for the reloadable workflow and lifetime semantics.
 
 ## Where to go next
 
@@ -166,4 +174,4 @@ See the [Calendar dependency injection guide](../../guides/calendar/dependency-i
 - **[Core concepts](concepts.md)** — vocabulary used across the rest of the documentation.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
-- **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` providers.
+- **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` resources.

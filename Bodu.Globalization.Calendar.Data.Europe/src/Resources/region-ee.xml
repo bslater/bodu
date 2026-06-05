@@ -1,62 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Estonia (EE) notable-date resource using the Western / Gregorian calendar.
+  Estonia (EE) — notable-date resource pack.
 
-  National public holidays (riigipühad). Estonia does not observe Easter Monday
-  as a public holiday; Good Friday, Easter Sunday, and Whit Sunday are the
-  observed movable Christian holidays.
+  Migrated from the v1 region-ee.xml to the v2 cookbook schema. All rules are scoped to territory "EE"; Estonia has
+  no subdivision-specific public holidays.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="EE"; Estonia-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Good Friday, Whit Sunday,
+      Christmas Eve, Christmas Day) are IMPORTED from the europe-common hub and given an EE territory scope through
+      the import <Use> directive. The Easter-derived feasts (Good Friday, Whit Sunday) derive from the WESTERN Easter
+      Sunday anchor the hub re-exports.
+    * Estonia-specific national, seasonal, and civic days are declared INLINE below as fixed dates.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="EE" />
-    <Use name="Easter Sunday" territory="EE" />
-    <Use name="Good Friday" territory="EE" />
-    <Use name="International Workers' Day" as="Spring Day" territory="EE" />
-    <Use name="Pentecost Sunday" as="Whit Sunday" territory="EE" />
-    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="EE" />
-    <Use name="Christmas Day" territory="EE" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="EE" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ee">
 
   <!--
-    National Estonian holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Independence Day">
-    <Rule name="fixed-feb-24-ee" category="Holiday" territory="EE" nonWorking="true" firstYear="1918"
-          comment="Iseseisvuspäev. Marks the declaration of Estonian independence on 24 February 1918.">
-      <Fixed month="February" day="24" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Victory Day">
-    <Rule name="fixed-jun-23-ee" category="Holiday" territory="EE" nonWorking="true" firstYear="1919"
-          comment="Võidupüha. Commemorates the Battle of Võnnu of 23 June 1919 during the Estonian War of Independence.">
-      <Fixed month="June" day="23" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Estonia. New Year's Day (1
+      January) carries a weekend roll to the next working day. Good Friday and Whit Sunday derive from the Easter
+      Sunday anchor (an OffsetFromRule strategy the hub re-exports). Christmas Eve is re-scoped to a non-working
+      public holiday for Estonia; Christmas Day is imported with its shared fixed-date strategy.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="EE">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="EE" />
+      <Use notableDateRef="good-friday" territory="EE" />
+      <Use notableDateRef="whit-sunday" territory="EE" />
+      <Use notableDateRef="christmas-eve" territory="EE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="EE" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Midsummer Day">
-    <Rule name="fixed-jun-24-ee" category="Holiday" territory="EE" nonWorking="true"
-          comment="Jaanipäev. Saint John's Day, the high point of the Estonian midsummer celebration.">
-      <Fixed month="June" day="24" />
-      <Tag>Cultural</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Day of Restoration of Independence">
-    <Rule name="fixed-aug-20-ee" category="Holiday" territory="EE" nonWorking="true" firstYear="1991"
-          comment="Taasiseseisvumispäev. Marks the restoration of Estonian independence on 20 August 1991.">
-      <Fixed month="August" day="20" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Fixed seasonal and Christian feasts
+      ============================================================================================================
+    -->
 
-</NotableDates>
+    <!-- Spring Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="spring-day" displayName="Spring Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ee"><Applicability><Territory code="EE" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas (Boxing Day) — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ee"><Applicability><Territory code="EE" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      National, seasonal, and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Independence Day — 24 February, marking the 1918 declaration of Estonian independence. fromYear 1918 excludes earlier years. -->
+    <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ee"><Applicability fromYear="1918"><Territory code="EE" /></Applicability>
+        <Strategy><Fixed month="February" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Victory Day — 23 June, marking the 1919 Battle of Võnnu in the Estonian War of Independence. fromYear 1919 excludes earlier years. -->
+    <NotableDate id="victory-day" displayName="Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ee"><Applicability fromYear="1919"><Territory code="EE" /></Applicability>
+        <Strategy><Fixed month="June" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Midsummer Day (Saint John's Day / Jaanipäev) — 24 June, the traditional midsummer celebration. Fixed date. -->
+    <NotableDate id="midsummer-day" displayName="Midsummer Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ee"><Applicability><Territory code="EE" /></Applicability>
+        <Strategy><Fixed month="June" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of Restoration of Independence — 20 August, marking the 1991 restoration of Estonian independence from the Soviet Union. fromYear 1991 excludes earlier years. -->
+    <NotableDate id="day-of-restoration-of-independence" displayName="Day of Restoration of Independence" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ee"><Applicability fromYear="1991"><Territory code="EE" /></Applicability>
+        <Strategy><Fixed month="August" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

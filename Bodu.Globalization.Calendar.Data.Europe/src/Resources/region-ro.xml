@@ -1,78 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Romania (RO) notable-date resource.
+  Romania (RO) — notable-date resource pack.
 
-  National public holidays (sărbători legale). Romania celebrates Christmas on
-  the Gregorian date but follows the Eastern Orthodox calendar for the movable
-  Easter and Pentecost cycle, cherry-picked from the main library's
-  christian-orthodox.xml (anchored on Orthodox Easter Sunday); the fixed
-  Gregorian observances come from europe-common.xml.
+  Migrated from the v1 region-ro.xml to the v2 cookbook schema. All rules are scoped to territory "RO"; Romania has
+  no subdivision-specific public holidays.
 
-  Algorithm note: resolving the Orthodox movable feasts requires the
-  "orthodox-easter-sunday" INotableDateAlgorithm to be registered with the
-  service.
+  How this resource is built:
+
+    * Shared civil and Christian observances (New Year's Day, Christmas Day) are IMPORTED from the europe-common hub
+      and given an RO territory scope through the import <Use> directive.
+    * Romania-specific concepts and the Orthodox Easter cycle are declared INLINE below.
+
+  Easter anchor: Romania is predominantly Eastern Orthodox, so its movable feasts (Good Friday, Easter Monday,
+  Pentecost, Pentecost Monday) derive from the ORTHODOX Easter Sunday (computed by the "orthodox-easter" algorithm —
+  a Julian-based paschal calculation projected onto the Gregorian calendar), not Western Easter. Each Easter-derived
+  entry offsets a fixed number of days from the local "orthodox-easter-sunday" concept. Note that Christmas
+  (25 December) is fixed-date and shared with the Western catalogue, but the Easter cycle is wholly Orthodox.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="RO" />
-    <Use name="International Workers' Day" as="Labour Day" territory="RO" />
-    <Use name="Assumption of Mary" as="Dormition of the Mother of God" territory="RO" />
-    <Use name="Christmas Day" territory="RO" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="RO" />
-  </UseFrom>
-
-  <UseFrom resource="./christian-orthodox.xml">
-    <Use name="Orthodox Good Friday" as="Good Friday" nonWorking="true" territory="RO" />
-    <Use name="Orthodox Easter Sunday" territory="RO" />
-    <Use name="Orthodox Easter Monday" nonWorking="true" territory="RO" />
-    <Use name="Orthodox Pentecost" as="Pentecost" category="Holiday" nonWorking="true" territory="RO" />
-    <Use name="Orthodox Pentecost Monday" as="Pentecost Monday" category="Holiday" nonWorking="true" territory="RO" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ro">
 
   <!--
-    National Romanian holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Day after New Year's Day">
-    <Rule name="fixed-jan-02-ro" category="Holiday" territory="RO" nonWorking="true"
-          comment="Second day of the New Year, a public holiday in Romania.">
-      <Fixed month="January" day="2" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Union Day">
-    <Rule name="fixed-jan-24-ro" category="Holiday" territory="RO" nonWorking="true" firstYear="1859"
-          comment="Unirea Principatelor Române. Marks the union of the principalities of Moldavia and Wallachia on 24 January 1859.">
-      <Fixed month="January" day="24" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Romania. New Year's Day
+      (1 January) rolls to the next working day when it falls on a weekend; Christmas Day (25 December) is the
+      fixed-date Western feast. The Orthodox Easter cycle is declared inline below and does NOT derive from this hub.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="RO">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="christmas-day" territory="RO" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Children's Day">
-    <Rule name="fixed-jun-01-ro" category="Holiday" territory="RO" nonWorking="true" firstYear="2017"
-          comment="Ziua Copilului. International Children's Day, a public holiday in Romania since 2017.">
-      <Fixed month="June" day="1" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Saint Andrew's Day">
-    <Rule name="fixed-nov-30-ro" category="Holiday" territory="RO" nonWorking="true"
-          comment="Sfântul Andrei. Feast of Saint Andrew, patron saint of Romania, on 30 November.">
-      <Fixed month="November" day="30" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Fixed civic and Christian feasts
+      ============================================================================================================
+    -->
 
-  <NotableDate name="Great Union Day">
-    <Rule name="fixed-dec-01-ro" category="Holiday" territory="RO" nonWorking="true" firstYear="1918"
-          comment="Ziua Națională a României. National day marking the union of Transylvania with Romania on 1 December 1918.">
-      <Fixed month="December" day="1" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-</NotableDates>
+    <!-- Dormition of the Mother of God (Assumption) — 15 August. Fixed date. -->
+    <NotableDate id="dormition-of-the-mother-of-god" displayName="Dormition of the Mother of God" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Orthodox Easter cycle (movable feasts; anchored to ORTHODOX Easter Sunday)
+      ============================================================================================================
+    -->
+
+    <!-- Good Friday — two days before Orthodox Easter Sunday (offsetDays="-2"). fromYear 1583 ties it to the Gregorian reform. -->
+    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Orthodox Easter Sunday — the anchor for the cycle above and below, computed by the "orthodox-easter" algorithm
+      (Julian-based paschal calculation projected onto the Gregorian calendar). Not itself a non-working public
+      holiday here (it falls on a Sunday); it exists so the offset feasts can reference it.
+    -->
+    <NotableDate id="orthodox-easter-sunday" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Orthodox Easter Monday — one day after Orthodox Easter Sunday (offsetDays="1"). -->
+    <NotableDate id="orthodox-easter-monday" displayName="Orthodox Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Pentecost (Whit Sunday) — 49 days after Orthodox Easter Sunday (offsetDays="49"). -->
+    <NotableDate id="pentecost" displayName="Pentecost" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Pentecost Monday (Whit Monday) — 50 days after Orthodox Easter Sunday (offsetDays="50"), the day after Pentecost. -->
+    <NotableDate id="pentecost-monday" displayName="Pentecost Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1583"><Territory code="RO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="ro" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      National and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Day after New Year's Day — 2 January. Fixed date; the second day of the New Year holiday. -->
+    <NotableDate id="day-after-new-years-day" displayName="Day after New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="January" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Union Day (Unification of the Romanian Principalities) — 24 January, marking the 1859 union of Moldavia and Wallachia. fromYear 1859 excludes earlier years. -->
+    <NotableDate id="union-day" displayName="Union Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1859"><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="January" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Children's Day — 1 June, a Romanian public holiday from 2017. fromYear 2017 excludes earlier years. -->
+    <NotableDate id="childrens-day" displayName="Children's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="2017"><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Andrew's Day — 30 November, the feast of the patron saint of Romania. Fixed date. -->
+    <NotableDate id="saint-andrews-day" displayName="Saint Andrew's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="November" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Great Union Day (National Day) — 1 December, marking the 1918 union of Transylvania with Romania. fromYear 1918 excludes earlier years. -->
+    <NotableDate id="great-union-day" displayName="Great Union Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ro"><Applicability fromYear="1918"><Territory code="RO" /></Applicability>
+        <Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

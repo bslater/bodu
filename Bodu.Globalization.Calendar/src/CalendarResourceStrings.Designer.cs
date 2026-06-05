@@ -61,259 +61,34 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The anchor rule name cannot be null, empty, or white-space..
+        ///   Looks up a localized string similar to The notable-date document content cannot be empty or white-space..
         /// </summary>
-        internal static string Arg_Invalid_AnchorRuleNameNullOrWhiteSpace {
+        internal static string Arg_Invalid_DocumentContentEmpty {
             get {
-                return ResourceManager.GetString("Arg_Invalid_AnchorRuleNameNullOrWhiteSpace", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_DocumentContentEmpty", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assembly chain entries must not be null..
+        ///   Looks up a localized string similar to The notable-date document XML is not well-formed: {0}.
         /// </summary>
-        internal static string Arg_Invalid_AssemblyChainContainsNull {
+        internal static string Format_Invalid_XmlNotWellFormed {
             get {
-                return ResourceManager.GetString("Arg_Invalid_AssemblyChainContainsNull", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_XmlNotWellFormed", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to At least one assembly must be supplied..
+        ///   Looks up a localized string similar to The notable-date document JSON is not well-formed: {0}.
         /// </summary>
-        internal static string Arg_Invalid_AssemblyChainEmpty {
+        internal static string Format_Invalid_JsonNotWellFormed {
             get {
-                return ResourceManager.GetString("Arg_Invalid_AssemblyChainEmpty", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_JsonNotWellFormed", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assembly path must not be null or whitespace..
-        /// </summary>
-        internal static string Arg_Invalid_AssemblyPathNullOrWhiteSpace {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_AssemblyPathNullOrWhiteSpace", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The provenance list must have the same number of entries as the overlapping notable dates..
-        /// </summary>
-        internal static string Arg_Invalid_CollisionProvenanceCountMismatch {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_CollisionProvenanceCountMismatch", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The end date must not be earlier than the start date..
-        /// </summary>
-        internal static string Arg_Invalid_EndDateBeforeStartDate {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EndDateBeforeStartDate", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to '{0}' is not a defined HinduLunarMonth value..
-        /// </summary>
-        internal static string Arg_Invalid_HinduLunarMonthUndefined {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_HinduLunarMonthUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to '{0}' is not a defined HinduPaksha value..
-        /// </summary>
-        internal static string Arg_Invalid_HinduPakshaUndefined {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_HinduPakshaUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Key must not be null or whitespace..
-        /// </summary>
-        internal static string Arg_Invalid_KeyNullOrWhiteSpace {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_KeyNullOrWhiteSpace", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Child policies must not be null..
-        /// </summary>
-        internal static string Arg_Invalid_PoliciesContainNull {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_PoliciesContainNull", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to At least one child policy is required..
-        /// </summary>
-        internal static string Arg_Invalid_PoliciesEmpty {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_PoliciesEmpty", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The rule name cannot be null, empty, or white-space..
-        /// </summary>
-        internal static string Arg_Invalid_RuleNameNullOrWhiteSpace {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_RuleNameNullOrWhiteSpace", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Advancing the requested number of working days would overrun {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_AdvanceOverrunDays {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_AdvanceOverrunDays", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Advancing the requested number of non-working days would overrun {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_AdvanceOverrunNonWorkingDays {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_AdvanceOverrunNonWorkingDays", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The fringe distance must not be negative..
-        /// </summary>
-        internal static string Arg_OutOfRange_FringeDistanceNegative {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_FringeDistanceNegative", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Retreating the requested number of working days would underrun {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_RetreatUnderrunDays {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_RetreatUnderrunDays", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Retreating the requested number of non-working days would underrun {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_RetreatUnderrunNonWorkingDays {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_RetreatUnderrunNonWorkingDays", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Tithi must be between 1 and 15..
-        /// </summary>
-        internal static string Arg_OutOfRange_Tithi {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_Tithi", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The requested projection is not supported..
-        /// </summary>
-        internal static string Arg_OutOfRange_UnsupportedProjection {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_UnsupportedProjection", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The working week must select at least one day..
-        /// </summary>
-        internal static string Arg_OutOfRange_WorkingWeekEmpty {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_WorkingWeekEmpty", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The working-week pattern is not defined..
-        /// </summary>
-        internal static string Arg_OutOfRange_WorkingWeekUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_WorkingWeekUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Year must be between 1 and 9999..
-        /// </summary>
-        internal static string Arg_OutOfRange_Year {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_Year", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to JSON failed schema validation: {0}.
-        /// </summary>
-        internal static string Format_Invalid_JsonSchema {
-            get {
-                return ResourceManager.GetString("Format_Invalid_JsonSchema", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1–13..
-        /// </summary>
-        internal static string Format_Invalid_MonthValueGregorian {
-            get {
-                return ResourceManager.GetString("Format_Invalid_MonthValueGregorian", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid month value '{0}'. Expected a full English month name, an integer 1–13, or a Hebrew month name..
-        /// </summary>
-        internal static string Format_Invalid_MonthValueHebrew {
-            get {
-                return ResourceManager.GetString("Format_Invalid_MonthValueHebrew", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to '{0}' is not a valid ISO 3166-1/3166-2 territory code..
-        /// </summary>
-        internal static string Format_Invalid_TerritoryCode {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TerritoryCode", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Type '{0}' specified for '{1}' could not be resolved..
-        /// </summary>
-        internal static string Format_Invalid_TypeName {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TypeName", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Type '{0}' specified for '{1}' must derive from '{2}'..
-        /// </summary>
-        internal static string Format_Invalid_TypeNotAssignable {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TypeNotAssignable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Schema validation error: {0}.
+        ///   Looks up a localized string similar to The notable-date document XML failed schema validation: {0}.
         /// </summary>
         internal static string Format_Invalid_XmlSchema {
             get {
@@ -322,335 +97,236 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Embedded schema resource '{0}' not found in assembly '{1}'..
+        ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
-        internal static string IO_FileNotFound_EmbeddedSchemaResource {
+        internal static string Op_Invalid_NoWorkingDayFound {
             get {
-                return ResourceManager.GetString("IO_FileNotFound_EmbeddedSchemaResource", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_NoWorkingDayFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Embedded XML resource '{0}' was not found in any of the searched assemblies: {1}..
+        ///   Looks up a localized string similar to No non-working day was found within the search limit..
         /// </summary>
-        internal static string IO_FileNotFound_EmbeddedXmlResource {
+        internal static string Op_Invalid_NoNonWorkingDayFound {
             get {
-                return ResourceManager.GetString("IO_FileNotFound_EmbeddedXmlResource", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_NoNonWorkingDayFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Plugin assembly '{0}' was not found..
+        ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
-        internal static string IO_FileNotFound_PluginAssembly {
+        internal static string Op_Invalid_DocumentValidationFailed {
             get {
-                return ResourceManager.GetString("IO_FileNotFound_PluginAssembly", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_DocumentValidationFailed", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Activator.CreateInstance returned null for type '{0}'..
+        ///   Looks up a localized string similar to Duplicate adjustment-policy identifier '{0}'..
         /// </summary>
-        internal static string Op_Invalid_ActivatorCreateInstanceNull {
+        internal static string Validation_DuplicateAdjustmentPolicyId {
             get {
-                return ResourceManager.GetString("Op_Invalid_ActivatorCreateInstanceNull", resourceCulture);
+                return ResourceManager.GetString("Validation_DuplicateAdjustmentPolicyId", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Algorithm key '{0}' referenced by rule '{1}' is not registered..
+        ///   Looks up a localized string similar to Duplicate notable-date identifier '{0}'..
         /// </summary>
-        internal static string Op_Invalid_AlgorithmKeyNotRegistered {
+        internal static string Validation_DuplicateNotableDateId {
             get {
-                return ResourceManager.GetString("Op_Invalid_AlgorithmKeyNotRegistered", resourceCulture);
+                return ResourceManager.GetString("Validation_DuplicateNotableDateId", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Anchor reference '{0}' on rule '{1}' matches {2} rules and cannot be resolved unambiguously. Qualify the reference with a rule name, territory, or calendar type..
+        ///   Looks up a localized string similar to Duplicate rule identifier '{0}' within notable date '{1}'..
         /// </summary>
-        internal static string Op_Invalid_AmbiguousAnchorReference {
+        internal static string Validation_DuplicateRuleId {
             get {
-                return ResourceManager.GetString("Op_Invalid_AmbiguousAnchorReference", resourceCulture);
+                return ResourceManager.GetString("Validation_DuplicateRuleId", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Replacement target '{0}' on adjustment '{1}' (rule '{2}') matches {3} rules and cannot be resolved unambiguously. Qualify the target with a rule name, territory, or calendar type..
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': fromYear '{2}' must not be greater than toYear '{3}'..
         /// </summary>
-        internal static string Op_Invalid_AmbiguousReplacementTarget {
+        internal static string Validation_FromYearAfterToYear {
             get {
-                return ResourceManager.GetString("Op_Invalid_AmbiguousReplacementTarget", resourceCulture);
+                return ResourceManager.GetString("Validation_FromYearAfterToYear", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Rule reference '{0}' matches {1} rules and cannot be resolved unambiguously..
+        ///   Looks up a localized string similar to Adjustment policy '{0}': scope fromYear '{1}' must not be greater than toYear '{2}'.
         /// </summary>
-        internal static string Op_Invalid_AmbiguousRuleReference {
+        internal static string Validation_AdjustmentScopeFromYearAfterToYear {
             get {
-                return ResourceManager.GetString("Op_Invalid_AmbiguousRuleReference", resourceCulture);
+                return ResourceManager.GetString("Validation_AdjustmentScopeFromYearAfterToYear", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Anchor rule '{0}' referenced by '{1}' was not found..
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': day '{2}' is out of range for month '{3}'..
         /// </summary>
-        internal static string Op_Invalid_AnchorRuleNotFound {
+        internal static string Validation_InvalidDayValue {
             get {
-                return ResourceManager.GetString("Op_Invalid_AnchorRuleNotFound", resourceCulture);
+                return ResourceManager.GetString("Validation_InvalidDayValue", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The calculation anchor rule '{0}' could not be found..
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12..
         /// </summary>
-        internal static string Op_Invalid_CalculationAnchorRuleNotFound {
+        internal static string Validation_InvalidMonthValue {
             get {
-                return ResourceManager.GetString("Op_Invalid_CalculationAnchorRuleNotFound", resourceCulture);
+                return ResourceManager.GetString("Validation_InvalidMonthValue", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Circular dependency detected while resolving notable date rule '{0}': {1}..
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': '{2}' is not a valid territory code..
         /// </summary>
-        internal static string Op_Invalid_CircularDependencyInRule {
+        internal static string Validation_InvalidTerritoryCode {
             get {
-                return ResourceManager.GetString("Op_Invalid_CircularDependencyInRule", resourceCulture);
+                return ResourceManager.GetString("Validation_InvalidTerritoryCode", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Circular reference detected while flattening notable date resource '{0}'..
+        ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
-        internal static string Op_Invalid_CircularReferenceInResource {
+        internal static string Validation_OverrideNotableDateNotFound {
             get {
-                return ResourceManager.GetString("Op_Invalid_CircularReferenceInResource", resourceCulture);
+                return ResourceManager.GetString("Validation_OverrideNotableDateNotFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate adjustment key '{0}' on element '{1}'. Keys must be unique within a single rule or override body..
+        ///   Looks up a localized string similar to Override operation targets rule '{0}' in notable date '{1}', which does not exist in the resolved resource..
         /// </summary>
-        internal static string Op_Invalid_DuplicateAdjustmentKey {
+        internal static string Validation_OverrideRuleNotFound {
             get {
-                return ResourceManager.GetString("Op_Invalid_DuplicateAdjustmentKey", resourceCulture);
+                return ResourceManager.GetString("Validation_OverrideRuleNotFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Two rules share the same identity (Name '{0}', RuleName '{1}', Territory '{2}', Calendar '{3}'). Rule identities must be unique within a service..
+        ///   Looks up a localized string similar to Rule '{0}' references undefined adjustment policy '{1}'..
         /// </summary>
-        internal static string Op_Invalid_DuplicateRuleIdentity {
+        internal static string Validation_UnresolvedAdjustmentPolicy {
             get {
-                return ResourceManager.GetString("Op_Invalid_DuplicateRuleIdentity", resourceCulture);
+                return ResourceManager.GetString("Validation_UnresolvedAdjustmentPolicy", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value for attribute '{0}' on element '{1}'..
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': offset reference '{2}' resolves to no rule..
         /// </summary>
-        internal static string Op_Invalid_InvalidAttributeValue {
+        internal static string Validation_OffsetReferenceNotFound {
             get {
-                return ResourceManager.GetString("Op_Invalid_InvalidAttributeValue", resourceCulture);
+                return ResourceManager.GetString("Validation_OffsetReferenceNotFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Missing required attribute '{0}' on element '{1}'..
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': offset reference '{2}' is ambiguous; specify a ruleRef..
         /// </summary>
-        internal static string Op_Invalid_MissingRequiredAttribute {
+        internal static string Validation_OffsetReferenceAmbiguous {
             get {
-                return ResourceManager.GetString("Op_Invalid_MissingRequiredAttribute", resourceCulture);
+                return ResourceManager.GetString("Validation_OffsetReferenceAmbiguous", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Failed to activate plugin type '{0}' from assembly '{1}': {2}.
+        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': algorithm key '{2}' is not recognized..
         /// </summary>
-        internal static string Op_Invalid_PluginActivationFailedFormat {
+        internal static string Validation_UnknownAlgorithm {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginActivationFailedFormat", resourceCulture);
+                return ResourceManager.GetString("Validation_UnknownAlgorithm", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Plugin assembly name is missing..
+        ///   Looks up a localized string similar to Import targets resource '{0}', which could not be resolved..
         /// </summary>
-        internal static string Op_Invalid_PluginAssemblyNameMissing {
+        internal static string Validation_ImportResourceNotFound {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginAssemblyNameMissing", resourceCulture);
+                return ResourceManager.GetString("Validation_ImportResourceNotFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assembly '{0}' is not in the hash allowlist..
+        ///   Looks up a localized string similar to Import of resource '{0}' forms a cycle and was skipped..
         /// </summary>
-        internal static string Op_Invalid_PluginAssemblyNotInAllowlistFormat {
+        internal static string Validation_ImportCycle {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginAssemblyNotInAllowlistFormat", resourceCulture);
+                return ResourceManager.GetString("Validation_ImportCycle", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to attribute not present on the assembly.
+        ///   Looks up a localized string similar to Import from resource '{0}' targets concept '{1}', which it does not declare..
         /// </summary>
-        internal static string Op_Invalid_PluginAttributeMissing {
+        internal static string Validation_ImportConceptNotFound {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginAttributeMissing", resourceCulture);
+                return ResourceManager.GetString("Validation_ImportConceptNotFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assembly '{0}' hash length mismatch..
+        ///   Looks up a localized string similar to Adjustment policy '{0}' uses a ReplaceWithRule action without a notableDateRef..
         /// </summary>
-        internal static string Op_Invalid_PluginHashLengthMismatchFormat {
+        internal static string Validation_ReplaceReferenceMissing {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginHashLengthMismatchFormat", resourceCulture);
+                return ResourceManager.GetString("Validation_ReplaceReferenceMissing", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assembly '{0}' hash does not match the pinned value..
+        ///   Looks up a localized string similar to Adjustment policy '{0}': ReplaceWithRule reference '{1}' resolves to no rule..
         /// </summary>
-        internal static string Op_Invalid_PluginHashMismatchFormat {
+        internal static string Validation_ReplaceReferenceNotFound {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginHashMismatchFormat", resourceCulture);
+                return ResourceManager.GetString("Validation_ReplaceReferenceNotFound", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Plugin assembly '{0}' is missing a valid NotableDatePluginAttribute: {1}..
+        ///   Looks up a localized string similar to Adjustment policy '{0}': ReplaceWithRule reference '{1}' is ambiguous; specify a ruleRef..
         /// </summary>
-        internal static string Op_Invalid_PluginMissingAttributeFormat {
+        internal static string Validation_ReplaceReferenceAmbiguous {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginMissingAttributeFormat", resourceCulture);
+                return ResourceManager.GetString("Validation_ReplaceReferenceAmbiguous", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Plugin assembly is not strong-named..
+        ///   Looks up a localized string similar to Adjustment policy '{0}' uses a Custom action without a handlerKey..
         /// </summary>
-        internal static string Op_Invalid_PluginNotStrongNamed {
+        internal static string Validation_CustomHandlerKeyMissing {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginNotStrongNamed", resourceCulture);
+                return ResourceManager.GetString("Validation_CustomHandlerKeyMissing", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Plugin assembly '{0}' was rejected by the trust policy: {1}..
+        ///   Looks up a localized string similar to Adjustment policy '{0}' uses a Custom trigger without a handlerKey..
         /// </summary>
-        internal static string Op_Invalid_PluginNotTrustedFormat {
+        internal static string Validation_CustomTriggerHandlerKeyMissing {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginNotTrustedFormat", resourceCulture);
+                return ResourceManager.GetString("Validation_CustomTriggerHandlerKeyMissing", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to no reason supplied.
+        ///   Looks up a localized string similar to '{0}' is not a valid territory code; expected a two-letter country optionally followed by a hyphen and a one-to-three alphanumeric subdivision..
         /// </summary>
-        internal static string Op_Invalid_PluginReasonMissing {
+        internal static string Format_Invalid_TerritoryCode {
             get {
-                return ResourceManager.GetString("Op_Invalid_PluginReasonMissing", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Public-key token '{0}' is not in the allowlist..
-        /// </summary>
-        internal static string Op_Invalid_PluginTokenNotInAllowlistFormat {
-            get {
-                return ResourceManager.GetString("Op_Invalid_PluginTokenNotInAllowlistFormat", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to declared plugin type '{0}' does not implement INotableDatePlugin.
-        /// </summary>
-        internal static string Op_Invalid_PluginTypeMissingInterface {
-            get {
-                return ResourceManager.GetString("Op_Invalid_PluginTypeMissingInterface", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;unknown&gt;.
-        /// </summary>
-        internal static string Op_Invalid_PluginUnknownTypeName {
-            get {
-                return ResourceManager.GetString("Op_Invalid_PluginUnknownTypeName", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The resource path '{0}' escapes the resource root..
-        /// </summary>
-        internal static string Op_Invalid_ResourcePathEscapesRoot {
-            get {
-                return ResourceManager.GetString("Op_Invalid_ResourcePathEscapesRoot", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Rule '{0}' is missing a strategy child element..
-        /// </summary>
-        internal static string Op_Invalid_RuleMissingStrategy {
-            get {
-                return ResourceManager.GetString("Op_Invalid_RuleMissingStrategy", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Notable date rule '{0}' was not found in source resource '{1}' (referenced from '{2}')..
-        /// </summary>
-        internal static string Op_Invalid_RuleNotFoundInSource {
-            get {
-                return ResourceManager.GetString("Op_Invalid_RuleNotFoundInSource", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown strategy element '{0}' on override rule..
-        /// </summary>
-        internal static string Op_Invalid_UnknownStrategyElementOnOverrideRule {
-            get {
-                return ResourceManager.GetString("Op_Invalid_UnknownStrategyElementOnOverrideRule", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown strategy element '{0}' on rule '{1}'..
-        /// </summary>
-        internal static string Op_Invalid_UnknownStrategyElementOnRule {
-            get {
-                return ResourceManager.GetString("Op_Invalid_UnknownStrategyElementOnRule", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The calendar type '{0}' is not supported by {1}. Only {2} is supported..
-        /// </summary>
-        internal static string Op_NotSupported_CalendarType {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_CalendarType", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported date resolution strategy '{0}' on rule '{1}'..
-        /// </summary>
-        internal static string Op_NotSupported_DateResolutionStrategy {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_DateResolutionStrategy", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported strategy: {0}..
-        /// </summary>
-        internal static string Op_NotSupported_Strategy {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_Strategy", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_TerritoryCode", resourceCulture);
             }
         }
     }
