@@ -2,67 +2,56 @@
 uid: Bodu.Globalization.Calendar.Algorithms
 ---
 
-![Bodu.Globalization.Calendar](~/images/hero-calendar.svg)
+# Bodu.Globalization.Calendar.Algorithms
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Algorithms** ships the pluggable date-resolution algorithms for moveable observances that cannot be expressed as fixed dates or static day-of-week patterns. Each algorithm implements <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm> and is registered on an <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmRegistry> under a stable string key referenced by `NotableDateRule.AlgorithmKey`.
+**Bodu.Globalization.Calendar.Algorithms** is the date-calculation layer of [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md). It defines the strategy a rule uses to find its *nominal* date for a year, and the contract and registry for plugging in custom calculators.
 
-Reach for this namespace when an authored rule needs Easter, Vesak, Asalha Puja, Losar, Qingming, or a Hindu lunar festival, or when you are writing a custom algorithm that follows the same contract.
+Every <xref:Bodu.Globalization.Calendar.NotableDateRule> carries exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The loader maps each `<Strategy>` element in a rule document to one of the built-in strategies below; you rarely construct them by hand, but they are the public vocabulary the engine resolves against.
 
 ## Static documentation
 
-- **[Date calculation algorithms guide](~/guides/calendar/algorithms.md)** — the full per-algorithm walkthrough.
-- **[`Bodu.Globalization.Calendar` introduction](~/docs/calendar/index.md)** — how algorithms fit into the resolution pipeline.
+- **[Date calculation algorithms](~/guides/calendar/algorithms.md)** — the strategy kinds, the built-in algorithm keys, and how to register a custom algorithm.
+- **[Working with non-Gregorian calendars](~/guides/calendar/non-gregorian-calendars.md)** — fixed dates expressed in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
 
 ## Key types
 
-**Easter algorithms**
+**The strategy contract and built-in strategies**
 
-- <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm> — Computus-based Gregorian Easter Sunday for years ≥ 1583 and Meeus's Julian adaptation for earlier years. Results cached per `(year, calendar)`. Algorithm key: `"easter"`.
-- <xref:Bodu.Globalization.Calendar.Algorithms.GregorianEasterSundayNotableDateProvider> — Gregorian-only provider variant; accepts `null` or `GregorianCalendar`.
-- <xref:Bodu.Globalization.Calendar.Algorithms.OrthodoxEasterSundayNotableDateProvider> — Orthodox (Julian computus) Easter, returned as the Gregorian-equivalent `DateTime`. Accepts `null` or `JulianCalendar`.
-- <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateProviderBase> — abstract base for Easter providers with per-year caching via a `ConcurrentDictionary`. Derive when you need a custom Easter variant.
+- <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> — `DateOnly? Calculate(int year, StrategyResolutionContext context)`. Implemented by every strategy below.
+- <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> — a fixed month / day, optionally expressed in a non-Gregorian <xref:Bodu.Globalization.Calendar.CalendarSystem> (a short Hijri month can recur twice in a Gregorian year, so it also exposes `CalculateAll`).
+- <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy> — the *n*th or last weekday in a month (e.g. fourth Thursday in November), driven by <xref:Bodu.Globalization.Calendar.WeekOrdinal>.
+- <xref:Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy> — a weekday relative to a weekday-in-month anchor (e.g. the Tuesday after the first Monday).
+- <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy> — a weekday on / before / after / nearest a fixed date (e.g. the Monday nearest 24 May), driven by <xref:Bodu.Globalization.Calendar.WeekdayProximity>.
+- <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> — a fixed day offset from another rule's occurrence (e.g. Good Friday = Easter Sunday − 2).
+- <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> — dispatch to a named algorithm by key.
 
-**Lunar / solar-term algorithms**
+**Algorithm keys**
 
-- <xref:Bodu.Globalization.Calendar.Algorithms.VesakNotableDateAlgorithm> — the first full moon on or after 1 May. Accurate within one day for 1900–2100. Uses Meeus Chapter 49 lunar-phase computation.
-- <xref:Bodu.Globalization.Calendar.Algorithms.AsalhaPujaNotableDateAlgorithm> — the first full moon on or after 15 June (Theravada Dharma Day; start of Vassa).
-- <xref:Bodu.Globalization.Calendar.Algorithms.LosarNotableDateAlgorithm> — Tibetan New Year, approximated as the first new moon on or after 20 January using the Chinese lunisolar approximation. Diverges from the official Tibetan calendar approximately every 3–5 years by ~1 month; register a custom algorithm using TMAI tables when exact dates are required.
-- <xref:Bodu.Globalization.Calendar.Algorithms.QingmingNotableDateAlgorithm> — the Qingming solar term (清明節), when the sun's ecliptic longitude reaches 15° (typically 4–5 April). Accurate within one day for 1901–2100.
+<xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> resolves a string key to a bundled astronomical / gazetted calculator. Built-in keys include `western-easter` and `orthodox-easter` (exposed as the `WesternEasterKey` / `OrthodoxEasterKey` constants), `vernal-equinox`, `autumnal-equinox`, `jp-vernal-equinox`, `jp-autumnal-equinox`, `qingming`, `vesak`, `asalha-puja`, `losar`, `matariki`, and the Hindu-festival keys (`diwali`, `holi`, `maha-shivaratri`, `ganesh-chaturthi`, …). `AlgorithmDateStrategy.IsKnownKey(key)` reports whether a key is built in. The calculators that back these keys are an internal implementation detail reached only through the key.
 
-**Hindu lunisolar**
+**Custom algorithms**
 
-- <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarNotableDateAlgorithm> — Hindu festival dates from (month, paksha, tithi) lunisolar coordinates. Constructor: `(HinduLunarMonth month, HinduPaksha paksha, int tithi)`. Uses fixed month-offset approximation with ~19-year Metonic-cycle correction; accurate within 1–2 days for 1900–2100.
-- <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarMonth> — `Chaitra`, `Vaisakha`, `Jyaistha`, `Asadha`, `Sravana`, `Bhadrapada`, `Asvina`, `Kartika`, `Margasirsa`, `Pausa`, `Magha`, `Phalguna`.
-- <xref:Bodu.Globalization.Calendar.Algorithms.HinduPaksha> — `Shukla` (bright fortnight) or `Krishna` (dark fortnight).
+- <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> — `DateOnly? Calculate(int year)`. Implement this to add a calculator (returning `null` for years you do not support).
+- <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry>, <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> — the lookup and its chainable, mutable implementation (`Register(key, algorithm)`). Keys not recognised by `AlgorithmDateStrategy` fall through to this registry, so a custom key registered here can be referenced from a rule as `<Algorithm key="my-key" />`. Pass the registry to `NotableDateResourceLoader.Load(xml, resolver, registry)` (to whitelist the key during validation) and to the `NotableDateService` constructor.
+- <xref:Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext> — the per-resolution context passed to strategies; resolves referenced rules (`ResolveReference`) cycle-safely and carries the custom algorithm registry.
 
-## Example
+## Minimal sample
 
 ```csharp
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
 
-// Register the shipped algorithms.
-var registry = new NotableDateAlgorithmRegistry();
-registry.Register("easter",         new EasterSundayNotableDateAlgorithm());
-registry.Register("vesak",          new VesakNotableDateAlgorithm());
-registry.Register("qingming",       new QingmingNotableDateAlgorithm());
-registry.Register("diwali",         new HinduLunarNotableDateAlgorithm(
-                                        HinduLunarMonth.Kartika, HinduPaksha.Krishna, tithi: 15));
-
-// A rule that uses one.
-var rule = new NotableDateRule
+// A custom calculator …
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
 {
-    Name         = "Easter Sunday",
-    Strategy     = DateResolutionStrategy.Algorithm,
-    AlgorithmKey = "easter",
-    Category     = NotableDateCategory.Religious,
-};
+    public DateOnly? Calculate(int year) => new DateOnly(year, 3, 14);
+}
+
+// … registered under a key the rule document references via <Algorithm key="pi-day" />.
+var registry = new NotableDateAlgorithmRegistry().Register("pi-day", new PiDayAlgorithm());
+
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);
+NotableDateService service   = new NotableDateService(resource, registry);
 ```
-
-## Notes
-
-- **Caching.** Every shipped algorithm caches per `(year, calendar)` in a process-wide `ConcurrentDictionary` — a rule referenced from many territories pays the computation cost once per year.
-- **Accuracy windows.** Lunar and solar-term algorithms approximate astronomical events. Each algorithm's `<remarks>` documents its accuracy window. For applications that require official astronomical positions outside the documented window, supply a custom `INotableDateAlgorithm`.
-- **Algorithm key vs. type.** Rules may reference algorithms by `AlgorithmKey` (preferred — decoupled from assembly type names) or by `AlgorithmType` (assembly-qualified type name, reflection-activated fallback).
-- **See also:** the [Date calculation algorithms guide](~/guides/calendar/algorithms.md), the [non-Gregorian calendars guide](~/guides/calendar/non-gregorian-calendars.md), the [`NotableDateRule` reference](~/guides/calendar/rule-reference.md).
