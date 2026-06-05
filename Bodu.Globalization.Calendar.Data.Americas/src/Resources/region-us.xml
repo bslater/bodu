@@ -189,6 +189,16 @@
     </NotableDate>
 
     <!--
+      Arbor Day — the last Friday in April; a national observance promoting tree planting (originated in Nebraska in
+      1872, where it is a state holiday). Recognized nationally as a working observance. Strategy: DayOfWeekInMonth
+      (last Friday).
+    -->
+    <NotableDate id="arbor-day" displayName="Arbor Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1872"><Territory code="US" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="April" dayOfWeek="Friday" weekOrdinal="Last" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
       Pearl Harbor Remembrance Day — 7 December, a remembrance day designated in federal law from 1994. Strategy:
       Fixed day-of-month.
     -->
@@ -241,6 +251,12 @@
     <NotableDate id="lincolns-birthday" displayName="Lincoln's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="states"><Applicability><Territory code="US-CT" /><Territory code="US-IL" /><Territory code="US-MO" /><Territory code="US-NY" /></Applicability>
         <Strategy><Fixed month="February" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Daisy Gatson Bates Day — the third Monday in February (observed alongside Presidents' Day); an Arkansas state holiday honoring the civil-rights leader. Strategy: DayOfWeekInMonth (third Monday). -->
+    <NotableDate id="daisy-bates-day" displayName="Daisy Gatson Bates Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ar"><Applicability fromYear="2001"><Territory code="US-AR" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
@@ -351,6 +367,12 @@
         <Strategy><Fixed month="August" day="16" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Lyndon Baines Johnson Day — 27 August; an optional Texas state holiday marking the president's birthday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="lbj-day" displayName="Lyndon Baines Johnson Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="tx"><Applicability fromYear="1973"><Territory code="US-TX" /></Applicability>
+        <Strategy><Fixed month="August" day="27" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!-- Statehood Day (Hawaii) — the third Friday in August; a Hawaii state holiday marking 1959 admission to the Union. Strategy: DayOfWeekInMonth (third Friday). -->
     <NotableDate id="statehood-day-hi" displayName="Statehood Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="hi"><Applicability fromYear="1959"><Territory code="US-HI" /></Applicability>
@@ -373,6 +395,12 @@
     <NotableDate id="native-americans-day-sd" displayName="Native Americans' Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sd"><Applicability fromYear="1990"><Territory code="US-SD" /></Applicability>
         <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Cabrini Day — the first Monday in October; a Colorado state holiday honoring Mother Cabrini, adopted in 2020 in place of Columbus Day. Strategy: DayOfWeekInMonth (first Monday). -->
+    <NotableDate id="cabrini-day" displayName="Cabrini Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability fromYear="2020"><Territory code="US-CO" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Nevada Day — the last Friday in October; a Nevada state holiday marking 1864 admission to the Union (moved to the last Friday from 2000). Strategy: DayOfWeekInMonth (last Friday). -->
@@ -401,4 +429,23 @@
     </NotableDate>
 
   </NotableDates>
+
+  <!--
+    ============================================================================================================
+    State overrides
+    ============================================================================================================
+    Good Friday is imported above as a nationwide working religious observance. A number of states additionally
+    observe it as a statutory non-working holiday; this adds a subdivision-scoped rule (offsetting from the same
+    imported Easter Sunday anchor) that marks it non-working in those states. Both occurrences resolve for a state
+    query under KeepAll — the national observance and the state holiday — mirroring the territorial-shadow pattern
+    used for National Indigenous Peoples Day in the Canadian pack.
+  -->
+  <Overrides>
+    <AddRule notableDateRef="good-friday">
+      <Rule id="state-statutory" category="PublicHoliday" nonWorking="true">
+        <Applicability fromYear="1583"><Territory code="US-CT" /><Territory code="US-DE" /><Territory code="US-HI" /><Territory code="US-IN" /><Territory code="US-KY" /><Territory code="US-LA" /><Territory code="US-NJ" /><Territory code="US-NC" /><Territory code="US-ND" /><Territory code="US-TN" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy>
+      </Rule>
+    </AddRule>
+  </Overrides>
 </NotableDateResource>

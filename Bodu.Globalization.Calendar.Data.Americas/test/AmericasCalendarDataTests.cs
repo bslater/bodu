@@ -101,6 +101,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("US-WV", 2024, "west-virginia-day", "2024-06-20")]
     [DataRow("US-IL", 2024, "lincolns-birthday", "2024-02-12")]
     [DataRow("US-VT", 2024, "bennington-battle-day", "2024-08-16")]
+    [DataRow("US-TX", 2024, "lbj-day", "2024-08-27")]
     public void Resolve_UnitedStatesStateHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
         NotableDate match = Single(territory, year, notableDateId);
@@ -141,12 +142,21 @@ public sealed class AmericasCalendarDataTests
     [DataRow("US-HI", 2024, "statehood-day-hi", "2024-08-16")]
     [DataRow("US-NV", 2024, "nevada-day", "2024-10-25")]
     [DataRow("US-AK", 2024, "sewards-day", "2024-03-25")]
+    [DataRow("US", 2024, "arbor-day", "2024-04-26")]
+    [DataRow("US-CO", 2024, "cabrini-day", "2024-10-07")]
+    [DataRow("US-AR", 2024, "daisy-bates-day", "2024-02-19")]
+
+    // British Columbia Family Day moved from the second to the third Monday in February in 2019.
+    [DataRow("CA-BC", 2016, "family-day", "2016-02-08")]
+    [DataRow("CA-BC", 2019, "family-day", "2019-02-18")]
 
     // Nearest-weekday (WeekdayNearDate), Canada.
     [DataRow("CA", 2031, "victoria-day", "2031-05-19")]
+    [DataRow("CA-QC", 2024, "national-patriots-day", "2024-05-20")]
     [DataRow("CA-NL", 2024, "nl-discovery-day", "2024-06-24")]
     [DataRow("CA-NL", 2025, "nl-discovery-day", "2025-06-23")]
     [DataRow("CA-NL", 2024, "nl-st-georges-day", "2024-04-22")]
+    [DataRow("CA-NL", 2024, "nl-st-patricks-day", "2024-03-18")]
     public void Resolve_FloatingHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
         NotableDate match = Single(territory, year, notableDateId);
@@ -192,6 +202,21 @@ public sealed class AmericasCalendarDataTests
             .ToList();
 
         Assert.IsTrue(matches.Any(r => r.RuleId == "nt-yt" && r.IsNonWorkingDay), "expected a non-working territorial rule");
+    }
+
+    /// <summary>
+    /// Verifies that Good Friday resolves as a non-working statutory holiday in a state that observes it (the state
+    /// override rule), while remaining a working religious observance nationally.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_StateGoodFriday_IsStatutoryHoliday()
+    {
+        List<NotableDate> matches = AmericasCalendarData.CreateService("US-LA")
+            .Resolve(new DateRange(new DateOnly(2024, 3, 29), new DateOnly(2024, 3, 29)), "US-LA")
+            .Where(r => r.NotableDateId == "good-friday")
+            .ToList();
+
+        Assert.IsTrue(matches.Any(r => r.RuleId == "state-statutory" && r.IsNonWorkingDay), "expected a non-working state rule");
     }
 
     /// <summary>

@@ -104,16 +104,19 @@
 
     <!--
       Family Day — the third Monday in February. One concept carrying a rule per province that observes it, each
-      gated by the year the province adopted the holiday (AB 1990, SK 2007, ON 2008, BC 2013, NB 2018). The same
+      gated by the year the province adopted the holiday (AB 1990, SK 2007, ON 2008, BC 2013, NB 2018). British
+      Columbia is the exception: it observed Family Day on the SECOND Monday from 2013 to 2018, then moved to the
+      third Monday from 2019 to align with the other provinces, so it carries two date-bounded rules. The same
       third-Monday-in-February slot appears under different provincial names below (Islander Day, Louis Riel Day,
-      Nova Scotia Heritage Day). Strategy: DayOfWeekInMonth (third Monday).
+      Nova Scotia Heritage Day). Strategy: DayOfWeekInMonth (second/third Monday).
     -->
     <NotableDate id="family-day" displayName="Family Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>
         <Rule id="ab"><Applicability fromYear="1990"><Territory code="CA-AB" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
         <Rule id="sk"><Applicability fromYear="2007"><Territory code="CA-SK" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
         <Rule id="on"><Applicability fromYear="2008"><Territory code="CA-ON" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
-        <Rule id="bc"><Applicability fromYear="2013"><Territory code="CA-BC" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+        <Rule id="bc-early"><Applicability fromYear="2013" toYear="2018"><Territory code="CA-BC" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+        <Rule id="bc"><Applicability fromYear="2019"><Territory code="CA-BC" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
         <Rule id="nb"><Applicability fromYear="2018"><Territory code="CA-NB" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
       </Rules>
     </NotableDate>
@@ -165,6 +168,15 @@
     </NotableDate>
 
     <!--
+      St. Patrick's Day (Newfoundland and Labrador) — observed on the Monday nearest 17 March. Strategy:
+      WeekdayNearDate (Monday nearest 17 March).
+    -->
+    <NotableDate id="nl-st-patricks-day" displayName="St. Patrick's Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nl"><Applicability><Territory code="CA-NL" /></Applicability>
+        <Strategy><WeekdayNearDate month="March" day="17" dayOfWeek="Monday" direction="Nearest" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
       St. George's Day (Newfoundland and Labrador) — observed on the Monday nearest 23 April. Strategy:
       WeekdayNearDate (Monday nearest 23 April).
     -->
@@ -203,6 +215,16 @@
     -->
     <NotableDate id="victoria-day" displayName="Victoria Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
+        <Strategy><WeekdayNearDate month="May" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      National Patriots' Day (Journée nationale des patriotes) — the Monday on or before 24 May; Quebec observes
+      this in place of Victoria Day on the same date. Subdivision-scoped, so it resolves only for a CA-QC query.
+      Strategy: WeekdayNearDate (Monday on or before 24 May).
+    -->
+    <NotableDate id="national-patriots-day" displayName="National Patriots' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="qc"><Applicability fromYear="2003"><Territory code="CA-QC" /></Applicability>
         <Strategy><WeekdayNearDate month="May" day="24" dayOfWeek="Monday" direction="OnOrBefore" /></Strategy></Rule></Rules>
     </NotableDate>
 
