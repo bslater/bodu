@@ -11,36 +11,64 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Hebrew-calendar anchors (fixed month/day)
+      ============================================================================================================
+      Each anchor fixes a date in the Hebrew lunisolar calendar and projects it onto the Gregorian year through
+      the BCL HebrewCalendar. sweepCalendarYears="true" handles the lunisolar drift between the Hebrew and
+      Gregorian year boundaries, emitting each occurrence that lands in the requested Gregorian year.
+    -->
+
+    <!--
+      Purim — 14 Adar. The LastAdar month alias is the leap-month handling: in a Hebrew leap year (which inserts a
+      second Adar) it resolves to Adar II, and in a common year to the sole Adar, so Purim always falls in the
+      final Adar as tradition requires.
+    -->
     <NotableDate id="purim" displayName="Purim" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="LastAdar" day="14" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Passover (Pesach) — 15 Nisan: start of the week-long festival of unleavened bread; a 7-day span. -->
     <NotableDate id="passover" displayName="Passover" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Nisan" day="15" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Rosh Hashanah — 1 Tishri: the Jewish New Year; a 2-day span. -->
     <NotableDate id="rosh-hashanah" displayName="Rosh Hashanah" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="2"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Tishri" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Hanukkah — 25 Kislev: start of the eight-day Festival of Lights; an 8-day span. -->
     <NotableDate id="hanukkah" displayName="Hanukkah" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="8"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Kislev" day="25" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Derived observances (exact Hebrew-calendar offsets)
+      ============================================================================================================
+      These fall a fixed number of days from an anchor above and are authored as OffsetFromRule so the dependent
+      date tracks the anchor's swept Gregorian occurrence exactly and cannot drift.
+    -->
+
+    <!-- Shavuot — 6 Sivan, 50 days after the first day of Passover (the conclusion of the Counting of the Omer). -->
     <NotableDate id="shavuot" displayName="Shavuot" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="passover" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Yom Kippur — 10 Tishri, the Day of Atonement, nine days after Rosh Hashanah. -->
     <NotableDate id="yom-kippur" displayName="Yom Kippur" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="9" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Sukkot — 15 Tishri, the week-long Feast of Tabernacles, fourteen days after Rosh Hashanah; a 7-day span. -->
     <NotableDate id="sukkot" displayName="Sukkot" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="14" /></Strategy></Rule></Rules>

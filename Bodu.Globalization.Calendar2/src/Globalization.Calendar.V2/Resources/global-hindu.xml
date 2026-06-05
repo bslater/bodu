@@ -11,54 +11,85 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Solar harvest festivals (fixed Gregorian date)
+      ============================================================================================================
+      Makar Sankranti marks the sun's transit into Capricorn (Makara). By modern civil convention it, and the
+      Tamil harvest festival Pongal, are fixed to 14 January rather than computed astronomically.
+    -->
+
+    <!-- Makar Sankranti — winter solar (Uttarayana) harvest festival, fixed at 14 January by civil convention. -->
     <NotableDate id="makar-sankranti" displayName="Makar Sankranti" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Pongal — Tamil four-day harvest festival beginning 14 January (civil convention); a 4-day span. -->
     <NotableDate id="pongal" displayName="Pongal" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="4"><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Lunisolar festivals (computed Hindu lunar algorithm)
+      ============================================================================================================
+      Each date below is computed by the engine's solar-anchored Hindu lunar algorithm keyed by festival name. The
+      algorithm resolves the festival's tithi (lunar day) against the relevant lunar month, handling intercalary
+      (adhika) months, and is accurate to within a day or two of regional panchanga reckoning, which can vary by
+      locale and sighting convention. The same keys are used by the shipping India region pack.
+    -->
+
+    <!-- Saraswati Puja — observed on Vasant Panchami (Magha shukla panchami); shares the vasant-panchami computation. -->
     <NotableDate id="saraswati-puja" displayName="Saraswati Puja" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="vasant-panchami" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Maha Shivaratri — night dedicated to Shiva (Phalguna krishna chaturdashi); computed lunar date. -->
     <NotableDate id="maha-shivaratri" displayName="Maha Shivaratri" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="maha-shivaratri" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Holi — festival of colors at the Phalguna full moon; computed lunar date, a 2-day span (Holika Dahan + Holi). -->
     <NotableDate id="holi" displayName="Holi" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="2"><Strategy><Algorithm key="holi" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Ram Navami — birth of Rama (Chaitra shukla navami); computed lunar date. -->
     <NotableDate id="ram-navami" displayName="Ram Navami" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="ram-navami" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Raksha Bandhan — bond between siblings, at the Shravana full moon; computed lunar date. -->
     <NotableDate id="raksha-bandhan" displayName="Raksha Bandhan" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="raksha-bandhan" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Janmashtami — birth of Krishna (Bhadrapada krishna ashtami); computed lunar date. -->
     <NotableDate id="janmashtami" displayName="Janmashtami" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="janmashtami" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Ganesh Chaturthi — festival of Ganesha (Bhadrapada shukla chaturthi); computed lunar date, a 10-day span. -->
     <NotableDate id="ganesh-chaturthi" displayName="Ganesh Chaturthi" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="10"><Strategy><Algorithm key="ganesh-chaturthi" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Navaratri — nine nights honoring the Goddess, from Ashvina shukla pratipada; computed lunar date, a 9-day span. -->
     <NotableDate id="navaratri" displayName="Navaratri" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="9"><Strategy><Algorithm key="navaratri" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Dussehra (Vijayadashami) — tenth-day victory festival concluding Navaratri (Ashvina shukla dashami); computed lunar date. -->
     <NotableDate id="dussehra" displayName="Dussehra" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="dussehra" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Karva Chauth — fast for spouses' wellbeing (Kartika krishna chaturthi); computed lunar date. -->
     <NotableDate id="karva-chauth" displayName="Karva Chauth" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="karva-chauth" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Diwali — festival of lights around the Kartika new moon (Amavasya); computed lunar date, a 5-day span. -->
     <NotableDate id="diwali" displayName="Diwali" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="5"><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
     </NotableDate>
