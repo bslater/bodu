@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleValidator.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -9,159 +9,374 @@ using System.Globalization;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Performs the strict, post-flatten validation pass over a resolved notable-date rule set, surfacing authoring errors
-/// (duplicate identities, missing or ambiguous offset anchors and replacement targets) and warnings (unregistered
-/// algorithm keys) before the rules are used to resolve dates.
+/// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
+/// adjustment references, inverted year bounds, and impossible fixed dates.
 /// </summary>
 internal static class NotableDateRuleValidator
 {
     /// <summary>
-    /// Validates the supplied rule set and returns the diagnostics it produced.
+    /// The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.
     /// </summary>
-    /// <param name="rules">The flattened, override-merged rules to validate.</param>
-    /// <param name="algorithms">The algorithm registry consulted for algorithm-key warnings, or <see langword="null" />.</param>
-    /// <returns>The validation diagnostics; empty when the rule set is valid.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="rules" /> is <see langword="null" />.</exception>
-    public static IReadOnlyList<NotableDateValidationDiagnostic> Validate(
-        IReadOnlyList<NotableDateRule> rules,
-        INotableDateAlgorithmRegistry? algorithms)
+    private static readonly int[] s_maxDaysPerMonth = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    /// <summary>
+    /// Validates the assembled resource, recording an error diagnostic for each violation.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
+    public static void Validate(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms = null)
     {
-        ThrowHelper.ThrowIfNull(rules);
-
-        var diagnostics = new List<NotableDateValidationDiagnostic>();
-        var index = new NotableDateRuleIndex(rules);
-
-        ReportDuplicateIdentities(rules, diagnostics);
-
-        foreach (NotableDateRule rule in rules)
-        {
-            if (rule is null)
-                continue;
-
-            switch (rule.Strategy)
-            {
-                case DateResolutionStrategy.OffsetFromAnchor:
-                    ValidateAnchor(rule, index, diagnostics);
-                    break;
-
-                case DateResolutionStrategy.Algorithm:
-                    ValidateAlgorithm(rule, algorithms, diagnostics);
-                    break;
-            }
-
-            ValidateReplacementTargets(rule, index, diagnostics);
-        }
-
-        return diagnostics;
+        ValidateAdjustmentPolicyIds(resource, diagnostics);
+        ValidateAdjustmentPolicyScopes(resource, diagnostics);
+        ValidateAdjustmentActions(resource, diagnostics);
+        ValidateAdjustmentTriggers(resource, diagnostics);
+        ValidateNotableDates(resource, diagnostics, algorithms);
     }
 
     /// <summary>
-    /// Reports an error for each pair of rules that share the same full <see cref="NotableDateRuleIdentity" />.
+    /// Reports adjustment policies whose scope declares a lower year bound after its upper year bound.
     /// </summary>
-    /// <param name="rules">The rules being validated.</param>
-    /// <param name="diagnostics">The diagnostics list to append to.</param>
-    private static void ReportDuplicateIdentities(IReadOnlyList<NotableDateRule> rules, List<NotableDateValidationDiagnostic> diagnostics)
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentPolicyScopes(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        var seen = new HashSet<NotableDateRuleIdentity>();
-        foreach (NotableDateRule rule in rules)
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
-            if (rule is null || string.IsNullOrWhiteSpace(rule.Name))
-                continue;
-
-            NotableDateRuleIdentity identity = NotableDateRuleIdentity.From(rule);
-            if (!seen.Add(identity))
+            if (policy.Scope.FromYear is int from && policy.Scope.ToYear is int to && from > to)
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
-                    "DuplicateIdentity",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_DuplicateRuleIdentity, identity.Name, identity.RuleName ?? string.Empty, identity.TerritoryCode ?? string.Empty, identity.CalendarType?.FullName ?? string.Empty)));
+                    "BODU-CAL-YEARS",
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_AdjustmentScopeFromYearAfterToYear, policy.Id, from, to)));
             }
         }
     }
 
     /// <summary>
-    /// Validates that an offset rule's anchor resolves to exactly one rule in the requesting context.
+    /// Reports duplicate adjustment-policy identifiers.
     /// </summary>
-    /// <param name="rule">The offset rule.</param>
-    /// <param name="index">The rule index used to resolve the anchor reference.</param>
-    /// <param name="diagnostics">The diagnostics list to append to.</param>
-    private static void ValidateAnchor(NotableDateRule rule, NotableDateRuleIndex index, List<NotableDateValidationDiagnostic> diagnostics)
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentPolicyIds(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        if (string.IsNullOrWhiteSpace(rule.AnchorRuleName))
-            return;
+        HashSet<string> seen = new(StringComparer.Ordinal);
 
-        RuleReferenceResult result = index.Resolve(NotableDateRuleReference.ForName(rule.AnchorRuleName!), rule.TerritoryCode, rule.CalendarType);
-        switch (result.Match)
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
         {
-            case RuleReferenceMatch.None:
+            if (!seen.Add(policy.Id))
+            {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
-                    "MissingAnchor",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AnchorRuleNotFound, rule.AnchorRuleName, rule.Name)));
-                break;
-
-            case RuleReferenceMatch.Ambiguous:
-                diagnostics.Add(new NotableDateValidationDiagnostic(
-                    NotableDateValidationSeverity.Error,
-                    "AmbiguousAnchor",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AmbiguousAnchorReference, rule.AnchorRuleName, rule.Name, result.CandidateCount)));
-                break;
+                    "BODU-CAL-DUP-POLICY",
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateAdjustmentPolicyId, policy.Id)));
+            }
         }
     }
 
     /// <summary>
-    /// Validates that an algorithm rule's key is registered, warning when it is not and no explicit type is supplied.
+    /// Reports adjustment policies whose reference or custom actions are missing required targets or resolve
+    /// ambiguously.
     /// </summary>
-    /// <param name="rule">The algorithm rule.</param>
-    /// <param name="algorithms">The algorithm registry, or <see langword="null" />.</param>
-    /// <param name="diagnostics">The diagnostics list to append to.</param>
-    private static void ValidateAlgorithm(NotableDateRule rule, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics)
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentActions(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        if (string.IsNullOrWhiteSpace(rule.AlgorithmKey) || rule.AlgorithmType is not null)
-            return;
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            switch (policy.Action)
+            {
+                case AdjustmentAction.ReplaceWithRule:
+                    ValidateReplaceWithRule(resource, policy, diagnostics);
+                    break;
 
-        if (algorithms is null || !algorithms.TryGet(rule.AlgorithmKey!, out _))
+                case AdjustmentAction.Custom when string.IsNullOrEmpty(policy.ActionHandlerKey):
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-HANDLER-MISSING",
+                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_CustomHandlerKeyMissing, policy.Id)));
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reports adjustment policies whose <see cref="AdjustmentTrigger.Custom" /> trigger is missing its required
+    /// handler key.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateAdjustmentTriggers(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            if (policy.Trigger == AdjustmentTrigger.Custom && string.IsNullOrEmpty(policy.TriggerHandlerKey))
+            {
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL-TRIGGER-HANDLER-MISSING",
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_CustomTriggerHandlerKeyMissing, policy.Id)));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reports a <see cref="AdjustmentAction.ReplaceWithRule" /> action whose reference is missing, unresolved, or
+    /// ambiguous.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="policy">The policy to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateReplaceWithRule(NotableDateResource resource, AdjustmentPolicy policy, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        string? notableDateRef = policy.ActionNotableDateRef;
+        if (string.IsNullOrEmpty(notableDateRef))
         {
             diagnostics.Add(new NotableDateValidationDiagnostic(
-                NotableDateValidationSeverity.Warning,
-                "UnregisteredAlgorithm",
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AlgorithmKeyNotRegistered, rule.AlgorithmKey, rule.Name)));
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-REPLACE-MISSING",
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_ReplaceReferenceMissing, policy.Id)));
+            return;
+        }
+
+        string reference = string.IsNullOrEmpty(policy.ActionRuleRef)
+            ? notableDateRef
+            : $"{notableDateRef}/{policy.ActionRuleRef}";
+
+        int matches = CountReferenceMatches(resource, notableDateRef, policy.ActionRuleRef);
+        if (matches == 0)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-REPLACE-MISSING",
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_ReplaceReferenceNotFound, policy.Id, reference)));
+        }
+        else if (matches > 1)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-REPLACE-AMBIGUOUS",
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_ReplaceReferenceAmbiguous, policy.Id, reference)));
         }
     }
 
     /// <summary>
-    /// Validates that every <see cref="AdjustmentAction.ReplaceWithNamedDate" /> adjustment on the rule resolves to
-    /// exactly one target.
+    /// Reports duplicate concept identifiers and validates each concept's rules.
     /// </summary>
-    /// <param name="rule">The rule whose adjustments are inspected.</param>
-    /// <param name="index">The rule index used to resolve replacement targets.</param>
-    /// <param name="diagnostics">The diagnostics list to append to.</param>
-    private static void ValidateReplacementTargets(NotableDateRule rule, NotableDateRuleIndex index, List<NotableDateValidationDiagnostic> diagnostics)
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
+    private static void ValidateNotableDates(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics, INotableDateAlgorithmRegistry? algorithms)
     {
-        if (rule.Adjustments.IsDefaultOrEmpty)
+        HashSet<string> knownPolicies = new(resource.AdjustmentPolicies.Select(p => p.Id), StringComparer.Ordinal);
+        HashSet<string> seenConcepts = new(StringComparer.Ordinal);
+
+        foreach (NotableDateDefinition definition in resource.NotableDates)
+        {
+            if (!seenConcepts.Add(definition.Id))
+            {
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL-DUP-ND",
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateNotableDateId, definition.Id)));
+            }
+
+            ValidateRules(resource, definition, knownPolicies, diagnostics, algorithms);
+        }
+    }
+
+    /// <summary>
+    /// Reports duplicate rule identifiers, unresolved adjustment references, inverted year bounds, and impossible fixed
+    /// dates within a single concept.
+    /// </summary>
+    /// <param name="resource">The resource being validated, used to resolve offset references.</param>
+    /// <param name="definition">The concept to validate.</param>
+    /// <param name="knownPolicies">The set of declared adjustment-policy identifiers.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
+    private static void ValidateRules(
+        NotableDateResource resource,
+        NotableDateDefinition definition,
+        HashSet<string> knownPolicies,
+        ICollection<NotableDateValidationDiagnostic> diagnostics,
+        INotableDateAlgorithmRegistry? algorithms)
+    {
+        HashSet<string> seenRules = new(StringComparer.Ordinal);
+
+        foreach (NotableDateRule rule in definition.Rules)
+        {
+            if (!seenRules.Add(rule.Id))
+            {
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL-DUP-RULE",
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateRuleId, rule.Id, definition.Id)));
+            }
+
+            foreach (string policyRef in rule.AdjustmentPolicyRefs)
+            {
+                if (!knownPolicies.Contains(policyRef))
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-ADJREF",
+                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_UnresolvedAdjustmentPolicy, rule.Id, policyRef)));
+                }
+            }
+
+            ValidateYearBounds(definition, rule, diagnostics);
+            ValidateFixedDate(definition, rule, diagnostics);
+            ValidateStrategyReferences(resource, definition, rule, diagnostics, algorithms);
+        }
+    }
+
+    /// <summary>
+    /// Reports unresolved or ambiguous offset references and unrecognized algorithm keys.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="definition">The owning concept.</param>
+    /// <param name="rule">The rule to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
+    private static void ValidateStrategyReferences(
+        NotableDateResource resource,
+        NotableDateDefinition definition,
+        NotableDateRule rule,
+        ICollection<NotableDateValidationDiagnostic> diagnostics,
+        INotableDateAlgorithmRegistry? algorithms)
+    {
+        switch (rule.Strategy)
+        {
+            case OffsetFromRuleStrategy offset:
+            {
+                string reference = string.IsNullOrEmpty(offset.RuleRef)
+                    ? offset.NotableDateRef
+                    : $"{offset.NotableDateRef}/{offset.RuleRef}";
+
+                int matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
+                if (matches == 0)
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-OFFSET-MISSING",
+                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
+                }
+                else if (matches > 1)
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-OFFSET-AMBIGUOUS",
+                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
+                }
+
+                break;
+            }
+
+            case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key) && !(algorithms?.Contains(algorithm.Key) ?? false):
+                diagnostics.Add(new NotableDateValidationDiagnostic(
+                    NotableDateValidationSeverity.Error,
+                    "BODU-CAL-ALGORITHM",
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_UnknownAlgorithm, definition.Id, rule.Id, algorithm.Key)));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Counts the rules an offset reference resolves to within the resource.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="notableDateRef">The referenced concept identifier.</param>
+    /// <param name="ruleRef">The referenced rule identifier, or <see langword="null" /> for the sole rule.</param>
+    /// <returns>The number of matching rules: 0 when missing, 1 when unambiguous, more than 1 when ambiguous.</returns>
+    private static int CountReferenceMatches(NotableDateResource resource, string notableDateRef, string? ruleRef)
+    {
+        NotableDateDefinition? target = null;
+        foreach (NotableDateDefinition candidate in resource.NotableDates)
+        {
+            if (string.Equals(candidate.Id, notableDateRef, StringComparison.Ordinal))
+            {
+                target = candidate;
+                break;
+            }
+        }
+
+        if (target is null)
+            return 0;
+
+        if (string.IsNullOrEmpty(ruleRef))
+            return target.Rules.Count;
+
+        return target.Rules.Count(r => string.Equals(r.Id, ruleRef, StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Reports an inverted year range on a rule's applicability.
+    /// </summary>
+    /// <param name="definition">The owning concept.</param>
+    /// <param name="rule">The rule to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateYearBounds(
+        NotableDateDefinition definition,
+        NotableDateRule rule,
+        ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (rule.Applicability.FromYear is int from && rule.Applicability.ToYear is int to && from > to)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-YEARS",
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_FromYearAfterToYear, definition.Id, rule.Id, from, to)));
+        }
+    }
+
+    /// <summary>
+    /// Reports a fixed-date rule whose day can never exist in its month.
+    /// </summary>
+    /// <param name="definition">The owning concept.</param>
+    /// <param name="rule">The rule to validate.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    private static void ValidateFixedDate(
+        NotableDateDefinition definition,
+        NotableDateRule rule,
+        ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (rule.Strategy is not FixedDateStrategy strategy)
             return;
 
-        foreach (ObservanceAdjustment adjustment in rule.Adjustments)
-        {
-            if (adjustment.Action != AdjustmentAction.ReplaceWithNamedDate || string.IsNullOrWhiteSpace(adjustment.TargetRuleName))
-                continue;
+        // Non-Gregorian month/day ranges vary by calendar (and a Hebrew alias defers the month), so the
+        // proleptic-Gregorian day-in-month check does not apply.
+        if (strategy.Calendar != CalendarSystem.Gregorian)
+            return;
 
-            NotableDateRuleReference reference = new(adjustment.TargetRuleName!, adjustment.TargetRuleVariant);
-            RuleReferenceResult result = index.Resolve(reference, rule.TerritoryCode, rule.CalendarType);
-            if (result.Match == RuleReferenceMatch.Ambiguous)
-            {
-                diagnostics.Add(new NotableDateValidationDiagnostic(
-                    NotableDateValidationSeverity.Error,
-                    "AmbiguousReplacementTarget",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AmbiguousReplacementTarget, adjustment.TargetRuleName, adjustment.Key, rule.Name, result.CandidateCount)));
-            }
-            else if (result.Match == RuleReferenceMatch.None)
-            {
-                diagnostics.Add(new NotableDateValidationDiagnostic(
-                    NotableDateValidationSeverity.Error,
-                    "MissingReplacementTarget",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AnchorRuleNotFound, adjustment.TargetRuleName, rule.Name)));
-            }
+        if (strategy.Month is < 1 or > 12)
+            return;
+
+        if (strategy.Day > s_maxDaysPerMonth[strategy.Month - 1])
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-DAY",
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    CalendarResourceStrings.Validation_InvalidDayValue,
+                    definition.Id,
+                    rule.Id,
+                    strategy.Day,
+                    strategy.Month)));
         }
     }
 }

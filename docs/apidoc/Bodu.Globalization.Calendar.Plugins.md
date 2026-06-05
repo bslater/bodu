@@ -2,79 +2,56 @@
 uid: Bodu.Globalization.Calendar.Plugins
 ---
 
-![Bodu.Globalization.Calendar](~/images/hero-calendar.svg)
+# Bodu.Globalization.Calendar.Plugins
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Plugins** is the external-plugin loading and trust-policy surface. It enables third-party assemblies to contribute `INotableDateRuleProvider` instances and `INotableDateAlgorithm` registrations to a host `NotableDateService` without the host having to reference them at build time, while keeping load-time isolation and admission policies under the host's control.
+**Bodu.Globalization.Calendar.Plugins** loads external assemblies that contribute custom date-calculation algorithms to [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md), behind an explicit, **deny-by-default** trust gate.
 
-Reach for this namespace when you need to load notable-date rules and algorithms from a side-loaded assembly (e.g. a region-specific rule pack discovered at runtime), and you want a declarative trust policy gating which assemblies are admitted.
+A plugin assembly advertises itself with an assembly-level <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute>. The host evaluates the assembly against an <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy> *before* activating any plugin type; a rejected assembly is never instantiated. Trusted plugins surface their <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations, which are then registered into a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> for use by `<Algorithm key="…">` rules.
+
+## Static documentation
+
+- **[Building and extending the service](~/guides/calendar/building-the-service.md)** — the plugin model, trust policies, and end-to-end loading.
 
 ## Key types
 
 **Plugin contracts**
 
-- <xref:Bodu.Globalization.Calendar.Plugins.INotableDatePlugin> — the minimum surface every external plugin must expose: `string Name`, `System.Version Version`. Plugins additionally implement one or both of the contributor interfaces below.
-- <xref:Bodu.Globalization.Calendar.Plugins.INotableDateRulePlugin> — contributes rule providers via `IEnumerable<INotableDateRuleProvider> GetRuleProviders()`.
-- <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> — contributes algorithm registrations via `IEnumerable<(string key, INotableDateAlgorithm algorithm)> GetAlgorithms()`.
+- <xref:Bodu.Globalization.Calendar.Plugins.INotableDatePlugin> — the base contract (`Name`, `Version`).
+- <xref:Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin> — `GetAlgorithms()` returns the `(key, INotableDateAlgorithm)` pairs the plugin contributes.
+- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute> — the assembly-level attribute naming the plugin type, e.g. `[assembly: NotableDatePlugin(typeof(MyPlugin))]`.
 
-**Plugin declaration**
+**Loader**
 
-- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute> — assembly-level attribute declaring the plugin entry-point type. Exactly one attribute is required per plugin assembly. Constructor: `NotableDatePluginAttribute(Type pluginType)` where `pluginType` implements `INotableDatePlugin`.
-
-**Plugin loader**
-
-- <xref:Bodu.Globalization.Calendar.Plugins.ExternalPluginLoader> — static loader: `Load(string filePath, IPluginTrustPolicy trustPolicy)` → `INotableDatePlugin`. Reflects only the `NotableDatePluginAttribute`, evaluates the supplied trust policy, and instantiates the declared entry-point type in its own non-collectible `AssemblyLoadContext`.
+- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> — `LoadFrom(Assembly, IPluginTrustPolicy)` and `LoadFrom(string assemblyPath, IPluginTrustPolicy)` (the path overload loads into a dedicated `AssemblyLoadContext`); `RegisterAlgorithms(plugin, registry)` registers the plugin's algorithms and returns the count. Trust is evaluated before activation.
 
 **Trust policies**
 
-- <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy> — admission gate: `Evaluate(PluginTrustContext) → PluginTrustResult`.
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustContext> — record struct carrying `AssemblyPath`, `AssemblyName`, and `FileHash` (SHA-256).
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustResult> — record struct: `Trusted` plus an optional `Reason`.
-- <xref:Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy> — admits assemblies whose SHA-256 file hash matches a pinned value keyed by assembly name. Tamper-resistant when combined with a strong-name policy.
-- <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy> — admits assemblies whose strong-name public-key token is in a consumer-supplied allow-list. Tokens are compared case-insensitively as hex. Does **not** cryptographically verify the signature on its own; compose with `FileHashPluginTrustPolicy` for full tamper resistance.
-- <xref:Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy> — AND-composes two or more policies; every child must return trusted.
-- <xref:Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy> — adapts an arbitrary callback `Func<PluginTrustContext, PluginTrustResult>` into a policy. Use for runtime-driven decisions (configuration, remote attestation, logged-in user).
-- <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> — dev/test only; marks every plugin as trusted. Intentionally easy to spot in code review.
+- <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy> — `Evaluate(PluginTrustContext)` returns a <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustResult>; the inputs are carried by <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustContext> (assembly name, path, file hash, public-key token).
+- Bundled policies: <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> (development / tests only), <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy>, <xref:Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy>, <xref:Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy> (AND / short-circuit), and <xref:Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy> (decide with a delegate).
 
-**Exception hierarchy**
+**Exceptions**
 
-- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginException> — abstract base.
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException> — thrown when the trust policy rejects the candidate.
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException> — thrown when the assembly lacks a valid `NotableDatePluginAttribute` or the declared type does not implement `INotableDatePlugin`.
-- <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException> — thrown when the plugin type lacks a public parameterless constructor or the constructor throws.
+- <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginException> (base), <xref:Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException>, <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException>, <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException>.
 
-## Example
+## Minimal sample
 
 ```csharp
-using Bodu.Globalization.Calendar;
+using System.Reflection;
+using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.Plugins;
 
-// Production: pin the assembly hash and the strong-name token together.
-var trust = new CompositePluginTrustPolicy(
-    new StrongNamePluginTrustPolicy(allowedTokens: new[] { "31bf3856ad364e35" }),
-    new FileHashPluginTrustPolicy(allowedHashes: new()
-    {
-        ["Contoso.Calendar.Plugin"] = expectedSha256,
-    }));
+// Trust only assemblies whose strong-name public-key token is on the allow-list.
+IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(allowedPublicKeyTokens);
 
-INotableDatePlugin plugin = ExternalPluginLoader.Load("plugins/Contoso.Calendar.Plugin.dll", trust);
+Assembly pluginAssembly = Assembly.LoadFrom("Contoso.Holidays.dll");
+INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(pluginAssembly, trust); // throws if untrusted
 
-// Wire its contributions into the service.
-var ruleProviders   = ((INotableDateRulePlugin)plugin).GetRuleProviders().ToArray();
-var algorithmRegistry = new NotableDateAlgorithmRegistry();
-foreach (var (key, alg) in ((INotableDateAlgorithmPlugin)plugin).GetAlgorithms())
-    algorithmRegistry.Register(key, alg);
-
-var service = new NotableDateService(
-    ruleProviders,
-    algorithmRegistry);
+var registry = new NotableDateAlgorithmRegistry();
+int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
+// registry can now back <Algorithm key="…"> rules in a loaded resource.
 ```
 
-## Notes
-
-- **Isolated load context.** Every external plugin is loaded into its own non-collectible `AssemblyLoadContext`, so its dependency graph does not conflict with the host's. Plugins cannot, however, be unloaded — this is a deliberate trade-off for predictable lifetimes.
-- **Trust is the host's responsibility.** `ExternalPluginLoader` evaluates only the supplied policy; it does not consult signing certificates, EFS / SELinux labels, or operating-system policy. Compose with operating-system controls (mark plugins read-only, install in a privileged folder) for defence in depth.
-- **Reflect-only attribute scan.** The loader inspects only the `NotableDatePluginAttribute` and does not enumerate types or invoke module initializers, so a malformed plugin cannot execute code merely by being scanned.
-- **Strong-name policy caveat.** `StrongNamePluginTrustPolicy` checks the token, not the signature. Pair it with `FileHashPluginTrustPolicy` when the threat model includes a sophisticated attacker who could re-sign with a stolen private key.
-- **See also:** the [`NotableDateAlgorithmRegistry` reference](xref:Bodu.Globalization.Calendar.NotableDateAlgorithmRegistry), the [Building and extending the service](~/guides/calendar/building-the-service.md) guide.
+> [!WARNING]
+> <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> trusts every assembly and is intended for development and tests only. Use a strong-name, file-hash, or composite policy in production.

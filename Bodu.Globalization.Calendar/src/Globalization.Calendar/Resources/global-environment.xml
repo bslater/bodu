@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global environmental notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-environment.xml to the v2 cookbook schema. These are internationally recognized environmental and
+  sustainability-related observances; they are not universally public holidays. A territory pack imports only the
+  concepts it observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through
+  the import <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id
+  "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-environment">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Environmental and sustainability observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- World Wetlands Day — 2 February; marks the 1971 signing of the Ramsar Convention on Wetlands (from 1997). -->
+    <NotableDate id="world-wetlands-day" displayName="World Wetlands Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1997" /><Strategy><Fixed month="February" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Day of Forests — 21 March; UN day on the importance of forests (from 2013). -->
+    <NotableDate id="international-day-of-forests" displayName="International Day of Forests" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2013" /><Strategy><Fixed month="March" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Water Day — 22 March; UN day on freshwater and sustainable water management. -->
+    <NotableDate id="world-water-day" displayName="World Water Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Earth Hour — last Saturday in March (not a fixed date); a one-hour lights-off event for climate action (from 2007). -->
+    <NotableDate id="earth-hour" displayName="Earth Hour" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2007" /><Strategy><DayOfWeekInMonth month="March" dayOfWeek="Saturday" weekOrdinal="Last" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Earth Day — 22 April; worldwide environmental-protection day, first held in 1970. -->
+    <NotableDate id="earth-day" displayName="Earth Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="April" day="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Day for Biological Diversity — 22 May; marks the 1992 adoption of the Convention on Biological Diversity (from 2001). -->
+    <NotableDate id="international-day-for-biological-diversity" displayName="International Day for Biological Diversity" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2001" /><Strategy><Fixed month="May" day="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Environment Day — 5 June; the UN's principal day for environmental awareness and action. -->
+    <NotableDate id="world-environment-day" displayName="World Environment Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="June" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Oceans Day — 8 June; UN day on the role of the oceans and their conservation. -->
+    <NotableDate id="world-oceans-day" displayName="World Oceans Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="June" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Day to Combat Desertification and Drought — 17 June; UN day on land degradation and drought (from 1995). -->
+    <NotableDate id="world-day-to-combat-desertification-and-drought" displayName="World Day to Combat Desertification and Drought" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1995" /><Strategy><Fixed month="June" day="17" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Soil Day — 5 December; FAO day on healthy soils (from 2014). -->
+    <NotableDate id="world-soil-day" displayName="World Soil Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2014" /><Strategy><Fixed month="December" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Plastic Free July — the whole of July (31-day span); a challenge to cut single-use plastic (from 2011). -->
+    <NotableDate id="plastic-free-july" displayName="Plastic Free July" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="31"><Applicability fromYear="2011" /><Strategy><Fixed month="July" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Clean Up the World Weekend — the third weekend in September (3-day span beginning on the third Friday, not a fixed date); a global community clean-up (from 1993). -->
+    <NotableDate id="clean-up-the-world-weekend" displayName="Clean Up the World Weekend" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="3"><Applicability fromYear="1993" /><Strategy><DayOfWeekInMonth month="September" dayOfWeek="Friday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

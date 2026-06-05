@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerRegistry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,113 +7,56 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides a thread-safe, mutable in-memory implementation of <see cref="IAdjustmentHandlerRegistry" />.
+/// A mutable registry of custom <see cref="IAdjustmentHandler" /> implementations keyed by handler key.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Handlers registered via <see cref="Register(string, IAdjustmentHandler)" /> are looked up case-insensitively by key
-/// during observance-adjustment evaluation. The registry is intended as a composition-time concern: hosts populate it
-/// once during start-up and pass it to <see cref="NotableDateService" /> via the <c>adjustmentHandlers</c> constructor
-/// parameter so that <see cref="ObservanceAdjustment" /> entries declaring <see cref="AdjustmentTrigger.Custom" /> or
-/// <see cref="AdjustmentAction.Custom" /> can resolve to a concrete <see cref="IAdjustmentHandler" /> implementation.
+/// Keys are matched ordinally and are case-sensitive. Registering a key that is already present replaces the previous
+/// handler.
 /// </para>
 /// </remarks>
-/// <example>
-/// <para>
-/// Register a custom handler and wire it into a service:
-/// </para>
-/// <code>
-///<![CDATA[
-/// AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
-///     .Register("conflict-avoidance", new ConflictAvoidanceHandler("Anzac Day"));
-///
-/// NotableDateService service = new NotableDateService(
-///     ruleProviders: new[] { AustraliaCalendarData.CreateProvider() },
-///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-///     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
-///
-/// A rule's adjustment can now reference the handler by key:
-/// ObservanceAdjustment custom = new ObservanceAdjustment
-/// {
-///     Key = "avoid-anzac",
-///     Trigger = AdjustmentTrigger.Custom,
-///     Action = AdjustmentAction.Custom,
-///     HandlerKey = "conflict-avoidance",
-/// };
-///]]>
-/// </code>
-/// </example>
-public sealed class AdjustmentHandlerRegistry
-    : IAdjustmentHandlerRegistry
+public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
 {
     /// <summary>
-    /// The case-insensitive key-to-handler mapping maintained by this registry.
+    /// The registered handlers keyed by handler key.
     /// </summary>
-    private readonly Dictionary<string, IAdjustmentHandler> _handlers = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, IAdjustmentHandler> _handlers = new(StringComparer.Ordinal);
 
     /// <summary>
-    /// Lock protecting read-modify-write access to <see cref="_handlers" />.
+    /// Registers a handler under a key, replacing any existing registration.
     /// </summary>
-    private readonly object _gate = new();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry" /> class.
-    /// </summary>
-    public AdjustmentHandlerRegistry() { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry" /> class seeded with the supplied
-    /// handlers.
-    /// </summary>
-    /// <param name="handlers">The key/handler pairs to register. Must not be <see langword="null" />.</param>
+    /// <param name="key">The handler key the policy references.</param>
+    /// <param name="handler">The handler implementation.</param>
+    /// <returns>The same registry, to allow chaining.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="handlers" /> is <see langword="null" />.
-    /// </exception>
-    public AdjustmentHandlerRegistry(IEnumerable<KeyValuePair<string, IAdjustmentHandler>> handlers)
-    {
-        ThrowHelper.ThrowIfNull(handlers);
-
-        foreach (KeyValuePair<string, IAdjustmentHandler> pair in handlers)
-            Register(pair.Key, pair.Value);
-    }
-
-    /// <summary>
-    /// Registers a handler against the specified key.
-    /// </summary>
-    /// <param name="key">The handler key. Must not be <see langword="null" /> or whitespace.</param>
-    /// <param name="handler">The handler instance. Must not be <see langword="null" />.</param>
-    /// <returns>The current registry, for fluent chaining.</returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="handler" /> is <see langword="null" />.
+    /// <paramref name="key" /> or <paramref name="handler" /> is <see langword="null" />.
     /// </exception>
     public AdjustmentHandlerRegistry Register(string key, IAdjustmentHandler handler)
     {
-        CalendarThrowHelper.ThrowIfKeyNullOrWhiteSpace(key);
+        ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(handler);
 
-        lock (_gate)
-        {
-            _handlers[key] = handler;
-        }
-
+        this._handlers[key] = handler;
         return this;
     }
 
     /// <inheritdoc />
-    public bool TryGet(string key, out IAdjustmentHandler handler)
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool Contains(string key)
     {
-        if (string.IsNullOrWhiteSpace(key))
-        {
-            handler = null!;
-            return false;
-        }
+        ThrowHelper.ThrowIfNull(key);
 
-        lock (_gate)
-        {
-            return _handlers.TryGetValue(key, out handler!);
-        }
+        return this._handlers.ContainsKey(key);
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool TryGet(string key, out IAdjustmentHandler? handler)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        bool found = this._handlers.TryGetValue(key, out IAdjustmentHandler? value);
+        handler = value;
+        return found;
     }
 }

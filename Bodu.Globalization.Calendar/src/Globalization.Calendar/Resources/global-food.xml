@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global food and agriculture notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-food.xml to the v2 cookbook schema. These are internationally recognized food security, agriculture,
+  nutrition, and dietary observances; they are not universally public holidays. A territory pack imports only the
+  concepts it observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through
+  the import <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id
+  "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-food">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Food, agriculture, and nutrition observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- World Pulses Day — 10 February; FAO day recognising pulses (beans, lentils, peas) as a food source (from 2019). -->
+    <NotableDate id="world-pulses-day" displayName="World Pulses Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2019" /><Strategy><Fixed month="February" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Tea Day — 21 May; UN day on the value of tea to rural livelihoods (from 2020). -->
+    <NotableDate id="international-tea-day" displayName="International Tea Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2020" /><Strategy><Fixed month="May" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Food Safety Day — 7 June; FAO/WHO day on safe food (from 2019). -->
+    <NotableDate id="world-food-safety-day" displayName="World Food Safety Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2019" /><Strategy><Fixed month="June" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Beer Day — first Friday in August (not a fixed date); a social celebration of beer (from 2007). -->
+    <NotableDate id="international-beer-day" displayName="International Beer Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2007" /><Strategy><DayOfWeekInMonth month="August" dayOfWeek="Friday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Coffee Day — 1 October; ICO day celebrating coffee (from 2015). -->
+    <NotableDate id="international-coffee-day" displayName="International Coffee Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2015" /><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Vegetarian Day — 1 October; promotes vegetarianism, opening Vegetarian Awareness Month (from 1977). -->
+    <NotableDate id="world-vegetarian-day" displayName="World Vegetarian Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1977" /><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Food Day — 16 October; marks the 1945 founding of the FAO, on food security and hunger (from 1979). -->
+    <NotableDate id="world-food-day" displayName="World Food Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1979" /><Strategy><Fixed month="October" day="16" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Vegan Day — 1 November; marks the 1944 founding of the Vegan Society (from 1994). -->
+    <NotableDate id="world-vegan-day" displayName="World Vegan Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1994" /><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

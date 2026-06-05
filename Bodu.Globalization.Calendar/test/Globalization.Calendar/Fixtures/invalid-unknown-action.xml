@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  An adjustment policy whose action uses the v1 token "ReplaceWithNamedDate", which v2 renamed to
+  "ReplaceWithRule". The XSD adjustmentAction enumeration no longer lists "ReplaceWithNamedDate", so the
+  document fails schema validation with BODU-CAL2-SCHEMA.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.unknown-action">
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="p">
+      <Trigger type="Always" />
+      <Action type="ReplaceWithNamedDate" notableDateRef="x" ruleRef="r" />
+      <Emission mode="ObservedOnly" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+  <NotableDates>
+    <NotableDate id="x" displayName="X" category="PublicHoliday">
+      <Rules><Rule id="r"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

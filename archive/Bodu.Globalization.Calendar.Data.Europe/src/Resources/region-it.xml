@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Italy (IT) notable-date resource using the Western / Gregorian calendar.
+
+  National public holidays (giorni festivi). Good Friday is not a national
+  public holiday in Italy (it is observed only in South Tyrol) and is
+  therefore not modelled here. Patron-saint days are local and omitted.
+
+  Common European observances are inherited from europe-common.xml and
+  localized with territory="IT"; Italy-specific holidays are declared below.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./europe-common.xml">
+    <Use name="New Year's Day" territory="IT" />
+    <Use name="Epiphany" territory="IT" />
+    <Use name="Easter Sunday" territory="IT" />
+    <Use name="Easter Monday" territory="IT" />
+    <Use name="International Workers' Day" as="Labour Day" territory="IT" />
+    <Use name="Assumption of Mary" as="Assumption of Mary (Ferragosto)" territory="IT" />
+    <Use name="All Saints' Day" territory="IT" />
+    <Use name="Immaculate Conception" territory="IT" />
+    <Use name="Christmas Day" territory="IT" />
+    <Use name="Boxing Day" as="Saint Stephen's Day" territory="IT" />
+  </UseFrom>
+
+  <!--
+    National Italian holidays.
+  -->
+
+  <NotableDate name="Liberation Day">
+    <Rule name="fixed-apr-25-it" category="Holiday" territory="IT" nonWorking="true" firstYear="1946"
+          comment="Festa della Liberazione. Marks the end of the Nazi occupation and of Fascist rule in Italy in 1945.">
+      <Fixed month="April" day="25" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Republic Day">
+    <Rule name="fixed-jun-02-it" category="Holiday" territory="IT" nonWorking="true" firstYear="1946"
+          comment="Festa della Repubblica. Commemorates the institutional referendum of 2 June 1946 by which Italians voted to abolish the monarchy and establish a republic.">
+      <Fixed month="June" day="2" />
+      <Tag>National</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

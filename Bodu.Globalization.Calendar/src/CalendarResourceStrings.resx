@@ -63,202 +63,94 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Arg_Invalid_AnchorRuleNameNullOrWhiteSpace" xml:space="preserve">
-    <value>The anchor rule name cannot be null, empty, or white-space.</value>
+  <data name="Arg_Invalid_DocumentContentEmpty" xml:space="preserve">
+    <value>The notable-date document content cannot be empty or white-space.</value>
   </data>
-  <data name="Arg_Invalid_AssemblyChainContainsNull" xml:space="preserve">
-    <value>Assembly chain entries must not be null.</value>
+  <data name="Format_Invalid_XmlNotWellFormed" xml:space="preserve">
+    <value>The notable-date document XML is not well-formed: {0}</value>
   </data>
-  <data name="Arg_Invalid_AssemblyChainEmpty" xml:space="preserve">
-    <value>At least one assembly must be supplied.</value>
-  </data>
-  <data name="Arg_Invalid_AssemblyPathNullOrWhiteSpace" xml:space="preserve">
-    <value>Assembly path must not be null or whitespace.</value>
-  </data>
-  <data name="Arg_Invalid_CollisionProvenanceCountMismatch" xml:space="preserve">
-    <value>The provenance list must have the same number of entries as the overlapping notable dates.</value>
-  </data>
-  <data name="Arg_Invalid_EndDateBeforeStartDate" xml:space="preserve">
-    <value>The end date must not be earlier than the start date.</value>
-  </data>
-  <data name="Arg_Invalid_HinduLunarMonthUndefined" xml:space="preserve">
-    <value>'{0}' is not a defined HinduLunarMonth value.</value>
-  </data>
-  <data name="Arg_Invalid_HinduPakshaUndefined" xml:space="preserve">
-    <value>'{0}' is not a defined HinduPaksha value.</value>
-  </data>
-  <data name="Arg_Invalid_KeyNullOrWhiteSpace" xml:space="preserve">
-    <value>Key must not be null or whitespace.</value>
-  </data>
-  <data name="Arg_Invalid_PoliciesContainNull" xml:space="preserve">
-    <value>Child policies must not be null.</value>
-  </data>
-  <data name="Arg_Invalid_PoliciesEmpty" xml:space="preserve">
-    <value>At least one child policy is required.</value>
-  </data>
-  <data name="Arg_Invalid_RuleNameNullOrWhiteSpace" xml:space="preserve">
-    <value>The rule name cannot be null, empty, or white-space.</value>
-  </data>
-  <data name="Arg_OutOfRange_AdvanceOverrunDays" xml:space="preserve">
-    <value>Advancing the requested number of working days would overrun {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_AdvanceOverrunNonWorkingDays" xml:space="preserve">
-    <value>Advancing the requested number of non-working days would overrun {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_FringeDistanceNegative" xml:space="preserve">
-    <value>The fringe distance must not be negative.</value>
-  </data>
-  <data name="Arg_OutOfRange_RetreatUnderrunDays" xml:space="preserve">
-    <value>Retreating the requested number of working days would underrun {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_RetreatUnderrunNonWorkingDays" xml:space="preserve">
-    <value>Retreating the requested number of non-working days would underrun {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_Tithi" xml:space="preserve">
-    <value>Tithi must be between 1 and 15.</value>
-  </data>
-  <data name="Arg_OutOfRange_UnsupportedProjection" xml:space="preserve">
-    <value>The requested projection is not supported.</value>
-  </data>
-  <data name="Arg_OutOfRange_WorkingWeekEmpty" xml:space="preserve">
-    <value>The working week must select at least one day.</value>
-  </data>
-  <data name="Arg_OutOfRange_WorkingWeekUndefined" xml:space="preserve">
-    <value>The working-week pattern is not defined.</value>
-  </data>
-  <data name="Arg_OutOfRange_Year" xml:space="preserve">
-    <value>Year must be between 1 and 9999.</value>
-  </data>
-  <data name="Format_Invalid_JsonSchema" xml:space="preserve">
-    <value>JSON failed schema validation: {0}</value>
-  </data>
-  <data name="Format_Invalid_MonthValueGregorian" xml:space="preserve">
-    <value>Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1&#x2013;12.</value>
-  </data>
-  <data name="Format_Invalid_MonthValueHebrew" xml:space="preserve">
-    <value>Invalid month value '{0}'. Expected a full English month name, an integer 1&#x2013;13, or a Hebrew month name.</value>
-  </data>
-  <data name="Format_Invalid_TerritoryCode" xml:space="preserve">
-    <value>'{0}' is not a valid ISO 3166-1/3166-2 territory code.</value>
-  </data>
-  <data name="Format_Invalid_TypeName" xml:space="preserve">
-    <value>Type '{0}' specified for '{1}' could not be resolved.</value>
-  </data>
-  <data name="Format_Invalid_TypeNotAssignable" xml:space="preserve">
-    <value>Type '{0}' specified for '{1}' must derive from '{2}'.</value>
+  <data name="Format_Invalid_JsonNotWellFormed" xml:space="preserve">
+    <value>The notable-date document JSON is not well-formed: {0}</value>
   </data>
   <data name="Format_Invalid_XmlSchema" xml:space="preserve">
-    <value>Schema validation error: {0}</value>
+    <value>The notable-date document XML failed schema validation: {0}</value>
   </data>
-  <data name="IO_FileNotFound_EmbeddedSchemaResource" xml:space="preserve">
-    <value>Embedded schema resource '{0}' not found in assembly '{1}'.</value>
+  <data name="Op_Invalid_DocumentValidationFailed" xml:space="preserve">
+    <value>The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details.</value>
   </data>
-  <data name="IO_FileNotFound_EmbeddedXmlResource" xml:space="preserve">
-    <value>Embedded XML resource '{0}' was not found in any of the searched assemblies: {1}.</value>
+  <data name="Op_Invalid_NoWorkingDayFound" xml:space="preserve">
+    <value>No working day was found within the search limit.</value>
   </data>
-  <data name="IO_FileNotFound_PluginAssembly" xml:space="preserve">
-    <value>Plugin assembly '{0}' was not found.</value>
+  <data name="Op_Invalid_NoNonWorkingDayFound" xml:space="preserve">
+    <value>No non-working day was found within the search limit.</value>
   </data>
-  <data name="Op_Invalid_ActivatorCreateInstanceNull" xml:space="preserve">
-    <value>Activator.CreateInstance returned null for type '{0}'.</value>
+  <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
+    <value>Duplicate adjustment-policy identifier '{0}'.</value>
   </data>
-  <data name="Op_Invalid_AlgorithmKeyNotRegistered" xml:space="preserve">
-    <value>Algorithm key '{0}' referenced by rule '{1}' is not registered.</value>
+  <data name="Validation_DuplicateNotableDateId" xml:space="preserve">
+    <value>Duplicate notable-date identifier '{0}'.</value>
   </data>
-  <data name="Op_Invalid_AmbiguousAnchorReference" xml:space="preserve">
-    <value>Anchor reference '{0}' on rule '{1}' matches {2} rules and cannot be resolved unambiguously. Qualify the reference with a rule name, territory, or calendar type.</value>
+  <data name="Validation_DuplicateRuleId" xml:space="preserve">
+    <value>Duplicate rule identifier '{0}' within notable date '{1}'.</value>
   </data>
-  <data name="Op_Invalid_AmbiguousReplacementTarget" xml:space="preserve">
-    <value>Replacement target '{0}' on adjustment '{1}' (rule '{2}') matches {3} rules and cannot be resolved unambiguously. Qualify the target with a rule name, territory, or calendar type.</value>
+  <data name="Validation_FromYearAfterToYear" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': fromYear '{2}' must not be greater than toYear '{3}'.</value>
   </data>
-  <data name="Op_Invalid_AmbiguousRuleReference" xml:space="preserve">
-    <value>Rule reference '{0}' matches {1} rules and cannot be resolved unambiguously.</value>
+  <data name="Validation_AdjustmentScopeFromYearAfterToYear" xml:space="preserve">
+    <value>Adjustment policy '{0}': scope fromYear '{1}' must not be greater than toYear '{2}'.</value>
   </data>
-  <data name="Op_Invalid_AnchorRuleNotFound" xml:space="preserve">
-    <value>Anchor rule '{0}' referenced by '{1}' was not found.</value>
+  <data name="Validation_InvalidDayValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': day '{2}' is out of range for month '{3}'.</value>
   </data>
-  <data name="Op_Invalid_CalculationAnchorRuleNotFound" xml:space="preserve">
-    <value>The calculation anchor rule '{0}' could not be found.</value>
+  <data name="Validation_InvalidMonthValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12.</value>
   </data>
-  <data name="Op_Invalid_CircularDependencyInRule" xml:space="preserve">
-    <value>Circular dependency detected while resolving notable date rule '{0}': {1}.</value>
+  <data name="Validation_InvalidTerritoryCode" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid territory code.</value>
   </data>
-  <data name="Op_Invalid_CircularReferenceInResource" xml:space="preserve">
-    <value>Circular reference detected while flattening notable date resource '{0}'.</value>
+  <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
+    <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>
-  <data name="Op_Invalid_DuplicateAdjustmentKey" xml:space="preserve">
-    <value>Duplicate adjustment key '{0}' on element '{1}'. Keys must be unique within a single rule or override body.</value>
+  <data name="Validation_OverrideRuleNotFound" xml:space="preserve">
+    <value>Override operation targets rule '{0}' in notable date '{1}', which does not exist in the resolved resource.</value>
   </data>
-  <data name="Op_Invalid_DuplicateRuleIdentity" xml:space="preserve">
-    <value>Two rules share the same identity (Name '{0}', RuleName '{1}', Territory '{2}', Calendar '{3}'). Rule identities must be unique within a service.</value>
+  <data name="Validation_UnresolvedAdjustmentPolicy" xml:space="preserve">
+    <value>Rule '{0}' references undefined adjustment policy '{1}'.</value>
   </data>
-  <data name="Op_Invalid_InvalidAttributeValue" xml:space="preserve">
-    <value>Invalid value for attribute '{0}' on element '{1}'.</value>
+  <data name="Validation_OffsetReferenceNotFound" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': offset reference '{2}' resolves to no rule.</value>
   </data>
-  <data name="Op_Invalid_MissingRequiredAttribute" xml:space="preserve">
-    <value>Missing required attribute '{0}' on element '{1}'.</value>
+  <data name="Validation_OffsetReferenceAmbiguous" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': offset reference '{2}' is ambiguous; specify a ruleRef.</value>
   </data>
-  <data name="Op_Invalid_PluginActivationFailedFormat" xml:space="preserve">
-    <value>Failed to activate plugin type '{0}' from assembly '{1}': {2}</value>
+  <data name="Validation_UnknownAlgorithm" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': algorithm key '{2}' is not recognized.</value>
   </data>
-  <data name="Op_Invalid_PluginAssemblyNameMissing" xml:space="preserve">
-    <value>Plugin assembly name is missing.</value>
+  <data name="Validation_ImportResourceNotFound" xml:space="preserve">
+    <value>Import targets resource '{0}', which could not be resolved.</value>
   </data>
-  <data name="Op_Invalid_PluginAssemblyNotInAllowlistFormat" xml:space="preserve">
-    <value>Assembly '{0}' is not in the hash allowlist.</value>
+  <data name="Validation_ImportCycle" xml:space="preserve">
+    <value>Import of resource '{0}' forms a cycle and was skipped.</value>
   </data>
-  <data name="Op_Invalid_PluginAttributeMissing" xml:space="preserve">
-    <value>attribute not present on the assembly</value>
+  <data name="Validation_ImportConceptNotFound" xml:space="preserve">
+    <value>Import from resource '{0}' targets concept '{1}', which it does not declare.</value>
   </data>
-  <data name="Op_Invalid_PluginHashLengthMismatchFormat" xml:space="preserve">
-    <value>Assembly '{0}' hash length mismatch.</value>
+  <data name="Validation_ReplaceReferenceMissing" xml:space="preserve">
+    <value>Adjustment policy '{0}' uses a ReplaceWithRule action without a notableDateRef.</value>
   </data>
-  <data name="Op_Invalid_PluginHashMismatchFormat" xml:space="preserve">
-    <value>Assembly '{0}' hash does not match the pinned value.</value>
+  <data name="Validation_ReplaceReferenceNotFound" xml:space="preserve">
+    <value>Adjustment policy '{0}': ReplaceWithRule reference '{1}' resolves to no rule.</value>
   </data>
-  <data name="Op_Invalid_PluginMissingAttributeFormat" xml:space="preserve">
-    <value>Plugin assembly '{0}' is missing a valid NotableDatePluginAttribute: {1}.</value>
+  <data name="Validation_ReplaceReferenceAmbiguous" xml:space="preserve">
+    <value>Adjustment policy '{0}': ReplaceWithRule reference '{1}' is ambiguous; specify a ruleRef.</value>
   </data>
-  <data name="Op_Invalid_PluginNotStrongNamed" xml:space="preserve">
-    <value>Plugin assembly is not strong-named.</value>
+  <data name="Validation_CustomHandlerKeyMissing" xml:space="preserve">
+    <value>Adjustment policy '{0}' uses a Custom action without a handlerKey.</value>
   </data>
-  <data name="Op_Invalid_PluginNotTrustedFormat" xml:space="preserve">
-    <value>Plugin assembly '{0}' was rejected by the trust policy: {1}.</value>
+  <data name="Validation_CustomTriggerHandlerKeyMissing" xml:space="preserve">
+    <value>Adjustment policy '{0}' uses a Custom trigger without a handlerKey.</value>
   </data>
-  <data name="Op_Invalid_PluginReasonMissing" xml:space="preserve">
-    <value>no reason supplied</value>
-  </data>
-  <data name="Op_Invalid_PluginTokenNotInAllowlistFormat" xml:space="preserve">
-    <value>Public-key token '{0}' is not in the allowlist.</value>
-  </data>
-  <data name="Op_Invalid_PluginTypeMissingInterface" xml:space="preserve">
-    <value>declared plugin type '{0}' does not implement INotableDatePlugin</value>
-  </data>
-  <data name="Op_Invalid_PluginUnknownTypeName" xml:space="preserve">
-    <value>&lt;unknown&gt;</value>
-  </data>
-  <data name="Op_Invalid_ResourcePathEscapesRoot" xml:space="preserve">
-    <value>The resource path '{0}' escapes the resource root.</value>
-  </data>
-  <data name="Op_Invalid_RuleMissingStrategy" xml:space="preserve">
-    <value>Rule '{0}' is missing a strategy child element.</value>
-  </data>
-  <data name="Op_Invalid_RuleNotFoundInSource" xml:space="preserve">
-    <value>Notable date rule '{0}' was not found in source resource '{1}' (referenced from '{2}').</value>
-  </data>
-  <data name="Op_Invalid_UnknownStrategyElementOnOverrideRule" xml:space="preserve">
-    <value>Unknown strategy element '{0}' on override rule.</value>
-  </data>
-  <data name="Op_Invalid_UnknownStrategyElementOnRule" xml:space="preserve">
-    <value>Unknown strategy element '{0}' on rule '{1}'.</value>
-  </data>
-  <data name="Op_NotSupported_CalendarType" xml:space="preserve">
-    <value>The calendar type '{0}' is not supported by {1}. Only {2} is supported.</value>
-  </data>
-  <data name="Op_NotSupported_DateResolutionStrategy" xml:space="preserve">
-    <value>Unsupported date resolution strategy '{0}' on rule '{1}'.</value>
-  </data>
-  <data name="Op_NotSupported_Strategy" xml:space="preserve">
-    <value>Unsupported strategy: {0}.</value>
+  <data name="Format_Invalid_TerritoryCode" xml:space="preserve">
+    <value>'{0}' is not a valid territory code; expected a two-letter country optionally followed by a hyphen and a one-to-three alphanumeric subdivision.</value>
   </data>
 </root>

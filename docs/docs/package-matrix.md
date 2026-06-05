@@ -29,11 +29,12 @@ The calendar runtime is intentionally small. Region-specific holiday data, fluen
 
 | Package | Status | Purpose | Depends on |
 |---|---|---|---|
-| `Bodu.Globalization.Calendar.Builder` | Stable | Fluent, chainable C# API for authoring `NotableDateRule` documents; XML/JSON round-trip. | `Bodu.Globalization.Calendar` |
-| `Bodu.Globalization.Calendar.DependencyInjection` | Stable | `IServiceCollection` extensions for registering `NotableDateService`, rule providers, and adjustment handlers. | `Bodu.Globalization.Calendar`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
+| `Bodu.Globalization.Calendar.DependencyInjection` | Stable | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. | `Bodu.Globalization.Calendar`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
+| `Bodu.Globalization.Calendar.Plugins` | Stable | Trust-gated loading of external assemblies that contribute custom `INotableDateAlgorithm` implementations. | `Bodu.Globalization.Calendar` |
 | `Bodu.Globalization.Calendar.Data.Americas` | Stable | Curated public-holiday rules for the Americas territory bundle (e.g. `US`, `CA`). | `Bodu.Globalization.Calendar` |
-| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Stable | Asia-Pacific bundle (e.g. `AU` with subdivisions, `CN`, `IN`, `JP`, `KR`, `NZ`). | `Bodu.Globalization.Calendar` |
+| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Stable | Asia-Pacific bundle (e.g. `AU` with subdivisions, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`). | `Bodu.Globalization.Calendar` |
 | `Bodu.Globalization.Calendar.Data.Europe` | Stable | Europe bundle (e.g. `DE`, `ES`, `FR`, `GB`, `IT`, `NL`). | `Bodu.Globalization.Calendar` |
+| `Bodu.Globalization.Calendar.Builder` | Planned | Fluent, chainable C# API for authoring notable-date rule documents. *Not yet shipped against the current schema.* | `Bodu.Globalization.Calendar` |
 
 See the [Calendar introduction](calendar/index.md) for how the companion packages compose with the runtime, and the [data-packs guide](../guides/calendar/data-packs.md) for per-bundle install commands and territory coverage.
 
@@ -43,6 +44,7 @@ See the [Calendar introduction](calendar/index.md) for how the companion package
 |---|---|
 | **Stable** | The public API surface is committed. Breaking changes are reserved for a major-version bump; additive changes ship in minor versions; bug fixes in patch versions. |
 | **Preview** | The package is fully usable but still in its initial release. The public surface is intended to be stable, but minor breaking adjustments may land before promotion to *Stable*. Pin the version you adopt if breakage would be costly. |
+| **Planned** | The package is on the roadmap but not currently shipped. Its documentation may describe an earlier surface that is being reworked against the current schema. |
 
 ## Install commands
 
@@ -62,8 +64,8 @@ dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 
 # Calendar companions
-dotnet add package Bodu.Globalization.Calendar.Builder
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
+dotnet add package Bodu.Globalization.Calendar.Plugins
 
 # Calendar regional data packs (install only what you need)
 dotnet add package Bodu.Globalization.Calendar.Data.Americas

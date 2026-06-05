@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A notable-date whose category uses the v1 token "Holiday", which v2 renamed to "PublicHoliday". The XSD
+  notableDateCategory enumeration no longer lists "Holiday", so the document fails schema validation with
+  BODU-CAL2-SCHEMA.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.unknown-category">
+  <NotableDates>
+    <NotableDate id="legacy-holiday" displayName="Legacy Holiday" category="Holiday">
+      <Rules><Rule id="r"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

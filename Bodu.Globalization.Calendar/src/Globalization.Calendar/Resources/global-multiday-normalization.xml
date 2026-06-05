@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Multi-day normalization catalogue (Western / Gregorian calendar), migrated from the v1 global-multiday-normalization.xml
+  to the v2 cookbook schema. Holds shared multi-day observance definitions not already owned by a more specific thematic
+  catalogue; prefer the source thematic file when a multi-day observance already exists there. Convention: durationDays
+  is inclusive of the resolved start date, so durationDays="7" spans the start date plus the next six calendar days. A
+  territory pack imports only the concepts it observes and supplies its own territory scope, category, non-working flag,
+  and weekend adjustment through the import <Use> directive; the shared concepts therefore carry the bare calculation
+  strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-multiday-normalization">
+
+  <NotableDates>
+
+    <!--
+      NAIDOC Week — Australia's week celebrating the history, culture, and achievements of Aboriginal and Torres
+      Strait Islander peoples. Strategy: DayOfWeekInMonth (the first Sunday in July) with durationDays="7" spanning
+      the start Sunday through the following Saturday. Scoped to territory AU; carried here under rule id "default"
+      as a shared multi-day definition for the AU pack to import and re-scope.
+    -->
+    <NotableDate id="naidoc-week" displayName="NAIDOC Week" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="7"><Applicability><Territory code="AU" /></Applicability><Strategy><DayOfWeekInMonth month="July" dayOfWeek="Sunday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      World Space Week — the UN-declared week marking the contributions of space science and technology. Strategy:
+      Fixed start date (4 October, the 1957 launch of Sputnik 1) with durationDays="7" spanning 4-10 October.
+      Bounded fromYear="1999", the year the observance was proclaimed.
+    -->
+    <NotableDate id="world-space-week" displayName="World Space Week" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="7"><Applicability fromYear="1999" /><Strategy><Fixed month="October" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

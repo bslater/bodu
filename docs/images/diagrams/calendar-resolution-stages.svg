@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 660" role="img" aria-labelledby="crs-t crs-d">
   <title id="crs-t">NotableDateService — eight-stage resolution pipeline</title>
-  <desc id="crs-d">The resolution pipeline executes in eight ordered stages between a GetNotableDates call and the returned list. Stage 1 loads rules from every provider and materialises UseFrom/Use directives. Stage 2 merges override providers, applying removals and additions. Stage 3 assembles the effective rule list, dropping rules outside the year range, excluded by OccurrenceYears, or unable to match the territory. Stage 4 resolves each rule's anchor by strategy. Stage 5 evaluates the adjustment chain by priority. Stage 6 resolves collisions. Stage 7 writes the per-year cache. Stage 8, used only by filtered queries, applies primary and secondary filter gates and bypasses the cache.</desc>
+  <desc id="crs-d">The resolution pipeline executes in eight ordered stages between a Resolve call and the returned list. Stage 1 loads rules from the rule document and materialises Import/Use directives. Stage 2 merges overrides, applying removals and additions. Stage 3 assembles the effective rule list, dropping rules outside the year range, excluded by year filters, or unable to match the territory. Stage 4 resolves each rule's date by strategy. Stage 5 evaluates the adjustment chain by priority. Stage 6 resolves collisions. Stage 7 settles the result per ResolutionPolicy. Stage 8, used only by filtered queries, applies primary and secondary filter gates.</desc>
 
   <defs>
     <style>
@@ -31,7 +31,7 @@
     <rect class="crs-hdr" width="740" height="46" rx="8"/>
     <rect class="crs-hdr" y="38" width="740" height="8"/>
     <text class="crs-ttl" x="16" y="29">Resolution pipeline — eight ordered stages</text>
-    <text class="crs-form" x="724" y="29" text-anchor="end">GetNotableDates(year)  →  IReadOnlyList&lt;NotableDate&gt;</text>
+    <text class="crs-form" x="724" y="29" text-anchor="end">Resolve(year)  →  IReadOnlyList&lt;NotableDate&gt;</text>
 
     <!-- Stage cards -->
     <g>
@@ -40,56 +40,56 @@
       <circle class="crs-badge" cx="50" cy="89" r="15"/>
       <text class="crs-num" x="50" y="94">1</text>
       <text class="crs-name" x="82" y="84">Rule loading</text>
-      <text class="crs-sub" x="82" y="103">INotableDateRuleProvider.LoadRules() × N providers · UseFrom / Use directive materialisation</text>
+      <text class="crs-sub" x="82" y="103">NotableDateResourceLoader.Load() → NotableDateResource · Import / Use directive materialisation</text>
 
       <!-- 2 -->
       <rect class="crs-card" x="20" y="130" width="700" height="58" rx="7"/>
       <circle class="crs-badge" cx="50" cy="159" r="15"/>
       <text class="crs-num" x="50" y="164">2</text>
       <text class="crs-name" x="82" y="154">Override merging</text>
-      <text class="crs-sub" x="82" y="173">INotableDateRuleOverrideProvider × M · RuleRemoval by name + year bounds · GetAdditions() append</text>
+      <text class="crs-sub" x="82" y="173">Document &lt;Overrides&gt; · RemoveRule by ref + year bounds · AddRule / PatchRule applied</text>
 
       <!-- 3 -->
       <rect class="crs-card" x="20" y="200" width="700" height="58" rx="7"/>
       <circle class="crs-badge" cx="50" cy="229" r="15"/>
       <text class="crs-num" x="50" y="234">3</text>
       <text class="crs-name" x="82" y="224">Effective rule list assembly</text>
-      <text class="crs-sub" x="82" y="243">Drop rules outside [FirstYear, LastYear], excluded by OccurrenceYears, or unable to match the territory</text>
+      <text class="crs-sub" x="82" y="243">Drop rules outside [fromYear, toYear], excluded by OnlyYear / ExceptYear, or unable to match the territory</text>
 
       <!-- 4 -->
       <rect class="crs-card" x="20" y="270" width="700" height="58" rx="7"/>
       <circle class="crs-badge" cx="50" cy="299" r="15"/>
       <text class="crs-num" x="50" y="304">4</text>
       <text class="crs-name" x="82" y="294">Per-rule anchor resolution</text>
-      <text class="crs-sub" x="82" y="313">Fixed · DayOfWeekInMonth · OffsetFromAnchor · Algorithm · calendar-system sweep for lunisolar rules</text>
+      <text class="crs-sub" x="82" y="313">Fixed · DayOfWeekInMonth · OffsetFromRule · Algorithm · calendar-system sweep for lunisolar rules</text>
 
       <!-- 5 -->
       <rect class="crs-card" x="20" y="340" width="700" height="58" rx="7"/>
       <circle class="crs-badge" cx="50" cy="369" r="15"/>
       <text class="crs-num" x="50" y="374">5</text>
       <text class="crs-name" x="82" y="364">Adjustment chain evaluation</text>
-      <text class="crs-sub" x="82" y="383">ObservanceAdjustment[] sorted by Priority · first matching trigger wins · AdjustmentReason recorded</text>
+      <text class="crs-sub" x="82" y="383">AdjustmentPolicy[] sorted by Priority · first matching trigger wins · AdjustmentReason recorded</text>
 
       <!-- 6 -->
       <rect class="crs-card" x="20" y="410" width="700" height="58" rx="7"/>
       <circle class="crs-badge" cx="50" cy="439" r="15"/>
       <text class="crs-num" x="50" y="444">6</text>
       <text class="crs-name" x="82" y="434">Collision resolution</text>
-      <text class="crs-sub" x="82" y="453">INotableDateCollisionResolver.Resolve() · default removes exact duplicates, orders by category + name</text>
+      <text class="crs-sub" x="82" y="453">Settle per ResolutionPolicy: DuplicatePolicy + CollisionPolicy · Custom → INotableDateCollisionResolver</text>
 
       <!-- 7 -->
       <rect class="crs-card" x="20" y="480" width="700" height="58" rx="7"/>
       <circle class="crs-badge" cx="50" cy="509" r="15"/>
       <text class="crs-num" x="50" y="514">7</text>
-      <text class="crs-name" x="82" y="504">Per-year cache write</text>
-      <text class="crs-sub" x="82" y="523">ConcurrentDictionary&lt;int, IReadOnlyList&lt;NotableDate&gt;&gt; · thread-safe first-writer-wins with re-entry guard</text>
+      <text class="crs-name" x="82" y="504">Result settlement</text>
+      <text class="crs-sub" x="82" y="523">Order, dedupe, and emit the final IReadOnlyList&lt;NotableDate&gt; per ResolutionPolicy</text>
 
       <!-- 8 (optional) -->
       <rect class="crs-cardo" x="20" y="550" width="700" height="58" rx="7"/>
       <circle class="crs-badgo" cx="50" cy="579" r="15"/>
       <text class="crs-numo" x="50" y="584">8</text>
       <text class="crs-name" x="82" y="574">Filter gate <tspan class="crs-sub">— filtered queries only</tspan></text>
-      <text class="crs-sub" x="82" y="593">Primary gate: rule-level, pre-resolution · secondary gate: date-level, post-resolution · bypasses the cache</text>
+      <text class="crs-sub" x="82" y="593">Primary gate: rule-level, pre-resolution · secondary gate: date-level, post-resolution · per query</text>
     </g>
 
     <!-- connectors -->
@@ -103,6 +103,6 @@
       <line x1="50" y1="538" x2="50" y2="548" stroke-dasharray="4 3" marker-end="url(#crs-arr)"/>
     </g>
 
-    <text class="crs-foot" x="20" y="628">Stages 1–7 run once per year and the result is cached; Stage 8 runs per filtered query and never writes the cache.</text>
+    <text class="crs-foot" x="20" y="628">Stages 1–7 run for each Resolve query against the immutable resource; Stage 8 adds the filter gates for filtered queries.</text>
   </g>
 </svg>

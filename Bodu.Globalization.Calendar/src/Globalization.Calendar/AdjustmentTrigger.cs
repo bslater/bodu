@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentTrigger.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,65 +7,69 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Identifies the condition under which an <see cref="ObservanceAdjustment" /> activates and applies its action.
+/// Identifies the condition that determines whether an adjustment policy applies to a calculated occurrence.
 /// </summary>
-/// <remarks>
-/// This enumeration replaces <c>NotableDateAdjustmentRuleType</c>. The new name distinguishes the <em>trigger</em>
-/// (when an adjustment fires) from the <em>action</em> (what it does), and removes the redundant <c>...Type</c> suffix.
-/// </remarks>
 public enum AdjustmentTrigger
 {
     /// <summary>
-    /// The adjustment always activates regardless of the calculated date.
+    /// The adjustment always applies, regardless of the calculated occurrence.
     /// </summary>
     Always = 0,
 
     /// <summary>
-    /// Activates when the calculated date falls on the day of week specified by
-    /// <see cref="ObservanceAdjustment.DayOfWeek" />.
+    /// The adjustment applies when the calculated occurrence falls on one of the policy's configured weekdays.
     /// </summary>
     IfDayOfWeek,
 
     /// <summary>
-    /// Activates when the calculated date falls on a weekend, as determined by the configured
-    /// <see cref="Bodu.WorkingDaysOfWeek" />.
+    /// The adjustment applies when the calculated occurrence falls on a weekend: a day outside the resource's working
+    /// week (Saturday or Sunday by default).
     /// </summary>
     IfWeekend,
 
     /// <summary>
-    /// Activates when the calculated date falls on a weekday.
+    /// The adjustment applies when the calculated occurrence falls on a working day within the resource's working week
+    /// (Monday through Friday by default).
     /// </summary>
     IfWeekday,
 
     /// <summary>
-    /// Activates when the calculated date is classified as a non-working day for the active territory and calendar.
+    /// The adjustment applies when the calculated occurrence falls on a non-working day: a day outside the resource's
+    /// working week, or a day already claimed by another non-working occurrence.
     /// </summary>
     IfNonWorkingDay,
 
     /// <summary>
-    /// Activates when the calculated date occurs strictly before <see cref="ObservanceAdjustment.ComparisonDate" />.
+    /// The adjustment applies when the calculated occurrence falls on a working day within the resource's working week
+    /// that is not claimed by another non-working occurrence.
     /// </summary>
-    IfBeforeFixedDate,
+    IfWorkingDay,
 
     /// <summary>
-    /// Activates when the calculated date occurs strictly after <see cref="ObservanceAdjustment.ComparisonDate" />.
-    /// </summary>
-    IfAfterFixedDate,
-
-    /// <summary>
-    /// Activates when the calculated date falls within a leap year.
+    /// The adjustment applies when the calculated occurrence falls in a Gregorian leap year.
     /// </summary>
     IfLeapYear,
 
     /// <summary>
-    /// Activates when the calculated date is the n-th occurrence of its weekday within its month, as specified by
-    /// <see cref="ObservanceAdjustment.WeekOrdinal" />.
+    /// The adjustment applies when the calculated occurrence falls before the policy's comparison month and day in the
+    /// same year.
+    /// </summary>
+    IfBeforeFixedDate,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence falls after the policy's comparison month and day in the
+    /// same year.
+    /// </summary>
+    IfAfterFixedDate,
+
+    /// <summary>
+    /// The adjustment applies when the calculated occurrence is the configured nth weekday of its month.
     /// </summary>
     IfNthOccurrenceInMonth,
 
     /// <summary>
-    /// Activation is delegated to a registered <see cref="IAdjustmentHandler" /> looked up by
-    /// <see cref="ObservanceAdjustment.HandlerKey" />.
+    /// The adjustment applies when a caller-supplied <see cref="IAdjustmentTriggerHandler" />, bound through the
+    /// policy's trigger handler key, reports that it should fire.
     /// </summary>
     Custom,
 }

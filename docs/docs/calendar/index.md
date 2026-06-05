@@ -4,26 +4,28 @@ title: Bodu.Globalization.Calendar — Introduction
 
 # Bodu.Globalization.Calendar
 
-**Bodu.Globalization.Calendar** resolves authored calendar rules into concrete notable dates such as public holidays, observances, religious festivals, and regional events. Consumers can query dates by year, territory, category, tag, or date range, and use the resolved dates for working-day-aware arithmetic.
+**Bodu.Globalization.Calendar** resolves authored calendar rules into concrete notable dates such as public holidays, observances, religious festivals, and regional events. Consumers query dates by year, date, or range and territory, optionally filter by category, tag, or duration, and use the resolved dates for working-day-aware arithmetic.
 
-Rules can be supplied from embedded XML / JSON resources, companion data packs, runtime override providers, or external plugins. More advanced scenarios can extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and plugin trust policies.
+Rules are authored on the v2 cookbook schema as XML or JSON, import from a set of bundled common catalogues, and load eagerly into an immutable, validated resource. More advanced scenarios extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and trust-gated plugins.
 
 ## Calendar package family
 
-The calendar runtime is intentionally small. Region-specific holiday data, fluent rule authoring, and dependency-injection registration ship as separate companion packages so they can release on their own cadence without forcing a main-library rebuild.
+The calendar runtime is intentionally small. Region-specific holiday data and dependency-injection registration ship as separate companion packages so they can release on their own cadence without forcing a main-library rebuild.
 
 ![Bodu.Globalization.Calendar package family — runtime, companions, and data packs](../../images/diagrams/calendar-package-family.svg)
 
 | Package | Role |
 |---|---|
 | **`Bodu.Globalization.Calendar`** | The runtime — rule engine, resolution pipeline, working-day extensions. Required by every other calendar package. |
-| `Bodu.Globalization.Calendar.Builder` | Fluent, chainable C# API for authoring `NotableDateRule` documents. Round-trips to and from the XML / JSON forms consumed by the resource providers. See the [builder guide](../../guides/calendar/notable-date-builder.md). |
-| `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` extensions for registering `NotableDateService`, rule providers, and adjustment handlers in a `Microsoft.Extensions.DependencyInjection` container. See the [DI guide](../../guides/calendar/dependency-injection.md). |
+| `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. See the [DI guide](../../guides/calendar/dependency-injection.md). |
+| `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external assemblies that contribute custom date-calculation algorithms. See [Building and extending the service](../../guides/calendar/building-the-service.md). |
 | `Bodu.Globalization.Calendar.Data.Americas` | Curated public-holiday rules for `US`, `CA`. |
-| `Bodu.Globalization.Calendar.Data.Europe` | Curated rules for eight European countries including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
-| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Curated rules for eight Asia-Pacific countries including `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `NZ`. |
+| `Bodu.Globalization.Calendar.Data.Europe` | Curated rules for 28 European territories including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
+| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. |
 
 The data packs are independent NuGet packages, so consumers pull in only the regions they need. See the [Calendar data packs guide](../../guides/calendar/data-packs.md) for per-pack install commands, territory coverage, and registration patterns.
+
+> A fluent, in-code rule-authoring **Builder** is on the roadmap but not currently shipped against the v2 schema; author rules in XML or JSON for now.
 
 ## Core mental model
 
@@ -31,63 +33,64 @@ The data packs are independent NuGet packages, so consumers pull in only the reg
 
 A single notable date flows through the library in this order:
 
-![Notable date flow — six stages from authored rule to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
+![Notable date flow — from authored document to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
 
-A **`NotableDateRule`** is an authored recipe — the *what* and *how* of a notable date, never the date itself. **`NotableDateService`** loads rules from one or more providers, layers optional override providers, resolves each rule for a requested year using the strategy on the rule (fixed date, *n*th weekday, offset from an anchor, or algorithm), runs the adjustment pipeline against the *nominal* date, and caches the resulting `NotableDate` set per year. Consumers then query that resolved set by territory, category, tag, or date range, or feed it into the working-day extensions.
+A **rule document** is authored text on the cookbook schema. **`NotableDateResourceLoader`** parses it, resolves its imports against the bundled common catalogues, applies any overrides, validates it, and produces an immutable **`NotableDateResource`**. A **`NotableDateService`** is built over that resource; for each requested year, date, or range it resolves every applicable rule using the rule's strategy (fixed date, *n*th weekday, weekday-near-date, offset from another rule, or a named algorithm), runs the referenced adjustment policies against the *nominal* date, settles same-day collisions, and emits the resolved **`NotableDate`** set. Consumers then query that set by territory, category, tag, or date range, or feed it into the working-day extensions.
 
 ## Key concepts
 
 | Concept | Plain-language meaning |
 |---|---|
-| **Rule** | The authored definition of a notable date, not the date itself. |
-| **Resolution strategy** | How the rule finds its nominal date: fixed date, *n*th weekday-in-month, offset from an anchor, or algorithm. |
-| **Anchor** | A base date that other rules reference (typically algorithmic — e.g. Easter Sunday). |
-| **Adjustment** | A post-resolution shift that moves or substitutes the date — e.g. weekend rollover, substitute Monday. |
+| **Document / resource** | The authored XML/JSON, and the immutable validated value it loads into. |
+| **Definition / rule** | A notable-date concept, and one of its calculation recipes. |
+| **Resolution strategy** | How a rule finds its nominal date: fixed, *n*th weekday-in-month, relative weekday, weekday-near-date, offset-from-rule, or algorithm. |
+| **Adjustment policy** | A reusable post-resolution shift that moves or substitutes the date — e.g. weekend rollover, substitute Monday — referenced by rules. |
 | **Territory** | Geographic scope where the rule applies — `AU` for Australia, `AU-NSW` for New South Wales. |
 | **Category / tag** | Classification used for filtering and display. `NotableDateCategory` is the well-known enum; tags are free-form strings. |
-| **Provider** | A source of rules — embedded XML / JSON, a companion data pack, or a custom implementation. |
-| **Override** | A way to add, replace, or remove rules at runtime, layered over a base source. |
-| **Resolved notable date** | The concrete `NotableDate` returned to consumers — date, name, category, territory, optional multi-day span. |
+| **Import** | A pull from a bundled common catalogue, optionally re-scoped via `<Use>` directives. |
+| **Override** | An ID-targeted add / patch / remove applied at load time; runtime change is a resource reload. |
+| **Resolved notable date** | The concrete `NotableDate` returned to consumers — observed date, calculated date, name, category, territory, optional multi-day span. |
 
 For the full glossary, see [Core concepts](concepts.md).
 
 ### Notable date vs. non-working day
 
-Not every notable date is necessarily a non-working day. A rule can describe a public holiday, observance, remembrance day, religious festival, or regional event. Working-day operations use category, territory, weekend rules, and any configured non-working-day semantics to decide whether a date should be skipped.
+Not every notable date is a non-working day. A rule can describe a public holiday, observance, remembrance day, religious festival, or regional event. Working-day operations use the occurrence's `IsNonWorkingDay` flag together with the configured working week (a `Bodu.Core` `WeekPattern`) to decide whether a date should be skipped.
 
 ### Territory containment
 
-Territory codes are hierarchical. A query for `AU-NSW` can include rules authored for `AU` as well as rules specific to `AU-NSW`, allowing national and regional rules to compose naturally. The same applies to `GB-ENG` inheriting `GB`, `US-CA` inheriting `US`, and so on.
+Territory codes are hierarchical. A query for `AU-NSW` includes rules authored for `AU` as well as rules specific to `AU-NSW`, so national and regional rules compose naturally. The same applies to `GB-ENG` inheriting `GB`, `US-CA` inheriting `US`, and so on.
 
-## Worked example — New Year's Day in NSW
+## Worked example — New Year's Day in the US
 
 A single rule traces the pipeline end-to-end:
 
-1. A rule defines January 1 for territory `AU`, category `Holiday`, `IsNonWorkingDay = true`, with a weekend-rollover adjustment.
-2. The service resolves the fixed date for the requested year — the *nominal* date is `2027-01-01` (a Friday).
-3. The adjustment evaluates the nominal date. In 2027 it falls on a Friday, so no adjustment fires and the *observed* date stays `2027-01-01`. (If New Year's Day had landed on a weekend, `MoveToNextWeekday` would emit a substitute Monday instead.)
-4. A query for territory `AU-NSW` returns the resolved date because `AU-NSW` is contained by `AU`.
-5. Working-day arithmetic — `someDate.AddWorkingDays(service, 1, "AU-NSW")` — skips the resolved date because its rule was authored as non-working.
+1. `global-core` defines `new-years-day` as a `<Fixed month="January" day="1" />` rule, `PublicHoliday`, non-working.
+2. `region-us` imports it with `<Use notableDateRef="new-years-day" territory="US">` and attaches the `saturday-to-friday` and `sunday-to-monday` adjustment policies.
+3. The service resolves the fixed date for the requested year — the *nominal* `ActualDate`. For 2028 that is `2028-01-01`, a Saturday.
+4. The `saturday-to-friday` policy fires, so the emitted `Date` is the observed `2027-12-31` (Friday), with `IsObserved == true` and `AdjustmentPolicyId == "saturday-to-friday"`.
+5. A query for territory `US-NY` returns the occurrence because `US-NY` is contained by `US`.
+6. Working-day arithmetic — `someDate.AddWorkingDays(1, service, "US-NY")` — skips the observed date because the rule is non-working.
 
-The same flow applies to every other rule — only the strategy in step 2 and the adjustment outcome in step 3 differ.
+The same flow applies to every other rule — only the strategy in step 3 and the adjustment outcome in step 4 differ.
 
 ## Common scenarios
 
 | Scenario | Reach for |
 |---|---|
-| Resolve all notable dates in a country for a year | `service.GetNotableDates(year, territoryCode: "AU")` |
-| "Is today a public holiday in NSW?" | `dateOnly.IsNotableDate(service, territoryCode: "AU-NSW")` |
-| "Add 5 working days to today (skipping weekends and holidays)" | `dateOnly.AddWorkingDays(service, 5, territoryCode: "AU-NSW")` |
-| Compute Easter Sunday for any year | <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm>`.Calculate(year)` |
-| Compute Tibetan Losar (Lunar New Year) | <xref:Bodu.Globalization.Calendar.Algorithms.LosarNotableDateAlgorithm>`.Calculate(year)` |
-| Author rules in XML / JSON and load them | <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> / <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider> |
-| Layer runtime overrides on top of a base rule set | <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> / <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider> |
-| Register the service in an `IServiceCollection`-based host | `services.AddNotableDates(...)` from `Bodu.Globalization.Calendar.DependencyInjection` — see the [dependency-injection guide](../../guides/calendar/dependency-injection.md). |
-| Enumerate the territories / calendar systems covered by the loaded rules | `service.GetSupportedTerritories()` / `service.GetSupportedCalendars()` |
-| Pick up runtime override mutations on a live service | `service.Reload()` |
-| Load rules / algorithms from external assemblies safely | <xref:Bodu.Globalization.Calendar.Plugins.ExternalPluginLoader> + a trust policy |
-| Apply observance adjustments (e.g. holiday-falls-on-weekend → next Monday) | <xref:Bodu.Globalization.Calendar.ObservanceAdjustment> + <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry> |
-| Filter resolved notable dates by category, tag, or date range | <xref:Bodu.Globalization.Calendar.NotableDateFilter>`.ForCategory(...)`, `.WithTag(...)`, `.InDateRange(...)` (combine with `.And` / `.Or`). |
+| Resolve all notable dates in a country for a year | `service.Resolve(year, territory: "AU")` |
+| Resolve notable dates for a specific day or range | `service.Resolve(new DateOnly(2026, 1, 26), "AU")` / `service.Resolve(new DateRange(from, to), "AU")` |
+| "Is today a public holiday in NSW?" | `dateOnly.IsNotableDate(service, "AU-NSW", NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday))` |
+| "Add 5 working days to today (skipping weekends and holidays)" | `dateOnly.AddWorkingDays(5, service, "AU-NSW")` |
+| Author rules in XML / JSON and load them | <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>`.Load(xml)` / `.LoadJson(json)` |
+| Compute Easter / Diwali / Vesak for a year | author an `<Algorithm key="western-easter">` (etc.) rule — see [algorithms](../../guides/calendar/algorithms.md) |
+| Layer ID-targeted edits over imported concepts | a document `<Overrides>` block (`<AddRule>` / `<PatchRule>` / `<RemoveRule>`) |
+| Swap the rule set on a live service | <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> + <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> |
+| Register the service in an `IServiceCollection`-based host | `services.AddNotableDateService(resource)` from `Bodu.Globalization.Calendar.DependencyInjection` |
+| Enumerate the territories / calendar systems covered | `service.GetSupportedTerritories()` / `service.GetSupportedCalendars()` |
+| Load algorithms from external assemblies safely | <xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> + a trust policy |
+| Apply observance adjustments (weekend → next working day) | an <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> referenced by `policyRef` |
+| Filter resolved notable dates by category, tag, or range | <xref:Bodu.Globalization.Calendar.NotableDateFilter>`.ForCategory(...)`, `.WithTag(...)`, `.InDateRange(...)` (combine with `.And` / `.Or`) |
 
 ## Main types
 
@@ -97,62 +100,60 @@ The same surface, grouped by what role you're playing rather than by namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Globalization.Calendar.NotableDateService> / <xref:Bodu.Globalization.Calendar.INotableDateService> | Main entry point — resolves, caches, and queries notable dates. |
-| <xref:Bodu.Globalization.Calendar.NotableDate> | Resolved output — concrete date, name, category, territory, optional multi-day span. |
-| <xref:Bodu.Globalization.Calendar.NotableDateFilter> | Composable two-stage predicate for territory- and category-scoped queries, built via static factory methods (`ForCategory`, `WithTag`, `InDateRange`, `WithName`, `IsNonWorkingDay`, …). |
-| <xref:Bodu.Globalization.Calendar.TerritoryCode> | Strongly-typed ISO 3166-1 alpha-2 country / subdivision code with containment semantics. |
-| <xref:Bodu.Globalization.Calendar.NotableDateCategory> | `Holiday` / `Observance` / `Remembrance` / `Cultural` / `Religious` / `Seasonal` / `Civic` / `Bank` / `School` / `Regional` / `Other` / `None`. |
+| <xref:Bodu.Globalization.Calendar.NotableDateService> / <xref:Bodu.Globalization.Calendar.INotableDateService> | Main entry point — resolves and queries notable dates for a date, range, or year. |
+| <xref:Bodu.Globalization.Calendar.NotableDate> | Resolved output — observed date, calculated date, name, category, territory, optional multi-day span. |
+| <xref:Bodu.Globalization.Calendar.NotableDateFilter> | Composable predicate, built via static factory methods (`ForCategory`, `WithTag`, `WithId`, `InDateRange`, `IsNonWorkingDay`, …) and combined with `And` / `Or` / `Not`. |
+| <xref:Bodu.Globalization.Calendar.TerritoryCode> | Strongly-typed ISO 3166 country / subdivision code with containment semantics. |
+| <xref:Bodu.Globalization.Calendar.NotableDateCategory> | `PublicHoliday` / `BankHoliday` / `Observance` / `Remembrance` / `Cultural` / `Religious` / `Seasonal` / `Civic` / `School` / `Regional` / `Other` / `None`. |
 | <xref:Bodu.Extensions.NotableDateOnlyExtensions>, <xref:Bodu.Extensions.NotableDateTimeExtensions> | Working-day arithmetic over `DateOnly` / `DateTime` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, `WorkingDaysBetween`, `SnapToWorkingDay`, … See [Working-day arithmetic](../../guides/calendar/working-days.md). |
 
-### Types used when authoring rules
+### Types used when authoring and loading rules
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Globalization.Calendar.NotableDateRule> | Authored recipe — strategy, category, territory, adjustments, duration. |
-| <xref:Bodu.Globalization.Calendar.DateResolutionStrategy> | Enum: `Fixed`, `DayOfWeekInMonth`, `OffsetFromAnchor`, `Algorithm`. |
-| <xref:Bodu.Globalization.Calendar.ObservanceAdjustment> + <xref:Bodu.Globalization.Calendar.AdjustmentTrigger>, <xref:Bodu.Globalization.Calendar.AdjustmentAction>, <xref:Bodu.Globalization.Calendar.AdjustmentReason> | Conditional date-shift specification (trigger + action + scope). |
-| <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider> | Built-in resource-backed rule providers for embedded XML / JSON. |
-| <xref:Bodu.Globalization.Calendar.NotableDateRuleParser>, <xref:Bodu.Globalization.Calendar.NotableDateRuleJsonParser>, <xref:Bodu.Globalization.Calendar.ParsedNotableDateDocument>, <xref:Bodu.Globalization.Calendar.NotableDateRuleUseGroup>, <xref:Bodu.Globalization.Calendar.NotableDateRuleUseDirective>, <xref:Bodu.Globalization.Calendar.NotableDateRuleOverrideBody>, <xref:Bodu.Globalization.Calendar.RuleRemoval> | XML / JSON rule-document model. |
+| <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> | Loads XML / JSON (string or `Stream`) into a validated `NotableDateResource`. |
+| <xref:Bodu.Globalization.Calendar.NotableDateResource>, <xref:Bodu.Globalization.Calendar.NotableDateDefinition>, <xref:Bodu.Globalization.Calendar.NotableDateRule> | The immutable loaded document: a resource of definitions, each with one or more rules. |
+| <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> | Resolver over the bundled common catalogues that documents import by name. |
+| <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> | Resource-level duplicate / collision / observed-date policy and working week. |
+| <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> | A reusable, named adjustment referenced by rules. |
 
 ### Built-in algorithms
 
-The `Bodu.Globalization.Calendar.Algorithms` namespace ships concrete algorithm classes that consumers can call directly or that rules can reference via `AlgorithmKey`:
+The `Bodu.Globalization.Calendar.Algorithms` namespace resolves an `<Algorithm key="…">` strategy to a bundled calculator. Common keys:
 
-| Type | Computes |
+| Key | Computes |
 |---|---|
-| <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm> | Easter Sunday using the Gregorian or Orthodox computus. |
-| <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarNotableDateAlgorithm> + <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarMonth> + <xref:Bodu.Globalization.Calendar.Algorithms.HinduPaksha> | Hindu lunisolar dates (Diwali, Holi, …). |
-| <xref:Bodu.Globalization.Calendar.Algorithms.LosarNotableDateAlgorithm> | Tibetan New Year. |
-| <xref:Bodu.Globalization.Calendar.Algorithms.VesakNotableDateAlgorithm> | Buddhist Vesak / Buddha Day. |
-| <xref:Bodu.Globalization.Calendar.Algorithms.AsalhaPujaNotableDateAlgorithm> | Asalha Puja. |
-| <xref:Bodu.Globalization.Calendar.Algorithms.QingmingNotableDateAlgorithm> | Qingming festival (sun-longitude based). |
-| <xref:Bodu.Globalization.Calendar.Algorithms.GregorianEasterSundayNotableDateProvider>, <xref:Bodu.Globalization.Calendar.Algorithms.OrthodoxEasterSundayNotableDateProvider> | Bundled Easter providers — Western (Gregorian) and Eastern (Julian-anchored). |
+| `western-easter`, `orthodox-easter` | Easter Sunday (Gregorian / Orthodox computus). |
+| `vernal-equinox`, `autumnal-equinox`, `qingming` | Sun-longitude based dates. |
+| `vesak`, `asalha-puja`, `losar` | Buddhist Vesak / Asalha Puja and Tibetan New Year. |
+| `matariki` | New Zealand Matariki (gazetted table). |
+| `diwali`, `holi`, `maha-shivaratri`, … | Hindu lunisolar festivals. |
 
-Region-specific holiday rule providers ship separately in `Bodu.Globalization.Calendar.Data.*` companion packages on independent release schedules — see [Calendar data packs](../../guides/calendar/data-packs.md).
+Region-specific holiday rules ship separately in `Bodu.Globalization.Calendar.Data.*` companion packages — see [Calendar data packs](../../guides/calendar/data-packs.md).
 
 ### Types used when extending the library
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmRegistry>, <xref:Bodu.Globalization.Calendar.NotableDateAlgorithmRegistry> | Pluggable algorithm contract and registry. |
-| <xref:Bodu.Globalization.Calendar.INotableDateProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider>, <xref:Bodu.Globalization.Calendar.NotableDateRuleResourceProviderBase> | Rule-source contracts, the runtime-mutable override provider, and the base class shared by the built-in resource providers. |
-| <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry>, <xref:Bodu.Globalization.Calendar.IAdjustmentHandlerRegistry>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerContext>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerResult> | Handler model for adjustments. |
-| <xref:Bodu.Globalization.Calendar.INotableDateCollisionResolver>, <xref:Bodu.Globalization.Calendar.DefaultNotableDateCollisionResolver> | Behavior when multiple rules resolve to the same date. |
+| <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> | Pluggable algorithm contract and registry, backing `<Algorithm key="…">` rules. |
+| <xref:Bodu.Globalization.Calendar.INotableDateProvider> | Code-first contribution of finished occurrences. |
+| <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> | Runtime resource swap on a live service. |
+| <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> | Custom adjustment action / trigger handlers. |
+| <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> | Custom same-day collision behaviour. |
 | <xref:Bodu.Globalization.Calendar.INotableDateNameLocalizer> | Pluggable display-name localization. |
-| <xref:Bodu.Globalization.Calendar.IResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolverOptions> | Resource-path resolution for embedded providers. |
 
 ## Dependency injection
 
-The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `INotableDateService` into a `Microsoft.Extensions.DependencyInjection` container via `services.AddNotableDates(...)`, binds [`NotableDateOptions`](xref:Bodu.Globalization.Calendar.DependencyInjection.NotableDateOptions) from `IConfiguration`, exposes the fluent <xref:Bodu.Globalization.Calendar.DependencyInjection.INotableDateServiceBuilder> for layering rule providers and collaborators, and provides a `PostConfigure` hook for projecting from consumer-defined POCOs. See the [dependency-injection guide](../../guides/calendar/dependency-injection.md) for the full walkthrough.
+The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `INotableDateService` into a `Microsoft.Extensions.DependencyInjection` container as a singleton via `services.AddNotableDateService(resource)` (or a resource factory), and `services.AddReloadableNotableDateService(resource)` for the runtime-swap workflow. There is no options object — the resource carries the behaviour. See the [dependency-injection guide](../../guides/calendar/dependency-injection.md).
 
 ## Advanced extensibility
 
-External plugin hosting and trust policies for loading rules / algorithms from external assemblies (strong-name, file-hash, composite, or delegating policies) are documented in [Building and extending the service](../../guides/calendar/building-the-service.md). A first read of this introduction does not need them.
+External plugin hosting and trust policies for loading custom algorithms from external assemblies (strong-name, file-hash, composite, or delegating policies) are documented in [Building and extending the service](../../guides/calendar/building-the-service.md). A first read of this introduction does not need them.
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — full vocabulary: rule vs. date, nominal vs. observed, provider vs. override, anchor, category vs. tag, working day vs. non-working day.
-- **[Getting started](getting-started.md)** — install + minimal samples for the algorithm, the service, and working-day arithmetic.
+- **[Core concepts](concepts.md)** — full vocabulary: document vs. resource, rule vs. date, nominal vs. observed, import vs. override, adjustment policy, category vs. tag, working day vs. non-working day.
+- **[Getting started](getting-started.md)** — install + minimal samples for loading a resource, resolving dates, and working-day arithmetic.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — using `NotableDateService`, algorithms, rule authoring, working-day arithmetic, territories, data packs.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
-- **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific public-holiday rule providers (`AmericasCalendarData`, `EuropeCalendarData`, `AsiaPacificCalendarData`).
+- **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific resources (`AmericasCalendarData`, `EuropeCalendarData`, `AsiaPacificCalendarData`).

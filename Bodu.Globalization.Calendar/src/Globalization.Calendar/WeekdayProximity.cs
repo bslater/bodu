@@ -7,52 +7,32 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Specifies how a <see cref="DateResolutionStrategy.WeekdayNearDate" /> rule positions its target weekday relative to
-/// the rule's fixed reference month and day.
+/// Identifies the direction and inclusivity used when seeking a weekday relative to an anchor date.
 /// </summary>
-/// <remarks>
-/// <para>
-/// Because a given weekday recurs every seven days, each direction selects a single unambiguous occurrence within a
-/// seven-day window anchored at the reference date:
-/// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <see cref="OnOrAfter" /> — the reference date itself when it already falls on the target weekday, otherwise the
-/// first such weekday in the following six days.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <see cref="OnOrBefore" /> — the reference date itself when it already falls on the target weekday, otherwise the
-/// most recent such weekday in the preceding six days.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <see cref="Nearest" /> — the closest occurrence of the target weekday in either direction. Because the forward and
-/// backward distances always sum to seven, they are never equal, so the nearest occurrence is unique.
-/// </description>
-/// </item>
-/// </list>
-/// </remarks>
 public enum WeekdayProximity
 {
     /// <summary>
-    /// Selects the target weekday falling on or after the reference date (for example, "the Saturday on or after 20
-    /// June" for Nordic Midsummer Day).
+    /// The first matching weekday strictly before the anchor.
     /// </summary>
-    OnOrAfter = 0,
+    Before = 0,
 
     /// <summary>
-    /// Selects the target weekday falling on or before the reference date (for example, "the Wednesday on or before 22
-    /// November" for German Repentance Day, the Wednesday before 23 November).
+    /// The anchor itself when it matches, otherwise the first matching weekday before it.
     /// </summary>
     OnOrBefore,
 
     /// <summary>
-    /// Selects the occurrence of the target weekday nearest to the reference date in either direction (for example,
-    /// "the Monday nearest to a given date").
+    /// The matching weekday closest to the anchor in either direction.
     /// </summary>
     Nearest,
+
+    /// <summary>
+    /// The anchor itself when it matches, otherwise the first matching weekday after it.
+    /// </summary>
+    OnOrAfter,
+
+    /// <summary>
+    /// The first matching weekday strictly after the anchor.
+    /// </summary>
+    After,
 }

@@ -1,170 +1,79 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsiaPacificCalendarData.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
+using System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Data;
 
 /// <summary>
-/// Provides factory entry points for the Asia-Pacific region calendar data pack — embedded notable-date rules for
-/// Australia, China, India, Japan, South Korea, Malaysia, New Zealand, and Singapore — so consumers can compose a
-/// <see cref="NotableDateService" /> without knowing the underlying resource layout.
+/// Provides access to the embedded Asia-Pacific notable-date resource pack (Australia, China, Japan, New Zealand),
+/// migrated to the v2 cookbook schema.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each region XML is embedded under the historical <c>Bodu.Globalization.Calendar.Resources.*</c> path so that
-/// <c>&lt;UseFrom resource="./global-all.xml"&gt;</c> directives resolve against the main library's globals via the
-/// provider's assembly chain.
-/// </para>
-/// <para>
-/// Several rules in the Asia-Pacific pack (lunar, Hindu, Islamic, Buddhist) require custom
-/// <see cref="INotableDateAlgorithm" /> implementations registered with the
-/// <see cref="INotableDateAlgorithmRegistry" />. Without those registrations the affected dates resolve to no
-/// occurrences without error; the remaining Western/Gregorian rules behave unaffected.
+/// Each supported country is a self-contained embedded resource. A territory may be a country code (<c>AU</c>) or a
+/// subdivision (<c>AU-WA</c>); the subdivision selects the same country resource, and the resolver filters by the full
+/// territory at query time.
 /// </para>
 /// </remarks>
-/// <example>
-/// <code>
-///<![CDATA[
-/// var service = new NotableDateService(
-///     ruleProviders: AsiaPacificCalendarData.CreateProviders(),
-///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
-///]]>
-/// </code>
-/// </example>
 public static class AsiaPacificCalendarData
 {
     /// <summary>
-    /// The logical resource name for the Australia region payload.
+    /// The manifest-resource-name prefix shared by the bundle's region resources.
     /// </summary>
-    public const string AustraliaResourceName = "Bodu/Globalization/Calendar/Resources/region-au.xml";
+    private const string ResourcePrefix = "Bodu.Globalization.Calendar.Data.Resources.region-";
 
     /// <summary>
-    /// The logical resource name for the China region payload.
+    /// Gets the country codes the Asia-Pacific pack provides resources for.
     /// </summary>
-    public const string ChinaResourceName = "Bodu/Globalization/Calendar/Resources/region-cn.xml";
+    /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
+    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "AU", "CN", "IN", "JP", "KR", "MY", "NZ", "SG" };
 
     /// <summary>
-    /// The logical resource name for the India region payload.
+    /// Loads the notable-date resource for the country owning the supplied territory.
     /// </summary>
-    public const string IndiaResourceName = "Bodu/Globalization/Calendar/Resources/region-in.xml";
-
-    /// <summary>
-    /// The logical resource name for the Japan region payload.
-    /// </summary>
-    public const string JapanResourceName = "Bodu/Globalization/Calendar/Resources/region-jp.xml";
-
-    /// <summary>
-    /// The logical resource name for the South Korea region payload.
-    /// </summary>
-    public const string SouthKoreaResourceName = "Bodu/Globalization/Calendar/Resources/region-kr.xml";
-
-    /// <summary>
-    /// The logical resource name for the Malaysia region payload.
-    /// </summary>
-    public const string MalaysiaResourceName = "Bodu/Globalization/Calendar/Resources/region-my.xml";
-
-    /// <summary>
-    /// The logical resource name for the New Zealand region payload.
-    /// </summary>
-    public const string NewZealandResourceName = "Bodu/Globalization/Calendar/Resources/region-nz.xml";
-
-    /// <summary>
-    /// The logical resource name for the Singapore region payload.
-    /// </summary>
-    public const string SingaporeResourceName = "Bodu/Globalization/Calendar/Resources/region-sg.xml";
-
-    /// <summary>
-    /// Gets the assembly that hosts the pack's embedded XML resources. Exposed for advanced scenarios such as building
-    /// a custom assembly chain.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="Assembly" /> in which the pack's region payloads are embedded. Never <see langword="null" />.
-    /// </returns>
-    public static Assembly DataAssembly => typeof(AsiaPacificCalendarData).Assembly;
-
-    /// <summary>
-    /// Creates an Australia rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateAustraliaProvider() => CreateProvider(AustraliaResourceName);
-
-    /// <summary>
-    /// Creates a China rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateChinaProvider() => CreateProvider(ChinaResourceName);
-
-    /// <summary>
-    /// Creates an India rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateIndiaProvider() => CreateProvider(IndiaResourceName);
-
-    /// <summary>
-    /// Creates a Japan rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateJapanProvider() => CreateProvider(JapanResourceName);
-
-    /// <summary>
-    /// Creates a South Korea rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateSouthKoreaProvider() => CreateProvider(SouthKoreaResourceName);
-
-    /// <summary>
-    /// Creates a Malaysia rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateMalaysiaProvider() => CreateProvider(MalaysiaResourceName);
-
-    /// <summary>
-    /// Creates a New Zealand rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateNewZealandProvider() => CreateProvider(NewZealandResourceName);
-
-    /// <summary>
-    /// Creates a Singapore rule provider.
-    /// </summary>
-    /// <returns>A configured rule provider.</returns>
-    public static INotableDateRuleProvider CreateSingaporeProvider() => CreateProvider(SingaporeResourceName);
-
-    /// <summary>
-    /// Creates one provider per country in the Asia-Pacific pack so the full set can be passed straight to the
-    /// <see cref="NotableDateService" /> constructor's <c>ruleProviders</c> parameter.
-    /// </summary>
-    /// <returns>An ordered enumeration of providers — one per country in the pack.</returns>
-    public static IEnumerable<INotableDateRuleProvider> CreateProviders()
+    /// <param name="territory">A country code or subdivision (for example <c>AU</c> or <c>AU-WA</c>).</param>
+    /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">The territory's country is not provided by this pack.</exception>
+    public static NotableDateResource LoadResource(string territory)
     {
-        yield return CreateAustraliaProvider();
-        yield return CreateChinaProvider();
-        yield return CreateIndiaProvider();
-        yield return CreateJapanProvider();
-        yield return CreateSouthKoreaProvider();
-        yield return CreateMalaysiaProvider();
-        yield return CreateNewZealandProvider();
-        yield return CreateSingaporeProvider();
+        ThrowHelper.ThrowIfNull(territory);
+
+        string country = CountryOf(territory);
+        string resourceName = ResourcePrefix + country.ToLowerInvariant() + ".xml";
+
+        using Stream stream = typeof(AsiaPacificCalendarData).Assembly.GetManifestResourceStream(resourceName)
+            ?? throw new ArgumentException(
+                string.Format(CultureInfo.InvariantCulture, "No Asia-Pacific calendar resource for territory '{0}'.", territory),
+                nameof(territory));
+
+        return NotableDateResourceLoader.Load(stream, CommonNotableDateResources.Resolver);
     }
 
     /// <summary>
-    /// Creates an <see cref="INotableDateRuleProvider" /> rooted at <paramref name="resourceName" /> using the standard
-    /// pack → main-library assembly chain. Exposed to support consumers loading a specific resource by name.
+    /// Builds a resolver over the resource for the country owning the supplied territory.
     /// </summary>
-    /// <param name="resourceName">
-    /// The logical resource name of the root XML payload. Must not be <see langword="null" />.
-    /// </param>
-    /// <returns>A configured rule provider.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="resourceName" /> is <see langword="null" />.
-    /// </exception>
-    public static INotableDateRuleProvider CreateProvider(string resourceName) =>
-        new XmlResourceNotableDateRuleProvider(
-            resourceName,
-            new ResourcePathResolver(),
-            [DataAssembly, typeof(NotableDateService).Assembly]);
+    /// <param name="territory">A country code or subdivision (for example <c>AU</c> or <c>AU-WA</c>).</param>
+    /// <returns>A service over the country's resource.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">The territory's country is not provided by this pack.</exception>
+    public static NotableDateService CreateService(string territory) =>
+        new(LoadResource(territory));
+
+    /// <summary>
+    /// Extracts the country code from a territory, returning the segment before any subdivision separator.
+    /// </summary>
+    /// <param name="territory">The territory code.</param>
+    /// <returns>The uppercase country code.</returns>
+    private static string CountryOf(string territory)
+    {
+        int separator = territory.IndexOf('-', StringComparison.Ordinal);
+        string country = separator < 0 ? territory : territory[..separator];
+
+        return country.ToUpperInvariant();
+    }
 }

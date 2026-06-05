@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-labelledby="fg-t fg-d">
   <title id="fg-t">NotableDateFilter — two-stage gate evaluation</title>
-  <desc id="fg-d">A filtered GetNotableDates call passes each rule through a primary gate before resolving its date, then passes each resolved NotableDate through a secondary gate. Rules that fail the primary gate are skipped entirely, avoiding the cost of date resolution. Dates that fail the secondary gate are discarded from the result.</desc>
+  <desc id="fg-d">A filtered Resolve call passes each rule through a primary gate before resolving its date, then passes each resolved NotableDate through a secondary gate. Rules that fail the primary gate are skipped entirely, avoiding the cost of date resolution. Dates that fail the secondary gate are discarded from the result.</desc>
 
   <defs>
     <style>

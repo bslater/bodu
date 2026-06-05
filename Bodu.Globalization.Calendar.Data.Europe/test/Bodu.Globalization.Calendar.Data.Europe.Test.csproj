@@ -22,20 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
-    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Data.Europe.csproj" />
-  </ItemGroup>
-
-  <!--
-    Shared KAT infrastructure linked from the main Calendar test project. Avoids a cross-test-project
-    reference while letting all Data.* test packs reuse the TerritoryNotableDateKnownAnswer record and the
-    shared assertion / display-name helpers.
-  -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\TerritoryNotableDateKnownAnswer.cs" Link="Infrastructure\TerritoryNotableDateKnownAnswer.cs" />
-    <Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\RuleCatalogueExpectation.cs" Link="Infrastructure\RuleCatalogueExpectation.cs" />
-    <Compile Include="..\..\Bodu.Globalization.Calendar\test\Infrastructure\TerritoryNotableDateAssertions.cs" Link="Infrastructure\TerritoryNotableDateAssertions.cs" />
   </ItemGroup>
 
   <ItemGroup>

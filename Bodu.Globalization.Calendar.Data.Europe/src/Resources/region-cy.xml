@@ -1,71 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Cyprus (CY) notable-date resource.
+  Cyprus (CY) — notable-date resource pack.
 
-  Public holidays of the Republic of Cyprus. The movable Easter cycle follows
-  the Eastern Orthodox calendar (cherry-picked from the main library's
-  christian-orthodox.xml, anchored on Orthodox Easter Sunday); the fixed
-  Gregorian observances come from europe-common.xml.
+  Migrated from the v1 region-cy.xml to the v2 cookbook schema. All rules are scoped to territory "CY"; Cyprus has no
+  subdivision-specific public holidays.
 
-  Algorithm note: resolving the Orthodox movable feasts requires the
-  "orthodox-easter-sunday" INotableDateAlgorithm to be registered with the
-  service.
+  How this resource is built:
+
+    * Shared civil and Christian observances (New Year's Day, Christmas Day) are IMPORTED from the europe-common hub
+      and given a CY territory scope through the import <Use> directive.
+    * Cyprus-specific concepts and the Orthodox Easter cycle are declared INLINE below.
+
+  Easter anchor: Cyprus is predominantly Eastern Orthodox, so its movable feasts derive from the ORTHODOX Easter
+  Sunday (computed by the "orthodox-easter" algorithm — a Julian-based paschal calculation projected onto the
+  Gregorian calendar), not Western Easter. Each Easter-derived entry offsets a fixed number of days from the local
+  "orthodox-easter-sunday" concept.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="CY" />
-    <Use name="Epiphany" territory="CY" />
-    <Use name="International Workers' Day" as="Labour Day" territory="CY" />
-    <Use name="Assumption of Mary" as="Dormition of the Mother of God" territory="CY" />
-    <Use name="Christmas Day" territory="CY" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="CY" />
-  </UseFrom>
-
-  <UseFrom resource="./christian-orthodox.xml">
-    <Use name="Orthodox Clean Monday" as="Green Monday" category="Holiday" nonWorking="true" territory="CY" />
-    <Use name="Orthodox Good Friday" nonWorking="true" territory="CY" />
-    <Use name="Orthodox Holy Saturday" category="Holiday" nonWorking="true" territory="CY" />
-    <Use name="Orthodox Easter Sunday" territory="CY" />
-    <Use name="Orthodox Easter Monday" nonWorking="true" territory="CY" />
-    <Use name="Orthodox Pentecost Monday" as="Holy Spirit Monday" category="Holiday" nonWorking="true" territory="CY" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.cy">
 
   <!--
-    National Cypriot holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Greek Independence Day">
-    <Rule name="fixed-mar-25-cy" category="Holiday" territory="CY" nonWorking="true" firstYear="1821"
-          comment="Commemorates the start of the Greek War of Independence on 25 March 1821, observed throughout the Greek Cypriot community.">
-      <Fixed month="March" day="25" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Cyprus National Day">
-    <Rule name="fixed-apr-01-cy" category="Holiday" territory="CY" nonWorking="true" firstYear="1955"
-          comment="EOKA Day. Marks the start of the 1955 liberation struggle against British colonial rule.">
-      <Fixed month="April" day="1" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Cyprus. New Year's Day
+      (1 January) rolls to the next working day when it falls on a weekend; Christmas Day (25 December) is the
+      fixed-date Western feast. The Orthodox Easter cycle is declared inline below and does NOT derive from this hub.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="CY">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="christmas-day" territory="CY" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Cyprus Independence Day">
-    <Rule name="fixed-oct-01-cy" category="Holiday" territory="CY" nonWorking="true" firstYear="1960"
-          comment="Marks the independence of the Republic of Cyprus from the United Kingdom on 1 October 1960.">
-      <Fixed month="October" day="1" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Ochi Day">
-    <Rule name="fixed-oct-28-cy" category="Holiday" territory="CY" nonWorking="true" firstYear="1940"
-          comment="Commemorates the Greek rejection of the Italian ultimatum of 28 October 1940, observed jointly with Greece.">
-      <Fixed month="October" day="28" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Fixed Christian and civic feasts
+      ============================================================================================================
+    -->
 
-</NotableDates>
+    <!-- Epiphany (Theophany) — 6 January, marking the baptism of Christ. Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Dormition of the Mother of God (Assumption) — 15 August. Fixed date. -->
+    <NotableDate id="dormition-of-the-mother-of-god" displayName="Dormition of the Mother of God" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Orthodox Easter cycle (movable feasts; anchored to ORTHODOX Easter Sunday)
+      ============================================================================================================
+    -->
+
+    <!-- Green Monday (Clean Monday) — the start of Orthodox Lent, 48 days before Orthodox Easter Sunday (offsetDays="-48"). fromYear 1583 ties it to the Gregorian reform. -->
+    <NotableDate id="green-monday" displayName="Green Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1583"><Territory code="CY" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="cy" offsetDays="-48" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Orthodox Good Friday — two days before Orthodox Easter Sunday (offsetDays="-2"). -->
+    <NotableDate id="orthodox-good-friday" displayName="Orthodox Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1583"><Territory code="CY" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="cy" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Orthodox Holy Saturday — one day before Orthodox Easter Sunday (offsetDays="-1"). -->
+    <NotableDate id="orthodox-holy-saturday" displayName="Orthodox Holy Saturday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1583"><Territory code="CY" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="cy" offsetDays="-1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Orthodox Easter Sunday — the anchor for the cycle above and below, computed by the "orthodox-easter" algorithm
+      (Julian-based paschal calculation projected onto the Gregorian calendar). Not itself a non-working public
+      holiday here (it falls on a Sunday); it exists so the offset feasts can reference it.
+    -->
+    <NotableDate id="orthodox-easter-sunday" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="cy"><Applicability fromYear="1583"><Territory code="CY" /></Applicability>
+        <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Orthodox Easter Monday — one day after Orthodox Easter Sunday (offsetDays="1"). -->
+    <NotableDate id="orthodox-easter-monday" displayName="Orthodox Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1583"><Territory code="CY" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="cy" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Holy Spirit Monday (Whit Monday) — 50 days after Orthodox Easter Sunday (offsetDays="50"), the day after Orthodox Pentecost. -->
+    <NotableDate id="holy-spirit-monday" displayName="Holy Spirit Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1583"><Territory code="CY" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="cy" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      National and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Greek Independence Day — 25 March, commemorating the 1821 Greek War of Independence. fromYear 1821 excludes earlier years. -->
+    <NotableDate id="greek-independence-day" displayName="Greek Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1821"><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="March" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Cyprus National Day (EOKA Day / Greek Cypriot Struggle Day) — 1 April, marking the 1955 start of the EOKA campaign. fromYear 1955 excludes earlier years. -->
+    <NotableDate id="cyprus-national-day" displayName="Cyprus National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1955"><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="April" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Cyprus Independence Day — 1 October, marking independence from Britain in 1960. fromYear 1960 excludes earlier years. -->
+    <NotableDate id="cyprus-independence-day" displayName="Cyprus Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1960"><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ochi Day ("No" Day) — 28 October, marking Greece's 1940 refusal of the Italian ultimatum. fromYear 1940 excludes earlier years. -->
+    <NotableDate id="ochi-day" displayName="Ochi Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cy"><Applicability fromYear="1940"><Territory code="CY" /></Applicability>
+        <Strategy><Fixed month="October" day="28" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

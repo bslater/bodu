@@ -1,62 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Portugal (PT) notable-date resource using the Western / Gregorian calendar.
+  ================================================================================================================
+  Portugal (PT) — notable-date resource pack
+  ================================================================================================================
 
-  National public holidays (feriados nacionais). Municipal holidays and the
-  optional Carnival Tuesday are omitted.
+  Migrated from the v1 region-pt.xml to the v2 cookbook schema. All rules are scoped to territory "PT"; the
+  municipal holidays and the Azores/Madeira regional days are not modelled — only the mainland national set.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="PT"; Portugal-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared European observances — including the common Catholic feasts (the Assumption and the Immaculate
+      Conception) — are IMPORTED from the europe-common hub and given a PT territory scope through the import
+      <Use> directive. The hub carries the resolved calculation strategy; the territory supplies the local
+      observance.
+
+    * Portugal-specific concepts (Labour Day, Freedom Day, Portugal Day, Republic Day, and the Restoration of
+      Independence) are declared INLINE below.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="PT" />
-    <Use name="Easter Sunday" territory="PT" />
-    <Use name="Good Friday" territory="PT" />
-    <Use name="International Workers' Day" as="Labour Day" territory="PT" />
-    <Use name="Corpus Christi" territory="PT" />
-    <Use name="Assumption of Mary" territory="PT" />
-    <Use name="All Saints' Day" territory="PT" />
-    <Use name="Immaculate Conception" territory="PT" />
-    <Use name="Christmas Day" territory="PT" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.pt">
 
   <!--
-    National Portuguese holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Freedom Day">
-    <Rule name="fixed-apr-25-pt" category="Holiday" territory="PT" nonWorking="true" firstYear="1974"
-          comment="Dia da Liberdade. Commemorates the Carnation Revolution of 25 April 1974, which ended the Estado Novo dictatorship.">
-      <Fixed month="April" day="25" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Portugal Day">
-    <Rule name="fixed-jun-10-pt" category="Holiday" territory="PT" nonWorking="true"
-          comment="Dia de Portugal, de Camões e das Comunidades Portuguesas. National day, marking the death of the poet Luís de Camões on 10 June 1580.">
-      <Fixed month="June" day="10" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Portugal. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend. Good Friday (-2) and Corpus Christi (+60)
+      derive from the Easter Sunday anchor the hub re-exports. Corpus Christi and All Saints' (1 November) are
+      re-scoped to non-working public holidays. The Assumption (15 August) and Immaculate Conception (8 December)
+      are the common Catholic feasts the hub defines inline. Christmas Day (25 December) is fixed.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="PT">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="PT" />
+      <Use notableDateRef="good-friday" territory="PT" />
+      <Use notableDateRef="corpus-christi" territory="PT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="assumption-of-mary" territory="PT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="PT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="PT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="PT" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Republic Day">
-    <Rule name="fixed-oct-05-pt" category="Holiday" territory="PT" nonWorking="true" firstYear="1910"
-          comment="Implantação da República. Marks the proclamation of the Portuguese Republic on 5 October 1910.">
-      <Fixed month="October" day="5" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Restoration of Independence">
-    <Rule name="fixed-dec-01-pt" category="Holiday" territory="PT" nonWorking="true" firstYear="1640"
-          comment="Restauração da Independência. Commemorates the end of the Iberian Union and the restoration of Portuguese independence in 1640.">
-      <Fixed month="December" day="1" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
 
-</NotableDates>
+    <!-- Labour Day (Dia do Trabalhador) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Freedom Day (Dia da Liberdade) — 25 April, marking the 1974 Carnation Revolution. The fromYear="1974" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="freedom-day" displayName="Freedom Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pt"><Applicability fromYear="1974"><Territory code="PT" /></Applicability>
+        <Strategy><Fixed month="April" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Portugal Day (Dia de Portugal) — 10 June, the national day, marking the death of the poet Luís de Camões in 1580. Strategy: Fixed date. -->
+    <NotableDate id="portugal-day" displayName="Portugal Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
+        <Strategy><Fixed month="June" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Republic Day (Implantação da República) — 5 October, marking the 1910 proclamation of the republic. The fromYear="1910" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="republic-day" displayName="Republic Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pt"><Applicability fromYear="1910"><Territory code="PT" /></Applicability>
+        <Strategy><Fixed month="October" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Restoration of Independence (Restauração da Independência) — 1 December, marking the 1640 end of the Iberian Union with Spain. The fromYear="1640" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="restoration-of-independence" displayName="Restoration of Independence" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pt"><Applicability fromYear="1640"><Territory code="PT" /></Applicability>
+        <Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

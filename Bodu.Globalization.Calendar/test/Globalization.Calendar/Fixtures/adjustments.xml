@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.adjustments">
+
+  <AdjustmentPolicies>
+    <AdjustmentPolicy id="weekend-next-monday-observed" priority="100">
+      <Trigger type="IfDayOfWeek">
+        <Weekday value="Saturday" />
+        <Weekday value="Sunday" />
+      </Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" reason="Observed Monday" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-next-monday-both" priority="100">
+      <Trigger type="IfDayOfWeek">
+        <Weekday value="Saturday" />
+        <Weekday value="Sunday" />
+      </Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ActualAndObserved" reason="Actual and observed" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-next-monday-additional" priority="100">
+      <Trigger type="IfDayOfWeek">
+        <Weekday value="Saturday" />
+        <Weekday value="Sunday" />
+      </Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedAsAdditional" reason="Additional observance" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-next-monday-actual-only" priority="100">
+      <Trigger type="IfDayOfWeek">
+        <Weekday value="Saturday" />
+        <Weekday value="Sunday" />
+      </Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ActualOnly" reason="Actual only" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-suppress" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="None" />
+      <Emission mode="Suppress" reason="Suppressed on weekend" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="always-add-one" priority="100">
+      <Trigger type="Always" />
+      <Action type="AddDays" days="1" />
+      <Emission mode="ObservedOnly" reason="Shifted one day" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-prev-friday" priority="100">
+      <Trigger type="IfDayOfWeek">
+        <Weekday value="Saturday" />
+        <Weekday value="Sunday" />
+      </Trigger>
+      <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
+      <Emission mode="ObservedOnly" reason="Observed Friday" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-next-working-day" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Next working day" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekend-prev-working-day" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToPreviousWorkingDay" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Previous working day" />
+    </AdjustmentPolicy>
+
+    <AdjustmentPolicy id="weekday-add-two" priority="100">
+      <Trigger type="IfWeekday" />
+      <Action type="AddDays" days="2" />
+      <Emission mode="ObservedOnly" reason="Shifted on weekday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <NotableDates>
+
+    <NotableDate id="observed-only" displayName="Observed Only" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-next-monday-observed" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="actual-and-observed" displayName="Actual And Observed" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-next-monday-both" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="observed-additional" displayName="Observed Additional" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-next-monday-additional" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="actual-only" displayName="Actual Only" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-next-monday-actual-only" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="suppress-weekend" displayName="Suppress Weekend" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-suppress" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="always-shift" displayName="Always Shift" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="always-add-one" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="prev-friday" displayName="Previous Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-prev-friday" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="next-working-day" displayName="Next Working Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-next-working-day" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="prev-working-day" displayName="Previous Working Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekend-prev-working-day" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="weekday-shift" displayName="Weekday Shift" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="jan-1"><Applicability><Territory code="ZZ" /></Applicability>
+          <Strategy><Fixed month="January" day="1" /></Strategy>
+          <Adjustments><Adjustment policyRef="weekday-add-two" /></Adjustments></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

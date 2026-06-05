@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Singapore notable-date resource. -->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./global-lunar.xml">
+    <Use name="Lunar New Year" as="Chinese New Year" territory="SG" nonWorking="true" durationDays="2" />
+  </UseFrom>
+
+  <UseFrom resource="./global-islamic.xml">
+    <Use name="Eid al-Fitr" as="Hari Raya Puasa" territory="SG" nonWorking="true" />
+    <Use name="Eid al-Adha" as="Hari Raya Haji" territory="SG" nonWorking="true" />
+  </UseFrom>
+
+  <UseFrom resource="./global-hindu.xml">
+    <Use name="Diwali" as="Deepavali" territory="SG" nonWorking="true" />
+  </UseFrom>
+
+  <UseFrom resource="./global-buddhist.xml">
+    <Use name="Vesak" territory="SG" nonWorking="true" />
+  </UseFrom>
+
+  <UseFrom resource="./christian-gregorian.xml">
+    <Use name="Good Friday" territory="SG" nonWorking="true" />
+    <Use name="Christmas Day" territory="SG" nonWorking="true" />
+  </UseFrom>
+
+  <NotableDate name="New Year's Day">
+    <Rule name="fixed-jan-01-sg" category="Holiday" territory="SG" nonWorking="true">
+      <Fixed month="January" day="1" />
+      <Tag>Singapore</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Labour Day">
+    <Rule name="fixed-may-01-sg" category="Holiday" territory="SG" nonWorking="true">
+      <Fixed month="May" day="1" />
+      <Tag>Singapore</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="National Day">
+    <Rule name="fixed-aug-09-sg" category="Holiday" territory="SG" nonWorking="true">
+      <Fixed month="August" day="9" />
+      <Tag>Singapore</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

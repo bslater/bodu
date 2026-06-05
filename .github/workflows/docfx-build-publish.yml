@@ -52,14 +52,9 @@ jobs:
           exit 1
         fi
         echo "Checking for HTML-escaped characters in hand-authored TOC/YAML files (use raw < > & instead)..."
-        # Scope to source-authored YAML only. The generated managed-reference YAML
-        # (docs/api/, gitignored) and the built site (docs/_site/) legitimately carry
-        # HTML entities inside <code>/<pre> blocks within summaries and remarks; the
-        # double-encoding hazard this guards against only applies to hand-authored TOC
-        # 'name:' values.
-        if grep -rEn '&lt;|&gt;|&amp;|&quot;|&#[0-9]+;' docs/ --include='*.yml' --exclude-dir=api --exclude-dir=_site >/dev/null; then
-          echo "::error::Found HTML entities in hand-authored docs/*.yml. DocFX HTML-encodes TOC 'name:' values, so pre-escaped entities are double-encoded and render literally (e.g. Fraction<T> shows as Fraction&lt;T&gt;). Use raw < > & characters."
-          grep -rEn '&lt;|&gt;|&amp;|&quot;|&#[0-9]+;' docs/ --include='*.yml' --exclude-dir=api --exclude-dir=_site
+        if grep -rEn '&lt;|&gt;|&amp;|&quot;|&#[0-9]+;' docs/ --include='*.yml' --exclude-dir=api >/dev/null; then
+          echo "::error::Found HTML entities in hand-authored docs/*.yml. DocFX HTML-encodes TOC 'name:' values, so pre-escaped entities are double-encoded and render literally (e.g. Fraction<T> shows as Fraction&lt;T&gt;). Use raw < > & characters. (The generated docs/api output is excluded: DocFX legitimately encodes < > & inside its code blocks there.)"
+          grep -rEn '&lt;|&gt;|&amp;|&quot;|&#[0-9]+;' docs/ --include='*.yml' --exclude-dir=api
           exit 1
         fi
         echo "All content audits passed."

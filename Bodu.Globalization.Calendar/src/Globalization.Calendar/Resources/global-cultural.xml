@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global cultural notable-date catalogue (Western / Gregorian calendar), migrated from the v1 global-cultural.xml to
+  the v2 cookbook schema. These are commonly recognized cultural observances, not universally public holidays. A
+  territory pack imports only the concepts it observes and supplies its own territory scope, category, non-working
+  flag, and weekend adjustment through the import <Use> directive; the shared concepts therefore carry the bare
+  calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-cultural">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Cultural observances, ordered by date through the year. Most are fixed Gregorian dates; the fromYear bound,
+      where present, records the year the observance was first proclaimed or established.
+      ============================================================================================================
+    -->
+
+    <!-- Valentine's Day — 14 February; romance and affection. -->
+    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Mother Language Day — 21 February; UNESCO observance promoting linguistic diversity (proclaimed 1999, first observed 2000). -->
+    <NotableDate id="international-mother-language-day" displayName="International Mother Language Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2000" /><Strategy><Fixed month="February" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Poetry Day — 21 March; UNESCO observance (from 1999). -->
+    <NotableDate id="world-poetry-day" displayName="World Poetry Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1999" /><Strategy><Fixed month="March" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Theatre Day — 27 March; initiated by the International Theatre Institute (from 1962). -->
+    <NotableDate id="world-theatre-day" displayName="World Theatre Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1962" /><Strategy><Fixed month="March" day="27" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- April Fool's Day — 1 April; a customary day of practical jokes and hoaxes. -->
+    <NotableDate id="april-fools-day" displayName="April Fool's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="April" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Jazz Day — 30 April; UNESCO observance (from 2012). -->
+    <NotableDate id="international-jazz-day" displayName="International Jazz Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="April" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Star Wars Day — 4 May; a fan observance punning on "May the Fourth be with you". -->
+    <NotableDate id="star-wars-day" displayName="Star Wars Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="May" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Music Day (Fête de la Musique) — 21 June; originated in France (from 1982). -->
+    <NotableDate id="world-music-day" displayName="World Music Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1982" /><Strategy><Fixed month="June" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Friendship Day — 30 July; the UN International Day of Friendship (from 2011). Distinct from the first-Sunday-in-August Friendship Day in global-family-social. -->
+    <NotableDate id="international-friendship-day" displayName="International Friendship Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2011" /><Strategy><Fixed month="July" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Halloween — 31 October; the eve of All Saints' Day, marked by costumes and trick-or-treating. -->
+    <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

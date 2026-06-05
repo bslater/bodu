@@ -1,80 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Slovakia (SK) notable-date resource using the Western / Gregorian calendar.
+  Slovakia (SK) — notable-date resource pack.
 
-  Public holidays and days of rest (štátne sviatky a dni pracovného pokoja).
+  Migrated from the v1 region-sk.xml to the v2 cookbook schema. All rules are scoped to territory "SK"; Slovakia has
+  no subdivision-specific public holidays.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="SK"; Slovakia-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared Western Christian feasts (Easter Sunday, Good Friday, Easter Monday, All Saints' Day, Christmas Eve,
+      Christmas Day) are IMPORTED from the europe-common hub and given an SK territory scope through the import
+      <Use> directive. Good Friday and Easter Monday derive from the WESTERN Easter Sunday anchor the hub re-exports.
+    * Slovakia-specific national and Catholic feast days are declared INLINE below as fixed dates.
+
+  Note: New Year's Day is not imported from global-core here because Slovakia observes 1 January under its own name
+  (Day of the Establishment of the Slovak Republic), declared inline below.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" as="Day of the Establishment of the Slovak Republic" territory="SK" />
-    <Use name="Epiphany" territory="SK" />
-    <Use name="Easter Sunday" territory="SK" />
-    <Use name="Good Friday" territory="SK" />
-    <Use name="Easter Monday" territory="SK" />
-    <Use name="International Workers' Day" as="Labour Day" territory="SK" />
-    <Use name="All Saints' Day" territory="SK" />
-    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="SK" />
-    <Use name="Christmas Day" territory="SK" />
-    <Use name="Boxing Day" as="Saint Stephen's Day" territory="SK" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.sk">
 
   <!--
-    National Slovak holidays. Slovakia's Marian public holiday is the 15
-    September feast of Our Lady of Sorrows (patroness of Slovakia), not the
-    15 August Assumption, so it is declared explicitly here.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Day of Our Lady of Sorrows">
-    <Rule name="fixed-sep-15-sk" category="Holiday" territory="SK" nonWorking="true"
-          comment="Sedembolestná Panna Mária. Feast of Our Lady of Sorrows, patroness of Slovakia, observed on 15 September.">
-      <Fixed month="September" day="15" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the inline New Year's Day (Establishment of the Slovak Republic).
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Day of Victory over Fascism">
-    <Rule name="fixed-may-08-sk" category="Holiday" territory="SK" nonWorking="true" firstYear="1945"
-          comment="Deň víťazstva nad fašizmom. Marks the end of the Second World War in Europe on 8 May 1945.">
-      <Fixed month="May" day="8" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Slovakia. Good Friday and Easter
+      Monday derive from the Easter Sunday anchor (OffsetFromRule strategies the hub re-exports). All Saints' Day and
+      Christmas Eve are re-scoped to non-working public holidays for Slovakia; Christmas Day is imported with its
+      shared fixed-date strategy.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="easter-sunday" territory="SK" />
+      <Use notableDateRef="good-friday" territory="SK" />
+      <Use notableDateRef="easter-monday" territory="SK" />
+      <Use notableDateRef="all-saints-day" territory="SK" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-eve" territory="SK" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="SK" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Saints Cyril and Methodius Day">
-    <Rule name="fixed-jul-05-sk" category="Holiday" territory="SK" nonWorking="true"
-          comment="Sviatok svätého Cyrila a Metoda. Honors the Byzantine missionaries who brought Christianity and literacy to the Slavs.">
-      <Fixed month="July" day="5" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Slovak National Uprising Anniversary">
-    <Rule name="fixed-aug-29-sk" category="Holiday" territory="SK" nonWorking="true" firstYear="1944"
-          comment="Výročie Slovenského národného povstania. Commemorates the 1944 uprising against Nazi Germany and its collaborators.">
-      <Fixed month="August" day="29" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Fixed civic and Christian feasts
+      ============================================================================================================
+    -->
 
-  <NotableDate name="Constitution Day">
-    <Rule name="fixed-sep-01-sk" category="Holiday" territory="SK" nonWorking="true" firstYear="1992"
-          comment="Deň Ústavy Slovenskej republiky. Marks the adoption of the Constitution of the Slovak Republic on 1 September 1992.">
-      <Fixed month="September" day="1" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Day of the Establishment of the Slovak Republic — 1 January (also New Year's Day), marking the 1993 founding of independent Slovakia. Fixed date, with a weekend roll to the next working day. -->
+    <NotableDate id="day-of-the-establishment-of-the-slovak-republic" displayName="Day of the Establishment of the Slovak Republic" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="January" day="1" /></Strategy>
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Struggle for Freedom and Democracy Day">
-    <Rule name="fixed-nov-17-sk" category="Holiday" territory="SK" nonWorking="true"
-          comment="Deň boja za slobodu a demokraciu. Commemorates the student demonstrations of 1939 and 1989 against totalitarian rule.">
-      <Fixed month="November" day="17" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Epiphany (Three Kings' Day) — 6 January, marking the visit of the Magi. Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-</NotableDates>
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Stephen's Day (Second Day of Christmas) — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      National and Catholic feast days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Day of Our Lady of Sorrows (patroness of Slovakia) — 15 September. Fixed date. -->
+    <NotableDate id="day-of-our-lady-of-sorrows" displayName="Day of Our Lady of Sorrows" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="September" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of Victory over Fascism (Liberation Day) — 8 May, marking the 1945 end of the Second World War in Europe. fromYear 1945 excludes earlier years. -->
+    <NotableDate id="day-of-victory-over-fascism" displayName="Day of Victory over Fascism" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability fromYear="1945"><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="May" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saints Cyril and Methodius Day — 5 July, honouring the Byzantine missionaries to the Slavs. Fixed date. -->
+    <NotableDate id="saints-cyril-and-methodius-day" displayName="Saints Cyril and Methodius Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="July" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Slovak National Uprising Anniversary — 29 August, marking the 1944 uprising against Nazi occupation. fromYear 1944 excludes earlier years. -->
+    <NotableDate id="slovak-national-uprising-anniversary" displayName="Slovak National Uprising Anniversary" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability fromYear="1944"><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="August" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Constitution Day — 1 September, marking the adoption of the 1992 Slovak constitution. fromYear 1992 excludes earlier years. -->
+    <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability fromYear="1992"><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="September" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Struggle for Freedom and Democracy Day — 17 November, marking the 1939 and 1989 student protests (the latter began the Velvet Revolution). Fixed date. -->
+    <NotableDate id="struggle-for-freedom-and-democracy-day" displayName="Struggle for Freedom and Democracy Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
+        <Strategy><Fixed month="November" day="17" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

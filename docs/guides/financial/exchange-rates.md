@@ -24,7 +24,12 @@ reports, and multi-source feeds that carry their provenance.
 - **Lookup result** — `ExchangeRateLookupResult` carries the rate, requested date, resolution policy, and offset-day distance.
 
 See the [core concepts page](../../docs/financial/concepts.md) for
-the long-form treatment of every `ExchangeRateDateResolution` policy.
+the long-form treatment of every `ExchangeRateDateResolution` policy,
+the [exchange-rate types catalogue](exchange-types.md) for a
+scenario-driven map of every type below, and
+[Exchange-rate lookups on a known dataset](exchange-rate-lookups.md)
+for a worked results matrix showing how each lookup option changes the
+answer.
 
 ## A minimal in-memory provider
 

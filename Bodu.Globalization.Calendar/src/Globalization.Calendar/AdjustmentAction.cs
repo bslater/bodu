@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentAction.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,53 +7,60 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Identifies the action an <see cref="ObservanceAdjustment" /> performs once its <see cref="AdjustmentTrigger" /> has
-/// activated.
+/// Identifies how an adjustment policy transforms a calculated occurrence once its trigger is active.
 /// </summary>
 /// <remarks>
-/// This enumeration replaces <c>NotableDateAdjustmentActionType</c>, dropping the redundant <c>...Type</c> suffix. Each
-/// value maps to a branch in <see cref="NotableDateAdjuster" />.
+/// <para>
+/// Working-day aware actions treat Saturday and Sunday as non-working days. A pluggable non-working-day calendar that
+/// also skips holidays is reserved for a later phase.
+/// </para>
 /// </remarks>
 public enum AdjustmentAction
 {
     /// <summary>
-    /// Leaves the date unchanged. Useful when an adjustment is used purely to flag an observance (for example, marking
-    /// the date as a non-working day) without rescheduling it.
+    /// Leave the occurrence unchanged.
     /// </summary>
     None = 0,
 
     /// <summary>
-    /// Adds <see cref="ObservanceAdjustment.OffsetDays" /> to the calculated date. Negative values move backwards.
+    /// Shift the occurrence by a fixed number of days.
     /// </summary>
     AddDays,
 
     /// <summary>
-    /// Moves the date forward to the next weekday as defined by the configured <see cref="Bodu.WorkingDaysOfWeek" />.
+    /// Move the occurrence forward to the next instance of the configured weekday.
     /// </summary>
     MoveToNextWeekday,
 
     /// <summary>
-    /// Moves the date backward to the previous weekday as defined by the configured
-    /// <see cref="Bodu.WorkingDaysOfWeek" />.
+    /// Move the occurrence backward to the previous instance of the configured weekday.
     /// </summary>
     MoveToPreviousWeekday,
 
     /// <summary>
-    /// Moves the date forward to the next working day, skipping all days flagged as non-working for the active
-    /// territory (weekends and other notable non-working dates). The resulting working day becomes the observance
-    /// substitute. Replaces the previous, misleadingly-named <c>MoveToNextNonWorkingDay</c> value.
+    /// Move the occurrence forward to the next working day, skipping weekends.
     /// </summary>
     MoveToNextWorkingDay,
 
     /// <summary>
-    /// Replaces the date with the resolved date of another notable date rule named by
-    /// <see cref="ObservanceAdjustment.TargetRuleName" />.
+    /// Move the occurrence backward to the previous working day, skipping weekends.
     /// </summary>
-    ReplaceWithNamedDate,
+    MoveToPreviousWorkingDay,
 
     /// <summary>
-    /// Delegates the adjustment to a registered <see cref="IAdjustmentHandler" /> looked up by
-    /// <see cref="ObservanceAdjustment.HandlerKey" />.
+    /// Replace the occurrence date with the date of another rule resolved for the same year, identified by the policy's
+    /// notable-date and rule references.
+    /// </summary>
+    ReplaceWithRule,
+
+    /// <summary>
+    /// Suppress the occurrence entirely.
+    /// </summary>
+    Suppress,
+
+    /// <summary>
+    /// Delegate the observed-date computation to a caller-supplied <see cref="IAdjustmentHandler" /> resolved through the
+    /// policy's handler key.
     /// </summary>
     Custom,
 }

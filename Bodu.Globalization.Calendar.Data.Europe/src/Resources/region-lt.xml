@@ -1,62 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Lithuania (LT) notable-date resource using the Western / Gregorian calendar.
+  Lithuania (LT) — notable-date resource pack.
 
-  National public holidays (valstybės šventės ir nedarbo dienos).
+  Migrated from the v1 region-lt.xml to the v2 cookbook schema. All rules are scoped to territory "LT"; Lithuania has
+  no subdivision-specific public holidays.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="LT"; Lithuania-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Easter Monday, the Assumption of
+      Mary, All Saints' Day, Christmas Eve, Christmas Day) are IMPORTED from the europe-common hub and given an LT
+      territory scope through the import <Use> directive. Easter Monday derives from the WESTERN Easter Sunday anchor
+      the hub re-exports.
+    * Lithuania-specific national, religious, and seasonal days are declared INLINE below as fixed dates.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="LT" />
-    <Use name="Easter Sunday" territory="LT" />
-    <Use name="Easter Monday" territory="LT" />
-    <Use name="International Workers' Day" as="Labour Day" territory="LT" />
-    <Use name="Assumption of Mary" territory="LT" />
-    <Use name="All Saints' Day" territory="LT" />
-    <Use name="All Souls' Day" nonWorking="true" category="Holiday" territory="LT" />
-    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="LT" />
-    <Use name="Christmas Day" territory="LT" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="LT" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.lt">
 
   <!--
-    National Lithuanian holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Day of Restoration of the State">
-    <Rule name="fixed-feb-16-lt" category="Holiday" territory="LT" nonWorking="true" firstYear="1918"
-          comment="Lietuvos valstybės atkūrimo diena. Marks the Act of Independence of 16 February 1918, re-establishing the Lithuanian state.">
-      <Fixed month="February" day="16" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Day of Restoration of Independence">
-    <Rule name="fixed-mar-11-lt" category="Holiday" territory="LT" nonWorking="true" firstYear="1990"
-          comment="Lietuvos nepriklausomybės atkūrimo diena. Marks the Act of the Re-Establishment of the State of Lithuania of 11 March 1990, the first Soviet republic to declare independence.">
-      <Fixed month="March" day="11" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Lithuania. New Year's Day (1
+      January) carries a weekend roll to the next working day. Easter Monday derives from the Easter Sunday anchor (an
+      OffsetFromRule strategy the hub re-exports). All Saints' Day and Christmas Eve are re-scoped to non-working
+      public holidays for Lithuania; Christmas Day is imported with its shared fixed-date strategy. The Assumption of
+      Mary (15 August) is cherry-picked from the hub as a non-working public holiday rather than re-declared inline.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="LT">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="LT" />
+      <Use notableDateRef="easter-monday" territory="LT" />
+      <Use notableDateRef="assumption-of-mary" territory="LT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="LT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-eve" territory="LT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="LT" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Saint John's Day">
-    <Rule name="fixed-jun-24-lt" category="Holiday" territory="LT" nonWorking="true"
-          comment="Joninės (Rasos). Midsummer celebration on 24 June, blending the feast of the Nativity of Saint John the Baptist with pre-Christian solstice traditions.">
-      <Fixed month="June" day="24" />
-      <Tag>Cultural</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Statehood Day">
-    <Rule name="fixed-jul-06-lt" category="Holiday" territory="LT" nonWorking="true" firstYear="1253"
-          comment="Valstybės diena. Commemorates the coronation of Mindaugas as the only King of Lithuania on 6 July 1253.">
-      <Fixed month="July" day="6" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Fixed Christian feasts
+      ============================================================================================================
+    -->
 
-</NotableDates>
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- All Souls' Day (Day of the Dead) — 2 November, the day after All Saints' Day. Fixed date. -->
+    <NotableDate id="all-souls-day" displayName="All Souls' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="November" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      National, religious, and seasonal days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Day of Restoration of the State — 16 February, marking the 1918 Act of Independence. fromYear 1918 excludes earlier years. -->
+    <NotableDate id="day-of-restoration-of-the-state" displayName="Day of Restoration of the State" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability fromYear="1918"><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="February" day="16" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of Restoration of Independence — 11 March, marking the 1990 re-declaration of independence from the Soviet Union. fromYear 1990 excludes earlier years. -->
+    <NotableDate id="day-of-restoration-of-independence" displayName="Day of Restoration of Independence" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability fromYear="1990"><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="March" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint John's Day (Midsummer / Joninės) — 24 June, the traditional midsummer celebration. Fixed date. -->
+    <NotableDate id="saint-johns-day" displayName="Saint John's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="June" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Statehood Day (Coronation of King Mindaugas) — 6 July, marking the 1253 coronation of Lithuania's only king. fromYear 1253 excludes earlier years. -->
+    <NotableDate id="statehood-day" displayName="Statehood Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lt"><Applicability fromYear="1253"><Territory code="LT" /></Applicability>
+        <Strategy><Fixed month="July" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

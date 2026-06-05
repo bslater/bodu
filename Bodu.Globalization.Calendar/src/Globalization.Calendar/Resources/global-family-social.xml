@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global family-social notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-family-social.xml to the v2 cookbook schema. These are widely observed family and social community days. A
+  territory pack imports only the concepts it observes and supplies its own territory scope, category, non-working
+  flag, and weekend adjustment through the import <Use> directive; the shared concepts therefore carry the bare
+  calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-family-social">
+
+  <NotableDates>
+
+    <!-- Friendship Day — first Sunday in August (the traditional date observed in the US and elsewhere). -->
+    <NotableDate id="friendship-day" displayName="Friendship Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><DayOfWeekInMonth month="August" dayOfWeek="Sunday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Grandparents Day — first Sunday in September. -->
+    <NotableDate id="grandparents-day" displayName="Grandparents Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

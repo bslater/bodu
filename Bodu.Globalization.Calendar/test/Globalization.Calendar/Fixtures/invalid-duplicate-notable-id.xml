@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+  <NotableDates>
+    <NotableDate id="x" displayName="X" category="PublicHoliday">
+      <Rules><Rule id="r1"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+    <NotableDate id="x" displayName="X2" category="PublicHoliday">
+      <Rules><Rule id="r2"><Strategy><Fixed month="March" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

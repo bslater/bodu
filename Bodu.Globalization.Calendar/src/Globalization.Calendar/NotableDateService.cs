@@ -1,1068 +1,800 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Immutable;
-using System.Globalization;
-using Bodu.Extensions;
-using Bodu.Globalization.Calendar.Plugins;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides the canonical implementation of <see cref="INotableDateService" />, combining base
-/// <see cref="INotableDateRuleProvider" /> sources with optional <see cref="INotableDateRuleOverrideProvider" /> layers
-/// and producing resolved <see cref="NotableDate" /> instances on demand.
+/// Resolves notable-date occurrences from a loaded <see cref="NotableDateResource" /> for a requested territory and day
+/// or date range.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This type is the orchestrator at the centre of the resolution pipeline. The pipeline reads
-/// <c>Rule source → NotableDateRule → Resolution strategy → Nominal date → Adjustment pipeline → Resolved NotableDate → Consumer query</c>
-/// ; the documentation introduction (<c>docs/calendar/index.md</c>) and the concepts page (
-/// <c>docs/calendar/concepts.md</c>) render this flow as a diagram and provide the surrounding vocabulary, and the
-/// <c>guides/calendar/*</c> walk-throughs cover authoring rules, working-day arithmetic, observance adjustments,
-/// territories, and data packs.
+/// Resolution runs in two phases. The first phase calculates every actual occurrence purely and seeds an occupied-day
+/// set with the actual dates of non-working occurrences. The second phase places observed dates in an explicit
+/// precedence order — earliest actual date, then higher priority, then stable identity — so that a substitute that opts
+/// in to <see cref="AdjustmentPolicy.SkipNonWorkingDates" /> advances past days already claimed by other holidays.
 /// </para>
 /// <para>
-/// The service serves every query through the range-resolution pipeline. The pipeline materialises results per request,
-/// merges resolved windows for cross-call coverage tracking, and is cleared via <see cref="Invalidate()" />. The
-/// pipeline and its caches are thread-safe under concurrent reads and writes.
+/// Inclusion is decided by the emitted (observed) date, so a single-day query and a range query covering the same dates
+/// return consistent results. To capture occurrences whose actual date lies just outside the requested window but whose
+/// observed date falls inside it, the service scans one civil year either side of the window.
 /// </para>
-/// <para>
-/// Multi-day events are supported: a <see cref="NotableDateRule" /> with <see cref="NotableDateRule.DurationDays" />
-/// greater than one produces a single <see cref="NotableDate" /> whose <see cref="NotableDate.EndDate" /> is the
-/// inclusive last day of the span. Range and single-day queries return the span when any day within it intersects the
-/// query.
-/// </para>
-/// <para>
-/// The default no-argument constructor loads only the embedded minimal default rule set (currently New Year's Day) so a
-/// service can be created without referencing any companion data pack. Region-specific public holidays — US federal
-/// holidays, UK bank holidays, Australian state observances, and so on — ship in separate
-/// <c>Bodu.Globalization.Calendar.Data.*</c> assemblies and are added by passing the pack's <c>CreateProvider()</c>
-/// result through the full constructor. The full constructor accepts base rule providers, weekend definitions, override
-/// providers, algorithm registries, custom adjustment handlers, collision resolvers, and name localizers, enabling
-/// complete control over the resolution pipeline.
-/// </para>
-/// <para>
-/// Pipeline stage cross-reference:
-/// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <b>Rule source</b> — supplied via the <c>ruleProviders</c> constructor parameter using
-/// <see cref="INotableDateRuleProvider" /> implementations such as <see cref="XmlResourceNotableDateRuleProvider" /> or
-/// <see cref="JsonResourceNotableDateRuleProvider" />, or via companion <c>Bodu.Globalization.Calendar.Data.*</c>
-/// packs.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>NotableDateRule → Resolution strategy</b> — each <see cref="NotableDateRule" /> declares a
-/// <see cref="DateResolutionStrategy" /> (<c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, or
-/// <c>Algorithm</c>) that the resolver dispatches to per year, producing the <i>nominal</i> date.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Adjustment pipeline</b> — <see cref="ObservanceAdjustment" /> entries on the rule fire through registered
-/// <see cref="IAdjustmentHandler" /> instances (managed by <see cref="AdjustmentHandlerRegistry" />), yielding the <i>
-/// observed</i> date and populating <see cref="NotableDate.WasAdjusted" /> /
-/// <see cref="NotableDate.AdjustmentReason" />.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Resolved NotableDate</b> — every <c>GetNotableDates</c> overload delegates to the
-/// <see cref="RangeResolution.NotableDateRangePipeline" /> (reached publicly through
-/// <see cref="ResolveNotableDatesInRange" />). The pipeline emits exactly one <see cref="NotableDate" /> per rule
-/// occurrence, carrying any <see cref="NotableDate.AdjustmentReason" /> on the single emitted record rather than
-/// producing a (base, adjusted) pair. <see cref="Invalidate()" /> drops the pipeline and the resolved-window set.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Consumer query</b> — <c>GetNotableDates</c> and its overloads return the resolved set;
-/// <see cref="NotableDateFilter" /> composes territory / category / tag predicates;
-/// <c>Bodu.Extensions.NotableDateOnlyExtensions</c> and <c>NotableDateTimeExtensions</c> provide working-day arithmetic
-/// (<c>IsWorkingDay</c>, <c>AddWorkingDays</c>, <c>NextWorkingDay</c>, …).
-/// </description>
-/// </item>
-/// </list>
-/// <para>
-/// <b>Contracts established by the range pipeline.</b> These hold for every public range API on the service:
-/// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <b>One emission per rule occurrence (by default).</b> When an <see cref="ObservanceAdjustment" /> activates, the
-/// emitted <see cref="NotableDate" /> carries the post-adjustment observed date and an <see cref="AdjustmentReason" />
-/// describing the shift. When several adjustments could activate, the first to activate and move the date — by
-/// ascending <see cref="ObservanceAdjustment.Priority" /> — wins (first-active-wins). Whether the service emits the
-/// observed occurrence only, the actual occurrence only, or both is governed by
-/// <see cref="ObservedDateMode" />; the default <see cref="ObservedDateMode.ObservedOnly" /> yields a single
-/// observed occurrence.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Observed-date filtering.</b> Only occurrences whose observed date intersects the requested window are emitted.
-/// Anchors materialised from adjacent years (for cross-year multi-day spans or roll-forward substitutions) surface
-/// when, and only when, their observed date falls inside the window.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Strict reversed-range policy.</b> Every range-accepting API throws <see cref="ArgumentException" /> when
-/// <c>endDate</c> is earlier than <c>startDate</c>. Callers must supply a well-ordered range.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Composite rule identity.</b> Override-merge uses the full <see cref="NotableDateRuleIdentity" />
-/// (<c>Name, RuleName, TerritoryCode, CalendarType</c>) key, so regional, rule-level, and calendar-system variants of
-/// the same named observance (for example western and orthodox Easter) coexist as distinct rules. An override addition
-/// replaces a base rule only when every identity component matches exactly.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Strict parser type resolution.</b> Both <see cref="NotableDateRuleParser" /> and
-/// <see cref="NotableDateRuleJsonParser" /> throw <see cref="FormatException" /> at parse time when a
-/// <c>calendarType</c> or algorithm-type attribute cannot be resolved or does not derive from the expected base.
-/// Numeric month 13 is rejected for Fixed rules in a Gregorian context.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <b>Atomic Reload.</b> <see cref="Reload" /> rebuilds the effective rule set and invalidates the pipeline /
-/// resolved-window state under a single critical section, so concurrent readers cannot observe new effective rules
-/// paired with a stale pipeline.
-/// </description>
-/// </item>
-/// </list>
 /// </remarks>
-/// <example>
-/// <para>
-/// Construct with the built-in minimal rule set, then layer Australian public holidays from a companion data pack:
-/// </para>
-/// <code>
-///<![CDATA[
-/// Simplest construction — loads only the embedded New Year's Day rule:
-/// NotableDateService service = new NotableDateService();
-///
-/// All notable dates for New South Wales in 2026 (requires the Asia-Pacific data pack):
-/// IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
-///
-/// Full construction with a custom XML rule file and algorithm registry:
-/// var registry = new NotableDateAlgorithmRegistry()
-///     .Register("easter-sunday", new GregorianEasterSundayNotableDateProvider());
-///
-/// NotableDateService fullService = new NotableDateService(
-///     ruleProviders: new[] { new XmlResourceNotableDateRuleProvider(
-///         "MyApp/Calendar/Resources/custom-rules.xml",
-///         new ResourcePathResolver()) },
-///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
-///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
-///
-/// Invalidate the cache when runtime overrides change:
-/// service.Invalidate();
-///]]>
-/// </code>
-/// </example>
-/// <seealso cref="INotableDateService" /> <seealso cref="NotableDateRule" /> <seealso cref="NotableDate" />
-/// <seealso cref="NotableDateFilter" /> <seealso cref="ObservanceAdjustment" />
-/// <seealso cref="INotableDateRuleProvider" /> <seealso cref="INotableDateRuleOverrideProvider" />
-/// <seealso cref="NotableDateServiceOptions" />
-public sealed class NotableDateService
-    : INotableDateService
-    , IDisposable
+public sealed class NotableDateService : INotableDateService
 {
     /// <summary>
-    /// The embedded resource path for the minimal default rule set used by the parameterless constructor.
+    /// The loaded resource the service draws occurrences from.
     /// </summary>
-    private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/default-minimal.xml";
+    private readonly NotableDateResource _resource;
 
     /// <summary>
-    /// The optional registry of custom adjustment handlers used during generation.
+    /// The custom algorithm registry, or <see langword="null" /> when only built-in algorithms are available.
     /// </summary>
-    private readonly IAdjustmentHandlerRegistry? _adjustmentHandlers;
+    private readonly INotableDateAlgorithmRegistry? _algorithms;
 
     /// <summary>
-    /// The immutable snapshot of base rules loaded at construction from all rule providers.
+    /// The custom same-day collision resolver, consulted when the policy is <see cref="CollisionPolicy.Custom" />.
     /// </summary>
-    private readonly ImmutableArray<NotableDateRule> _baseRules;
+    private readonly INotableDateCollisionResolver? _collisionResolver;
 
     /// <summary>
-    /// The resolver that arbitrates when multiple rules produce a date on the same day.
+    /// The custom adjustment-handler registry, consulted when an action is <see cref="AdjustmentAction.Custom" />.
     /// </summary>
-    private readonly INotableDateCollisionResolver _collisionResolver;
+    private readonly IAdjustmentHandlerRegistry? _handlers;
 
     /// <summary>
-    /// The merged rule set after all overrides have been applied; drives every resolution pass. Rebuilt by
-    /// <see cref="Reload" /> when an <see cref="INotableDateRuleOverrideProvider" /> mutates its contributions.
+    /// The custom trigger-handler registry, consulted when a trigger is <see cref="AdjustmentTrigger.Custom" />.
     /// </summary>
-    private IReadOnlyList<NotableDateRule> _effectiveRules;
+    private readonly IAdjustmentTriggerHandlerRegistry? _triggerHandlers;
 
     /// <summary>
-    /// Lock guarding atomic publication of effective rules, resolver, and lazy <see cref="_rangePipeline" /> across
-    /// <see cref="Reload" /> and reader threads.
+    /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
     /// </summary>
-    private readonly object _gate = new();
+    private readonly IReadOnlyList<INotableDateProvider>? _providers;
 
     /// <summary>
-    /// The optional localizer used to translate notable date names into the active culture.
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
-    private readonly INotableDateNameLocalizer? _nameLocalizer;
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(NotableDateResource resource)
+        : this(resource, null, null)
+    {
+    }
 
     /// <summary>
-    /// The service-wide observed-date emission policy applied when an adjustment shifts a notable date.
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry.
     /// </summary>
-    private readonly ObservedDateMode _observedDateMode;
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms)
+        : this(resource, algorithms, null)
+    {
+    }
 
     /// <summary>
-    /// Identity-keyed set of every rule contributed by an <see cref="INotableDateRuleOverrideProvider" /> addition.
-    /// Used downstream to exempt override additions from same-name <see cref="RuleRemoval" /> suppression, so an
-    /// addition can replace a removed base rule of the same name. Rebuilt by <see cref="Reload" /> alongside
-    /// <see cref="_effectiveRules" />.
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry and
+    /// same-day collision resolver.
     /// </summary>
-    private HashSet<NotableDateRule> _overrideAdditions;
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms, INotableDateCollisionResolver? collisionResolver)
+        : this(resource, algorithms, collisionResolver, null)
+    {
+    }
 
     /// <summary>
-    /// The ordered list of override providers applied on top of the base rule set.
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry,
+    /// same-day collision resolver, and adjustment-handler registry.
     /// </summary>
-    private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
-
-    /// <summary>
-    /// Snapshot of all override removals, materialized once at construction and refreshed by <see cref="Reload" /> so
-    /// that downstream lookups iterate a materialized list once per rule × year × territory rather than re-invoking
-    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" /> on every check.
-    /// </summary>
-    private IReadOnlyList<RuleRemoval> _overrideRemovals;
-
-    /// <summary>
-    /// The chronological windows resolved by <see cref="ResolveNotableDatesInRange" /> since the last
-    /// <see cref="Invalidate()" /> call.
-    /// </summary>
-    private readonly RangeResolution.ResolvedWindowSet _resolvedWindows = new();
-
-    /// <summary>
-    /// Lock protecting concurrent updates to <see cref="_resolvedWindows" />.
-    /// </summary>
-    private readonly object _resolvedWindowsGate = new();
-
-    /// <summary>
-    /// The resolver that turns each rule into an anchor date for a given year. Rebuilt by <see cref="Reload" /> when
-    /// the effective rule set changes.
-    /// </summary>
-    private NotableDateRuleResolver _resolver;
-
-    /// <summary>
-    /// The composed algorithm registry that was supplied to the resolver, retained so <see cref="Reload" /> can
-    /// reconstruct an equivalent resolver against the refreshed rule set.
-    /// </summary>
-    private readonly INotableDateAlgorithmRegistry? _algorithmRegistry;
-
-    /// <summary>
-    /// The resolver used to locate embedded XML resource files.
-    /// </summary>
-    private readonly IResourcePathResolver _resourcePathResolver;
-
-    /// <summary>
-    /// The lazily constructed range-resolution pipeline used by <see cref="ResolveNotableDatesInRange" /> and the
-    /// adapted <c>GetNotableDates</c> overloads. Marked <see langword="volatile" /> so the fast-path read in
-    /// <see cref="GetOrBuildRangePipeline" /> reliably observes the publication performed inside <see cref="_gate" />.
-    /// </summary>
-    private volatile RangeResolution.NotableDateRangePipeline? _rangePipeline;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default
-    /// rule set (currently a single rule for New Year's Day). Region-specific holidays must be supplied via the full
-    /// constructor by passing providers from the <c>Bodu.Globalization.Calendar.Data.*</c> companion assemblies.
-    /// </summary>
-    public NotableDateService()
-        : this(
-        [
-            new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
-        ],
-        WeekPattern.MondayToFriday)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default
-    /// rule set and the supplied <see cref="WeekPattern" /> working week.
-    /// </summary>
-    /// <param name="workingWeek">The working-week pattern used when classifying dates.</param>
-    /// <remarks>
-    /// Equivalent to the parameterless constructor but with a caller-supplied working week. Use the full
-    /// <see cref="NotableDateService(IEnumerable{INotableDateRuleProvider}, WeekPattern, NotableDateServiceOptions?)" />
-    /// constructor when region-specific rule providers are required.
-    /// </remarks>
-    public NotableDateService(WeekPattern workingWeek)
-        : this(
-        [
-            new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
-        ],
-        workingWeek)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default
-    /// rule set and the supplied named <see cref="WorkingDaysOfWeek" /> working week.
-    /// </summary>
-    /// <param name="workingDaysOfWeek">The named working-week pattern used when classifying dates.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="workingDaysOfWeek" /> is not a defined member of the
-    /// <see cref="WorkingDaysOfWeek" /> enumeration.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="workingDaysOfWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no
-    /// canonical pattern.
-    /// </exception>
-    public NotableDateService(WorkingDaysOfWeek workingDaysOfWeek)
-        : this(workingDaysOfWeek.ToWeekPattern())
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class using a caller-supplied
-    /// <see cref="WeekPattern" /> as the working week. This is the canonical constructor; every other overload routes
-    /// through it.
-    /// </summary>
-    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
-    /// <param name="workingWeek">The working-week pattern used when classifying dates.</param>
-    /// <param name="options">Optional service configuration. When <see langword="null" />, defaults apply.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// To use a custom weekend supplied by an <see cref="IWeekendDefinitionProvider" />, convert it to a
-    /// <see cref="WeekPattern" /> first via
-    /// <see cref="Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWeekPattern(IWeekendDefinitionProvider)" />.
-    /// </para>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// IWeekendDefinitionProvider provider = new MyCustomWeekend();
-    /// WeekPattern workingWeek = provider.ToWeekPattern();
-    /// var service = new NotableDateService(ruleProviders, workingWeek);
-    ///
-    /// With advanced configuration:
-    /// var options = new NotableDateServiceOptions
-    /// {
-    ///     OverrideProviders = new[] { myOverrideProvider },
-    ///     AlgorithmRegistry  = myAlgorithmRegistry,
-    /// };
-    /// var configured = new NotableDateService(ruleProviders, workingWeek, options);
-    ///]]>
-    /// </code>
-    /// </example>
-    /// </remarks>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(
-        IEnumerable<INotableDateRuleProvider> ruleProviders,
+        NotableDateResource resource,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers)
+        : this(resource, algorithms, collisionResolver, handlers, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry,
+    /// same-day collision resolver, adjustment-handler registry, and trigger-handler registry.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <param name="triggerHandlers">
+    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(
+        NotableDateResource resource,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers,
+        IAdjustmentTriggerHandlerRegistry? triggerHandlers)
+        : this(resource, algorithms, collisionResolver, handlers, triggerHandlers, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class with the full set of collaborators,
+    /// including code-first notable-date providers.
+    /// </summary>
+    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
+    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted when the resource's same-day collision policy is
+    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <param name="triggerHandlers">
+    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />,
+    /// or <see langword="null" />.
+    /// </param>
+    /// <param name="providers">
+    /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
+    public NotableDateService(
+        NotableDateResource resource,
+        INotableDateAlgorithmRegistry? algorithms,
+        INotableDateCollisionResolver? collisionResolver,
+        IAdjustmentHandlerRegistry? handlers,
+        IAdjustmentTriggerHandlerRegistry? triggerHandlers,
+        IEnumerable<INotableDateProvider>? providers)
+    {
+        ThrowHelper.ThrowIfNull(resource);
+
+        this._resource = resource;
+        this._algorithms = algorithms;
+        this._collisionResolver = collisionResolver;
+        this._handlers = handlers;
+        this._triggerHandlers = triggerHandlers;
+        this._providers = providers?.ToArray();
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory) =>
+        this.Resolve(new DateRange(date, date), territory);
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The range start is later than its end.</exception>
+    public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory)
+    {
+        ThrowHelper.ThrowIfNull(territory);
+        ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
+
+        int firstYear = Math.Max(1, range.StartDate.Year - 1);
+        int lastYear = Math.Min(9999, range.EndDate.Year + 1);
+
+        StrategyResolutionContext context = new(this._resource, this._algorithms);
+        HashSet<DateOnly> occupied = new();
+        List<ResolutionCandidate> candidates = this.GatherCandidates(context, territory, firstYear, lastYear, occupied);
+
+        candidates.Sort(CompareForPlacement);
+
+        List<NotableDate> results = new();
+        foreach (ResolutionCandidate candidate in candidates)
+            this.EmitCandidate(results, candidate, territory, occupied, range, context);
+
+        this.AddProviderOccurrences(results, range, territory);
+
+        List<NotableDate> ordered = results
+            .OrderBy(r => r.Date)
+            .ThenBy(r => r.NotableDateId, StringComparer.Ordinal)
+            .ThenBy(r => r.RuleId, StringComparer.Ordinal)
+            .ToList();
+
+        return this.ApplySameDayCollisionPolicy(ordered);
+    }
+
+    /// <summary>
+    /// Applies the resource's same-day collision policy to occurrences sharing an emitted date, keeping all of them,
+    /// the highest-priority occurrence(s), the highest-category-then-priority occurrence(s), or whatever a custom
+    /// resolver selects.
+    /// </summary>
+    /// <param name="ordered">The date-ordered occurrences.</param>
+    /// <returns>The occurrences surviving the policy, preserving order.</returns>
+    private IReadOnlyList<NotableDate> ApplySameDayCollisionPolicy(List<NotableDate> ordered)
+    {
+        CollisionPolicy policy = this._resource.ResolutionPolicy.SameDayCollisionPolicy;
+        if (policy == CollisionPolicy.KeepAll || ordered.Count < 2)
+            return ordered;
+
+        bool higherWins = this._resource.ResolutionPolicy.PriorityDirection == PriorityDirection.HigherWins;
+        List<NotableDate> kept = new();
+
+        int index = 0;
+        while (index < ordered.Count)
+        {
+            DateOnly date = ordered[index].Date;
+            int end = index;
+            while (end < ordered.Count && ordered[end].Date == date)
+                end++;
+
+            if (end - index == 1)
+            {
+                kept.Add(ordered[index]);
+            }
+            else
+            {
+                kept.AddRange(ResolveCollision(date, ordered.GetRange(index, end - index), policy, higherWins));
+            }
+
+            index = end;
+        }
+
+        return kept;
+    }
+
+    /// <summary>
+    /// Selects the occurrences to keep from a single same-day collision group.
+    /// </summary>
+    /// <param name="date">The emitted date the occurrences share.</param>
+    /// <param name="group">The colliding occurrences.</param>
+    /// <param name="policy">The same-day collision policy.</param>
+    /// <param name="higherWins">Whether a higher priority value wins.</param>
+    /// <returns>The kept occurrences.</returns>
+    private IReadOnlyList<NotableDate> ResolveCollision(DateOnly date, List<NotableDate> group, CollisionPolicy policy, bool higherWins)
+    {
+        switch (policy)
+        {
+            case CollisionPolicy.HighestPriorityOnly:
+                return KeepBestPriority(group, higherWins);
+
+            case CollisionPolicy.CategoryPriority:
+            {
+                int bestRank = group.Max(n => CategoryRank(n.Category));
+                List<NotableDate> topCategory = group.Where(n => CategoryRank(n.Category) == bestRank).ToList();
+                return KeepBestPriority(topCategory, higherWins);
+            }
+
+            case CollisionPolicy.Custom:
+                return this._collisionResolver?.Resolve(date, group) ?? group;
+
+            default:
+                return group;
+        }
+    }
+
+    /// <summary>
+    /// Keeps the occurrences whose priority is the best in the group for the configured direction.
+    /// </summary>
+    /// <param name="group">The occurrences to filter.</param>
+    /// <param name="higherWins">Whether a higher priority value wins.</param>
+    /// <returns>The best-priority occurrences.</returns>
+    private static List<NotableDate> KeepBestPriority(List<NotableDate> group, bool higherWins)
+    {
+        int best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
+        return group.Where(n => n.Priority == best).ToList();
+    }
+
+    /// <summary>
+    /// Returns the collision-precedence rank of a category, where a higher rank wins a category collision.
+    /// </summary>
+    /// <param name="category">The category to rank.</param>
+    /// <returns>The precedence rank.</returns>
+    private static int CategoryRank(NotableDateCategory category) =>
+        category switch
+        {
+            NotableDateCategory.PublicHoliday => 11,
+            NotableDateCategory.BankHoliday => 10,
+            NotableDateCategory.Remembrance => 9,
+            NotableDateCategory.Religious => 8,
+            NotableDateCategory.Civic => 7,
+            NotableDateCategory.Seasonal => 6,
+            NotableDateCategory.Cultural => 5,
+            NotableDateCategory.School => 4,
+            NotableDateCategory.Regional => 3,
+            NotableDateCategory.Observance => 2,
+            NotableDateCategory.Other => 1,
+            _ => 0,
+        };
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
+    public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory, NotableDateFilter filter) =>
+        this.Resolve(new DateRange(date, date), territory, filter);
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">The range start is later than its end.</exception>
+    public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter)
+    {
+        ThrowHelper.ThrowIfNull(filter);
+
+        return this.Resolve(range, territory).Where(filter.Matches).ToArray();
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<string> GetSupportedTerritories() =>
+        this._resource.NotableDates
+            .SelectMany(definition => definition.Rules)
+            .SelectMany(rule => rule.Applicability.Territories)
+            .Where(territory => !string.IsNullOrWhiteSpace(territory))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+    /// <inheritdoc />
+    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
+        this._resource.NotableDates
+            .SelectMany(definition => definition.Rules)
+            .Select(rule => rule.Applicability.Calendar)
+            .Distinct()
+            .OrderBy(calendar => calendar)
+            .ToArray();
+
+    /// <summary>
+    /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
+    /// non-working occurrences.
+    /// </summary>
+    /// <param name="context">The resolution context for offset references.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="firstYear">The first civil year to scan.</param>
+    /// <param name="lastYear">The last civil year to scan.</param>
+    /// <param name="occupied">The occupied-day set to seed.</param>
+    /// <returns>The calculated candidates.</returns>
+    /// <remarks>
+    /// The phase runs in two sub-passes so that the non-working-day triggers evaluate against the complete picture.
+    /// The first sub-pass enumerates every applicable occurrence, seeding the occupied-day set and tallying the actual
+    /// dates of non-working occurrences. The second sub-pass selects the firing adjustment policy for each occurrence,
+    /// at which point a <see cref="AdjustmentTrigger.IfNonWorkingDay" /> or <see cref="AdjustmentTrigger.IfWorkingDay" />
+    /// trigger can see every other holiday that shares the actual date, regardless of enumeration order.
+    /// </remarks>
+    private List<ResolutionCandidate> GatherCandidates(StrategyResolutionContext context, string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
+    {
+        List<ResolutionCandidate> candidates = new();
+        List<(NotableDateDefinition Definition, NotableDateRule Rule)> sources = new();
+        Dictionary<DateOnly, int> actualNonWorkingCounts = new();
+
+        foreach (NotableDateDefinition definition in this._resource.NotableDates)
+        {
+            for (int year = firstYear; year <= lastYear; year++)
+            {
+                // Within a concept, the most-specific territory match wins: a narrower rule (for example AU-WA)
+                // shadows a broader same-concept rule (AU) for that territory and year.
+                List<NotableDateRule> applicable = new();
+                int maxSpecificity = -1;
+                foreach (NotableDateRule rule in definition.Rules)
+                {
+                    if (!rule.Applicability.AppliesTo(territory, year))
+                        continue;
+
+                    applicable.Add(rule);
+                    maxSpecificity = Math.Max(maxSpecificity, rule.Applicability.MatchSpecificity(territory));
+                }
+
+                foreach (NotableDateRule rule in applicable)
+                {
+                    if (rule.Applicability.MatchSpecificity(territory) != maxSpecificity)
+                        continue;
+
+                    NotableDateCategory category = rule.Category ?? definition.Category;
+                    NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
+                    bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
+                    int durationDays = Math.Max(1, rule.DurationDays ?? definition.DefaultDurationDays);
+
+                    IReadOnlyList<string> tags = rule.Tags.Count > 0 ? rule.Tags : definition.Tags;
+
+                    foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
+                    {
+                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, null, rule.Priority, nonWorking, durationDays, tags));
+                        sources.Add((definition, rule));
+
+                        if (nonWorking)
+                        {
+                            occupied.Add(baseDate);
+                            actualNonWorkingCounts[baseDate] = actualNonWorkingCounts.GetValueOrDefault(baseDate) + 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        WeekPattern workingWeek = this._resource.ResolutionPolicy.WorkingWeek;
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            ResolutionCandidate candidate = candidates[i];
+            (NotableDateDefinition definition, NotableDateRule rule) = sources[i];
+
+            // A day is occupied "by another" when a non-working occurrence other than this one shares the date; the
+            // candidate's own contribution to the tally is discounted so a lone holiday never collides with itself.
+            bool OccupiedByAnother(DateOnly day) =>
+                actualNonWorkingCounts.GetValueOrDefault(day) > (candidate.NonWorking && day == candidate.BaseDate ? 1 : 0);
+
+            AdjustmentPolicy? policy = this.SelectAdjustmentPolicy(definition, rule, candidate.Category, candidate.BaseDate, territory, context, workingWeek, OccupiedByAnother);
+            candidates[i] = candidate with { Policy = policy };
+        }
+
+        return candidates;
+    }
+
+    /// <summary>
+    /// Enumerates the calculated occurrences a strategy produces for a year: every occurrence of a fixed-date strategy
+    /// (a short Islamic month and day can recur twice in one Gregorian year) and the single occurrence of every other
+    /// strategy.
+    /// </summary>
+    /// <param name="strategy">The strategy to evaluate.</param>
+    /// <param name="year">The Gregorian year to calculate against.</param>
+    /// <param name="context">The resolution context for offset references.</param>
+    /// <returns>The calculated occurrences for the year.</returns>
+    private static IEnumerable<DateOnly> EnumerateBaseDates(IDateCalculationStrategy strategy, int year, StrategyResolutionContext context)
+    {
+        if (strategy is FixedDateStrategy fixedStrategy)
+            return fixedStrategy.CalculateAll(year, context);
+
+        return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : Array.Empty<DateOnly>();
+    }
+
+    /// <summary>
+    /// Orders candidates for placement: earliest actual date first, then higher priority, then stable identity.
+    /// Earliest first ensures an earlier holiday claims a contested day before a later one resolves its substitute.
+    /// </summary>
+    /// <param name="left">The first candidate.</param>
+    /// <param name="right">The second candidate.</param>
+    /// <returns>A signed comparison result.</returns>
+    private static int CompareForPlacement(ResolutionCandidate left, ResolutionCandidate right)
+    {
+        int byDate = left.BaseDate.CompareTo(right.BaseDate);
+        if (byDate != 0)
+            return byDate;
+
+        int byPriority = right.Priority.CompareTo(left.Priority);
+        if (byPriority != 0)
+            return byPriority;
+
+        int byNotableDate = string.CompareOrdinal(left.Identity.NotableDateId, right.Identity.NotableDateId);
+        return byNotableDate != 0 ? byNotableDate : string.CompareOrdinal(left.Identity.RuleId, right.Identity.RuleId);
+    }
+
+    /// <summary>
+    /// Phase two: computes the observed date for a candidate against the occupied-day set and emits occurrences per the
+    /// winning policy's emission mode, updating the occupied-day set with any claimed observed date.
+    /// </summary>
+    /// <param name="results">The accumulating result list.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="occupied">The occupied-day set, updated as observed dates are claimed.</param>
+    /// <param name="range">The inclusive range that controls emission inclusion.</param>
+    /// <param name="context">The resolution context used by reference and custom actions.</param>
+    private void EmitCandidate(
+        List<NotableDate> results,
+        ResolutionCandidate candidate,
+        string territory,
+        HashSet<DateOnly> occupied,
+        DateRange range,
+        StrategyResolutionContext context)
+    {
+        if (candidate.Policy is not AdjustmentPolicy policy)
+        {
+            AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
+            return;
+        }
+
+        DateOnly observed = this.ComputeObservedDate(policy, candidate, territory, occupied, context);
+        string reason = policy.Reason ?? string.Empty;
+
+        switch (policy.Emission)
+        {
+            case EmissionMode.ActualOnly:
+                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
+                break;
+
+            case EmissionMode.ObservedOnly:
+                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
+                Claim(occupied, observed, candidate);
+                break;
+
+            case EmissionMode.ActualAndObserved:
+            case EmissionMode.ObservedAsAdditional:
+                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
+                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
+                Claim(occupied, observed, candidate);
+                break;
+
+            case EmissionMode.Suppress:
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Computes the observed date a policy's action produces for a candidate, dispatching reference and custom actions
+    /// to the resolution context and handler registry, and delegating every other action to the policy itself.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="occupied">The occupied-day set used by working-day searches.</param>
+    /// <param name="context">The resolution context for reference and custom actions.</param>
+    /// <returns>The observed date; the candidate's calculated date when the action makes no change.</returns>
+    private DateOnly ComputeObservedDate(
+        AdjustmentPolicy policy,
+        ResolutionCandidate candidate,
+        string territory,
+        HashSet<DateOnly> occupied,
+        StrategyResolutionContext context) =>
+        policy.Action switch
+        {
+            AdjustmentAction.ReplaceWithRule => ResolveReplacementDate(policy, candidate, context),
+            AdjustmentAction.Custom => this.InvokeCustomHandler(policy, candidate, territory, occupied, context),
+            _ => policy.ApplyAction(candidate.BaseDate, occupied.Contains, this._resource.ResolutionPolicy.WorkingWeek),
+        };
+
+    /// <summary>
+    /// Resolves the observed date for a <see cref="AdjustmentAction.ReplaceWithRule" /> action by calculating the
+    /// referenced rule's occurrence for the candidate's year.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="context">The resolution context that resolves the reference.</param>
+    /// <returns>The referenced occurrence, or the candidate's calculated date when it cannot be resolved.</returns>
+    private static DateOnly ResolveReplacementDate(AdjustmentPolicy policy, ResolutionCandidate candidate, StrategyResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(policy.ActionNotableDateRef))
+            return candidate.BaseDate;
+
+        return context.ResolveReference(policy.ActionNotableDateRef, policy.ActionRuleRef, candidate.BaseDate.Year) ?? candidate.BaseDate;
+    }
+
+    /// <summary>
+    /// Resolves the observed date for a <see cref="AdjustmentAction.Custom" /> action by invoking the handler
+    /// registered under the policy's handler key.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="occupied">The occupied-day set the handler can query.</param>
+    /// <param name="context">The resolution context exposed to the handler.</param>
+    /// <returns>
+    /// The handler's observed date, or the candidate's calculated date when no handler is registered or the handler
+    /// declines to adjust.
+    /// </returns>
+    private DateOnly InvokeCustomHandler(
+        AdjustmentPolicy policy,
+        ResolutionCandidate candidate,
+        string territory,
+        HashSet<DateOnly> occupied,
+        StrategyResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(policy.ActionHandlerKey)
+            || this._handlers is null
+            || !this._handlers.TryGet(policy.ActionHandlerKey, out IAdjustmentHandler? handler)
+            || handler is null)
+        {
+            return candidate.BaseDate;
+        }
+
+        AdjustmentHandlerContext handlerContext = new(candidate.BaseDate, territory, policy, occupied.Contains, context);
+        return handler.Adjust(handlerContext) ?? candidate.BaseDate;
+    }
+
+    /// <summary>
+    /// Claims an observed date in the occupied-day set when the candidate is a non-working occurrence.
+    /// </summary>
+    /// <param name="occupied">The occupied-day set.</param>
+    /// <param name="observed">The observed date to claim.</param>
+    /// <param name="candidate">The candidate that produced the observed date.</param>
+    private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate)
+    {
+        if (candidate.NonWorking)
+            occupied.Add(observed);
+    }
+
+    /// <summary>
+    /// Selects the adjustment policy that fires for the supplied base date, using ascending-priority, first-active-wins
+    /// evaluation across the rule's scope-matching policy references.
+    /// </summary>
+    /// <param name="definition">The notable-date concept being resolved.</param>
+    /// <param name="rule">The rule being resolved.</param>
+    /// <param name="category">The effective category of the rule.</param>
+    /// <param name="baseDate">The calculated (actual) occurrence date.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="context">The resolution context exposed to custom triggers.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
+    /// <param name="occupiedByAnother">
+    /// A predicate reporting whether a non-working occurrence other than this one falls on the supplied date.
+    /// </param>
+    /// <returns>The winning <see cref="AdjustmentPolicy" />, or <see langword="null" /> when none fires.</returns>
+    private AdjustmentPolicy? SelectAdjustmentPolicy(
+        NotableDateDefinition definition,
+        NotableDateRule rule,
+        NotableDateCategory category,
+        DateOnly baseDate,
+        string territory,
+        StrategyResolutionContext context,
         WeekPattern workingWeek,
-        NotableDateServiceOptions? options = null)
+        Func<DateOnly, bool> occupiedByAnother)
     {
-        ThrowHelper.ThrowIfNull(ruleProviders);
+        List<AdjustmentPolicy> candidates = new();
 
-        NotableDateServiceOptions opts = options ?? new NotableDateServiceOptions();
-
-        // Fan plugin contributions into the provider list and the algorithm registry. The merge order means host-level
-        // rule providers are loaded first and therefore win composite-key collisions inside the flatten pipeline, and
-        // host-supplied algorithm registrations take precedence over plugin-supplied ones with the same key.
-        var effectiveProviders = ruleProviders.ToList();
-        INotableDateAlgorithmRegistry? effectiveRegistry = opts.AlgorithmRegistry;
-
-        if (opts.Plugins is not null)
+        foreach (string policyRef in rule.AdjustmentPolicyRefs)
         {
-            var pluginAlgorithms = new List<KeyValuePair<string, INotableDateAlgorithm>>();
+            AdjustmentPolicy? policy = this._resource.FindAdjustmentPolicy(policyRef);
+            if (policy is null)
+                continue;
 
-            foreach (INotableDatePlugin plugin in opts.Plugins)
-            {
-                if (plugin is Plugins.INotableDateRulePlugin rulePlugin)
+            if (policy.Scope.Matches(territory, rule.Applicability.Calendar, category, definition.Id, rule.Id, baseDate.Year))
+                candidates.Add(policy);
+        }
+
+        return candidates
+            .OrderBy(p => p.Priority)
+            .FirstOrDefault(p => this.IsPolicyTriggered(p, baseDate, territory, context, workingWeek, occupiedByAnother));
+    }
+
+    /// <summary>
+    /// Determines whether a policy fires for a base date, dispatching the non-working-day triggers and the
+    /// <see cref="AdjustmentTrigger.Custom" /> trigger to the resolver state they depend on, and the remaining triggers
+    /// to the policy's built-in evaluation.
+    /// </summary>
+    /// <param name="policy">The candidate policy.</param>
+    /// <param name="baseDate">The calculated (actual) occurrence date.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="context">The resolution context exposed to a custom trigger handler.</param>
+    /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
+    /// <param name="occupiedByAnother">
+    /// A predicate reporting whether a non-working occurrence other than this one falls on the supplied date.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if the policy fires; otherwise <see langword="false" />. A custom trigger whose handler
+    /// is unregistered does not fire.
+    /// </returns>
+    private bool IsPolicyTriggered(
+        AdjustmentPolicy policy,
+        DateOnly baseDate,
+        string territory,
+        StrategyResolutionContext context,
+        WeekPattern workingWeek,
+        Func<DateOnly, bool> occupiedByAnother)
+    {
+        switch (policy.Trigger)
+        {
+            case AdjustmentTrigger.IfNonWorkingDay:
+                return !workingWeek.Contains(baseDate.DayOfWeek) || occupiedByAnother(baseDate);
+
+            case AdjustmentTrigger.IfWorkingDay:
+                return workingWeek.Contains(baseDate.DayOfWeek) && !occupiedByAnother(baseDate);
+
+            case AdjustmentTrigger.Custom:
+                if (string.IsNullOrEmpty(policy.TriggerHandlerKey)
+                    || this._triggerHandlers is null
+                    || !this._triggerHandlers.TryGet(policy.TriggerHandlerKey, out IAdjustmentTriggerHandler? handler)
+                    || handler is null)
                 {
-                    effectiveProviders.AddRange(rulePlugin.GetRuleProviders() ?? []);
+                    return false;
                 }
 
-                if (plugin is Plugins.INotableDateAlgorithmPlugin calcPlugin)
-                {
-                    pluginAlgorithms.AddRange(calcPlugin.GetAlgorithms() ?? []);
-                }
-            }
+                return handler.ShouldAdjust(new AdjustmentTriggerContext(baseDate, territory, policy, context));
 
-            if (pluginAlgorithms.Count > 0)
+            default:
+                return policy.IsTriggered(baseDate, workingWeek);
+        }
+    }
+
+    /// <summary>
+    /// Adds a resolved occurrence to the result list when its emitted date falls within the requested window.
+    /// </summary>
+    /// <param name="results">The accumulating result list.</param>
+    /// <param name="emitted">The emitted occurrence date.</param>
+    /// <param name="actual">The calculated occurrence date.</param>
+    /// <param name="isObserved">Whether the emitted date differs from the actual date.</param>
+    /// <param name="candidate">The candidate that produced the occurrence.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="adjustmentPolicyId">
+    /// The id of the adjustment policy that produced the observed date, if any.
+    /// </param>
+    /// <param name="reason">The reason recorded by the adjustment policy, if any.</param>
+    /// <param name="range">The inclusive range that controls inclusion.</param>
+    /// <remarks>
+    /// <para>
+    /// A multi-day occurrence is included when any day of its span intersects the requested window, so a single-day
+    /// query for a day inside a multi-day holiday returns it.
+    /// </para>
+    /// </remarks>
+    private static void AddIfInRange(
+        List<NotableDate> results,
+        DateOnly emitted,
+        DateOnly actual,
+        bool isObserved,
+        ResolutionCandidate candidate,
+        string territory,
+        string? adjustmentPolicyId,
+        string? reason,
+        DateRange range)
+    {
+        int spanEndDayNumber = emitted.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
+        if (emitted > range.EndDate || spanEndDayNumber < range.StartDate.DayNumber)
+            return;
+
+        results.Add(new NotableDate(
+            emitted,
+            actual,
+            isObserved,
+            candidate.Identity,
+            candidate.DisplayName,
+            territory,
+            candidate.Category,
+            candidate.Priority,
+            candidate.DurationDays,
+            candidate.NonWorking,
+            candidate.Tags,
+            adjustmentPolicyId,
+            string.IsNullOrEmpty(reason) ? null : reason));
+    }
+
+    /// <summary>
+    /// Appends the occurrences contributed by any registered code-first providers whose span intersects the requested
+    /// window. Provider occurrences are emitted as supplied and bypass the adjustment, override, and specificity
+    /// pipeline; they take part only in the subsequent ordering and same-day collision policy.
+    /// </summary>
+    /// <param name="results">The accumulating result list.</param>
+    /// <param name="range">The inclusive range that controls inclusion.</param>
+    /// <param name="territory">The requested territory code.</param>
+    private void AddProviderOccurrences(List<NotableDate> results, DateRange range, string territory)
+    {
+        if (this._providers is null)
+            return;
+
+        foreach (INotableDateProvider provider in this._providers)
+        {
+            foreach (NotableDate occurrence in provider.GetNotableDates(range, territory))
             {
-                var pluginRegistry = new NotableDateAlgorithmRegistry(pluginAlgorithms);
-                effectiveRegistry = effectiveRegistry is null
-                    ? pluginRegistry
-                    : new CompositeAlgorithmRegistry(effectiveRegistry, pluginRegistry);
-            }
-        }
-
-        _baseRules = [.. effectiveProviders
-            .SelectMany(p => p.LoadRules() ?? [])
-            .Where(r => r is not null)];
-        _overrideProviders = opts.OverrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)[];
-
-        WorkingWeek = workingWeek;
-        _collisionResolver = opts.CollisionResolver ?? new DefaultNotableDateCollisionResolver();
-        _nameLocalizer = opts.NameLocalizer;
-        _observedDateMode = opts.ObservedDates;
-        _resourcePathResolver = opts.ResourcePathResolver ?? new ResourcePathResolver();
-        _algorithmRegistry = effectiveRegistry;
-        _adjustmentHandlers = opts.AdjustmentHandlers;
-
-        (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
-
-        if (opts.ValidateRules)
-        {
-            var errors = Validate()
-                .Where(d => d.Severity == NotableDateValidationSeverity.Error)
-                .Select(d => d.Message)
-                .ToList();
-
-            if (errors.Count > 0)
-                throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
-        }
-    }
-
-    /// <summary>
-    /// Runs the strict-validation pass over the effective rule set and returns the diagnostics it produced.
-    /// </summary>
-    /// <remarks>
-    /// Reports duplicate rule identities, missing or ambiguous offset anchors, missing or ambiguous replacement targets,
-    /// and unregistered algorithm keys. This is the same pass the constructor runs when
-    /// <see cref="NotableDateServiceOptions.ValidateRules" /> is set, but it never throws — callers can inspect the
-    /// diagnostics directly.
-    /// </remarks>
-    /// <returns>The validation diagnostics; empty when the rule set is valid.</returns>
-    /// <example>
-    /// <para>Inspect a rule set for authoring problems without aborting startup:</para>
-    /// <code>
-    ///<![CDATA[
-    /// var service = new NotableDateService(ruleProviders, WorkingDaysOfWeek.MondayToFriday);
-    ///
-    /// foreach (NotableDateValidationDiagnostic diagnostic in service.Validate())
-    /// {
-    ///     Console.WriteLine($"[{diagnostic.Severity}] {diagnostic.Code}: {diagnostic.Message}");
-    /// }
-    ///
-    /// // Fail fast only on errors, tolerating warnings such as UnregisteredAlgorithm.
-    /// bool hasErrors = service.Validate()
-    ///     .Any(d => d.Severity == NotableDateValidationSeverity.Error);
-    ///]]>
-    /// </code>
-    /// <para>
-    /// To throw automatically on any error instead, set <see cref="NotableDateServiceOptions.ValidateRules" /> to
-    /// <see langword="true" /> when constructing the service.
-    /// </para>
-    /// </example>
-    public IReadOnlyList<NotableDateValidationDiagnostic> Validate() =>
-        NotableDateRuleValidator.Validate(_effectiveRules, _algorithmRegistry);
-
-    /// <summary>
-    /// Re-queries every registered <see cref="INotableDateRuleOverrideProvider" /> and returns the freshly snapshotted
-    /// override removals, addition identity set, merged effective rule set, and resolver. Shared by the constructor and
-    /// <see cref="Reload" /> so that the two callers cannot drift.
-    /// </summary>
-    /// <returns>A tuple comprising the override-derived state needed by the resolution pipeline.</returns>
-    /// <remarks>
-    /// <para>
-    /// Snapshotting every override provider's contributions in a single pass pins the cost of any non-trivial override
-    /// provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider and removes a
-    /// runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation. Override
-    /// additions are tracked by reference identity because <see cref="NotableDateRule" /> is a record with value
-    /// equality — <see cref="ReferenceEqualityComparer" /> ensures we only exempt the specific instances contributed by
-    /// override providers from same-name <see cref="RuleRemoval" /> suppression.
-    /// </para>
-    /// </remarks>
-    private (IReadOnlyList<RuleRemoval> Removals, HashSet<NotableDateRule> Additions, IReadOnlyList<NotableDateRule> Effective, NotableDateRuleResolver Resolver) BuildOverrideState()
-    {
-        IReadOnlyList<RuleRemoval> removals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
-        List<NotableDateRule> additionList = [.. _overrideProviders.SelectMany(p => p.GetAdditions())];
-        HashSet<NotableDateRule> additions = new(additionList, ReferenceEqualityComparer.Instance);
-        IReadOnlyList<NotableDateRule> effective = ApplyOverrides(_baseRules, additionList);
-        NotableDateRuleResolver resolver = new(effective, _algorithmRegistry);
-
-        return (removals, additions, effective, resolver);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class using a named
-    /// <see cref="WorkingDaysOfWeek" /> preset as the working week.
-    /// </summary>
-    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
-    /// <param name="workingDaysOfWeek">The named working-week pattern used when classifying dates.</param>
-    /// <param name="options">Optional service configuration. When <see langword="null" />, defaults apply.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="workingDaysOfWeek" /> is not a defined member of the
-    /// <see cref="WorkingDaysOfWeek" /> enumeration.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="workingDaysOfWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no
-    /// canonical pattern.
-    /// </exception>
-    public NotableDateService(
-        IEnumerable<INotableDateRuleProvider> ruleProviders,
-        WorkingDaysOfWeek workingDaysOfWeek,
-        NotableDateServiceOptions? options = null)
-        : this(ruleProviders, workingDaysOfWeek.ToWeekPattern(), options)
-    { }
-
-    /// <summary>
-    /// Gets the chronological windows that have been resolved by <see cref="ResolveNotableDatesInRange" /> since the
-    /// service was constructed or <see cref="Invalidate()" /> was last called. The list is sorted ascending by start
-    /// date and contains the minimum number of disjoint intervals describing the same coverage.
-    /// </summary>
-    /// <returns>
-    /// A snapshot of the disjoint <see cref="DateRange" /> instances representing the union of every requested window.
-    /// An empty list indicates that no range request has been served yet.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// The property reflects the windows the consumer has <em>asked about</em>, not the rule-set's effective range.
-    /// Adjacent or overlapping requests are merged. The returned list is a snapshot; subsequent calls to
-    /// <see cref="ResolveNotableDatesInRange" /> may extend it.
-    /// </para>
-    /// </remarks>
-    public IReadOnlyList<DateRange> ResolvedWindows
-    {
-        get
-        {
-            lock (_resolvedWindowsGate)
-            {
-                return [.. _resolvedWindows.Ranges];
+                if (occurrence is not null && SpanIntersects(occurrence, range))
+                    results.Add(occurrence);
             }
         }
     }
 
-    // --------------------------------------------------------------------------------------
-    // INotableDateService surface
-    // --------------------------------------------------------------------------------------
-
-    /// <inheritdoc />
-    public WeekPattern WorkingWeek { get; }
-
     /// <summary>
-    /// Releases resources owned by the service. The current implementation has no unmanaged or disposable state to
-    /// release; the method is retained on <see cref="IDisposable" /> for forward compatibility and so callers that own
-    /// the service can still wrap it in <c>using</c> blocks.
+    /// Determines whether a provider occurrence's inclusive span intersects the requested window.
     /// </summary>
-    public void Dispose() => GC.SuppressFinalize(this);
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through December 31
-    /// of <paramref name="year" /> as the range.
-    /// </remarks>
-    public IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null)
-        => ResolveRangeInternal(
-            new DateTime(year, 1, 1),
-            new DateTime(year, 12, 31),
-            filter: null,
-            territoryCode,
-            calendarType,
-            recordWindow: true);
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both the
-    /// start and end of the range.
-    /// </remarks>
-    public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null)
-        => ResolveRangeInternal(
-            date.Date,
-            date.Date,
-            filter: null,
-            territoryCode,
-            calendarType,
-            recordWindow: true);
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies January 1 through December 31
-    /// of <paramref name="year" /> as the range.
-    /// </remarks>
-    public IReadOnlyList<NotableDate> GetNotableDates(int year, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
+    /// <param name="occurrence">The provider occurrence.</param>
+    /// <param name="range">The inclusive range.</param>
+    /// <returns><see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.</returns>
+    private static bool SpanIntersects(NotableDate occurrence, DateRange range)
     {
-        ThrowHelper.ThrowIfNull(filter);
-
-        return ResolveRangeInternal(
-            new DateTime(year, 1, 1),
-            new DateTime(year, 12, 31),
-            filter,
-            territoryCode,
-            calendarType,
-            recordWindow: true);
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that passes the supplied range through
-    /// unchanged.
-    /// </remarks>
-    public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, string? territoryCode = null, Type? calendarType = null)
-        => ResolveRangeInternal(
-            startDate,
-            endDate,
-            filter: null,
-            territoryCode,
-            calendarType,
-            recordWindow: true);
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that supplies the supplied day as both the
-    /// start and end of the range.
-    /// </remarks>
-    public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
-    {
-        ThrowHelper.ThrowIfNull(filter);
-
-        return ResolveRangeInternal(
-            date.Date,
-            date.Date,
-            filter,
-            territoryCode,
-            calendarType,
-            recordWindow: true);
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Convenience wrapper over <see cref="ResolveNotableDatesInRange" /> that passes the supplied range through
-    /// unchanged.
-    /// </remarks>
-    public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
-    {
-        ThrowHelper.ThrowIfNull(filter);
-
-        return ResolveRangeInternal(
-            startDate,
-            endDate,
-            filter,
-            territoryCode,
-            calendarType,
-            recordWindow: true);
-    }
-
-    /// <inheritdoc />
-    public void Invalidate()
-    {
-        lock (_gate)
-        {
-            InvalidateCachesUnderGate();
-        }
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// <para>
-    /// Re-snapshots every registered <see cref="INotableDateRuleOverrideProvider" /> by calling
-    /// <see cref="INotableDateRuleOverrideProvider.GetAdditions" /> and
-    /// <see cref="INotableDateRuleOverrideProvider.GetRemovals" />, rebuilds the merged effective rule set, recreates
-    /// the resolver, and clears all cached year results. Base <see cref="INotableDateRuleProvider" /> sources are not
-    /// re-queried; their contribution is fixed for the lifetime of the service.
-    /// </para>
-    /// <para>
-    /// The effective-rule rebuild and the pipeline invalidation are performed atomically under a single <c>_gate</c>
-    /// critical section so that no concurrent reader can observe new effective rules paired with a stale range
-    /// pipeline. Resolved-window state is cleared identically to <see cref="Invalidate()" />.
-    /// </para>
-    /// </remarks>
-    public void Reload()
-    {
-        lock (_gate)
-        {
-            (_overrideRemovals, _overrideAdditions, _effectiveRules, _resolver) = BuildOverrideState();
-            InvalidateCachesUnderGate();
-        }
-    }
-
-    /// <summary>
-    /// Drops the lazy range pipeline and resets the resolved-window set. Must be invoked while holding
-    /// <see cref="_gate" /> so the reset is coherent with any concurrent effective-rule rebuild.
-    /// </summary>
-    private void InvalidateCachesUnderGate()
-    {
-        _rangePipeline = null;
-        lock (_resolvedWindowsGate)
-        {
-            _resolvedWindows.Clear();
-        }
-    }
-
-    /// <summary>
-    /// Returns the lazily constructed <see cref="RangeResolution.NotableDateRangePipeline" />, building it under
-    /// <see cref="_gate" /> on first access so it cannot be assembled from rules that <see cref="Reload" /> has already
-    /// swapped out.
-    /// </summary>
-    /// <returns>
-    /// The current range pipeline, coherent with the effective rule set at the moment of construction.
-    /// </returns>
-    private RangeResolution.NotableDateRangePipeline GetOrBuildRangePipeline()
-    {
-        RangeResolution.NotableDateRangePipeline? snapshot = _rangePipeline;
-        if (snapshot is not null)
-            return snapshot;
-
-        lock (_gate)
-        {
-            return _rangePipeline ??= BuildRangePipeline();
-        }
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// <para>
-    /// Projects the effective rule set's <see cref="NotableDateRule.TerritoryCode" /> values through case-insensitive
-    /// distinctness, eliding rules whose territory is <see langword="null" />, empty, or whitespace. Returned codes
-    /// preserve their authored casing.
-    /// </para>
-    /// </remarks>
-    public IReadOnlyCollection<string> GetSupportedTerritories()
-    {
-        IReadOnlyList<NotableDateRule> snapshot = _effectiveRules;
-        SortedSet<string> territories = new(StringComparer.OrdinalIgnoreCase);
-
-        foreach (NotableDateRule rule in snapshot)
-        {
-            if (!string.IsNullOrWhiteSpace(rule.TerritoryCode))
-            {
-                _ = territories.Add(rule.TerritoryCode);
-            }
-        }
-
-        return territories;
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// <para>
-    /// Projects the effective rule set's <see cref="NotableDateRule.CalendarType" /> values through reference
-    /// distinctness, eliding rules whose calendar is <see langword="null" /> (global / unscoped rules).
-    /// </para>
-    /// </remarks>
-    public IReadOnlyCollection<Type> GetSupportedCalendars()
-    {
-        IReadOnlyList<NotableDateRule> snapshot = _effectiveRules;
-        HashSet<Type> calendars = [];
-
-        foreach (NotableDateRule rule in snapshot)
-        {
-            if (rule.CalendarType is not null)
-            {
-                _ = calendars.Add(rule.CalendarType);
-            }
-        }
-
-        return calendars;
-    }
-
-    /// <inheritdoc />
-    public bool IsHolidayNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
-    {
-        IReadOnlyList<NotableDate> sameDay = ResolveRangeInternal(
-            date.Date,
-            date.Date,
-            filter: null,
-            territoryCode,
-            calendarType,
-            recordWindow: false);
-
-        foreach (NotableDate notable in sameDay)
-        {
-            if (notable.IsNonWorkingDay && ContainsDay(notable, date.Date))
-                return true;
-        }
-
-        return false;
-    }
-
-    /// <inheritdoc />
-    public bool IsNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null) =>
-        IsWeekend(date) || IsHolidayNonWorkingDay(date, territoryCode, calendarType);
-
-    /// <summary>
-    /// Determines whether the supplied chronological range has already been resolved in its entirety by a previous call
-    /// to <see cref="ResolveNotableDatesInRange" />.
-    /// </summary>
-    /// <param name="startDate">The inclusive start of the range to test.</param>
-    /// <param name="endDate">
-    /// The inclusive end of the range to test. Must not be earlier than <paramref name="startDate" />.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> when every day in the supplied range is covered by a single resolved window; otherwise,
-    /// <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
-    /// </exception>
-    public bool IsRangeResolved(DateTime startDate, DateTime endDate)
-    {
-        CalendarThrowHelper.ThrowIfEndDateBeforeStartDate(startDate, endDate);
-
-        DateRange probe = new(startDate.Date, endDate.Date);
-
-        lock (_resolvedWindowsGate)
-        {
-            return _resolvedWindows.Covers(probe);
-        }
-    }
-
-    /// <inheritdoc />
-    public bool IsWeekend(DateTime date) => !WorkingWeek.Contains(date.DayOfWeek);
-
-    /// <summary>
-    /// Resolves notable dates whose observed date intersects the supplied chronological window using the
-    /// range-resolution pipeline. Collateral dates that originate outside the requested range are admitted when an
-    /// observance adjustment rolls them into the window or when an offset rule projects an out-of-window anchor date
-    /// inside.
-    /// </summary>
-    /// <param name="startDate">The inclusive start date of the requested window.</param>
-    /// <param name="endDate">
-    /// The inclusive end date of the requested window. Must not be earlier than <paramref name="startDate" />.
-    /// </param>
-    /// <param name="territoryCode">The optional territory context.</param>
-    /// <param name="calendarType">The optional calendar context.</param>
-    /// <param name="filter">The optional notable-date filter.</param>
-    /// <param name="observedDates">
-    /// The observed-date policy for this query, or <see langword="null" /> to use the service-wide default configured
-    /// via <see cref="NotableDateServiceOptions.ObservedDates" />.
-    /// </param>
-    /// <returns>The resolved notable dates ordered by observed date.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method is the canonical resolution entry point on the service. Every <c>GetNotableDates</c> overload is a
-    /// thin wrapper that translates its arguments into an <c>(start, end)</c> range and delegates here: the year
-    /// overload supplies <c>(new DateTime(year, 1, 1), new DateTime(year, 12, 31))</c>, the single-day overload
-    /// supplies <c>(date.Date, date.Date)</c>, and the range overloads pass their arguments through unchanged.
-    /// </para>
-    /// </remarks>
-    public IReadOnlyList<NotableDate> ResolveNotableDatesInRange(
-        DateTime startDate,
-        DateTime endDate,
-        string? territoryCode = null,
-        Type? calendarType = null,
-        NotableDateFilter? filter = null,
-        ObservedDateMode? observedDates = null)
-        => ResolveRangeInternal(startDate, endDate, filter, territoryCode, calendarType, recordWindow: true, observedDates);
-
-    /// <summary>
-    /// Resolves notable dates for the supplied window through the range pipeline, optionally recording the requested
-    /// window in <see cref="_resolvedWindows" />. This is the canonical implementation shared by
-    /// <see cref="ResolveNotableDatesInRange" /> and every <c>GetNotableDates</c> overload.
-    /// </summary>
-    /// <param name="startDate">The inclusive start date.</param>
-    /// <param name="endDate">The inclusive end date.</param>
-    /// <param name="filter">The optional filter applied during pipeline resolution.</param>
-    /// <param name="territoryCode">The optional territory context.</param>
-    /// <param name="calendarType">The optional calendar context.</param>
-    /// <param name="recordWindow">
-    /// <see langword="true" /> to add the request window to <see cref="_resolvedWindows" />; <see langword="false" />
-    /// for hot-path predicate queries (for example single-day non-working checks) that should not extend the resolved
-    /// coverage set.
-    /// </param>
-    /// <param name="observedDates">
-    /// The per-query observed-date policy, or <see langword="null" /> to use the service-wide default.
-    /// </param>
-    /// <returns>The resolved notable dates ordered by observed date.</returns>
-    private IReadOnlyList<NotableDate> ResolveRangeInternal(
-        DateTime startDate,
-        DateTime endDate,
-        NotableDateFilter? filter,
-        string? territoryCode,
-        Type? calendarType,
-        bool recordWindow,
-        ObservedDateMode? observedDates = null)
-    {
-        RangeResolution.NotableDateRangeRequest request = new(
-            startDate,
-            endDate,
-            territoryCode,
-            calendarType,
-            filter,
-            observedDates ?? _observedDateMode);
-
-        RangeResolution.NotableDateRangePipeline pipeline = GetOrBuildRangePipeline();
-        IReadOnlyList<RangeResolution.ResolvedNotableDate> resolved = pipeline.ResolveWithProvenance(request);
-
-        if (recordWindow)
-        {
-            lock (_resolvedWindowsGate)
-            {
-                _resolvedWindows.Add(new DateRange(request.StartDate, request.EndDate));
-            }
-        }
-
-        // Localize each occurrence while preserving its provenance for collision arbitration.
-        List<RangeResolution.ResolvedNotableDate> localized = new(resolved.Count);
-        foreach (RangeResolution.ResolvedNotableDate item in resolved)
-            localized.Add(item with { Notable = LocaliseIfNeeded(item.Notable) });
-
-        return ResolveCollisions(localized, request.StartDate == request.EndDate ? request.StartDate : null);
-    }
-
-    /// <summary>
-    /// Arbitrates same-day collisions among the resolved occurrences. A single-day query treats every result as
-    /// covering the one requested day (coverage-day collision); a range query arbitrates per start day in chronological
-    /// order.
-    /// </summary>
-    /// <param name="resolved">The localized resolved occurrences with provenance.</param>
-    /// <param name="singleDay">
-    /// The single requested day when the query window is one day; otherwise <see langword="null" /> for a range.
-    /// </param>
-    /// <returns>The collision-resolved notable dates.</returns>
-    private IReadOnlyList<NotableDate> ResolveCollisions(
-        IReadOnlyList<RangeResolution.ResolvedNotableDate> resolved,
-        DateTime? singleDay)
-    {
-        if (singleDay is { } day)
-            return _collisionResolver.Resolve(BuildCollisionContext(day, resolved)) ?? [];
-
-        return [.. resolved
-            .GroupBy(r => r.Notable.Date.Date)
-            .OrderBy(g => g.Key)
-            .SelectMany(g => _collisionResolver.Resolve(BuildCollisionContext(g.Key, [.. g])) ?? [])];
-    }
-
-    /// <summary>
-    /// Builds a <see cref="NotableDateCollisionContext" /> from the resolved occurrences for a single day.
-    /// </summary>
-    /// <param name="day">The shared day.</param>
-    /// <param name="items">The resolved occurrences applying to <paramref name="day" />.</param>
-    /// <returns>The collision context with index-aligned occurrences and provenance.</returns>
-    private static NotableDateCollisionContext BuildCollisionContext(
-        DateTime day,
-        IReadOnlyList<RangeResolution.ResolvedNotableDate> items) =>
-        new(day, [.. items.Select(i => i.Notable)], [.. items.Select(i => i.Provenance)]);
-
-    /// <summary>
-    /// Applies the pre-materialised list of override additions to the base rule set, producing the merged effective
-    /// rule set.
-    /// </summary>
-    /// <param name="baseRules">The base set of rules to be overridden.</param>
-    /// <param name="overrideAdditions">
-    /// The materialised list of additions contributed by every configured override provider.
-    /// </param>
-    /// <returns>The rule list after all additions have been applied.</returns>
-    /// <remarks>
-    /// Additions are layered on top of the base rule set using the full <see cref="NotableDateRuleIdentity" /> (name,
-    /// rule name, territory, calendar type) so that regional, rule-level, and calendar-system variants of the same
-    /// notable date (for example, multiple Labour Day variants across Australian states, western and orthodox Easter,
-    /// or Gregorian and Julian Christmas observances) survive instead of collapsing into a single entry. An addition
-    /// only replaces a base rule when every identity component matches exactly. Removals are evaluated per
-    /// (year, territory) downstream so they can be scoped to specific years and territories.
-    /// </remarks>
-    private static ImmutableArray<NotableDateRule> ApplyOverrides(
-        ImmutableArray<NotableDateRule> baseRules,
-        List<NotableDateRule> overrideAdditions)
-    {
-        if (overrideAdditions.Count == 0)
-            return baseRules.IsDefault ? [] : baseRules;
-
-        IEnumerable<NotableDateRule> source = baseRules.IsDefault ? Enumerable.Empty<NotableDateRule>() : baseRules;
-
-        var byKey = new Dictionary<NotableDateRuleIdentity, NotableDateRule>();
-        foreach (NotableDateRule rule in source)
-        {
-            byKey[NotableDateRuleIdentity.From(rule)] = rule;
-        }
-
-        foreach (NotableDateRule addition in overrideAdditions)
-        {
-            byKey[NotableDateRuleIdentity.From(addition)] = addition;
-        }
-
-        return [.. byKey.Values];
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if <paramref name="notable" /> covers the calendar day of
-    /// <paramref name="day" />, ignoring the time component.
-    /// </summary>
-    /// <param name="notable">The notable date.</param>
-    /// <param name="day">The day under test.</param>
-    /// <returns><see langword="true" /> if the day is covered.</returns>
-    private static bool ContainsDay(NotableDate notable, DateTime day)
-        => day >= notable.Date.Date && day <= notable.EndDate.Date;
-
-    /// <summary>
-    /// Constructs the prototype range-resolution pipeline using the service's effective rule set, resolver, and weekend
-    /// / handler configuration.
-    /// </summary>
-    /// <returns>The constructed pipeline.</returns>
-    private RangeResolution.NotableDateRangePipeline BuildRangePipeline()
-    {
-        var analysis = RangeResolution.RuleStaticAnalysis.Build(_effectiveRules);
-
-        return new RangeResolution.NotableDateRangePipeline(
-            analysis,
-            _resolver,
-            WorkingWeek,
-            _adjustmentHandlers,
-            _overrideRemovals,
-            _overrideAdditions);
-    }
-
-    /// <summary>
-    /// If a name-localizer is configured, replaces the name on <paramref name="notable" /> with its localized form;
-    /// otherwise returns <paramref name="notable" /> unchanged.
-    /// </summary>
-    /// <param name="notable">The notable date to potentially localize.</param>
-    /// <returns>The localized or original notable date.</returns>
-    private NotableDate LocaliseIfNeeded(NotableDate notable)
-    {
-        if (_nameLocalizer is null)
-            return notable;
-
-        var localized = _nameLocalizer.GetDisplayName(notable, CultureInfo.CurrentCulture);
-
-        return string.IsNullOrEmpty(localized) || string.Equals(localized, notable.Name, StringComparison.Ordinal)
-            ? notable
-            : notable with { Name = localized };
-    }
-
-    /// <summary>
-    /// Layers two <see cref="INotableDateAlgorithmRegistry" /> instances: <c>primary</c> is consulted first; on a miss,
-    /// <c>fallback</c> is consulted. Used to compose host-supplied algorithms with plugin-supplied ones so the host
-    /// retains precedence on key collisions.
-    /// </summary>
-    private sealed class CompositeAlgorithmRegistry : INotableDateAlgorithmRegistry
-    {
-        /// <summary>
-        /// The plugin-supplied registry consulted when <see cref="_primary" /> does not contain the requested key.
-        /// </summary>
-        private readonly INotableDateAlgorithmRegistry _fallback;
-
-        /// <summary>
-        /// The host-supplied registry consulted first; its registrations take precedence on key collisions.
-        /// </summary>
-        private readonly INotableDateAlgorithmRegistry _primary;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeAlgorithmRegistry" /> class.
-        /// </summary>
-        /// <param name="primary">The primary (host) registry, consulted first.</param>
-        /// <param name="fallback">The fallback (plugin) registry, consulted on primary misses.</param>
-        public CompositeAlgorithmRegistry(INotableDateAlgorithmRegistry primary, INotableDateAlgorithmRegistry fallback)
-        {
-            _primary = primary;
-            _fallback = fallback;
-        }
-
-        /// <inheritdoc />
-        public bool Contains(string key) => _primary.Contains(key) || _fallback.Contains(key);
-
-        /// <inheritdoc />
-        public bool TryGet(string key, out INotableDateAlgorithm algorithm) =>
-             _primary.TryGet(key, out algorithm!) || _fallback.TryGet(key, out algorithm!);
+        int spanEndDayNumber = occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
+        return occurrence.Date <= range.EndDate && spanEndDayNumber >= range.StartDate.DayNumber;
     }
 }

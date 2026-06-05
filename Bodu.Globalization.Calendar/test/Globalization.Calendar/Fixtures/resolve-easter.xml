@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixture for the Resolve scenario tests covering an algorithmic anchor (Western Easter Sunday)
+  with the four offset-derived occurrences that frame it. 2026 Easter cycle:
+    Start of Lent   Easter - 46 = 18 Feb 2026
+    Palm Sunday     Easter - 7  = 29 Mar 2026
+    Good Friday     Easter - 2  = 3 Apr 2026
+    Easter Sunday   algorithm   = 5 Apr 2026
+    Easter Monday   Easter + 1  = 6 Apr 2026
+  All rules are global (no Applicability territories) so any territory resolves them.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.resolve-easter">
+
+  <NotableDates>
+
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="western" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><Algorithm key="western-easter" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="start-of-lent" displayName="Start of Lent" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="western-minus-46" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="-46" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="palm-sunday" displayName="Palm Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="western-minus-7" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="-7" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="good-friday" displayName="Good Friday" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="western-minus-2" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="-2" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+    <NotableDate id="easter-monday" displayName="Easter Monday" category="Religious" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="western-plus-1" priority="100">
+          <Applicability calendar="Gregorian" />
+          <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="western" offsetDays="1" /></Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

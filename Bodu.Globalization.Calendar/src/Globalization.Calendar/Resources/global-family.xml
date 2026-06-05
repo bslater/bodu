@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global family observances notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-family.xml to the v2 cookbook schema. These are the most widely observed forms of Mother's Day (second Sunday
+  in May) and Father's Day (third Sunday in June); regional variants are handled in the corresponding territory packs.
+  A territory pack imports only the concepts it observes and supplies its own territory scope, category, non-working
+  flag, and weekend adjustment through the import <Use> directive; the shared concepts therefore carry the bare
+  calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-family">
+
+  <NotableDates>
+
+    <!-- Mother's Day — second Sunday in May (the most widely observed form; regional variants live in territory packs). -->
+    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Father's Day — third Sunday in June (the most widely observed form; Australia/NZ and others use different dates in their territory packs). -->
+    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

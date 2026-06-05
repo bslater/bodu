@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixture for the consecutive-holiday window-slicing scenarios: seven non-working fixed-date holidays
+  anchored 25 Dec .. 31 Dec, named "Festival Day 1" .. "Festival Day 7". All rules are global so any
+  territory resolves them. No adjustment policies are attached, so each emits on its plain anchor date.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.resolve-consecutive">
+
+  <NotableDates>
+
+    <NotableDate id="festival-day-1" displayName="Festival Day 1" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-25" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="festival-day-2" displayName="Festival Day 2" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-26" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="festival-day-3" displayName="Festival Day 3" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-27" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="27" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="festival-day-4" displayName="Festival Day 4" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-28" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="28" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="festival-day-5" displayName="Festival Day 5" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-29" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="festival-day-6" displayName="Festival Day 6" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-30" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="festival-day-7" displayName="Festival Day 7" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="dec-31" priority="100"><Applicability calendar="Gregorian" /><Strategy><Fixed month="December" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

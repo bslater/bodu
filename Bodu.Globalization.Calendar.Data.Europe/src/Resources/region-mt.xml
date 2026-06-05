@@ -1,92 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Malta (MT) notable-date resource using the Western / Gregorian calendar.
+  Malta (MT) — notable-date resource pack.
 
-  National public holidays. Malta observes a large number of national and
-  religious holidays; the full statutory set is modelled here.
+  Migrated from the v1 region-mt.xml to the v2 cookbook schema. All rules are scoped to territory "MT"; Malta has no
+  subdivision-specific public holidays.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="MT"; Malta-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared European observances — including the common Catholic feast of the Immaculate Conception — are
+      IMPORTED from the europe-common hub and given an MT territory scope through the import <Use> directive. Good
+      Friday derives from the WESTERN Easter Sunday anchor the hub re-exports.
+    * Malta-specific Catholic feasts and national days are declared INLINE below as fixed dates. The Assumption
+      keeps its localized Maltese name (Santa Marija), so it stays inline rather than importing the hub's concept.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="MT" />
-    <Use name="Easter Sunday" territory="MT" />
-    <Use name="Good Friday" territory="MT" />
-    <Use name="International Workers' Day" as="Worker's Day" territory="MT" />
-    <Use name="Assumption of Mary" as="Feast of the Assumption (Santa Marija)" territory="MT" />
-    <Use name="Immaculate Conception" territory="MT" />
-    <Use name="Christmas Day" territory="MT" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.mt">
 
   <!--
-    National Maltese holidays and religious feasts.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Feast of Saint Paul's Shipwreck">
-    <Rule name="fixed-feb-10-mt" category="Holiday" territory="MT" nonWorking="true"
-          comment="Nawfraġju ta' San Pawl. Commemorates the shipwreck of the Apostle Paul on Malta, traditionally dated to AD 60.">
-      <Fixed month="February" day="10" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Feast of Saint Joseph">
-    <Rule name="fixed-mar-19-mt" category="Holiday" territory="MT" nonWorking="true"
-          comment="Festa ta' San Ġużepp. Feast of Saint Joseph, observed on 19 March.">
-      <Fixed month="March" day="19" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Malta. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend; Workers' Day (1 May) and Christmas Day (25
+      December) carry their shared fixed-date strategy. Good Friday (-2) derives from the WESTERN Easter Sunday
+      anchor the hub re-exports. The Immaculate Conception (8 December) is one of the common Catholic feasts the hub
+      defines inline. (The Assumption is declared inline below under its Maltese name, Santa Marija.)
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="MT">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="workers-day" territory="MT" />
+      <Use notableDateRef="easter-sunday" territory="MT" />
+      <Use notableDateRef="good-friday" territory="MT" />
+      <Use notableDateRef="immaculate-conception" territory="MT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="MT" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Freedom Day">
-    <Rule name="fixed-mar-31-mt" category="Holiday" territory="MT" nonWorking="true" firstYear="1979"
-          comment="Jum il-Ħelsien. Marks the withdrawal of the last British forces and the Royal Navy from Malta on 31 March 1979.">
-      <Fixed month="March" day="31" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-  <NotableDate name="Sette Giugno">
-    <Rule name="fixed-jun-07-mt" category="Holiday" territory="MT" nonWorking="true" firstYear="1919"
-          comment="Commemorates the riots of 7 June 1919, when British troops fired on a crowd protesting economic conditions, a milestone toward self-government.">
-      <Fixed month="June" day="7" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Fixed Catholic feasts
+      ============================================================================================================
+    -->
 
-  <NotableDate name="Feast of Saint Peter and Saint Paul">
-    <Rule name="fixed-jun-29-mt" category="Holiday" territory="MT" nonWorking="true"
-          comment="L-Imnarja. One of Malta's oldest folk festivals, honoring the apostles Peter and Paul on 29 June.">
-      <Fixed month="June" day="29" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Feast of the Assumption (Santa Marija) — 15 August. Fixed date. -->
+    <NotableDate id="feast-of-the-assumption-santa-marija" displayName="Feast of the Assumption (Santa Marija)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Victory Day">
-    <Rule name="fixed-sep-08-mt" category="Holiday" territory="MT" nonWorking="true"
-          comment="Jum il-Vitorja. Marks the end of the Great Siege of 1565 and the Nativity of Mary, and commemorates the end of the Second Siege of Malta in 1943.">
-      <Fixed month="September" day="8" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Feast of Saint Paul's Shipwreck — 10 February, commemorating the apostle's shipwreck on Malta. Fixed date. -->
+    <NotableDate id="feast-of-saint-pauls-shipwreck" displayName="Feast of Saint Paul's Shipwreck" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="February" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Independence Day">
-    <Rule name="fixed-sep-21-mt" category="Holiday" territory="MT" nonWorking="true" firstYear="1964"
-          comment="Jum l-Indipendenza. Marks Malta's independence from the United Kingdom on 21 September 1964.">
-      <Fixed month="September" day="21" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Feast of Saint Joseph — 19 March. Fixed date. -->
+    <NotableDate id="feast-of-saint-joseph" displayName="Feast of Saint Joseph" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="March" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Republic Day">
-    <Rule name="fixed-dec-13-mt" category="Holiday" territory="MT" nonWorking="true" firstYear="1974"
-          comment="Jum ir-Repubblika. Marks the establishment of the Republic of Malta on 13 December 1974.">
-      <Fixed month="December" day="13" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      National and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
 
-</NotableDates>
+    <!-- Freedom Day (Jum il-Ħelsien) — 31 March, marking the 1979 withdrawal of British forces. fromYear 1979 excludes earlier years. -->
+    <NotableDate id="freedom-day" displayName="Freedom Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability fromYear="1979"><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="March" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Sette Giugno — 7 June, commemorating the 1919 riots against British colonial rule. fromYear 1919 excludes earlier years. -->
+    <NotableDate id="sette-giugno" displayName="Sette Giugno" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability fromYear="1919"><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="June" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Feast of Saint Peter and Saint Paul (L-Imnarja) — 29 June, a Maltese harvest and folk festival. Fixed date. -->
+    <NotableDate id="feast-of-saint-peter-and-saint-paul" displayName="Feast of Saint Peter and Saint Paul" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="June" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Victory Day (Jum il-Vitorja) — 8 September, marking the end of the 1565 Great Siege and the 1943 Italian armistice. Fixed date. -->
+    <NotableDate id="victory-day" displayName="Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="September" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Jum l-Indipendenza) — 21 September, marking independence from Britain in 1964. fromYear 1964 excludes earlier years. -->
+    <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability fromYear="1964"><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="September" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Republic Day (Jum ir-Repubblika) — 13 December, marking Malta becoming a republic in 1974. fromYear 1974 excludes earlier years. -->
+    <NotableDate id="republic-day" displayName="Republic Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mt"><Applicability fromYear="1974"><Territory code="MT" /></Applicability>
+        <Strategy><Fixed month="December" day="13" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

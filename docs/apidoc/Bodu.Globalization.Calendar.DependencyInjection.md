@@ -1,67 +1,52 @@
 ---
-uid: Bodu.Globalization.Calendar.DependencyInjection
+uid: Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions
 ---
 
 # Bodu.Globalization.Calendar.DependencyInjection
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.DependencyInjection** provides the `Microsoft.Extensions.DependencyInjection` integration for [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md). It registers <xref:Bodu.Globalization.Calendar.INotableDateService> as a singleton, binds [`NotableDateOptions`](xref:Bodu.Globalization.Calendar.DependencyInjection.NotableDateOptions) from `IConfiguration`, and exposes a fluent builder for layering rule providers, override providers, plugins, algorithm registries, collision resolvers, and name localizers from across a host's composition root.
+**Bodu.Globalization.Calendar.DependencyInjection** provides the `Microsoft.Extensions.DependencyInjection` integration for [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md). It registers <xref:Bodu.Globalization.Calendar.INotableDateService> as a singleton over a loaded <xref:Bodu.Globalization.Calendar.NotableDateResource> (or a factory that produces one), so an ASP.NET Core app — or any `Microsoft.Extensions.*`-style host — can inject the calendar service rather than composing `new NotableDateService(...)` by hand.
 
-Reach for this package when you want ASP.NET Core (or any `Microsoft.Extensions.*`-style host) to construct and inject the calendar service for you rather than composing `new NotableDateService(...)` by hand. The package is optional — direct construction continues to work for consoles, libraries, and tests that prefer not to bring in `IServiceCollection`.
+The package is intentionally thin: a resource is an immutable, already-validated value, so registration takes the resource (or a provider for it) directly. There is no options object and no fluent builder — the service's behaviour is carried by the resource's `<ResolutionPolicy>` and by the optional collaborators passed when the resource/service is built. Direct construction continues to work for consoles, libraries, and tests that prefer not to bring in `IServiceCollection`.
+
+The extension methods live in the `Microsoft.Extensions.DependencyInjection` namespace, so they light up on `IServiceCollection` without an extra `using`.
 
 ## Static documentation
 
-- **[Calendar dependency injection guide](~/guides/calendar/dependency-injection.md)** — `AddNotableDates`, fluent builder, `IConfiguration` binding, ambient default wiring, and the `PostConfigure` consumer-options projection hook.
-- **[Building and extending the service](~/guides/calendar/building-the-service.md)** — explains every collaborator interface that the DI package wires up.
+- **[Calendar dependency injection guide](~/guides/calendar/dependency-injection.md)** — registration overloads, the reloadable workflow, and lifetime semantics.
 
 ## Key types
 
-**Entry points**
-
-- <xref:Bodu.Globalization.Calendar.DependencyInjection.ServiceCollectionExtensions> — the `AddNotableDates(IServiceCollection, IConfiguration?, string)` and `AddNotableDates(IServiceCollection, Action<INotableDateServiceBuilder>)` extension methods that register the service singleton and return an <xref:Bodu.Globalization.Calendar.DependencyInjection.INotableDateServiceBuilder>.
-- <xref:Bodu.Globalization.Calendar.DependencyInjection.INotableDateServiceBuilder> — the fluent registration surface returned by `AddNotableDates`. Exposes the host's <xref:Microsoft.Extensions.DependencyInjection.IServiceCollection> so extension methods can register additional collaborators.
-
-**Bindable options**
-
-- <xref:Bodu.Globalization.Calendar.DependencyInjection.NotableDateOptions> — the POCO bound from an `IConfiguration` section. Composed of bindable primitives (`WorkingDays`, `DefaultTerritoryCode`, `DefaultCalendarTypeName`, `RegisterAsAmbientDefault`) and distinct from <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, which carries non-bindable interface-typed dependencies.
-
-**Builder extension methods**
-
-- <xref:Bodu.Globalization.Calendar.DependencyInjection.NotableDateServiceBuilderExtensions> — the fluent surface exposed on <xref:Bodu.Globalization.Calendar.DependencyInjection.INotableDateServiceBuilder>:
-  - `AddRuleProvider` / `AddRuleProviders` / `AddPlugin` — register collaborators resolved via `IEnumerable<T>` injection.
-  - `AddOverrideProvider` — register an <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>; when the supplied instance is a <xref:Bodu.Globalization.Calendar.MutableNotableDateRuleOverrideProvider>, the service is auto-wired to call <xref:Bodu.Globalization.Calendar.INotableDateService.Reload> on every change.
-  - `UseAlgorithmRegistry` / `UseCollisionResolver` / `UseNameLocalizer` / `UseAdjustmentHandlers` / `UseResourcePathResolver` — register single-instance collaborators.
-  - `Configure(Action<NotableDateOptions>)` — overlay programmatic settings onto any value bound from configuration.
-  - `PostConfigure(Action<IServiceProvider, NotableDateOptions>)` — the consumer-defined-options hook for projecting from custom POCOs registered through the standard `Configure<TOptions>` API. Backed by `IPostConfigureOptions<NotableDateOptions>`.
-  - `UseWorkingDays(WorkingDaysOfWeek)` / `UseWorkingWeek(WeekPattern)` — sugar over `Configure`.
-  - `RegisterAsAmbientDefault()` — wire the resolved singleton into <xref:Bodu.Globalization.Calendar.NotableDateContext.Default> on first resolution so that extension-method overloads without an explicit service argument resolve through the DI-registered instance.
+- <xref:Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions> — the registration surface:
+  - `AddNotableDateService(IServiceCollection, NotableDateResource)` — register a singleton <xref:Bodu.Globalization.Calendar.INotableDateService> over an already-loaded resource.
+  - `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` — the same, but the resource is produced from the container (e.g. loaded from configuration or a data pack resolved through DI).
+  - `AddReloadableNotableDateService(IServiceCollection, NotableDateResource)` — register a singleton <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> together with a singleton <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> (also exposed as <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider>). Inject the mutable provider to call `Reload(...)` and the live service picks up the new resource.
 
 ## Minimal sample
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Data.AsiaPacific;
-using Bodu.Globalization.Calendar.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services
-    .AddNotableDates(builder.Configuration)
-    .AddRuleProviders(AsiaPacificCalendarData.CreateProviders())
-    .AddOverrideProvider(new MutableNotableDateRuleOverrideProvider())
-    .RegisterAsAmbientDefault();
-```
+// From a companion data pack (or NotableDateResourceLoader.Load(...) for your own document):
+builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 
-With `appsettings.json`:
-
-```json
+// ... elsewhere, the resolved singleton is injected:
+public sealed class HolidayController(INotableDateService calendar)
 {
-  "NotableDates": {
-    "WorkingDays": "MondayToFriday",
-    "DefaultTerritoryCode": "AU-NSW",
-    "RegisterAsAmbientDefault": true
-  }
+    public IReadOnlyList<NotableDate> Year(int year) => calendar.Resolve(year, "AU-NSW");
 }
 ```
 
-The full guide — including the `PostConfigure` consumer-options projection pattern, runtime-mutable overrides, and the resolved `INotableDateService` lifetime semantics — is in [Calendar dependency injection](~/guides/calendar/dependency-injection.md).
+To swap the rule set at runtime, register the reloadable service and inject the mutable provider:
+
+```csharp
+builder.Services.AddReloadableNotableDateService(EuropeCalendarData.LoadResource("GB"));
+
+// later, when the rules change:
+provider.Reload(NotableDateResourceLoader.Load(updatedXml, CommonNotableDateResources.Resolver));
+```
+
+See the [Calendar dependency injection](~/guides/calendar/dependency-injection.md) guide for the full walkthrough, including the reloadable workflow and lifetime semantics.

@@ -1,46 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Luxembourg (LU) notable-date resource using the Western / Gregorian calendar.
+  Luxembourg (LU) — notable-date resource pack.
 
-  National public holidays (jours fériés légaux).
+  Migrated from the v1 region-lu.xml to the v2 cookbook schema. All rules are scoped to territory "LU"; Luxembourg has
+  no subdivision-specific public holidays.
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="LU"; Luxembourg-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Easter Monday, Ascension Day,
+      Whit Monday, All Saints' Day, Christmas Day) are IMPORTED from the global-core and christian-western catalogues
+      and given an LU territory scope through the import <Use> directive. The movable feasts (Easter Monday, Ascension
+      Day, Whit Monday) derive from the WESTERN Easter Sunday anchor in the shared catalogue.
+    * Luxembourg-specific civic days are declared INLINE below as fixed dates.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="LU" />
-    <Use name="Easter Sunday" territory="LU" />
-    <Use name="Easter Monday" territory="LU" />
-    <Use name="International Workers' Day" as="Labour Day" territory="LU" />
-    <Use name="Ascension Day" territory="LU" />
-    <Use name="Whit Monday" territory="LU" />
-    <Use name="Assumption of Mary" territory="LU" />
-    <Use name="All Saints' Day" territory="LU" />
-    <Use name="Christmas Day" territory="LU" />
-    <Use name="Boxing Day" as="Saint Stephen's Day" territory="LU" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.lu">
 
   <!--
-    National Luxembourg holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Europe Day">
-    <Rule name="fixed-may-09-lu" category="Holiday" territory="LU" nonWorking="true" firstYear="2019"
-          comment="Marks the Schuman Declaration of 9 May 1950. Declared a public holiday in Luxembourg from 2019.">
-      <Fixed month="May" day="9" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="National Day">
-    <Rule name="fixed-jun-23-lu" category="Holiday" territory="LU" nonWorking="true"
-          comment="Public celebration of the official birthday of the Grand Duke, fixed on 23 June regardless of the reigning monarch's actual birthday.">
-      <Fixed month="June" day="23" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Luxembourg. New Year's Day
+      (1 January) takes a weekend roll to the next working day. Easter Monday derives from the Easter Sunday anchor
+      the hub re-exports, Ascension Day falls 39 days after it, and Whit Monday 50 days after it (all OffsetFromRule
+      strategies). Ascension Day and All Saints' Day are re-scoped to non-working public holidays for Luxembourg;
+      the Assumption (15 August) is re-exported by the hub and scoped here as a Luxembourg public holiday. Christmas
+      Day is imported with its shared fixed-date strategy.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="LU">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="LU" />
+      <Use notableDateRef="easter-monday" territory="LU" />
+      <Use notableDateRef="ascension-day" territory="LU" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-monday" territory="LU" />
+      <Use notableDateRef="all-saints-day" territory="LU" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="assumption-of-mary" territory="LU" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="LU" />
+    </Import>
+  </Imports>
 
-</NotableDates>
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Fixed Christian feasts
+      ============================================================================================================
+    -->
+
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lu"><Applicability><Territory code="LU" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Stephen's Day (Second Day of Christmas) — 26 December. Fixed date; the day after Christmas Day. -->
+    <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lu"><Applicability><Territory code="LU" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Europe Day — 9 May, marking the 1950 Schuman Declaration; a Luxembourg public holiday from 2019. fromYear 2019 excludes earlier years. -->
+    <NotableDate id="europe-day" displayName="Europe Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lu"><Applicability fromYear="2019"><Territory code="LU" /></Applicability>
+        <Strategy><Fixed month="May" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day (official birthday of the Grand Duke) — 23 June. Fixed date. -->
+    <NotableDate id="national-day" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="lu"><Applicability><Territory code="LU" /></Applicability>
+        <Strategy><Fixed month="June" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

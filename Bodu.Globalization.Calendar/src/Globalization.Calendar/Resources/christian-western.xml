@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Western (Gregorian) Christian notable-date catalogue, migrated from the v1 christian-gregorian.xml to the v2 cookbook
+  schema. Easter Sunday is the computed anchor (valid from the 1583 Gregorian reform); the surrounding feasts are
+  offsets from it. A territory pack imports the concepts it observes and supplies its own territory scope, category,
+  non-working flag, and weekend adjustment through the import <Use> directive. The shared rules use the stable rule id
+  "default", so a territory-local rule that offsets from Easter references <OffsetFromRule ... ruleRef="default" />.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.christian-western">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Easter anchor and Easter-derived movable feasts
+      ============================================================================================================
+      Every date below is positioned relative to Easter Sunday, so the whole cluster moves with the paschal full
+      moon each year. All rules are bounded fromYear="1583" because the Gregorian computus only applies from the
+      1582/1583 reform onward.
+    -->
+
+    <!--
+      Easter Sunday — the central Christian feast of the Resurrection and the anchor for every movable feast in
+      this catalogue. Strategy: Algorithm "western-easter" (the Gregorian computus / paschal full-moon
+      computation). Carries the bare strategy under rule id "default" for territories to import and offset from.
+    -->
+    <NotableDate id="easter-sunday" displayName="Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" /><Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Good Friday — commemorates the Crucifixion. Strategy: OffsetFromRule, two days before Easter Sunday
+      (offsetDays="-2"). A public holiday in most Western jurisdictions.
+    -->
+    <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Maundy Thursday — Holy Thursday, commemorating the Last Supper. Strategy: OffsetFromRule, three days before
+      Easter Sunday (offsetDays="-3").
+    -->
+    <NotableDate id="maundy-thursday" displayName="Maundy Thursday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Easter Monday — the day after Easter Sunday. Strategy: OffsetFromRule, one day after Easter Sunday
+      (offsetDays="1"). A public holiday in many Western jurisdictions.
+    -->
+    <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Ascension Day — commemorates the Ascension of Christ, the fortieth day of Eastertide (a Thursday). Strategy:
+      OffsetFromRule, 39 days after Easter Sunday (offsetDays="39").
+    -->
+    <NotableDate id="ascension-day" displayName="Ascension Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Whit Sunday — Pentecost, the fiftieth day of Eastertide. Strategy: OffsetFromRule, 49 days after Easter
+      Sunday (offsetDays="49").
+    -->
+    <NotableDate id="whit-sunday" displayName="Whit Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Whit Monday — Pentecost Monday, the day after Whit Sunday. Strategy: OffsetFromRule, 50 days after Easter
+      Sunday (offsetDays="50"). A public holiday in several Western jurisdictions.
+    -->
+    <NotableDate id="whit-monday" displayName="Whit Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Corpus Christi — feast of the Body and Blood of Christ, the Thursday after Trinity Sunday. Strategy:
+      OffsetFromRule, 60 days after Easter Sunday (offsetDays="60").
+    -->
+    <NotableDate id="corpus-christi" displayName="Corpus Christi" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="60" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Lenten and post-Pentecost movable feasts. These complete the Easter-derived cluster carried by the v1
+      christian-gregorian.xml catalogue so a territory pack can cherry-pick them by import. Each offsets from the
+      Easter Sunday anchor and is a working religious observance by default.
+    -->
+
+    <!-- Shrove Tuesday — Mardi Gras, the day before Lent begins. Strategy: OffsetFromRule, 47 days before Easter Sunday. -->
+    <NotableDate id="shrove-tuesday" displayName="Shrove Tuesday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-47" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ash Wednesday — the first day of Lent. Strategy: OffsetFromRule, 46 days before Easter Sunday. -->
+    <NotableDate id="ash-wednesday" displayName="Ash Wednesday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-46" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Palm Sunday — the Sunday before Easter, opening Holy Week. Strategy: OffsetFromRule, 7 days before Easter Sunday. -->
+    <NotableDate id="palm-sunday" displayName="Palm Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Holy Saturday — the day before Easter Sunday, closing Holy Week. Strategy: OffsetFromRule, 1 day before Easter Sunday. -->
+    <NotableDate id="holy-saturday" displayName="Holy Saturday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Trinity Sunday — the Sunday after Pentecost. Strategy: OffsetFromRule, 56 days after Easter Sunday. -->
+    <NotableDate id="trinity-sunday" displayName="Trinity Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="56" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Fixed-date feasts
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany — 6 January, the manifestation of Christ to the Magi. Strategy: Fixed day-of-month. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Candlemas — 2 February, the Presentation of Christ at the Temple. Strategy: Fixed day-of-month. -->
+    <NotableDate id="candlemas" displayName="Candlemas" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="February" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Annunciation — 25 March, the announcement to Mary of the Incarnation. Strategy: Fixed day-of-month. -->
+    <NotableDate id="annunciation" displayName="Annunciation" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- All Saints' Day — 1 November, honoring all saints. Strategy: Fixed day-of-month. -->
+    <NotableDate id="all-saints-day" displayName="All Saints' Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- All Souls' Day — 2 November, commemoration of the faithful departed. Strategy: Fixed day-of-month. -->
+    <NotableDate id="all-souls-day" displayName="All Souls' Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Christmas Eve — 24 December, the day before Christmas; a cultural observance rather than a public holiday. -->
+    <NotableDate id="christmas-eve" displayName="Christmas Eve" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Christmas Day — 25 December, celebrating the Nativity. Strategy: Fixed day-of-month. -->
+    <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Boxing Day — 26 December, the day after Christmas. Strategy: Fixed day-of-month. -->
+    <NotableDate id="boxing-day" displayName="Boxing Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

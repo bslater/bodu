@@ -1,188 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  German notable-date resource using the Western/Gregorian calendar.
+  ================================================================================================================
+  Germany (DE) — notable-date resource pack
+  ================================================================================================================
 
-  These entries represent German national public holidays (Feiertage) and widely
-  observed state-specific holidays. National rules use territory="DE"; state-specific
-  rules use their ISO 3166-2 subdivision codes (DE-BB, DE-BE, DE-BW, DE-BY, DE-HB,
-  DE-HE, DE-HH, DE-MV, DE-NI, DE-NW, DE-RP, DE-SH, DE-SL, DE-SN, DE-ST, DE-TH).
+  Migrated from the v1 region-de.xml to the v2 cookbook schema. The nine nationwide public holidays (Feiertage)
+  are scoped to territory "DE"; the further holidays established under individual state legislation are scoped to
+  their ISO 3166-2 subdivision codes (DE-BW, DE-BY, DE-BE, DE-BB, DE-HB, DE-HH, DE-HE, DE-MV, DE-NI, DE-NW, DE-RP,
+  DE-SL, DE-SN, DE-ST, DE-SH, DE-TH).
 
-  The nine holidays listed under territory="DE" are observed as non-working days in
-  all sixteen federal states. Further holidays are established under individual state
-  legislation and are listed by their state codes.
+  How this resource is built:
 
-  Note on Buß- und Bettag (Repentance Day, Saxony only): This holiday falls on the
-  Wednesday before 23 November. It is expressed declaratively with the
-  WeekdayNearDate strategy (the Wednesday on or before 22 November) and needs no
-  custom algorithm.
+    * Shared civil and Christian observances are IMPORTED from the europe-common hub and scoped to Germany.
+      Ascension is re-scoped to a non-working public holiday (statutory nationwide); the other Easter feasts and
+      Christmas carry the hub/catalogue defaults.
 
-  Country-specific rules explicitly import only the inherited global and Christian
-  dates that Germany observes, and override naming, territory, nonWorking, adjustment,
-  or tagging behavior where required.
+    * Germany-specific concepts are declared INLINE: German Unity Day, the Second Day of Christmas, and — crucially
+      — the regional religious feasts. Each regional feast is scoped to exactly the Länder that observe it as a
+      statutory non-working day (Epiphany in BW/BY/ST; Corpus Christi in BW/BY/HE/NW/RP/SL; the Assumption in
+      BY/SL; Reformation Day across the northern and eastern states; All Saints' in BW/BY/NW/RP/SL; Repentance and
+      Prayer Day in SN). A plain "DE" national query returns none of them, and they resolve as non-working only in
+      their states — matching the v1 data, which scoped them per-Land, not nationally.
+
+  International Women's Day carries two rules under one concept: a nationwide recognition observance (working) and
+  a non-working public-holiday rule for Berlin and Mecklenburg-Vorpommern (from 2019). Territory shadowing returns
+  the state rule for BE/MV and the national rule elsewhere.
+
+  Germany does not roll weekend public holidays onto the following Monday, so no adjustment policy is declared.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.de">
 
   <!--
-    Common European observances, inherited from europe-common.xml. The state-
-    only Christian holidays (Epiphany, Corpus Christi, Assumption, All Saints')
-    are intentionally NOT inherited here; they are declared per-state below.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="DE" />
-    <Use name="Valentine's Day" territory="DE" />
-    <Use name="International Workers' Day" territory="DE" />
-    <Use name="Good Friday" territory="DE" />
-    <Use name="Easter Sunday" territory="DE" />
-    <Use name="Easter Monday" territory="DE" />
-    <Use name="Ascension Day" territory="DE" />
-    <Use name="Whit Monday" territory="DE" />
-    <Use name="Christmas Eve" territory="DE" />
-    <Use name="Christmas Day" territory="DE" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="DE" />
-    <Use name="Mother's Day" territory="DE" />
-    <Use name="Father's Day" territory="DE" />
-  </UseFrom>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Germany. Easter Sunday is the
+      imported anchor that the inline Corpus Christi offsets from. Good Friday, Easter Monday, and Whit Monday are
+      nationwide public holidays (catalogue defaults); Ascension is re-scoped to a non-working public holiday.
+      Workers' Day (1 May), Christmas Day, Christmas Eve, Valentine's, Mother's, and Father's Day are imported too.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="DE" />
+      <Use notableDateRef="workers-day" territory="DE" />
+      <Use notableDateRef="valentines-day" territory="DE" />
+      <Use notableDateRef="easter-sunday" territory="DE" />
+      <Use notableDateRef="good-friday" territory="DE" />
+      <Use notableDateRef="easter-monday" territory="DE" />
+      <Use notableDateRef="ascension-day" territory="DE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-monday" territory="DE" />
+      <Use notableDateRef="christmas-eve" territory="DE" />
+      <Use notableDateRef="christmas-day" territory="DE" />
+      <Use notableDateRef="mothers-day" territory="DE" />
+      <Use notableDateRef="fathers-day" territory="DE" />
+    </Import>
+  </Imports>
 
-  <!--
-    International Women's Day as a recognition-only observance (it is a state
-    holiday in Berlin and Mecklenburg-Vorpommern, declared separately below).
-    Not part of the pan-European common set, so inherited from the main library.
-  -->
+  <NotableDates>
 
-  <UseFrom resource="./global-all.xml">
-    <Use name="International Women's Day" territory="DE" />
-  </UseFrom>
+    <!--
+      ============================================================================================================
+      Nationwide observances and public holidays
+      ============================================================================================================
+    -->
 
-  <!--
-    National German holidays (observed in all sixteen federal states).
-  -->
+    <!--
+      International Women's Day — 8 March. A nationwide recognition observance (working), plus a non-working public
+      holiday in Berlin (from 2019) and Mecklenburg-Vorpommern. Territory shadowing returns the BE/MV rule for those
+      states and the national rule elsewhere. Strategy: Fixed date.
+    -->
+    <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules>
+        <Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="March" day="8" /></Strategy></Rule>
+        <Rule id="be-mv" nonWorking="true"><Applicability fromYear="2019"><Territory code="DE-BE" /><Territory code="DE-MV" /></Applicability><Strategy><Fixed month="March" day="8" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
 
-  <NotableDate name="German Unity Day">
-    <Rule name="fixed-oct-03-de"
-          category="Holiday"
-          territory="DE"
-          nonWorking="true"
-          firstYear="1990"
-          comment="Tag der Deutschen Einheit. Commemorates the reunification of Germany on 3 October 1990, when the German Democratic Republic formally joined the Federal Republic of Germany.">
-      <Fixed month="October" day="3" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- German Unity Day (Tag der Deutschen Einheit) — 3 October, marking 1990 reunification; the national day and a public holiday. The fromYear="1990" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="german-unity-day" displayName="German Unity Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability fromYear="1990"><Territory code="DE" /></Applicability><Strategy><Fixed month="October" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <!--
-    State-specific holidays — Baden-Württemberg, Bavaria, Saxony-Anhalt.
-  -->
+    <!-- Second Day of Christmas (Zweiter Weihnachtsfeiertag) — 26 December; a nationwide public holiday (declared inline under its German name rather than imported as "Boxing Day"). Strategy: Fixed date. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Epiphany">
-    <Rule name="fixed-jan-06-de-bw"
-          category="Holiday"
-          territory="DE-BW,DE-BY,DE-ST"
-          nonWorking="true"
-          comment="Heilige Drei Könige. A public holiday in Baden-Württemberg, Bavaria, and Saxony-Anhalt only.">
-      <Fixed month="January" day="6" />
-      <Tag>Christian</Tag>
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
+    <!--
+      ============================================================================================================
+      Regional religious feasts (statutory non-working public holidays in their Länder only)
+      ============================================================================================================
+    -->
 
-  <!--
-    State-specific holidays — International Women's Day as a non-working day.
-  -->
+    <!-- Epiphany (Heilige Drei Könige) — 6 January; a public holiday in Baden-Württemberg, Bavaria, and Saxony-Anhalt only. Strategy: Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability><Territory code="DE-BW" /><Territory code="DE-BY" /><Territory code="DE-ST" /></Applicability><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="International Women's Day">
-    <Rule name="fixed-mar-08-de-be"
-          category="Holiday"
-          territory="DE-BE,DE-MV"
-          nonWorking="true"
-          firstYear="2019"
-          comment="Internationaler Frauentag. Designated as a public holiday in Berlin from 2019 and in Mecklenburg-Vorpommern from 2023. The global observance rule imported above marks it as a recognition-only date for the remainder of Germany.">
-      <Fixed month="March" day="8" />
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Corpus Christi (Fronleichnam) — a public holiday in Baden-Württemberg, Bavaria, Hesse, North Rhine-Westphalia, Rhineland-Palatinate, and Saarland. Strategy: OffsetFromRule, 60 days after the imported Easter Sunday anchor. -->
+    <NotableDate id="corpus-christi" displayName="Corpus Christi" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability fromYear="1583"><Territory code="DE-BW" /><Territory code="DE-BY" /><Territory code="DE-HE" /><Territory code="DE-NW" /><Territory code="DE-RP" /><Territory code="DE-SL" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="60" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <!--
-    State-specific holidays — Corpus Christi.
-  -->
+    <!-- Assumption of Mary (Mariä Himmelfahrt) — 15 August; a public holiday in Saarland and the predominantly Catholic municipalities of Bavaria. Strategy: Fixed date. -->
+    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability><Territory code="DE-BY" /><Territory code="DE-SL" /></Applicability><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Corpus Christi">
-    <Rule name="offset-easter-sunday+60-de-bw"
-          category="Holiday"
-          territory="DE-BW,DE-BY,DE-HE,DE-NW,DE-RP,DE-SL"
-          nonWorking="true"
-          firstYear="1583"
-          comment="Fronleichnam. A public holiday in Baden-Württemberg, Bavaria, Hesse, North Rhine-Westphalia, Rhineland-Palatinate, and Saarland. Also observed in parts of Saxony and Thuringia by local regulation.">
-      <OffsetFromAnchor name="Easter Sunday" offset="60" />
-      <Tag>Christian</Tag>
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Reformation Day (Reformationstag) — 31 October; a public holiday in Brandenburg, Bremen, Hamburg, Mecklenburg-Vorpommern, Lower Saxony, Saxony, Saxony-Anhalt, Schleswig-Holstein, and Thuringia. Strategy: Fixed date. -->
+    <NotableDate id="reformation-day" displayName="Reformation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability><Territory code="DE-BB" /><Territory code="DE-HB" /><Territory code="DE-HH" /><Territory code="DE-MV" /><Territory code="DE-NI" /><Territory code="DE-SN" /><Territory code="DE-ST" /><Territory code="DE-SH" /><Territory code="DE-TH" /></Applicability><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <!--
-    State-specific holidays — Assumption of Mary.
-  -->
+    <!-- All Saints' Day (Allerheiligen) — 1 November; a public holiday in Baden-Württemberg, Bavaria, North Rhine-Westphalia, Rhineland-Palatinate, and Saarland. Strategy: Fixed date. -->
+    <NotableDate id="all-saints-day" displayName="All Saints' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability><Territory code="DE-BW" /><Territory code="DE-BY" /><Territory code="DE-NW" /><Territory code="DE-RP" /><Territory code="DE-SL" /></Applicability><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <NotableDate name="Assumption of Mary">
-    <Rule name="fixed-aug-15-de-by"
-          category="Holiday"
-          territory="DE-BY,DE-SL"
-          nonWorking="true"
-          comment="Maria Himmelfahrt. A public holiday in Saarland and in the majority of municipalities in Bavaria (those with a predominantly Catholic population).">
-      <Fixed month="August" day="15" />
-      <Tag>Christian</Tag>
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
+    <!-- Repentance and Prayer Day (Buß- und Bettag) — the Wednesday before 23 November; a public holiday in Saxony only. Strategy: WeekdayNearDate (Wednesday on or before 22 November). -->
+    <NotableDate id="repentance-day" displayName="Repentance and Prayer Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability><Territory code="DE-SN" /></Applicability><Strategy><WeekdayNearDate month="November" day="22" dayOfWeek="Wednesday" direction="OnOrBefore" /></Strategy></Rule></Rules>
+    </NotableDate>
 
-  <!--
-    State-specific holidays — Reformation Day.
-  -->
-
-  <NotableDate name="Reformation Day">
-    <Rule name="fixed-oct-31-de-bb"
-          category="Holiday"
-          territory="DE-BB,DE-HB,DE-HH,DE-MV,DE-NI,DE-SN,DE-ST,DE-SH,DE-TH"
-          nonWorking="true"
-          comment="Reformationstag. Marks the anniversary of Martin Luther's posting of the Ninety-Five Theses on 31 October 1517. A public holiday in Brandenburg, Bremen, Hamburg, Mecklenburg-Vorpommern, Lower Saxony, Saxony, Saxony-Anhalt, Schleswig-Holstein, and Thuringia.">
-      <Fixed month="October" day="31" />
-      <Tag>Christian</Tag>
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <!--
-    State-specific holidays — All Saints' Day.
-  -->
-
-  <NotableDate name="All Saints' Day">
-    <Rule name="fixed-nov-01-de-bw"
-          category="Holiday"
-          territory="DE-BW,DE-BY,DE-NW,DE-RP,DE-SL"
-          nonWorking="true"
-          comment="Allerheiligen. A public holiday in Baden-Württemberg, Bavaria, North Rhine-Westphalia, Rhineland-Palatinate, and Saarland.">
-      <Fixed month="November" day="1" />
-      <Tag>Christian</Tag>
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <!--
-    State-specific holidays — Repentance Day (Saxony only).
-  -->
-
-  <NotableDate name="Repentance Day">
-    <Rule name="weekday-wed-onorbefore-nov-22-de-sn"
-          category="Holiday"
-          territory="DE-SN"
-          nonWorking="true"
-          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November — that is, the Wednesday on or before 22 November.">
-      <WeekdayNearDate dayOfWeek="Wednesday" month="November" day="22" direction="OnOrBefore" />
-      <Tag>Christian</Tag>
-      <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-
-</NotableDates>
+  </NotableDates>
+</NotableDateResource>

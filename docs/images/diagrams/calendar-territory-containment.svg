@@ -87,10 +87,10 @@
     <g transform="translate(36 212)" style="text-anchor: start">
       <text class="sub" x="0" y="0" style="text-anchor: start" font-weight="700" fill="#F8FAFC">Query semantics</text>
 
-      <text class="ok"  x="0"  y="18" style="text-anchor: start" font-weight="700">GetNotableDates(year, "AU")</text>
+      <text class="ok"  x="0"  y="18" style="text-anchor: start" font-weight="700">Resolve(year, "AU")</text>
       <text class="mut" x="20" y="32" style="text-anchor: start">→ rules at AU plus every AU-XX subdivision (national-level view)</text>
 
-      <text class="ok"  x="0"   y="50" style="text-anchor: start" font-weight="700">GetNotableDates(year, "AU-NSW")</text>
+      <text class="ok"  x="0"   y="50" style="text-anchor: start" font-weight="700">Resolve(year, "AU-NSW")</text>
       <text class="mut" x="20"  y="64" style="text-anchor: start">→ rules at AU and at AU-NSW</text>
       <text class="err" x="200" y="64" style="text-anchor: start" font-weight="700">(no AU-VIC, AU-QLD, AU-WA, or AU-NT rules)</text>
 

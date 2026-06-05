@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global international and United Nations notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-un.xml to the v2 cookbook schema. These are internationally recognized observances, including United
+  Nations-designated days; they are not universally public holidays. A territory pack imports only the concepts it
+  observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through the import
+  <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-un">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      United Nations and international observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- International Women's Day — 8 March; a UN day marking women's rights and achievements. -->
+    <NotableDate id="international-womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Day of Happiness — 20 March; UN day promoting happiness as a universal goal (from 2013). -->
+    <NotableDate id="international-day-of-happiness" displayName="International Day of Happiness" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Youth Day — 12 August; UN day on issues facing young people (from 2000). -->
+    <NotableDate id="international-youth-day" displayName="International Youth Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Day of Peace — 21 September; the UN "Peace Day" observing a global ceasefire and non-violence. -->
+    <NotableDate id="international-day-of-peace" displayName="International Day of Peace" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="September" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- United Nations Day — 24 October; anniversary of the 1945 entry into force of the UN Charter. -->
+    <NotableDate id="united-nations-day" displayName="United Nations Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Human Rights Day — 10 December; marks the 1948 adoption of the Universal Declaration of Human Rights. -->
+    <NotableDate id="human-rights-day" displayName="Human Rights Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Interfaith Harmony Week — first week of February (1-7 February); a seven-day UN span (from 2011). -->
+    <NotableDate id="world-interfaith-harmony-week" displayName="World Interfaith Harmony Week" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="7"><Applicability fromYear="2011" /><Strategy><Fixed month="February" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Press Freedom Day — 3 May; UN day on freedom of the press (from 1993). -->
+    <NotableDate id="world-press-freedom-day" displayName="World Press Freedom Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1993" /><Strategy><Fixed month="May" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Day of Democracy — 15 September; UN day on democratic principles (from 2008). -->
+    <NotableDate id="international-day-of-democracy" displayName="International Day of Democracy" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2008" /><Strategy><Fixed month="September" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Habitat Day — first Monday in October (not a fixed date); UN day on the state of towns and cities (from 1986). -->
+    <NotableDate id="world-habitat-day" displayName="World Habitat Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1986" /><Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

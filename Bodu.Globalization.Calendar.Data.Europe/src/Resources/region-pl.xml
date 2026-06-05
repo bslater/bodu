@@ -1,47 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Poland (PL) notable-date resource using the Western / Gregorian calendar.
+  ================================================================================================================
+  Poland (PL) — notable-date resource pack
+  ================================================================================================================
 
-  National public holidays (dni wolne od pracy).
+  Migrated from the v1 region-pl.xml to the v2 cookbook schema. All rules are scoped to territory "PL".
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="PL"; Poland-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared civil and Christian observances (including the Assumption of Mary) are IMPORTED from the europe-common
+      hub and given a PL territory scope through the import <Use> directive. The shared catalogue carries only the
+      bare calculation strategy; the territory supplies the local observance.
+
+    * Poland-specific concepts (Epiphany, Labour Day, Second Day of Christmas, Constitution Day, and Independence
+      Day) are declared INLINE below. Note that Constitution Day (3 May) and Corpus Christi sometimes bracket Labour
+      Day to form the "May long weekend" (majówka).
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="PL" />
-    <Use name="Epiphany" territory="PL" />
-    <Use name="Easter Sunday" territory="PL" />
-    <Use name="Easter Monday" territory="PL" />
-    <Use name="International Workers' Day" as="Labour Day" territory="PL" />
-    <Use name="Pentecost Sunday" as="Whit Sunday" territory="PL" />
-    <Use name="Corpus Christi" territory="PL" />
-    <Use name="Assumption of Mary" territory="PL" />
-    <Use name="All Saints' Day" territory="PL" />
-    <Use name="Christmas Day" territory="PL" />
-    <Use name="Boxing Day" as="Second Day of Christmas" territory="PL" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.pl">
 
   <!--
-    National Polish holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Constitution Day">
-    <Rule name="fixed-may-03-pl" category="Holiday" territory="PL" nonWorking="true" firstYear="1791"
-          comment="Święto Konstytucji 3 Maja. Commemorates the Constitution of 3 May 1791, the first codified national constitution in Europe.">
-      <Fixed month="May" day="3" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="Independence Day">
-    <Rule name="fixed-nov-11-pl" category="Holiday" territory="PL" nonWorking="true" firstYear="1918"
-          comment="Narodowe Święto Niepodległości. Marks Poland's regaining of independence in 1918 after 123 years of partition.">
-      <Fixed month="November" day="11" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Poland. New Year's Day
+      (1 January) carries a weekend roll to the next working day. Easter Monday (+1), Whit Sunday (+49, Zielone
+      Świątki), and Corpus Christi (+60, Boże Ciało) derive from the Easter Sunday anchor the hub re-exports.
+      Corpus Christi and All Saints' (1 November) are re-scoped to non-working public holidays; the Assumption
+      (15 August) is a non-working public holiday too. Christmas Day (25 December) is fixed.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="PL">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="PL" />
+      <Use notableDateRef="easter-monday" territory="PL" />
+      <Use notableDateRef="whit-sunday" territory="PL" />
+      <Use notableDateRef="corpus-christi" territory="PL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="PL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="assumption-of-mary" territory="PL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="PL" />
+    </Import>
+  </Imports>
 
-</NotableDates>
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany (Trzech Króli) — 6 January; a public holiday (restored as a day off in 2011). Strategy: Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pl"><Applicability><Territory code="PL" /></Applicability>
+        <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Labour Day (Święto Pracy) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pl"><Applicability><Territory code="PL" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas (Drugi dzień Świąt) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pl"><Applicability><Territory code="PL" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Constitution Day (Święto Konstytucji 3 Maja) — 3 May, marking the 1791 constitution. The fromYear="1791" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pl"><Applicability fromYear="1791"><Territory code="PL" /></Applicability>
+        <Strategy><Fixed month="May" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Narodowe Święto Niepodległości) — 11 November, marking Poland's 1918 restoration of sovereignty; the national day. The fromYear="1918" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="pl"><Applicability fromYear="1918"><Territory code="PL" /></Applicability>
+        <Strategy><Fixed month="November" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

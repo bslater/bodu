@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global animal and wildlife notable-date catalogue (Western / Gregorian calendar), migrated from the v1
+  global-animals.xml to the v2 cookbook schema. These are internationally recognized animal welfare and wildlife
+  conservation observances; they are not universally public holidays. A territory pack imports only the concepts it
+  observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through the import
+  <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id "default".
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-animals">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Animal-welfare and wildlife-conservation observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- World Wildlife Day — 3 March; UN day marking the 1973 signing of CITES (from 2014). -->
+    <NotableDate id="world-wildlife-day" displayName="World Wildlife Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2014" /><Strategy><Fixed month="March" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Bee Day — 20 May; UN day on pollinators, on the birthday of beekeeping pioneer Anton Janša (from 2018). -->
+    <NotableDate id="world-bee-day" displayName="World Bee Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2018" /><Strategy><Fixed month="May" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Tiger Day — 29 July; on tiger conservation, established at the 2010 Saint Petersburg Tiger Summit. -->
+    <NotableDate id="international-tiger-day" displayName="International Tiger Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2010" /><Strategy><Fixed month="July" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Cat Day — 8 August; celebrates cats and cat welfare (from 2002). -->
+    <NotableDate id="international-cat-day" displayName="International Cat Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2002" /><Strategy><Fixed month="August" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Elephant Day — 12 August; on the conservation of elephants (from 2012). -->
+    <NotableDate id="world-elephant-day" displayName="World Elephant Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="August" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- International Dog Day — 26 August; celebrates dogs and encourages adoption. -->
+    <NotableDate id="international-dog-day" displayName="International Dog Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- World Animal Day — 4 October; animal-welfare day held on the feast of St Francis of Assisi (from 1931). -->
+    <NotableDate id="world-animal-day" displayName="World Animal Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1931" /><Strategy><Fixed month="October" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

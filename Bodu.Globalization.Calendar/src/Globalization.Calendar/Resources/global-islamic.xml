@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Islamic (Hijri) notable-date catalogue, migrated from the v1 global-islamic.xml to the v2 cookbook schema. The
+  principal observances of the Islamic lunar calendar are expressed as fixed dates in the tabular Hijri calendar
+  (System.Globalization.HijriCalendar) and swept onto the requested Gregorian year, so the dates follow the engine's
+  tabular reckoning rather than local moon-sighting and may differ from gazetted dates by up to two days. A territory
+  pack imports the concepts it observes and supplies its own territory scope, category, non-working flag, and duration.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-islamic">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Hijri festivals (tabular calendar)
+      ============================================================================================================
+      Every entry below fixes a date in the Hijri lunar calendar and projects it onto the Gregorian year through
+      the BCL HijriCalendar. sweepCalendarYears="true" is essential because a Hijri year is about eleven days
+      shorter than a Gregorian one: the same Hijri month/day can therefore fall twice, once, or not at all within
+      a single Gregorian year, and the sweep emits each occurrence that lands in the requested Gregorian year.
+      Dates follow tabular reckoning and may differ from locally moon-sighted observance by up to two days.
+    -->
+
+    <!-- Ramadan — 1 Ramadan (Hijri month 9, day 1): start of the month of fasting; a 30-day span. -->
+    <NotableDate id="ramadan" displayName="Ramadan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="30"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="9" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Eid al-Fitr — 1 Shawwal (Hijri month 10, day 1): festival breaking the Ramadan fast; a 3-day span. -->
+    <NotableDate id="eid-al-fitr" displayName="Eid al-Fitr" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="3"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="10" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Eid al-Adha — 10 Dhu al-Hijjah (Hijri month 12, day 10): the Festival of Sacrifice, falling the day after
+      the Day of Arafah at the climax of the annual Hajj pilgrimage; a 4-day span (Eid plus the Tashriq days).
+    -->
+    <NotableDate id="eid-al-adha" displayName="Eid al-Adha" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="4"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="12" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Islamic New Year — 1 Muharram (Hijri month 1, day 1): first day of the Hijri year (Hijri New Year / Ras as-Sanah). -->
+    <NotableDate id="islamic-new-year" displayName="Islamic New Year" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day of Ashura — 10 Muharram (Hijri month 1, day 10): ten days into the new year. A day of voluntary fasting
+      in Sunni tradition and of mourning for the martyrdom of Husayn at Karbala in Shia tradition.
+    -->
+    <NotableDate id="day-of-ashura" displayName="Day of Ashura" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="1" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mawlid al-Nabi — 12 Rabi al-Awwal (Hijri month 3, day 12): observance of the birth of the Prophet Muhammad. -->
+    <NotableDate id="mawlid-al-nabi" displayName="Mawlid al-Nabi" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Hijri" />
+        <Strategy><Fixed month="3" day="12" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

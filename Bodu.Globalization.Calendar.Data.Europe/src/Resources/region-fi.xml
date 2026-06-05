@@ -1,57 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Finland (FI) notable-date resource using the Western / Gregorian calendar.
+  ================================================================================================================
+  Finland (FI) — notable-date resource pack
+  ================================================================================================================
 
-  National public holidays (juhlapyhät). Midsummer Day and All Saints' Day each
-  fall on the Saturday within a fixed seven-day window and are expressed with the
-  WeekdayNearDate strategy (the Saturday on or after the window's first day).
+  Migrated from the v1 region-fi.xml to the v2 cookbook schema. All rules are scoped to territory "FI".
 
-  Common European observances are inherited from europe-common.xml and
-  localized with territory="FI"; Finland-specific holidays are declared below.
+  How this resource is built:
+
+    * Shared European observances are IMPORTED from the europe-common hub and given an FI territory scope through the
+      import <Use> directive. The shared catalogue carries only the bare calculation strategy; the territory supplies
+      the local observance.
+
+    * Finland-specific concepts (Epiphany, May Day, Saint Stephen's Day, Midsummer Day, All Saints' Day, and
+      Independence Day) are declared INLINE below. Note that Finnish Midsummer and All Saints' float to a Saturday,
+      so they are modelled with the WeekdayNearDate strategy rather than a fixed date.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
-<NotableDates xmlns="urn:bodu:globalization:calendar"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <UseFrom resource="./europe-common.xml">
-    <Use name="New Year's Day" territory="FI" />
-    <Use name="Epiphany" territory="FI" />
-    <Use name="Easter Sunday" territory="FI" />
-    <Use name="Good Friday" territory="FI" />
-    <Use name="Easter Monday" territory="FI" />
-    <Use name="International Workers' Day" as="May Day" territory="FI" />
-    <Use name="Ascension Day" territory="FI" />
-    <Use name="Pentecost Sunday" as="Whit Sunday" territory="FI" />
-    <Use name="Christmas Eve" nonWorking="true" category="Holiday" territory="FI" />
-    <Use name="Christmas Day" territory="FI" />
-    <Use name="Boxing Day" as="Saint Stephen's Day" territory="FI" />
-  </UseFrom>
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.fi">
 
   <!--
-    National Finnish holidays.
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
   -->
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
-  <NotableDate name="Midsummer Day">
-    <Rule name="weekday-sat-onorafter-jun-20-fi" category="Holiday" territory="FI" nonWorking="true"
-          comment="Juhannuspäivä. The Saturday falling between 20 and 26 June.">
-      <WeekdayNearDate dayOfWeek="Saturday" month="June" day="20" direction="OnOrAfter" />
-      <Tag>Cultural</Tag>
-    </Rule>
-  </NotableDate>
+  <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
+    <AdjustmentPolicy id="weekend-roll" priority="100">
+      <Trigger type="IfWeekend" />
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute public holiday" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
 
-  <NotableDate name="All Saints' Day">
-    <Rule name="weekday-sat-onorafter-oct-31-fi" category="Holiday" territory="FI" nonWorking="true"
-          comment="Pyhäinpäivä. The Saturday falling between 31 October and 6 November.">
-      <WeekdayNearDate dayOfWeek="Saturday" month="October" day="31" direction="OnOrAfter" />
-      <Tag>Christian</Tag>
-    </Rule>
-  </NotableDate>
+  <Imports>
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Finland. New Year's Day (1
+      January) carries a weekend roll to the next working day. Good Friday (-2), Easter Monday (+1), Ascension
+      (+39), and Whit Sunday (+49) derive from the Easter Sunday anchor the hub re-exports. Ascension and Christmas
+      Eve (24 December) are re-scoped to non-working public holidays; Christmas Eve is effectively the principal
+      Finnish Christmas day off. Christmas Day (25 December) is fixed.
+    -->
+    <Import resource="europe-common">
+      <Use notableDateRef="new-years-day" territory="FI">
+        <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
+      </Use>
+      <Use notableDateRef="easter-sunday" territory="FI" />
+      <Use notableDateRef="good-friday" territory="FI" />
+      <Use notableDateRef="easter-monday" territory="FI" />
+      <Use notableDateRef="ascension-day" territory="FI" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="whit-sunday" territory="FI" />
+      <Use notableDateRef="christmas-eve" territory="FI" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="FI" />
+    </Import>
+  </Imports>
 
-  <NotableDate name="Independence Day">
-    <Rule name="fixed-dec-06-fi" category="Holiday" territory="FI" nonWorking="true" firstYear="1917"
-          comment="Itsenäisyyspäivä. Marks Finland's declaration of independence from Russia on 6 December 1917.">
-      <Fixed month="December" day="6" />
-      <Tag>National</Tag>
-    </Rule>
-  </NotableDate>
+  <NotableDates>
 
-</NotableDates>
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany (Loppiainen) — 6 January; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fi"><Applicability><Territory code="FI" /></Applicability>
+        <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- May Day (Vappu) — 1 May, a labour-movement and spring holiday; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="may-day" displayName="May Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fi"><Applicability><Territory code="FI" /></Applicability>
+        <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Stephen's Day (Tapaninpäivä) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fi"><Applicability><Territory code="FI" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Midsummer Day (Juhannuspäivä) — the Saturday falling between 20 and 26 June (the Saturday on or after 20
+      June). A public holiday; the eve is the more widely celebrated day. Strategy: WeekdayNearDate (Saturday on or
+      after 20 June).
+    -->
+    <NotableDate id="midsummer-day" displayName="Midsummer Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fi"><Applicability><Territory code="FI" /></Applicability>
+        <Strategy><WeekdayNearDate month="June" day="20" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      All Saints' Day (Pyhäinpäivä) — the Saturday falling between 31 October and 6 November (the Saturday on or
+      after 31 October). Unlike the fixed 1 November feast elsewhere, Finland observes it on a floating Saturday. A
+      public holiday. Strategy: WeekdayNearDate (Saturday on or after 31 October).
+    -->
+    <NotableDate id="all-saints-day" displayName="All Saints' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fi"><Applicability><Territory code="FI" /></Applicability>
+        <Strategy><WeekdayNearDate month="October" day="31" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Itsenäisyyspäivä) — 6 December, marking the 1917 declaration of independence; the national day. The fromYear="1917" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fi"><Applicability fromYear="1917"><Territory code="FI" /></Applicability>
+        <Strategy><Fixed month="December" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

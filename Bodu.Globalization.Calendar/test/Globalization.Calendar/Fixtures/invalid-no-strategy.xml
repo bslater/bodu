@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A rule whose Strategy element has no strategy child. The XSD requires exactly one strategy choice
+  (Strategy.choice minOccurs="1"), so the document fails schema validation with BODU-CAL2-SCHEMA.
+  (In v1 a rule with no strategy threw during construction; v2 reports it as a schema diagnostic.)
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.invalid.no-strategy">
+  <NotableDates>
+    <NotableDate id="no-strategy" displayName="No Strategy" category="PublicHoliday">
+      <Rules><Rule id="r"><Strategy /></Rule></Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>
