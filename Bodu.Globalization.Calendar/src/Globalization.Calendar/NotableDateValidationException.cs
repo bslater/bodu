@@ -8,8 +8,32 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// The exception thrown when a notable-date document resource fails to load because one or more error-severity
-/// validation diagnostics were produced.
+/// validation diagnostics were produced. This class cannot be inherited.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The <see cref="Diagnostics" /> property carries the full diagnostic set — both the errors that caused the failure
+/// and any warnings gathered along the way — so a caller can report every problem at once rather than discovering them
+/// one load at a time.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// try
+/// {
+///     NotableDateResource resource = NotableDateResourceLoader.Load(documentXml);
+/// }
+/// catch (NotableDateValidationException ex)
+/// {
+///     foreach (NotableDateValidationDiagnostic diagnostic in ex.Diagnostics)
+///         Console.WriteLine($"{diagnostic.Severity} {diagnostic.Code}: {diagnostic.Message}");
+/// }
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateValidationDiagnostic" />
+/// <seealso cref="NotableDateResourceLoader" />
 public sealed class NotableDateValidationException : Exception
 {
     /// <summary>

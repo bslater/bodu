@@ -15,7 +15,14 @@ namespace Bodu.Globalization.Calendar;
 /// A resource is immutable once loaded. Imports and override operations are applied during loading, so the concepts and
 /// rules exposed here are the effective set used by the resolver.
 /// </para>
+/// <para>
+/// <strong>How obtained.</strong> A resource is normally produced by <see cref="NotableDateResourceLoader" />, a data
+/// pack factory, or <c>NotableDateDocumentBuilder.Build</c>, then handed to a <see cref="NotableDateService" />. The
+/// public constructor exists for advanced code-first assembly; most consumers never call it directly.
+/// </para>
 /// </remarks>
+/// <seealso cref="NotableDateResourceLoader" />
+/// <seealso cref="NotableDateService" />
 public sealed class NotableDateResource
 {
     /// <summary>
