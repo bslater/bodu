@@ -24,6 +24,44 @@ namespace Bodu.Globalization.Calendar;
 /// provider that needs observed-date shifting must compute it itself.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Contribute a company founding anniversary that is not expressible as an authored rule.
+/// public sealed class FoundingDayProvider : INotableDateProvider
+/// {
+///     public IEnumerable<NotableDate> GetNotableDates(DateRange range, string territory)
+///     {
+///         for (int year = range.StartDate.Year; year <= range.EndDate.Year; year++)
+///         {
+///             DateOnly date = new(year, 6, 15);
+///             yield return new NotableDate(
+///                 Date: date,
+///                 ActualDate: date,
+///                 IsObserved: false,
+///                 Identity: new NotableDateRuleIdentity("company", "company-founding", "fixed"),
+///                 DisplayName: "Company Founding Day",
+///                 TerritoryCode: territory,
+///                 Category: NotableDateCategory.Observance,
+///                 Priority: 0,
+///                 DurationDays: 1,
+///                 IsNonWorkingDay: false,
+///                 Tags: Array.Empty<string>(),
+///                 AdjustmentPolicyId: null,
+///                 AdjustmentReason: null);
+///         }
+///     }
+/// }
+///
+/// // Register the provider through the collaborator-aware constructor.
+/// NotableDateService service = new(
+///     resource, algorithms: null, collisionResolver: null, handlers: null,
+///     triggerHandlers: null, providers: new[] { new FoundingDayProvider() });
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDate" />
+/// <seealso cref="NotableDateService" />
 public interface INotableDateProvider
 {
     /// <summary>

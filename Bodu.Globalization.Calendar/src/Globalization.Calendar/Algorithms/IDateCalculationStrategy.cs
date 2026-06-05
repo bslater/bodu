@@ -12,8 +12,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The first cut of the v2 engine ships a single implementation, <see cref="FixedDateStrategy" />. The interface is the
-/// extension point through which later phases add weekday-based, offset, and algorithm strategies.
+/// The engine ships a strategy per authoring shape — among them <see cref="FixedDateStrategy" />,
+/// <see cref="DayOfWeekInMonthStrategy" />, <see cref="RelativeWeekdayInMonthStrategy" />,
+/// <see cref="WeekdayNearDateStrategy" />, <see cref="OffsetFromRuleStrategy" />, and
+/// <see cref="AlgorithmDateStrategy" /> (which dispatches to a registered <see cref="INotableDateAlgorithm" />). A
+/// strategy is selected per rule when a document is loaded; consumers extend the catalogue through
+/// <see cref="INotableDateAlgorithm" /> rather than by implementing this interface directly.
 /// </para>
 /// </remarks>
 public interface IDateCalculationStrategy

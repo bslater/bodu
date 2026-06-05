@@ -17,6 +17,27 @@ namespace Bodu.Globalization.Calendar;
 /// it can resolve other rules or test whether candidate days are already claimed by non-working occurrences.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Move the occurrence to the next day that is not already claimed by another non-working date.
+/// public sealed class NextFreeDayHandler : IAdjustmentHandler
+/// {
+///     public DateOnly? Adjust(AdjustmentHandlerContext context)
+///     {
+///         DateOnly date = context.BaseDate;
+///         while (context.IsOccupied(date))
+///             date = date.AddDays(1);
+///
+///         return date == context.BaseDate ? null : date; // null leaves it on the calculated date
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="AdjustmentHandlerContext" />
+/// <seealso cref="AdjustmentAction" />
+/// <seealso cref="IAdjustmentHandlerRegistry" />
 public interface IAdjustmentHandler
 {
     /// <summary>

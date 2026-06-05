@@ -21,7 +21,34 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// Trust is evaluated before the plugin's entry-point type is activated, so an untrusted assembly's constructor never
 /// runs. The file-path overload loads the assembly into a dedicated <see cref="AssemblyLoadContext" />.
 /// </para>
+/// <para>
+/// <strong>When to use.</strong> Load a plugin with one of the <c>LoadFrom</c> overloads, register its contributed
+/// algorithms into a <see cref="NotableDateAlgorithmRegistry" /> with <see cref="RegisterAlgorithms" />, then pass that
+/// registry to both <see cref="NotableDateResourceLoader" /> (so documents may reference the plugin's algorithm keys
+/// during validation) and the <see cref="NotableDateService" /> (so they resolve at query time). Always supply a
+/// production-grade <see cref="IPluginTrustPolicy" /> — <see cref="AllowAllPluginTrustPolicy" /> is for development
+/// only.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Gate activation behind a strong-name trust policy, then register the plugin's algorithms.
+/// IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(new[] { "c0ffee1234567890" });
+/// INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("Contoso.Calendar.Plugin.dll", trust);
+///
+/// NotableDateAlgorithmRegistry registry = new();
+/// int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
+///
+/// // Wire the registry into the load and resolve pipeline so rules can reference the plugin keys.
+/// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml, _ => null, registry);
+/// NotableDateService service = new(resource, registry);
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="IPluginTrustPolicy" />
+/// <seealso cref="INotableDateAlgorithmPlugin" />
+/// <seealso cref="NotableDateAlgorithmRegistry" />
 public static class NotableDatePluginLoader
 {
     /// <summary>

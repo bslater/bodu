@@ -10,6 +10,29 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Provides a fluent surface for authoring a notable-date concept: its identity, default category, duration and
 /// non-working flags, concept-level tags, and one or more calculation rules.
 /// </summary>
+/// <remarks>
+/// <para>
+/// A concept groups the rules that express the same notable date across territories or eras — for example a national
+/// rule and a regional variant that calculate the same holiday differently. Set concept-level defaults (category,
+/// duration, non-working) once, then add each variant with
+/// <see cref="AddRule(string, System.Action{NotableDateRuleBuilder})" />; a rule may override the defaults it needs to.
+/// Configure the builder inside
+/// <see cref="NotableDateDocumentBuilder.AddNotableDate(string, string, NotableDateCategory, System.Action{NotableDateDefinitionBuilder})" />.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// document.AddNotableDate("anzac-day", "Anzac Day", NotableDateCategory.PublicHoliday, c => c
+///     .AsNonWorkingByDefault()
+///     .AddTag("Remembrance")
+///     .AddRule("au", r => r.ForTerritory("AU").Fixed(4, 25))
+///     .AddRule("nz", r => r.ForTerritory("NZ").Fixed(4, 25)));
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateDocumentBuilder" />
+/// <seealso cref="NotableDateRuleBuilder" />
 public sealed class NotableDateDefinitionBuilder
 {
     /// <summary>

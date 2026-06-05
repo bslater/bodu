@@ -21,7 +21,45 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// XML form expresses every feature of the schema, whereas the JSON form rendered by <see cref="ToJson" /> is
 /// restricted to the subset the companion JSON schema can represent.
 /// </para>
+/// <para>
+/// <strong>Workflow.</strong> Obtain a builder with <see cref="Create()" /> or <see cref="Create(string, string)" />,
+/// declare reusable adjustment policies with <see cref="AddAdjustmentPolicy(string, Action{AdjustmentPolicyBuilder})" />,
+/// add each notable-date concept with
+/// <see cref="AddNotableDate(string, string, NotableDateCategory, Action{NotableDateDefinitionBuilder})" />, then
+/// terminate by materializing a <see cref="NotableDateResource" /> with <see cref="Build()" />, serializing with
+/// <see cref="ToXml" /> / <see cref="ToJson" /> / <see cref="Save(string)" />, or wrapping the result with
+/// <see cref="ToProvider" />.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("contoso-holidays")
+///     .AddAdjustmentPolicy("weekend-roll", p => p
+///         .When(AdjustmentTrigger.IfWeekend)
+///         .Then(AdjustmentAction.MoveToNextWorkingDay)
+///         .Emit(EmissionMode.ObservedOnly))
+///     .AddNotableDate("christmas", "Christmas Day", NotableDateCategory.PublicHoliday, c => c
+///         .AsNonWorkingByDefault()
+///         .AddRule("fixed", r => r
+///             .Fixed(12, 25)
+///             .WithAdjustment("weekend-roll")))
+///     .Build();
+///
+/// NotableDateService service = new(resource);
+///
+/// // The same model serializes to XML or JSON for storage or distribution.
+/// NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso-holidays")
+///     .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c => c
+///         .AddRule("fixed", r => r.Fixed(1, 1)));
+/// string xml = builder.ToXml();
+/// string json = builder.ToJson();
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateResourceLoader" />
+/// <seealso cref="NotableDateService" />
 public sealed partial class NotableDateDocumentBuilder
 {
     /// <summary>

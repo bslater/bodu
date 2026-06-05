@@ -24,7 +24,38 @@ namespace Bodu.Globalization.Calendar;
 /// The overloads without a resolver cannot satisfy imports; a document declaring <c>Imports</c> must be loaded with the
 /// resolver overload, whose delegate maps a resource name to that resource's XML or JSON content.
 /// </para>
+/// <para>
+/// <strong>When to use.</strong> Call <see cref="Load(string)" /> / <see cref="LoadJson(string)" /> (or the
+/// <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document imports
+/// shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the data-pack
+/// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the
+/// embedded resources for you.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // A self-contained document with no imports.
+/// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml);
+/// NotableDateService service = new(resource);
+///
+/// // A document that imports shared concepts: map each import name to its content.
+/// var library = new Dictionary<string, string>(StringComparer.Ordinal)
+/// {
+///     ["common-christian"] = christianXml,
+/// };
+/// NotableDateResource composed = NotableDateResourceLoader.Load(
+///     documentXml,
+///     name => library.TryGetValue(name, out string? content) ? content : null);
+///
+/// // The same pipeline accepts the JSON projection of the schema.
+/// NotableDateResource fromJson = NotableDateResourceLoader.LoadJson(documentJson);
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" />
+/// <seealso cref="NotableDateValidationException" />
 public static class NotableDateResourceLoader
 {
     /// <summary>

@@ -16,6 +16,21 @@ namespace Bodu.Extensions;
 /// <see cref="DateTime" /> preserve the original time-of-day and <see cref="DateTime.Kind" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// INotableDateService service = AmericasCalendarData.CreateService("US");
+/// DateTime stamp = new(2026, 12, 25, 9, 30, 0, DateTimeKind.Local); // Christmas morning
+///
+/// bool working = stamp.IsWorkingDay(service, "US"); // false
+///
+/// // The next working day keeps the original 09:30 local time-of-day.
+/// DateTime resume = stamp.NextWorkingDay(service, "US");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateOnlyExtensions" />
+/// <seealso cref="INotableDateService" />
 public static class NotableDateTimeExtensions
 {
     /// <summary>

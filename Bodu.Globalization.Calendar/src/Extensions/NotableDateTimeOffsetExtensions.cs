@@ -17,6 +17,21 @@ namespace Bodu.Extensions;
 /// <see cref="DateTimeOffset.Offset" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// INotableDateService service = AmericasCalendarData.CreateService("US");
+/// DateTimeOffset stamp = new(2026, 7, 3, 14, 0, 0, TimeSpan.FromHours(-5)); // observed Independence Day
+///
+/// bool working = stamp.IsWorkingDay(service, "US"); // false
+///
+/// // The next working day keeps the original time-of-day and -05:00 offset.
+/// DateTimeOffset resume = stamp.NextWorkingDay(service, "US");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateOnlyExtensions" />
+/// <seealso cref="INotableDateService" />
 public static class NotableDateTimeOffsetExtensions
 {
     /// <summary>

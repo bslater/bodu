@@ -16,7 +16,29 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Implementations must be deterministic, side-effect-free, and thread-safe, and should return <see langword="null" />
 /// for a year outside their supported range rather than throwing.
 /// </para>
+/// <para>
+/// <strong>When to implement.</strong> Provide a custom algorithm when a notable date follows a computation the
+/// built-in strategies do not cover — for example an astronomical event or a bespoke ecclesiastical rule. Register the
+/// implementation under a key in an <see cref="INotableDateAlgorithmRegistry" />, pass that registry to the loader and
+/// the <see cref="NotableDateService" />, and reference the key from a rule's algorithm strategy.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // A custom algorithm returning the March equinox (UTC) for the supplied year.
+/// public sealed class MarchEquinoxAlgorithm : INotableDateAlgorithm
+/// {
+///     public DateOnly? Calculate(int year) =>
+///         year is >= 1900 and <= 2100
+///             ? DateOnly.FromDateTime(AstronomyTables.MarchEquinox(year))
+///             : null; // unsupported year: return null rather than throw
+/// }
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateAlgorithmRegistry" />
+/// <seealso cref="AlgorithmDateStrategy" />
 public interface INotableDateAlgorithm
 {
     /// <summary>

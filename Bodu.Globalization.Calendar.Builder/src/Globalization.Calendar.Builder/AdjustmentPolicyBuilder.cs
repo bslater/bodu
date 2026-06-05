@@ -12,6 +12,29 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Provides a fluent surface for authoring a reusable adjustment policy: its scope, the trigger that activates it, the
 /// action it performs, the emission mode of the resulting occurrence, and any custom handler parameters.
 /// </summary>
+/// <remarks>
+/// <para>
+/// A policy reads as a sentence: <c>When</c> a trigger holds, <c>Then</c> perform an action, and <c>Emit</c> the
+/// resulting occurrence in the chosen mode. Configure the builder inside
+/// <see cref="NotableDateDocumentBuilder.AddAdjustmentPolicy(string, System.Action{AdjustmentPolicyBuilder})" /> and
+/// reference the policy from a rule with <see cref="NotableDateRuleBuilder.WithAdjustment(string)" />.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // "If the holiday lands on a weekend, move it to the next working day and emit only the observed date."
+/// builder.AddAdjustmentPolicy("weekend-roll", p => p
+///     .When(AdjustmentTrigger.IfWeekend)
+///     .Then(AdjustmentAction.MoveToNextWorkingDay)
+///     .SkipNonWorkingDates()
+///     .Emit(EmissionMode.ObservedOnly)
+///     .WithReason("Observed (weekend roll-forward)"));
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateDocumentBuilder" />
+/// <seealso cref="NotableDateRuleBuilder" />
 public sealed class AdjustmentPolicyBuilder
 {
     /// <summary>

@@ -17,6 +17,26 @@ namespace Bodu.Globalization.Calendar;
 /// resolution context, so it can resolve other rules for the same year when deciding whether to fire.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Fire only in leap years, reading a policy parameter for the toggle.
+/// public sealed class LeapYearTriggerHandler : IAdjustmentTriggerHandler
+/// {
+///     public bool ShouldAdjust(AdjustmentTriggerContext context)
+///     {
+///         bool enabled = !context.Parameters.TryGetValue("enabled", out string? flag)
+///             || bool.Parse(flag);
+///
+///         return enabled && DateTime.IsLeapYear(context.BaseDate.Year);
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="AdjustmentTriggerContext" />
+/// <seealso cref="AdjustmentTrigger" />
+/// <seealso cref="IAdjustmentTriggerHandlerRegistry" />
 public interface IAdjustmentTriggerHandler
 {
     /// <summary>

@@ -9,15 +9,55 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Represents a composable predicate over resolved <see cref="NotableDate" /> occurrences, used to restrict the results
 /// returned by <see cref="INotableDateService" /> to those matching a category, tag, name, duration, or observed-state
-/// criterion.
+/// criterion. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Filters are immutable and may be combined with <see cref="And(NotableDateFilter)" />,
-/// <see cref="Or(NotableDateFilter)" />, <see cref="AllOf(NotableDateFilter[])" />, and
-/// <see cref="AnyOf(NotableDateFilter[])" /> to express compound criteria.
+/// <strong>Construction.</strong> A filter is created through the static factory methods on this class — for example
+/// <see cref="ForCategory(NotableDateCategory)" />, <see cref="WithTag(string)" />,
+/// <see cref="IsNonWorkingDay()" />, and <see cref="InDateRange(DateOnly, DateOnly)" />. There is no public
+/// constructor; every factory returns an immutable instance.
+/// </para>
+/// <para>
+/// <strong>Composition.</strong> Filters combine through the instance operators <see cref="And(NotableDateFilter)" />,
+/// <see cref="Or(NotableDateFilter)" />, and <see cref="Not()" />, and the variadic factories
+/// <see cref="AllOf(NotableDateFilter[])" /> and <see cref="AnyOf(NotableDateFilter[])" />. Because every instance is
+/// immutable, composition always produces a new filter and never mutates an operand, so a filter can be cached and
+/// reused across queries and threads.
+/// </para>
+/// <para>
+/// <strong>Evaluation.</strong> A filter is evaluated against each materialized occurrence after resolution: pass a
+/// filter to one of the <c>Resolve</c> overloads on <see cref="INotableDateService" /> (which keeps only the
+/// occurrences for which <see cref="Matches(NotableDate)" /> returns <see langword="true" />), or call
+/// <see cref="Matches(NotableDate)" /> directly to test a single occurrence.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// INotableDateService service = AmericasCalendarData.CreateService("US");
+/// DateRange year = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+///
+/// // Non-working public holidays only.
+/// NotableDateFilter publicHolidays = NotableDateFilter
+///     .ForCategory(NotableDateCategory.PublicHoliday)
+///     .And(NotableDateFilter.IsNonWorkingDay());
+///
+/// IReadOnlyList<NotableDate> holidays = service.Resolve(year, "US", publicHolidays);
+///
+/// // Religious or cultural dates tagged "Christian", excluding observed substitutes.
+/// NotableDateFilter christian = NotableDateFilter
+///     .ForAnyCategory(NotableDateCategory.Religious, NotableDateCategory.Cultural)
+///     .And(NotableDateFilter.WithTag("Christian"))
+///     .And(NotableDateFilter.WasAdjusted().Not());
+///
+/// IReadOnlyList<NotableDate> observances = service.Resolve(year, "US", christian);
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDate" />
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateCategory" />
 public sealed class NotableDateFilter
 {
     /// <summary>

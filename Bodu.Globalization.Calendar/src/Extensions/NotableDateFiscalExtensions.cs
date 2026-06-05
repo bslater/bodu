@@ -17,6 +17,23 @@ namespace Bodu.Extensions;
 /// or inside the boundary, found by snapping the period's first day forward and its last day backward.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// INotableDateService service = AmericasCalendarData.CreateService("US");
+/// DateOnly anyDay = new(2026, 9, 15);
+///
+/// // United States federal fiscal year begins 1 October.
+/// DateOnly fyOpen = anyDay.FirstWorkingDayOfFiscalYear(10, service, "US");
+/// DateOnly fyClose = anyDay.LastWorkingDayOfFiscalYear(10, service, "US");
+///
+/// // The working-day bounds of the containing fiscal quarter.
+/// DateOnly qOpen = anyDay.FirstWorkingDayOfFiscalQuarter(10, service, "US");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateOnlyExtensions" />
+/// <seealso cref="INotableDateService" />
 public static class NotableDateFiscalExtensions
 {
     /// <summary>

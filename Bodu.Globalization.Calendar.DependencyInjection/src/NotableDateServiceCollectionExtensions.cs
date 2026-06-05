@@ -17,7 +17,30 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// The service is registered as a singleton because a <see cref="NotableDateResource" /> is immutable and the resolver
 /// holds no shared mutable state, so a single instance can be shared across the application safely.
 /// </para>
+/// <para>
+/// <strong>When to use.</strong> Use <see cref="AddNotableDateService(IServiceCollection, NotableDateResource)" /> when
+/// the resource is available at startup, the factory overload when it must be built from other registered services, and
+/// <see cref="AddReloadableNotableDateService(IServiceCollection, NotableDateResource)" /> when the data must be
+/// swapped at runtime without restarting the host.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Register a service over a bundled data pack at application startup.
+/// builder.Services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
+///
+/// // Consume it anywhere through constructor injection.
+/// public sealed class PayrollCalendar(INotableDateService notableDates)
+/// {
+///     public bool IsBankHoliday(DateOnly date) =>
+///         notableDates.Resolve(date, "US").Any(n => n.Category == NotableDateCategory.BankHoliday);
+/// }
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateResource" />
 public static class NotableDateServiceCollectionExtensions
 {
     /// <summary>
