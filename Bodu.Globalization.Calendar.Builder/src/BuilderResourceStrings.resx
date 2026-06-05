@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Op_Invalid_RuleStrategyNotSet" xml:space="preserve">
+    <value>The rule '{0}' has no calculation strategy. Configure exactly one strategy (for example Fixed, DayOfWeekInMonth, OffsetFromRule, or Algorithm) before building or serializing the document.</value>
+  </data>
+  <data name="Op_Invalid_RuleStrategyAlreadySet" xml:space="preserve">
+    <value>The rule already has a calculation strategy configured. A rule must declare exactly one strategy; remove the existing strategy before configuring a different one.</value>
+  </data>
+  <data name="Op_Invalid_DefinitionHasNoRules" xml:space="preserve">
+    <value>The notable-date concept '{0}' has no rules. Add at least one rule before building or serializing the document.</value>
+  </data>
+  <data name="Op_Invalid_DocumentResourceIdNotSet" xml:space="preserve">
+    <value>The document has no resource identifier. Call WithResourceId or Create(resourceId) before building or serializing the document.</value>
+  </data>
+  <data name="Op_Invalid_AdjustmentPolicyIncomplete" xml:space="preserve">
+    <value>The adjustment policy '{0}' is incomplete. A policy must declare a trigger (When), an action (Then), and an emission (Emit) before building or serializing the document.</value>
+  </data>
+  <data name="Op_NotSupported_JsonFeature" xml:space="preserve">
+    <value>The document cannot be serialized to JSON because it uses the feature '{0}', which the JSON subset schema cannot represent. Use XML serialization for full-fidelity documents.</value>
+  </data>
+  <data name="Arg_Invalid_UnknownFileExtension" xml:space="preserve">
+    <value>The file path '{0}' has an unrecognized extension. Use a '.xml' or '.json' extension, or specify the format explicitly.</value>
+  </data>
+  <data name="Format_Invalid_RootElement" xml:space="preserve">
+    <value>The document root element is '{0}' but a 'NotableDateResource' element in the 'urn:bodu:globalization:calendar' namespace was expected.</value>
+  </data>
+  <data name="Format_Invalid_StrategyChoiceCount" xml:space="preserve">
+    <value>The rule '{0}' declares {1} calculation strategies but exactly one is required.</value>
+  </data>
+  <data name="Format_Invalid_JsonRoot" xml:space="preserve">
+    <value>The JSON document root must be an object describing a notable-date resource.</value>
+  </data>
+  <data name="Format_Invalid_JsonNotWellFormed" xml:space="preserve">
+    <value>The JSON content is not well-formed: {0}</value>
+  </data>
+  <data name="Format_Invalid_XmlNotWellFormed" xml:space="preserve">
+    <value>The XML content is not well-formed: {0}</value>
+  </data>
+</root>

@@ -16,6 +16,8 @@
   <Folder Name="/Bodu.Globalization.Calendar/">
     <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data.Americas\src\Bodu.Globalization.Calendar.Data.Americas.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data.Americas\test\Bodu.Globalization.Calendar.Data.Americas.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data.AsiaPacific\src\Bodu.Globalization.Calendar.Data.AsiaPacific.csproj" />
