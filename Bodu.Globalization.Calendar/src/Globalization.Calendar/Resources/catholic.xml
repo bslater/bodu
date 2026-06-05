@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  catholic — Catholic patron-saint feast-day catalogue (Western / Gregorian calendar)
+  ================================================================================================================
+
+  A common-library catalogue of fixed-date Catholic patron-saint feast days, a sibling to christian-western (the
+  Easter cluster and the major fixed feasts) and christian-orthodox. These are the saints' days that territory
+  packs observe as national or cultural days — most famously Saint Patrick's Day — so they are defined here once
+  for territory packs to import rather than each pack re-declaring them.
+
+  Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
+  stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend
+  adjustment there. The catalogue default category is Religious (these are liturgical feast days); a pack that
+  observes one as a secular cultural day or a public holiday overrides category/nonWorking on its own <Use>.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.catholic">
+
+  <NotableDates>
+
+    <!-- Saint David's Day — 1 March; feast of Saint David, patron saint of Wales. Strategy: Fixed day-of-month. -->
+    <NotableDate id="st-davids-day" displayName="Saint David's Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Patrick's Day — 17 March; feast of Saint Patrick, patron saint of Ireland, widely observed as a cultural day across the Irish diaspora (a public holiday in Ireland). Strategy: Fixed day-of-month. -->
+    <NotableDate id="st-patricks-day" displayName="Saint Patrick's Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="17" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint George's Day — 23 April; feast of Saint George, patron saint of England (and observed in Newfoundland and Labrador on the nearest Monday). Strategy: Fixed day-of-month. -->
+    <NotableDate id="st-georges-day" displayName="Saint George's Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Andrew's Day — 30 November; feast of Saint Andrew, patron saint of Scotland. Strategy: Fixed day-of-month. -->
+    <NotableDate id="st-andrews-day" displayName="Saint Andrew's Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
