@@ -8,6 +8,8 @@ Recipe-style walk-throughs for **Bodu.Globalization.Calendar**, organized by nam
 
 If you are new to the library, start with the [introduction](../../docs/calendar/index.md), the [Core concepts](../../docs/calendar/concepts.md) glossary, and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](xref:Bodu.Globalization.Calendar).
 
+> **Looking for the data?** The [Notable-date catalogue](catalogue/index.md) lists what notable dates the **v2** calendar resources include and how regions and territories differ — generated from the XML, organized by theme and by region, with a cross-region comparison matrix.
+
 ## How the library works
 
 ![NotableDateService resolution pipeline](../../images/diagrams/calendar-resolution-pipeline.svg)
