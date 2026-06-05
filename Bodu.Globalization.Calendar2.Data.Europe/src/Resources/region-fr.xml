@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  French notable-date resource, migrated from the v1 region-fr.xml to the v2 cookbook schema. France does not roll
-  weekend public holidays, so no weekend adjustment is applied. Shared civil and Christian observances are imported from
-  the global-core and christian-western catalogues; the remaining entries are territory-local concepts defined inline.
+  ================================================================================================================
+  France (FR) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-fr.xml to the v2 cookbook schema. All rules are scoped to territory "FR"; France has
+  no subdivision-specific holidays in this pack (the Alsace-Moselle local feasts are not modelled).
+
+  How this resource is built:
+
+    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
+      christian-western) and given an FR territory scope through the import <Use> directive. The shared catalogue
+      carries only the bare calculation strategy; the territory supplies the local observance.
+
+    * France does NOT roll weekend public holidays onto the following Monday, so no adjustment policy is declared
+      and none is referenced.
+
+    * France-specific concepts (Labour Day, V-E Day, Bastille Day, Armistice Day, and the widely marked cultural
+      days) are declared INLINE below.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.fr">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <Imports>
+    <!--
+      Civil core. New Year's Day (1 January); imported with its shared fixed-date strategy and no weekend roll.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="FR" />
     </Import>
+    <!--
+      Western Christian feasts. Easter Monday (+1), Ascension (+39), and Whit Monday (+50) derive from the Easter
+      Sunday anchor in the shared catalogue. Ascension and All Saints' (1 November) are re-scoped to PublicHoliday
+      with nonWorking="true" because they are statutory holidays in France. Christmas Day (25 December) is fixed.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="FR" />
       <Use notableDateRef="easter-monday" territory="FR" />
@@ -24,42 +51,64 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Cultural and civic observances (widely marked, not public holidays)
+      ============================================================================================================
+    -->
+
+    <!-- Valentine's Day — 14 February; widely observed, not a public holiday. -->
     <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Women's Day — 8 March; an observance, not a public holiday. -->
     <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="March" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <NotableDate id="labour-day" displayName="Fête du Travail" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <NotableDate id="victory-in-europe-day" displayName="Victory in Europe Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="May" day="8" /></Strategy></Rule></Rules>
-    </NotableDate>
-
+    <!-- Mother's Day (Fête des Mères) — last Sunday in May in France (moved to the first Sunday in June when it coincides with Whit Sunday, not modelled). An observance. Strategy: DayOfWeekInMonth (last Sunday). -->
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Last" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Music Day (Fête de la Musique) — 21 June; a cultural observance, not a public holiday. -->
     <NotableDate id="world-music-day" displayName="World Music Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="June" day="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Fête du Travail (Labour Day) — 1 May; a statutory public holiday. Strategy: Fixed date. -->
+    <NotableDate id="labour-day" displayName="Fête du Travail" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Victory in Europe Day — 8 May, marking the 1945 Allied victory; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="victory-in-europe-day" displayName="Victory in Europe Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="May" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Bastille Day (Fête nationale) — 14 July, the French national day; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="bastille-day" displayName="Bastille Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="July" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Assumption of Mary — 15 August, a Marian feast and statutory public holiday. Strategy: Fixed date. -->
     <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Armistice Day — 11 November, marking the 1918 armistice; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="armistice-day" displayName="Armistice Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="fr"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="November" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint Stephen's Day — 26 December; a public holiday in the Alsace-Moselle départements (modelled nationally here, matching the v1 data). Strategy: Fixed date. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="fr-am"><Applicability><Territory code="FR" /></Applicability><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>

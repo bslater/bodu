@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  German notable-date resource, migrated from the v1 region-de.xml to the v2 cookbook schema. Germany does not roll
-  weekend public holidays. Shared civil and Christian observances are imported from the global-core and christian-western
-  catalogues; the remaining entries are territory-local concepts defined inline. Several entries are statutory only in
-  some federal states; they are modelled here at the national level.
+  ================================================================================================================
+  Germany (DE) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-de.xml to the v2 cookbook schema. Germany does not roll weekend public holidays onto
+  the following Monday, so no adjustment policy is declared.
+
+  How this resource is built:
+
+    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
+      christian-western) and given a DE territory scope through the import <Use> directive. The shared catalogue
+      carries only the bare calculation strategy; the territory supplies the local observance.
+
+    * Germany-specific concepts (German Unity Day, the regional religious feasts, and the cultural days) are
+      declared INLINE below.
+
+  Federal-state scoping: several entries below (Epiphany, Assumption, Reformation Day, Repentance and Prayer Day)
+  are statutory holidays only in some Länder. The v1 data modelled them at the NATIONAL level, so they are
+  preserved here as territory "DE" rules rather than per-subdivision rules; their non-working flags reflect the v1
+  data and not the patchwork of state law.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.de">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <Imports>
+    <!--
+      Civil core. New Year's Day (1 January) and Labour Day (workers-day, 1 May) are nationwide public holidays;
+      imported with their shared fixed-date strategy and no weekend roll.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="DE" />
       <Use notableDateRef="workers-day" territory="DE" />
     </Import>
+    <!--
+      Western Christian feasts. Good Friday (-2), Easter Monday (+1), Ascension (+39), Whit Monday (+50), and Corpus
+      Christi (+60) derive from the Easter Sunday anchor in the shared catalogue. Good Friday, Easter Monday,
+      Ascension, and Whit Monday are nationwide public holidays; Corpus Christi and All Saints' (1 November) are
+      taken with their shared defaults (statutory in some Länder only). Christmas Day (25 December) is fixed.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="good-friday" territory="DE" />
       <Use notableDateRef="easter-sunday" territory="DE" />
@@ -28,38 +58,63 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Regional religious feasts and cultural observances
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany (Heilige Drei Könige) — 6 January; a public holiday in Baden-Württemberg, Bavaria, and Saxony-Anhalt, modelled nationally as a non-public observance. Strategy: Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Valentine's Day — 14 February; a cultural observance, not a public holiday. -->
     <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Women's Day — 8 March; an observance (a public holiday in Berlin and Mecklenburg-Vorpommern, modelled nationally as non-public). -->
     <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="March" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Mother's Day (Muttertag) — second Sunday in May; an observance, not a public holiday. Strategy: DayOfWeekInMonth (second Sunday). -->
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Assumption of Mary — 15 August, a Marian feast; a public holiday in Saarland and parts of Bavaria, modelled nationally as a non-public observance. Strategy: Fixed date. -->
     <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <NotableDate id="german-unity-day" displayName="German Unity Day" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="de"><Applicability fromYear="1990"><Territory code="DE" /></Applicability><Strategy><Fixed month="October" day="3" /></Strategy></Rule></Rules>
-    </NotableDate>
-
+    <!-- Reformation Day — 31 October, marking Luther's 1517 theses; a public holiday across the northern and eastern Länder, modelled nationally as a non-public observance. Strategy: Fixed date. -->
     <NotableDate id="reformation-day" displayName="Reformation Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Repentance and Prayer Day (Buß- und Bettag) — the Wednesday before 23 November (i.e. the Wednesday falling on
+      or before 22 November). A Protestant day of repentance; a public holiday only in Saxony, modelled nationally
+      as a non-public observance. Strategy: WeekdayNearDate (Wednesday on or before 22 November).
+    -->
     <NotableDate id="repentance-day" displayName="Repentance and Prayer Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><WeekdayNearDate month="November" day="22" dayOfWeek="Wednesday" direction="OnOrBefore" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- German Unity Day (Tag der Deutschen Einheit) — 3 October, marking 1990 reunification; the national day and a public holiday. The fromYear="1990" bound excludes earlier years. Strategy: Fixed date. -->
+    <NotableDate id="german-unity-day" displayName="German Unity Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="de"><Applicability fromYear="1990"><Territory code="DE" /></Applicability><Strategy><Fixed month="October" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas (Zweiter Weihnachtsfeiertag) — 26 December; a nationwide public holiday. Strategy: Fixed date. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="de"><Applicability><Territory code="DE" /></Applicability><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
