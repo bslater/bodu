@@ -100,19 +100,19 @@ ulong digest = BitConverter.ToUInt64(sip.ComputeHash(data));
 
 ## Bodu.Globalization.Calendar
 
-**Bodu.Globalization.Calendar** resolves notable dates — public holidays, observances, religious festivals — for any year, territory, or calendar system, either through standalone calculators or the rule-driven `NotableDateService`.
+**Bodu.Globalization.Calendar** resolves notable dates — public holidays, observances, religious festivals — for a date, range, or year and territory, from rule documents loaded into an immutable resource and queried through `NotableDateService`.
 
 ```csharp
-using Bodu.Globalization.Calendar.Algorithms;
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var algorithm = new EasterSundayNotableDateAlgorithm();
-DateTime easter2026 = algorithm.Calculate(2026);
-// 2026-04-05
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
-DateTime goodFriday2026 = easter2026.AddDays(-2);
+foreach (NotableDate d in service.Resolve(2026, "AU-NSW"))
+    Console.WriteLine($"{d.Date:yyyy-MM-dd}  {d.DisplayName}");
 ```
 
-For the rule-driven `NotableDateService`, territory filtering, the observance-adjustment pipeline, and the regional data packs, see the getting-started page below.
+For authoring rule documents, territory filtering, the observance-adjustment pipeline, working-day arithmetic, and the regional data packs, see the getting-started page below.
 
 → **[Introduction](calendar/index.md)** · **[Getting started](calendar/getting-started.md)** · **[Guides](../guides/calendar/index.md)**
 
