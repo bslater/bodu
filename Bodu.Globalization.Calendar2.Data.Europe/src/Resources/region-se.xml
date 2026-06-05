@@ -74,34 +74,48 @@
       ============================================================================================================
     -->
 
+    <!-- Epiphany (Trettondedag jul) — 6 January; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- May Day (Första maj) — 1 May, an international workers' day; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="may-day" displayName="May Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
-        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
-    </NotableDate>
-
+    <!--
+      Midsummer Day (Midsommardagen) — the Saturday falling between 20 and 26 June (the Saturday on or after 20
+      June). A public holiday; the eve is the more widely celebrated day. Strategy: WeekdayNearDate (Saturday on or
+      after 20 June).
+    -->
     <NotableDate id="midsummer-day" displayName="Midsummer Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
         <Strategy><WeekdayNearDate month="June" day="20" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      All Saints' Day (Alla helgons dag) — the Saturday falling between 31 October and 6 November (the Saturday on
+      or after 31 October). Sweden observes it on a floating Saturday rather than the fixed 1 November feast. A
+      public holiday. Strategy: WeekdayNearDate (Saturday on or after 31 October).
+    -->
     <NotableDate id="all-saints-day" displayName="All Saints' Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
         <Strategy><WeekdayNearDate month="October" day="31" dayOfWeek="Saturday" direction="OnOrAfter" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- National Day of Sweden (Sveriges nationaldag) — 6 June, commemorating the 1523 election of Gustav Vasa and the 1809 constitution; became a public holiday in 2005, so the fromYear="2005" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="national-day-of-sweden" displayName="National Day of Sweden" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="se"><Applicability fromYear="2005"><Territory code="SE" /></Applicability>
         <Strategy><Fixed month="June" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Second Day of Christmas (Annandag jul) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
+        <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>
