@@ -38,14 +38,14 @@
     <rect class="hdr" y="22" width="800" height="8"/>
     <text class="ttl" x="16" y="20">NotableDateService — resolution pipeline</text>
 
-    <!-- INPUT: INotableDateRuleProvider -->
+    <!-- INPUT: NotableDateResource -->
     <g transform="translate(20 52)">
       <rect class="inp" width="200" height="40" rx="5"/>
       <text class="lbl" fill="#2DD4BF" x="100" y="16">NotableDateResource</text>
       <text class="mut" x="100" y="30">base rules (XML, JSON, …)</text>
     </g>
 
-    <!-- INPUT: INotableDateRuleOverrideProvider -->
+    <!-- INPUT: document Overrides -->
     <g transform="translate(20 108)">
       <rect class="inp-d" width="176" height="40" rx="5"/>
       <text class="lbl" fill="#94A3B8" x="88" y="15">Overrides</text>
