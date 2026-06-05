@@ -39,6 +39,17 @@ is **not** the complete, loss-free migration the functional audit claims ("every
 self-contained v2-schema migration of its v1 counterpart"). The audit finds **15 dropped region
 entries, 8 territory/status degradations, and 10 dropped catalogue entries.**
 
+> **Resolution (2026-06-05): all findings below have been addressed.** The dropped region and catalogue
+> entries were restored, the territory/status degradations were corrected, and — as part of the same
+> work — the v1 `europe-common.xml` consolidation hub was reinstated and every European region pack now
+> imports its shared observances from it. One correction to the audit itself: **Saraswati Puja was a
+> false positive** — it is v2's `vasant-panchami` (the v1 comment names it "Vasant Panchami"), already
+> present, so it was a rename, not a drop. **Onam remains deferred**: it needs a custom `onam` algorithm
+> that neither v1 nor v2 ships (v1 required external registration). All fixes are covered by regression
+> tests and a behavioural before/after snapshot (3,765 resolved occurrences across 28 countries, proving
+> the europe-common rollout is byte-identical). See **§ Resolution detail** below. The per-entry tables
+> that follow record the *original pre-fix* audit state.
+
 ### A. Dropped region entries (15 across 6 regions)
 
 | v1 region file | v1 entry (concept · rule) | source | v2 status |
@@ -120,6 +131,62 @@ into inline rules + direct catalogue imports. Its two locally-defined concepts m
 **Assumption of Mary** → inlined per-region (FR, DE, …); **Immaculate Conception** → no region currently
 declares it (it had no v1 region consumer either). The flattening is the mechanism by which the
 Christmas Eve / Father's Day import omissions in §A occurred.
+
+---
+
+## Resolution detail (2026-06-05)
+
+The findings above were addressed on the migration branch, together with the reinstatement of the
+`europe-common` hub. Summary of what changed:
+
+### Reinstated `europe-common.xml`
+
+A v2 `europe-common.xml` was added to the Europe data pack (`…Calendar2.Data.Europe/src/Resources/`). It
+**re-exports** the shared civil/Christian/family/cultural concepts from the common catalogues
+(`global-core`, `christian-western`, `global-family`, `global-cultural`) and **defines inline** the two
+Catholic feasts the catalogues do not carry (`assumption-of-mary`, `immaculate-conception`). The v2 import
+resolver resolves a hub import transitively, so a region importing a concept from `europe-common` receives
+the identical catalogue rule. `EuropeCalendarData` gained a composite resource resolver (hub served from the
+Europe pack, catalogues delegated to `CommonNotableDateResources`). **All 28 European region packs now import
+their shared observances from the hub** — proven byte-identical by a before/after behavioural snapshot
+(3,765 occurrences). Orthodox Easter cycles (`christian-orthodox`) and localized feasts (e.g. Italy's
+`assumption-of-mary-ferragosto`, the Orthodox Dormition) remain inline; `region-dk` keeps a `christian-western`
+import for Maundy Thursday (not carried by the hub).
+
+### A. Dropped region entries — restored
+
+| Region | Entry | How restored |
+|---|---|---|
+| CA | Christmas Eve | import `christmas-eve` from `christian-western` |
+| DE | Christmas Eve, Father's Day | import from `europe-common` |
+| FR | Christmas Eve, Father's Day, Pentecost (Whit Sunday), April Fool's Day | hub imports (`christmas-eve`, `fathers-day`, `whit-sunday`) + `global-cultural` (`april-fools-day`) |
+| FR | Good Friday (Alsace-Moselle) | inline, scoped `FR-67/68/57`, offset −2 from Easter |
+| GB | Christmas Eve | import from `europe-common` |
+| GB | April Fool's Day, Remembrance Day (11 Nov) | import from `global-all` |
+| JP | Obon, Golden Week | inline `durationDays` spans (3 and 7 days) |
+| IN | ~~Saraswati Puja~~ | **not a drop** — already present as `vasant-panchami` |
+| IN | Onam | **deferred** — needs an unshipped `onam` algorithm (as in v1) |
+
+### B. Territory / status degradations — corrected
+
+The seven German state feasts (`epiphany`, `corpus-christi`, `assumption-of-mary`, `reformation-day`,
+`all-saints-day`, `repentance-day`, and the Berlin/MV `womens-day` rule) were re-scoped to the exact Länder
+that observe them and restored to non-working public-holiday status; `womens-day` now carries two rules (a
+national working observance and a non-working BE/MV public holiday) under territory shadowing. FR
+`saint-stephens-day` was re-scoped from national to Alsace-Moselle (`FR-67/68/57`). The misleading
+`region-de.xml` header (which claimed v1 modelled these nationally) was corrected.
+
+### C. Dropped catalogue entries — restored
+
+The nine Christian feasts were re-added to `christian-western.xml` (Epiphany, Candlemas, Annunciation, Shrove
+Tuesday, Ash Wednesday, Palm Sunday, Holy Saturday, Trinity Sunday, All Souls' Day), restoring its 21-concept
+v1 surface. `global-hindu` Onam stays out (see §A).
+
+### Verification
+
+Regression coverage was added for the restored/re-scoped entries (Europe, Americas, AsiaPacific data-pack
+tests). Full suite green: core 1680, Americas 26, AsiaPacific 70, Europe 40. The europe-common rollout is
+guarded by the behavioural snapshot diff (zero change across 28 countries).
 
 ---
 
