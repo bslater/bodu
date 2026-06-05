@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  SE notable-date resource, migrated from the v1 region-se.xml to the v2 cookbook schema. Shared civil and Christian
-  observances are imported from the global-core and christian-western catalogues; the remaining entries are
-  territory-local concepts defined inline.
+  ================================================================================================================
+  Sweden (SE) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-se.xml to the v2 cookbook schema. All rules are scoped to territory "SE".
+
+  How this resource is built:
+
+    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
+      christian-western) and given an SE territory scope through the import <Use> directive. The shared catalogue
+      carries only the bare calculation strategy; the territory supplies the local observance.
+
+    * Sweden-specific concepts (Epiphany, May Day, Second Day of Christmas, Midsummer Day, All Saints' Day, and the
+      National Day) are declared INLINE below. As in Finland, Swedish Midsummer and All Saints' float to a Saturday,
+      so they use the WeekdayNearDate strategy rather than a fixed date.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.se">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -17,12 +39,22 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Civil core. New Year's Day (1 January) with a weekend roll to the next working day; New Year's Eve (31
+      December) is imported as a widely marked observance.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="SE">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
       <Use notableDateRef="new-years-eve" territory="SE" />
     </Import>
+    <!--
+      Western Christian feasts. Good Friday (-2), Easter Monday (+1), Ascension (+39), and Whit Sunday (+49) derive
+      from the Easter Sunday anchor in the shared catalogue. Ascension and Christmas Eve (24 December) are re-scoped
+      to non-working public holidays; Christmas Eve is the principal Swedish Christmas day off. Christmas Day (25
+      December) is fixed.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="SE" />
       <Use notableDateRef="good-friday" territory="SE" />
@@ -35,6 +67,12 @@
   </Imports>
 
   <NotableDates>
+
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
 
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="se"><Applicability><Territory code="SE" /></Applicability>
