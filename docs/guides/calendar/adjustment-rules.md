@@ -122,7 +122,7 @@ The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWo
 </AdjustmentPolicy>
 ```
 
-> **`IfNonWorkingDay` is order-sensitive.** It is evaluated against the non-working dates already settled for the same year and territory, so an anchor rule (e.g. Christmas Day) must out-prioritise a dependent rule (e.g. Boxing Day) for the dependent's `IfNonWorkingDay` trigger to see the anchor's observed date. See the [worked Boxing Day trace](#worked-pattern-christmas-and-boxing-day-substitution).
+> **`IfNonWorkingDay` is order-sensitive.** It is evaluated against the non-working dates already settled for the same year and territory, so an anchor rule (e.g. Christmas Day) must out-prioritise a dependent rule (e.g. Boxing Day) for the dependent's `IfNonWorkingDay` trigger to see the anchor's observed date. See the [worked Boxing Day trace](#worked-pattern--christmas-and-boxing-day-substitution).
 
 ---
 
