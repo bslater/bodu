@@ -58,6 +58,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="NotableDate" />
 /// <seealso cref="INotableDateService" />
 /// <seealso cref="NotableDateCategory" />
+/// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public sealed class NotableDateFilter
 {
     /// <summary>

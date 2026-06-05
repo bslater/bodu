@@ -41,6 +41,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </example>
 /// <seealso cref="NotableDatePluginAttribute" />
 /// <seealso cref="NotableDatePluginLoader" />
+/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public interface INotableDateAlgorithmPlugin : INotableDatePlugin
 {
     /// <summary>

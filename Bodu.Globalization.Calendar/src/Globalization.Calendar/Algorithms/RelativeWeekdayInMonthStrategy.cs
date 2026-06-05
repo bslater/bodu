@@ -10,6 +10,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Calculates a notable date that falls on a weekday relative to an anchor weekday occurrence within a month, such as
 /// the Tuesday after the first Monday of November (United States general election day).
 /// </summary>
+/// <seealso cref="IDateCalculationStrategy" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class RelativeWeekdayInMonthStrategy : IDateCalculationStrategy
 {
     /// <summary>

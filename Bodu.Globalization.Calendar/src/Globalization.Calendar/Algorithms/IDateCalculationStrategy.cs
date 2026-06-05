@@ -20,6 +20,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <see cref="INotableDateAlgorithm" /> rather than by implementing this interface directly.
 /// </para>
 /// </remarks>
+/// <seealso cref="INotableDateAlgorithm" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public interface IDateCalculationStrategy
 {
     /// <summary>

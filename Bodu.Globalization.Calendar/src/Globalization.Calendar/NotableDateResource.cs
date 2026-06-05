@@ -23,6 +23,7 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 /// <seealso cref="NotableDateResourceLoader" />
 /// <seealso cref="NotableDateService" />
+/// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
 public sealed class NotableDateResource
 {
     /// <summary>

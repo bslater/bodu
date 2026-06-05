@@ -34,6 +34,7 @@ namespace Bodu.Extensions;
 /// </example>
 /// <seealso cref="NotableDateOnlyExtensions" />
 /// <seealso cref="INotableDateService" />
+/// <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)</seealso>
 public static class NotableDateFiscalExtensions
 {
     /// <summary>

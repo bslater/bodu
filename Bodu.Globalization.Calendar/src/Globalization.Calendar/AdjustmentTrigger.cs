@@ -9,6 +9,9 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Identifies the condition that determines whether an adjustment policy applies to a calculated occurrence.
 /// </summary>
+/// <seealso cref="AdjustmentAction" />
+/// <seealso cref="AdjustmentPolicy" />
+/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public enum AdjustmentTrigger
 {
     /// <summary>

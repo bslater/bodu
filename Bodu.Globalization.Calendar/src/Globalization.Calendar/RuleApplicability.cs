@@ -17,6 +17,8 @@ namespace Bodu.Globalization.Calendar;
 /// scoped to its parent territory (<c>AU</c>), but a national query does not match a subnational-only rule.
 /// </para>
 /// </remarks>
+/// <seealso cref="NotableDateRule" />
+/// <seealso href="../guides/calendar/territories.html">Territories and regional composition (guide)</seealso>
 public sealed class RuleApplicability
 {
     /// <summary>

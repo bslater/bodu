@@ -41,6 +41,7 @@ namespace Bodu.Globalization.Calendar;
 /// </code>
 /// </example>
 /// <seealso cref="INotableDateService" />
+/// <seealso href="../guides/calendar/territories.html">Territories and regional composition (guide)</seealso>
 public readonly struct TerritoryCode : IEquatable<TerritoryCode>
 {
     /// <summary>

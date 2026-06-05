@@ -39,6 +39,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </example>
 /// <seealso cref="INotableDateAlgorithmRegistry" />
 /// <seealso cref="AlgorithmDateStrategy" />
+/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public interface INotableDateAlgorithm
 {
     /// <summary>

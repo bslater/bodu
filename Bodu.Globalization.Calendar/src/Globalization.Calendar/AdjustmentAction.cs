@@ -11,10 +11,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Working-day aware actions treat Saturday and Sunday as non-working days. A pluggable non-working-day calendar that
-/// also skips holidays is reserved for a later phase.
+/// Working-day aware actions treat the days outside the resource's working week as non-working. Whether they also step
+/// over days already claimed by other non-working occurrences is controlled by the owning policy's
+/// <see cref="AdjustmentPolicy.SkipNonWorkingDates" /> flag.
 /// </para>
 /// </remarks>
+/// <seealso cref="AdjustmentTrigger" />
+/// <seealso cref="AdjustmentPolicy" />
+/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public enum AdjustmentAction
 {
     /// <summary>

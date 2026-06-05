@@ -38,6 +38,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="AdjustmentHandlerContext" />
 /// <seealso cref="AdjustmentAction" />
 /// <seealso cref="IAdjustmentHandlerRegistry" />
+/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public interface IAdjustmentHandler
 {
     /// <summary>

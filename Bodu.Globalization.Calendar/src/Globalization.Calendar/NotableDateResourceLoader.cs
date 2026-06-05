@@ -56,6 +56,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="NotableDateResource" />
 /// <seealso cref="NotableDateService" />
 /// <seealso cref="NotableDateValidationException" />
+/// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
 public static class NotableDateResourceLoader
 {
     /// <summary>

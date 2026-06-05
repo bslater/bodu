@@ -16,6 +16,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// inside the requested window.
 /// </para>
 /// </remarks>
+/// <seealso cref="ResolutionPolicy" />
+/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
 public enum ObservedDateRangePolicy
 {
     /// <summary>

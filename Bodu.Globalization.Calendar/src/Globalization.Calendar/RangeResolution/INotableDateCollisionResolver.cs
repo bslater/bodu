@@ -38,6 +38,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </example>
 /// <seealso cref="CollisionPolicy" />
 /// <seealso cref="NotableDateService" />
+/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
 public interface INotableDateCollisionResolver
 {
     /// <summary>

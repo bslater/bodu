@@ -16,6 +16,9 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// occurrences, higher priority wins, and the observed (emitted) occurrence controls range inclusion.
 /// </para>
 /// </remarks>
+/// <seealso cref="CollisionPolicy" />
+/// <seealso cref="DuplicatePolicy" />
+/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
 public sealed class ResolutionPolicy
 {
     /// <summary>

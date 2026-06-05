@@ -16,6 +16,8 @@ namespace Bodu.Globalization.Calendar;
 /// merely share a display name — coexist as distinct, independently addressable rules rather than collapsing.
 /// </para>
 /// </remarks>
+/// <seealso cref="NotableDateRule" />
+/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
 public sealed class NotableDateDefinition
 {
     /// <summary>

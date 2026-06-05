@@ -60,6 +60,8 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// <seealso cref="NotableDateResource" />
 /// <seealso cref="NotableDateResourceLoader" />
 /// <seealso cref="NotableDateService" />
+/// <seealso href="../guides/calendar/notable-date-builder.html">Authoring with the notable-date builder (guide)</seealso>
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed partial class NotableDateDocumentBuilder
 {
     /// <summary>

@@ -18,6 +18,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// leap-month skip (for the Chinese lunisolar calendar).
 /// </para>
 /// </remarks>
+/// <seealso cref="IDateCalculationStrategy" />
+/// <seealso cref="CalendarSystem" />
+/// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)</seealso>
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class FixedDateStrategy : IDateCalculationStrategy
 {
     /// <summary>

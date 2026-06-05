@@ -49,6 +49,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <seealso cref="IPluginTrustPolicy" />
 /// <seealso cref="INotableDateAlgorithmPlugin" />
 /// <seealso cref="NotableDateAlgorithmRegistry" />
+/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public static class NotableDatePluginLoader
 {
     /// <summary>

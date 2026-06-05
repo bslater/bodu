@@ -27,6 +27,9 @@ namespace Bodu.Globalization.Calendar;
 /// The identifier of the adjustment policy that produced the observed date, if any.
 /// </param>
 /// <param name="AdjustmentReason">The reason recorded by the adjustment policy, if any.</param>
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateRuleIdentity" />
+/// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public sealed record NotableDate(
     DateOnly Date,
     DateOnly? ActualDate,

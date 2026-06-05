@@ -36,6 +36,8 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </example>
 /// <seealso cref="NotableDateDefinitionBuilder" />
 /// <seealso cref="AdjustmentPolicyBuilder" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
 public sealed class NotableDateRuleBuilder
 {
     /// <summary>

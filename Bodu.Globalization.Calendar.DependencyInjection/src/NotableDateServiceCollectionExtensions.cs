@@ -41,6 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </example>
 /// <seealso cref="INotableDateService" />
 /// <seealso cref="NotableDateResource" />
+/// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public static class NotableDateServiceCollectionExtensions
 {
     /// <summary>
