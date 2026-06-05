@@ -58,6 +58,8 @@
           href: calendar/notable-dates.md
         - name: Authoring notable date rules
           href: calendar/rule-authoring.md
+        - name: Authoring with the notable-date builder
+          href: calendar/notable-date-builder.md
     - name: Bodu.Globalization.Calendar — Reference
       items:
         - name: NotableDateRule and adjustment-policy reference
