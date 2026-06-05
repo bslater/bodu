@@ -286,7 +286,7 @@ The loader signals failure with the <xref:Bodu.Globalization.Calendar.Plugins.No
 - <xref:Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException> — the assembly lacks a `[assembly: NotableDatePlugin(…)]` attribute.
 - <xref:Bodu.Globalization.Calendar.Plugins.PluginActivationException> — the named plugin type could not be instantiated.
 
-See the [Plugins package reference](../../apidoc/Bodu.Globalization.Calendar.Plugins.md) for the full type list.
+See the [Plugins package reference](xref:Bodu.Globalization.Calendar.Plugins) for the full type list.
 
 ## Where to go next
 
