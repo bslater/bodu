@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using System.Reflection;
+using System.Text;
 
 namespace Bodu.Globalization.Calendar.Data;
 
@@ -52,8 +52,35 @@ public static class AmericasCalendarData
                 string.Format(CultureInfo.InvariantCulture, "No Americas calendar resource for territory '{0}'.", territory),
                 nameof(territory));
 
-        return NotableDateResourceLoader.Load(stream, CommonNotableDateResources.Resolver);
+        return NotableDateResourceLoader.Load(stream, ResolveResource);
     }
+
+    /// <summary>
+    /// Resolves an imported resource name to its content. The pan-American <c>americas-common</c> hub is served from
+    /// this pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c> and
+    /// <c>global-core</c>, including those that <c>americas-common</c> itself imports) is delegated to
+    /// <see cref="CommonNotableDateResources" />.
+    /// </summary>
+    /// <param name="resourceName">The imported resource name, without extension.</param>
+    /// <returns>The resource XML, or <see langword="null" /> when no resource of that name is available.</returns>
+    private static string? ResolveResource(string resourceName) =>
+        string.Equals(resourceName, "americas-common", StringComparison.OrdinalIgnoreCase)
+            ? s_americasCommon.Value
+            : CommonNotableDateResources.Resolve(resourceName);
+
+    /// <summary>
+    /// The lazily-read XML content of the embedded <c>americas-common</c> hub resource.
+    /// </summary>
+    private static readonly Lazy<string?> s_americasCommon = new(static () =>
+    {
+        using Stream? stream = typeof(AmericasCalendarData).Assembly
+            .GetManifestResourceStream("Bodu.Globalization.Calendar.Data.Resources.americas-common.xml");
+        if (stream is null)
+            return null;
+
+        using StreamReader reader = new(stream, Encoding.UTF8);
+        return reader.ReadToEnd();
+    });
 
     /// <summary>
     /// Builds a resolver over the resource for the country owning the supplied territory.

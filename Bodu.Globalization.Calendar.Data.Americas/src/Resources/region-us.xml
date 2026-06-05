@@ -4,23 +4,28 @@
   United States (US) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-us.xml to the v2 cookbook schema. All rules are national: there are no subdivision
-  (ISO 3166-2) rules in this pack, so every concept is scoped to territory "US". The v1 UseFrom imports (global and
-  Christian observances) are flattened into explicit, self-contained rules.
+  National (federal) rules are scoped to territory "US"; state and District of Columbia rules use their ISO 3166-2
+  subdivision codes (US-AL … US-WY, US-DC). Because a subdivision query inherits every rule scoped to its parent
+  country, all 50 states and DC automatically receive the federal holidays; the subdivision-scoped rules below add
+  the further holidays established under individual state law.
 
   How this resource is built:
 
-    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Good Friday, Christmas Eve,
-      Christmas Day) are IMPORTED from the common catalogues (global-core, christian-western) and given a US
-      territory scope, plus a weekend-substitution policy where the federal holiday is observed in lieu.
+    * Shared civil, Western Christian, Catholic, family, cultural, and environmental observances (New Year's Day,
+      Groundhog Day, Valentine's Day, St. Patrick's Day, Easter, Good Friday, Cinco de Mayo, Mother's/Father's Day,
+      Earth Day, Halloween, Thanksgiving, Christmas Eve, Christmas Day) are IMPORTED from the americas-common hub
+      and given a US territory scope, plus a weekend-substitution policy where the federal holiday is observed in
+      lieu. Concepts are defined once in the hub (or the common library it re-exports) and never re-declared here.
 
-    * United States-specific concepts (the federal Monday holidays, the cultural and civic observances, and the
-      Thanksgiving-anchored retail days) are declared INLINE below.
+    * United States federal concepts that are specific to the country (the Monday holidays, the civic and cultural
+      observances, and the Thanksgiving-anchored retail days) are declared INLINE, scoped to "US".
 
-  Weekend substitution: federal practice observes a holiday in lieu when it lands on a weekend — Saturday is observed
-  on the PRECEDING Friday, and Sunday on the FOLLOWING Monday. These are two separate one-directional policies (the
-  AU/CA/NZ packs instead use a single forward "weekend roll"); a single-day federal holiday carries both so either
-  weekend day resolves correctly.
+    * State-specific statutory holidays and observances are declared INLINE, scoped to their US-XX subdivision codes
+      and, where datable, gated by the year the state adopted them. Politically contested observances are excluded.
+
+  Weekend substitution: federal practice observes a holiday in lieu when it lands on a weekend — Saturday is
+  observed on the PRECEDING Friday, and Sunday on the FOLLOWING Monday. These are two separate one-directional
+  policies; a single-day federal holiday carries both so either weekend day resolves correctly.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.us">
 
@@ -54,24 +59,29 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day is a federal holiday observed in lieu when 1 January lands on a weekend (both the
-      Saturday and Sunday substitute policies apply).
+      Shared observances imported from the americas-common hub and scoped to the United States. New Year's Day and
+      Christmas Day are federal holidays observed in lieu when they land on a weekend (both substitute policies
+      apply). Good Friday is re-categorized as a working religious observance (it is not a federal holiday).
+      St. Patrick's Day, Cinco de Mayo, Groundhog Day, Valentine's Day, Halloween, Christmas Eve, and the family
+      observances are working cultural/observance days. Easter Sunday is the imported anchor used by the inline
+      Mardi Gras offset. Thanksgiving is imported without a territory override so its US rule is preserved (the hub
+      also carries a Canadian rule that never matches a US query); the retail days below offset from that rule.
     -->
-    <Import resource="global-core">
+    <Import resource="americas-common">
       <Use notableDateRef="new-years-day" territory="US">
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments>
       </Use>
-    </Import>
-
-    <!--
-      Western Christian feasts, re-scoped to the US. Easter Sunday is the computed anchor (used by no offset here but
-      imported for completeness). Good Friday is re-categorized Religious and made a working day (nonWorking="false")
-      because it is not a federal holiday. Christmas Eve is imported as-is. Christmas Day is a federal holiday and
-      carries both weekend-substitute policies.
-    -->
-    <Import resource="christian-western">
+      <Use notableDateRef="groundhog-day" territory="US" />
+      <Use notableDateRef="valentines-day" territory="US" />
+      <Use notableDateRef="st-patricks-day" territory="US" category="Cultural" />
       <Use notableDateRef="easter-sunday" territory="US" />
       <Use notableDateRef="good-friday" territory="US" category="Religious" nonWorking="false" />
+      <Use notableDateRef="cinco-de-mayo" territory="US" />
+      <Use notableDateRef="mothers-day" territory="US" />
+      <Use notableDateRef="fathers-day" territory="US" />
+      <Use notableDateRef="earth-day" territory="US" />
+      <Use notableDateRef="halloween" territory="US" />
+      <Use notableDateRef="thanksgiving" />
       <Use notableDateRef="christmas-eve" territory="US" />
       <Use notableDateRef="christmas-day" territory="US">
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments>
@@ -83,7 +93,7 @@
 
     <!--
       ============================================================================================================
-      Federal public holidays (the Monday holidays and fixed-date federal holidays)
+      Federal public holidays and observances (scoped to "US"; inherited by every state and DC)
       ============================================================================================================
     -->
 
@@ -96,40 +106,10 @@
         <Strategy><DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Valentine's Day — 14 February, a cultural observance (not a federal holiday). Strategy: Fixed day-of-month. -->
-    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!--
-      Presidents' Day (Washington's Birthday) — third Monday in February. Federal holiday. Strategy: DayOfWeekInMonth
-      (third Monday).
-    -->
+    <!-- Presidents' Day (Washington's Birthday) — third Monday in February. Federal holiday. Strategy: DayOfWeekInMonth (third Monday). -->
     <NotableDate id="presidents-day" displayName="Presidents' Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- St. Patrick's Day — 17 March, a cultural observance (not a federal holiday). Strategy: Fixed day-of-month. -->
-    <NotableDate id="st-patricks-day" displayName="St. Patrick's Day" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><Fixed month="March" day="17" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!--
-      Earth Day — 22 April, an environmental observance first held in 1970, so the fromYear bound excludes earlier
-      years. Strategy: Fixed day-of-month.
-    -->
-    <NotableDate id="earth-day" displayName="Earth Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability fromYear="1970"><Territory code="US" /></Applicability>
-        <Strategy><Fixed month="April" day="22" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Mother's Day — second Sunday in May, an observance. Strategy: DayOfWeekInMonth (second Sunday). -->
-    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
@@ -141,22 +121,9 @@
         <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Flag Day — 14 June, an observance (not a federal holiday). Strategy: Fixed day-of-month. -->
-    <NotableDate id="flag-day" displayName="Flag Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><Fixed month="June" day="14" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Father's Day — third Sunday in June, an observance. Strategy: DayOfWeekInMonth (third Sunday). -->
-    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <!--
       Juneteenth National Independence Day — 19 June. The newest federal holiday (established 2021), so the fromYear
-      bound returns nothing before 2021. Carries both weekend-substitute policies (Saturday to Friday, Sunday to
-      Monday). Strategy: Fixed day-of-month.
+      bound returns nothing before 2021. Carries both weekend-substitute policies. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="juneteenth" displayName="Juneteenth National Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability fromYear="2021"><Territory code="US" /></Applicability>
@@ -165,8 +132,7 @@
     </NotableDate>
 
     <!--
-      Independence Day — 4 July. Federal holiday with both weekend-substitute policies (Saturday observed on the
-      preceding Friday, Sunday on the following Monday). Strategy: Fixed day-of-month.
+      Independence Day — 4 July. Federal holiday with both weekend-substitute policies. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
@@ -196,16 +162,10 @@
         <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Halloween — 31 October, a cultural observance (not a federal holiday). Strategy: Fixed day-of-month. -->
-    <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <!--
-      Election Day — the Tuesday after the first Monday in November (so the first Tuesday that is not 1 November).
-      A civic observance, fixed in federal law since 1845; the fromYear bound excludes earlier years. Strategy:
-      RelativeWeekdayInMonth — the Tuesday positioned After the first Monday in November.
+      Election Day — the Tuesday after the first Monday in November. A civic observance, fixed in federal law since
+      1845; the fromYear bound excludes earlier years. Strategy: RelativeWeekdayInMonth — the Tuesday positioned
+      After the first Monday in November.
     -->
     <NotableDate id="election-day" displayName="Election Day" category="Civic" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability fromYear="1845"><Territory code="US" /></Applicability>
@@ -213,8 +173,8 @@
     </NotableDate>
 
     <!--
-      Veterans Day — 11 November. Federal holiday with both weekend-substitute policies (Saturday to Friday, Sunday
-      to Monday). Strategy: Fixed day-of-month.
+      Veterans Day — 11 November. Federal holiday with both weekend-substitute policies. Strategy: Fixed
+      day-of-month.
     -->
     <NotableDate id="veterans-day" displayName="Veterans Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
@@ -222,46 +182,222 @@
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!--
-      Thanksgiving Day — fourth Thursday in November. Federal holiday and the anchor for the retail days below.
-      Strategy: DayOfWeekInMonth (fourth Thursday).
-    -->
-    <NotableDate id="thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
+    <!-- Flag Day — 14 June, an observance (not a federal holiday). Strategy: Fixed day-of-month. -->
+    <NotableDate id="flag-day" displayName="Flag Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
-        <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy></Rule></Rules>
+        <Strategy><Fixed month="June" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Pearl Harbor Remembrance Day — 7 December, a remembrance day designated in federal law from 1994. Strategy:
+      Fixed day-of-month.
+    -->
+    <NotableDate id="pearl-harbor-day" displayName="Pearl Harbor Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
+      <Rules><Rule id="us"><Applicability fromYear="1994"><Territory code="US" /></Applicability>
+        <Strategy><Fixed month="December" day="7" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
       ============================================================================================================
-      Thanksgiving-anchored retail days and remaining observances
+      Thanksgiving-anchored retail days (scoped to "US")
       ============================================================================================================
     -->
 
-    <!--
-      Black Friday — the day after Thanksgiving, the traditional start of the holiday shopping season. Strategy:
-      OffsetFromRule, one day after the Thanksgiving rule (the Friday).
-    -->
+    <!-- Black Friday — the day after Thanksgiving, the traditional start of the holiday shopping season. Strategy: OffsetFromRule, one day after the imported US Thanksgiving rule (the Friday). -->
     <NotableDate id="black-friday" displayName="Black Friday" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!--
-      Cyber Monday — the Monday after Thanksgiving (four days after the Thursday). Strategy: OffsetFromRule, four
-      days after the Thanksgiving rule.
-    -->
+    <!-- Cyber Monday — the Monday after Thanksgiving (four days after the Thursday). Strategy: OffsetFromRule, four days after the imported US Thanksgiving rule. -->
     <NotableDate id="cyber-monday" displayName="Cyber Monday" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="4" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Pearl Harbor Remembrance Day — 7 December, a remembrance day designated in federal law from 1994, so the
-      fromYear bound excludes earlier years. Strategy: Fixed day-of-month.
+      ============================================================================================================
+      State and District of Columbia statutory holidays (scoped to US-XX subdivisions)
+      ============================================================================================================
+      Concepts that share a single date across several states list every applicable subdivision on one rule; where
+      states adopted the same slot in different years, one rule per state carries its own fromYear bound. A national
+      "US" query resolves none of these subdivision-scoped rules.
     -->
-    <NotableDate id="pearl-harbor-day" displayName="Pearl Harbor Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
-      <Rules><Rule id="us"><Applicability fromYear="1994"><Territory code="US" /></Applicability>
-        <Strategy><Fixed month="December" day="7" /></Strategy></Rule></Rules>
+
+    <!--
+      Inauguration Day — 20 January, every fourth year following a presidential election; a public holiday for the
+      District of Columbia (and federal employees in the capital region). everyYears="4" with anchorYear="1937"
+      recurs on 1937, 1941, … 2021, 2025; the year is skipped in between. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="inauguration-day" displayName="Inauguration Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="dc"><Applicability fromYear="1937" everyYears="4" anchorYear="1937"><Territory code="US-DC" /></Applicability>
+        <Strategy><Fixed month="January" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Lincoln's Birthday — 12 February; a public holiday in several states (Connecticut, Illinois, Missouri, and
+      New York). Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="lincolns-birthday" displayName="Lincoln's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="states"><Applicability><Territory code="US-CT" /><Territory code="US-IL" /><Territory code="US-MO" /><Territory code="US-NY" /></Applicability>
+        <Strategy><Fixed month="February" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Mardi Gras (Shrove Tuesday) — the day before Lent; a statutory holiday in Louisiana and Alabama. Strategy:
+      OffsetFromRule, 47 days before the imported Easter Sunday anchor.
+    -->
+    <NotableDate id="mardi-gras" displayName="Mardi Gras" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="states"><Applicability fromYear="1583"><Territory code="US-LA" /><Territory code="US-AL" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-47" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Texas Independence Day — 2 March; a Texas state holiday commemorating the 1836 declaration of independence. Strategy: Fixed day-of-month. -->
+    <NotableDate id="texas-independence-day" displayName="Texas Independence Day" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="tx"><Applicability fromYear="1874"><Territory code="US-TX" /></Applicability>
+        <Strategy><Fixed month="March" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Town Meeting Day — the first Tuesday in March; a Vermont state holiday for local town meetings. Strategy: DayOfWeekInMonth (first Tuesday). -->
+    <NotableDate id="town-meeting-day" displayName="Town Meeting Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="vt"><Applicability><Territory code="US-VT" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Tuesday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Casimir Pulaski Day — the first Monday in March; an Illinois commemorative holiday honoring the Revolutionary War general. Strategy: DayOfWeekInMonth (first Monday). -->
+    <NotableDate id="casimir-pulaski-day" displayName="Casimir Pulaski Day" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="il"><Applicability fromYear="1986"><Territory code="US-IL" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Prince Jonah Kuhio Kalanianaole Day — 26 March; a Hawaii state holiday honoring the prince and delegate. Strategy: Fixed day-of-month. -->
+    <NotableDate id="prince-kuhio-day" displayName="Prince Jonah Kuhio Kalanianaole Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hi"><Applicability fromYear="1949"><Territory code="US-HI" /></Applicability>
+        <Strategy><Fixed month="March" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Seward's Day — the last Monday in March; an Alaska state holiday marking the 1867 treaty to purchase Alaska. Strategy: DayOfWeekInMonth (last Monday). -->
+    <NotableDate id="sewards-day" displayName="Seward's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ak"><Applicability fromYear="1959"><Territory code="US-AK" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Cesar Chavez Day — 31 March; a state holiday in California and Texas honoring the labor leader. Strategy: Fixed day-of-month. -->
+    <NotableDate id="cesar-chavez-day" displayName="Cesar Chavez Day" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="states"><Applicability fromYear="1995"><Territory code="US-CA" /><Territory code="US-TX" /></Applicability>
+        <Strategy><Fixed month="March" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Emancipation Day — 16 April; a District of Columbia public holiday marking the 1862 abolition of slavery in
+      the capital, carrying both weekend-substitute policies. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="emancipation-day-dc" displayName="Emancipation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="dc"><Applicability fromYear="2005"><Territory code="US-DC" /></Applicability>
+        <Strategy><Fixed month="April" day="16" /></Strategy>
+        <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Patriots' Day — the third Monday in April; a state holiday in Massachusetts (from 1894) and Maine (from
+      1907), commemorating the battles of Lexington and Concord. Strategy: DayOfWeekInMonth (third Monday).
+    -->
+    <NotableDate id="patriots-day" displayName="Patriots' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="ma"><Applicability fromYear="1894"><Territory code="US-MA" /></Applicability><Strategy><DayOfWeekInMonth month="April" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+        <Rule id="me"><Applicability fromYear="1907"><Territory code="US-ME" /></Applicability><Strategy><DayOfWeekInMonth month="April" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+    <!-- San Jacinto Day — 21 April; a Texas state holiday marking the 1836 battle that secured Texan independence. Strategy: Fixed day-of-month. -->
+    <NotableDate id="san-jacinto-day" displayName="San Jacinto Day" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="tx"><Applicability fromYear="1874"><Territory code="US-TX" /></Applicability>
+        <Strategy><Fixed month="April" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Harry S. Truman Day — 8 May; a Missouri state holiday honoring the president's birthday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="truman-day" displayName="Harry S. Truman Day" category="PublicHoliday" defaultNonWorkingDay="false">
+      <Rules><Rule id="mo"><Applicability fromYear="1949"><Territory code="US-MO" /></Applicability>
+        <Strategy><Fixed month="May" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Kamehameha Day — 11 June; a Hawaii state holiday honoring King Kamehameha I. Strategy: Fixed day-of-month. -->
+    <NotableDate id="kamehameha-day" displayName="Kamehameha Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hi"><Applicability fromYear="1872"><Territory code="US-HI" /></Applicability>
+        <Strategy><Fixed month="June" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- West Virginia Day — 20 June; a state holiday marking West Virginia's 1863 admission to the Union. Strategy: Fixed day-of-month. -->
+    <NotableDate id="west-virginia-day" displayName="West Virginia Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="wv"><Applicability fromYear="1927"><Territory code="US-WV" /></Applicability>
+        <Strategy><Fixed month="June" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Pioneer Day — 24 July; a Utah state holiday commemorating the 1847 arrival of the Mormon pioneers in the Salt Lake Valley. Strategy: Fixed day-of-month. -->
+    <NotableDate id="pioneer-day" displayName="Pioneer Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ut"><Applicability fromYear="1849"><Territory code="US-UT" /></Applicability>
+        <Strategy><Fixed month="July" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Victory Day — the second Monday in August; a Rhode Island state holiday marking the end of the Second World War in the Pacific. Strategy: DayOfWeekInMonth (second Monday). -->
+    <NotableDate id="victory-day" displayName="Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ri"><Applicability fromYear="1948"><Territory code="US-RI" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Bennington Battle Day — 16 August; a Vermont state holiday marking the 1777 Revolutionary War battle. Strategy: Fixed day-of-month. -->
+    <NotableDate id="bennington-battle-day" displayName="Bennington Battle Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="vt"><Applicability fromYear="1894"><Territory code="US-VT" /></Applicability>
+        <Strategy><Fixed month="August" day="16" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Statehood Day (Hawaii) — the third Friday in August; a Hawaii state holiday marking 1959 admission to the Union. Strategy: DayOfWeekInMonth (third Friday). -->
+    <NotableDate id="statehood-day-hi" displayName="Statehood Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hi"><Applicability fromYear="1959"><Territory code="US-HI" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Friday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- California Admission Day — 9 September; a California state holiday marking 1850 admission to the Union. Strategy: Fixed day-of-month. -->
+    <NotableDate id="california-admission-day" displayName="California Admission Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability fromYear="1850"><Territory code="US-CA" /></Applicability>
+        <Strategy><Fixed month="September" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Native American Day (California) — the fourth Friday in September; a California observance honoring Native Americans. Strategy: DayOfWeekInMonth (fourth Friday). -->
+    <NotableDate id="native-american-day-ca" displayName="Native American Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ca"><Applicability fromYear="1998"><Territory code="US-CA" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Friday" weekOrdinal="Fourth" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Native Americans' Day (South Dakota) — the second Monday in October; South Dakota observes this in place of Columbus Day. Strategy: DayOfWeekInMonth (second Monday). -->
+    <NotableDate id="native-americans-day-sd" displayName="Native Americans' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sd"><Applicability fromYear="1990"><Territory code="US-SD" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Nevada Day — the last Friday in October; a Nevada state holiday marking 1864 admission to the Union (moved to the last Friday from 2000). Strategy: DayOfWeekInMonth (last Friday). -->
+    <NotableDate id="nevada-day" displayName="Nevada Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nv"><Applicability fromYear="2000"><Territory code="US-NV" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Friday" weekOrdinal="Last" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Alaska Day — 18 October; an Alaska state holiday marking the 1867 formal transfer of Alaska to the United States. Strategy: Fixed day-of-month. -->
+    <NotableDate id="alaska-day" displayName="Alaska Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ak"><Applicability fromYear="1959"><Territory code="US-AK" /></Applicability>
+        <Strategy><Fixed month="October" day="18" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day after Thanksgiving — the Friday after Thanksgiving, a state-government holiday in many states (distinct
+      from the cultural Black Friday at "US" scope, which both resolve under KeepAll). One rule lists the states
+      that observe it as a paid state holiday. Strategy: OffsetFromRule, one day after the imported US Thanksgiving
+      rule.
+    -->
+    <NotableDate id="day-after-thanksgiving" displayName="Day After Thanksgiving" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="states"><Applicability>
+          <Territory code="US-CA" /><Territory code="US-DE" /><Territory code="US-FL" /><Territory code="US-GA" /><Territory code="US-IN" /><Territory code="US-KY" /><Territory code="US-ME" /><Territory code="US-MD" /><Territory code="US-MI" /><Territory code="US-NV" /><Territory code="US-NH" /><Territory code="US-NM" /><Territory code="US-NC" /><Territory code="US-OK" /><Territory code="US-PA" /><Territory code="US-SC" /><Territory code="US-TN" /><Territory code="US-TX" /><Territory code="US-VA" /><Territory code="US-WV" />
+        </Applicability>
+        <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

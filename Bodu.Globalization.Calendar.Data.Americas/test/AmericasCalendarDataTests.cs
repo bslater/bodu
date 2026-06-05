@@ -79,7 +79,124 @@ public sealed class AmericasCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that a holiday introduced in a later year does not resolve before its first applicable year.
+    /// Verifies that each fixed-date state and District of Columbia statutory holiday resolves for its subdivision
+    /// to the known emitted date.
+    /// </summary>
+    /// <param name="territory">The requested subdivision code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("US-UT", 2024, "pioneer-day", "2024-07-24")]
+    [DataRow("US-DC", 2024, "emancipation-day-dc", "2024-04-16")]
+    [DataRow("US-DC", 2025, "inauguration-day", "2025-01-20")]
+    [DataRow("US-DC", 2021, "inauguration-day", "2021-01-20")]
+    [DataRow("US-TX", 2024, "texas-independence-day", "2024-03-02")]
+    [DataRow("US-TX", 2024, "san-jacinto-day", "2024-04-21")]
+    [DataRow("US-TX", 2024, "day-after-thanksgiving", "2024-11-29")]
+    [DataRow("US-AK", 2024, "alaska-day", "2024-10-18")]
+    [DataRow("US-HI", 2024, "kamehameha-day", "2024-06-11")]
+    [DataRow("US-MO", 2024, "truman-day", "2024-05-08")]
+    [DataRow("US-WV", 2024, "west-virginia-day", "2024-06-20")]
+    [DataRow("US-IL", 2024, "lincolns-birthday", "2024-02-12")]
+    [DataRow("US-VT", 2024, "bennington-battle-day", "2024-08-16")]
+    public void Resolve_UnitedStatesStateHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single(territory, year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that holidays whose date floats from year to year resolve to independently-known reference dates
+    /// across both historical and future years — the Easter-derived offsets, the nth-weekday-in-month rules, and the
+    /// nearest-weekday rules — so the moving feasts are pinned, not merely structurally validated.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+
+    // Easter-derived (Algorithm + OffsetFromRule), historical and future.
+    [DataRow("US", 2008, "easter-sunday", "2008-03-23")]
+    [DataRow("US", 2030, "easter-sunday", "2030-04-21")]
+    [DataRow("US", 2038, "easter-sunday", "2038-04-25")]
+    [DataRow("US", 2008, "good-friday", "2008-03-21")]
+    [DataRow("US", 2021, "good-friday", "2021-04-02")]
+    [DataRow("US-LA", 2021, "mardi-gras", "2021-02-16")]
+    [DataRow("US-LA", 2024, "mardi-gras", "2024-02-13")]
+
+    // Nth-weekday-in-month, historical and future.
+    [DataRow("US", 2024, "mlk-day", "2024-01-15")]
+    [DataRow("US", 2031, "mlk-day", "2031-01-20")]
+    [DataRow("US", 2031, "memorial-day", "2031-05-26")]
+    [DataRow("US", 2024, "thanksgiving", "2024-11-28")]
+    [DataRow("US", 2030, "thanksgiving", "2030-11-28")]
+    [DataRow("CA", 2031, "thanksgiving", "2031-10-13")]
+    [DataRow("US-MA", 2024, "patriots-day", "2024-04-15")]
+    [DataRow("US-MA", 2031, "patriots-day", "2031-04-21")]
+    [DataRow("US-HI", 2024, "statehood-day-hi", "2024-08-16")]
+    [DataRow("US-NV", 2024, "nevada-day", "2024-10-25")]
+    [DataRow("US-AK", 2024, "sewards-day", "2024-03-25")]
+
+    // Nearest-weekday (WeekdayNearDate), Canada.
+    [DataRow("CA", 2031, "victoria-day", "2031-05-19")]
+    [DataRow("CA-NL", 2024, "nl-discovery-day", "2024-06-24")]
+    [DataRow("CA-NL", 2025, "nl-discovery-day", "2025-06-23")]
+    [DataRow("CA-NL", 2024, "nl-st-georges-day", "2024-04-22")]
+    public void Resolve_FloatingHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single(territory, year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that the shared observances consolidated in the americas-common hub resolve for both the United
+    /// States and Canada from their single hub/common-library definition.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("US", 2024, "groundhog-day", "2024-02-02")]
+    [DataRow("CA", 2024, "groundhog-day", "2024-02-02")]
+    [DataRow("US", 2024, "st-patricks-day", "2024-03-17")]
+    [DataRow("US", 2024, "cinco-de-mayo", "2024-05-05")]
+    [DataRow("US", 2024, "earth-day", "2024-04-22")]
+    [DataRow("US", 2024, "valentines-day", "2024-02-14")]
+    [DataRow("CA", 2024, "valentines-day", "2024-02-14")]
+    [DataRow("CA", 2024, "international-womens-day", "2024-03-08")]
+    public void Resolve_HubSharedObservance_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single(territory, year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that National Indigenous Peoples Day resolves as a non-working statutory holiday in the Northwest
+    /// Territories (the territorial rule) while remaining a working observance nationally.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_NorthwestTerritoriesIndigenousPeoplesDay_IsStatutoryHoliday()
+    {
+        List<NotableDate> matches = AmericasCalendarData.CreateService("CA-NT")
+            .Resolve(new DateRange(new DateOnly(2024, 6, 21), new DateOnly(2024, 6, 21)), "CA-NT")
+            .Where(r => r.NotableDateId == "national-indigenous-peoples-day")
+            .ToList();
+
+        Assert.IsTrue(matches.Any(r => r.RuleId == "nt-yt" && r.IsNonWorkingDay), "expected a non-working territorial rule");
+    }
+
+    /// <summary>
+    /// Verifies that a holiday does not resolve in a year outside its applicability — before its first applicable
+    /// year, or (for the quadrennial Inauguration Day) in a non-inauguration year.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="year">The Gregorian year.</param>
@@ -88,6 +205,10 @@ public sealed class AmericasCalendarDataTests
     [DataRow("US", 2020, "juneteenth")]
     [DataRow("CA", 2020, "truth-and-reconciliation-day")]
     [DataRow("CA-ON", 2007, "family-day")]
+    [DataRow("US-DC", 2004, "emancipation-day-dc")]
+    [DataRow("US-SD", 1989, "native-americans-day-sd")]
+    [DataRow("US-DC", 2023, "inauguration-day")]
+    [DataRow("US-DC", 2024, "inauguration-day")]
     public void Resolve_WhenBeforeFirstYear_ReturnsNoResult(string territory, int year, string notableDateId)
     {
         int count = AmericasCalendarData.CreateService(territory)

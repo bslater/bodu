@@ -4,16 +4,18 @@
   Canada (CA) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-ca.xml to the v2 cookbook schema. National rules are scoped to territory "CA";
-  provincial and territorial rules use their ISO 3166-2 subdivision codes (CA-AB, CA-BC, CA-MB, CA-NB, CA-NS,
-  CA-NU, CA-ON, CA-PE, CA-QC, CA-SK, CA-YT).
+  National rules are scoped to territory "CA"; provincial and territorial rules use their ISO 3166-2 subdivision
+  codes (CA-AB, CA-BC, CA-MB, CA-NB, CA-NL, CA-NS, CA-NT, CA-NU, CA-ON, CA-PE, CA-QC, CA-SK, CA-YT). Because a
+  subdivision query inherits every rule scoped to "CA", all provinces and territories receive the national
+  statutory holidays automatically; the subdivision-scoped rules add the provincial/territorial holidays.
 
   How this resource is built:
 
-    * Shared civil, Western Christian, and family observances (New Year's Day, the Easter feasts, Christmas, Boxing
-      Day, Mother's/Father's Day) are IMPORTED from the common catalogues (global-core, christian-western) and given
-      a CA territory scope, plus a weekend-substitution policy where the statutory holiday rolls in lieu. The v1
-      UseFrom imports are flattened into explicit rules.
+    * Shared civil, Western Christian, Catholic, family, and cultural observances (New Year's Day, the Easter
+      feasts, Christmas, Boxing Day, Mother's/Father's Day, Valentine's Day, Halloween, International Women's Day,
+      Thanksgiving) are IMPORTED from the americas-common hub and given a CA territory scope, plus a
+      weekend-substitution policy where the statutory holiday rolls in lieu. Concepts are defined once in the hub
+      (or the common library it re-exports) and never re-declared here.
 
     * Canada-specific concepts (Canada Day, the provincial statutory holidays, and the national observances) are
       declared INLINE below.
@@ -39,8 +41,7 @@
   <AdjustmentPolicies>
     <!--
       Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
-      is false, so the substitute may share a day with another holiday. Used by the standalone statutory holidays
-      (New Year's Day, Canada Day, Fete nationale, Nunavut Day, Truth and Reconciliation Day, Remembrance Day).
+      is false, so the substitute may share a day with another holiday. Used by the standalone statutory holidays.
       Emission is ObservedOnly, so the holiday is substituted (moved), not duplicated.
     -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
@@ -62,23 +63,27 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day is a national statutory holiday with a weekend roll to the next working day.
+      Shared observances imported from the americas-common hub and scoped to Canada. New Year's Day and Canada's
+      statutory Easter feasts carry the catalogue defaults (Good Friday and Easter Monday are non-working public
+      holidays). Christmas Day and Boxing Day fall on consecutive days, so they use the conflict-aware substitute to
+      keep their in-lieu days from colliding. Thanksgiving is imported without a territory override so its Canadian
+      rule (second Monday of October) is preserved. Valentine's Day, Halloween, International Women's Day, and the
+      family observances are working cultural/observance days.
     -->
-    <Import resource="global-core">
+    <Import resource="americas-common">
       <Use notableDateRef="new-years-day" territory="CA">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (an OffsetFromRule
-      strategy in the shared catalogue); Easter Saturday (the offset source) is imported too. Christmas Day and
-      Boxing Day fall on consecutive days, so they use the conflict-aware substitute to keep their in-lieu days from
-      colliding.
-    -->
-    <Import resource="christian-western">
+      <Use notableDateRef="groundhog-day" territory="CA" />
+      <Use notableDateRef="valentines-day" territory="CA" />
+      <Use notableDateRef="international-womens-day" territory="CA" />
       <Use notableDateRef="good-friday" territory="CA" />
       <Use notableDateRef="easter-sunday" territory="CA" />
       <Use notableDateRef="easter-monday" territory="CA" />
+      <Use notableDateRef="mothers-day" territory="CA" />
+      <Use notableDateRef="fathers-day" territory="CA" />
+      <Use notableDateRef="thanksgiving" />
+      <Use notableDateRef="halloween" territory="CA" />
       <Use notableDateRef="christmas-eve" territory="CA" />
       <Use notableDateRef="christmas-day" territory="CA">
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
@@ -91,18 +96,6 @@
 
   <NotableDates>
 
-    <!-- Valentine's Day — 14 February, a cultural observance (not a statutory holiday). Strategy: Fixed day-of-month. -->
-    <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- International Women's Day — 8 March, an observance. Strategy: Fixed day-of-month. -->
-    <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="March" day="8" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <!--
       ============================================================================================================
       Provincial third-Monday-in-February statutory holidays (one concept per province, year-gated by adoption)
@@ -111,9 +104,7 @@
 
     <!--
       Family Day — the third Monday in February. One concept carrying a rule per province that observes it, each
-      gated by the year the province adopted the holiday (AB 1990, SK 2007, ON 2008, BC 2013, NB 2018). The engine
-      matches the rule whose territory equals the requested subdivision AND whose year bound includes the query, so
-      a "CA" national query returns none of these, and a province returns nothing before its adoption year. The same
+      gated by the year the province adopted the holiday (AB 1990, SK 2007, ON 2008, BC 2013, NB 2018). The same
       third-Monday-in-February slot appears under different provincial names below (Islander Day, Louis Riel Day,
       Nova Scotia Heritage Day). Strategy: DayOfWeekInMonth (third Monday).
     -->
@@ -128,8 +119,8 @@
     </NotableDate>
 
     <!--
-      Islander Day — Prince Edward Island's name for the third-Monday-in-February holiday, observed from 2009. The
-      fromYear bound excludes earlier years. Strategy: DayOfWeekInMonth (third Monday).
+      Islander Day — Prince Edward Island's name for the third-Monday-in-February holiday, observed from 2009.
+      Strategy: DayOfWeekInMonth (third Monday).
     -->
     <NotableDate id="island-day" displayName="Islander Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pe"><Applicability fromYear="2009"><Territory code="CA-PE" /></Applicability>
@@ -156,15 +147,55 @@
 
     <!--
       ============================================================================================================
+      Newfoundland and Labrador commemorative holidays (CA-NL)
+      ============================================================================================================
+      Newfoundland observes several commemorative days on the Monday nearest the underlying date. St. Patrick's Day
+      and St. George's Day are imported as the Catholic feast dates and re-scoped to a provincial public holiday;
+      Discovery Day and Orangemen's Day are declared inline on the nearest Monday, and Memorial Day shares 1 July
+      with Canada Day.
+    -->
+
+    <!--
+      Newfoundland Memorial Day — 1 July, commemorating the Royal Newfoundland Regiment's losses at Beaumont-Hamel
+      in 1916; observed alongside Canada Day. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="nl-memorial-day" displayName="Memorial Day (Newfoundland and Labrador)" category="Remembrance" defaultNonWorkingDay="true">
+      <Rules><Rule id="nl"><Applicability fromYear="1917"><Territory code="CA-NL" /></Applicability>
+        <Strategy><Fixed month="July" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      St. George's Day (Newfoundland and Labrador) — observed on the Monday nearest 23 April. Strategy:
+      WeekdayNearDate (Monday nearest 23 April).
+    -->
+    <NotableDate id="nl-st-georges-day" displayName="St. George's Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nl"><Applicability><Territory code="CA-NL" /></Applicability>
+        <Strategy><WeekdayNearDate month="April" day="23" dayOfWeek="Monday" direction="Nearest" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Discovery Day (Newfoundland and Labrador) — observed on the Monday nearest 24 June, marking John Cabot's 1497
+      landfall. Distinct from Yukon's August Discovery Day below. Strategy: WeekdayNearDate (Monday nearest 24 June).
+    -->
+    <NotableDate id="nl-discovery-day" displayName="Discovery Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nl"><Applicability><Territory code="CA-NL" /></Applicability>
+        <Strategy><WeekdayNearDate month="June" day="24" dayOfWeek="Monday" direction="Nearest" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Orangemen's Day (Newfoundland and Labrador) — observed on the Monday nearest 12 July. Strategy:
+      WeekdayNearDate (Monday nearest 12 July).
+    -->
+    <NotableDate id="orangemens-day" displayName="Orangemen's Day (Newfoundland and Labrador)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="nl"><Applicability><Territory code="CA-NL" /></Applicability>
+        <Strategy><WeekdayNearDate month="July" day="12" dayOfWeek="Monday" direction="Nearest" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
       National statutory holidays and observances
       ============================================================================================================
     -->
-
-    <!-- Mother's Day — second Sunday in May, an observance. Strategy: DayOfWeekInMonth (second Sunday). -->
-    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
-    </NotableDate>
 
     <!--
       Victoria Day — the Monday on or before 24 May (so the penultimate Monday of May), a national statutory
@@ -176,28 +207,25 @@
     </NotableDate>
 
     <!--
-      National Indigenous Peoples Day — 21 June, an observance held since 1996, so the fromYear bound excludes
-      earlier years. Strategy: Fixed day-of-month.
+      National Indigenous Peoples Day — 21 June. A national observance held since 1996 (working day), and a
+      statutory non-working holiday in the Northwest Territories (from 2022) and Yukon. Territory shadowing returns
+      the territorial rule for CA-NT/CA-YT and the national observance rule elsewhere. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="national-indigenous-peoples-day" displayName="National Indigenous Peoples Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability fromYear="1996"><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="June" day="21" /></Strategy></Rule></Rules>
+      <Rules>
+        <Rule id="ca"><Applicability fromYear="1996"><Territory code="CA" /></Applicability><Strategy><Fixed month="June" day="21" /></Strategy></Rule>
+        <Rule id="nt-yt" category="PublicHoliday" nonWorking="true"><Applicability fromYear="2022"><Territory code="CA-NT" /><Territory code="CA-YT" /></Applicability><Strategy><Fixed month="June" day="21" /></Strategy></Rule>
+      </Rules>
     </NotableDate>
 
     <!--
-      Fete nationale du Quebec (Saint-Jean-Baptiste Day) — 24 June, a Quebec-only statutory holiday with a weekend
+      Fête nationale du Québec (Saint-Jean-Baptiste Day) — 24 June, a Quebec-only statutory holiday with a weekend
       roll. Subdivision-scoped, so a national "CA" query returns nothing. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="fete-nationale-quebec" displayName="Fête nationale du Québec" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="qc"><Applicability><Territory code="CA-QC" /></Applicability>
         <Strategy><Fixed month="June" day="24" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <!-- Father's Day — third Sunday in June, an observance. Strategy: DayOfWeekInMonth (third Sunday). -->
-    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Canada Day — 1 July, the national statutory holiday, with a weekend roll. Strategy: Fixed day-of-month. -->
@@ -233,11 +261,11 @@
 
     <!--
       Civic Holiday — first Monday in August, the generic name used where no province-specific name applies. A
-      single rule lists every applicable subdivision (ON, MB, SK, NU); the engine matches any of them. Strategy:
+      single rule lists every applicable subdivision (ON, MB, SK, NU, NT); the engine matches any of them. Strategy:
       DayOfWeekInMonth (first Monday).
     -->
     <NotableDate id="civic-holiday" displayName="Civic Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="general"><Applicability><Territory code="CA-ON" /><Territory code="CA-MB" /><Territory code="CA-SK" /><Territory code="CA-NU" /></Applicability>
+      <Rules><Rule id="general"><Applicability><Territory code="CA-ON" /><Territory code="CA-MB" /><Territory code="CA-SK" /><Territory code="CA-NU" /><Territory code="CA-NT" /></Applicability>
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
@@ -258,9 +286,10 @@
 
     <!--
       Discovery Day — third Monday in August, Yukon only (commemorating the 1896 Klondike gold discovery; distinct
-      from the first-Monday August holiday). Strategy: DayOfWeekInMonth (third Monday).
+      from the first-Monday August holiday and from Newfoundland's June Discovery Day). Strategy: DayOfWeekInMonth
+      (third Monday).
     -->
-    <NotableDate id="discovery-day" displayName="Discovery Day" category="PublicHoliday" defaultNonWorkingDay="true">
+    <NotableDate id="discovery-day" displayName="Discovery Day (Yukon)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="yt"><Applicability><Territory code="CA-YT" /></Applicability>
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
@@ -285,21 +314,6 @@
       <Rules><Rule id="ca"><Applicability fromYear="2021"><Territory code="CA" /></Applicability>
         <Strategy><Fixed month="September" day="30" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
-    </NotableDate>
-
-    <!--
-      Thanksgiving — second Monday in October (earlier than the US fourth-Thursday-in-November date). A national
-      statutory holiday. Strategy: DayOfWeekInMonth (second Monday).
-    -->
-    <NotableDate id="thanksgiving" displayName="Thanksgiving" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Halloween — 31 October, a cultural observance (not a statutory holiday). Strategy: Fixed day-of-month. -->
-    <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
-      <Rules><Rule id="ca"><Applicability><Territory code="CA" /></Applicability>
-        <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
