@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  AT notable-date resource, migrated from the v1 region-at.xml to the v2 cookbook schema. Shared civil and Christian
-  observances are imported from the global-core and christian-western catalogues with per-territory overrides; the
-  remaining entries are territory-local concepts defined inline.
+  ================================================================================================================
+  Austria (AT) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-at.xml to the v2 cookbook schema. All rules are scoped to territory "AT".
+
+  How this resource is built:
+
+    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
+      christian-western), re-scoped to the Austrian public-holiday set through the import <Use> directive. The
+      shared catalogue carries only the bare calculation strategy; the territory supplies the local observance.
+
+    * Austria-specific concepts (Epiphany, State Holiday, Assumption, the National Day, Immaculate Conception, and
+      Saint Stephen's Day) are declared INLINE below.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.at">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -17,11 +38,20 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="AT">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
     </Import>
+    <!--
+      Western Christian feasts. Easter Monday (+1), Ascension (+39), Whit Monday (+50), and Corpus Christi (+60)
+      derive from the Easter Sunday anchor in the shared catalogue. Ascension, Corpus Christi, and All Saints'
+      (1 November) are re-scoped to non-working public holidays, all of which are statutory across Austria.
+      Christmas Day (25 December) is fixed.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="AT" />
       <Use notableDateRef="easter-monday" territory="AT" />
@@ -35,31 +65,43 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Epiphany (Heilige Drei Könige) — 6 January; a public holiday in Austria. Strategy: Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- State Holiday (Staatsfeiertag) — 1 May, Austria's Labour Day; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="state-holiday" displayName="State Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Assumption of Mary (Mariä Himmelfahrt) — 15 August, a Marian feast; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Immaculate Conception (Mariä Empfängnis) — 8 December, a Marian feast; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint Stephen's Day (Stefanitag) — 26 December; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- National Day (Nationalfeiertag) — 26 October, marking the 1955 declaration of permanent neutrality; the national day. The fromYear="1965" bound reflects its establishment as a holiday. Strategy: Fixed date. -->
     <NotableDate id="national-day" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability fromYear="1965"><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="October" day="26" /></Strategy></Rule></Rules>

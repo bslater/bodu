@@ -12,11 +12,22 @@
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday. Used by the standalone holidays (Waitangi
+      Day, Anzac Day). Emission is ObservedOnly, so the holiday is substituted (moved), not duplicated.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
       <Emission mode="ObservedOnly" reason="Substitute public holiday" />
     </AdjustmentPolicy>
+    <!--
+      Conflict-aware weekend substitute: as above, but skipNonWorkingDates is true, so the substitute steps over a
+      day already claimed by another non-working holiday. This is what lets the paired holidays (New Year / Day after
+      New Year's Day, and Christmas / Boxing Day) keep their in-lieu days from colliding when both fall on a weekend
+      — the second advances past the day the first has already taken.
+    -->
     <AdjustmentPolicy id="working-day-substitute" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
@@ -25,11 +36,21 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Civil core. New Year's Day is a public holiday; it is paired with the inline "Day after New Year's Day"
+      (2 January) below, so it uses the conflict-aware substitute to keep their in-lieu days distinct.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="NZ">
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
       </Use>
     </Import>
+    <!--
+      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (an OffsetFromRule
+      strategy in the shared catalogue); Easter Sunday is also the source for the inline Easter Saturday offset
+      below. Christmas Day and Boxing Day fall on consecutive days, so they use the conflict-aware substitute to keep
+      their in-lieu days from colliding.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="NZ" />
       <Use notableDateRef="good-friday" territory="NZ" />
