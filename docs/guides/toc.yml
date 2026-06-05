@@ -92,7 +92,7 @@
       items:
         - name: Calendar data packs
           href: calendar/data-packs.md
-    - name: Bodu.Globalization.Calendar.V2 — Notable-date catalogue
+    - name: Bodu.Globalization.Calendar — Notable-date catalogue
       items:
         - name: Catalogue overview
           href: calendar/catalogue/index.md

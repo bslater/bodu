@@ -17,8 +17,8 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Text.Configuration` | `Bodu.Text.Configuration/` | Bodu text configuration parser/resolver (INI-compatible profile, resolver precedence, typed view getters, write options). |
 | `Bodu.Text.Formats` | `Bodu.Text.Formats/` | Document formats: Bencode, Delimited (RFC 4180 CSV/TSV), DotEnv, INI. |
 | `Bodu.Extensions.Configuration.Text` | `Bodu.Extensions.Configuration.Text/` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. |
-| `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Notable-date algorithms (Easter / Orthodox Easter / Lunar New Year / Vesak / Asalha Puja / Qingming / Losar / Hindu lunar festivals), rule providers, range resolution, observed-date adjustments, `NotableDateService`. |
-| `Bodu.Globalization.Calendar.Builder` | `Bodu.Globalization.Calendar.Builder/` | Source generator that produces calendar resource assemblies from rule XML/JSON. |
+| `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Resource-driven notable-date engine on the v2 cookbook schema: rule model, date-calculation strategies and astronomical algorithms (`Algorithms`), range resolution (`RangeResolution`), observed-date adjustments, working-day extensions (`Bodu.Extensions`), and `NotableDateService`. |
+| `Bodu.Globalization.Calendar.Plugins` | `Bodu.Globalization.Calendar.Plugins/` | Trust-gated external plugin loading for assemblies contributing custom `INotableDateAlgorithm` implementations. |
 | `Bodu.Globalization.Calendar.Data.Americas` | `…Calendar.Data.Americas/` | Bundled calendar rules for the Americas territory bundle (e.g. US). |
 | `Bodu.Globalization.Calendar.Data.AsiaPacific` | `…Calendar.Data.AsiaPacific/` | Asia-Pacific bundle (e.g. AU including subdivisions). |
 | `Bodu.Globalization.Calendar.Data.Europe` | `…Calendar.Data.Europe/` | Europe bundle (e.g. GB, FR). |
@@ -51,7 +51,7 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for
 - **Bodu.Text.Encoding**: `Base16`, `Base32`, `Base58`, `Base64`, `Base85`, `BaseFormattingOptions`, `BaseFormatStyles`, variant enums.
 - **Bodu.Text.Configuration**: `ConfigurationDocument`, `ConfigurationParseOptions`, `ConfigurationWriteOptions`, `ConfigurationProfile`, view getters.
 - **Bodu.Text.Formats**: `Bencode` / `BencodedValue`, `Delimited` / `DelimitedParseOptions`, `DotEnv`, `Ini` / `IniDocument` / `IniParseOptions`.
-- **Bodu.Globalization.Calendar**: `NotableDateService`, `INotableDateRuleProvider`, `NotableDate`, `NotableDateKind`, `NotableDateFilter`, `EasterSundayNotableDateAlgorithm`, `LunarNewYearNotableDateAlgorithm`, plus Vesak/Asalha/Qingming/Losar/Hindu lunar variants.
+- **Bodu.Globalization.Calendar**: `NotableDateService` / `INotableDateService`, `NotableDateResource` / `NotableDateResourceLoader`, `NotableDateRule`, `NotableDate`, `NotableDateDefinition`, `NotableDateFilter`, `TerritoryCode`; namespace `Bodu.Globalization.Calendar.Algorithms` (`INotableDateAlgorithm`, `EasterCalculator`, `HinduLunarCalculator`, `LunarPhaseCalculator`, `SolarTermCalculator`, and the `IDateCalculationStrategy` implementations); namespace `Bodu.Globalization.Calendar.RangeResolution` (`ResolutionPolicy`, collision/duplicate policies); working-day/date extensions in `Bodu.Extensions`.
 - **Bodu.Test** (test infrastructure): `IKat`, generic KAT records (`ValidKat<TInput,TExpected>`, `InvalidKat<TInput>`, `RoundTripKat<TValue,TWire>`, `BinaryKat<TInput,TExpected>`, `ExceptionKat<TInput>`, `GuardValidKat<T>`, `GuardInvalidKat<T>`, `EnumerableKat<TInput,TExpected>`, `BinaryEncodingKat`, `InvalidEncodedTextKat`), `KatDisplayName` helper, `ExceptionAssert` (with `ThrowsExactlyWithParamName<T>` and `AssertGuard`), MSTest tier constants in `TestCategories`, reusable stream mocks under `Bodu.Test.IO`.
 
 ## Build & Tooling
@@ -261,10 +261,7 @@ Assert.IsTrue(ex.InnerException.Message.Contains("Invalid state", StringComparis
 - **Bodu.Text.Encoding.Test** (namespace `Bodu.Text.Encoding.Contracts`): `BinaryEncodingContractTests<TEncoding>`; plus the KATs `BinaryEncodingKat`, `InvalidEncodedTextKat`; and the pre-existing domain-local KAT `EncodingKnownAnswerVector`.
 - **Bodu.Text.Formats.Test** (namespace `Bodu.Text.Formats.Contracts`): `BinaryDocumentFormatContractTests<TDocument,TOptions>`, `TextDocumentFormatContractTests<TDocument,TOptions>`, `StreamRoundTripContractTests<T>`; plus the KATs `BinaryDocumentKat<,>`, `InvalidBinaryDocumentKat<>`, `TextDocumentKat<,>`, `InvalidTextDocumentKat<>`; and the pre-existing domain-local KATs `BencodeKnownAnswerVector`, `DelimitedKnownAnswerVector`, `DotEnvKnownAnswerVector`, `IniKnownAnswerVector`.
 - **Bodu.Text.Configuration.Test**: the bespoke `ConfigurationKatRunnerTests` framework + `ConfigurationKnownAnswerData`.
-- **Bodu.Globalization.Calendar.Test** (namespaces `Bodu.Globalization.Calendar` / `Bodu.Globalization.Calendar.RangeResolution` / `Bodu.Globalization.Calendar.Extensions.Contracts`): `NotableDateTemporalExtensionContractTests<TDate>`; plus the KATs `RangeResolutionKat`, `RuleParseKat<TDocument>`, `InvalidRuleParseKat`; and the pre-existing domain-local records `AlgorithmFactoryCase`, `NotableDateAlgorithmKnownAnswer`, `FilterScenarioKnownAnswer`, `TerritoryNotableDateKnownAnswer`, `RuleCatalogueExpectation`.
-- **Bodu.Globalization.Calendar.Builder.Test** (namespace `Bodu.Globalization.Calendar.Builder`): `CalendarBuilderOutputKat`, `CalendarBuilderInvalidKat`.
-- **Bodu.Globalization.Calendar.Data.Americas.Test** (namespace `Bodu.Globalization.Calendar.Data`): `CalendarDataKat`. The shape is reusable for sibling regional bundles (AsiaPacific, Europe) but they currently use bespoke `<Country>TerritoryAnswers` patterns; promote if a second consumer materialises.
-- **Bodu.Globalization.Calendar.DependencyInjection.Test** (namespace `Bodu.Globalization.Calendar.DependencyInjection.Contracts`): `ServiceLifetimeContractTests`, `ServiceRegistrationKat`.
+- **Bodu.Globalization.Calendar.Test** (plus the `.Data.*`, `.DependencyInjection`, and `.Plugins` test projects): the v2 calendar suite uses self-contained `*KnownAnswerTests` classes (e.g. `EasterKnownAnswerTests`, `IslamicCalendarKnownAnswerTests`, `StrategyResolution*KnownAnswerTests`) that drive known-answer vectors directly, with shared XML inputs embedded under `test/Globalization.Calendar/Fixtures/`. It does not currently promote reusable contract bases or KAT-record types; add them under a local `Contracts/` folder if a second consumer in a different calendar test project emerges.
 
 When adding a new contract base or KAT record, default to colocating it with its sole consumer — only promote it to `Bodu.Test` once a second consumer in a different test project exists.
 
@@ -455,7 +452,7 @@ Use `{0}`, `{1}`, … for format placeholders and combine via `string.Format(Cul
 
 **Cross-file ThrowHelper convention:**
 
-Mirror the partial-file pattern used by `CalendarThrowHelper` and `FinancialThrowHelper`:
+Mirror the partial-file pattern used by `FinancialThrowHelper`:
 
 - Root file `<Domain>ThrowHelper.cs` — `internal static partial class` declaration with the standard StyleCop / Roslynator suppressions inherited from the reference implementations.
 - `<Domain>ThrowHelper.CallerExpression.cs` (and a `<Domain>ThrowHelper.NetStandard.cs` companion when the project multi-targets `netstandard2.0`) — holds the actual guard implementations.
@@ -465,7 +462,7 @@ Mirror the partial-file pattern used by `CalendarThrowHelper` and `FinancialThro
 
 **When to add a helper vs. inline the throw:**
 
-- **Add to `<Domain>ThrowHelper`** when the same validation rule appears in **two or more** call sites across the library (e.g. ISO code validation in `Bodu.Financial`, year-range validation in `Bodu.Globalization.Calendar`).
+- **Add to `<Domain>ThrowHelper`** when the same validation rule appears in **two or more** call sites across the library (e.g. ISO code validation in `Bodu.Financial`).
 - **Keep inline** when a check appears in only one method, but **still source the message from resx**. A single-use throw becomes:
 
   ```csharp
