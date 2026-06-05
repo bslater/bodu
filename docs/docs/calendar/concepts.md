@@ -10,138 +10,132 @@ For the high-level shape of the library and the resolution pipeline diagram, sta
 
 ## The pipeline in one line
 
-![Notable date flow — six stages from authored rule to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
+![Notable date flow — from authored document to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
 
-The pipeline reads left to right. A **rule source** loads authored recipes; each recipe is a **`NotableDateRule`**; the **resolution strategy** turns the rule into a *nominal date* for the requested year; the **adjustment pipeline** may shift it to an *observed date*; the result is cached as a **resolved `NotableDate`**; consumers query the cache via **`GetNotableDates`**, working-day arithmetic, and filters.
+The pipeline reads left to right. A **rule document** is authored on the cookbook schema and **loaded** into an immutable **`NotableDateResource`**; each notable-date concept carries one or more **`NotableDateRule`** recipes; a rule's **strategy** computes a *nominal date* for the requested year; an **adjustment policy** may shift it to an *observed date*; same-day **collisions** are settled by the resource's **resolution policy**; and consumers query the result via **`Resolve`**, working-day arithmetic, and filters.
 
 Every term below corresponds to a stage or an input of that pipeline.
 
-> **Conceptual vs. implementation view.** This diagram collapses the resolver into the six conceptual stages that matter to consumers. The implementation expands these into eight discrete stages — *rule loading*, *override merging*, *effective rule list assembly*, *anchor resolution*, *adjustment chain evaluation*, *collision resolution*, *per-year cache*, and (for filtered queries) *filter gate*. The [resolution pipeline guide](../../guides/calendar/resolution-pipeline.md) walks through each one with traces and worked examples.
+> **Conceptual vs. implementation view.** The load step expands into parse → import resolution → override application → assembly → semantic validation; the query step expands into strategy resolution → adjustment evaluation → collision/duplicate settlement → emission. The [resolution pipeline guide](../../guides/calendar/resolution-pipeline.md) walks through each stage with worked examples.
 
-## Rule vs. resolved date
+## Document, resource, definition, rule
 
-A **rule** (<xref:Bodu.Globalization.Calendar.NotableDateRule>) is the authored recipe — *what* the date represents and *how* to compute it for any year. It is immutable, year-independent, and lives in a rule source.
+A **rule document** is authored text (XML or JSON) on the v2 cookbook schema (`urn:bodu:globalization:calendar`). <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> parses it, resolves its imports, applies any overrides, validates it, and returns a **resource**.
 
-A **resolved date** (<xref:Bodu.Globalization.Calendar.NotableDate>) is the year-specific concrete output — a single occurrence, with a `Date`, `Name`, `Category`, `TerritoryCode`, and optional adjustment metadata. Resolved dates are produced by `NotableDateService.GetNotableDates` and cached per year.
+A **resource** (<xref:Bodu.Globalization.Calendar.NotableDateResource>) is the immutable, fully validated result of loading a document — a resolution policy, a set of adjustment policies, and a list of notable-date definitions. It is the unit a <xref:Bodu.Globalization.Calendar.NotableDateService> is built over.
 
-A rule produces zero, one, or many resolved dates per year, depending on its strategy, scope, and any year bounds.
+A **definition** (<xref:Bodu.Globalization.Calendar.NotableDateDefinition>) is a single notable-date *concept* — an id, a display name, a default category, and one or more rules.
+
+A **rule** (<xref:Bodu.Globalization.Calendar.NotableDateRule>) is one calculation recipe for its definition: an applicability window, exactly one resolution strategy, optional adjustment-policy references, and tags. A concept can hold several rules — for example a different recipe before and after a reform year.
+
+## Resolved date
+
+A **resolved date** (<xref:Bodu.Globalization.Calendar.NotableDate>) is the year-specific concrete output — one occurrence with an emitted `Date`, the calculated `ActualDate`, `IsObserved`, a rule `Identity`, `DisplayName`, `TerritoryCode`, `Category`, and adjustment metadata. Resolved dates are produced by `NotableDateService.Resolve(...)`.
+
+A rule produces zero, one, or many resolved dates per query, depending on its strategy, applicability, and the requested window.
 
 ## Nominal date vs. observed date
 
-![Nominal date vs. observed date — Christmas Day 2027 worked example](../../images/diagrams/calendar-nominal-vs-observed.svg)
+![Nominal date vs. observed date — a weekend-rollover worked example](../../images/diagrams/calendar-nominal-vs-observed.svg)
 
-The **nominal date** is what the resolution strategy computes from the rule before any adjustment runs — e.g. *25 December* for Christmas Day.
+The **nominal date** (`NotableDate.ActualDate`) is what the resolution strategy computes from the rule before any adjustment runs — e.g. *25 December* for Christmas Day.
 
-The **observed date** is what the adjustment pipeline emits — e.g. *Monday 27 December 2027* when Christmas falls on a Saturday and a weekend-rollover adjustment relocates it.
+The **observed date** (`NotableDate.Date`) is what the adjustment pipeline emits — e.g. *Monday 27 December* when Christmas falls on a Saturday and a weekend-rollover policy relocates it.
 
-Most rules have a single occurrence per year and `nominal == observed`. When an adjustment fires, `NotableDate.WasAdjusted` is set to `true` and `NotableDate.AdjustmentReason` records the original nominal date, trigger, and action. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by <xref:Bodu.Globalization.Calendar.ObservedDateMode>: `ObservedOnly` (the default) supersedes the nominal date with its substitute (e.g. AU New Year's Day moving off the weekend), `ActualAndObserved` emits the nominal day *and* its substitute (e.g. UK bank holidays), and `ActualOnly` suppresses the substitute entirely. The mode is applied consistently regardless of query-window width. See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) for the design choice and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md) for the trigger/action catalogue.
+Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an adjustment fires, `IsObserved` is `true` and `AdjustmentPolicyId` / `AdjustmentReason` record which policy moved it. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by the policy's <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> (`ObservedOnly`, `ActualOnly`, `ActualAndObserved`, `ObservedAsAdditional`, `Suppress`); which occurrence controls range-query inclusion is governed by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>. See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md).
 
 ## Resolution strategy
 
-A rule's <xref:Bodu.Globalization.Calendar.DateResolutionStrategy> determines how the nominal date is computed:
+Each rule carries exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>, authored as one `<Strategy>` child element:
 
-| Strategy | What it does |
+| Strategy element | What it does |
 |---|---|
-| `Fixed` | A specific month + day every year (e.g. 1 January). |
-| `DayOfWeekInMonth` | The *n*th occurrence of a weekday in a month (e.g. third Monday in January). |
-| `OffsetFromAnchor` | A signed day-offset from another resolved rule (e.g. Easter Sunday − 2 = Good Friday). |
-| `WeekdayNearDate` | A weekday on or after, on or before, or nearest to a fixed reference date (e.g. the Saturday on or after 20 June = Nordic Midsummer Day). |
-| `RelativeWeekdayInMonth` | A weekday positioned relative to the *n*th anchor weekday of a month (e.g. the Tuesday after the first Monday in November = US Election Day). |
-| `Algorithm` | Delegated to a registered `INotableDateAlgorithm` for astronomical or ecclesiastical computations (Easter, Vesak, …). |
+| `<Fixed>` | A specific month + day every year (e.g. 1 January), optionally in a non-Gregorian calendar. |
+| `<DayOfWeekInMonth>` | The *n*th or last weekday in a month (e.g. fourth Thursday in November). |
+| `<RelativeWeekdayInMonth>` | A weekday positioned relative to a weekday-in-month anchor (e.g. the Tuesday after the first Monday in November). |
+| `<WeekdayNearDate>` | A weekday on / before / after / nearest a fixed reference date (e.g. the Monday nearest 24 May). |
+| `<OffsetFromRule>` | A signed day-offset from another rule's occurrence (e.g. Easter Sunday − 2 = Good Friday). |
+| `<Algorithm>` | Delegated to a named algorithm key for astronomical or ecclesiastical computations (Easter, equinoxes, Vesak, Diwali, …). |
 
-See [Choosing a strategy](../../guides/calendar/rule-reference.md#choosing-a-strategy) for guidance on which strategy to pick, and the [NotableDateRule and ObservanceAdjustment reference](../../guides/calendar/rule-reference.md) for the per-field contracts and worked examples.
+See the [NotableDateRule and adjustment-policy reference](../../guides/calendar/rule-reference.md) for the per-element contracts and [Date calculation algorithms](../../guides/calendar/algorithms.md) for the algorithm keys.
 
-## Anchor
+## Rule references (offset-from-rule)
 
-An **anchor** is a rule whose resolved date is consumed by `OffsetFromAnchor` rules. Anchors are typically algorithmic — Easter Sunday is the most common — but any resolved rule with a `Name` can serve as one.
+An `<OffsetFromRule>` strategy names another concept's rule via `notableDateRef` (and optional `ruleRef`) plus a signed `offsetDays`. The referenced rule is resolved first and the offset applied — this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the same resource; see [Date calculation algorithms](../../guides/calendar/algorithms.md).
 
-A rule names its anchor via `NotableDateRule.AnchorRuleName` and a signed `OffsetDays`. The anchor must be loaded by the same service instance and must resolve before the dependent rule (priority and pipeline order govern this).
+## Adjustment policy
 
-See [Date calculation algorithms](../../guides/calendar/algorithms.md) for the algorithm + anchor pattern.
+An **adjustment policy** (<xref:Bodu.Globalization.Calendar.AdjustmentPolicy>) is a reusable, named post-resolution shift declared once at the top of a document and referenced by rules via `policyRef`. It pairs a <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> (when it fires — `IfWeekend`, `IfNonWorkingDay`, `IfDayOfWeek`, …) with an <xref:Bodu.Globalization.Calendar.AdjustmentAction> (what it does — `MoveToNextWorkingDay`, `AddDays`, `ReplaceWithRule`, `Suppress`, …), an <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode>, and an optional <xref:Bodu.Globalization.Calendar.AdjustmentScope> (territory, calendar, category, year range).
 
-## Adjustment
+A rule can reference several policies; they are evaluated in priority order. Custom triggers and actions are supplied through <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> / <xref:Bodu.Globalization.Calendar.IAdjustmentHandler> registries. See [Observance adjustment rules](../../guides/calendar/adjustment-rules.md).
 
-An **adjustment** (<xref:Bodu.Globalization.Calendar.ObservanceAdjustment>) is a post-resolution shift evaluated against the nominal date. It pairs a `Trigger` (when it fires — `IfWeekend`, `IfNonWorkingDay`, `IfDayOfWeek`, …) with an `Action` (what it does — `MoveToNextWeekday`, `MoveToNextWorkingDay`, `AddDays`, `ReplaceWithNamedDate`, …) and an optional scope (territory, year range).
+## Collision and duplicate resolution
 
-A rule can carry multiple adjustments. The pipeline sorts them by priority, fires the first whose trigger matches, and stops. See [Observance adjustment rules](../../guides/calendar/adjustment-rules.md) for the full trigger / action catalogue and pattern examples.
-
-## Collision resolution
-
-A **collision** occurs when two rules resolve to the same date for the same territory — for example, when an adjusted Christmas Day lands on Boxing Day. The configured <xref:Bodu.Globalization.Calendar.INotableDateCollisionResolver> decides whether to merge them, keep the higher-priority rule, or surface both. The built-in <xref:Bodu.Globalization.Calendar.DefaultNotableDateCollisionResolver> implements a sensible default; plug in a custom resolver for bespoke merge logic.
-
-See [Building and extending the service](../../guides/calendar/building-the-service.md) for the registry contract.
+A **collision** occurs when two distinct rules resolve to the same date for the same territory — for example, an adjusted holiday landing on another holiday. The resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> decides the outcome: <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> (`KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`) combined with <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection>, while <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> reconciles identical occurrences. Under `CollisionPolicy.Custom`, a supplied <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> settles the day. See [Identity, priority, and observed-date resolution](../../guides/calendar/identity-and-resolution.md).
 
 ## Territory
 
 ![TerritoryCode containment hierarchy](../../images/diagrams/calendar-territory-containment.svg)
 
-A <xref:Bodu.Globalization.Calendar.TerritoryCode> is an ISO 3166-1 alpha-2 country code with an optional ISO 3166-2 subdivision — `AU`, `AU-NSW`, `GB-ENG`, `US-CA`. Territory codes are **hierarchical**: a parent contains all of its subdivisions.
+A <xref:Bodu.Globalization.Calendar.TerritoryCode> is an ISO 3166 country code with an optional subdivision — `AU`, `AU-NSW`, `GB-ENG`, `US-CA`. Territory codes are **hierarchical**: a country contains all of its subdivisions. Queries take a plain `string` territory (the struct converts implicitly).
 
 - A rule authored for `AU` applies to every Australian subdivision.
 - A query for `AU-NSW` returns rules authored at `AU` *and* at `AU-NSW`.
-- A rule with no territory code applies globally — useful for genuinely global dates like the Gregorian New Year.
+- A rule with no `<Territory>` constraint applies to every territory — useful for genuinely global dates like the Gregorian New Year.
 
-See [Territories and regional composition](../../guides/calendar/territories.md) for the parsing, containment, and composition rules.
+See [Territories and regional composition](../../guides/calendar/territories.md).
 
 ## Category vs. tag
 
-<xref:Bodu.Globalization.Calendar.NotableDateCategory> is the well-known enum — `Holiday`, `Observance`, `Remembrance`, `Cultural`, `Religious`, `Seasonal`, `Civic`, `Bank`, `School`, `Regional`, `Other`, `None`. Every resolved date has exactly one category. Use it for coarse-grained filtering (e.g. "show me holidays").
+<xref:Bodu.Globalization.Calendar.NotableDateCategory> is the well-known enum — `PublicHoliday`, `BankHoliday`, `Observance`, `Remembrance`, `Cultural`, `Religious`, `Seasonal`, `Civic`, `School`, `Regional`, `Other`, `None`. Every resolved date has exactly one category. Use it for coarse filtering (e.g. "show me public holidays").
 
-**Tags** are free-form strings on the rule (`NotableDateRule.Tags`). They survive into the resolved `NotableDate.Tags` and are intended for fine-grained, app-specific filtering — `"NationalHoliday"`, `"BankClosed"`, `"SchoolHoliday"`, `"Christian"`. Combine `NotableDateFilter.WithTag(...)` with `NotableDateFilter.ForCategory(...)` for compound queries.
+**Tags** are free-form strings on the rule (`<Tags>`). They survive into the resolved `NotableDate.Tags` and are intended for fine-grained, app-specific filtering. Combine `NotableDateFilter.WithTag(...)` with `NotableDateFilter.ForCategory(...)` for compound queries.
 
-## Provider
+## Imports and common catalogues
 
-A **provider** is a source of rules. The base contract is <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider> — a single `LoadRules` method returning `NotableDateRule` instances. Built-in providers cover the common cases:
+A document rarely starts from scratch. `<Imports>` pull notable-date concepts from the bundled **common catalogues** — `global-core`, `christian-western`, `global-islamic`, `global-hindu`, and friends — resolved by name through <xref:Bodu.Globalization.Calendar.CommonNotableDateResources>. An `<Import>` can take every concept or cherry-pick with `<Use>` directives that rename, re-scope to a territory, override the category, or attach adjustment policies. Local concepts win over imported concepts of the same id. The `Bodu.Globalization.Calendar.Data.*` packs are built exactly this way. See [Authoring notable date rules](../../guides/calendar/rule-authoring.md).
 
-- <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> — load rules from an embedded XML resource.
-- <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider> — load rules from an embedded JSON resource (same document model as XML).
-- The `Bodu.Globalization.Calendar.Data.*` companion packages — `AmericasCalendarData`, `EuropeCalendarData`, `AsiaPacificCalendarData` — ship per-country providers backed by curated rule files.
+## Overrides and runtime change
 
-A service can be constructed from one or many providers; their rule sets are merged in declaration order.
+**Overrides** are ID-targeted edits applied at load time, authored in a document's `<Overrides>` element: `<AddRule>` adds a rule to a concept, `<PatchRule>` replaces parts of an existing rule, `<RemoveRule>` deletes one. They let a regional document tweak imported concepts without forking them.
 
-See [Authoring notable date rules](../../guides/calendar/rule-authoring.md) and [Calendar data packs](../../guides/calendar/data-packs.md).
-
-## Override
-
-An **override** is a runtime modification of the base rule set, layered on top of all providers. The contract is <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>: `GetAdditions` returns new rules; `GetRemovals` returns <xref:Bodu.Globalization.Calendar.RuleRemoval> records that suppress base rules by name (optionally scoped to year ranges).
-
-Use overrides for organisation-specific closures, ad-hoc emergency holidays, suppression of a base rule in a single territory, or short-lived experiments. Overrides do not modify provider XML / JSON — they layer on top at resolution time, and `service.Invalidate()` clears the cache when the override state changes.
+Because a resource is immutable, *runtime* change is modelled by loading a **new** resource and swapping it in: a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> holds the current resource and `Reload(...)` replaces it, while a <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> reads the provider per query and rebuilds atomically. Code-first contribution of *finished* occurrences (bypassing the rule pipeline) is the role of <xref:Bodu.Globalization.Calendar.INotableDateProvider>.
 
 ## Algorithm vs. fixed rule
 
-When a date cannot be expressed as a calendar formula (Easter Sunday, Vesak, Diwali, Qingming), the calculation lives behind <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm>. The rule references it by key:
+When a date cannot be expressed as a calendar formula (Easter Sunday, Vesak, Diwali, Qingming), it is computed by a named **algorithm** referenced from the rule:
 
-```csharp
-new NotableDateRule
-{
-    Name         = "Easter Sunday",
-    Strategy     = DateResolutionStrategy.Algorithm,
-    AlgorithmKey = "easter-sunday",
-};
+```xml
+<Rule id="default">
+  <Strategy><Algorithm key="western-easter" /></Strategy>
+</Rule>
 ```
 
-Algorithms are registered on <xref:Bodu.Globalization.Calendar.NotableDateAlgorithmRegistry> and resolved during the pipeline. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
+Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) are backed by bundled calculators; unknown keys resolve against a custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
 
 ## Resolved notable date
 
-A `NotableDate` is the immutable output of one rule for one occurrence in one year. Its key fields:
+A <xref:Bodu.Globalization.Calendar.NotableDate> is the immutable output of one rule for one occurrence. Its key fields:
 
 | Field | Meaning |
 |---|---|
-| `Date` | The observed date (after any adjustment). |
-| `Name` | The display name (subject to optional localisation). |
+| `Date` | The emitted occurrence date (observed, after any adjustment). |
+| `ActualDate` | The originally calculated (nominal) date. |
+| `IsObserved` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
+| `DisplayName` | The display name (subject to optional localisation). |
 | `Category` | `NotableDateCategory` value. |
 | `TerritoryCode` | The territory the occurrence applies to. |
 | `Tags` | Free-form classification strings from the rule. |
 | `DurationDays`, `EndDate` | Multi-day spans (e.g. Hanukkah, Easter weekend). |
 | `IsNonWorkingDay` | Whether working-day arithmetic should skip this date. |
-| `WasAdjusted`, `AdjustmentReason` | Whether and how the adjustment pipeline shifted the nominal date. |
+| `AdjustmentPolicyId`, `AdjustmentReason` | Which adjustment policy moved the date, and why. |
+| `Identity` (`NotableDateId`, `RuleId`) | The originating concept and rule. |
 
 ## Working day vs. non-working day
 
-A **working day** is any day that is neither a weekend (per the service's configured `WorkingDaysOfWeek`) nor a resolved notable date with `IsNonWorkingDay = true` for the queried territory.
+A **working day** is any day that is neither outside the configured working week (a `Bodu.Core` `WeekPattern`, default Monday–Friday) nor a resolved notable date with `IsNonWorkingDay = true` for the queried territory.
 
-Not every notable date is non-working: Mother's Day, ANZAC commemorations in certain territories, and most cultural observances are notable but not closures. Working-day arithmetic relies entirely on the rule's `IsNonWorkingDay` flag — authors decide which categories of date count as closures.
+Not every notable date is non-working: Mother's Day and most cultural observances are notable but not closures. Working-day arithmetic relies on the occurrence's `IsNonWorkingDay` flag — authors decide which dates count as closures, and each extension method accepts an optional `WeekPattern` to override the default working week.
 
 See [Working-day arithmetic](../../guides/calendar/working-days.md) for the operations (`IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, `WorkingDaysBetween`, `SnapToWorkingDay`, …).
 
