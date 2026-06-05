@@ -17,6 +17,7 @@ The calendar runtime is intentionally small. Region-specific holiday data and de
 | Package | Role |
 |---|---|
 | **`Bodu.Globalization.Calendar`** | The runtime — rule engine, resolution pipeline, working-day extensions. Required by every other calendar package. |
+| `Bodu.Globalization.Calendar.Builder` | Fluent, chainable C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save. See the [builder guide](../../guides/calendar/notable-date-builder.md). |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. See the [DI guide](../../guides/calendar/dependency-injection.md). |
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external assemblies that contribute custom date-calculation algorithms. See [Building and extending the service](../../guides/calendar/building-the-service.md). |
 | `Bodu.Globalization.Calendar.Data.Americas` | Curated public-holiday rules for `US`, `CA`. |
@@ -24,8 +25,6 @@ The calendar runtime is intentionally small. Region-specific holiday data and de
 | `Bodu.Globalization.Calendar.Data.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. |
 
 The data packs are independent NuGet packages, so consumers pull in only the regions they need. See the [Calendar data packs guide](../../guides/calendar/data-packs.md) for per-pack install commands, territory coverage, and registration patterns.
-
-> A fluent, in-code rule-authoring **Builder** is on the roadmap but not currently shipped against the v2 schema; author rules in XML or JSON for now.
 
 ## Core mental model
 
@@ -83,6 +82,7 @@ The same flow applies to every other rule — only the strategy in step 3 and th
 | "Is today a public holiday in NSW?" | `dateOnly.IsNotableDate(service, "AU-NSW", NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday))` |
 | "Add 5 working days to today (skipping weekends and holidays)" | `dateOnly.AddWorkingDays(5, service, "AU-NSW")` |
 | Author rules in XML / JSON and load them | <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>`.Load(xml)` / `.LoadJson(json)` |
+| Author rules fluently in C# (and save to XML / JSON) | <xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> — see the [builder guide](../../guides/calendar/notable-date-builder.md) |
 | Compute Easter / Diwali / Vesak for a year | author an `<Algorithm key="western-easter">` (etc.) rule — see [algorithms](../../guides/calendar/algorithms.md) |
 | Layer ID-targeted edits over imported concepts | a document `<Overrides>` block (`<AddRule>` / `<PatchRule>` / `<RemoveRule>`) |
 | Swap the rule set on a live service | <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> + <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> |
@@ -112,6 +112,7 @@ The same surface, grouped by what role you're playing rather than by namespace.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> | Loads XML / JSON (string or `Stream`) into a validated `NotableDateResource`. |
+| <xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> | Fluent C# authoring of a document — builds, serializes (XML / JSON), and saves; from the `Bodu.Globalization.Calendar.Builder` companion. |
 | <xref:Bodu.Globalization.Calendar.NotableDateResource>, <xref:Bodu.Globalization.Calendar.NotableDateDefinition>, <xref:Bodu.Globalization.Calendar.NotableDateRule> | The immutable loaded document: a resource of definitions, each with one or more rules. |
 | <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> | Resolver over the bundled common catalogues that documents import by name. |
 | <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> | Resource-level duplicate / collision / observed-date policy and working week. |
