@@ -13,24 +13,6 @@
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
     <Project Path="Bodu.Core\test\Bodu.Core.Test.csproj" />
   </Folder>
-  <Folder Name="/Bodu.Globalization.Calendar/">
-    <Project Path="Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Data.Americas\src\Bodu.Globalization.Calendar.Data.Americas.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Data.Americas\test\Bodu.Globalization.Calendar.Data.Americas.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Data.AsiaPacific\src\Bodu.Globalization.Calendar.Data.AsiaPacific.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Data.AsiaPacific\test\Bodu.Globalization.Calendar.Data.AsiaPacific.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Data.Europe\src\Bodu.Globalization.Calendar.Data.Europe.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Data.Europe\test\Bodu.Globalization.Calendar.Data.Europe.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.DependencyInjection/src/Bodu.Globalization.Calendar.DependencyInjection.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.DependencyInjection/test/Bodu.Globalization.Calendar.DependencyInjection.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin3.TestAssembly\Bodu.Globalization.Calendar.Plugin3.TestAssembly.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin4.TestAssembly\Bodu.Globalization.Calendar.Plugin4.TestAssembly.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
-  </Folder>
   <Folder Name="/Bodu.Globalization.Calendar2/">
     <Project Path="Bodu.Globalization.Calendar2\src\Bodu.Globalization.Calendar2.csproj" />
     <Project Path="Bodu.Globalization.Calendar2\test\Bodu.Globalization.Calendar2.Test.csproj" />
