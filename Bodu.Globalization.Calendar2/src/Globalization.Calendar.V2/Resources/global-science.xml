@@ -10,34 +10,48 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Science, technology, and innovation observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- International Day of Women and Girls in Science — 11 February; UN day promoting women's participation in science (from 2016). -->
     <NotableDate id="international-day-of-women-and-girls-in-science" displayName="International Day of Women and Girls in Science" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2016" /><Strategy><Fixed month="February" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of Mathematics — 14 March; UNESCO day held on Pi Day (3/14, the digits of pi) (from 2020). -->
     <NotableDate id="international-day-of-mathematics" displayName="International Day of Mathematics" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2020" /><Strategy><Fixed month="March" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Meteorological Day — 23 March; marks the 1950 establishment of the World Meteorological Organization (from 1961). -->
     <NotableDate id="world-meteorological-day" displayName="World Meteorological Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1961" /><Strategy><Fixed month="March" day="23" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Intellectual Property Day — 26 April; marks the 1970 entry into force of the WIPO Convention (from 2000). -->
     <NotableDate id="world-intellectual-property-day" displayName="World Intellectual Property Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2000" /><Strategy><Fixed month="April" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of Light — 16 May; marks the 1960 first operation of the laser (from 2018). -->
     <NotableDate id="international-day-of-light" displayName="International Day of Light" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2018" /><Strategy><Fixed month="May" day="16" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Pi Day — 14 March; celebrates the mathematical constant pi, whose first digits (3.14) match the US 3/14 date (from 1988). -->
     <NotableDate id="pi-day" displayName="Pi Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1988" /><Strategy><Fixed month="March" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Space Week — 4 to 10 October (7-day span); UN week on space science and technology, bracketing the 1957 launch of Sputnik 1 and the 1967 Outer Space Treaty (from 1999). -->
     <NotableDate id="world-space-week" displayName="World Space Week" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7"><Applicability fromYear="1999" /><Strategy><Fixed month="October" day="4" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Science Day for Peace and Development — 10 November; UNESCO day on the role of science in society (from 2002). -->
     <NotableDate id="world-science-day-for-peace-and-development" displayName="World Science Day for Peace and Development" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2002" /><Strategy><Fixed month="November" day="10" /></Strategy></Rule></Rules>
     </NotableDate>

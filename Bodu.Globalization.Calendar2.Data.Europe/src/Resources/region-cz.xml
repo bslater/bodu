@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  CZ notable-date resource, migrated from the v1 region-cz.xml to the v2 cookbook schema. Shared Christian observances
-  are imported from the christian-western catalogue; the remaining entries are territory-local concepts defined inline.
+  Czech Republic (CZ) — notable-date resource pack.
+
+  Migrated from the v1 region-cz.xml to the v2 cookbook schema. All rules are scoped to territory "CZ"; the Czech
+  Republic has no subdivision-specific public holidays.
+
+  How this resource is built:
+
+    * Shared Western Christian feasts (Easter Sunday, Good Friday, Easter Monday, Christmas Eve, Christmas Day) are
+      IMPORTED from the christian-western catalogue and given a CZ territory scope through the import <Use> directive.
+      Good Friday, Easter Sunday, and Easter Monday derive from the WESTERN Easter Sunday anchor in the shared
+      catalogue.
+    * Czech-specific national and civic days are declared INLINE below as fixed dates.
+
+  Note: New Year's Day is not imported from global-core here because the Czech Republic observes 1 January under its
+  own name (Restoration Day of the Independent Czech State), declared inline below.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.cz">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the inline New Year's Day (Restoration Day).
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -16,6 +37,11 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (an OffsetFromRule
+      strategy in the shared catalogue). Christmas Eve is re-scoped to a non-working public holiday for the Czech
+      Republic; Christmas Day is imported with its shared fixed-date strategy.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="CZ" />
       <Use notableDateRef="good-friday" territory="CZ" />
@@ -27,47 +53,68 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Fixed civic and Christian feasts
+      ============================================================================================================
+    -->
+
+    <!-- Restoration Day of the Independent Czech State — 1 January (also New Year's Day), marking the 1993 founding of the Czech Republic. Fixed date, with a weekend roll to the next working day. -->
     <NotableDate id="restoration-day-of-the-independent-czech-state" displayName="Restoration Day of the Independent Czech State" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="January" day="1" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint Stephen's Day (Second Day of Christmas) — 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      National and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Victory Day (Liberation Day) — 8 May, marking the 1945 end of the Second World War in Europe. fromYear 1945 excludes earlier years. -->
     <NotableDate id="victory-day" displayName="Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability fromYear="1945"><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="May" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saints Cyril and Methodius Day — 5 July, honouring the Byzantine missionaries to the Slavs. Fixed date. -->
     <NotableDate id="saints-cyril-and-methodius-day" displayName="Saints Cyril and Methodius Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="July" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Jan Hus Day — 6 July, marking the 1415 burning of the reformer Jan Hus. fromYear 1415 excludes earlier years. -->
     <NotableDate id="jan-hus-day" displayName="Jan Hus Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability fromYear="1415"><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="July" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Statehood Day (Saint Wenceslas Day) — 28 September, the feast of the patron saint of the Czech lands. Fixed date. -->
     <NotableDate id="statehood-day" displayName="Statehood Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="September" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Independent Czechoslovak State Day — 28 October, marking the 1918 founding of Czechoslovakia. fromYear 1918 excludes earlier years. -->
     <NotableDate id="independent-czechoslovak-state-day" displayName="Independent Czechoslovak State Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability fromYear="1918"><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="October" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Struggle for Freedom and Democracy Day — 17 November, marking the 1939 and 1989 student protests (the latter began the Velvet Revolution). Fixed date. -->
     <NotableDate id="struggle-for-freedom-and-democracy-day" displayName="Struggle for Freedom and Democracy Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="cz"><Applicability><Territory code="CZ" /></Applicability>
         <Strategy><Fixed month="November" day="17" /></Strategy></Rule></Rules>

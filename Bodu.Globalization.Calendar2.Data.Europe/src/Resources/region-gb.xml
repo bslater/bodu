@@ -8,14 +8,28 @@
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.gb">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day (national and subdivision observances may coincide).
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe the substitute bank holiday on the next
+      working day. skipNonWorkingDates is false, so the substitute may share a day with another holiday. Used by
+      the single-day holidays (New Year's Day, Saint Patrick's Day, the Battle of the Boyne, Saint Andrew's Day).
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
       <Emission mode="ObservedOnly" reason="Substitute bank holiday" />
     </AdjustmentPolicy>
+    <!--
+      Conflict-aware weekend substitute: as above, but skipNonWorkingDates is true, so the substitute steps over a
+      day already taken by another non-working holiday. This is what lets Boxing Day's substitute advance past the
+      day that Christmas Day's own substitute has already claimed when both fall on a weekend.
+    -->
     <AdjustmentPolicy id="working-day-substitute" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
@@ -24,11 +38,19 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Civil core. New Year's Day is a UK bank holiday with a weekend roll to the next working day.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="GB">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
     </Import>
+    <!--
+      Western Christian feasts. Good Friday and Easter Sunday derive from the Easter anchor in the shared catalogue.
+      Christmas Day and Boxing Day fall on consecutive days, so they take the conflict-aware substitute to keep
+      their in-lieu days from colliding. Easter Monday is England/Wales/NI-only and is declared inline below.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="good-friday" territory="GB" />
       <Use notableDateRef="easter-sunday" territory="GB" />
@@ -43,87 +65,129 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Subdivision public holidays and patron-saint days (territory shadowing)
+      ============================================================================================================
+      Each rule is scoped to an ISO 3166-2 subdivision (GB-ENG, GB-WLS, GB-SCT, GB-NIR). The engine selects the
+      most-specific rule for the requested territory, so a subdivision-only holiday is returned for that nation
+      only and a plain "GB" national query returns none of them.
+    -->
+
+    <!-- 2 January — a Scotland-only bank holiday extending the New Year; conflict-aware substitute keeps its in-lieu day clear of New Year's Day's own substitute. -->
     <NotableDate id="day-after-new-years-day" displayName="2 January" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability>
         <Strategy><Fixed month="January" day="2" /></Strategy>
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Burns Night — 25 January, Scottish cultural celebration of the poet Robert Burns; not a public holiday. -->
     <NotableDate id="burns-night" displayName="Burns Night" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability><Strategy><Fixed month="January" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Valentine's Day — 14 February, widely observed nationally; not a public holiday. -->
     <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint David's Day — 1 March, the Welsh patron-saint day; observed in Wales, not a statutory holiday. -->
     <NotableDate id="saint-davids-day" displayName="Saint David's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="wls"><Applicability><Territory code="GB-WLS" /></Applicability><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Women's Day — 8 March; an observance, not a public holiday. -->
     <NotableDate id="womens-day" displayName="International Women's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><Fixed month="March" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint Patrick's Day — 17 March, the patron-saint day; a public holiday in Northern Ireland only, with a weekend roll. -->
     <NotableDate id="saint-patricks-day" displayName="Saint Patrick's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nir"><Applicability><Territory code="GB-NIR" /></Applicability>
         <Strategy><Fixed month="March" day="17" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Mothering Sunday (UK Mother's Day) — the fourth Sunday in Lent, i.e. 21 days (three weeks) before Easter
+      Sunday. Strategy: OffsetFromRule, -21 days from the imported Easter Sunday anchor. The fromYear="1583" bound
+      reflects the start of the Gregorian Easter era used by the anchor. An observance, not a public holiday.
+    -->
     <NotableDate id="mothering-sunday" displayName="Mothering Sunday" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability fromYear="1583"><Territory code="GB" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-21" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Easter Monday — the day after Easter Sunday. A public holiday in England, Wales, and Northern Ireland but NOT
+      Scotland, so the rule lists those three subdivisions (a "GB-SCT" query returns nothing). Strategy:
+      OffsetFromRule, +1 day from the Easter Sunday anchor.
+    -->
     <NotableDate id="easter-monday" displayName="Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ew"><Applicability fromYear="1583"><Territory code="GB-ENG" /><Territory code="GB-WLS" /><Territory code="GB-NIR" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint George's Day — 23 April, the English patron-saint day; observed in England, not a statutory holiday. -->
     <NotableDate id="saint-georges-day" displayName="Saint George's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="eng"><Applicability><Territory code="GB-ENG" /></Applicability><Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Nationwide bank holidays and observances
+      ============================================================================================================
+    -->
+
+    <!-- Early May Bank Holiday — first Monday in May, observed across the UK. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="early-may-bank-holiday" displayName="Early May Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Spring Bank Holiday — last Monday in May, observed across the UK. Strategy: DayOfWeekInMonth (last Monday). -->
     <NotableDate id="spring-bank-holiday" displayName="Spring Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Father's Day — third Sunday in June; an observance, not a public holiday. Strategy: DayOfWeekInMonth (third Sunday). -->
     <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Battle of the Boyne (Orangemen's Day) — 12 July, a public holiday in Northern Ireland only, with a weekend roll. -->
     <NotableDate id="battle-of-the-boyne" displayName="Battle of the Boyne" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nir"><Applicability><Territory code="GB-NIR" /></Applicability>
         <Strategy><Fixed month="July" day="12" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Summer Bank Holiday (Scotland) — first Monday in August, observed in Scotland only (the rest of the UK observes the last Monday; see below). -->
     <NotableDate id="summer-bank-holiday-scotland" displayName="Summer Bank Holiday (Scotland)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability><Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Summer Bank Holiday — last Monday in August in England, Wales, and Northern Ireland (Scotland uses the first Monday; see above). -->
     <NotableDate id="summer-bank-holiday" displayName="Summer Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ew"><Applicability><Territory code="GB-ENG" /><Territory code="GB-WLS" /><Territory code="GB-NIR" /></Applicability>
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Halloween — 31 October; a cultural observance, not a public holiday. -->
     <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Bonfire Night (Guy Fawkes Night) — 5 November; a cultural observance, not a public holiday. -->
     <NotableDate id="bonfire-night" displayName="Bonfire Night" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><Fixed month="November" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Remembrance Sunday — second Sunday in November, honouring the war dead; a remembrance day, not a public holiday. Strategy: DayOfWeekInMonth (second Sunday). -->
     <NotableDate id="remembrance-sunday" displayName="Remembrance Sunday" category="Remembrance" defaultNonWorkingDay="false">
       <Rules><Rule id="gb"><Applicability><Territory code="GB" /></Applicability><Strategy><DayOfWeekInMonth month="November" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint Andrew's Day — 30 November, the Scottish patron-saint day; a public holiday in Scotland only, with a weekend roll. -->
     <NotableDate id="saint-andrews-day" displayName="Saint Andrew's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability>
         <Strategy><Fixed month="November" day="30" /></Strategy>

@@ -1,19 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  United States notable-date resource, migrated from the v1 region-us.xml to the v2 cookbook schema. The v1 UseFrom
-  imports (global and Christian observances) are flattened into explicit, self-contained rules. Federal holidays that
-  fall on a weekend are observed in lieu: Saturday on the preceding Friday, Sunday on the following Monday.
+  ================================================================================================================
+  United States (US) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-us.xml to the v2 cookbook schema. All rules are national: there are no subdivision
+  (ISO 3166-2) rules in this pack, so every concept is scoped to territory "US". The v1 UseFrom imports (global and
+  Christian observances) are flattened into explicit, self-contained rules.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Good Friday, Christmas Eve,
+      Christmas Day) are IMPORTED from the common catalogues (global-core, christian-western) and given a US
+      territory scope, plus a weekend-substitution policy where the federal holiday is observed in lieu.
+
+    * United States-specific concepts (the federal Monday holidays, the cultural and civic observances, and the
+      Thanksgiving-anchored retail days) are declared INLINE below.
+
+  Weekend substitution: federal practice observes a holiday in lieu when it lands on a weekend — Saturday is observed
+  on the PRECEDING Friday, and Sunday on the FOLLOWING Monday. These are two separate one-directional policies (the
+  AU/CA/NZ packs instead use a single forward "weekend roll"); a single-day federal holiday carries both so either
+  weekend day resolves correctly.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.us">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day (observances and public holidays are layered freely, so
+    same-day collisions are expected, not pruned).
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Saturday substitute: when the actual date is a Saturday, observe it on the preceding Friday. Emission is
+      ObservedOnly, so the holiday is substituted (moved), not duplicated.
+    -->
     <AdjustmentPolicy id="saturday-to-friday" priority="100">
       <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /></Trigger>
       <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
       <Emission mode="ObservedOnly" reason="Observed Friday" />
     </AdjustmentPolicy>
+    <!--
+      Sunday substitute: when the actual date is a Sunday, observe it on the following Monday. ObservedOnly, so the
+      single public holiday moves rather than producing an extra day.
+    -->
     <AdjustmentPolicy id="sunday-to-monday" priority="100">
       <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
       <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
@@ -22,11 +53,22 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Civil core. New Year's Day is a federal holiday observed in lieu when 1 January lands on a weekend (both the
+      Saturday and Sunday substitute policies apply).
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="US">
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments>
       </Use>
     </Import>
+
+    <!--
+      Western Christian feasts, re-scoped to the US. Easter Sunday is the computed anchor (used by no offset here but
+      imported for completeness). Good Friday is re-categorized Religious and made a working day (nonWorking="false")
+      because it is not a federal holiday. Christmas Eve is imported as-is. Christmas Day is a federal holiday and
+      carries both weekend-substitute policies.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="US" />
       <Use notableDateRef="good-friday" territory="US" category="Religious" nonWorking="false" />
@@ -39,109 +81,184 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Federal public holidays (the Monday holidays and fixed-date federal holidays)
+      ============================================================================================================
+    -->
+
+    <!--
+      Birthday of Martin Luther King, Jr. — third Monday in January. A federal holiday since 1986, so the fromYear
+      bound returns nothing for earlier years. Strategy: DayOfWeekInMonth (third Monday).
+    -->
     <NotableDate id="mlk-day" displayName="Birthday of Martin Luther King, Jr." category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability fromYear="1986"><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Valentine's Day — 14 February, a cultural observance (not a federal holiday). Strategy: Fixed day-of-month. -->
     <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Presidents' Day (Washington's Birthday) — third Monday in February. Federal holiday. Strategy: DayOfWeekInMonth
+      (third Monday).
+    -->
     <NotableDate id="presidents-day" displayName="Presidents' Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- St. Patrick's Day — 17 March, a cultural observance (not a federal holiday). Strategy: Fixed day-of-month. -->
     <NotableDate id="st-patricks-day" displayName="St. Patrick's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><Fixed month="March" day="17" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Earth Day — 22 April, an environmental observance first held in 1970, so the fromYear bound excludes earlier
+      years. Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="earth-day" displayName="Earth Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability fromYear="1970"><Territory code="US" /></Applicability>
         <Strategy><Fixed month="April" day="22" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Mother's Day — second Sunday in May, an observance. Strategy: DayOfWeekInMonth (second Sunday). -->
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Memorial Day — last Monday in May. Federal holiday honoring those who died in military service. Strategy:
+      DayOfWeekInMonth (last Monday).
+    -->
     <NotableDate id="memorial-day" displayName="Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Flag Day — 14 June, an observance (not a federal holiday). Strategy: Fixed day-of-month. -->
     <NotableDate id="flag-day" displayName="Flag Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><Fixed month="June" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Father's Day — third Sunday in June, an observance. Strategy: DayOfWeekInMonth (third Sunday). -->
     <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Juneteenth National Independence Day — 19 June. The newest federal holiday (established 2021), so the fromYear
+      bound returns nothing before 2021. Carries both weekend-substitute policies (Saturday to Friday, Sunday to
+      Monday). Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="juneteenth" displayName="Juneteenth National Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability fromYear="2021"><Territory code="US" /></Applicability>
         <Strategy><Fixed month="June" day="19" /></Strategy>
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Independence Day — 4 July. Federal holiday with both weekend-substitute policies (Saturday observed on the
+      preceding Friday, Sunday on the following Monday). Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><Fixed month="July" day="4" /></Strategy>
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Labor Day — first Monday in September. Federal holiday. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="labor-day" displayName="Labor Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Columbus Day — second Monday in October. Federal holiday. Strategy: DayOfWeekInMonth (second Monday). -->
     <NotableDate id="columbus-day" displayName="Columbus Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Indigenous Peoples' Day — second Monday in October, an observance held the same day as Columbus Day (under
+      KeepAll both resolve for a US query). First proclaimed 1992, so the fromYear bound excludes earlier years.
+      Strategy: DayOfWeekInMonth (second Monday).
+    -->
     <NotableDate id="indigenous-peoples-day" displayName="Indigenous Peoples' Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability fromYear="1992"><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Halloween — 31 October, a cultural observance (not a federal holiday). Strategy: Fixed day-of-month. -->
     <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Election Day — the Tuesday after the first Monday in November (so the first Tuesday that is not 1 November).
+      A civic observance, fixed in federal law since 1845; the fromYear bound excludes earlier years. Strategy:
+      RelativeWeekdayInMonth — the Tuesday positioned After the first Monday in November.
+    -->
     <NotableDate id="election-day" displayName="Election Day" category="Civic" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability fromYear="1845"><Territory code="US" /></Applicability>
         <Strategy><RelativeWeekdayInMonth month="November" weekOrdinal="First" dayOfWeek="Monday" relativeDayOfWeek="Tuesday" direction="After" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Veterans Day — 11 November. Federal holiday with both weekend-substitute policies (Saturday to Friday, Sunday
+      to Monday). Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="veterans-day" displayName="Veterans Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><Fixed month="November" day="11" /></Strategy>
         <Adjustments><Adjustment policyRef="saturday-to-friday" /><Adjustment policyRef="sunday-to-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Thanksgiving Day — fourth Thursday in November. Federal holiday and the anchor for the retail days below.
+      Strategy: DayOfWeekInMonth (fourth Thursday).
+    -->
     <NotableDate id="thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Thanksgiving-anchored retail days and remaining observances
+      ============================================================================================================
+    -->
+
+    <!--
+      Black Friday — the day after Thanksgiving, the traditional start of the holiday shopping season. Strategy:
+      OffsetFromRule, one day after the Thanksgiving rule (the Friday).
+    -->
     <NotableDate id="black-friday" displayName="Black Friday" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Cyber Monday — the Monday after Thanksgiving (four days after the Thursday). Strategy: OffsetFromRule, four
+      days after the Thanksgiving rule.
+    -->
     <NotableDate id="cyber-monday" displayName="Cyber Monday" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability><Territory code="US" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="thanksgiving" ruleRef="us" offsetDays="4" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Pearl Harbor Remembrance Day — 7 December, a remembrance day designated in federal law from 1994, so the
+      fromYear bound excludes earlier years. Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="pearl-harbor-day" displayName="Pearl Harbor Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
       <Rules><Rule id="us"><Applicability fromYear="1994"><Territory code="US" /></Applicability>
         <Strategy><Fixed month="December" day="7" /></Strategy></Rule></Rules>
