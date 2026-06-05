@@ -19,7 +19,28 @@ namespace Bodu.Globalization.Calendar.Data;
 /// subdivision (<c>CA-ON</c>); the subdivision selects the same country resource, and the resolver filters by the full
 /// territory at query time.
 /// </para>
+/// <para>
+/// <strong>When to use.</strong> Call <see cref="CreateService(string)" /> for a ready-to-query
+/// <see cref="NotableDateService" />, or <see cref="LoadResource(string)" /> when you need the underlying
+/// <see cref="NotableDateResource" /> to compose with custom collaborators or providers.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Query United States federal holidays for a year.
+/// NotableDateService service = AmericasCalendarData.CreateService("US");
+/// DateRange year = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+/// IReadOnlyList<NotableDate> holidays = service.Resolve(year, "US");
+///
+/// // A subdivision sees its province's rules layered over the country's.
+/// NotableDateService ontario = AmericasCalendarData.CreateService("CA-ON");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateService" />
+/// <seealso cref="NotableDateResource" />
+/// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AmericasCalendarData
 {
     /// <summary>

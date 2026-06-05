@@ -15,9 +15,42 @@ namespace Bodu.Extensions;
 /// A working day is a day that is neither outside the working week nor a non-working notable date. The working week
 /// defaults to Monday through Friday and can be overridden with a <see cref="WeekPattern" />. The traversal and
 /// counting methods resolve each candidate day through the service, so prefer the range-based
-/// <see cref="EnumerateNotableDates" /> for large windows.
+/// <see cref="EnumerateNotableDates(DateOnly, DateOnly, INotableDateService, string, NotableDateFilter)" /> for large
+/// windows.
+/// </para>
+/// <para>
+/// <strong>Method groups.</strong> <c>IsWeekend</c> / <c>IsWorkingDay</c> / <c>IsNonWorkingDay</c> /
+/// <c>IsNotableDate</c> test a single day; <c>NextWorkingDay</c> / <c>PreviousWorkingDay</c> / <c>SnapToWorkingDay</c>
+/// (and the <c>NonWorkingDay</c> / <c>NotableDate</c> variants) traverse to a nearby day; <c>AddWorkingDays</c> /
+/// <c>WorkingDaysBetween</c> count working days; and <c>EnumerateWorkingDays</c> / <c>EnumerateNonWorkingDays</c> /
+/// <c>EnumerateNotableDates</c> stream a window.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// INotableDateService service = AmericasCalendarData.CreateService("US");
+/// DateOnly date = new(2026, 7, 3); // Friday, observed Independence Day in the US
+///
+/// // Is this a working day?
+/// bool working = date.IsWorkingDay(service, "US"); // false
+///
+/// // Settlement date three working days out, skipping weekends and holidays.
+/// DateOnly settles = date.AddWorkingDays(3, service, "US");
+///
+/// // The next working day on or after a candidate date.
+/// DateOnly resume = date.SnapToWorkingDay(service, "US");
+///
+/// // Every notable date in July 2026.
+/// IReadOnlyList<NotableDate> july = date.GetNotableDatesInMonth(service, "US");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDate" />
+/// <seealso cref="NotableDateFilter" />
+/// <seealso cref="WeekPattern" />
+/// <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)</seealso>
 public static class NotableDateOnlyExtensions
 {
     /// <summary>

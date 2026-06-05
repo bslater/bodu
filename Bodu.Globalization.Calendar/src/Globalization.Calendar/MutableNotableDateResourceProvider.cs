@@ -18,6 +18,21 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDateResource" /> and passing it to <see cref="Reload" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// MutableNotableDateResourceProvider provider = new(NotableDateResourceLoader.Load(initialXml));
+/// INotableDateService service = new ReloadableNotableDateService(provider);
+///
+/// // Later, when the source document changes, swap in fresh data; the service picks it up
+/// // on its next query without being rebuilt.
+/// provider.Reload(NotableDateResourceLoader.Load(updatedXml));
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="ReloadableNotableDateService" />
+/// <seealso cref="INotableDateResourceProvider" />
+/// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public sealed class MutableNotableDateResourceProvider : INotableDateResourceProvider
 {
     /// <summary>

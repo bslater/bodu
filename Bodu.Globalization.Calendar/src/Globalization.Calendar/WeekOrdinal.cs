@@ -9,6 +9,8 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Identifies which occurrence of a weekday within a month a strategy selects.
 /// </summary>
+/// <seealso cref="WeekdayProximity" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public enum WeekOrdinal
 {
     /// <summary>

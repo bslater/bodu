@@ -17,6 +17,9 @@ namespace Bodu.Globalization.Calendar;
 /// concept; when <see langword="null" /> the parent value applies.
 /// </para>
 /// </remarks>
+/// <seealso cref="NotableDateDefinition" />
+/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class NotableDateRule
 {
     /// <summary>

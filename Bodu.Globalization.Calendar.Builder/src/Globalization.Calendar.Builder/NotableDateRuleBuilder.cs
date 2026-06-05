@@ -12,6 +12,32 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Provides a fluent surface for authoring a single rule: its selection scalars, applicability scope, exactly one
 /// calculation strategy, rule-specific tags, and the adjustment policies applied to its occurrences.
 /// </summary>
+/// <remarks>
+/// <para>
+/// A rule must declare exactly one calculation strategy — for example <see cref="Fixed(int, int, bool, bool)" />,
+/// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOrdinal)" />,
+/// <see cref="WeekdayNearDate(int, int, DayOfWeek, WeekdayProximity)" />,
+/// <see cref="OffsetFromRule(string, int, string)" />, or <see cref="Algorithm(string)" />. Scope the rule to a
+/// calendar, territories, or a year window with the <c>For…</c> / <c>…Year(s)</c> members, and attach reusable
+/// adjustment policies with <see cref="WithAdjustment(string)" />. Configure the builder inside
+/// <see cref="NotableDateDefinitionBuilder.AddRule(string, System.Action{NotableDateRuleBuilder})" />.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // U.S. Thanksgiving: the fourth Thursday of November, scoped to the United States.
+/// definition.AddRule("us", r => r
+///     .ForTerritory("US")
+///     .DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOrdinal.Fourth)
+///     .AsNonWorking());
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateDefinitionBuilder" />
+/// <seealso cref="AdjustmentPolicyBuilder" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
 public sealed class NotableDateRuleBuilder
 {
     /// <summary>

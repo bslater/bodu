@@ -18,7 +18,25 @@ namespace Bodu.Globalization.Calendar.Data;
 /// subdivision (<c>AU-WA</c>); the subdivision selects the same country resource, and the resolver filters by the full
 /// territory at query time.
 /// </para>
+/// <para>
+/// <strong>When to use.</strong> Call <see cref="CreateService(string)" /> for a ready-to-query
+/// <see cref="NotableDateService" />, or <see cref="LoadResource(string)" /> when you need the underlying
+/// <see cref="NotableDateResource" /> to compose with custom collaborators or providers.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Query public holidays for Western Australia.
+/// NotableDateService service = AsiaPacificCalendarData.CreateService("AU-WA");
+/// DateRange year = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+/// IReadOnlyList<NotableDate> holidays = service.Resolve(year, "AU-WA");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="NotableDateService" />
+/// <seealso cref="NotableDateResource" />
+/// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AsiaPacificCalendarData
 {
     /// <summary>

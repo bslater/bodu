@@ -11,6 +11,27 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <param name="StartDate">The first day of the range, inclusive.</param>
 /// <param name="EndDate">The last day of the range, inclusive.</param>
+/// <remarks>
+/// <para>
+/// Both endpoints are inclusive, so a range whose start equals its end spans a single day and reports a
+/// <see cref="DayCount" /> of one. The struct does not enforce ordering at construction; <see cref="IsValid" /> reports
+/// whether the start is on or before the end, and the containment and overlap members return <see langword="false" />
+/// for an ill-formed range rather than throwing.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The whole of 2026, passed to a service query.
+/// DateRange year = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+/// int days = year.DayCount;                       // 365
+/// bool inRange = year.Contains(new DateOnly(2026, 7, 4)); // true
+///
+/// IReadOnlyList<NotableDate> occurrences = service.Resolve(year, "US");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateService" />
 public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
 {
     /// <summary>

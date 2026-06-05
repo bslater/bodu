@@ -10,6 +10,25 @@ namespace Bodu.Globalization.Calendar;
 /// Provides convenience query extension methods over <see cref="INotableDateService" />, including a by-year overload
 /// that resolves a full civil year.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// INotableDateService service = AmericasCalendarData.CreateService("US");
+///
+/// // Resolve a whole civil year in one call.
+/// IReadOnlyList<NotableDate> all = service.Resolve(2026, "US");
+///
+/// // Or restrict to non-working public holidays.
+/// NotableDateFilter holidays = NotableDateFilter
+///     .ForCategory(NotableDateCategory.PublicHoliday)
+///     .And(NotableDateFilter.IsNonWorkingDay());
+/// IReadOnlyList<NotableDate> publicHolidays = service.Resolve(2026, "US", holidays);
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateFilter" />
+/// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public static class NotableDateServiceExtensions
 {
     /// <summary>

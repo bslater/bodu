@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Resolves notable-date occurrences from a loaded <see cref="NotableDateResource" /> for a requested territory and day
-/// or date range.
+/// or date range. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,7 +22,38 @@ namespace Bodu.Globalization.Calendar;
 /// return consistent results. To capture occurrences whose actual date lies just outside the requested window but whose
 /// observed date falls inside it, the service scans one civil year either side of the window.
 /// </para>
+/// <para>
+/// <strong>Thread safety.</strong> The service is immutable once constructed and holds no per-query mutable state, so a
+/// single instance is safe to share across threads. Prefer reusing one instance per resource rather than reconstructing
+/// it per query, since each query re-scans the resource.
+/// </para>
+/// <para>
+/// <strong>When to use.</strong> Construct directly from a <see cref="NotableDateResource" /> when you load documents
+/// yourself with <see cref="NotableDateResourceLoader" />; use a data pack's
+/// <c>CreateService</c> factory (for example the <c>AmericasCalendarData</c> bundle) for
+/// bundled rules; or register the service through the dependency-injection extensions for application hosting. Pass the
+/// optional collaborator overloads only when a document references custom algorithms, collision resolvers, or
+/// adjustment handlers.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Load a document and build a service over it.
+/// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml);
+/// NotableDateService service = new(resource);
+///
+/// // Resolve the occurrences emitted on Christmas Day for Ontario, Canada.
+/// IReadOnlyList<NotableDate> christmas = service.Resolve(new DateOnly(2026, 12, 25), "CA-ON");
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateResourceLoader" />
+/// <seealso cref="NotableDateFilter" />
+/// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
+/// <seealso href="../guides/calendar/resolution-pipeline.html">The resolution pipeline (guide)</seealso>
 public sealed class NotableDateService : INotableDateService
 {
     /// <summary>
