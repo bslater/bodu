@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  United Kingdom notable-date resource, migrated from the v1 region-gb.xml to the v2 cookbook schema. Bank holidays
-  roll to the next weekday when they fall on a weekend; Christmas and Boxing Day use the conflict-aware working-day
-  substitute. National patron-saint days and the Scottish/Northern Irish holidays are scoped to their subdivisions.
-  Shared civil and Christian observances are imported from the global-core and christian-western catalogues; concepts
-  scoped to multiple subdivisions (Easter Monday) remain inline. The remaining entries are territory-local.
+  ================================================================================================================
+  United Kingdom (GB) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-gb.xml to the v2 cookbook schema. National rules are scoped to territory "GB";
+  subdivision rules use their ISO 3166-2 codes (GB-ENG England, GB-WLS Wales, GB-SCT Scotland, GB-NIR Northern
+  Ireland).
+
+  How this resource is built:
+
+    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
+      christian-western) and given a GB territory scope (and, where required, a weekend-substitution policy) through
+      the import <Use> directive. The shared catalogue carries only the bare calculation strategy; the territory
+      supplies the local observance.
+
+    * UK-specific concepts — the patron-saint days, the nation-specific bank holidays, Easter Monday (England, Wales,
+      and Northern Ireland only), and the widely observed cultural days — are declared INLINE below.
+
+  Territory shadowing: a subdivision-scoped rule is returned only for that nation; a plain "GB" national query
+  resolves none of the subdivision-only rules. Bank holidays roll to the next weekday when they fall on a weekend;
+  Christmas and Boxing Day use the conflict-aware working-day substitute so their in-lieu days do not collide.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.gb">
 
