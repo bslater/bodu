@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -62,7 +62,7 @@ public sealed class NotableDateTimeExtensionsTests
     [TestMethod]
     public void EnumerateNonWorkingDays_ShouldReattachStartTime()
     {
-        List<DateTime> days = new DateTime(2025, 1, 1, 6, 15, 0)
+        var days = new DateTime(2025, 1, 1, 6, 15, 0)
             .EnumerateNonWorkingDays(new DateTime(2025, 1, 5, 0, 0, 0), Service, "XX")
             .ToList();
 

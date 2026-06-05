@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.UnknownCurrencyPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -76,7 +76,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenUnregisteredAndAllowUnscaledPolicy_ShouldStoreSourcePrecisionAndReportZeroMinorUnits()
     {
-        Money money = Money.From(12.3456m, "XYZ", UnknownCurrencyPolicy.AllowUnscaled);
+        var money = Money.From(12.3456m, "XYZ", UnknownCurrencyPolicy.AllowUnscaled);
 
         Assert.AreEqual(12.3456m, money.Amount);
         Assert.AreEqual("XYZ", money.IsoCode);
@@ -90,7 +90,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenRegisteredAndAllowUnscaledPolicy_ShouldRoundToRegistryMinorUnits()
     {
-        Money money = Money.From(1.235m, "USD", UnknownCurrencyPolicy.AllowUnscaled);
+        var money = Money.From(1.235m, "USD", UnknownCurrencyPolicy.AllowUnscaled);
 
         Assert.AreEqual(1.24m, money.Amount);
         Assert.AreEqual(2, money.MinorUnits);
@@ -118,7 +118,7 @@ public partial class MoneyTests
     [TestMethod]
     public void FromUnchecked_WhenExplicitScaleSupplied_ShouldRoundAndReportScale()
     {
-        Money money = Money.FromUnchecked(1.234567m, "XYZ", 4);
+        var money = Money.FromUnchecked(1.234567m, "XYZ", 4);
 
         Assert.AreEqual(1.2346m, money.Amount);
         Assert.AreEqual("XYZ", money.IsoCode);
@@ -161,7 +161,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ExplicitScale_WhenNegatedAndAbs_ShouldPreserveMinorUnits()
     {
-        Money money = Money.FromUnchecked(-1.2300m, "XYZ", 4);
+        var money = Money.FromUnchecked(-1.2300m, "XYZ", 4);
 
         Assert.AreEqual(4, (-money).MinorUnits);
         Assert.AreEqual(4, money.Abs.MinorUnits);

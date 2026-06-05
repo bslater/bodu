@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ImportResolutionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public sealed class ImportResolutionTests
     private static Func<string, string?> Resolver(params (string Name, string Content)[] resources)
     {
         Dictionary<string, string> map = resources.ToDictionary(r => r.Name, r => r.Content, StringComparer.Ordinal);
-        return name => map.TryGetValue(name, out string? content) ? content : null;
+        return name => map.TryGetValue(name, out var content) ? content : null;
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public sealed class ImportResolutionTests
 
         NotableDateService service = new(NotableDateResourceLoader.Load(Region, Resolver(("global", Global))));
 
-        List<string> ids = service.Resolve(new DateRange(new DateOnly(2021, 1, 1), new DateOnly(2021, 12, 31)), "XX")
+        var ids = service.Resolve(new DateRange(new DateOnly(2021, 1, 1), new DateOnly(2021, 12, 31)), "XX")
             .Select(r => r.NotableDateId).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
         CollectionAssert.AreEqual(new[] { "christmas", "easter-sunday", "local-day" }, ids);
 
@@ -103,10 +103,10 @@ public sealed class ImportResolutionTests
         NotableDateService service = new(NotableDateResourceLoader.Load(Region, Resolver(("global", Global))));
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        List<string> britain = service.Resolve(year, "GB").Select(r => r.NotableDateId).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
+        var britain = service.Resolve(year, "GB").Select(r => r.NotableDateId).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
         CollectionAssert.AreEqual(new[] { "christmas", "easter" }, britain, "GB sees the renamed easter and the GB-scoped christmas");
 
-        List<string> other = service.Resolve(year, "XX").Select(r => r.NotableDateId).Distinct().ToList();
+        var other = service.Resolve(year, "XX").Select(r => r.NotableDateId).Distinct().ToList();
         CollectionAssert.AreEqual(new[] { "easter" }, other, "another territory sees only the un-scoped easter");
     }
 

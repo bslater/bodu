@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MutableNotableDateResourceProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// The current resource is swapped atomically; a <see cref="ReloadableNotableDateService" /> built over the provider
 /// rebuilds its resolution state the next time it is queried. Because a resource is itself immutable, applying new
-/// override operations or refreshed data at runtime is performed by loading a fresh
-/// <see cref="NotableDateResource" /> and passing it to <see cref="Reload" />.
+/// override operations or refreshed data at runtime is performed by loading a fresh <see cref="NotableDateResource" />
+/// and passing it to <see cref="Reload" />.
 /// </para>
 /// </remarks>
 public sealed class MutableNotableDateResourceProvider : INotableDateResourceProvider

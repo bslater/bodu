@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RuleApplicabilityTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -243,8 +243,8 @@ public sealed class RuleApplicabilityTests
     [TestMethod]
     public void MatchSpecificity_WhenNarrowerScope_ShouldExceedBroaderScope()
     {
-        int national = Territories("AU").MatchSpecificity("AU-NSW");
-        int subnational = Territories("AU-NSW").MatchSpecificity("AU-NSW");
+        var national = Territories("AU").MatchSpecificity("AU-NSW");
+        var subnational = Territories("AU-NSW").MatchSpecificity("AU-NSW");
 
         Assert.IsTrue(subnational > national);
     }

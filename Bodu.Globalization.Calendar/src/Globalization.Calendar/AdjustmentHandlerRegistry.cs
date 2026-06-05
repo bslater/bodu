@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerRegistry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,7 @@ public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
     {
         ThrowHelper.ThrowIfNull(key);
 
-        bool found = this._handlers.TryGetValue(key, out IAdjustmentHandler? value);
+        var found = this._handlers.TryGetValue(key, out IAdjustmentHandler? value);
         handler = value;
         return found;
     }

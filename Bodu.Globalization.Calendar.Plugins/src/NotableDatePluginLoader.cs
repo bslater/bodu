@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDatePluginLoader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,10 +42,10 @@ public static class NotableDatePluginLoader
         ThrowHelper.ThrowIfNull(trustPolicy);
 
         AssemblyName assemblyName = assembly.GetName();
-        string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
-        string? path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
-        byte[]? hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
-        string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
+        var name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
+        var path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
+        var hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
+        var token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
 
         PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash, token));
         if (!trust.IsTrusted)
@@ -84,7 +84,7 @@ public static class NotableDatePluginLoader
         ThrowHelper.ThrowIfNull(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
-        string fullPath = Path.GetFullPath(assemblyPath);
+        var fullPath = Path.GetFullPath(assemblyPath);
         AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: false);
         Assembly assembly = context.LoadFromAssemblyPath(fullPath);
 
@@ -108,7 +108,7 @@ public static class NotableDatePluginLoader
         if (plugin is not INotableDateAlgorithmPlugin algorithmPlugin)
             return 0;
 
-        int count = 0;
+        var count = 0;
         foreach (KeyValuePair<string, INotableDateAlgorithm> pair in algorithmPlugin.GetAlgorithms())
         {
             registry.Register(pair.Key, pair.Value);

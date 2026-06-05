@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MinimalNotableDates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ internal static class MinimalNotableDates
     /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
     private static NotableDateResource LoadResource(string fileName)
     {
-        string resourceName = "Bodu.Globalization.Calendar.Fixtures." + fileName;
+        var resourceName = "Bodu.Globalization.Calendar.Fixtures." + fileName;
         using Stream stream = typeof(MinimalNotableDates).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new InvalidOperationException($"Missing embedded fixture '{resourceName}'.");
 

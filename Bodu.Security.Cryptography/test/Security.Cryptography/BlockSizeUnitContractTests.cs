@@ -68,7 +68,7 @@ public sealed class BlockSizeUnitContractTests
         Assert.AreEqual(expectedBlockSizeBits, alg.BlockSize, $"{name}: SymmetricAlgorithm.BlockSize must report bits.");
 
         using ICryptoTransform xfm = alg.CreateEncryptor();
-        int expectedBytes = expectedBlockSizeBits / 8;
+        var expectedBytes = expectedBlockSizeBits / 8;
 
         Assert.AreEqual(expectedBytes, xfm.InputBlockSize, $"{name}: ICryptoTransform.InputBlockSize must equal BlockSize / 8.");
         Assert.AreEqual(expectedBytes, xfm.OutputBlockSize, $"{name}: ICryptoTransform.OutputBlockSize must equal BlockSize / 8.");

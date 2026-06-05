@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesStorageTests.Enumerate.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Enumerate_WhenInvoked_ShouldYieldInAscendingOrder()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
             ObservationsParam);
 
@@ -33,7 +33,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Enumerate_WhenInvokedTwice_ShouldYieldEquivalentSequences()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1000, 1.4m), Obs(1010, 1.5m), Obs(1020, 1.6m) },
             ObservationsParam);
 
@@ -50,7 +50,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Enumerate_WhenInvoked_ShouldEmitDateAndRateTogether()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1000, 1.4m), Obs(1010, 1.5m) },
             ObservationsParam);
 

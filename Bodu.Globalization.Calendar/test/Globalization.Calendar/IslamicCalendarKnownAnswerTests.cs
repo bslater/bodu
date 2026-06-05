@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IslamicCalendarKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,7 +46,7 @@ public sealed class IslamicCalendarKnownAnswerTests
     {
         NotableDateService service = CreateService();
 
-        HashSet<string> ids = service
+        var ids = service
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);

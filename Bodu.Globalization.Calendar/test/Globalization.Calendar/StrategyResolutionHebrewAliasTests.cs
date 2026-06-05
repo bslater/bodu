@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyResolutionHebrewAliasTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public sealed class StrategyResolutionHebrewAliasTests
     [DataRow("alias-elul")]
     public void Resolve_HebrewAlias_ResolvesWithinRequestedYear(string notableDateId)
     {
-        List<NotableDate> matches = s_service
+        var matches = s_service
             .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
@@ -61,7 +61,7 @@ public sealed class StrategyResolutionHebrewAliasTests
     [TestMethod]
     public void Load_UnknownHebrewAlias_ThrowsValidationException()
     {
-        string xml = NotableDateFixtures.ReadText("invalid-unknown-hebrew-alias.xml");
+        var xml = NotableDateFixtures.ReadText("invalid-unknown-hebrew-alias.xml");
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {

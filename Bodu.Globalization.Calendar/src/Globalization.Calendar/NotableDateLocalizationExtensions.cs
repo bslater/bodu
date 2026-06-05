@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateLocalizationExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public static class NotableDateLocalizationExtensions
         ThrowHelper.ThrowIfNull(localizer);
         ThrowHelper.ThrowIfNull(culture);
 
-        string? localized = localizer.GetDisplayName(notableDate, culture);
+        var localized = localizer.GetDisplayName(notableDate, culture);
         return localized is null ? notableDate : notableDate with { DisplayName = localized };
     }
 
@@ -54,8 +54,8 @@ public static class NotableDateLocalizationExtensions
         ThrowHelper.ThrowIfNull(localizer);
         ThrowHelper.ThrowIfNull(culture);
 
-        NotableDate[] localized = new NotableDate[occurrences.Count];
-        for (int i = 0; i < occurrences.Count; i++)
+        var localized = new NotableDate[occurrences.Count];
+        for (var i = 0; i < occurrences.Count; i++)
             localized[i] = occurrences[i].Localize(localizer, culture);
 
         return localized;

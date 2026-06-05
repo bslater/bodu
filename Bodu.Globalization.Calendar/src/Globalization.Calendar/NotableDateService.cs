@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -131,8 +131,8 @@ public sealed class NotableDateService : INotableDateService
     /// or <see langword="null" />.
     /// </param>
     /// <param name="triggerHandlers">
-    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />,
-    /// or <see langword="null" />.
+    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />, or
+    /// <see langword="null" />.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(
@@ -160,8 +160,8 @@ public sealed class NotableDateService : INotableDateService
     /// or <see langword="null" />.
     /// </param>
     /// <param name="triggerHandlers">
-    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />,
-    /// or <see langword="null" />.
+    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />, or
+    /// <see langword="null" />.
     /// </param>
     /// <param name="providers">
     /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
@@ -197,8 +197,8 @@ public sealed class NotableDateService : INotableDateService
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
 
-        int firstYear = Math.Max(1, range.StartDate.Year - 1);
-        int lastYear = Math.Min(9999, range.EndDate.Year + 1);
+        var firstYear = Math.Max(1, range.StartDate.Year - 1);
+        var lastYear = Math.Min(9999, range.EndDate.Year + 1);
 
         StrategyResolutionContext context = new(this._resource, this._algorithms);
         HashSet<DateOnly> occupied = new();
@@ -212,7 +212,7 @@ public sealed class NotableDateService : INotableDateService
 
         this.AddProviderOccurrences(results, range, territory);
 
-        List<NotableDate> ordered = results
+        var ordered = results
             .OrderBy(r => r.Date)
             .ThenBy(r => r.NotableDateId, StringComparer.Ordinal)
             .ThenBy(r => r.RuleId, StringComparer.Ordinal)
@@ -234,14 +234,14 @@ public sealed class NotableDateService : INotableDateService
         if (policy == CollisionPolicy.KeepAll || ordered.Count < 2)
             return ordered;
 
-        bool higherWins = this._resource.ResolutionPolicy.PriorityDirection == PriorityDirection.HigherWins;
+        var higherWins = this._resource.ResolutionPolicy.PriorityDirection == PriorityDirection.HigherWins;
         List<NotableDate> kept = new();
 
-        int index = 0;
+        var index = 0;
         while (index < ordered.Count)
         {
             DateOnly date = ordered[index].Date;
-            int end = index;
+            var end = index;
             while (end < ordered.Count && ordered[end].Date == date)
                 end++;
 
@@ -277,8 +277,8 @@ public sealed class NotableDateService : INotableDateService
 
             case CollisionPolicy.CategoryPriority:
             {
-                int bestRank = group.Max(n => CategoryRank(n.Category));
-                List<NotableDate> topCategory = group.Where(n => CategoryRank(n.Category) == bestRank).ToList();
+                var bestRank = group.Max(n => CategoryRank(n.Category));
+                var topCategory = group.Where(n => CategoryRank(n.Category) == bestRank).ToList();
                 return KeepBestPriority(topCategory, higherWins);
             }
 
@@ -298,7 +298,7 @@ public sealed class NotableDateService : INotableDateService
     /// <returns>The best-priority occurrences.</returns>
     private static List<NotableDate> KeepBestPriority(List<NotableDate> group, bool higherWins)
     {
-        int best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
+        var best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
         return group.Where(n => n.Priority == best).ToList();
     }
 
@@ -373,11 +373,12 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="occupied">The occupied-day set to seed.</param>
     /// <returns>The calculated candidates.</returns>
     /// <remarks>
-    /// The phase runs in two sub-passes so that the non-working-day triggers evaluate against the complete picture.
-    /// The first sub-pass enumerates every applicable occurrence, seeding the occupied-day set and tallying the actual
+    /// The phase runs in two sub-passes so that the non-working-day triggers evaluate against the complete picture. The
+    /// first sub-pass enumerates every applicable occurrence, seeding the occupied-day set and tallying the actual
     /// dates of non-working occurrences. The second sub-pass selects the firing adjustment policy for each occurrence,
-    /// at which point a <see cref="AdjustmentTrigger.IfNonWorkingDay" /> or <see cref="AdjustmentTrigger.IfWorkingDay" />
-    /// trigger can see every other holiday that shares the actual date, regardless of enumeration order.
+    /// at which point a <see cref="AdjustmentTrigger.IfNonWorkingDay" /> or
+    /// <see cref="AdjustmentTrigger.IfWorkingDay" /> trigger can see every other holiday that shares the actual date,
+    /// regardless of enumeration order.
     /// </remarks>
     private List<ResolutionCandidate> GatherCandidates(StrategyResolutionContext context, string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
     {
@@ -387,12 +388,12 @@ public sealed class NotableDateService : INotableDateService
 
         foreach (NotableDateDefinition definition in this._resource.NotableDates)
         {
-            for (int year = firstYear; year <= lastYear; year++)
+            for (var year = firstYear; year <= lastYear; year++)
             {
                 // Within a concept, the most-specific territory match wins: a narrower rule (for example AU-WA)
                 // shadows a broader same-concept rule (AU) for that territory and year.
                 List<NotableDateRule> applicable = new();
-                int maxSpecificity = -1;
+                var maxSpecificity = -1;
                 foreach (NotableDateRule rule in definition.Rules)
                 {
                     if (!rule.Applicability.AppliesTo(territory, year))
@@ -409,8 +410,8 @@ public sealed class NotableDateService : INotableDateService
 
                     NotableDateCategory category = rule.Category ?? definition.Category;
                     NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
-                    bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
-                    int durationDays = Math.Max(1, rule.DurationDays ?? definition.DefaultDurationDays);
+                    var nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
+                    var durationDays = Math.Max(1, rule.DurationDays ?? definition.DefaultDurationDays);
 
                     IReadOnlyList<string> tags = rule.Tags.Count > 0 ? rule.Tags : definition.Tags;
 
@@ -430,7 +431,7 @@ public sealed class NotableDateService : INotableDateService
         }
 
         WeekPattern workingWeek = this._resource.ResolutionPolicy.WorkingWeek;
-        for (int i = 0; i < candidates.Count; i++)
+        for (var i = 0; i < candidates.Count; i++)
         {
             ResolutionCandidate candidate = candidates[i];
             (NotableDateDefinition definition, NotableDateRule rule) = sources[i];
@@ -461,7 +462,7 @@ public sealed class NotableDateService : INotableDateService
         if (strategy is FixedDateStrategy fixedStrategy)
             return fixedStrategy.CalculateAll(year, context);
 
-        return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : Array.Empty<DateOnly>();
+        return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : [];
     }
 
     /// <summary>
@@ -473,15 +474,15 @@ public sealed class NotableDateService : INotableDateService
     /// <returns>A signed comparison result.</returns>
     private static int CompareForPlacement(ResolutionCandidate left, ResolutionCandidate right)
     {
-        int byDate = left.BaseDate.CompareTo(right.BaseDate);
+        var byDate = left.BaseDate.CompareTo(right.BaseDate);
         if (byDate != 0)
             return byDate;
 
-        int byPriority = right.Priority.CompareTo(left.Priority);
+        var byPriority = right.Priority.CompareTo(left.Priority);
         if (byPriority != 0)
             return byPriority;
 
-        int byNotableDate = string.CompareOrdinal(left.Identity.NotableDateId, right.Identity.NotableDateId);
+        var byNotableDate = string.CompareOrdinal(left.Identity.NotableDateId, right.Identity.NotableDateId);
         return byNotableDate != 0 ? byNotableDate : string.CompareOrdinal(left.Identity.RuleId, right.Identity.RuleId);
     }
 
@@ -510,7 +511,7 @@ public sealed class NotableDateService : INotableDateService
         }
 
         DateOnly observed = this.ComputeObservedDate(policy, candidate, territory, occupied, context);
-        string reason = policy.Reason ?? string.Empty;
+        var reason = policy.Reason ?? string.Empty;
 
         switch (policy.Emission)
         {
@@ -648,7 +649,7 @@ public sealed class NotableDateService : INotableDateService
     {
         List<AdjustmentPolicy> candidates = new();
 
-        foreach (string policyRef in rule.AdjustmentPolicyRefs)
+        foreach (var policyRef in rule.AdjustmentPolicyRefs)
         {
             AdjustmentPolicy? policy = this._resource.FindAdjustmentPolicy(policyRef);
             if (policy is null)
@@ -743,7 +744,7 @@ public sealed class NotableDateService : INotableDateService
         string? reason,
         DateRange range)
     {
-        int spanEndDayNumber = emitted.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
+        var spanEndDayNumber = emitted.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
         if (emitted > range.EndDate || spanEndDayNumber < range.StartDate.DayNumber)
             return;
 
@@ -791,10 +792,12 @@ public sealed class NotableDateService : INotableDateService
     /// </summary>
     /// <param name="occurrence">The provider occurrence.</param>
     /// <param name="range">The inclusive range.</param>
-    /// <returns><see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.
+    /// </returns>
     private static bool SpanIntersects(NotableDate occurrence, DateRange range)
     {
-        int spanEndDayNumber = occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
+        var spanEndDayNumber = occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
         return occurrence.Date <= range.EndDate && spanEndDayNumber >= range.StartDate.DayNumber;
     }
 }

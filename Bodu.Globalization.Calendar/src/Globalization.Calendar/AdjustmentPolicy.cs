@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -78,7 +78,8 @@ public sealed class AdjustmentPolicy
     /// The handler key for <see cref="AdjustmentTrigger.Custom" />, or <see langword="null" />.
     /// </param>
     /// <param name="handlerParameters">
-    /// The author-supplied parameters passed to custom trigger and action handlers, or <see langword="null" /> for none.
+    /// The author-supplied parameters passed to custom trigger and action handlers, or <see langword="null" /> for
+    /// none.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id" />, <paramref name="scope" />, or <paramref name="triggerWeekdays" /> is
@@ -274,7 +275,9 @@ public sealed class AdjustmentPolicy
     /// <summary>
     /// Gets the author-supplied parameters passed to custom trigger and action handlers.
     /// </summary>
-    /// <returns>The parameter map; empty when the policy declares none. The engine treats the values as opaque.</returns>
+    /// <returns>
+    /// The parameter map; empty when the policy declares none. The engine treats the values as opaque.
+    /// </returns>
     public IReadOnlyDictionary<string, string> HandlerParameters { get; }
 
     /// <summary>
@@ -314,7 +317,7 @@ public sealed class AdjustmentPolicy
         if (this.TriggerMonth is not int month || this.TriggerDay is not int day || month is < 1 or > 12)
             return false;
 
-        int clampedDay = Math.Min(day, DateTime.DaysInMonth(date.Year, month));
+        var clampedDay = Math.Min(day, DateTime.DaysInMonth(date.Year, month));
         DateOnly pivot = new(date.Year, month, clampedDay);
 
         return before ? date < pivot : date > pivot;
@@ -373,10 +376,10 @@ public sealed class AdjustmentPolicy
     /// <returns>The first working day found, or the last scanned day when the bound is reached.</returns>
     private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
     {
-        int bound = this.MaxSearchDays ?? DefaultMaxSearchDays;
+        var bound = this.MaxSearchDays ?? DefaultMaxSearchDays;
 
         DateOnly cursor = date.AddDays(step);
-        for (int i = 0; i < bound && this.IsBlocked(cursor, isOccupied, workingWeek); i++)
+        for (var i = 0; i < bound && this.IsBlocked(cursor, isOccupied, workingWeek); i++)
             cursor = cursor.AddDays(step);
 
         return cursor;

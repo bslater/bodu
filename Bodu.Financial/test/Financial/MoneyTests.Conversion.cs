@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Conversion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public partial class MoneyTests
     {
         Money runtime = new(99.99m, "USD");
 
-        Money<USD> typed = (Money<USD>)runtime;
+        var typed = (Money<USD>)runtime;
 
         Assert.AreEqual(new Money<USD>(99.99m), typed);
     }

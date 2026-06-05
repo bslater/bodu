@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Default.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class MoneyTests
     [TestMethod]
     public void IsDefault_WhenConstructed_ShouldReturnFalse()
     {
-        Money money = Money.From(0m, "USD");
+        var money = Money.From(0m, "USD");
 
         Assert.IsFalse(money.IsDefault);
         Assert.IsTrue(money.HasCurrency);
@@ -132,7 +132,7 @@ public partial class MoneyTests
     {
         Money money = default;
 
-        string text = money.ToString();
+        var text = money.ToString();
 
         Assert.IsNotNull(text);
     }

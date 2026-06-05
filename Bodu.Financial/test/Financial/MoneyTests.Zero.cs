@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Zero.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Zero_WhenIsoCodeValid_ShouldReturnZeroForCurrency()
     {
-        Money money = Money.Zero("USD");
+        var money = Money.Zero("USD");
 
         Assert.AreEqual(0m, money.Amount);
         Assert.AreEqual("USD", money.IsoCode);

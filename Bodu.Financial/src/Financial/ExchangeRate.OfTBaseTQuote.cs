@@ -134,8 +134,8 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// </exception>
     public static ExchangeRate<TBase, TQuote> FromRuntime(ExchangeRate rate)
     {
-        string baseIso = CurrencyMetadata<TBase>.Value.IsoCode;
-        string quoteIso = CurrencyMetadata<TQuote>.Value.IsoCode;
+        var baseIso = CurrencyMetadata<TBase>.Value.IsoCode;
+        var quoteIso = CurrencyMetadata<TQuote>.Value.IsoCode;
 
         if (!string.Equals(rate.FromIsoCode, baseIso, StringComparison.Ordinal) ||
             !string.Equals(rate.ToIsoCode, quoteIso, StringComparison.Ordinal))

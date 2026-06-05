@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -99,7 +99,7 @@ public sealed class NotableDateOnlyExtensionsTests
     public void WorkingDaysBetween_CountsInclusiveWorkingDays()
     {
         // 1-10 January 2025: Wed 1 (holiday), Thu 2, Fri 3, Sat 4, Sun 5, Mon 6, Tue 7, Wed 8, Thu 9, Fri 10 -> 7 working days.
-        int count = new DateOnly(2025, 1, 1).WorkingDaysBetween(new DateOnly(2025, 1, 10), Service, "XX");
+        var count = new DateOnly(2025, 1, 1).WorkingDaysBetween(new DateOnly(2025, 1, 10), Service, "XX");
 
         Assert.AreEqual(7, count);
     }

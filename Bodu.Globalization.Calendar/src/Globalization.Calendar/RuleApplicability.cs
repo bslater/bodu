@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RuleApplicability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,9 @@ public sealed class RuleApplicability
     /// <param name="territories">The explicit territories the rule applies to.</param>
     /// <param name="onlyYears">The explicit inclusion years, or an empty sequence for no restriction.</param>
     /// <param name="exceptYears">The explicit exclusion years, or an empty sequence for no exclusions.</param>
-    /// <param name="everyYears">The recurrence interval in years, or <see langword="null" /> for an annual rule.</param>
+    /// <param name="everyYears">
+    /// The recurrence interval in years, or <see langword="null" /> for an annual rule.
+    /// </param>
     /// <param name="anchorYear">
     /// The year the recurrence interval is measured from, or <see langword="null" /> to anchor on
     /// <paramref name="fromYear" /> (or year zero when also unbounded).
@@ -140,7 +142,7 @@ public sealed class RuleApplicability
 
         if (this.EveryYears is int interval && interval > 1)
         {
-            int anchor = this.AnchorYear ?? this.FromYear ?? 0;
+            var anchor = this.AnchorYear ?? this.FromYear ?? 0;
             if ((((year - anchor) % interval) + interval) % interval != 0)
                 return false;
         }
@@ -160,7 +162,7 @@ public sealed class RuleApplicability
         if (this.Territories.Count == 0)
             return true;
 
-        foreach (string scoped in this.Territories)
+        foreach (var scoped in this.Territories)
         {
             if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -188,8 +190,8 @@ public sealed class RuleApplicability
         if (this.Territories.Count == 0)
             return 0;
 
-        int best = -1;
-        foreach (string scoped in this.Territories)
+        var best = -1;
+        foreach (var scoped in this.Territories)
         {
             if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase)
                 || territory.StartsWith(scoped + "-", StringComparison.OrdinalIgnoreCase))

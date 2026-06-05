@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LeapYearScenarioTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -251,9 +251,9 @@ public sealed class LeapYearScenarioTests
     [DataRow(2024, 2, 29, false)]   // Leap. 29 < 29 is false -> no fire.
     public void Resolve_WhenComparisonDateIsFeb29_ShouldClampToFeb28InNonLeapYear(int year, int month, int day, bool expectedFire)
     {
-        string monthName = System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(month);
+        var monthName = System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(month);
 
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.before-feb-29">
           <AdjustmentPolicies>
             <AdjustmentPolicy id="before-feb-29" priority="100">
@@ -414,7 +414,7 @@ public sealed class LeapYearScenarioTests
     /// <returns>The matching occurrence.</returns>
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
-        List<NotableDate> matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
+        var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
         Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }

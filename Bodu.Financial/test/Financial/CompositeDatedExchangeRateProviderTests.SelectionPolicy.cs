@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompositeDatedExchangeRateProviderTests.SelectionPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class CompositeDatedExchangeRateProviderTests
             new IDatedExchangeRateProvider[] { first, second },
             ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst);
 
-        bool found = composite.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
+        var found = composite.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.5m, result.Rate.Rate);

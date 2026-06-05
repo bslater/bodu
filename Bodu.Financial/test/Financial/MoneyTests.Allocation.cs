@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Allocation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -116,19 +116,19 @@ public partial class MoneyTests
     public void Allocate_WhenUnevenRatios_ShouldStayWithinOneMinorUnitOfExactShare()
     {
         decimal[] ratios = { 17m, 5m, 3m, 11m, 1m };
-        Money original = Money.From(1.23m, "USD");
+        var original = Money.From(1.23m, "USD");
 
         Money[] shares = original.Allocate(ratios);
 
-        decimal totalWeight = 0m;
-        foreach (decimal r in ratios)
+        var totalWeight = 0m;
+        foreach (var r in ratios)
             totalWeight += r;
 
-        Money sum = Money.From(0m, "USD");
-        for (int i = 0; i < ratios.Length; i++)
+        var sum = Money.From(0m, "USD");
+        for (var i = 0; i < ratios.Length; i++)
         {
             sum += shares[i];
-            decimal exact = original.Amount * ratios[i] / totalWeight;
+            var exact = original.Amount * ratios[i] / totalWeight;
             Assert.IsTrue(Math.Abs(shares[i].Amount - exact) <= 0.01m);
         }
 
@@ -142,7 +142,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenAmountExceedsInt64MinorUnits_ShouldThrowOverflowException()
     {
-        Money huge = Money.From(100_000_000_000_000_000m, "USD");
+        var huge = Money.From(100_000_000_000_000_000m, "USD");
 
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {

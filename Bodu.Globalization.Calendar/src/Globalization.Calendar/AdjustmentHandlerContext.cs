@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,9 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides an <see cref="IAdjustmentHandler" /> with the information needed to compute an observed date: the calculated
-/// occurrence date, the requesting territory, the firing policy, and access to the surrounding resolution context.
+/// Provides an <see cref="IAdjustmentHandler" /> with the information needed to compute an observed date: the
+/// calculated occurrence date, the requesting territory, the firing policy, and access to the surrounding resolution
+/// context.
 /// </summary>
 public sealed class AdjustmentHandlerContext
 {

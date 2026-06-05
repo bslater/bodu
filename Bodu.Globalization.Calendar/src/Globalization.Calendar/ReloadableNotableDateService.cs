@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReloadableNotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,10 +12,10 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This service is a drop-in replacement for <see cref="NotableDateService" /> in scenarios where the underlying data is
-/// reloaded at runtime — for example a dependency-injection singleton whose source document changes. Each query reads the
-/// provider's current resource; when it differs from the one the inner service was built from, a fresh inner service is
-/// constructed. Construction is cheap, so reloads are inexpensive.
+/// This service is a drop-in replacement for <see cref="NotableDateService" /> in scenarios where the underlying data
+/// is reloaded at runtime — for example a dependency-injection singleton whose source document changes. Each query
+/// reads the provider's current resource; when it differs from the one the inner service was built from, a fresh inner
+/// service is constructed. Construction is cheap, so reloads are inexpensive.
 /// </para>
 /// </remarks>
 public sealed class ReloadableNotableDateService : INotableDateService
@@ -76,8 +76,12 @@ public sealed class ReloadableNotableDateService : INotableDateService
     /// </summary>
     /// <param name="provider">The provider supplying the resource currently in effect.</param>
     /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">The collision resolver consulted for a custom collision policy, or <see langword="null" />.</param>
-    /// <param name="handlers">The adjustment-handler registry consulted for a custom action, or <see langword="null" />.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted for a custom collision policy, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted for a custom action, or <see langword="null" />.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
     public ReloadableNotableDateService(
         INotableDateResourceProvider provider,
@@ -94,9 +98,15 @@ public sealed class ReloadableNotableDateService : INotableDateService
     /// </summary>
     /// <param name="provider">The provider supplying the resource currently in effect.</param>
     /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">The collision resolver consulted for a custom collision policy, or <see langword="null" />.</param>
-    /// <param name="handlers">The adjustment-handler registry consulted for a custom action, or <see langword="null" />.</param>
-    /// <param name="triggerHandlers">The trigger-handler registry consulted for a custom trigger, or <see langword="null" />.</param>
+    /// <param name="collisionResolver">
+    /// The collision resolver consulted for a custom collision policy, or <see langword="null" />.
+    /// </param>
+    /// <param name="handlers">
+    /// The adjustment-handler registry consulted for a custom action, or <see langword="null" />.
+    /// </param>
+    /// <param name="triggerHandlers">
+    /// The trigger-handler registry consulted for a custom trigger, or <see langword="null" />.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
     public ReloadableNotableDateService(
         INotableDateResourceProvider provider,

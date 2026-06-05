@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.ToStorage.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public partial class ExchangeRateSeriesBufferTests
     [TestMethod]
     public void FromStorage_WhenSeeded_ShouldCopyAllObservations()
     {
-        ExchangeRateSeriesStorage source = ExchangeRateSeriesStorage.Create(
+        var source = ExchangeRateSeriesStorage.Create(
             new[]
             {
                 new ExchangeRateObservation(DateOnly.FromDayNumber(1000), 1.4m),
@@ -72,7 +72,7 @@ public partial class ExchangeRateSeriesBufferTests
             },
             ObservationsParam);
 
-        ExchangeRateSeriesBuffer buffer = ExchangeRateSeriesBuffer.FromStorage(source);
+        var buffer = ExchangeRateSeriesBuffer.FromStorage(source);
 
         Assert.AreEqual(3, buffer.Count);
         Assert.IsTrue(buffer.Contains(1000));
@@ -87,11 +87,11 @@ public partial class ExchangeRateSeriesBufferTests
     [TestMethod]
     public void FromStorage_WhenBufferMutated_ShouldNotAffectSourceStorage()
     {
-        ExchangeRateSeriesStorage source = ExchangeRateSeriesStorage.Create(
+        var source = ExchangeRateSeriesStorage.Create(
             new[] { new ExchangeRateObservation(DateOnly.FromDayNumber(1000), 1.4m) },
             ObservationsParam);
 
-        ExchangeRateSeriesBuffer buffer = ExchangeRateSeriesBuffer.FromStorage(source);
+        var buffer = ExchangeRateSeriesBuffer.FromStorage(source);
         buffer.Upsert(1000, 99m, RateParam);
         buffer.Add(1010, 1.5m, RateParam, DateParam);
 

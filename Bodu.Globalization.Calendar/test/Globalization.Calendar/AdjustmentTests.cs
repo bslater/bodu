@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -179,7 +179,7 @@ public sealed class AdjustmentTests
     /// <returns>The matching occurrence.</returns>
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
-        List<NotableDate> matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
+        var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
         Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }

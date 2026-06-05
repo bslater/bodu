@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentActionMatrixTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public sealed class AdjustmentActionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService AddDaysService(int days)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.add-days">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>
@@ -134,7 +134,7 @@ public sealed class AdjustmentActionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService WeekdayMoveService(string action, string targetWeekday, int strategyDay)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.weekday-move">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>
@@ -220,7 +220,7 @@ public sealed class AdjustmentActionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService WorkingDayService(string action, int strategyDay, int maxSearchDays)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.working-day">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>

@@ -89,7 +89,7 @@ public sealed class StreamCipherCounterExhaustionTests
         SetField(cipher, "_counterExhausted", true);
 
         var block = new byte[64];
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<CryptographicException>(() =>
             {
@@ -112,7 +112,7 @@ public sealed class StreamCipherCounterExhaustionTests
         SetField(cipher, "_counterExhausted", true);
 
         var block = new byte[64];
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<CryptographicException>(() =>
             {

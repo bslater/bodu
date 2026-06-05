@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarSystemKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,9 +44,9 @@ public sealed class CalendarSystemKnownAnswerTests
     [DataRow("islamic-new-year", 2024, "2024-07-07")]
     public void Resolve_NonGregorianFixedDate_MatchesKnownAnswer(string notableDateId, int year, string expected)
     {
-        DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
 
-        List<NotableDate> matches = CreateService()
+        var matches = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
@@ -64,7 +64,7 @@ public sealed class CalendarSystemKnownAnswerTests
     {
         NotableDateService service = CreateService();
 
-        List<NotableDate> inside = service
+        var inside = service
             .Resolve(new DateOnly(2024, 5, 2), "XX")
             .Where(r => r.NotableDateId == "golden-week")
             .ToList();
@@ -74,8 +74,8 @@ public sealed class CalendarSystemKnownAnswerTests
         Assert.AreEqual(7, inside[0].DurationDays, "duration");
         Assert.AreEqual(new DateOnly(2024, 5, 5), inside[0].EndDate, "span end");
 
-        int before = service.Resolve(new DateOnly(2024, 4, 28), "XX").Count(r => r.NotableDateId == "golden-week");
-        int after = service.Resolve(new DateOnly(2024, 5, 6), "XX").Count(r => r.NotableDateId == "golden-week");
+        var before = service.Resolve(new DateOnly(2024, 4, 28), "XX").Count(r => r.NotableDateId == "golden-week");
+        var after = service.Resolve(new DateOnly(2024, 5, 6), "XX").Count(r => r.NotableDateId == "golden-week");
 
         Assert.AreEqual(0, before, "a day before the span is excluded");
         Assert.AreEqual(0, after, "a day after the span is excluded");
@@ -90,12 +90,12 @@ public sealed class CalendarSystemKnownAnswerTests
     [TestCategory("Regression")]
     public void Resolve_WhenIslamicDateRecursInOneGregorianYear_EmitsBothOccurrences()
     {
-        List<NotableDate> occurrences = CreateService()
+        var occurrences = CreateService()
             .Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2075, 12, 31)), "XX")
             .Where(r => r.NotableDateId == "islamic-new-year")
             .ToList();
 
-        List<IGrouping<int, NotableDate>> doubledYears = occurrences
+        var doubledYears = occurrences
             .GroupBy(r => r.Date.Year)
             .Where(g => g.Count() == 2)
             .ToList();
@@ -103,7 +103,7 @@ public sealed class CalendarSystemKnownAnswerTests
         Assert.IsTrue(doubledYears.Count > 0, "expected at least one Gregorian year with two Islamic New Year occurrences");
 
         IGrouping<int, NotableDate> doubled = doubledYears[0];
-        List<DateOnly> dates = doubled.Select(r => r.Date).OrderBy(d => d).ToList();
+        var dates = doubled.Select(r => r.Date).OrderBy(d => d).ToList();
         Assert.AreEqual(doubled.Key, dates[0].Year, "first occurrence is in the Gregorian year");
         Assert.AreEqual(doubled.Key, dates[1].Year, "second occurrence is in the same Gregorian year");
         Assert.IsTrue(dates[1].DayNumber - dates[0].DayNumber > 300, "the two occurrences are about a lunar year apart");

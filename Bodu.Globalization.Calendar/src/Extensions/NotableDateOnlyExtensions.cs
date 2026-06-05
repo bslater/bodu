@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,9 @@ public static class NotableDateOnlyExtensions
     /// </summary>
     /// <param name="date">The date to test.</param>
     /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
-    /// <returns><see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsWeekend(this DateOnly date, WeekPattern? workingWeek = null) =>
         !(workingWeek ?? WeekPattern.MondayToFriday).Contains(date.DayOfWeek);
 
@@ -77,7 +79,9 @@ public static class NotableDateOnlyExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns><see langword="true" /> if at least one occurrence is emitted; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if at least one occurrence is emitted; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
@@ -186,7 +190,9 @@ public static class NotableDateOnlyExtensions
     /// Advances the date by a signed number of working days.
     /// </summary>
     /// <param name="date">The starting date.</param>
-    /// <param name="count">The number of working days to add; negative retreats, zero returns the date unchanged.</param>
+    /// <param name="count">
+    /// The number of working days to add; negative retreats, zero returns the date unchanged.
+    /// </param>
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
@@ -202,8 +208,8 @@ public static class NotableDateOnlyExtensions
         if (count == 0)
             return date;
 
-        int direction = count > 0 ? 1 : -1;
-        int remaining = Math.Abs(count);
+        var direction = count > 0 ? 1 : -1;
+        var remaining = Math.Abs(count);
         DateOnly current = date;
 
         while (remaining > 0)
@@ -235,7 +241,7 @@ public static class NotableDateOnlyExtensions
         DateOnly lower = start <= end ? start : end;
         DateOnly upper = start <= end ? end : start;
 
-        int count = 0;
+        var count = 0;
         for (DateOnly cursor = lower; cursor <= upper; cursor = cursor.AddDays(1))
         {
             if (cursor.IsWorkingDay(service, territory, workingWeek))
@@ -391,7 +397,9 @@ public static class NotableDateOnlyExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns>The next matching occurrence, or <see langword="null" /> when none exists up to the maximum year.</returns>
+    /// <returns>
+    /// The next matching occurrence, or <see langword="null" /> when none exists up to the maximum year.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
@@ -400,7 +408,7 @@ public static class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (int year = date.Year; year <= DateOnly.MaxValue.Year; year++)
+        for (var year = date.Year; year <= DateOnly.MaxValue.Year; year++)
         {
             foreach (NotableDate notable in ResolveYear(year, service, territory, filter))
             {
@@ -419,7 +427,9 @@ public static class NotableDateOnlyExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns>The previous matching occurrence, or <see langword="null" /> when none exists down to the minimum year.</returns>
+    /// <returns>
+    /// The previous matching occurrence, or <see langword="null" /> when none exists down to the minimum year.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
@@ -428,10 +438,10 @@ public static class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (int year = date.Year; year >= DateOnly.MinValue.Year; year--)
+        for (var year = date.Year; year >= DateOnly.MinValue.Year; year--)
         {
             IReadOnlyList<NotableDate> resolved = ResolveYear(year, service, territory, filter);
-            for (int i = resolved.Count - 1; i >= 0; i--)
+            for (var i = resolved.Count - 1; i >= 0; i--)
             {
                 if (resolved[i].Date < date)
                     return resolved[i];
@@ -473,7 +483,7 @@ public static class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (int probe = 0; probe < TraversalGuard; probe++)
+        for (var probe = 0; probe < TraversalGuard; probe++)
         {
             date = date.AddDays(direction);
             if (date.IsWorkingDay(service, territory, workingWeek))
@@ -501,7 +511,7 @@ public static class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (int probe = 0; probe < TraversalGuard; probe++)
+        for (var probe = 0; probe < TraversalGuard; probe++)
         {
             date = date.AddDays(direction);
             if (date.IsNonWorkingDay(service, territory, workingWeek))

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesStorageTests.Dates.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void FirstDate_WhenStoragePopulated_ShouldReturnEarliestObservation()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
             ObservationsParam);
 
@@ -27,7 +27,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void LastDate_WhenStoragePopulated_ShouldReturnLatestObservation()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
             ObservationsParam);
 
@@ -41,7 +41,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void FirstAndLastDate_WhenSingleEntry_ShouldMatch()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1234, 2.5m) },
             ObservationsParam);
 

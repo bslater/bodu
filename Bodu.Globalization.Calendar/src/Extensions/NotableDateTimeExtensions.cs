@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides working-day, traversal, and notable-date query extension methods over <see cref="DateTime" />, delegating to
-/// the <see cref="DateOnly" /> surface on the date component.
+/// Provides working-day, traversal, and notable-date query extension methods over <see cref="DateTime" />, delegating
+/// to the <see cref="DateOnly" /> surface on the date component.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,7 +23,9 @@ public static class NotableDateTimeExtensions
     /// </summary>
     /// <param name="date">The date whose date component is tested.</param>
     /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
-    /// <returns><see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsWeekend(this DateTime date, WeekPattern? workingWeek = null) =>
         DateOnly.FromDateTime(date).IsWeekend(workingWeek);
 
@@ -62,7 +64,9 @@ public static class NotableDateTimeExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns><see langword="true" /> if at least one occurrence is emitted; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if at least one occurrence is emitted; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
@@ -126,7 +130,8 @@ public static class NotableDateTimeExtensions
         WithTimeOf(date, DateOnly.FromDateTime(date).SnapToWorkingDay(service, territory, workingWeek));
 
     /// <summary>
-    /// Returns the date if it is a working day; otherwise the previous working day, preserving the time-of-day and kind.
+    /// Returns the date if it is a working day; otherwise the previous working day, preserving the time-of-day and
+    /// kind.
     /// </summary>
     /// <param name="date">The date to snap.</param>
     /// <param name="service">The service used to resolve notable dates.</param>
@@ -157,7 +162,9 @@ public static class NotableDateTimeExtensions
     /// Advances the date by a signed number of working days, preserving the time-of-day and kind.
     /// </summary>
     /// <param name="date">The starting date.</param>
-    /// <param name="count">The number of working days to add; negative retreats, zero returns the date unchanged.</param>
+    /// <param name="count">
+    /// The number of working days to add; negative retreats, zero returns the date unchanged.
+    /// </param>
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
@@ -198,7 +205,7 @@ public static class NotableDateTimeExtensions
     /// </exception>
     public static IEnumerable<DateTime> EnumerateWorkingDays(this DateTime start, DateTime end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
-        TimeOnly time = TimeOnly.FromDateTime(start);
+        var time = TimeOnly.FromDateTime(start);
         DateTimeKind kind = start.Kind;
 
         return DateOnly.FromDateTime(start)
@@ -266,7 +273,7 @@ public static class NotableDateTimeExtensions
     /// </exception>
     public static IEnumerable<DateTime> EnumerateNonWorkingDays(this DateTime start, DateTime end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
-        TimeOnly time = TimeOnly.FromDateTime(start);
+        var time = TimeOnly.FromDateTime(start);
         DateTimeKind kind = start.Kind;
 
         return DateOnly.FromDateTime(start)
@@ -281,7 +288,9 @@ public static class NotableDateTimeExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns>The next matching occurrence, or <see langword="null" /> when none exists up to the maximum year.</returns>
+    /// <returns>
+    /// The next matching occurrence, or <see langword="null" /> when none exists up to the maximum year.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
@@ -295,7 +304,9 @@ public static class NotableDateTimeExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns>The previous matching occurrence, or <see langword="null" /> when none exists down to the minimum year.</returns>
+    /// <returns>
+    /// The previous matching occurrence, or <see langword="null" /> when none exists down to the minimum year.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryCode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -151,9 +151,9 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
         if (string.IsNullOrEmpty(value))
             return false;
 
-        int dash = value.IndexOf('-', StringComparison.Ordinal);
-        string country = dash < 0 ? value : value.Substring(0, dash);
-        string? subdivision = dash < 0 ? null : value.Substring(dash + 1);
+        var dash = value.IndexOf('-', StringComparison.Ordinal);
+        var country = dash < 0 ? value : value.Substring(0, dash);
+        var subdivision = dash < 0 ? null : value.Substring(dash + 1);
 
         if (!IsValidCountry(country) || (subdivision is not null && !IsValidSubdivision(subdivision)))
             return false;
@@ -180,9 +180,9 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
         if (string.IsNullOrWhiteSpace(value))
             return [];
 
-        string[] parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        TerritoryCode[] result = new TerritoryCode[parts.Length];
-        for (int i = 0; i < parts.Length; i++)
+        var parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var result = new TerritoryCode[parts.Length];
+        for (var i = 0; i < parts.Length; i++)
             result[i] = Parse(parts[i]);
 
         return result;
@@ -223,7 +223,9 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     /// <summary>
     /// Returns the canonical string form of the code.
     /// </summary>
-    /// <returns>The country, the country and subdivision joined by a hyphen, or the empty string when default.</returns>
+    /// <returns>
+    /// The country, the country and subdivision joined by a hyphen, or the empty string when default.
+    /// </returns>
     public override string ToString() =>
         this._country is null ? string.Empty
         : this._subdivision is null ? this._country
@@ -247,7 +249,7 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
         if (value.Length is < 1 or > 3)
             return false;
 
-        foreach (char c in value)
+        foreach (var c in value)
         {
             if (!char.IsAsciiLetterOrDigit(c))
                 return false;

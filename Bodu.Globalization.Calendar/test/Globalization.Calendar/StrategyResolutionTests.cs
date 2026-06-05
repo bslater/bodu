@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyResolutionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -149,7 +149,7 @@ public sealed class StrategyResolutionTests
     [DataRow(2030, "2030-04-21")]
     public void Resolve_Algorithm_WesternEaster_MatchesKnownTable(int year, string expected)
     {
-        DateOnly date = DateOnly.Parse(expected, System.Globalization.CultureInfo.InvariantCulture);
+        var date = DateOnly.Parse(expected, System.Globalization.CultureInfo.InvariantCulture);
         AssertResolvesOn(date, "US", "easter-sunday", "western");
     }
 
@@ -167,7 +167,7 @@ public sealed class StrategyResolutionTests
     [DataRow(2026, "2026-04-12")]
     public void Resolve_Algorithm_OrthodoxEaster_MatchesKnownTable(int year, string expected)
     {
-        DateOnly date = DateOnly.Parse(expected, System.Globalization.CultureInfo.InvariantCulture);
+        var date = DateOnly.Parse(expected, System.Globalization.CultureInfo.InvariantCulture);
         AssertResolvesOn(date, "US", "orthodox-easter", "orthodox");
     }
 

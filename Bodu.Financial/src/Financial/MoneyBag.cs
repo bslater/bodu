@@ -203,7 +203,7 @@ public sealed partial class MoneyBag :
         if (IsEmpty)
             return other;
 
-        ImmutableSortedDictionary<string, decimal>.Builder builder = _balances.ToBuilder();
+        var builder = _balances.ToBuilder();
         foreach (KeyValuePair<string, decimal> entry in other._balances)
         {
             if (builder.TryGetValue(entry.Key, out var existing))

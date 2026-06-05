@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UnitedStatesKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,9 +49,9 @@ public sealed class UnitedStatesKnownAnswerTests
     [DataRow(2022, "christmas-day", "2022-12-26", true)]
     public void Resolve_FederalHoliday_MatchesKnownAnswer(int year, string notableDateId, string expected, bool isObserved)
     {
-        DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
 
-        List<NotableDate> matches = CreateService()
+        var matches = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "US")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
@@ -67,7 +67,7 @@ public sealed class UnitedStatesKnownAnswerTests
     [TestMethod]
     public void Resolve_WhenJuneteenthBefore2021_ReturnsNoResult()
     {
-        int count = CreateService()
+        var count = CreateService()
             .Resolve(new DateRange(new DateOnly(2020, 1, 1), new DateOnly(2020, 12, 31)), "US")
             .Count(r => r.NotableDateId == "juneteenth");
 

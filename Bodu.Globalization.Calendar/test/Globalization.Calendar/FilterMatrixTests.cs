@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FilterMatrixTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -84,7 +84,7 @@ public sealed class FilterMatrixTests
     [DataRow(NotableDateCategory.Other)]
     public void Matches_WhenForCategoryAndCategoryEquals_ShouldReturnTrue(NotableDateCategory category)
     {
-        NotableDateFilter filter = NotableDateFilter.ForCategory(category);
+        var filter = NotableDateFilter.ForCategory(category);
 
         Assert.IsTrue(filter.Matches(Occurrence(category: category)));
     }
@@ -101,7 +101,7 @@ public sealed class FilterMatrixTests
     [DataRow(NotableDateCategory.Religious, NotableDateCategory.PublicHoliday)]
     public void Matches_WhenForCategoryAndCategoryDiffers_ShouldReturnFalse(NotableDateCategory filterCategory, NotableDateCategory occurrenceCategory)
     {
-        NotableDateFilter filter = NotableDateFilter.ForCategory(filterCategory);
+        var filter = NotableDateFilter.ForCategory(filterCategory);
 
         Assert.IsFalse(filter.Matches(Occurrence(category: occurrenceCategory)));
     }
@@ -113,7 +113,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenForAnyCategoryAndCategoryAccepted_ShouldReturnTrue()
     {
-        NotableDateFilter filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.PublicHoliday, NotableDateCategory.Observance);
+        var filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.PublicHoliday, NotableDateCategory.Observance);
 
         Assert.IsTrue(filter.Matches(Occurrence(category: NotableDateCategory.Observance)));
     }
@@ -125,7 +125,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenForAnyCategoryAndCategoryNotAccepted_ShouldReturnFalse()
     {
-        NotableDateFilter filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.PublicHoliday, NotableDateCategory.Observance);
+        var filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.PublicHoliday, NotableDateCategory.Observance);
 
         Assert.IsFalse(filter.Matches(Occurrence(category: NotableDateCategory.Cultural)));
     }
@@ -152,7 +152,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenForAnyCategoryIsEmpty_ShouldMatchNothing()
     {
-        NotableDateFilter filter = NotableDateFilter.ForAnyCategory();
+        var filter = NotableDateFilter.ForAnyCategory();
 
         Assert.IsFalse(filter.Matches(Occurrence(category: NotableDateCategory.PublicHoliday)));
     }
@@ -174,7 +174,7 @@ public sealed class FilterMatrixTests
     [DataRow("Nonexistent", false)]
     public void Matches_WhenWithTag_ShouldReflectTagPresence(string tag, bool expected)
     {
-        NotableDateFilter filter = NotableDateFilter.WithTag(tag);
+        var filter = NotableDateFilter.WithTag(tag);
 
         Assert.AreEqual(expected, filter.Matches(Occurrence(tags: ["Christian", "Public"])));
     }
@@ -186,7 +186,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithTagCaseDiffers_ShouldReturnFalse()
     {
-        NotableDateFilter filter = NotableDateFilter.WithTag("PUBLIC");
+        var filter = NotableDateFilter.WithTag("PUBLIC");
 
         Assert.IsFalse(filter.Matches(Occurrence(tags: ["Public"])));
     }
@@ -211,7 +211,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithAnyTag_ShouldReflectIntersection()
     {
-        NotableDateFilter filter = NotableDateFilter.WithAnyTag("Public", "Federal");
+        var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
 
         Assert.IsTrue(filter.Matches(Occurrence(tags: ["Regional", "Federal"])));
         Assert.IsFalse(filter.Matches(Occurrence(tags: ["Christian"])));
@@ -239,7 +239,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithAllTags_ShouldRequireEveryTag()
     {
-        NotableDateFilter filter = NotableDateFilter.WithAllTags("Public", "Christian");
+        var filter = NotableDateFilter.WithAllTags("Public", "Christian");
 
         Assert.IsTrue(filter.Matches(Occurrence(tags: ["Christian", "Public", "Federal"])));
         Assert.IsFalse(filter.Matches(Occurrence(tags: ["Public"])));
@@ -267,7 +267,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithAllTagsIsEmpty_ShouldMatchEveryOccurrence()
     {
-        NotableDateFilter filter = NotableDateFilter.WithAllTags();
+        var filter = NotableDateFilter.WithAllTags();
 
         Assert.IsTrue(filter.Matches(Occurrence(tags: [])));
     }
@@ -283,7 +283,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithName_ShouldReflectNameEquality()
     {
-        NotableDateFilter filter = NotableDateFilter.WithName("Christmas Day");
+        var filter = NotableDateFilter.WithName("Christmas Day");
 
         Assert.IsTrue(filter.Matches(Occurrence(displayName: "Christmas Day")));
         Assert.IsFalse(filter.Matches(Occurrence(displayName: "Easter Sunday")));
@@ -296,7 +296,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithNameCaseDiffers_ShouldReturnFalse()
     {
-        NotableDateFilter filter = NotableDateFilter.WithName("christmas day");
+        var filter = NotableDateFilter.WithName("christmas day");
 
         Assert.IsFalse(filter.Matches(Occurrence(displayName: "Christmas Day")));
     }
@@ -321,7 +321,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithAnyName_ShouldReflectMembership()
     {
-        NotableDateFilter filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
+        var filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
 
         Assert.IsTrue(filter.Matches(Occurrence(displayName: "Easter Sunday")));
         Assert.IsFalse(filter.Matches(Occurrence(displayName: "Anzac Day")));
@@ -353,7 +353,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithId_ShouldReflectConceptIdentity()
     {
-        NotableDateFilter filter = NotableDateFilter.WithId("christmas-day");
+        var filter = NotableDateFilter.WithId("christmas-day");
 
         Assert.IsTrue(filter.Matches(Occurrence(notableDateId: "christmas-day")));
         Assert.IsFalse(filter.Matches(Occurrence(notableDateId: "boxing-day")));
@@ -366,7 +366,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenWithIdCaseDiffers_ShouldReturnFalse()
     {
-        NotableDateFilter filter = NotableDateFilter.WithId("Christmas-Day");
+        var filter = NotableDateFilter.WithId("Christmas-Day");
 
         Assert.IsFalse(filter.Matches(Occurrence(notableDateId: "christmas-day")));
     }
@@ -398,7 +398,7 @@ public sealed class FilterMatrixTests
     [DataRow(false)]
     public void Matches_WhenIsNonWorkingDay_ShouldReflectFlag(bool isNonWorkingDay)
     {
-        NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+        var filter = NotableDateFilter.IsNonWorkingDay();
 
         Assert.AreEqual(isNonWorkingDay, filter.Matches(Occurrence(isNonWorkingDay: isNonWorkingDay)));
     }
@@ -413,7 +413,7 @@ public sealed class FilterMatrixTests
     [DataRow(false)]
     public void Matches_WhenWasAdjusted_ShouldReflectObservedFlag(bool isObserved)
     {
-        NotableDateFilter filter = NotableDateFilter.WasAdjusted();
+        var filter = NotableDateFilter.WasAdjusted();
 
         Assert.AreEqual(isObserved, filter.Matches(Occurrence(isObserved: isObserved)));
     }
@@ -440,7 +440,7 @@ public sealed class FilterMatrixTests
     [DataRow(7, 6, false)]
     public void Matches_WhenWithMinDuration_ShouldReflectThreshold(int minimumDays, int durationDays, bool expected)
     {
-        NotableDateFilter filter = NotableDateFilter.WithMinDuration(minimumDays);
+        var filter = NotableDateFilter.WithMinDuration(minimumDays);
 
         Assert.AreEqual(expected, filter.Matches(Occurrence(durationDays: durationDays)));
     }
@@ -465,7 +465,7 @@ public sealed class FilterMatrixTests
     [DataRow(2024, 7, 1, false)]  // day after end
     public void Matches_WhenInDateRange_ShouldReflectMembership(int year, int month, int day, bool expected)
     {
-        NotableDateFilter filter = NotableDateFilter.InDateRange(new DateOnly(2024, 6, 1), new DateOnly(2024, 6, 30));
+        var filter = NotableDateFilter.InDateRange(new DateOnly(2024, 6, 1), new DateOnly(2024, 6, 30));
 
         Assert.AreEqual(expected, filter.Matches(Occurrence(date: new DateOnly(year, month, day))));
     }
@@ -478,7 +478,7 @@ public sealed class FilterMatrixTests
     public void Matches_WhenInDateRangeStartEqualsEnd_ShouldMatchOnlyThatDay()
     {
         DateOnly day = new(2024, 6, 15);
-        NotableDateFilter filter = NotableDateFilter.InDateRange(day, day);
+        var filter = NotableDateFilter.InDateRange(day, day);
 
         Assert.IsTrue(filter.Matches(Occurrence(date: day)));
         Assert.IsFalse(filter.Matches(Occurrence(date: new DateOnly(2024, 6, 16))));
@@ -495,7 +495,7 @@ public sealed class FilterMatrixTests
     [TestMethod]
     public void Matches_WhenNotableDateIsNull_ShouldThrowExactly()
     {
-        NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+        var filter = NotableDateFilter.IsNonWorkingDay();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

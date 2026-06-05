@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTraversalExtensionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -281,7 +281,7 @@ public sealed class NotableDateTraversalExtensionTests
     [TestMethod]
     public void EnumerateNotableDates_WhenFilterApplied_ShouldYieldOnlyMatchingDates()
     {
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
         NotableDate[] result = new DateOnly(2026, 1, 1).EnumerateNotableDates(new DateOnly(2026, 12, 31), CalendarService, "XX", filter).ToArray();
 
@@ -346,7 +346,7 @@ public sealed class NotableDateTraversalExtensionTests
     [TestMethod]
     public void NextNotableDate_WhenFilterApplied_ShouldReturnFirstMatchingDate()
     {
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
 
         NotableDate? result = new DateOnly(2026, 1, 15).NextNotableDate(CalendarService, "XX", filter);
 
@@ -473,7 +473,7 @@ public sealed class NotableDateTraversalExtensionTests
     [TestMethod]
     public void EnumerateNonWorkingDays_OnDateTime_ShouldReattachStartTimeAndKind()
     {
-        List<DateTime> days = new DateTime(2026, 1, 1, 6, 15, 0, DateTimeKind.Utc)
+        var days = new DateTime(2026, 1, 1, 6, 15, 0, DateTimeKind.Utc)
             .EnumerateNonWorkingDays(new DateTime(2026, 1, 4, 0, 0, 0, DateTimeKind.Utc), HolidayService, "XX")
             .ToList();
 

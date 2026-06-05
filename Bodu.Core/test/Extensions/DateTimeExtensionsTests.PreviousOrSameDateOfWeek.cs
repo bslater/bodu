@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.PreviousOrSameDateOfWeek.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOrSameDateOfWeek_WhenAlreadyOnTargetDay_ShouldReturnInputUnchanged()
     {
-        DateTime input = new DateTime(2024, 4, 18, 17, 45, 00); // Thursday
+        var input = new DateTime(2024, 4, 18, 17, 45, 00); // Thursday
         DateTime actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Thursday);
 
         Assert.AreEqual(input, actual);
@@ -60,7 +60,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(DateTimeKind.Local)]
     public void PreviousOrSameDateOfWeek_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
     {
-        DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
+        var input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
         DateTime actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Wednesday);
 
         Assert.AreEqual(kind, actual.Kind);

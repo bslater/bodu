@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileHashPluginTrustPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,7 +66,7 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
         if (context.FileHash is null)
             return PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashUnavailable, context.AssemblyName));
 
-        if (!this._allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out byte[]? expected))
+        if (!this._allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out var expected))
             return PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNotAllowed, context.AssemblyName));
 
         return CryptographicOperations.FixedTimeEquals(expected, context.FileHash)

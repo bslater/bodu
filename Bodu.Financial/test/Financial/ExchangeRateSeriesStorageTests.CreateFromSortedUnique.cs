@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesStorageTests.CreateFromSortedUnique.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class ExchangeRateSeriesStorageTests
         int[] days = [1000, 1010, 1020];
         decimal[] rates = [1.4m, 1.5m, 1.6m];
 
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(days, rates);
+        var storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(days, rates);
 
         Assert.AreEqual(3, storage.Count);
         Assert.AreEqual(DateOnly.FromDayNumber(1000), storage.FirstDate);
@@ -35,7 +35,7 @@ public partial class ExchangeRateSeriesStorageTests
         int[] days = [1000, 1010, 1020];
         decimal[] rates = [1.4m, 1.5m, 1.6m];
 
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(days, rates);
+        var storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(days, rates);
 
         var observations = storage.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
@@ -51,7 +51,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void CreateFromSortedUnique_WhenSingleEntry_ShouldExposeBothFirstAndLastDate()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(
+        var storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(
             new[] { 1234 },
             new[] { 2.5m });
 

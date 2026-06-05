@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.ParseOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class MoneyTests
     {
         MoneyParseOptions options = MoneyParseOptions.Default with { FormatProvider = CultureInfo.InvariantCulture };
 
-        Money money = Money.Parse(text, options);
+        var money = Money.Parse(text, options);
 
         Assert.AreEqual(new Money(19.99m, "USD"), money);
     }
@@ -42,7 +42,7 @@ public partial class MoneyTests
     {
         MoneyParseOptions options = new() { Mode = MoneyParseMode.LenientImport, FormatProvider = CultureInfo.InvariantCulture };
 
-        Money money = Money.Parse("usd 19.99", options);
+        var money = Money.Parse("usd 19.99", options);
 
         Assert.AreEqual(new Money(19.99m, "USD"), money);
     }
@@ -61,7 +61,7 @@ public partial class MoneyTests
             UnknownCurrency = UnknownCurrencyPolicy.AllowUnscaled,
         };
 
-        Money money = Money.Parse("XYZ 1.2345", options);
+        var money = Money.Parse("XYZ 1.2345", options);
 
         Assert.AreEqual(1.2345m, money.Amount);
         Assert.AreEqual("XYZ", money.IsoCode);
@@ -74,7 +74,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ParseOptions_WhenRoundTripOnly_ShouldParseInvariantForm()
     {
-        Money money = Money.Parse("USD 1234.56", new MoneyParseOptions { Mode = MoneyParseMode.RoundTripOnly });
+        var money = Money.Parse("USD 1234.56", new MoneyParseOptions { Mode = MoneyParseMode.RoundTripOnly });
 
         Assert.AreEqual(new Money(1234.56m, "USD"), money);
     }
@@ -94,7 +94,7 @@ public partial class MoneyTests
             CurrencyLookup = new CurrencyLookupService(),
         };
 
-        Money money = Money.Parse("Ω10.50", options);
+        var money = Money.Parse("Ω10.50", options);
 
         Assert.AreEqual("XQP", money.IsoCode);
         Assert.AreEqual(10.50m, money.Amount);

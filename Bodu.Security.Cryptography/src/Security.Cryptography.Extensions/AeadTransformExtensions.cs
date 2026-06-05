@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadTransformExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public static class AeadTransformExtensions
         if (transform is null) throw new ArgumentNullException(nameof(transform));
 
         var output = new byte[plaintext.Length + (transform.TagSize / 8)];
-        int written = transform.Encrypt(plaintext, output, associatedData);
+        var written = transform.Encrypt(plaintext, output, associatedData);
 
         if (written != output.Length)
             Array.Resize(ref output, written);
@@ -59,7 +59,7 @@ public static class AeadTransformExtensions
         if (transform is null) throw new ArgumentNullException(nameof(transform));
 
         var output = new byte[ciphertextWithTag.Length - (transform.TagSize / 8)];
-        int written = transform.Decrypt(ciphertextWithTag, output, associatedData);
+        var written = transform.Decrypt(ciphertextWithTag, output, associatedData);
 
         if (written != output.Length)
             Array.Resize(ref output, written);

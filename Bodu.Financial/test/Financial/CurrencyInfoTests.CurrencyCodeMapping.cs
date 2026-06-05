@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyInfoTests.CurrencyCodeMapping.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void FromCurrencyCode_WhenCodeIsDefined_ShouldReturnRegisteredInfo()
     {
-        CurrencyInfo info = CurrencyInfo.FromCurrencyCode(CurrencyCode.AUD);
+        var info = CurrencyInfo.FromCurrencyCode(CurrencyCode.AUD);
 
         Assert.AreEqual("AUD", info.IsoCode);
         Assert.AreEqual(36, info.NumericCode);
@@ -46,7 +46,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsActive_ShouldReturnTrueAndCode()
     {
-        bool ok = CurrencyInfo.TryGetCurrencyCode("USD", out CurrencyCode code);
+        var ok = CurrencyInfo.TryGetCurrencyCode("USD", out CurrencyCode code);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(CurrencyCode.USD, code);
@@ -59,7 +59,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsHistoric_ShouldReturnFalse()
     {
-        bool ok = CurrencyInfo.TryGetCurrencyCode("DEM", out CurrencyCode code);
+        var ok = CurrencyInfo.TryGetCurrencyCode("DEM", out CurrencyCode code);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, code);
@@ -72,7 +72,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsLowerCase_ShouldReturnFalse()
     {
-        bool ok = CurrencyInfo.TryGetCurrencyCode("usd", out CurrencyCode code);
+        var ok = CurrencyInfo.TryGetCurrencyCode("usd", out CurrencyCode code);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, code);
@@ -87,7 +87,7 @@ public partial class CurrencyInfoTests
     {
         CurrencyInfo info = CurrencyRegistry.Get("EUR");
 
-        CurrencyCode code = info.ToCurrencyCode();
+        var code = info.ToCurrencyCode();
 
         Assert.AreEqual(CurrencyCode.EUR, code);
     }

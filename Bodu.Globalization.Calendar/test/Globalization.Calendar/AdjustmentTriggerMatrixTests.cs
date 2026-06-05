@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentTriggerMatrixTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -238,7 +238,7 @@ public sealed class AdjustmentTriggerMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService FixedDateService(string triggerType, string month, int day, string strategyMonth, int strategyDay)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.fixed-trigger">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>
@@ -350,7 +350,7 @@ public sealed class AdjustmentTriggerMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService NthOccurrenceService(string weekday, string ordinal, int strategyDay)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.nth-trigger">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>

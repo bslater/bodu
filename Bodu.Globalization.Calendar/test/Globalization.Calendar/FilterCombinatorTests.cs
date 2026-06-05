@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FilterCombinatorTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -75,7 +75,7 @@ public sealed class FilterCombinatorTests
     /// <param name="year">The calendar year to resolve.</param>
     private static void AssertResolves(string[] expected, NotableDateFilter filter, int year = 2026)
     {
-        string[] sorted = expected.OrderBy(s => s, StringComparer.Ordinal).ToArray();
+        var sorted = expected.OrderBy(s => s, StringComparer.Ordinal).ToArray();
 
         CollectionAssert.AreEqual(sorted, ResolveIds(filter, year));
     }
@@ -91,7 +91,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenUnfiltered_ReturnsAllConcepts()
     {
         DateRange range = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
-        List<string> ids = CreateService().Resolve(range, "XX")
+        var ids = CreateService().Resolve(range, "XX")
             .Select(r => r.NotableDateId).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
 
         CollectionAssert.AreEqual(
@@ -201,7 +201,7 @@ public sealed class FilterCombinatorTests
     [TestMethod]
     public void And_WhenOtherIsNull_ShouldThrowExactly()
     {
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -241,7 +241,7 @@ public sealed class FilterCombinatorTests
     [TestMethod]
     public void Or_WhenOtherIsNull_ShouldThrowExactly()
     {
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -307,7 +307,7 @@ public sealed class FilterCombinatorTests
     [TestMethod]
     public void Matches_WhenAllOfIsEmpty_ShouldMatchEveryOccurrence()
     {
-        NotableDateFilter filter = NotableDateFilter.AllOf();
+        var filter = NotableDateFilter.AllOf();
 
         Assert.IsTrue(filter.Matches(Occurrence(NotableDateCategory.Cultural)));
     }
@@ -361,7 +361,7 @@ public sealed class FilterCombinatorTests
     [TestMethod]
     public void Matches_WhenAnyOfIsEmpty_ShouldMatchNothing()
     {
-        NotableDateFilter filter = NotableDateFilter.AnyOf();
+        var filter = NotableDateFilter.AnyOf();
 
         Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.PublicHoliday)));
     }

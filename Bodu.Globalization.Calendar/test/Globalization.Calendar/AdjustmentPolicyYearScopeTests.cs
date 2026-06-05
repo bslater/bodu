@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentPolicyYearScopeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public sealed class AdjustmentPolicyYearScopeTests
     /// <returns>A service over the fixture.</returns>
     private static INotableDateService Build(string scope)
     {
-        string xml = """
+        var xml = """
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.b1">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>

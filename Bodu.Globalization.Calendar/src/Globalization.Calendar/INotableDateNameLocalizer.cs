@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateNameLocalizer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A localizer is applied on demand to resolved occurrences (for example through the
-/// <c>Localize</c> extension methods), so resolution itself stays culture-agnostic and a caller can request any culture.
+/// A localizer is applied on demand to resolved occurrences (for example through the <c>Localize</c> extension
+/// methods), so resolution itself stays culture-agnostic and a caller can request any culture.
 /// </para>
 /// </remarks>
 public interface INotableDateNameLocalizer

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StreamAeadKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -122,7 +122,7 @@ public class StreamAeadKnownAnswerTests
 
         using (IStreamAeadTransform enc = CreateTransform(vector))
         {
-            int written = enc.Encrypt(plaintext, output, vector.AssociatedData);
+            var written = enc.Encrypt(plaintext, output, vector.AssociatedData);
             Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
         }
 
@@ -146,7 +146,7 @@ public class StreamAeadKnownAnswerTests
 
         using (IStreamAeadTransform dec = CreateTransform(vector))
         {
-            int written = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
+            var written = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
             Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
         }
 
@@ -208,12 +208,12 @@ public class StreamAeadKnownAnswerTests
     [TestMethod]
     public void XSalsa20Poly1305Aead_WhenComparedToDerivedOracle_ShouldMatchAndRoundTrip()
     {
-        byte[] key = Convert.FromHexString(SunscreenKeyHex);
-        byte[] nonce = Convert.FromHexString(SunscreenNonce24Hex);
-        byte[] aad = Convert.FromHexString(SunscreenAadHex);
-        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+        var key = Convert.FromHexString(SunscreenKeyHex);
+        var nonce = Convert.FromHexString(SunscreenNonce24Hex);
+        var aad = Convert.FromHexString(SunscreenAadHex);
+        var plaintext = Convert.FromHexString(SunscreenPlaintextHex);
 
-        (byte[] expectedCiphertext, byte[] expectedTag) = DeriveAeadOracle(key, nonce, aad, plaintext);
+        (var expectedCiphertext, var expectedTag) = DeriveAeadOracle(key, nonce, aad, plaintext);
 
         var output = new byte[plaintext.Length + 16];
         using (var enc = new XSalsa20Poly1305Aead(key, nonce))
@@ -239,10 +239,10 @@ public class StreamAeadKnownAnswerTests
     [TestMethod]
     public void XSalsa20Poly1305Aead_WhenGivenFrozenDerivedVector_ShouldRemainStable()
     {
-        byte[] key = Convert.FromHexString(SunscreenKeyHex);
-        byte[] nonce = Convert.FromHexString(SunscreenNonce24Hex);
-        byte[] aad = Convert.FromHexString(SunscreenAadHex);
-        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+        var key = Convert.FromHexString(SunscreenKeyHex);
+        var nonce = Convert.FromHexString(SunscreenNonce24Hex);
+        var aad = Convert.FromHexString(SunscreenAadHex);
+        var plaintext = Convert.FromHexString(SunscreenPlaintextHex);
 
         var output = new byte[plaintext.Length + 16];
         using (var enc = new XSalsa20Poly1305Aead(key, nonce))
@@ -304,8 +304,8 @@ public class StreamAeadKnownAnswerTests
         for (var i = 0; i < plaintext.Length; i++)
             ciphertext[i] = (byte)(plaintext[i] ^ keystream[64 + i]);
 
-        byte[] poly1305Key = keystream[..32];
-        byte[] tag = ComputeRfc8439Poly1305(poly1305Key, aad, ciphertext);
+        var poly1305Key = keystream[..32];
+        var tag = ComputeRfc8439Poly1305(poly1305Key, aad, ciphertext);
 
         return (ciphertext, tag);
     }

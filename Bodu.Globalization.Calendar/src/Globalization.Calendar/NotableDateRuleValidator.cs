@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleValidator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -134,7 +134,7 @@ internal static class NotableDateRuleValidator
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
     private static void ValidateReplaceWithRule(NotableDateResource resource, AdjustmentPolicy policy, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        string? notableDateRef = policy.ActionNotableDateRef;
+        var notableDateRef = policy.ActionNotableDateRef;
         if (string.IsNullOrEmpty(notableDateRef))
         {
             diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -144,11 +144,11 @@ internal static class NotableDateRuleValidator
             return;
         }
 
-        string reference = string.IsNullOrEmpty(policy.ActionRuleRef)
+        var reference = string.IsNullOrEmpty(policy.ActionRuleRef)
             ? notableDateRef
             : $"{notableDateRef}/{policy.ActionRuleRef}";
 
-        int matches = CountReferenceMatches(resource, notableDateRef, policy.ActionRuleRef);
+        var matches = CountReferenceMatches(resource, notableDateRef, policy.ActionRuleRef);
         if (matches == 0)
         {
             diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -222,7 +222,7 @@ internal static class NotableDateRuleValidator
                     string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateRuleId, rule.Id, definition.Id)));
             }
 
-            foreach (string policyRef in rule.AdjustmentPolicyRefs)
+            foreach (var policyRef in rule.AdjustmentPolicyRefs)
             {
                 if (!knownPolicies.Contains(policyRef))
                 {
@@ -260,11 +260,11 @@ internal static class NotableDateRuleValidator
         {
             case OffsetFromRuleStrategy offset:
             {
-                string reference = string.IsNullOrEmpty(offset.RuleRef)
+                var reference = string.IsNullOrEmpty(offset.RuleRef)
                     ? offset.NotableDateRef
                     : $"{offset.NotableDateRef}/{offset.RuleRef}";
 
-                int matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
+                var matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
                 if (matches == 0)
                 {
                     diagnostics.Add(new NotableDateValidationDiagnostic(

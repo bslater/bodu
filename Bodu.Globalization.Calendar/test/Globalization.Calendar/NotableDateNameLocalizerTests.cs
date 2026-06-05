@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateNameLocalizerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public sealed class NotableDateNameLocalizerTests
         NotableDateNameLocalizer localizer = new NotableDateNameLocalizer()
             .Register("new-years-day", CultureInfo.GetCultureInfo("fr"), "Jour de l'An");
 
-        string? name = localizer.GetDisplayName(NewYearsDay(), CultureInfo.GetCultureInfo("fr-CA"));
+        var name = localizer.GetDisplayName(NewYearsDay(), CultureInfo.GetCultureInfo("fr-CA"));
 
         Assert.AreEqual("Jour de l'An", name);
     }
@@ -77,7 +77,7 @@ public sealed class NotableDateNameLocalizerTests
         NotableDateNameLocalizer localizer = new NotableDateNameLocalizer()
             .Register("new-years-day", CultureInfo.InvariantCulture, "Default Name");
 
-        string? name = localizer.GetDisplayName(NewYearsDay(), CultureInfo.GetCultureInfo("de"));
+        var name = localizer.GetDisplayName(NewYearsDay(), CultureInfo.GetCultureInfo("de"));
 
         Assert.AreEqual("Default Name", name);
     }

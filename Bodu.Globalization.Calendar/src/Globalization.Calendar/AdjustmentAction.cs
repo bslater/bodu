@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentAction.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,8 +59,8 @@ public enum AdjustmentAction
     Suppress,
 
     /// <summary>
-    /// Delegate the observed-date computation to a caller-supplied <see cref="IAdjustmentHandler" /> resolved through the
-    /// policy's handler key.
+    /// Delegate the observed-date computation to a caller-supplied <see cref="IAdjustmentHandler" /> resolved through
+    /// the policy's handler key.
     /// </summary>
     Custom,
 }
