@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  NL notable-date resource, migrated from the v1 region-nl.xml to the v2 cookbook schema. Shared civil and Christian
-  observances are imported from the global-core and christian-western catalogues; the remaining entries are
-  territory-local concepts defined inline.
+  ================================================================================================================
+  Netherlands (NL) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-nl.xml to the v2 cookbook schema. All rules are scoped to territory "NL".
+
+  How this resource is built:
+
+    * Shared European observances are IMPORTED from the europe-common hub and given an NL territory scope through the
+      import <Use> directive. The hub carries the catalogue calculation strategy; the territory supplies the local
+      observance.
+
+    * Netherlands-specific concepts (Second Day of Christmas, King's Day, and Liberation Day) are declared INLINE
+      below.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below and applied to New Year's Day and
+  King's Day (which by law moves to the preceding Saturday when 27 April is a Sunday; approximated here by the
+  generic next-working-day roll).
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.nl">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -17,12 +40,17 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to the Netherlands. New Year's Day
+      (1 January) takes a weekend roll to the next working day. Good Friday (-2), Easter Monday (+1), Ascension
+      (+39), Whit Sunday (+49), and Whit Monday (+50) derive from the Easter Sunday anchor the hub re-exports. Good
+      Friday is re-scoped to a non-working Observance because it is not a statutory day off in the Netherlands;
+      Ascension and the Whit days are nationwide public holidays. Christmas Day (25 December) is fixed.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="NL">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="NL" />
       <Use notableDateRef="good-friday" territory="NL" category="Observance" nonWorking="false" />
       <Use notableDateRef="easter-monday" territory="NL" />
@@ -35,17 +63,26 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      National public holidays and observances
+      ============================================================================================================
+    -->
+
+    <!-- Second Day of Christmas (Tweede Kerstdag) — 26 December; a nationwide public holiday. Strategy: Fixed date. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nl"><Applicability><Territory code="NL" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- King's Day (Koningsdag) — 27 April, the monarch's official birthday and a public holiday, with a weekend roll when it falls on a weekend (statutorily to the preceding Saturday; approximated here). The fromYear="2014" bound reflects the accession of King Willem-Alexander, when the date moved from 30 April (Queen's Day). Strategy: Fixed date. -->
     <NotableDate id="kings-day" displayName="King's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nl"><Applicability fromYear="2014"><Territory code="NL" /></Applicability>
         <Strategy><Fixed month="April" day="27" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Liberation Day (Bevrijdingsdag) — 5 May, marking the 1945 end of German occupation; an observance (an official day off only every fifth year). The fromYear="1945" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="liberation-day" displayName="Liberation Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="nl"><Applicability fromYear="1945"><Territory code="NL" /></Applicability>
         <Strategy><Fixed month="May" day="5" /></Strategy></Rule></Rules>

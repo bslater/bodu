@@ -12,11 +12,22 @@
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe it on the next working day. skipNonWorkingDates
+      is false, so the substitute may share a day with another holiday. Used by the standalone holidays (Waitangi
+      Day, Anzac Day). Emission is ObservedOnly, so the holiday is substituted (moved), not duplicated.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
       <Emission mode="ObservedOnly" reason="Substitute public holiday" />
     </AdjustmentPolicy>
+    <!--
+      Conflict-aware weekend substitute: as above, but skipNonWorkingDates is true, so the substitute steps over a
+      day already claimed by another non-working holiday. This is what lets the paired holidays (New Year / Day after
+      New Year's Day, and Christmas / Boxing Day) keep their in-lieu days from colliding when both fall on a weekend
+      — the second advances past the day the first has already taken.
+    -->
     <AdjustmentPolicy id="working-day-substitute" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
@@ -25,11 +36,21 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!--
+      Civil core. New Year's Day is a public holiday; it is paired with the inline "Day after New Year's Day"
+      (2 January) below, so it uses the conflict-aware substitute to keep their in-lieu days distinct.
+    -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="NZ">
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments>
       </Use>
     </Import>
+    <!--
+      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (an OffsetFromRule
+      strategy in the shared catalogue); Easter Sunday is also the source for the inline Easter Saturday offset
+      below. Christmas Day and Boxing Day fall on consecutive days, so they use the conflict-aware substitute to keep
+      their in-lieu days from colliding.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="NZ" />
       <Use notableDateRef="good-friday" territory="NZ" />
@@ -45,61 +66,97 @@
 
   <NotableDates>
 
+    <!--
+      Day after New Year's Day — 2 January, a public holiday paired with the imported New Year's Day. Uses the
+      conflict-aware substitute so that when both fall on a weekend their in-lieu days do not collide (the second
+      advances past the first). Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="day-after-new-years-day" displayName="Day after New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability>
         <Strategy><Fixed month="January" day="2" /></Strategy>
         <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Waitangi Day — 6 February, commemorating the 1840 signing of the Treaty of Waitangi. A standalone public
+      holiday with a "Mondayisation" weekend roll to the next working day. Strategy: Fixed day-of-month.
+    -->
     <NotableDate id="waitangi-day" displayName="Waitangi Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability>
         <Strategy><Fixed month="February" day="6" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Valentine's Day — 14 February, a cultural observance (not a public holiday). Strategy: Fixed day-of-month. -->
     <NotableDate id="valentines-day" displayName="Valentine's Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><Fixed month="February" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Easter Saturday (Holy Saturday) — the day before Easter Sunday, an observance (working day). The fromYear bound
+      of 1583 reflects the Gregorian-calendar start for the Easter computation. Strategy: OffsetFromRule, one day
+      before the imported Easter Sunday rule (id "default").
+    -->
     <NotableDate id="easter-saturday" displayName="Easter Saturday" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability fromYear="1583"><Territory code="NZ" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Anzac Day — 25 April, a remembrance day and public holiday with a weekend roll ("Mondayisation"). Unlike the
+      Australian practice, New Zealand grants a substitute when 25 April falls on a weekend. Strategy: Fixed
+      day-of-month.
+    -->
     <NotableDate id="anzac-day" displayName="Anzac Day" category="Remembrance" defaultNonWorkingDay="true">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability>
         <Strategy><Fixed month="April" day="25" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- Mother's Day — second Sunday in May, an observance. Strategy: DayOfWeekInMonth (second Sunday). -->
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- King's Birthday — first Monday in June, a public holiday. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="kings-birthday" displayName="King's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Matariki — the Maori New Year, marked by the rise of the Matariki star cluster. New Zealand's newest public
+      holiday (first observed 2022), so the fromYear bound excludes earlier years; the date is set by the gazetted-
+      date algorithm and shifts within June/July each year. Strategy: Algorithm (computed; may differ from a fixed
+      date).
+    -->
     <NotableDate id="matariki" displayName="Matariki" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nz"><Applicability fromYear="2022"><Territory code="NZ" /></Applicability><Strategy><Algorithm key="matariki" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Father's Day — first Sunday in September in New Zealand and Australia, unlike the global third-Sunday-in-June
+      form. An observance. Strategy: DayOfWeekInMonth (first Sunday).
+    -->
     <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Labour Day — fourth Monday in October, a public holiday. Strategy: DayOfWeekInMonth (fourth Monday). -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Fourth" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Halloween — 31 October, a cultural observance. Strategy: Fixed day-of-month. -->
     <NotableDate id="halloween" displayName="Halloween" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Guy Fawkes Night — 5 November, a cultural observance marked with fireworks. Strategy: Fixed day-of-month. -->
     <NotableDate id="guy-fawkes-night" displayName="Guy Fawkes Night" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><Fixed month="November" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Remembrance Day — 11 November, a remembrance day (not a public holiday; working day). Strategy: Fixed day-of-month. -->
     <NotableDate id="remembrance-day" displayName="Remembrance Day" category="Remembrance" defaultNonWorkingDay="false">
       <Rules><Rule id="nz"><Applicability><Territory code="NZ" /></Applicability><Strategy><Fixed month="November" day="11" /></Strategy></Rule></Rules>
     </NotableDate>

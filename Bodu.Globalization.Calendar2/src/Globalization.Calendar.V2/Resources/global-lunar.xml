@@ -12,45 +12,90 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Lunar New Year and its derived festival
+      ============================================================================================================
+    -->
+
+    <!--
+      Lunar New Year (Spring Festival) — 1/1 in the Chinese lunisolar calendar (the second new moon after the
+      winter solstice), projected onto the Gregorian year via the BCL ChineseLunisolarCalendar. Anchors the
+      Lantern Festival below.
+    -->
     <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
         <Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Lantern Festival (Yuanxiao) — the fifteenth day of the first lunar month, marking the end of the New Year
+      period. Authored as a fixed 14-day OffsetFromRule from the lunar-new-year anchor so it tracks that occurrence
+      exactly without a second lunisolar projection.
+    -->
     <NotableDate id="lantern-festival" displayName="Lantern Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="lunar-new-year" ruleRef="default" offsetDays="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Solar-term festival (computed)
+      ============================================================================================================
+    -->
+
+    <!--
+      Qingming Festival (Tomb-Sweeping Day) — a solar term, not a lunar date, falling when the sun reaches 15
+      degrees of celestial longitude (about 4-5 April). Computed by the engine's astronomical solar-term
+      algorithm; may differ by a day from gazetted observance.
+    -->
     <NotableDate id="qingming-festival" displayName="Qingming Festival" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="qingming" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Lunisolar festivals (fixed Chinese lunisolar month/day)
+      ============================================================================================================
+      Each entry fixes a month/day in the Chinese lunisolar calendar, projected onto the Gregorian year via the BCL
+      ChineseLunisolarCalendar. skipLeapMonth="true" advances the conventional ordinal month past any intercalary
+      (leap) month inserted in the same year, so the festival lands in the regular month it traditionally occupies.
+    -->
+
+    <!-- Dragon Boat Festival (Duanwu) — 5th day of the 5th lunar month. -->
     <NotableDate id="dragon-boat-festival" displayName="Dragon Boat Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
         <Strategy><Fixed month="5" day="5" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Qixi Festival (Chinese Valentine's Day) — 7th day of the 7th lunar month. -->
     <NotableDate id="qixi-festival" displayName="Qixi Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
         <Strategy><Fixed month="7" day="7" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Hungry Ghost Festival (Zhongyuan) — 15th day of the 7th lunar month. -->
     <NotableDate id="hungry-ghost-festival" displayName="Hungry Ghost Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
         <Strategy><Fixed month="7" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Mid-Autumn Festival (Mooncake Festival) — 15th day of the 8th lunar month, at the harvest full moon. -->
     <NotableDate id="mid-autumn-festival" displayName="Mid-Autumn Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
         <Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Double Ninth Festival (Chongyang) — 9th day of the 9th lunar month. -->
     <NotableDate id="double-ninth-festival" displayName="Double Ninth Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
         <Strategy><Fixed month="9" day="9" skipLeapMonth="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Winter Solstice Festival (Dongzhi) — falls at the December solstice. Approximated by its most frequent civil
+      Gregorian date, 22 December, rather than computed astronomically.
+    -->
     <NotableDate id="winter-solstice-festival" displayName="Winter Solstice Festival" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="22" /></Strategy></Rule></Rules>
     </NotableDate>

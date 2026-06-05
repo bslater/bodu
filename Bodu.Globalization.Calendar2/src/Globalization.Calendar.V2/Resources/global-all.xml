@@ -10,32 +10,53 @@
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-all">
 
+  <!--
+    Every import is bare (no <Use> directives), so each catalogue contributes its full concept set unchanged.
+    Identifiers that appear in more than one source are deduplicated first-source-winning, so the order below is
+    significant for the few shared concepts (noted inline).
+  -->
   <Imports>
-    <Import resource="global-core" />
-    <Import resource="global-anchors" />
-    <Import resource="christian-western" />
-    <Import resource="christian-orthodox" />
-    <Import resource="global-cultural" />
-    <Import resource="global-education" />
-    <Import resource="global-environment" />
-    <Import resource="global-family" />
-    <Import resource="global-family-social" />
-    <Import resource="global-food" />
-    <Import resource="global-health" />
-    <Import resource="global-remembrance" />
-    <Import resource="global-science" />
-    <Import resource="global-social" />
-    <Import resource="global-un" />
-    <Import resource="global-animals" />
-    <Import resource="global-multiday-normalization" />
-    <Import resource="global-lunar" />
-    <Import resource="global-islamic" />
-    <Import resource="global-islamic-umm-al-qura" />
-    <Import resource="global-jewish" />
-    <Import resource="global-hindu" />
-    <Import resource="global-buddhist" />
-    <Import resource="global-persian" />
-    <Import resource="default-minimal" />
+
+    <!-- Civil and anchor foundations. -->
+    <Import resource="global-core" />                    <!-- New Year's Day/Eve, International Workers' Day. -->
+    <Import resource="global-anchors" />                 <!-- Lunar New Year, Ramadan Start, Orthodox Easter base anchors. -->
+
+    <!-- Christian feast catalogues (Easter computus anchors plus their offset-derived movable feasts). -->
+    <Import resource="christian-western" />              <!-- Gregorian-computus Easter cluster and the fixed Christmas feasts. -->
+    <Import resource="christian-orthodox" />             <!-- Julian-paschalion Pascha cluster and the Old-Calendar fixed feasts. -->
+
+    <!-- Secular themed observance catalogues (mostly fixed-date awareness and cultural days). -->
+    <Import resource="global-cultural" />                <!-- Valentine's Day, April Fools' Day, Halloween, etc. -->
+    <Import resource="global-education" />               <!-- Education- and literacy-themed observances. -->
+    <Import resource="global-environment" />             <!-- Environmental and climate observances. -->
+    <Import resource="global-family" />                  <!-- Mother's Day, Father's Day, and family observances. -->
+    <Import resource="global-family-social" />           <!-- Broader family and social-relationship observances. -->
+    <Import resource="global-food" />                    <!-- Food- and cuisine-themed observances. -->
+    <Import resource="global-health" />                  <!-- Health and wellbeing awareness days. -->
+    <Import resource="global-remembrance" />             <!-- Remembrance Day and commemorative observances. -->
+    <Import resource="global-science" />                 <!-- Science- and technology-themed observances. -->
+    <Import resource="global-social" />                  <!-- Social-cause and awareness observances. -->
+    <Import resource="global-un" />                      <!-- United Nations international days. -->
+    <Import resource="global-animals" />                 <!-- Animal- and wildlife-themed observances. -->
+    <Import resource="global-multiday-normalization" />  <!-- Shared multi-day spans (NAIDOC Week, World Space Week). -->
+
+    <!--
+      Non-Gregorian religious catalogues (lunar, Hijri, Hebrew, and Persian calendars). Concepts shared across
+      these are deduplicated on first appearance: Lunar New Year already came from global-anchors above, and the
+      Hijri festivals shared by the tabular and Umm al-Qura Islamic sets resolve to whichever is imported first
+      (global-islamic here).
+    -->
+    <Import resource="global-lunar" />                   <!-- Chinese-lunisolar festivals (Lunar New Year, Mid-Autumn, etc.). -->
+    <Import resource="global-islamic" />                 <!-- Tabular Hijri festivals (Eid al-Fitr, Eid al-Adha, etc.). -->
+    <Import resource="global-islamic-umm-al-qura" />     <!-- Umm al-Qura Hijri variants; duplicate festivals already won by global-islamic. -->
+    <Import resource="global-jewish" />                  <!-- Hebrew-calendar festivals (Rosh Hashanah, Yom Kippur, Passover, etc.). -->
+    <Import resource="global-hindu" />                   <!-- Hindu lunar festivals (Diwali, Holi, etc.). -->
+    <Import resource="global-buddhist" />                <!-- Buddhist observances (Vesak, Asalha Puja, etc.). -->
+    <Import resource="global-persian" />                 <!-- Persian-calendar observances (Nowruz, etc.). -->
+
+    <!-- Minimal fallback; New Year's Day here is a duplicate already supplied by global-core. -->
+    <Import resource="default-minimal" />                <!-- Country-neutral New Year's Day (deduplicated against global-core). -->
+
   </Imports>
 
   <NotableDates />

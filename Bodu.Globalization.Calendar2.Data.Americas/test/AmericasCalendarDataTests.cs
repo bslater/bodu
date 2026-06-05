@@ -67,6 +67,9 @@ public sealed class AmericasCalendarDataTests
     [DataRow("CA-QC", 2024, "fete-nationale-quebec", "2024-06-24", false)]
     [DataRow("CA", 2021, "christmas-day", "2021-12-27", true)]
     [DataRow("CA", 2021, "boxing-day", "2021-12-28", true)]
+
+    // Restored by the entry-level migration audit: Christmas Eve (24 December), a working cultural observance.
+    [DataRow("CA", 2024, "christmas-eve", "2024-12-24", false)]
     public void Resolve_CanadianHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
         NotableDate match = Single(territory, year, notableDateId);

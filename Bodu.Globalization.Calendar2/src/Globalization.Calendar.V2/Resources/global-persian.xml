@@ -11,16 +11,35 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Persian (Solar Hijri) festivals
+      ============================================================================================================
+      Each entry fixes a month/day in the Persian calendar and projects it onto the Gregorian year via the BCL
+      PersianCalendar. sweepCalendarYears="true" emits each landing occurrence within the requested Gregorian year,
+      since the Persian and Gregorian year boundaries do not coincide. Because the Persian year begins at the
+      vernal equinox, the spring observances land in late March and Yalda lands in late December.
+    -->
+
+    <!--
+      Nowruz — 1 Farvardin: the Persian New Year, beginning at the vernal equinox (about 20-21 March). A 13-day
+      span covering the traditional New Year holiday period.
+    -->
     <NotableDate id="nowruz" displayName="Nowruz" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="13"><Applicability calendar="Persian" />
         <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Sizdah Bedar (Nature's Day) — 13 Farvardin: the thirteenth and final day of the Nowruz festivities. -->
     <NotableDate id="sizdah-bedar" displayName="Sizdah Bedar" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="1" day="13" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Yalda Night (Shab-e Yalda) — 30 Azar: the eve of the winter solstice and the last night of autumn in the
+      Persian calendar, celebrating the longest night of the year (about 20-21 December).
+    -->
     <NotableDate id="yalda-night" displayName="Yalda Night" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability calendar="Persian" />
         <Strategy><Fixed month="9" day="30" sweepCalendarYears="true" /></Strategy></Rule></Rules>

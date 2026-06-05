@@ -10,50 +10,68 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Health and public-health observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- World Cancer Day — 4 February; UICC day to raise cancer awareness (from 2000). -->
     <NotableDate id="world-cancer-day" displayName="World Cancer Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2000" /><Strategy><Fixed month="February" day="4" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Autism Awareness Day — 2 April; UN day to raise autism awareness (from 2008). -->
     <NotableDate id="world-autism-awareness-day" displayName="World Autism Awareness Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2008" /><Strategy><Fixed month="April" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Health Day — 7 April; WHO day marking the organisation's 1948 founding. -->
     <NotableDate id="world-health-day" displayName="World Health Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="April" day="7" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World No Tobacco Day — 31 May; WHO day on the harms of tobacco (from 1987). -->
     <NotableDate id="world-no-tobacco-day" displayName="World No Tobacco Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1987" /><Strategy><Fixed month="May" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Blood Donor Day — 14 June; thanks blood donors, on the birthday of Karl Landsteiner (discoverer of blood groups). -->
     <NotableDate id="world-blood-donor-day" displayName="World Blood Donor Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="June" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Hepatitis Day — 28 July; WHO day on viral hepatitis, on the birthday of Baruch Blumberg (discoverer of hepatitis B) (from 2008). -->
     <NotableDate id="world-hepatitis-day" displayName="World Hepatitis Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2008" /><Strategy><Fixed month="July" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Suicide Prevention Day — 10 September; IASP/WHO day on suicide prevention (from 2003). -->
     <NotableDate id="world-suicide-prevention-day" displayName="World Suicide Prevention Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2003" /><Strategy><Fixed month="September" day="10" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Mental Health Day — 10 October; WHO/WFMH day on mental-health awareness. -->
     <NotableDate id="world-mental-health-day" displayName="World Mental Health Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="October" day="10" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Diabetes Day — 14 November; on the birthday of Frederick Banting (co-discoverer of insulin) (from 1991). -->
     <NotableDate id="world-diabetes-day" displayName="World Diabetes Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1991" /><Strategy><Fixed month="November" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World AIDS Day — 1 December; on HIV/AIDS awareness and remembrance. -->
     <NotableDate id="world-aids-day" displayName="World AIDS Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Breast Cancer Awareness Month — the whole of October (31-day span); breast-cancer awareness and fundraising. -->
     <NotableDate id="breast-cancer-awareness-month" displayName="Breast Cancer Awareness Month" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="31"><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Movember — the whole of November (30-day span); moustache-growing campaign for men's health (from 2003). -->
     <NotableDate id="movember" displayName="Movember" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="30"><Applicability fromYear="2003" /><Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
     </NotableDate>

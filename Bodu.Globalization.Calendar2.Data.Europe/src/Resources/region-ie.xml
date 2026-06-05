@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  IE notable-date resource, migrated from the v1 region-ie.xml to the v2 cookbook schema. Shared civil and Christian
-  observances are imported from the global-core and christian-western catalogues; the remaining entries are
-  territory-local concepts defined inline.
+  ================================================================================================================
+  Ireland (IE) — notable-date resource pack
+  ================================================================================================================
+
+  Migrated from the v1 region-ie.xml to the v2 cookbook schema. All rules are scoped to territory "IE".
+
+  How this resource is built:
+
+    * Shared civil and Christian observances are IMPORTED from the europe-common hub and given an IE territory scope
+      through the import <Use> directive. The hub carries only the bare calculation strategy; the territory supplies
+      the local observance.
+
+    * Ireland-specific concepts (Saint Stephen's Day, Saint Brigid's Day, Saint Patrick's Day, and the monthly bank
+      holidays) are declared INLINE below.
+
+  Weekend substitution: a single reusable weekend-roll policy is declared below. Irish practice grants a substitute
+  weekday when a fixed-date public holiday lands on a weekend, so it is applied to New Year's Day, Christmas Day,
+  Saint Stephen's Day, and Saint Patrick's Day. The Monday bank holidays already fall on a weekday and need none.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ie">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date is a weekend, observe the substitute public holiday on the next
+      working day. skipNonWorkingDates is false, so the substitute may share a day with another holiday.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -17,12 +40,16 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Ireland. New Year's Day
+      (1 January) takes a weekend roll to the next working day. Easter Monday (+1) derives from the Easter Sunday
+      anchor the hub re-exports. Christmas Day (25 December) is fixed and takes the weekend roll; its companion
+      Saint Stephen's Day (26 December) is declared inline below with the same substitute behaviour.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="IE">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="IE" />
       <Use notableDateRef="easter-monday" territory="IE" />
       <Use notableDateRef="christmas-day" territory="IE">
@@ -33,38 +60,55 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      National public holidays
+      ============================================================================================================
+    -->
+
+    <!-- Saint Stephen's Day — 26 December; a public holiday, with a substitute weekday when it falls on a weekend (any clash with Christmas Day's own substitute is reconciled by the resolution policy). Strategy: Fixed date. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Saint Brigid's Day — first Monday in February (or 1 February when it falls on a Friday, not modelled here).
+      Ireland's newest public holiday, introduced in 2023; the fromYear="2023" bound excludes earlier years.
+      Strategy: DayOfWeekInMonth (first Monday).
+    -->
     <NotableDate id="saint-brigids-day" displayName="Saint Brigid's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability fromYear="2023"><Territory code="IE" /></Applicability>
         <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint Patrick's Day — 17 March, the national patron-saint day and a public holiday, with a substitute weekday when it falls on a weekend. Strategy: Fixed date. -->
     <NotableDate id="saint-patricks-day" displayName="Saint Patrick's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
         <Strategy><Fixed month="March" day="17" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
+    <!-- May Day — first Monday in May; a public holiday. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="may-day" displayName="May Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
         <Strategy><DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- June Bank Holiday — first Monday in June; a public holiday. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="june-bank-holiday" displayName="June Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
         <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- August Bank Holiday — first Monday in August; a public holiday. Strategy: DayOfWeekInMonth (first Monday). -->
     <NotableDate id="august-bank-holiday" displayName="August Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
         <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- October Bank Holiday — last Monday in October; a public holiday. Strategy: DayOfWeekInMonth (last Monday). -->
     <NotableDate id="october-bank-holiday" displayName="October Bank Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ie"><Applicability><Territory code="IE" /></Applicability>
         <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>

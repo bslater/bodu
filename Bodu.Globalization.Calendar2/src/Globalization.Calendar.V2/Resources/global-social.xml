@@ -11,58 +11,78 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Social and humanitarian observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- World Day of Social Justice — 20 February; UN day on social justice and equity (from 2009). -->
     <NotableDate id="world-day-of-social-justice" displayName="World Day of Social Justice" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2009" /><Strategy><Fixed month="February" day="20" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of Families — 15 May; UN day on the role of families in society. -->
     <NotableDate id="international-day-of-families" displayName="International Day of Families" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="May" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day Against Homophobia, Biphobia and Transphobia (IDAHOBIT) — 17 May; marks the 1990 removal of homosexuality from the WHO disease classification (from 2005). -->
     <NotableDate id="international-day-against-homophobia-biphobia-and-transphobia" displayName="International Day Against Homophobia, Biphobia and Transphobia" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2005" /><Strategy><Fixed month="May" day="17" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Pride Month — the whole of June (30-day span); LGBTQ+ pride and history, commemorating the June 1969 Stonewall uprising. -->
     <NotableDate id="pride-month" displayName="Pride Month" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="30"><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Day Against Child Labour — 12 June; ILO day on ending child labour (from 2002). -->
     <NotableDate id="world-day-against-child-labour" displayName="World Day Against Child Labour" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2002" /><Strategy><Fixed month="June" day="12" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Refugee Day — 20 June; UN day honouring refugees worldwide. -->
     <NotableDate id="world-refugee-day" displayName="World Refugee Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="June" day="20" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Nelson Mandela International Day — 18 July; Mandela's birthday, a UN day for community service (from 2010). -->
     <NotableDate id="nelson-mandela-international-day" displayName="Nelson Mandela International Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2010" /><Strategy><Fixed month="July" day="18" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of Charity — 5 September; UN day marking the anniversary of Mother Teresa's death (from 2012). -->
     <NotableDate id="international-day-of-charity" displayName="International Day of Charity" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="September" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of Older Persons — 1 October; UN day on the rights and contributions of older people. -->
     <NotableDate id="international-day-of-older-persons" displayName="International Day of Older Persons" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of the Girl Child — 11 October; UN day on girls' rights and the challenges they face (from 2012). -->
     <NotableDate id="international-day-of-the-girl-child" displayName="International Day of the Girl Child" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2012" /><Strategy><Fixed month="October" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Kindness Day — 13 November; encourages acts of kindness (from 1998). -->
     <NotableDate id="world-kindness-day" displayName="World Kindness Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1998" /><Strategy><Fixed month="November" day="13" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Men's Day — 19 November; on men's and boys' health and wellbeing (from 1999). -->
     <NotableDate id="international-mens-day" displayName="International Men's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1999" /><Strategy><Fixed month="November" day="19" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Universal Children's Day — 20 November; UN day on children's welfare, marking the adoption of the Declaration (1959) and Convention (1989) on the Rights of the Child (from 1954). -->
     <NotableDate id="universal-childrens-day" displayName="Universal Children's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1954" /><Strategy><Fixed month="November" day="20" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Day of Persons with Disabilities — 3 December; UN day promoting the rights and inclusion of people with disabilities. -->
     <NotableDate id="international-day-of-persons-with-disabilities" displayName="International Day of Persons with Disabilities" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="3" /></Strategy></Rule></Rules>
     </NotableDate>

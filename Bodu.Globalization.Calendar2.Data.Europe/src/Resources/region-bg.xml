@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  BG notable-date resource, migrated from the v1 region-bg.xml to the v2 cookbook schema. Shared civil and Christian
-  observances are imported from the global-core and christian-western catalogues; the Orthodox Easter cycle and the
-  remaining entries are territory-local concepts defined inline.
+  Bulgaria (BG) — notable-date resource pack.
+
+  Migrated from the v1 region-bg.xml to the v2 cookbook schema. All rules are scoped to territory "BG"; Bulgaria has
+  no subdivision-specific public holidays.
+
+  How this resource is built:
+
+    * Shared civil and Christian observances (New Year's Day, Christmas Eve, Christmas Day) are IMPORTED from the
+      europe-common hub and given a BG territory scope through the import <Use> directive.
+    * Bulgaria-specific concepts and the Orthodox Easter cycle are declared INLINE below.
+
+  Easter anchor: Bulgaria is an Eastern Orthodox country, so its movable feasts derive from the ORTHODOX Easter
+  Sunday (computed by the "orthodox-easter" algorithm), not Western Easter. The Easter-derived entries each offset a
+  fixed number of days from the local "orthodox-easter-sunday" concept.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.bg">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -17,12 +36,16 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Bulgaria. New Year's Day
+      (1 January) rolls to the next working day when it falls on a weekend. Christmas Eve (24 December) and Christmas
+      Day (25 December) are the fixed-date Western feasts; Christmas Eve is re-scoped to a non-working public holiday
+      for Bulgaria. The Orthodox Easter cycle is declared inline below and does NOT derive from this hub.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="BG">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <Import resource="christian-western">
       <Use notableDateRef="christmas-eve" territory="BG" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="BG" />
     </Import>
@@ -30,56 +53,89 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Fixed civic and Christian feasts
+      ============================================================================================================
+    -->
+
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Orthodox Easter cycle (movable feasts; anchored to ORTHODOX Easter Sunday)
+      ============================================================================================================
+    -->
+
+    <!-- Good Friday — two days before Orthodox Easter Sunday (offsetDays="-2"). fromYear 1583 ties it to the Gregorian reform. -->
     <NotableDate id="good-friday" displayName="Good Friday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability fromYear="1583"><Territory code="BG" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="bg" offsetDays="-2" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Holy Saturday — one day before Orthodox Easter Sunday (offsetDays="-1"). -->
     <NotableDate id="holy-saturday" displayName="Holy Saturday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability fromYear="1583"><Territory code="BG" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="bg" offsetDays="-1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Easter Sunday — the anchor for the cycle above and below, computed by the "orthodox-easter" algorithm
+      (Julian-based paschal calculation projected onto the Gregorian calendar). Not itself a non-working public
+      holiday here (it falls on a Sunday); it exists so the offset feasts can reference it.
+    -->
     <NotableDate id="orthodox-easter-sunday" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="bg"><Applicability fromYear="1583"><Territory code="BG" /></Applicability>
         <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Orthodox Easter Monday — one day after Orthodox Easter Sunday (offsetDays="1"). -->
     <NotableDate id="orthodox-easter-monday" displayName="Orthodox Easter Monday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability fromYear="1583"><Territory code="BG" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="bg" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      National and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Liberation Day — 3 March, marking the 1878 Treaty of San Stefano. fromYear 1878 excludes earlier years. -->
     <NotableDate id="liberation-day" displayName="Liberation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability fromYear="1878"><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="March" day="3" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Saint George's Day (Day of Bravery / Bulgarian Army Day) — 6 May. Fixed date. -->
     <NotableDate id="saint-georges-day" displayName="Saint George's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="May" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Bulgarian Education and Culture and Slavonic Literature Day (Saints Cyril and Methodius) — 24 May. Fixed date. -->
     <NotableDate id="bulgarian-education-and-culture-and-slavonic-literature-day" displayName="Bulgarian Education and Culture and Slavonic Literature Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="May" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Unification Day — 6 September, marking the 1885 unification of Bulgaria. fromYear 1885 excludes earlier years. -->
     <NotableDate id="unification-day" displayName="Unification Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability fromYear="1885"><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="September" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Independence Day — 22 September, marking the 1908 declaration of independence. fromYear 1908 excludes earlier years. -->
     <NotableDate id="independence-day" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="bg"><Applicability fromYear="1908"><Territory code="BG" /></Applicability>
         <Strategy><Fixed month="September" day="22" /></Strategy></Rule></Rules>

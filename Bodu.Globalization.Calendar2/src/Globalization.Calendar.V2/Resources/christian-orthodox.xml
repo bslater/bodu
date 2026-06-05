@@ -11,77 +11,155 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Orthodox Easter anchor
+      ============================================================================================================
+    -->
+
+    <!--
+      Orthodox Easter Sunday — Pascha, the central Orthodox feast of the Resurrection and the anchor for the
+      movable feasts below. Strategy: Algorithm "orthodox-easter" (the Julian paschalion, computed on the Julian
+      calendar and projected onto the civil Gregorian year). Bounded fromYear="1583" because the projection is
+      defined only from the Gregorian reform onward.
+    -->
     <NotableDate id="orthodox-easter-sunday" displayName="Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Fixed-date feasts (Christmas and Theophany cycle)
+      ============================================================================================================
+      These fall on fixed Gregorian dates because the Old-Calendar Orthodox churches keep the Julian calendar,
+      whose 25 December / 6 January feasts land on 7 January / 19 January in the current Gregorian era. The dates
+      are stored as their Gregorian equivalents directly.
+    -->
+
+    <!-- Orthodox Christmas Eve — 6 January, the eve of Old-Calendar Nativity. Strategy: Fixed day-of-month. -->
     <NotableDate id="orthodox-christmas-eve" displayName="Orthodox Christmas Eve" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Orthodox Christmas Day — 7 January, the Julian 25 December Nativity in the Gregorian era. Strategy: Fixed day-of-month. -->
     <NotableDate id="orthodox-christmas-day" displayName="Orthodox Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Orthodox New Year — 14 January, the Julian 1 January ("Old New Year") in the Gregorian era. Strategy: Fixed day-of-month. -->
     <NotableDate id="orthodox-new-year" displayName="Orthodox New Year" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Orthodox Epiphany — 19 January, Theophany; the Julian 6 January feast in the Gregorian era. Strategy: Fixed day-of-month. -->
     <NotableDate id="orthodox-epiphany" displayName="Orthodox Epiphany" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="January" day="19" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      Easter-derived movable feasts
+      ============================================================================================================
+      Every date below is positioned relative to Orthodox Easter Sunday and moves with it each year. All are
+      bounded fromYear="1583" to match the anchor's validity window.
+    -->
+
+    <!--
+      Orthodox Clean Monday — the first day of Great Lent, opening Orthodox Holy Week season. Strategy:
+      OffsetFromRule, 48 days before Orthodox Easter Sunday (offsetDays="-48").
+    -->
     <NotableDate id="orthodox-clean-monday" displayName="Orthodox Clean Monday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-48" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Lazarus Saturday — the Saturday before Palm Sunday, commemorating the raising of Lazarus. Strategy:
+      OffsetFromRule, eight days before Orthodox Easter Sunday (offsetDays="-8").
+    -->
     <NotableDate id="orthodox-lazarus-saturday" displayName="Orthodox Lazarus Saturday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Palm Sunday — the Sunday before Pascha, commemorating the entry into Jerusalem. Strategy:
+      OffsetFromRule, seven days before Orthodox Easter Sunday (offsetDays="-7").
+    -->
     <NotableDate id="orthodox-palm-sunday" displayName="Orthodox Palm Sunday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-7" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Holy Thursday — Great Thursday of Holy Week, commemorating the Last Supper. Strategy: OffsetFromRule,
+      three days before Orthodox Easter Sunday (offsetDays="-3").
+    -->
     <NotableDate id="orthodox-holy-thursday" displayName="Orthodox Holy Thursday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-3" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Good Friday — Great Friday, commemorating the Crucifixion. Strategy: OffsetFromRule, two days before
+      Orthodox Easter Sunday (offsetDays="-2").
+    -->
     <NotableDate id="orthodox-good-friday" displayName="Orthodox Good Friday" category="PublicHoliday" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Holy Saturday — Great Saturday, the eve of Pascha. Strategy: OffsetFromRule, one day before Orthodox
+      Easter Sunday (offsetDays="-1").
+    -->
     <NotableDate id="orthodox-holy-saturday" displayName="Orthodox Holy Saturday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="-1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Bright Week — the seven-day festival week beginning on Pascha. Strategy: OffsetFromRule, zero days
+      from Orthodox Easter Sunday (offsetDays="0"), so the span starts on Pascha itself; durationDays="7" makes it a
+      seven-day observance (Pascha plus the next six days).
+    -->
     <NotableDate id="orthodox-bright-week" displayName="Orthodox Bright Week" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="0" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Easter Monday — Bright Monday, the day after Pascha. Strategy: OffsetFromRule, one day after Orthodox
+      Easter Sunday (offsetDays="1").
+    -->
     <NotableDate id="orthodox-easter-monday" displayName="Orthodox Easter Monday" category="PublicHoliday" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Ascension Day — the fortieth day of Pascha. Strategy: OffsetFromRule, 39 days after Orthodox Easter
+      Sunday (offsetDays="39").
+    -->
     <NotableDate id="orthodox-ascension-day" displayName="Orthodox Ascension Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Pentecost — the fiftieth day of Pascha, commemorating the descent of the Holy Spirit. Strategy:
+      OffsetFromRule, 49 days after Orthodox Easter Sunday (offsetDays="49").
+    -->
     <NotableDate id="orthodox-pentecost" displayName="Orthodox Pentecost" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="49" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      Orthodox Pentecost Monday — Monday of the Holy Spirit, the day after Pentecost. Strategy: OffsetFromRule,
+      50 days after Orthodox Easter Sunday (offsetDays="50").
+    -->
     <NotableDate id="orthodox-pentecost-monday" displayName="Orthodox Pentecost Monday" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1583" />
         <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>

@@ -11,10 +11,12 @@
 
   <NotableDates>
 
+    <!-- Mother's Day — second Sunday in May (the most widely observed form; regional variants live in territory packs). -->
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Father's Day — third Sunday in June (the most widely observed form; Australia/NZ and others use different dates in their territory packs). -->
     <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
     </NotableDate>

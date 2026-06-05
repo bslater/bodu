@@ -11,22 +11,33 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Education, literacy, and knowledge observances, ordered by date through the year
+      ============================================================================================================
+    -->
+
+    <!-- International Day of Education — 24 January; UN day on the role of education for peace and development (from 2019). -->
     <NotableDate id="international-day-of-education" displayName="International Day of Education" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2019" /><Strategy><Fixed month="January" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Book and Copyright Day — 23 April; UNESCO day on books and reading, chosen for its literary anniversaries (death dates of Cervantes and Shakespeare). -->
     <NotableDate id="world-book-and-copyright-day" displayName="World Book and Copyright Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- International Literacy Day — 8 September; UNESCO day promoting literacy. -->
     <NotableDate id="international-literacy-day" displayName="International Literacy Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="September" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- World Teachers' Day — 5 October; UNESCO day marking the 1966 recommendation on the status of teachers (some countries, including Australia, observe it on a different date in their own packs). -->
     <NotableDate id="world-teachers-day" displayName="World Teachers' Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="October" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Safer Internet Day — second Tuesday in February (not a fixed date); promotes safe and responsible use of online technology (from 2004). -->
     <NotableDate id="safer-internet-day" displayName="Safer Internet Day" category="Observance" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="2004" /><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Tuesday" weekOrdinal="Second" /></Strategy></Rule></Rules>
     </NotableDate>
