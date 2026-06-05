@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  SI notable-date resource, migrated from the v1 region-si.xml to the v2 cookbook schema. Shared civil and Christian
-  observances are imported from the global-core and christian-western catalogues; the remaining entries are
-  territory-local concepts defined inline.
+  Slovenia (SI) — notable-date resource pack.
+
+  Migrated from the v1 region-si.xml to the v2 cookbook schema. All rules are scoped to territory "SI"; Slovenia has
+  no subdivision-specific public holidays.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Easter Monday, Whit Sunday,
+      Christmas Day) are IMPORTED from the global-core and christian-western catalogues and given an SI territory
+      scope through the import <Use> directive. The movable feasts (Easter Monday, Whit Sunday) derive from the
+      WESTERN Easter Sunday anchor in the shared catalogue.
+    * Slovenia-specific national, cultural, and civic days are declared INLINE below as fixed dates.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.si">
 
+  <!--
+    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
+    every distinct occurrence that lands on a shared day.
+  -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 
   <AdjustmentPolicies>
+    <!--
+      Plain weekend roll: when the actual date falls on a weekend, observe it on the next working day. Applied here
+      only to the imported New Year's Day.
+    -->
     <AdjustmentPolicy id="weekend-roll" priority="100">
       <Trigger type="IfWeekend" />
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="false" maxSearchDays="7" />
@@ -17,11 +34,17 @@
   </AdjustmentPolicies>
 
   <Imports>
+    <!-- Civil core. New Year's Day (1 January), with a weekend roll to the next working day. -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" territory="SI">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
     </Import>
+    <!--
+      Western Christian feasts. Easter Monday derives from the Easter Sunday anchor and Whit Sunday falls 49 days
+      after it (both OffsetFromRule strategies in the shared catalogue). Christmas Day is imported with its shared
+      fixed-date strategy.
+    -->
     <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="SI" />
       <Use notableDateRef="easter-monday" territory="SI" />
@@ -32,51 +55,73 @@
 
   <NotableDates>
 
+    <!--
+      ============================================================================================================
+      Fixed civic and Christian feasts
+      ============================================================================================================
+    -->
+
+    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date; observed alongside the Labour Day Holiday on 2 May. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Assumption of Mary — 15 August. Fixed date. -->
     <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Day of Remembrance of the Dead (All Saints' Day) — 1 November. Fixed date. -->
     <NotableDate id="day-of-remembrance-of-the-dead" displayName="Day of Remembrance of the Dead" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="November" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- New Year Holiday — 2 January. Fixed date; the second day of the New Year holiday. -->
     <NotableDate id="new-year-holiday" displayName="New Year Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="January" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!--
+      ============================================================================================================
+      National, cultural, and civic days (fixed dates with historical year bounds)
+      ============================================================================================================
+    -->
+
+    <!-- Prešeren Day (Slovenian Cultural Holiday) — 8 February, marking the 1849 death of the poet France Prešeren. Fixed date. -->
     <NotableDate id="pre-eren-day" displayName="Prešeren Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="February" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Day of Uprising Against Occupation — 27 April, marking the 1941 founding of the Liberation Front. fromYear 1941 excludes earlier years. -->
     <NotableDate id="day-of-uprising-against-occupation" displayName="Day of Uprising Against Occupation" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability fromYear="1941"><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="April" day="27" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Labour Day Holiday — 2 May. Fixed date; the second day of the Labour Day public holidays. -->
     <NotableDate id="labour-day-holiday" displayName="Labour Day Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="May" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Statehood Day — 25 June, marking the 1991 declaration of Slovenian independence. fromYear 1991 excludes earlier years. -->
     <NotableDate id="statehood-day" displayName="Statehood Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability fromYear="1991"><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="June" day="25" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Reformation Day — 31 October, commemorating the Protestant Reformation and its role in Slovenian literacy. Fixed date. -->
     <NotableDate id="reformation-day" displayName="Reformation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Independence and Unity Day — 26 December, marking the 1990 plebiscite on independence. fromYear 1990 excludes earlier years. -->
     <NotableDate id="independence-and-unity-day" displayName="Independence and Unity Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability fromYear="1990"><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
