@@ -8,9 +8,9 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given an NL territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances are IMPORTED from the europe-common hub and given an NL territory scope through the
+      import <Use> directive. The hub carries the catalogue calculation strategy; the territory supplies the local
+      observance.
 
     * Netherlands-specific concepts (Second Day of Christmas, King's Day, and Liberation Day) are declared INLINE
       below.
@@ -41,20 +41,16 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to the Netherlands. New Year's Day
+      (1 January) takes a weekend roll to the next working day. Good Friday (-2), Easter Monday (+1), Ascension
+      (+39), Whit Sunday (+49), and Whit Monday (+50) derive from the Easter Sunday anchor the hub re-exports. Good
+      Friday is re-scoped to a non-working Observance because it is not a statutory day off in the Netherlands;
+      Ascension and the Whit days are nationwide public holidays. Christmas Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="NL">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday (-2), Easter Monday (+1), Ascension (+39), Whit Sunday (+49), and Whit
-      Monday (+50) derive from the Easter Sunday anchor in the shared catalogue. Good Friday is re-scoped to a
-      non-working Observance because it is not a statutory day off in the Netherlands; Ascension and the Whit days
-      are nationwide public holidays. Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="NL" />
       <Use notableDateRef="good-friday" territory="NL" category="Observance" nonWorking="false" />
       <Use notableDateRef="easter-monday" territory="NL" />

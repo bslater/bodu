@@ -8,9 +8,9 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given an FI territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances are IMPORTED from the europe-common hub and given an FI territory scope through the
+      import <Use> directive. The shared catalogue carries only the bare calculation strategy; the territory supplies
+      the local observance.
 
     * Finland-specific concepts (Epiphany, May Day, Saint Stephen's Day, Midsummer Day, All Saints' Day, and
       Independence Day) are declared INLINE below. Note that Finnish Midsummer and All Saints' float to a Saturday,
@@ -40,20 +40,16 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Finland. New Year's Day (1
+      January) carries a weekend roll to the next working day. Good Friday (-2), Easter Monday (+1), Ascension
+      (+39), and Whit Sunday (+49) derive from the Easter Sunday anchor the hub re-exports. Ascension and Christmas
+      Eve (24 December) are re-scoped to non-working public holidays; Christmas Eve is effectively the principal
+      Finnish Christmas day off. Christmas Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="FI">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday (-2), Easter Monday (+1), Ascension (+39), and Whit Sunday (+49) derive
-      from the Easter Sunday anchor in the shared catalogue. Ascension and Christmas Eve (24 December) are re-scoped
-      to non-working public holidays; Christmas Eve is effectively the principal Finnish Christmas day off.
-      Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="FI" />
       <Use notableDateRef="good-friday" territory="FI" />
       <Use notableDateRef="easter-monday" territory="FI" />

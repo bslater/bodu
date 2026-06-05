@@ -9,12 +9,13 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given a PT territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances — including the common Catholic feasts (the Assumption and the Immaculate
+      Conception) — are IMPORTED from the europe-common hub and given a PT territory scope through the import
+      <Use> directive. The hub carries the resolved calculation strategy; the territory supplies the local
+      observance.
 
-    * Portugal-specific concepts (Labour Day, Assumption, Immaculate Conception, Freedom Day, Portugal Day,
-      Republic Day, and the Restoration of Independence) are declared INLINE below.
+    * Portugal-specific concepts (Labour Day, Freedom Day, Portugal Day, Republic Day, and the Restoration of
+      Independence) are declared INLINE below.
 
   Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
@@ -40,23 +41,22 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Portugal. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend. Good Friday (-2) and Corpus Christi (+60)
+      derive from the Easter Sunday anchor the hub re-exports. Corpus Christi and All Saints' (1 November) are
+      re-scoped to non-working public holidays. The Assumption (15 August) and Immaculate Conception (8 December)
+      are the common Catholic feasts the hub defines inline. Christmas Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="PT">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday (-2) and Corpus Christi (+60) derive from the Easter Sunday anchor in
-      the shared catalogue. Corpus Christi and All Saints' (1 November) are re-scoped to non-working public
-      holidays. Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="PT" />
       <Use notableDateRef="good-friday" territory="PT" />
       <Use notableDateRef="corpus-christi" territory="PT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="assumption-of-mary" territory="PT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="all-saints-day" territory="PT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="PT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="PT" />
     </Import>
   </Imports>
@@ -73,18 +73,6 @@
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Assumption of Mary (Assunção de Nossa Senhora) — 15 August, a Marian feast; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
-        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Immaculate Conception (Imaculada Conceição) — 8 December, a Marian feast and Portugal's patroness; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="pt"><Applicability><Territory code="PT" /></Applicability>
-        <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Freedom Day (Dia da Liberdade) — 25 April, marking the 1974 Carnation Revolution. The fromYear="1974" bound excludes earlier years. Strategy: Fixed date. -->

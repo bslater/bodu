@@ -7,8 +7,8 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances (New Year's Day, Christmas Day) are IMPORTED from the global-core and
-      christian-western catalogues and given an RO territory scope through the import <Use> directive.
+    * Shared civil and Christian observances (New Year's Day, Christmas Day) are IMPORTED from the europe-common hub
+      and given an RO territory scope through the import <Use> directive.
     * Romania-specific concepts and the Orthodox Easter cycle are declared INLINE below.
 
   Easter anchor: Romania is predominantly Eastern Orthodox, so its movable feasts (Good Friday, Easter Monday,
@@ -38,14 +38,15 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <!-- Civil core. New Year's Day (1 January), with a weekend roll to the next working day. -->
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Romania. New Year's Day
+      (1 January) rolls to the next working day when it falls on a weekend; Christmas Day (25 December) is the
+      fixed-date Western feast. The Orthodox Easter cycle is declared inline below and does NOT derive from this hub.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="RO">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!-- Christian feast. Christmas Day (25 December), imported with its shared fixed-date strategy. -->
-    <Import resource="christian-western">
       <Use notableDateRef="christmas-day" territory="RO" />
     </Import>
   </Imports>

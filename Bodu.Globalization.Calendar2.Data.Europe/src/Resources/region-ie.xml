@@ -8,9 +8,9 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given an IE territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared civil and Christian observances are IMPORTED from the europe-common hub and given an IE territory scope
+      through the import <Use> directive. The hub carries only the bare calculation strategy; the territory supplies
+      the local observance.
 
     * Ireland-specific concepts (Saint Stephen's Day, Saint Brigid's Day, Saint Patrick's Day, and the monthly bank
       holidays) are declared INLINE below.
@@ -41,19 +41,15 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Ireland. New Year's Day
+      (1 January) takes a weekend roll to the next working day. Easter Monday (+1) derives from the Easter Sunday
+      anchor the hub re-exports. Christmas Day (25 December) is fixed and takes the weekend roll; its companion
+      Saint Stephen's Day (26 December) is declared inline below with the same substitute behaviour.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="IE">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday (+1) derives from the Easter Sunday anchor in the shared catalogue.
-      Christmas Day (25 December) is fixed and takes the weekend roll; its companion Saint Stephen's Day (26
-      December) is declared inline below with the same substitute behaviour.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="IE" />
       <Use notableDateRef="easter-monday" territory="IE" />
       <Use notableDateRef="christmas-day" territory="IE">

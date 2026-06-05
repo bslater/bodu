@@ -8,12 +8,13 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western), re-scoped to the Austrian public-holiday set through the import <Use> directive. The
-      shared catalogue carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances are IMPORTED from the europe-common hub, re-scoped to the Austrian public-holiday
+      set through the import <Use> directive. The hub carries the catalogue calculation strategy; the territory
+      supplies the local observance. The Assumption (15 August) and Immaculate Conception (8 December) are
+      re-exported by the hub and scoped here as Austrian public holidays rather than re-declared inline.
 
-    * Austria-specific concepts (Epiphany, State Holiday, Assumption, the National Day, Immaculate Conception, and
-      Saint Stephen's Day) are declared INLINE below.
+    * Austria-specific concepts (Epiphany, State Holiday, the National Day, and Saint Stephen's Day) are declared
+      INLINE below.
 
   Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
@@ -39,26 +40,25 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Austria. New Year's Day
+      (1 January) takes a weekend roll to the next working day. Easter Monday (+1), Ascension (+39), Whit Monday
+      (+50), and Corpus Christi (+60) derive from the Easter Sunday anchor the hub re-exports. Ascension, Corpus
+      Christi, and All Saints' (1 November) are re-scoped to non-working public holidays, all statutory across
+      Austria; the Assumption (15 August) and Immaculate Conception (8 December) are re-exported by the hub and
+      scoped here as Austrian public holidays. Christmas Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="AT">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday (+1), Ascension (+39), Whit Monday (+50), and Corpus Christi (+60)
-      derive from the Easter Sunday anchor in the shared catalogue. Ascension, Corpus Christi, and All Saints'
-      (1 November) are re-scoped to non-working public holidays, all of which are statutory across Austria.
-      Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="AT" />
       <Use notableDateRef="easter-monday" territory="AT" />
       <Use notableDateRef="ascension-day" territory="AT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="whit-monday" territory="AT" />
       <Use notableDateRef="corpus-christi" territory="AT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="all-saints-day" territory="AT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="assumption-of-mary" territory="AT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="AT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="AT" />
     </Import>
   </Imports>
@@ -81,18 +81,6 @@
     <NotableDate id="state-holiday" displayName="State Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Assumption of Mary (Mariä Himmelfahrt) — 15 August, a Marian feast; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
-        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Immaculate Conception (Mariä Empfängnis) — 8 December, a Marian feast; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
-        <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Saint Stephen's Day (Stefanitag) — 26 December; a public holiday. Strategy: Fixed date. -->

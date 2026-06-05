@@ -8,9 +8,9 @@
   How this resource is built:
 
     * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Good Friday, Whit Sunday,
-      Christmas Eve, Christmas Day) are IMPORTED from the global-core and christian-western catalogues and given an
-      EE territory scope through the import <Use> directive. The Easter-derived feasts (Good Friday, Whit Sunday)
-      derive from the WESTERN Easter Sunday anchor in the shared catalogue.
+      Christmas Eve, Christmas Day) are IMPORTED from the europe-common hub and given an EE territory scope through
+      the import <Use> directive. The Easter-derived feasts (Good Friday, Whit Sunday) derive from the WESTERN Easter
+      Sunday anchor the hub re-exports.
     * Estonia-specific national, seasonal, and civic days are declared INLINE below as fixed dates.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ee">
@@ -34,18 +34,16 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <!-- Civil core. New Year's Day (1 January), with a weekend roll to the next working day. -->
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Estonia. New Year's Day (1
+      January) carries a weekend roll to the next working day. Good Friday and Whit Sunday derive from the Easter
+      Sunday anchor (an OffsetFromRule strategy the hub re-exports). Christmas Eve is re-scoped to a non-working
+      public holiday for Estonia; Christmas Day is imported with its shared fixed-date strategy.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="EE">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday and Whit Sunday derive from the Easter Sunday anchor (an OffsetFromRule
-      strategy in the shared catalogue). Christmas Eve is re-scoped to a non-working public holiday for Estonia;
-      Christmas Day is imported with its shared fixed-date strategy.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="EE" />
       <Use notableDateRef="good-friday" territory="EE" />
       <Use notableDateRef="whit-sunday" territory="EE" />

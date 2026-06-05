@@ -7,11 +7,11 @@
 
   How this resource is built:
 
-    * Shared civil and Western Christian observances (New Year's Day, Workers' Day, Easter Sunday, Good Friday,
-      Christmas Day) are IMPORTED from the global-core and christian-western catalogues and given an MT territory
-      scope through the import <Use> directive. Good Friday derives from the WESTERN Easter Sunday anchor in the
-      shared catalogue.
-    * Malta-specific Catholic feasts and national days are declared INLINE below as fixed dates.
+    * Shared European observances — including the common Catholic feast of the Immaculate Conception — are
+      IMPORTED from the europe-common hub and given an MT territory scope through the import <Use> directive. Good
+      Friday derives from the WESTERN Easter Sunday anchor the hub re-exports.
+    * Malta-specific Catholic feasts and national days are declared INLINE below as fixed dates. The Assumption
+      keeps its localized Maltese name (Santa Marija), so it stays inline rather than importing the hub's concept.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.mt">
 
@@ -35,22 +35,20 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January), with a weekend roll to the next working day. Workers' Day (1 May) is
-      imported with its shared fixed-date strategy.
+      Shared European observances, imported from the europe-common hub and scoped to Malta. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend; Workers' Day (1 May) and Christmas Day (25
+      December) carry their shared fixed-date strategy. Good Friday (-2) derives from the WESTERN Easter Sunday
+      anchor the hub re-exports. The Immaculate Conception (8 December) is one of the common Catholic feasts the hub
+      defines inline. (The Assumption is declared inline below under its Maltese name, Santa Marija.)
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="MT">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
       <Use notableDateRef="workers-day" territory="MT" />
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday derives from the Easter Sunday anchor (an OffsetFromRule strategy in the
-      shared catalogue). Christmas Day is imported with its shared fixed-date strategy.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="MT" />
       <Use notableDateRef="good-friday" territory="MT" />
+      <Use notableDateRef="immaculate-conception" territory="MT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="MT" />
     </Import>
   </Imports>
@@ -67,12 +65,6 @@
     <NotableDate id="feast-of-the-assumption-santa-marija" displayName="Feast of the Assumption (Santa Marija)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
         <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Immaculate Conception — 8 December. Fixed date. -->
-    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="mt"><Applicability><Territory code="MT" /></Applicability>
-        <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Feast of Saint Paul's Shipwreck — 10 February, commemorating the apostle's shipwreck on Malta. Fixed date. -->

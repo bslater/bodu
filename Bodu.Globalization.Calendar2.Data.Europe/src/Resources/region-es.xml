@@ -9,12 +9,13 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given an ES territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances — including the common Catholic feasts (the Assumption and the Immaculate
+      Conception) — are IMPORTED from the europe-common hub and given an ES territory scope through the import
+      <Use> directive. The hub carries the resolved calculation strategy; the territory supplies the local
+      observance.
 
-    * Spain-specific concepts (Epiphany, Labour Day, Assumption, the National Day, Constitution Day, and the
-      Immaculate Conception) are declared INLINE below.
+    * Spain-specific concepts (Epiphany, Labour Day, the National Day, and Constitution Day) are declared INLINE
+      below.
 
   Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
   Note that Easter Monday is observed only in some communities (e.g. Catalonia) and is therefore not imported here;
@@ -42,22 +43,21 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Spain. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend. Good Friday (-2, Viernes Santo) derives
+      from the Easter Sunday anchor the hub re-exports and is the nationwide Holy Week holiday. All Saints' (1
+      November) is re-scoped to a non-working public holiday. The Assumption (15 August) and Immaculate Conception
+      (8 December) are the common Catholic feasts the hub defines inline. Christmas Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="ES">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday (-2, Viernes Santo) derives from the Easter Sunday anchor in the shared
-      catalogue and is the nationwide Holy Week holiday. All Saints' (1 November) is re-scoped to a non-working
-      public holiday. Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="ES" />
       <Use notableDateRef="good-friday" territory="ES" />
+      <Use notableDateRef="assumption-of-mary" territory="ES" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="all-saints-day" territory="ES" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="ES" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="ES" />
     </Import>
   </Imports>
@@ -82,12 +82,6 @@
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Assumption of Mary (Asunción) — 15 August, a Marian feast; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
-        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
-    </NotableDate>
-
     <!-- National Day of Spain (Fiesta Nacional / Día de la Hispanidad) — 12 October; the national day and a public holiday. Strategy: Fixed date. -->
     <NotableDate id="national-day-of-spain" displayName="National Day of Spain" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
@@ -98,12 +92,6 @@
     <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
         <Strategy><Fixed month="December" day="6" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Immaculate Conception (Inmaculada Concepción) — 8 December, a Marian feast; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="es"><Applicability><Territory code="ES" /></Applicability>
-        <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

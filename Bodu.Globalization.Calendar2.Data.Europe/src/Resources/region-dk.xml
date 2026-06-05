@@ -8,9 +8,9 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given a DK territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances are IMPORTED from the europe-common hub and given a DK territory scope through the
+      import <Use> directive. Maundy Thursday is not carried by the hub, so it is imported from christian-western.
+      The shared catalogue carries only the bare calculation strategy; the territory supplies the local observance.
 
     * Denmark-specific concepts (Second Day of Christmas and Constitution Day) are declared INLINE below.
 
@@ -41,28 +41,31 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Denmark. New Year's Day (1
+      January) carries a weekend roll to the next working day. Good Friday (-2), Easter Monday (+1), Ascension
+      (+39), Whit Sunday (+49), and Whit Monday (+50) derive from the Easter Sunday anchor the hub re-exports.
+      Ascension is re-scoped to a non-working public holiday; the rest are statutory days off in Denmark. Christmas
+      Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="DK">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Maundy Thursday (-3), Good Friday (-2), Easter Monday (+1), Ascension (+39), Whit
-      Sunday (+49), and Whit Monday (+50) derive from the Easter Sunday anchor in the shared catalogue. Maundy
-      Thursday and Ascension are re-scoped to non-working public holidays; the rest are statutory days off in
-      Denmark. Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="DK" />
       <Use notableDateRef="good-friday" territory="DK" />
       <Use notableDateRef="easter-monday" territory="DK" />
       <Use notableDateRef="ascension-day" territory="DK" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="whit-sunday" territory="DK" />
       <Use notableDateRef="whit-monday" territory="DK" />
-      <Use notableDateRef="maundy-thursday" territory="DK" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="DK" />
+    </Import>
+    <!--
+      Maundy Thursday (-3) is not carried by the europe-common hub, so it is imported from christian-western and
+      derives from the Easter Sunday anchor in the shared catalogue. It is re-scoped to a non-working public
+      holiday in Denmark.
+    -->
+    <Import resource="christian-western">
+      <Use notableDateRef="maundy-thursday" territory="DK" category="PublicHoliday" nonWorking="true" />
     </Import>
   </Imports>
 

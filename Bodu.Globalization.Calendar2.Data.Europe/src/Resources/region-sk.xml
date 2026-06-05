@@ -8,9 +8,8 @@
   How this resource is built:
 
     * Shared Western Christian feasts (Easter Sunday, Good Friday, Easter Monday, All Saints' Day, Christmas Eve,
-      Christmas Day) are IMPORTED from the christian-western catalogue and given an SK territory scope through the
-      import <Use> directive. Good Friday and Easter Monday derive from the WESTERN Easter Sunday anchor in the
-      shared catalogue.
+      Christmas Day) are IMPORTED from the europe-common hub and given an SK territory scope through the import
+      <Use> directive. Good Friday and Easter Monday derive from the WESTERN Easter Sunday anchor the hub re-exports.
     * Slovakia-specific national and Catholic feast days are declared INLINE below as fixed dates.
 
   Note: New Year's Day is not imported from global-core here because Slovakia observes 1 January under its own name
@@ -38,11 +37,12 @@
 
   <Imports>
     <!--
-      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (OffsetFromRule
-      strategies in the shared catalogue). All Saints' Day and Christmas Eve are re-scoped to non-working public
-      holidays for Slovakia; Christmas Day is imported with its shared fixed-date strategy.
+      Shared European observances, imported from the europe-common hub and scoped to Slovakia. Good Friday and Easter
+      Monday derive from the Easter Sunday anchor (OffsetFromRule strategies the hub re-exports). All Saints' Day and
+      Christmas Eve are re-scoped to non-working public holidays for Slovakia; Christmas Day is imported with its
+      shared fixed-date strategy.
     -->
-    <Import resource="christian-western">
+    <Import resource="europe-common">
       <Use notableDateRef="easter-sunday" territory="SK" />
       <Use notableDateRef="good-friday" territory="SK" />
       <Use notableDateRef="easter-monday" territory="SK" />

@@ -8,9 +8,9 @@
   How this resource is built:
 
     * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Easter Monday, Whit Sunday,
-      Christmas Day) are IMPORTED from the global-core and christian-western catalogues and given an SI territory
-      scope through the import <Use> directive. The movable feasts (Easter Monday, Whit Sunday) derive from the
-      WESTERN Easter Sunday anchor in the shared catalogue.
+      the Assumption of Mary, Christmas Day) are IMPORTED from the europe-common hub and given an SI territory scope
+      through the import <Use> directive. The movable feasts (Easter Monday, Whit Sunday) derive from the WESTERN
+      Easter Sunday anchor the hub re-exports.
     * Slovenia-specific national, cultural, and civic days are declared INLINE below as fixed dates.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.si">
@@ -34,21 +34,20 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <!-- Civil core. New Year's Day (1 January), with a weekend roll to the next working day. -->
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Slovenia. New Year's Day
+      (1 January) carries a weekend roll to the next working day. Easter Monday derives from the Easter Sunday anchor
+      and Whit Sunday falls 49 days after it (both OffsetFromRule strategies the hub re-exports). The Assumption
+      (15 August) is a non-working public holiday; Christmas Day is imported with its shared fixed-date strategy.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="SI">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday derives from the Easter Sunday anchor and Whit Sunday falls 49 days
-      after it (both OffsetFromRule strategies in the shared catalogue). Christmas Day is imported with its shared
-      fixed-date strategy.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="SI" />
       <Use notableDateRef="easter-monday" territory="SI" />
       <Use notableDateRef="whit-sunday" territory="SI" />
+      <Use notableDateRef="assumption-of-mary" territory="SI" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="SI" />
     </Import>
   </Imports>
@@ -65,12 +64,6 @@
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Assumption of Mary — 15 August. Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="si"><Applicability><Territory code="SI" /></Applicability>
-        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Day of Remembrance of the Dead (All Saints' Day) — 1 November. Fixed date. -->

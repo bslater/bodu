@@ -7,10 +7,10 @@
 
   How this resource is built:
 
-    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Easter Monday, All Saints' Day,
-      Christmas Eve, Christmas Day) are IMPORTED from the global-core and christian-western catalogues and given an LT
+    * Shared civil and Western Christian observances (New Year's Day, Easter Sunday, Easter Monday, the Assumption of
+      Mary, All Saints' Day, Christmas Eve, Christmas Day) are IMPORTED from the europe-common hub and given an LT
       territory scope through the import <Use> directive. Easter Monday derives from the WESTERN Easter Sunday anchor
-      in the shared catalogue.
+      the hub re-exports.
     * Lithuania-specific national, religious, and seasonal days are declared INLINE below as fixed dates.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.lt">
@@ -34,20 +34,20 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <!-- Civil core. New Year's Day (1 January), with a weekend roll to the next working day. -->
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Lithuania. New Year's Day (1
+      January) carries a weekend roll to the next working day. Easter Monday derives from the Easter Sunday anchor (an
+      OffsetFromRule strategy the hub re-exports). All Saints' Day and Christmas Eve are re-scoped to non-working
+      public holidays for Lithuania; Christmas Day is imported with its shared fixed-date strategy. The Assumption of
+      Mary (15 August) is cherry-picked from the hub as a non-working public holiday rather than re-declared inline.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="LT">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday derives from the Easter Sunday anchor (an OffsetFromRule strategy in the
-      shared catalogue). All Saints' Day and Christmas Eve are re-scoped to non-working public holidays for Lithuania;
-      Christmas Day is imported with its shared fixed-date strategy.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="LT" />
       <Use notableDateRef="easter-monday" territory="LT" />
+      <Use notableDateRef="assumption-of-mary" territory="LT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="all-saints-day" territory="LT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-eve" territory="LT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="LT" />
@@ -66,12 +66,6 @@
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Assumption of Mary — 15 August. Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
-        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- All Souls' Day (Day of the Dead) — 2 November, the day after All Saints' Day. Fixed date. -->

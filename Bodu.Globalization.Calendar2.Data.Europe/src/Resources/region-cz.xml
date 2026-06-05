@@ -8,9 +8,8 @@
   How this resource is built:
 
     * Shared Western Christian feasts (Easter Sunday, Good Friday, Easter Monday, Christmas Eve, Christmas Day) are
-      IMPORTED from the christian-western catalogue and given a CZ territory scope through the import <Use> directive.
-      Good Friday, Easter Sunday, and Easter Monday derive from the WESTERN Easter Sunday anchor in the shared
-      catalogue.
+      IMPORTED from the europe-common hub and given a CZ territory scope through the import <Use> directive. Good
+      Friday, Easter Sunday, and Easter Monday derive from the WESTERN Easter Sunday anchor the hub re-exports.
     * Czech-specific national and civic days are declared INLINE below as fixed dates.
 
   Note: New Year's Day is not imported from global-core here because the Czech Republic observes 1 January under its
@@ -38,11 +37,12 @@
 
   <Imports>
     <!--
-      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (an OffsetFromRule
-      strategy in the shared catalogue). Christmas Eve is re-scoped to a non-working public holiday for the Czech
-      Republic; Christmas Day is imported with its shared fixed-date strategy.
+      Shared European observances, imported from the europe-common hub and scoped to the Czech Republic. Good Friday
+      and Easter Monday derive from the Easter Sunday anchor (an OffsetFromRule strategy the hub re-exports). Christmas
+      Eve is re-scoped to a non-working public holiday for the Czech Republic; Christmas Day is imported with its
+      shared fixed-date strategy.
     -->
-    <Import resource="christian-western">
+    <Import resource="europe-common">
       <Use notableDateRef="easter-sunday" territory="CZ" />
       <Use notableDateRef="good-friday" territory="CZ" />
       <Use notableDateRef="easter-monday" territory="CZ" />

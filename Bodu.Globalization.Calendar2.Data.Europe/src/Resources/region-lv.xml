@@ -8,9 +8,9 @@
   How this resource is built:
 
     * Shared civil and Western Christian observances (New Year's Day, New Year's Eve, Easter Sunday, Good Friday,
-      Easter Monday, Christmas Eve, Christmas Day) are IMPORTED from the global-core and christian-western catalogues
-      and given an LV territory scope through the import <Use> directive. The movable feasts (Good Friday, Easter
-      Monday) derive from the WESTERN Easter Sunday anchor in the shared catalogue.
+      Easter Monday, Christmas Eve, Christmas Day) are IMPORTED from the europe-common hub and given an LV territory
+      scope through the import <Use> directive. The movable feasts (Good Friday, Easter Monday) derive from the
+      WESTERN Easter Sunday anchor the hub re-exports.
     * Latvia-specific national and seasonal days are declared INLINE below as fixed dates.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.lv">
@@ -35,21 +35,17 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January), with a weekend roll to the next working day. New Year's Eve
-      (31 December) is re-scoped to a non-working public holiday for Latvia.
+      Shared European observances, imported from the europe-common hub and scoped to Latvia. New Year's Day (1
+      January) carries a weekend roll to the next working day. New Year's Eve (31 December) is re-scoped to a
+      non-working public holiday for Latvia. Good Friday and Easter Monday derive from the Easter Sunday anchor
+      (OffsetFromRule strategies the hub re-exports). Christmas Eve is re-scoped to a non-working public holiday for
+      Latvia; Christmas Day is imported with its shared fixed-date strategy.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="LV">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
       <Use notableDateRef="new-years-eve" territory="LV" category="PublicHoliday" nonWorking="true" />
-    </Import>
-    <!--
-      Western Christian feasts. Good Friday and Easter Monday derive from the Easter Sunday anchor (OffsetFromRule
-      strategies in the shared catalogue). Christmas Eve is re-scoped to a non-working public holiday for Latvia;
-      Christmas Day is imported with its shared fixed-date strategy.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="LV" />
       <Use notableDateRef="good-friday" territory="LV" />
       <Use notableDateRef="easter-monday" territory="LV" />

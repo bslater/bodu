@@ -9,12 +9,13 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given an IT territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared European observances — including the common Catholic feast of the Immaculate Conception — are
+      IMPORTED from the europe-common hub and given an IT territory scope through the import <Use> directive. The
+      hub carries the resolved calculation strategy; the territory supplies the local observance.
 
-    * Italy-specific concepts (Epiphany, Labour Day, Ferragosto, Immaculate Conception, Saint Stephen's Day,
-      Liberation Day, and Republic Day) are declared INLINE below.
+    * Italy-specific concepts (Epiphany, Labour Day, Ferragosto, Saint Stephen's Day, Liberation Day, and Republic
+      Day) are declared INLINE below. Ferragosto (the Assumption, 15 August) keeps its localized id and display
+      name, so it stays inline rather than importing the hub's Assumption concept.
 
   Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day
   (the other Italian holidays are not rolled in this pack).
@@ -41,22 +42,21 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Italy. New Year's Day (1
+      January) rolls to the next working day when it falls on a weekend. Easter Monday (+1, Lunedì dell'Angelo)
+      derives from the Easter Sunday anchor the hub re-exports. All Saints' (1 November) is re-scoped to a
+      non-working public holiday. The Immaculate Conception (8 December) is one of the common Catholic feasts the
+      hub defines inline. Christmas Day (25 December) is fixed. (The Assumption is declared inline below under its
+      Italian name, Ferragosto.)
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="IT">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday (+1, Lunedì dell'Angelo) derives from the Easter Sunday anchor in the
-      shared catalogue. All Saints' (1 November) is re-scoped to a non-working public holiday. Christmas Day
-      (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="IT" />
       <Use notableDateRef="easter-monday" territory="IT" />
       <Use notableDateRef="all-saints-day" territory="IT" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="IT" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="IT" />
     </Import>
   </Imports>
@@ -97,12 +97,6 @@
     <NotableDate id="assumption-of-mary-ferragosto" displayName="Assumption of Mary (Ferragosto)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="it"><Applicability><Territory code="IT" /></Applicability>
         <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Immaculate Conception (Immacolata Concezione) — 8 December, a Marian feast; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="it"><Applicability><Territory code="IT" /></Applicability>
-        <Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Saint Stephen's Day (Santo Stefano) — 26 December; a public holiday. Strategy: Fixed date. -->

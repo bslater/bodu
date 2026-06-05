@@ -8,7 +8,7 @@
   How this resource is built:
 
     * Shared civil and Christian observances (New Year's Day, Christmas Eve, Christmas Day) are IMPORTED from the
-      global-core and christian-western catalogues and given a BG territory scope through the import <Use> directive.
+      europe-common hub and given a BG territory scope through the import <Use> directive.
     * Bulgaria-specific concepts and the Orthodox Easter cycle are declared INLINE below.
 
   Easter anchor: Bulgaria is an Eastern Orthodox country, so its movable feasts derive from the ORTHODOX Easter
@@ -36,17 +36,16 @@
   </AdjustmentPolicies>
 
   <Imports>
-    <!-- Civil core. New Year's Day (1 January), with a weekend roll to the next working day. -->
-    <Import resource="global-core">
+    <!--
+      Shared European observances, imported from the europe-common hub and scoped to Bulgaria. New Year's Day
+      (1 January) rolls to the next working day when it falls on a weekend. Christmas Eve (24 December) and Christmas
+      Day (25 December) are the fixed-date Western feasts; Christmas Eve is re-scoped to a non-working public holiday
+      for Bulgaria. The Orthodox Easter cycle is declared inline below and does NOT derive from this hub.
+    -->
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="BG">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Christian feasts. Christmas Eve (24 December) and Christmas Day (25 December) are fixed-date observances pulled
-      from the shared catalogue; Christmas Eve is re-scoped to a non-working public holiday for Bulgaria.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="christmas-eve" territory="BG" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="BG" />
     </Import>

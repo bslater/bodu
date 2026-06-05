@@ -8,13 +8,13 @@
 
   How this resource is built:
 
-    * Shared civil and Christian observances are IMPORTED from the common catalogues (global-core,
-      christian-western) and given a PL territory scope through the import <Use> directive. The shared catalogue
-      carries only the bare calculation strategy; the territory supplies the local observance.
+    * Shared civil and Christian observances (including the Assumption of Mary) are IMPORTED from the europe-common
+      hub and given a PL territory scope through the import <Use> directive. The shared catalogue carries only the
+      bare calculation strategy; the territory supplies the local observance.
 
-    * Poland-specific concepts (Epiphany, Labour Day, Assumption, Second Day of Christmas, Constitution Day, and
-      Independence Day) are declared INLINE below. Note that Constitution Day (3 May) and Corpus Christi sometimes
-      bracket Labour Day to form the "May long weekend" (majówka).
+    * Poland-specific concepts (Epiphany, Labour Day, Second Day of Christmas, Constitution Day, and Independence
+      Day) are declared INLINE below. Note that Constitution Day (3 May) and Corpus Christi sometimes bracket Labour
+      Day to form the "May long weekend" (majówka).
 
   Weekend substitution: a single reusable weekend-roll policy is declared below and applied only to New Year's Day.
 -->
@@ -40,24 +40,22 @@
 
   <Imports>
     <!--
-      Civil core. New Year's Day (1 January) with a weekend roll to the next working day.
+      Shared European observances, imported from the europe-common hub and scoped to Poland. New Year's Day
+      (1 January) carries a weekend roll to the next working day. Easter Monday (+1), Whit Sunday (+49, Zielone
+      Świątki), and Corpus Christi (+60, Boże Ciało) derive from the Easter Sunday anchor the hub re-exports.
+      Corpus Christi and All Saints' (1 November) are re-scoped to non-working public holidays; the Assumption
+      (15 August) is a non-working public holiday too. Christmas Day (25 December) is fixed.
     -->
-    <Import resource="global-core">
+    <Import resource="europe-common">
       <Use notableDateRef="new-years-day" territory="PL">
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments>
       </Use>
-    </Import>
-    <!--
-      Western Christian feasts. Easter Monday (+1), Whit Sunday (+49, Zielone Świątki), and Corpus Christi (+60,
-      Boże Ciało) derive from the Easter Sunday anchor in the shared catalogue. Corpus Christi and All Saints'
-      (1 November) are re-scoped to non-working public holidays. Christmas Day (25 December) is fixed.
-    -->
-    <Import resource="christian-western">
       <Use notableDateRef="easter-sunday" territory="PL" />
       <Use notableDateRef="easter-monday" territory="PL" />
       <Use notableDateRef="whit-sunday" territory="PL" />
       <Use notableDateRef="corpus-christi" territory="PL" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="all-saints-day" territory="PL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="assumption-of-mary" territory="PL" category="PublicHoliday" nonWorking="true" />
       <Use notableDateRef="christmas-day" territory="PL" />
     </Import>
   </Imports>
@@ -80,12 +78,6 @@
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="pl"><Applicability><Territory code="PL" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
-    </NotableDate>
-
-    <!-- Assumption of Mary (Wniebowzięcie NMP) — 15 August, a Marian feast that also marks Polish Armed Forces Day; a public holiday. Strategy: Fixed date. -->
-    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="PublicHoliday" defaultNonWorkingDay="true">
-      <Rules><Rule id="pl"><Applicability><Territory code="PL" /></Applicability>
-        <Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Second Day of Christmas (Drugi dzień Świąt) — 26 December; a public holiday. Strategy: Fixed date. -->
