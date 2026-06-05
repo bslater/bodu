@@ -20,16 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\region-ca.xml" />
-    <None Remove="Resources\region-us.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\region-ca.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Data.Resources.region-ca.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-us.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Data.Resources.region-us.xml</LogicalName>
+    <None Remove="Resources\*.xml" />
+    <!-- Region packs and the shared americas-common hub they import from. -->
+    <EmbeddedResource Include="Resources\*.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Data.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

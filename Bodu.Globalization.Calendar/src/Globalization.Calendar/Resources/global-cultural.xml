@@ -52,6 +52,11 @@
       <Rules><Rule id="default"><Strategy><Fixed month="May" day="4" /></Strategy></Rule></Rules>
     </NotableDate>
 
+    <!-- Cinco de Mayo — 5 May; commemorates the 1862 Mexican victory at the Battle of Puebla, widely observed as a celebration of Mexican-American culture. Strategy: Fixed day-of-month. -->
+    <NotableDate id="cinco-de-mayo" displayName="Cinco de Mayo" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="May" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!-- World Music Day (Fête de la Musique) — 21 June; originated in France (from 1982). -->
     <NotableDate id="world-music-day" displayName="World Music Day" category="Cultural" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Applicability fromYear="1982" /><Strategy><Fixed month="June" day="21" /></Strategy></Rule></Rules>
