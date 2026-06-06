@@ -24,25 +24,19 @@ public sealed class ImportBuilder
     private readonly List<ImportUseBuilder> _uses = new();
 
     /// <summary>
-    /// The name of the imported resource.
-    /// </summary>
-    private string _resource;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="ImportBuilder" /> class.
     /// </summary>
     /// <param name="resource">The name of the imported resource.</param>
     internal ImportBuilder(string resource)
     {
-        _resource = resource;
+        Resource = resource;
     }
 
     /// <summary>
     /// Gets the name of the imported resource.
     /// </summary>
     /// <returns>The resource name.</returns>
-    internal string Resource =>
-        _resource;
+    internal string Resource { get; }
 
     /// <summary>
     /// Gets the selective <c>Use</c> directives.
@@ -83,7 +77,7 @@ public sealed class ImportBuilder
     /// <returns>A new <see cref="ImportBuilder" /> carrying the same configured state.</returns>
     internal ImportBuilder Clone()
     {
-        ImportBuilder clone = new(_resource);
+        ImportBuilder clone = new(Resource);
         foreach (ImportUseBuilder use in _uses)
             clone._uses.Add(use.Clone());
 

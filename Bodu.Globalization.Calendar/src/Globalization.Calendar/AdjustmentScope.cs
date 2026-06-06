@@ -54,11 +54,11 @@ public sealed class AdjustmentScope
         ThrowHelper.ThrowIfNull(notableDateRefs);
         ThrowHelper.ThrowIfNull(ruleRefs);
 
-        Territories = territories.ToArray();
-        Calendars = calendars.ToArray();
-        Categories = categories.ToArray();
-        NotableDateRefs = notableDateRefs.ToArray();
-        RuleRefs = ruleRefs.ToArray();
+        Territories = [.. territories];
+        Calendars = [.. calendars];
+        Categories = [.. categories];
+        NotableDateRefs = [.. notableDateRefs];
+        RuleRefs = [.. ruleRefs];
         FromYear = fromYear;
         ToYear = toYear;
         OnlyYears = onlyYears?.ToArray() ?? [];

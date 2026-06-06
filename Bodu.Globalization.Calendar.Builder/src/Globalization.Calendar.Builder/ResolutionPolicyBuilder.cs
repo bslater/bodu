@@ -14,35 +14,6 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed class ResolutionPolicyBuilder
 {
-    /// <summary>
-    /// The configured duplicate-resolution policy, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private DuplicatePolicy? _duplicatePolicy;
-
-    /// <summary>
-    /// The configured same-day collision policy, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private CollisionPolicy? _sameDayCollisionPolicy;
-
-    /// <summary>
-    /// The configured span collision policy, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private CollisionPolicy? _spanCollisionPolicy;
-
-    /// <summary>
-    /// The configured priority direction, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private PriorityDirection? _priorityDirection;
-
-    /// <summary>
-    /// The configured observed-date range policy, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private ObservedDateRangePolicy? _observedDateRangePolicy;
-
-    /// <summary>
-    /// The configured working week, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private WeekPattern? _workingWeek;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResolutionPolicyBuilder" /> class with no configured values.
@@ -55,43 +26,37 @@ public sealed class ResolutionPolicyBuilder
     /// Gets the configured duplicate-resolution policy.
     /// </summary>
     /// <returns>The duplicate policy, or <see langword="null" /> when unset.</returns>
-    internal DuplicatePolicy? DuplicatePolicy =>
-        _duplicatePolicy;
+    internal DuplicatePolicy? DuplicatePolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured same-day collision policy.
     /// </summary>
     /// <returns>The same-day collision policy, or <see langword="null" /> when unset.</returns>
-    internal CollisionPolicy? SameDayCollisionPolicy =>
-        _sameDayCollisionPolicy;
+    internal CollisionPolicy? SameDayCollisionPolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured span collision policy.
     /// </summary>
     /// <returns>The span collision policy, or <see langword="null" /> when unset.</returns>
-    internal CollisionPolicy? SpanCollisionPolicy =>
-        _spanCollisionPolicy;
+    internal CollisionPolicy? SpanCollisionPolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured priority direction.
     /// </summary>
     /// <returns>The priority direction, or <see langword="null" /> when unset.</returns>
-    internal PriorityDirection? PriorityDirection =>
-        _priorityDirection;
+    internal PriorityDirection? PriorityDirection { get; private set; }
 
     /// <summary>
     /// Gets the configured observed-date range policy.
     /// </summary>
     /// <returns>The observed-date range policy, or <see langword="null" /> when unset.</returns>
-    internal ObservedDateRangePolicy? ObservedDateRangePolicy =>
-        _observedDateRangePolicy;
+    internal ObservedDateRangePolicy? ObservedDateRangePolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured working week.
     /// </summary>
     /// <returns>The working-week pattern, or <see langword="null" /> when unset.</returns>
-    internal WeekPattern? WorkingWeek =>
-        _workingWeek;
+    internal WeekPattern? WorkingWeek { get; private set; }
 
     /// <summary>
     /// Sets the policy that governs how duplicate concept definitions are reconciled.
@@ -100,7 +65,7 @@ public sealed class ResolutionPolicyBuilder
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     public ResolutionPolicyBuilder WithDuplicatePolicy(DuplicatePolicy policy)
     {
-        _duplicatePolicy = policy;
+        DuplicatePolicy = policy;
         return this;
     }
 
@@ -111,7 +76,7 @@ public sealed class ResolutionPolicyBuilder
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     public ResolutionPolicyBuilder WithSameDayCollisionPolicy(CollisionPolicy policy)
     {
-        _sameDayCollisionPolicy = policy;
+        SameDayCollisionPolicy = policy;
         return this;
     }
 
@@ -122,7 +87,7 @@ public sealed class ResolutionPolicyBuilder
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     public ResolutionPolicyBuilder WithSpanCollisionPolicy(CollisionPolicy policy)
     {
-        _spanCollisionPolicy = policy;
+        SpanCollisionPolicy = policy;
         return this;
     }
 
@@ -133,7 +98,7 @@ public sealed class ResolutionPolicyBuilder
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     public ResolutionPolicyBuilder WithPriorityDirection(PriorityDirection direction)
     {
-        _priorityDirection = direction;
+        PriorityDirection = direction;
         return this;
     }
 
@@ -144,7 +109,7 @@ public sealed class ResolutionPolicyBuilder
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     public ResolutionPolicyBuilder WithObservedDateRangePolicy(ObservedDateRangePolicy policy)
     {
-        _observedDateRangePolicy = policy;
+        ObservedDateRangePolicy = policy;
         return this;
     }
 
@@ -157,7 +122,7 @@ public sealed class ResolutionPolicyBuilder
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     public ResolutionPolicyBuilder WithWorkingWeek(WeekPattern workingWeek)
     {
-        _workingWeek = workingWeek;
+        WorkingWeek = workingWeek;
         return this;
     }
 
@@ -168,12 +133,12 @@ public sealed class ResolutionPolicyBuilder
     internal ResolutionPolicyBuilder Clone() =>
         new()
         {
-            _duplicatePolicy = _duplicatePolicy,
-            _sameDayCollisionPolicy = _sameDayCollisionPolicy,
-            _spanCollisionPolicy = _spanCollisionPolicy,
-            _priorityDirection = _priorityDirection,
-            _observedDateRangePolicy = _observedDateRangePolicy,
-            _workingWeek = _workingWeek,
+            DuplicatePolicy = DuplicatePolicy,
+            SameDayCollisionPolicy = SameDayCollisionPolicy,
+            SpanCollisionPolicy = SpanCollisionPolicy,
+            PriorityDirection = PriorityDirection,
+            ObservedDateRangePolicy = ObservedDateRangePolicy,
+            WorkingWeek = WorkingWeek,
         };
 
     /// <summary>
@@ -183,12 +148,12 @@ public sealed class ResolutionPolicyBuilder
     /// <see langword="true" /> when at least one policy value is set; otherwise, <see langword="false" />.
     /// </returns>
     internal bool HasAnyValue() =>
-        _duplicatePolicy is not null
-        || _sameDayCollisionPolicy is not null
-        || _spanCollisionPolicy is not null
-        || _priorityDirection is not null
-        || _observedDateRangePolicy is not null
-        || _workingWeek is not null;
+        DuplicatePolicy is not null
+        || SameDayCollisionPolicy is not null
+        || SpanCollisionPolicy is not null
+        || PriorityDirection is not null
+        || ObservedDateRangePolicy is not null
+        || WorkingWeek is not null;
 
     /// <summary>
     /// Sets the configured values directly when reconstructing a builder from a parsed document.
@@ -207,11 +172,11 @@ public sealed class ResolutionPolicyBuilder
         ObservedDateRangePolicy? observedDateRangePolicy,
         WeekPattern? workingWeek)
     {
-        _duplicatePolicy = duplicatePolicy;
-        _sameDayCollisionPolicy = sameDayCollisionPolicy;
-        _spanCollisionPolicy = spanCollisionPolicy;
-        _priorityDirection = priorityDirection;
-        _observedDateRangePolicy = observedDateRangePolicy;
-        _workingWeek = workingWeek;
+        DuplicatePolicy = duplicatePolicy;
+        SameDayCollisionPolicy = sameDayCollisionPolicy;
+        SpanCollisionPolicy = spanCollisionPolicy;
+        PriorityDirection = priorityDirection;
+        ObservedDateRangePolicy = observedDateRangePolicy;
+        WorkingWeek = workingWeek;
     }
 }

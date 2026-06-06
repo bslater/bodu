@@ -162,7 +162,7 @@ internal static class HinduLunarCalculator
     private static int SiderealSunSign(DateOnly date)
     {
         var ayanamsa = 23.85 + (0.0139666 * (date.Year - 2000));
-        var sidereal = ((SolarTermCalculator.SunTropicalLongitude(date) - ayanamsa) % 360.0 + 360.0) % 360.0;
+        var sidereal = (((SolarTermCalculator.SunTropicalLongitude(date) - ayanamsa) % 360.0) + 360.0) % 360.0;
 
         return (int)(sidereal / 30.0) % 12;
     }

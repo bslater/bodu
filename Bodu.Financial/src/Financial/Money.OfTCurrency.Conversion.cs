@@ -38,8 +38,10 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <param name="value">The strongly-typed money.</param>
     /// <returns>The runtime-tagged equivalent.</returns>
-    public static implicit operator Money(Money<TCurrency> value) =>
-        value.ToMoney();
+    public static implicit operator Money(Money<TCurrency> value)
+    {
+        return value.ToMoney();
+    }
 
     /// <summary>
     /// Explicitly converts a runtime-tagged <see cref="Money" /> to <see cref="Money{TCurrency}" /> when the runtime
@@ -51,8 +53,10 @@ public readonly partial struct Money<TCurrency>
     /// <paramref name="value" />'s <see cref="Money.IsoCode" /> does not match the ISO code of
     /// <typeparamref name="TCurrency" />.
     /// </exception>
-    public static explicit operator Money<TCurrency>(Money value) =>
-        value.As<TCurrency>();
+    public static explicit operator Money<TCurrency>(Money value)
+    {
+        return value.As<TCurrency>();
+    }
 
     /// <summary>
     /// Converts this amount to <typeparamref name="TTarget" /> at the supplied exchange rate, rounding the result to

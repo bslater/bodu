@@ -121,7 +121,7 @@ public sealed class AdjustmentPolicy
         Priority = priority;
         Scope = scope;
         Trigger = trigger;
-        TriggerWeekdays = triggerWeekdays.ToArray();
+        TriggerWeekdays = [.. triggerWeekdays];
         Action = action;
         ActionWeekday = actionWeekday;
         ActionDays = actionDays;

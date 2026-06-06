@@ -50,8 +50,8 @@ public sealed class NotableDateResource
         ResourceId = resourceId;
         SchemaVersion = schemaVersion;
         ResolutionPolicy = resolutionPolicy;
-        AdjustmentPolicies = adjustmentPolicies.ToArray();
-        NotableDates = notableDates.ToArray();
+        AdjustmentPolicies = [.. adjustmentPolicies];
+        NotableDates = [.. notableDates];
     }
 
     /// <summary>

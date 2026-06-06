@@ -53,8 +53,8 @@ public sealed class NotableDateDefinition
         Category = category;
         DefaultNonWorkingDay = defaultNonWorkingDay;
         DefaultDurationDays = defaultDurationDays;
-        Tags = tags.ToArray();
-        Rules = rules.ToArray();
+        Tags = [.. tags];
+        Rules = [.. rules];
     }
 
     /// <summary>

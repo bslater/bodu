@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -117,9 +117,7 @@ internal static class NotableDateDocumentParser
         if (adjustments is null)
             return null;
 
-        return adjustments.Elements(s_ns + "Adjustment")
-            .Select(adjustment => (string?)adjustment.Attribute("policyRef") ?? string.Empty)
-            .ToList();
+        return [.. adjustments.Elements(s_ns + "Adjustment").Select(adjustment => (string?)adjustment.Attribute("policyRef") ?? string.Empty)];
     }
 
     /// <summary>
@@ -454,9 +452,7 @@ internal static class NotableDateDocumentParser
         if (element is null)
             return new List<string>();
 
-        return element.Elements(s_ns + "Adjustment")
-            .Select(a => (string?)a.Attribute("policyRef") ?? string.Empty)
-            .ToList();
+        return [.. element.Elements(s_ns + "Adjustment").Select(a => (string?)a.Attribute("policyRef") ?? string.Empty)];
     }
 
     /// <summary>
@@ -469,9 +465,7 @@ internal static class NotableDateDocumentParser
         if (element is null)
             return new List<string>();
 
-        return element.Elements(s_ns + "Tag")
-            .Select(t => (string?)t.Attribute("value") ?? string.Empty)
-            .ToList();
+        return [.. element.Elements(s_ns + "Tag").Select(t => (string?)t.Attribute("value") ?? string.Empty)];
     }
 
     /// <summary>

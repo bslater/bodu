@@ -13,8 +13,10 @@ public partial struct WeekPattern
     /// </summary>
     /// <param name="pattern">The <see cref="WeekPattern" /> to convert.</param>
     /// <returns>A <see cref="byte" /> representing the selected days.</returns>
-    public static implicit operator byte(WeekPattern pattern) =>
-        pattern._selectedDays;
+    public static implicit operator byte(WeekPattern pattern)
+    {
+        return pattern._selectedDays;
+    }
 
     /// <summary>
     /// Determines whether two <see cref="WeekPattern" /> instances have the same selected days.

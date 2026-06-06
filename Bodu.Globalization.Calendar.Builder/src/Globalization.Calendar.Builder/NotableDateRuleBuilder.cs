@@ -67,150 +67,79 @@ public sealed class NotableDateRuleBuilder
     private readonly List<string> _adjustments = new();
 
     /// <summary>
-    /// The stable identifier of the rule within its concept.
-    /// </summary>
-    private string _id;
-
-    /// <summary>
-    /// The configured selection priority, or <see langword="null" /> when the schema default applies.
-    /// </summary>
-    private int? _priority;
-
-    /// <summary>
-    /// The configured category override, or <see langword="null" /> to inherit the concept's category.
-    /// </summary>
-    private NotableDateCategory? _category;
-
-    /// <summary>
-    /// The configured non-working override, or <see langword="null" /> to inherit the concept's default.
-    /// </summary>
-    private bool? _nonWorking;
-
-    /// <summary>
-    /// The configured duration override in days, or <see langword="null" /> to inherit the concept's default.
-    /// </summary>
-    private int? _durationDays;
-
-    /// <summary>
-    /// The optional authoring comment, or <see langword="null" /> when unset.
-    /// </summary>
-    private string? _comment;
-
-    /// <summary>
-    /// The applicability calendar system, or <see langword="null" /> when the Gregorian default applies.
-    /// </summary>
-    private CalendarSystem? _calendar;
-
-    /// <summary>
-    /// The inclusive lower year bound, or <see langword="null" /> when unbounded.
-    /// </summary>
-    private int? _fromYear;
-
-    /// <summary>
-    /// The inclusive upper year bound, or <see langword="null" /> when unbounded.
-    /// </summary>
-    private int? _toYear;
-
-    /// <summary>
-    /// The recurrence interval in years, or <see langword="null" /> when the rule applies every year.
-    /// </summary>
-    private int? _everyYears;
-
-    /// <summary>
-    /// The anchor year for interval recurrence, or <see langword="null" /> when unset.
-    /// </summary>
-    private int? _anchorYear;
-
-    /// <summary>
-    /// The single strategy element in the document namespace, or <see langword="null" /> until a strategy is set.
-    /// </summary>
-    private XElement? _strategy;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRuleBuilder" /> class.
     /// </summary>
     /// <param name="id">The stable identifier of the rule within its concept.</param>
     internal NotableDateRuleBuilder(string id)
     {
-        _id = id;
+        Id = id;
     }
 
     /// <summary>
     /// Gets the stable identifier of the rule.
     /// </summary>
     /// <returns>The rule identifier.</returns>
-    internal string Id =>
-        _id;
+    internal string Id { get; }
 
     /// <summary>
     /// Gets the configured selection priority.
     /// </summary>
     /// <returns>The priority, or <see langword="null" /> when unset.</returns>
-    internal int? Priority =>
-        _priority;
+    internal int? Priority { get; private set; }
 
     /// <summary>
     /// Gets the configured category override.
     /// </summary>
     /// <returns>The category, or <see langword="null" /> when inherited.</returns>
-    internal NotableDateCategory? Category =>
-        _category;
+    internal NotableDateCategory? Category { get; private set; }
 
     /// <summary>
     /// Gets the configured non-working override.
     /// </summary>
     /// <returns>The flag, or <see langword="null" /> when inherited.</returns>
-    internal bool? NonWorking =>
-        _nonWorking;
+    internal bool? NonWorking { get; private set; }
 
     /// <summary>
     /// Gets the configured duration override.
     /// </summary>
     /// <returns>The duration in days, or <see langword="null" /> when inherited.</returns>
-    internal int? DurationDays =>
-        _durationDays;
+    internal int? DurationDays { get; private set; }
 
     /// <summary>
     /// Gets the configured authoring comment.
     /// </summary>
     /// <returns>The comment, or <see langword="null" /> when unset.</returns>
-    internal string? Comment =>
-        _comment;
+    internal string? Comment { get; private set; }
 
     /// <summary>
     /// Gets the configured applicability calendar system.
     /// </summary>
     /// <returns>The calendar system, or <see langword="null" /> when the Gregorian default applies.</returns>
-    internal CalendarSystem? Calendar =>
-        _calendar;
+    internal CalendarSystem? Calendar { get; private set; }
 
     /// <summary>
     /// Gets the inclusive lower year bound.
     /// </summary>
     /// <returns>The lower bound, or <see langword="null" /> when unbounded.</returns>
-    internal int? FromYearValue =>
-        _fromYear;
+    internal int? FromYearValue { get; private set; }
 
     /// <summary>
     /// Gets the inclusive upper year bound.
     /// </summary>
     /// <returns>The upper bound, or <see langword="null" /> when unbounded.</returns>
-    internal int? ToYearValue =>
-        _toYear;
+    internal int? ToYearValue { get; private set; }
 
     /// <summary>
     /// Gets the recurrence interval in years.
     /// </summary>
     /// <returns>The interval, or <see langword="null" /> when the rule applies every year.</returns>
-    internal int? EveryYearsValue =>
-        _everyYears;
+    internal int? EveryYearsValue { get; private set; }
 
     /// <summary>
     /// Gets the anchor year for interval recurrence.
     /// </summary>
     /// <returns>The anchor year, or <see langword="null" /> when unset.</returns>
-    internal int? AnchorYearValue =>
-        _anchorYear;
+    internal int? AnchorYearValue { get; private set; }
 
     /// <summary>
     /// Gets the territory codes scoping the rule.
@@ -251,8 +180,7 @@ public sealed class NotableDateRuleBuilder
     /// Gets the single strategy element in the document namespace.
     /// </summary>
     /// <returns>The strategy element, or <see langword="null" /> when no strategy is set.</returns>
-    internal XElement? Strategy =>
-        _strategy;
+    internal XElement? Strategy { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the applicability scope declares any values.
@@ -261,11 +189,11 @@ public sealed class NotableDateRuleBuilder
     /// <see langword="true" /> when at least one applicability value is set; otherwise, <see langword="false" />.
     /// </returns>
     internal bool HasApplicability =>
-        _calendar is not null
-        || _fromYear is not null
-        || _toYear is not null
-        || _everyYears is not null
-        || _anchorYear is not null
+        Calendar is not null
+        || FromYearValue is not null
+        || ToYearValue is not null
+        || EveryYearsValue is not null
+        || AnchorYearValue is not null
         || _territories.Count > 0
         || _onlyYears.Count > 0
         || _exceptYears.Count > 0;
@@ -277,7 +205,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder WithPriority(int priority)
     {
-        _priority = priority;
+        Priority = priority;
         return this;
     }
 
@@ -288,7 +216,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder WithCategory(NotableDateCategory category)
     {
-        _category = category;
+        Category = category;
         return this;
     }
 
@@ -299,7 +227,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder AsNonWorking(bool value = true)
     {
-        _nonWorking = value;
+        NonWorking = value;
         return this;
     }
 
@@ -313,7 +241,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfLessThan(durationDays, 1);
 
-        _durationDays = durationDays;
+        DurationDays = durationDays;
         return this;
     }
 
@@ -327,7 +255,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(comment);
 
-        _comment = comment;
+        Comment = comment;
         return this;
     }
 
@@ -369,7 +297,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder ForCalendar(CalendarSystem calendar)
     {
-        _calendar = calendar;
+        Calendar = calendar;
         return this;
     }
 
@@ -411,7 +339,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder FromYear(int year)
     {
-        _fromYear = year;
+        FromYearValue = year;
         return this;
     }
 
@@ -422,7 +350,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder ToYear(int year)
     {
-        _toYear = year;
+        ToYearValue = year;
         return this;
     }
 
@@ -436,7 +364,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfLessThan(years, 1);
 
-        _everyYears = years;
+        EveryYearsValue = years;
         return this;
     }
 
@@ -447,7 +375,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder AnchorYear(int year)
     {
-        _anchorYear = year;
+        AnchorYearValue = year;
         return this;
     }
 
@@ -692,7 +620,7 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="strategy">The strategy element in the document namespace, or <see langword="null" />.</param>
     internal void SetParsedStrategy(XElement? strategy) =>
-        _strategy = strategy;
+        Strategy = strategy;
 
     /// <summary>
     /// Sets the applicability and scalar state directly when reconstructing a builder from a parsed document.
@@ -719,16 +647,16 @@ public sealed class NotableDateRuleBuilder
         int? everyYears,
         int? anchorYear)
     {
-        _priority = priority;
-        _category = category;
-        _nonWorking = nonWorking;
-        _durationDays = durationDays;
-        _comment = comment;
-        _calendar = calendar;
-        _fromYear = fromYear;
-        _toYear = toYear;
-        _everyYears = everyYears;
-        _anchorYear = anchorYear;
+        Priority = priority;
+        Category = category;
+        NonWorking = nonWorking;
+        DurationDays = durationDays;
+        Comment = comment;
+        Calendar = calendar;
+        FromYearValue = fromYear;
+        ToYearValue = toYear;
+        EveryYearsValue = everyYears;
+        AnchorYearValue = anchorYear;
     }
 
     /// <summary>
@@ -764,20 +692,20 @@ public sealed class NotableDateRuleBuilder
     /// <returns>A new <see cref="NotableDateRuleBuilder" /> carrying the same configured state.</returns>
     internal NotableDateRuleBuilder Clone()
     {
-        NotableDateRuleBuilder clone = new(_id);
+        NotableDateRuleBuilder clone = new(Id);
         clone.SetParsedScalars(
-            _priority,
-            _category,
-            _nonWorking,
-            _durationDays,
-            _comment,
-            _calendar,
-            _fromYear,
-            _toYear,
-            _everyYears,
-            _anchorYear);
+            Priority,
+            Category,
+            NonWorking,
+            DurationDays,
+            Comment,
+            Calendar,
+            FromYearValue,
+            ToYearValue,
+            EveryYearsValue,
+            AnchorYearValue);
         clone.SetParsedCollections(_territories, _onlyYears, _exceptYears, _tags, _adjustments);
-        clone._strategy = _strategy is null ? null : new XElement(_strategy);
+        clone.Strategy = Strategy is null ? null : new XElement(Strategy);
         return clone;
     }
 
@@ -789,10 +717,10 @@ public sealed class NotableDateRuleBuilder
     /// <exception cref="InvalidOperationException">A strategy has already been configured on this rule.</exception>
     private NotableDateRuleBuilder SetStrategy(XElement element)
     {
-        if (_strategy is not null)
+        if (Strategy is not null)
             throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleStrategyAlreadySet);
 
-        _strategy = element;
+        Strategy = element;
         return this;
     }
 }

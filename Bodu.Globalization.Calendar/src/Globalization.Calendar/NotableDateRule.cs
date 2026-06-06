@@ -68,8 +68,8 @@ public sealed class NotableDateRule
         DurationDays = durationDays;
         Applicability = applicability;
         Strategy = strategy;
-        AdjustmentPolicyRefs = adjustmentPolicyRefs.ToArray();
-        Tags = tags.ToArray();
+        AdjustmentPolicyRefs = [.. adjustmentPolicyRefs];
+        Tags = [.. tags];
     }
 
     /// <summary>

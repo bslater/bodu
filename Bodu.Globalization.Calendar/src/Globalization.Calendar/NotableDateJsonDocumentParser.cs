@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Globalization;
 using System.Text.Json;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -162,7 +162,7 @@ internal static class NotableDateJsonDocumentParser
                 action is JsonElement a ? ParseNullableEnum<DayOfWeek>(GetString(a, "dayOfWeek")) : null,
                 action is JsonElement a2 ? GetInt(a2, "days", 0) : 0,
                 action is JsonElement a3 ? GetNullableInt(a3, "maxSearchDays") : null,
-                action is JsonElement a4 ? GetBool(a4, "skipWeekends", true) : true,
+                action is not JsonElement a4 || GetBool(a4, "skipWeekends", true),
                 action is JsonElement a5 && GetBool(a5, "skipNonWorkingDates", false),
                 ParseEnum(emission is JsonElement em ? GetString(em, "mode") : null, EmissionMode.ActualOnly),
                 emission is JsonElement e ? GetString(e, "reason") : null,
@@ -258,7 +258,7 @@ internal static class NotableDateJsonDocumentParser
                 ParseEnum(GetString(notableDate, "category"), NotableDateCategory.None),
                 GetBool(notableDate, "defaultNonWorkingDay", false),
                 GetInt(notableDate, "defaultDurationDays", 1),
-                StringArray(notableDate, "tags").ToList(),
+                [.. StringArray(notableDate, "tags")],
                 ParseRules(GetProperty(notableDate, "rules"), id, diagnostics)));
         }
 
@@ -304,8 +304,8 @@ internal static class NotableDateJsonDocumentParser
             GetNullableInt(element, "durationDays"),
             applicability,
             ParseStrategy(GetProperty(element, "strategy"), applicability.Calendar, notableDateId, id, diagnostics),
-            StringArray(element, "adjustments").ToList(),
-            StringArray(element, "tags").ToList());
+            [.. StringArray(element, "adjustments")],
+            [.. StringArray(element, "tags")]);
     }
 
     /// <summary>

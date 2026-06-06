@@ -21,10 +21,9 @@ public static partial class DateTimeExtensions
     /// </param>
     /// <param name="ordinal">
     /// The ordinal occurrence to return. Valid values are <see cref="WeekOrdinal.First" />,
-    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />,
-    /// <see cref="WeekOrdinal.Fourth" />, <see cref="WeekOrdinal.Fifth" />, and
-    /// <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid only in months where
-    /// five matching weekdays occur.
+    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />, <see cref="WeekOrdinal.Fourth" />,
+    /// <see cref="WeekOrdinal.Fifth" />, and <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid
+    /// only in months where five matching weekdays occur.
     /// </param>
     /// <returns>
     /// An object whose value is set to midnight (00:00:00) on the requested occurrence of <paramref name="dayOfWeek" />
@@ -33,9 +32,9 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
-    /// in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple
-    /// of seven days to reach the desired ordinal.
+    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" /> in the
+    /// month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of
+    /// seven days to reach the desired ordinal.
     /// </para>
     /// <para>
     /// The returned value has its time component normalized to midnight (00:00:00), and the original
@@ -44,8 +43,8 @@ public static partial class DateTimeExtensions
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
-    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or-
-    /// the requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
+    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or- the
+    /// requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
     /// February).
     /// </exception>
     public static DateTime NthDateOfWeekInMonth(this DateTime dateTime, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
@@ -88,10 +87,9 @@ public static partial class DateTimeExtensions
     /// </param>
     /// <param name="ordinal">
     /// The ordinal occurrence to return. Valid values are <see cref="WeekOrdinal.First" />,
-    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />,
-    /// <see cref="WeekOrdinal.Fourth" />, <see cref="WeekOrdinal.Fifth" />, and
-    /// <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid only in months where
-    /// five matching weekdays occur.
+    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />, <see cref="WeekOrdinal.Fourth" />,
+    /// <see cref="WeekOrdinal.Fifth" />, and <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid
+    /// only in months where five matching weekdays occur.
     /// </param>
     /// <returns>
     /// An object whose value is set to midnight (00:00:00) on the requested occurrence of <paramref name="dayOfWeek" />
@@ -100,9 +98,9 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
-    /// in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple
-    /// of seven days to reach the desired ordinal.
+    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" /> in the
+    /// month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of
+    /// seven days to reach the desired ordinal.
     /// </para>
     /// <para>
     /// The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified" />.
@@ -112,8 +110,8 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="year" /> is less than the <c>Year</c> of <see cref="DateTime.MinValue" /> or greater
     /// than that of <see cref="DateTime.MaxValue" />, -or- <paramref name="month" /> is less than 1 or greater than 12,
     /// -or- <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
-    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or-
-    /// the requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
+    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or- the
+    /// requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
     /// February).
     /// </exception>
     public static DateTime GetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal)

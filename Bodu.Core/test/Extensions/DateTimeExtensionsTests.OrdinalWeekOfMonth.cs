@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(DayOfWeekOccurrenceInMonthTestData))]
     public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime input, WeekOrdinal expected)
     {
-        var actual = input.OrdinalWeekOfMonth();
+        var actual = input.WeekOrdinalOfMonth();
 
         Assert.AreEqual(expected, actual);
     }
@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
     public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
     {
         DateTime leapDay = new DateTime(2024, 2, 29); // Thursday
-        WeekOrdinal actual = leapDay.OrdinalWeekOfMonth();
+        WeekOrdinal actual = leapDay.WeekOrdinalOfMonth();
 
         Assert.AreEqual(WeekOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
     }

@@ -60,9 +60,9 @@ public sealed class RuleApplicability
         Calendar = calendar;
         FromYear = fromYear;
         ToYear = toYear;
-        Territories = territories.ToArray();
-        OnlyYears = onlyYears.ToArray();
-        ExceptYears = exceptYears.ToArray();
+        Territories = [.. territories];
+        OnlyYears = [.. onlyYears];
+        ExceptYears = [.. exceptYears];
         EveryYears = everyYears;
         AnchorYear = anchorYear;
     }

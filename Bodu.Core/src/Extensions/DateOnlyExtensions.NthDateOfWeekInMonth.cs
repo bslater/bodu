@@ -21,10 +21,9 @@ public static partial class DateOnlyExtensions
     /// </param>
     /// <param name="ordinal">
     /// The ordinal occurrence to return. Valid values are <see cref="WeekOrdinal.First" />,
-    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />,
-    /// <see cref="WeekOrdinal.Fourth" />, <see cref="WeekOrdinal.Fifth" />, and
-    /// <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid only in months where
-    /// five matching weekdays occur.
+    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />, <see cref="WeekOrdinal.Fourth" />,
+    /// <see cref="WeekOrdinal.Fifth" />, and <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid
+    /// only in months where five matching weekdays occur.
     /// </param>
     /// <returns>
     /// A <see cref="DateOnly" /> value set to the requested occurrence of <paramref name="dayOfWeek" /> within the same
@@ -32,15 +31,15 @@ public static partial class DateOnlyExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
-    /// in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple
-    /// of seven days to reach the desired ordinal.
+    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" /> in the
+    /// month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of
+    /// seven days to reach the desired ordinal.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
-    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or-
-    /// the requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
+    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or- the
+    /// requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
     /// February).
     /// </exception>
     public static DateOnly NthDateOfWeekInMonth(this DateOnly date, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
@@ -85,10 +84,9 @@ public static partial class DateOnlyExtensions
     /// </param>
     /// <param name="ordinal">
     /// The ordinal occurrence to return. Valid values are <see cref="WeekOrdinal.First" />,
-    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />,
-    /// <see cref="WeekOrdinal.Fourth" />, <see cref="WeekOrdinal.Fifth" />, and
-    /// <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid only in months where
-    /// five matching weekdays occur.
+    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />, <see cref="WeekOrdinal.Fourth" />,
+    /// <see cref="WeekOrdinal.Fifth" />, and <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid
+    /// only in months where five matching weekdays occur.
     /// </param>
     /// <returns>
     /// A <see cref="DateOnly" /> value set to the requested occurrence of <paramref name="dayOfWeek" /> within the
@@ -96,17 +94,17 @@ public static partial class DateOnlyExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
-    /// in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple
-    /// of seven days to reach the desired ordinal.
+    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" /> in the
+    /// month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of
+    /// seven days to reach the desired ordinal.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year" /> is less than the <c>Year</c> of <see cref="DateOnly.MinValue" /> or greater
     /// than that of <see cref="DateOnly.MaxValue" />, -or- <paramref name="month" /> is less than 1 or greater than 12,
     /// -or- <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
-    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or-
-    /// the requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
+    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or- the
+    /// requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
     /// February).
     /// </exception>
     public static DateOnly GetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal)

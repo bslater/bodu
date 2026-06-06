@@ -103,16 +103,20 @@ public readonly struct TerritoryCode
     /// </summary>
     /// <param name="value">The code to convert.</param>
     /// <returns>The parsed code.</returns>
-    public static explicit operator TerritoryCode(string value) =>
-        Parse(value);
+    public static explicit operator TerritoryCode(string value)
+    {
+        return Parse(value);
+    }
 
     /// <summary>
     /// Converts a <see cref="TerritoryCode" /> to its canonical string form.
     /// </summary>
     /// <param name="code">The code to convert.</param>
     /// <returns>The canonical code string, accepted directly by the string-based resolution surface.</returns>
-    public static implicit operator string(TerritoryCode code) =>
-        code.ToString();
+    public static implicit operator string(TerritoryCode code)
+    {
+        return code.ToString();
+    }
 
     /// <summary>
     /// Determines whether two codes are equal.

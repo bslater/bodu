@@ -236,7 +236,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(filters);
 
-        NotableDateFilter[] all = filters.ToArray();
+        NotableDateFilter[] all = [.. filters];
         return new NotableDateFilter(n => all.All(f => f._predicate(n)));
     }
 
@@ -250,7 +250,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(filters);
 
-        NotableDateFilter[] any = filters.ToArray();
+        NotableDateFilter[] any = [.. filters];
         return new NotableDateFilter(n => any.Any(f => f._predicate(n)));
     }
 

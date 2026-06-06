@@ -371,7 +371,7 @@ public static class NotableDateResourceLoader
         IReadOnlyList<NotableDateRule> rules = concept.Rules;
         if (overrideTerritory || overrideAdjustments)
         {
-            rules = concept.Rules
+            rules = [.. concept.Rules
                 .Select(r => new NotableDateRule(
                     r.Id,
                     r.Priority,
@@ -391,8 +391,7 @@ public static class NotableDateResourceLoader
                         : r.Applicability,
                     r.Strategy,
                     overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs,
-                    r.Tags))
-                .ToList();
+                    r.Tags))];
         }
 
         return new NotableDateDefinition(id, concept.DisplayName, category, nonWorking, concept.DefaultDurationDays, concept.Tags, rules);

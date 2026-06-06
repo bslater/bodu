@@ -328,7 +328,7 @@ public sealed class NotableDateService
     private static List<NotableDate> KeepBestPriority(List<NotableDate> group, bool higherWins)
     {
         var best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
-        return group.Where(n => n.Priority == best).ToList();
+        return [.. group.Where(n => n.Priority == best)];
     }
 
     /// <summary>
@@ -369,27 +369,25 @@ public sealed class NotableDateService
     {
         ThrowHelper.ThrowIfNull(filter);
 
-        return Resolve(range, territory).Where(filter.Matches).ToArray();
+        return [.. Resolve(range, territory).Where(filter.Matches)];
     }
 
     /// <inheritdoc />
     public IReadOnlyList<string> GetSupportedTerritories() =>
-        _resource.NotableDates
+        [.. _resource.NotableDates
             .SelectMany(definition => definition.Rules)
             .SelectMany(rule => rule.Applicability.Territories)
             .Where(territory => !string.IsNullOrWhiteSpace(territory))
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)
-            .ToArray();
+            .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)];
 
     /// <inheritdoc />
     public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
-        _resource.NotableDates
+        [.. _resource.NotableDates
             .SelectMany(definition => definition.Rules)
             .Select(rule => rule.Applicability.Calendar)
             .Distinct()
-            .OrderBy(calendar => calendar)
-            .ToArray();
+            .OrderBy(calendar => calendar)];
 
     /// <summary>
     /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
@@ -467,8 +465,10 @@ public sealed class NotableDateService
 
             // A day is occupied "by another" when a non-working occurrence other than this one shares the date; the
             // candidate's own contribution to the tally is discounted so a lone holiday never collides with itself.
-            bool OccupiedByAnother(DateOnly day) =>
-                actualNonWorkingCounts.GetValueOrDefault(day) > (candidate.NonWorking && day == candidate.BaseDate ? 1 : 0);
+            bool OccupiedByAnother(DateOnly day)
+            {
+                return actualNonWorkingCounts.GetValueOrDefault(day) > (candidate.NonWorking && day == candidate.BaseDate ? 1 : 0);
+            }
 
             AdjustmentPolicy? policy = SelectAdjustmentPolicy(definition, rule, candidate.Category, candidate.BaseDate, territory, context, workingWeek, OccupiedByAnother);
             candidates[i] = candidate with { Policy = policy };

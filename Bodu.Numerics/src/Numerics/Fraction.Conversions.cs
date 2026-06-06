@@ -15,8 +15,10 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <param name="value">The integer value to lift into a rational value.</param>
     /// <returns>A <see cref="Fraction{T}" /> with denominator one.</returns>
-    public static implicit operator Fraction<T>(T value) =>
-        new(value);
+    public static implicit operator Fraction<T>(T value)
+    {
+        return new(value);
+    }
 
     /// <summary>
     /// Converts a <see cref="decimal" /> to its exact rational representation.
@@ -26,8 +28,10 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
     /// </exception>
-    public static explicit operator Fraction<T>(decimal value) =>
-        FromDecimal(value);
+    public static explicit operator Fraction<T>(decimal value)
+    {
+        return FromDecimal(value);
+    }
 
     /// <summary>
     /// Converts a finite <see cref="double" /> to its exact rational representation.
@@ -38,8 +42,10 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical numerator or denominator cannot be represented by <typeparamref name="T" />.
     /// </exception>
-    public static explicit operator Fraction<T>(double value) =>
-        FromDouble(value);
+    public static explicit operator Fraction<T>(double value)
+    {
+        return FromDouble(value);
+    }
 
     /// <summary>
     /// Converts a rational value to the nearest <see cref="decimal" />.
@@ -49,24 +55,30 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if <paramref name="value" /> lies outside the range of <see cref="decimal" />.
     /// </exception>
-    public static explicit operator decimal(Fraction<T> value) =>
-        value.ToDecimal();
+    public static explicit operator decimal(Fraction<T> value)
+    {
+        return value.ToDecimal();
+    }
 
     /// <summary>
     /// Converts a rational value to the nearest <see cref="double" />.
     /// </summary>
     /// <param name="value">The rational value to convert.</param>
     /// <returns>The double-precision approximation of <paramref name="value" />.</returns>
-    public static explicit operator double(Fraction<T> value) =>
-        value.ToDouble();
+    public static explicit operator double(Fraction<T> value)
+    {
+        return value.ToDouble();
+    }
 
     /// <summary>
     /// Converts a rational value to the nearest <see cref="float" />.
     /// </summary>
     /// <param name="value">The rational value to convert.</param>
     /// <returns>The single-precision approximation of <paramref name="value" />.</returns>
-    public static explicit operator float(Fraction<T> value) =>
-        value.ToSingle();
+    public static explicit operator float(Fraction<T> value)
+    {
+        return value.ToSingle();
+    }
 
     /// <summary>
     /// Converts a <see cref="decimal" /> to its exact rational representation.

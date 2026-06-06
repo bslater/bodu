@@ -47,31 +47,6 @@ public sealed class NotableDateDefinitionBuilder
     private readonly List<NotableDateRuleBuilder> _rules = new();
 
     /// <summary>
-    /// The stable identifier of the concept.
-    /// </summary>
-    private string _id;
-
-    /// <summary>
-    /// The human-readable display name of the concept.
-    /// </summary>
-    private string _displayName;
-
-    /// <summary>
-    /// The category of the concept.
-    /// </summary>
-    private NotableDateCategory _category;
-
-    /// <summary>
-    /// The default duration in days, or <see langword="null" /> when the schema default of one day applies.
-    /// </summary>
-    private int? _defaultDurationDays;
-
-    /// <summary>
-    /// The default non-working flag, or <see langword="null" /> when unset.
-    /// </summary>
-    private bool? _defaultNonWorkingDay;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateDefinitionBuilder" /> class.
     /// </summary>
     /// <param name="id">The stable identifier of the concept.</param>
@@ -79,45 +54,40 @@ public sealed class NotableDateDefinitionBuilder
     /// <param name="category">The category of the concept.</param>
     internal NotableDateDefinitionBuilder(string id, string displayName, NotableDateCategory category)
     {
-        _id = id;
-        _displayName = displayName;
-        _category = category;
+        Id = id;
+        DisplayName = displayName;
+        Category = category;
     }
 
     /// <summary>
     /// Gets the stable identifier of the concept.
     /// </summary>
     /// <returns>The concept identifier.</returns>
-    internal string Id =>
-        _id;
+    internal string Id { get; }
 
     /// <summary>
     /// Gets the human-readable display name of the concept.
     /// </summary>
     /// <returns>The display name.</returns>
-    internal string DisplayName =>
-        _displayName;
+    internal string DisplayName { get; private set; }
 
     /// <summary>
     /// Gets the category of the concept.
     /// </summary>
     /// <returns>The category.</returns>
-    internal NotableDateCategory Category =>
-        _category;
+    internal NotableDateCategory Category { get; private set; }
 
     /// <summary>
     /// Gets the default duration in days.
     /// </summary>
     /// <returns>The default duration, or <see langword="null" /> when unset.</returns>
-    internal int? DefaultDurationDays =>
-        _defaultDurationDays;
+    internal int? DefaultDurationDays { get; private set; }
 
     /// <summary>
     /// Gets the default non-working flag.
     /// </summary>
     /// <returns>The default flag, or <see langword="null" /> when unset.</returns>
-    internal bool? DefaultNonWorkingDay =>
-        _defaultNonWorkingDay;
+    internal bool? DefaultNonWorkingDay { get; private set; }
 
     /// <summary>
     /// Gets the concept-level tags.
@@ -145,7 +115,7 @@ public sealed class NotableDateDefinitionBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(displayName);
 
-        _displayName = displayName;
+        DisplayName = displayName;
         return this;
     }
 
@@ -156,7 +126,7 @@ public sealed class NotableDateDefinitionBuilder
     /// <returns>The same <see cref="NotableDateDefinitionBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateDefinitionBuilder WithCategory(NotableDateCategory category)
     {
-        _category = category;
+        Category = category;
         return this;
     }
 
@@ -170,7 +140,7 @@ public sealed class NotableDateDefinitionBuilder
     {
         ThrowHelper.ThrowIfLessThan(days, 1);
 
-        _defaultDurationDays = days;
+        DefaultDurationDays = days;
         return this;
     }
 
@@ -181,7 +151,7 @@ public sealed class NotableDateDefinitionBuilder
     /// <returns>The same <see cref="NotableDateDefinitionBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateDefinitionBuilder AsNonWorkingByDefault(bool value = true)
     {
-        _defaultNonWorkingDay = value;
+        DefaultNonWorkingDay = value;
         return this;
     }
 
@@ -252,8 +222,8 @@ public sealed class NotableDateDefinitionBuilder
     /// <param name="tags">The concept-level tags.</param>
     internal void SetParsedValues(int? defaultDurationDays, bool? defaultNonWorkingDay, IEnumerable<string> tags)
     {
-        _defaultDurationDays = defaultDurationDays;
-        _defaultNonWorkingDay = defaultNonWorkingDay;
+        DefaultDurationDays = defaultDurationDays;
+        DefaultNonWorkingDay = defaultNonWorkingDay;
         _tags.Clear();
         _tags.AddRange(tags);
     }
@@ -264,8 +234,8 @@ public sealed class NotableDateDefinitionBuilder
     /// <returns>A new <see cref="NotableDateDefinitionBuilder" /> carrying the same configured state.</returns>
     internal NotableDateDefinitionBuilder Clone()
     {
-        NotableDateDefinitionBuilder clone = new(_id, _displayName, _category);
-        clone.SetParsedValues(_defaultDurationDays, _defaultNonWorkingDay, _tags);
+        NotableDateDefinitionBuilder clone = new(Id, DisplayName, Category);
+        clone.SetParsedValues(DefaultDurationDays, DefaultNonWorkingDay, _tags);
         foreach (NotableDateRuleBuilder rule in _rules)
             clone._rules.Add(rule.Clone());
 
