@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PluginMissingAttributeException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed class PluginMissingAttributeException : NotableDatePluginException
     public PluginMissingAttributeException(string message, string assemblyName)
         : base(message)
     {
-        this.AssemblyName = assemblyName;
+        AssemblyName = assemblyName;
     }
 
     /// <summary>

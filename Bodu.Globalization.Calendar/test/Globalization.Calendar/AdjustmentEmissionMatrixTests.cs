@@ -67,7 +67,7 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ActualOnly"), 2022);
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         Assert.AreEqual(new DateOnly(2022, 1, 1), results[0].Date);
         Assert.IsFalse(results[0].IsObserved);
         Assert.IsNull(results[0].AdjustmentPolicyId);
@@ -82,7 +82,7 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ObservedOnly"), 2022);
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         Assert.AreEqual(new DateOnly(2022, 1, 3), results[0].Date);
         Assert.AreEqual(new DateOnly(2022, 1, 1), results[0].ActualDate);
         Assert.IsTrue(results[0].IsObserved);
@@ -98,9 +98,9 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ActualAndObserved"), 2022);
 
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved), "actual occurrence");
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved), "observed occurrence");
+        Assert.HasCount(2, results);
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "observed occurrence");
     }
 
     /// <summary>
@@ -112,9 +112,9 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ObservedAsAdditional"), 2022);
 
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved), "actual occurrence");
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved), "additional observed occurrence");
+        Assert.HasCount(2, results);
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "additional observed occurrence");
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("Suppress"), 2022);
 
-        Assert.AreEqual(0, results.Count);
+        Assert.IsEmpty(results);
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService(emissionMode), 2026);
 
-        Assert.AreEqual(1, results.Count, emissionMode);
+        Assert.HasCount(1, results, emissionMode);
         Assert.AreEqual(new DateOnly(2026, 1, 1), results[0].Date);
         Assert.IsFalse(results[0].IsObserved);
         Assert.IsNull(results[0].AdjustmentPolicyId);

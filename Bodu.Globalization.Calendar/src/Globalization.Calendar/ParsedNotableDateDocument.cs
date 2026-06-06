@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParsedNotableDateDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,13 +30,13 @@ internal sealed class ParsedNotableDateDocument
         IReadOnlyList<NotableDateRuleOverride> overrides,
         IReadOnlyList<NotableDateImport> imports)
     {
-        this.ResourceId = resourceId;
-        this.SchemaVersion = schemaVersion;
-        this.ResolutionPolicy = resolutionPolicy;
-        this.AdjustmentPolicies = adjustmentPolicies;
-        this.NotableDates = notableDates;
-        this.Overrides = overrides;
-        this.Imports = imports;
+        ResourceId = resourceId;
+        SchemaVersion = schemaVersion;
+        ResolutionPolicy = resolutionPolicy;
+        AdjustmentPolicies = adjustmentPolicies;
+        NotableDates = notableDates;
+        Overrides = overrides;
+        Imports = imports;
     }
 
     /// <summary>

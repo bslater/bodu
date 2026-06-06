@@ -36,7 +36,7 @@ public sealed class AdjustmentTriggerHandlerRegistry : IAdjustmentTriggerHandler
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(handler);
 
-        this._handlers[key] = handler;
+        _handlers[key] = handler;
         return this;
     }
 
@@ -46,7 +46,7 @@ public sealed class AdjustmentTriggerHandlerRegistry : IAdjustmentTriggerHandler
     {
         ThrowHelper.ThrowIfNull(key);
 
-        return this._handlers.ContainsKey(key);
+        return _handlers.ContainsKey(key);
     }
 
     /// <inheritdoc />
@@ -55,7 +55,7 @@ public sealed class AdjustmentTriggerHandlerRegistry : IAdjustmentTriggerHandler
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var found = this._handlers.TryGetValue(key, out IAdjustmentTriggerHandler? value);
+        var found = _handlers.TryGetValue(key, out IAdjustmentTriggerHandler? value);
         handler = value;
         return found;
     }

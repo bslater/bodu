@@ -1,35 +1,166 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  catholic — Catholic patron-saint feast-day catalogue (Western / Gregorian calendar)
+  catholic — Catholic notable-date catalogue (Western / Gregorian calendar)
   ================================================================================================================
 
-  A common-library catalogue of fixed-date Catholic patron-saint feast days, a sibling to christian-western (the
-  Easter cluster and the major fixed feasts) and christian-orthodox. These are the saints' days that territory
-  packs observe as national or cultural days — most famously Saint Patrick's Day — so they are defined here once
-  for territory packs to import rather than each pack re-declaring them.
+  A common-library catalogue of Catholic solemnities, major Catholic feast days, Marian observances, and selected
+  patron-saint feast days that territory packs may observe as religious, national, or cultural days. This catalogue is
+  intentionally narrower than christian-western: the shared Western Christian Easter cluster, Christmas cycle, Epiphany,
+  Candlemas, Annunciation, All Saints, All Souls, and Corpus Christi live in common.christian-western. The Catholic
+  catalogue defines the additional Catholic-specific concepts once so territory packs can import them without
+  re-declaring their calculation strategies.
 
   Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
   stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
-  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend
-  adjustment there. The catalogue default category is Religious (these are liturgical feast days); a pack that
-  observes one as a secular cultural day or a public holiday overrides category/nonWorking on its own <Use>.
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend adjustment
+  there. The catalogue default category is Religious; a pack that observes one as a secular cultural day or public
+  holiday overrides category/nonWorking on its own <Use>.
+
+  Movable Catholic observances that depend on Easter import the Western Easter anchor from christian-western
+  under the local alias "western-easter-sunday". The imported anchor is used only as the calculation base for local
+  OffsetFromRule strategies in this catalogue.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.catholic">
 
+  <Imports>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" as="western-easter-sunday" />
+    </Import>
+  </Imports>
+
   <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Fixed-date Catholic solemnities and major feasts
+      ============================================================================================================
+      These are fixed Gregorian dates in the General Roman Calendar or widely recognised Catholic calendars. Territory
+      packs can import the concepts they observe and apply local obligation, transfer, or non-working rules there.
+    -->
+
+    <!-- Mary, Mother of God — 1 January; Catholic solemnity of the Blessed Virgin Mary. Strategy: Fixed day-of-month. -->
+    <NotableDate id="mary-mother-of-god" displayName="Mary, Mother of God" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Joseph — 19 March; spouse of the Blessed Virgin Mary. Strategy: Fixed day-of-month. -->
+    <NotableDate id="saint-joseph" displayName="Saint Joseph" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="March" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Nativity of Saint John the Baptist — 24 June; Catholic solemnity. Strategy: Fixed day-of-month. -->
+    <NotableDate id="nativity-of-saint-john-the-baptist" displayName="Nativity of Saint John the Baptist" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="June" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saints Peter and Paul — 29 June; Catholic solemnity of the apostles Peter and Paul. Strategy: Fixed day-of-month. -->
+    <NotableDate id="saints-peter-and-paul" displayName="Saints Peter and Paul" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="June" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Transfiguration of the Lord — 6 August; Catholic feast of the Transfiguration. Strategy: Fixed day-of-month. -->
+    <NotableDate id="transfiguration-of-the-lord" displayName="Transfiguration of the Lord" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Assumption of Mary — 15 August; Catholic solemnity of the Assumption. Strategy: Fixed day-of-month. -->
+    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Nativity of Mary — 8 September; Catholic feast of the Nativity of the Blessed Virgin Mary. Strategy: Fixed day-of-month. -->
+    <NotableDate id="nativity-of-mary" displayName="Nativity of Mary" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="September" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Exaltation of the Holy Cross — 14 September; Catholic feast of the Holy Cross. Strategy: Fixed day-of-month. -->
+    <NotableDate id="exaltation-of-the-holy-cross" displayName="Exaltation of the Holy Cross" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="September" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Our Lady of the Rosary — 7 October; Catholic Marian feast. Strategy: Fixed day-of-month. -->
+    <NotableDate id="our-lady-of-the-rosary" displayName="Our Lady of the Rosary" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Dedication of Saint John Lateran — 9 November; feast of the cathedral church of Rome. Strategy: Fixed day-of-month. -->
+    <NotableDate id="dedication-of-saint-john-lateran" displayName="Dedication of Saint John Lateran" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="November" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Immaculate Conception — 8 December; Catholic solemnity of the Blessed Virgin Mary. Strategy: Fixed day-of-month. -->
+    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Our Lady of Guadalupe — 12 December; major Catholic Marian feast, especially in the Americas. Strategy: Fixed day-of-month. -->
+    <NotableDate id="our-lady-of-guadalupe" displayName="Our Lady of Guadalupe" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint Stephen's Day — 26 December; feast of Saint Stephen, the first martyr. Strategy: Fixed day-of-month. -->
+    <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Easter-derived Catholic observances
+      ============================================================================================================
+      Every date below is positioned relative to the imported Western Easter Sunday anchor. All rules are bounded
+      fromYear="1583" to match the Gregorian computus validity window used by christian-western.
+    -->
+
+    <!-- Divine Mercy Sunday — Second Sunday of Easter. Strategy: OffsetFromRule, seven days after Western Easter Sunday. -->
+    <NotableDate id="divine-mercy-sunday" displayName="Divine Mercy Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="western-easter-sunday" ruleRef="default" offsetDays="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mary, Mother of the Church — Monday after Pentecost. Strategy: OffsetFromRule, 50 days after Western Easter Sunday. -->
+    <NotableDate id="mary-mother-of-the-church" displayName="Mary, Mother of the Church" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="western-easter-sunday" ruleRef="default" offsetDays="50" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Sacred Heart of Jesus — Friday after the second Sunday after Pentecost. Strategy: OffsetFromRule, 68 days after Western Easter Sunday. -->
+    <NotableDate id="sacred-heart-of-jesus" displayName="Sacred Heart of Jesus" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="western-easter-sunday" ruleRef="default" offsetDays="68" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Immaculate Heart of Mary — Saturday after Sacred Heart. Strategy: OffsetFromRule, 69 days after Western Easter Sunday. -->
+    <NotableDate id="immaculate-heart-of-mary" displayName="Immaculate Heart of Mary" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="western-easter-sunday" ruleRef="default" offsetDays="69" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Christ the King — final Sunday before Advent. Strategy: WeekdayNearDate, Sunday on or before 26 November. -->
+    <NotableDate id="christ-the-king" displayName="Christ the King" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><WeekdayNearDate month="November" day="26" dayOfWeek="Sunday" direction="OnOrBefore" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Catholic patronal and cultural feast days
+      ============================================================================================================
+      These are saints' days that territory packs commonly observe as national, regional, or cultural days. The shared
+      Catholic catalogue keeps the date calculation only; territory packs decide whether the day is religious,
+      cultural, public, non-working, or adjusted.
+    -->
 
     <!-- Saint David's Day — 1 March; feast of Saint David, patron saint of Wales. Strategy: Fixed day-of-month. -->
     <NotableDate id="st-davids-day" displayName="Saint David's Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Patrick's Day — 17 March; feast of Saint Patrick, patron saint of Ireland, widely observed as a cultural day across the Irish diaspora (a public holiday in Ireland). Strategy: Fixed day-of-month. -->
+    <!-- Saint Patrick's Day — 17 March; feast of Saint Patrick, patron saint of Ireland. Strategy: Fixed day-of-month. -->
     <NotableDate id="st-patricks-day" displayName="Saint Patrick's Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="March" day="17" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint George's Day — 23 April; feast of Saint George, patron saint of England (and observed in Newfoundland and Labrador on the nearest Monday). Strategy: Fixed day-of-month. -->
+    <!-- Saint George's Day — 23 April; feast of Saint George, patron saint of England. Strategy: Fixed day-of-month. -->
     <NotableDate id="st-georges-day" displayName="Saint George's Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
     </NotableDate>

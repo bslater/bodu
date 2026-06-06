@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OverrideEntry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Represents a single override operation captured by an <see cref="OverrideBuilder" />, carrying the target
-/// references and, for add and patch operations, the configured rule builder.
+/// Represents a single override operation captured by an <see cref="OverrideBuilder" />, carrying the target references
+/// and, for add and patch operations, the configured rule builder.
 /// </summary>
 internal sealed class OverrideEntry
 {
@@ -23,10 +23,10 @@ internal sealed class OverrideEntry
     /// <param name="rule">The configured rule builder for add and patch operations, or <see langword="null" />.</param>
     internal OverrideEntry(OverrideOperation operation, string notableDateRef, string? ruleRef, NotableDateRuleBuilder? rule)
     {
-        this.Operation = operation;
-        this.NotableDateRef = notableDateRef;
-        this.RuleRef = ruleRef;
-        this.Rule = rule;
+        Operation = operation;
+        NotableDateRef = notableDateRef;
+        RuleRef = ruleRef;
+        Rule = rule;
     }
 
     /// <summary>
@@ -58,5 +58,5 @@ internal sealed class OverrideEntry
     /// </summary>
     /// <returns>A new <see cref="OverrideEntry" /> carrying the same state.</returns>
     internal OverrideEntry Clone() =>
-        new(this.Operation, this.NotableDateRef, this.RuleRef, this.Rule?.Clone());
+        new(Operation, NotableDateRef, RuleRef, Rule?.Clone());
 }

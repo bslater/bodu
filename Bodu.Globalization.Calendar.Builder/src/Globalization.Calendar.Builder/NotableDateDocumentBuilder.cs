@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,8 +23,8 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </para>
 /// <para>
 /// <strong>Workflow.</strong> Obtain a builder with <see cref="Create()" /> or <see cref="Create(string, string)" />,
-/// declare reusable adjustment policies with <see cref="AddAdjustmentPolicy(string, Action{AdjustmentPolicyBuilder})" />,
-/// add each notable-date concept with
+/// declare reusable adjustment policies with
+/// <see cref="AddAdjustmentPolicy(string, Action{AdjustmentPolicyBuilder})" />, add each notable-date concept with
 /// <see cref="AddNotableDate(string, string, NotableDateCategory, Action{NotableDateDefinitionBuilder})" />, then
 /// terminate by materializing a <see cref="NotableDateResource" /> with <see cref="Build()" />, serializing with
 /// <see cref="ToXml" /> / <see cref="ToJson" /> / <see cref="Save(string)" />, or wrapping the result with
@@ -57,11 +57,10 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateResource" />
-/// <seealso cref="NotableDateResourceLoader" />
-/// <seealso cref="NotableDateService" />
-/// <seealso href="../guides/calendar/notable-date-builder.html">Authoring with the notable-date builder (guide)</seealso>
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="NotableDateResource" /> <seealso cref="NotableDateResourceLoader" />
+/// <seealso cref="NotableDateService" /> <seealso href="../guides/calendar/notable-date-builder.html">Authoring with
+/// the notable-date builder (guide)</seealso> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
+/// date rules (guide)</seealso>
 public sealed partial class NotableDateDocumentBuilder
 {
     /// <summary>
@@ -135,7 +134,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="schemaVersion">The schema version emitted on the root element.</param>
     /// <returns>A new <see cref="NotableDateDocumentBuilder" />.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="resourceId" /> or <paramref name="schemaVersion" /> is <see langword="null" />, empty, or white-space.
+    /// <paramref name="resourceId" /> or <paramref name="schemaVersion" /> is <see langword="null" />, empty, or
+    /// white-space.
     /// </exception>
     public static NotableDateDocumentBuilder Create(string resourceId, string schemaVersion = "1.0")
     {
@@ -161,7 +161,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(resourceId);
 
-        this._resourceId = resourceId;
+        _resourceId = resourceId;
         return this;
     }
 
@@ -177,7 +177,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(schemaVersion);
 
-        this._schemaVersion = schemaVersion;
+        _schemaVersion = schemaVersion;
         return this;
     }
 
@@ -193,10 +193,10 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNull(sources);
 
-        this._metadataName = name;
-        this._metadataDescription = description;
-        this._sources.Clear();
-        this._sources.AddRange(sources);
+        _metadataName = name;
+        _metadataDescription = description;
+        _sources.Clear();
+        _sources.AddRange(sources);
         return this;
     }
 
@@ -210,9 +210,9 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNull(configure);
 
-        ResolutionPolicyBuilder policy = this._resolutionPolicy ?? new ResolutionPolicyBuilder();
+        ResolutionPolicyBuilder policy = _resolutionPolicy ?? new ResolutionPolicyBuilder();
         configure(policy);
-        this._resolutionPolicy = policy;
+        _resolutionPolicy = policy;
         return this;
     }
 
@@ -233,7 +233,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         AdjustmentPolicyBuilder policy = new(id);
         configure(policy);
-        this._adjustmentPolicies.Add(policy);
+        _adjustmentPolicies.Add(policy);
         return this;
     }
 
@@ -252,7 +252,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         ImportBuilder import = new(resource);
         configure?.Invoke(import);
-        this._imports.Add(import);
+        _imports.Add(import);
         return this;
     }
 
@@ -276,7 +276,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         NotableDateDefinitionBuilder definition = new(id, displayName, category);
         configure(definition);
-        this._definitions.Add(definition);
+        _definitions.Add(definition);
         return this;
     }
 
@@ -290,9 +290,9 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNull(configure);
 
-        OverrideBuilder overrides = this._overrides ?? new OverrideBuilder();
+        OverrideBuilder overrides = _overrides ?? new OverrideBuilder();
         configure(overrides);
-        this._overrides = overrides;
+        _overrides = overrides;
         return this;
     }
 
@@ -306,7 +306,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="NotableDateValidationException">The loader produced one or more error diagnostics.</exception>
     public NotableDateResource Build() =>
-        this.Build(null);
+        Build(null);
 
     /// <summary>
     /// Materializes the document into a validated <see cref="NotableDateResource" />, resolving imports through the
@@ -322,7 +322,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="NotableDateValidationException">The loader produced one or more error diagnostics.</exception>
     public NotableDateResource Build(Func<string, string?>? importResolver) =>
-        NotableDateResourceLoader.Load(this.ToXml(), importResolver ?? (_ => null));
+        NotableDateResourceLoader.Load(ToXml(), importResolver ?? (_ => null));
 
     /// <summary>
     /// Materializes the document and wraps it in a mutable provider.
@@ -331,7 +331,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
     /// <exception cref="NotableDateValidationException">The loader produced one or more error diagnostics.</exception>
     public INotableDateResourceProvider ToProvider() =>
-        new MutableNotableDateResourceProvider(this.Build());
+        new MutableNotableDateResourceProvider(Build());
 
     /// <summary>
     /// Serializes the document to a file, inferring the format from the file extension.
@@ -350,7 +350,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
-        this.Save(path, InferFormat(path));
+        Save(path, InferFormat(path));
     }
 
     /// <summary>
@@ -369,7 +369,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
-        string content = format == NotableDateDocumentFormat.Json ? this.ToJson() : this.ToXml();
+        var content = format == NotableDateDocumentFormat.Json ? ToJson() : ToXml();
         File.WriteAllText(path, content);
     }
 
@@ -383,20 +383,20 @@ public sealed partial class NotableDateDocumentBuilder
     {
         NotableDateDocumentBuilder clone = new()
         {
-            _resourceId = this._resourceId,
-            _schemaVersion = this._schemaVersion,
-            _metadataName = this._metadataName,
-            _metadataDescription = this._metadataDescription,
-            _resolutionPolicy = this._resolutionPolicy?.Clone(),
-            _overrides = this._overrides?.Clone(),
+            _resourceId = _resourceId,
+            _schemaVersion = _schemaVersion,
+            _metadataName = _metadataName,
+            _metadataDescription = _metadataDescription,
+            _resolutionPolicy = _resolutionPolicy?.Clone(),
+            _overrides = _overrides?.Clone(),
         };
 
-        clone._sources.AddRange(this._sources);
-        foreach (AdjustmentPolicyBuilder policy in this._adjustmentPolicies)
+        clone._sources.AddRange(_sources);
+        foreach (AdjustmentPolicyBuilder policy in _adjustmentPolicies)
             clone._adjustmentPolicies.Add(policy.Clone());
-        foreach (ImportBuilder import in this._imports)
+        foreach (ImportBuilder import in _imports)
             clone._imports.Add(import.Clone());
-        foreach (NotableDateDefinitionBuilder definition in this._definitions)
+        foreach (NotableDateDefinitionBuilder definition in _definitions)
             clone._definitions.Add(definition.Clone());
 
         return clone;
@@ -417,7 +417,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
-        string content = File.ReadAllText(path);
+        var content = File.ReadAllText(path);
         return InferFormat(path) == NotableDateDocumentFormat.Json ? FromJson(content) : FromXml(content);
     }
 
@@ -427,9 +427,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The configured resource identifier.</returns>
     /// <exception cref="InvalidOperationException">No resource identifier has been configured.</exception>
     private string RequireResourceId() =>
-        string.IsNullOrWhiteSpace(this._resourceId)
+        string.IsNullOrWhiteSpace(_resourceId)
             ? throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_DocumentResourceIdNotSet)
-            : this._resourceId!;
+            : _resourceId!;
 
     /// <summary>
     /// Infers the serialization format from a file path's extension.
@@ -439,7 +439,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="ArgumentException">The extension is neither <c>.xml</c> nor <c>.json</c>.</exception>
     private static NotableDateDocumentFormat InferFormat(string path)
     {
-        string extension = Path.GetExtension(path);
+        var extension = Path.GetExtension(path);
 
         if (string.Equals(extension, ".xml", StringComparison.OrdinalIgnoreCase))
             return NotableDateDocumentFormat.Xml;

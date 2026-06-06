@@ -55,7 +55,7 @@ public partial class StringExtensionsTests
     /// an empty input string.
     /// </summary>
     [TestMethod]
-    public void SplitLines_WhenInputIsEmpty_ShouldReturnEmptySequence() => Assert.AreEqual(0, string.Empty.SplitLines().Count());
+    public void SplitLines_WhenInputIsEmpty_ShouldReturnEmptySequence() => Assert.IsEmpty(string.Empty.SplitLines());
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.SplitLines(string, bool)" /> throws

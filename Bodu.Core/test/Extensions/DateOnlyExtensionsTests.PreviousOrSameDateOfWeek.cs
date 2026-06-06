@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.PreviousOrSameDateOfWeek.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System;
 
 namespace Bodu.Extensions;
 
@@ -64,7 +62,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.MaxValue;
         var actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Saturday);
 
-        Assert.IsTrue(actual <= DateOnly.MaxValue);
+        Assert.IsLessThanOrEqualTo(DateOnly.MaxValue, actual);
     }
 
     /// <summary>

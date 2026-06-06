@@ -46,7 +46,7 @@ public sealed class FaultingStream
         if (throwAfterBytes < 0)
             throw new ArgumentOutOfRangeException(nameof(throwAfterBytes), "throwAfterBytes must be non-negative.");
 
-        this.ThrowAfterBytes = throwAfterBytes;
+        ThrowAfterBytes = throwAfterBytes;
     }
 
     /// <summary>
@@ -57,31 +57,31 @@ public sealed class FaultingStream
     /// <summary>
     /// Gets the total number of bytes that have been successfully read so far.
     /// </summary>
-    public int BytesRead => this._bytesRead;
+    public int BytesRead => _bytesRead;
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        this.ThrowIfFaulted();
+        ThrowIfFaulted();
         var n = base.Read(buffer, offset, count);
-        this._bytesRead += n;
+        _bytesRead += n;
         return n;
     }
 
     /// <inheritdoc />
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        this.ThrowIfFaulted();
+        ThrowIfFaulted();
         var n = await base.ReadAsync(buffer, cancellationToken);
-        this._bytesRead += n;
+        _bytesRead += n;
         return n;
     }
 
     private void ThrowIfFaulted()
     {
-        if (this._bytesRead >= this.ThrowAfterBytes)
+        if (_bytesRead >= ThrowAfterBytes)
             throw new IOException(
-                $"Simulated stream fault after {this.ThrowAfterBytes} bytes " +
-                $"({this._bytesRead} bytes read so far).");
+                $"Simulated stream fault after {ThrowAfterBytes} bytes " +
+                $"({_bytesRead} bytes read so far).");
     }
 }

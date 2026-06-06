@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.PreviousOrSameDateOfWeek.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="date">The starting date value from which to search backward.</param>
     /// <param name="dayOfWeek">
-    /// The <see cref="DayOfWeek" /> to locate. For example, <see cref="DayOfWeek.Monday" /> returns the previous
-    /// Monday on or before <paramref name="date" />.
+    /// The <see cref="DayOfWeek" /> to locate. For example, <see cref="DayOfWeek.Monday" /> returns the previous Monday
+    /// on or before <paramref name="date" />.
     /// </param>
     /// <returns>
     /// A <see cref="DateOnly" /> value set to the previous occurrence of <paramref name="dayOfWeek" /> at or before

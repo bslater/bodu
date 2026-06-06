@@ -17,8 +17,8 @@ namespace Bodu.Globalization.Calendar;
 /// scoped to its parent territory (<c>AU</c>), but a national query does not match a subnational-only rule.
 /// </para>
 /// </remarks>
-/// <seealso cref="NotableDateRule" />
-/// <seealso href="../guides/calendar/territories.html">Territories and regional composition (guide)</seealso>
+/// <seealso cref="NotableDateRule" /> <seealso href="../guides/calendar/territories.html">Territories and regional
+/// composition (guide)</seealso>
 public sealed class RuleApplicability
 {
     /// <summary>
@@ -57,14 +57,14 @@ public sealed class RuleApplicability
         ThrowHelper.ThrowIfNull(onlyYears);
         ThrowHelper.ThrowIfNull(exceptYears);
 
-        this.Calendar = calendar;
-        this.FromYear = fromYear;
-        this.ToYear = toYear;
-        this.Territories = territories.ToArray();
-        this.OnlyYears = onlyYears.ToArray();
-        this.ExceptYears = exceptYears.ToArray();
-        this.EveryYears = everyYears;
-        this.AnchorYear = anchorYear;
+        Calendar = calendar;
+        FromYear = fromYear;
+        ToYear = toYear;
+        Territories = territories.ToArray();
+        OnlyYears = onlyYears.ToArray();
+        ExceptYears = exceptYears.ToArray();
+        EveryYears = everyYears;
+        AnchorYear = anchorYear;
     }
 
     /// <summary>
@@ -130,26 +130,26 @@ public sealed class RuleApplicability
     {
         ThrowHelper.ThrowIfNull(territory);
 
-        if (this.FromYear.HasValue && year < this.FromYear.Value)
+        if (FromYear.HasValue && year < FromYear.Value)
             return false;
 
-        if (this.ToYear.HasValue && year > this.ToYear.Value)
+        if (ToYear.HasValue && year > ToYear.Value)
             return false;
 
-        if (this.OnlyYears.Count > 0 && !this.OnlyYears.Contains(year))
+        if (OnlyYears.Count > 0 && !OnlyYears.Contains(year))
             return false;
 
-        if (this.ExceptYears.Contains(year))
+        if (ExceptYears.Contains(year))
             return false;
 
-        if (this.EveryYears is int interval && interval > 1)
+        if (EveryYears is int interval && interval > 1)
         {
-            var anchor = this.AnchorYear ?? this.FromYear ?? 0;
+            var anchor = AnchorYear ?? FromYear ?? 0;
             if ((((year - anchor) % interval) + interval) % interval != 0)
                 return false;
         }
 
-        return this.MatchesTerritory(territory);
+        return MatchesTerritory(territory);
     }
 
     /// <summary>
@@ -161,10 +161,10 @@ public sealed class RuleApplicability
     {
         ThrowHelper.ThrowIfNull(territory);
 
-        if (this.Territories.Count == 0)
+        if (Territories.Count == 0)
             return true;
 
-        foreach (var scoped in this.Territories)
+        foreach (var scoped in Territories)
         {
             if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -189,11 +189,11 @@ public sealed class RuleApplicability
     {
         ThrowHelper.ThrowIfNull(territory);
 
-        if (this.Territories.Count == 0)
+        if (Territories.Count == 0)
             return 0;
 
         var best = -1;
-        foreach (var scoped in this.Territories)
+        foreach (var scoped in Territories)
         {
             if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase)
                 || territory.StartsWith(scoped + "-", StringComparison.OrdinalIgnoreCase))

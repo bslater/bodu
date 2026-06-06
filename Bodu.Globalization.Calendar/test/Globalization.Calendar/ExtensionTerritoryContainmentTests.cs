@@ -75,7 +75,7 @@ public sealed class ExtensionTerritoryContainmentTests
     /// <param name="expectedNonWorking">Whether the holiday is expected to apply to the query.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(TerritoryContainmentRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(TerritoryContainmentRows))]
     public void IsNonWorkingDay_WhenTerritoryForwarded_ShouldHonourContainment(string ruleTerritory, string queryTerritory, bool expectedNonWorking)
     {
         INotableDateService service = BuildHolidayService(ruleTerritory);
@@ -95,7 +95,7 @@ public sealed class ExtensionTerritoryContainmentTests
     /// <param name="expectedSkipsHoliday">Whether the holiday is expected to be skipped.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(TerritoryContainmentRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(TerritoryContainmentRows))]
     public void NextWorkingDay_WhenTerritoryForwarded_ShouldHonourContainment(string ruleTerritory, string queryTerritory, bool expectedSkipsHoliday)
     {
         INotableDateService service = BuildHolidayService(ruleTerritory);
@@ -116,7 +116,7 @@ public sealed class ExtensionTerritoryContainmentTests
     /// <param name="expectedExcludesHoliday">Whether the holiday is expected to be excluded from the count.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(TerritoryContainmentRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(TerritoryContainmentRows))]
     public void WorkingDaysBetween_WhenTerritoryForwarded_ShouldHonourContainment(string ruleTerritory, string queryTerritory, bool expectedExcludesHoliday)
     {
         INotableDateService service = BuildHolidayService(ruleTerritory);

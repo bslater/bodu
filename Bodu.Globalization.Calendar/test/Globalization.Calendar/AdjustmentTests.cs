@@ -51,9 +51,9 @@ public sealed class AdjustmentTests
             .Where(r => r.NotableDateId == "actual-and-observed")
             .ToList();
 
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved), "actual occurrence");
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved), "observed occurrence");
+        Assert.HasCount(2, results);
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "observed occurrence");
     }
 
     /// <summary>
@@ -67,9 +67,9 @@ public sealed class AdjustmentTests
             .Where(r => r.NotableDateId == "observed-additional")
             .ToList();
 
-        Assert.AreEqual(2, results.Count);
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved), "actual occurrence");
-        Assert.IsTrue(results.Any(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved), "additional observed occurrence");
+        Assert.HasCount(2, results);
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
+        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "additional observed occurrence");
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ public sealed class AdjustmentTests
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
         var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }
 

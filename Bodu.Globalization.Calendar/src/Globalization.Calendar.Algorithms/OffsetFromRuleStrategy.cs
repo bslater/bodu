@@ -16,8 +16,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// produces no occurrence; the loader reports the unresolved or ambiguous reference as a validation error.
 /// </para>
 /// </remarks>
-/// <seealso cref="IDateCalculationStrategy" />
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
+/// date rules (guide)</seealso>
 public sealed class OffsetFromRuleStrategy : IDateCalculationStrategy
 {
     /// <summary>
@@ -35,9 +35,9 @@ public sealed class OffsetFromRuleStrategy : IDateCalculationStrategy
     {
         ThrowHelper.ThrowIfNull(notableDateRef);
 
-        this.NotableDateRef = notableDateRef;
-        this.RuleRef = ruleRef;
-        this.OffsetDays = offsetDays;
+        NotableDateRef = notableDateRef;
+        RuleRef = ruleRef;
+        OffsetDays = offsetDays;
     }
 
     /// <summary>
@@ -63,12 +63,12 @@ public sealed class OffsetFromRuleStrategy : IDateCalculationStrategy
     {
         ThrowHelper.ThrowIfNull(context);
 
-        if (context.ResolveReference(this.NotableDateRef, this.RuleRef, year) is not DateOnly reference)
+        if (context.ResolveReference(NotableDateRef, RuleRef, year) is not DateOnly reference)
             return null;
 
         // Guard the projection against rolling past the representable date range at the year extremes; the engine
         // treats an out-of-range offset as "no occurrence" rather than failing the query.
-        var target = (long)reference.DayNumber + this.OffsetDays;
+        var target = (long)reference.DayNumber + OffsetDays;
         if (target < DateOnly.MinValue.DayNumber || target > DateOnly.MaxValue.DayNumber)
             return null;
 

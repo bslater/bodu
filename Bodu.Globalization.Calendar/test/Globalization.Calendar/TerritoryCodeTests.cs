@@ -189,8 +189,8 @@ public sealed class TerritoryCodeTests
 
         NotableDateService service = new(NotableDateResourceLoader.Load(xml));
 
-        Assert.AreEqual(1, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-NSW")).Count);
-        Assert.AreEqual(0, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-VIC")).Count);
+        Assert.HasCount(1, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-NSW")));
+        Assert.IsEmpty(service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-VIC")));
     }
 
     /// <summary>
@@ -215,7 +215,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void ParseList_WhenNullEmptyOrWhitespace_ShouldReturnEmpty(string? value)
     {
-        Assert.AreEqual(0, TerritoryCode.ParseList(value).Count);
+        Assert.IsEmpty(TerritoryCode.ParseList(value));
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public sealed class TerritoryCodeTests
     {
         IReadOnlyList<TerritoryCode> codes = TerritoryCode.ParseList("AU,, ,AU-NSW");
 
-        Assert.AreEqual(2, codes.Count);
+        Assert.HasCount(2, codes);
     }
 
     /// <summary>

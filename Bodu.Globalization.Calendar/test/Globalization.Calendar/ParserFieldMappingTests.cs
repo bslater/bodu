@@ -139,7 +139,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_FixedConcept_ShouldMapConceptMetadata(string path, Func<NotableDateResource> load)
     {
         NotableDateDefinition concept = Concept(load(), "new-years-day");
@@ -159,7 +159,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_FixedRule_ShouldMapRuleFields(string path, Func<NotableDateResource> load)
     {
         NotableDateRule rule = Concept(load(), "new-years-day").Rules.Single();
@@ -167,7 +167,7 @@ public sealed class ParserFieldMappingTests
         Assert.AreEqual("au-nsw", rule.Id, $"{path} id");
         Assert.AreEqual(5, rule.Priority, $"{path} priority");
         Assert.AreEqual(NotableDateCategory.Civic, rule.Category, $"{path} category override");
-        Assert.AreEqual(false, rule.NonWorking, $"{path} nonWorking override");
+        Assert.IsFalse(rule.NonWorking, $"{path} nonWorking override");
         Assert.AreEqual(3, rule.DurationDays, $"{path} duration override");
         CollectionAssert.AreEqual(new[] { "weekend-roll" }, rule.AdjustmentPolicyRefs.ToArray(), $"{path} adjustments");
         CollectionAssert.AreEqual(new[] { "rule-tag" }, rule.Tags.ToArray(), $"{path} rule tags");
@@ -180,7 +180,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_FixedRule_ShouldMapApplicability(string path, Func<NotableDateResource> load)
     {
         RuleApplicability applicability = Concept(load(), "new-years-day").Rules.Single().Applicability;
@@ -200,7 +200,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_FixedStrategy_ShouldMapMonthAndDay(string path, Func<NotableDateResource> load)
     {
         var strategy = (FixedDateStrategy)Concept(load(), "new-years-day").Rules.Single().Strategy;
@@ -218,7 +218,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_DayOfWeekInMonthStrategy_ShouldMapFields(string path, Func<NotableDateResource> load)
     {
         var strategy = (DayOfWeekInMonthStrategy)Concept(load(), "mothers-day").Rules.Single().Strategy;
@@ -235,7 +235,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_RelativeWeekdayInMonthStrategy_ShouldMapFields(string path, Func<NotableDateResource> load)
     {
         var strategy = (RelativeWeekdayInMonthStrategy)Concept(load(), "election-day").Rules.Single().Strategy;
@@ -254,7 +254,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_WeekdayNearDateStrategy_ShouldMapFields(string path, Func<NotableDateResource> load)
     {
         var strategy = (WeekdayNearDateStrategy)Concept(load(), "victoria-day").Rules.Single().Strategy;
@@ -272,7 +272,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_AlgorithmStrategy_ShouldMapKey(string path, Func<NotableDateResource> load)
     {
         var strategy = (AlgorithmDateStrategy)Concept(load(), "easter-sunday").Rules.Single().Strategy;
@@ -287,7 +287,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_OffsetFromRuleStrategy_ShouldMapReferenceAndOffset(string path, Func<NotableDateResource> load)
     {
         var strategy = (OffsetFromRuleStrategy)Concept(load(), "good-friday").Rules.Single().Strategy;
@@ -304,16 +304,16 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_Document_ShouldMapResourceMetadataAndCounts(string path, Func<NotableDateResource> load)
     {
         NotableDateResource resource = load();
 
         Assert.AreEqual("test.fields", resource.ResourceId, $"{path} resourceId");
         Assert.AreEqual("1.0", resource.SchemaVersion, $"{path} schemaVersion");
-        Assert.AreEqual(6, resource.NotableDates.Count, $"{path} concept count");
+        Assert.HasCount(6, resource.NotableDates, $"{path} concept count");
         Assert.AreEqual(6, resource.RuleCount, $"{path} rule count");
-        Assert.AreEqual(1, resource.AdjustmentPolicies.Count, $"{path} policy count");
+        Assert.HasCount(1, resource.AdjustmentPolicies, $"{path} policy count");
     }
 
     /// <summary>
@@ -323,7 +323,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_AdjustmentPolicy_ShouldMapTriggerActionEmission(string path, Func<NotableDateResource> load)
     {
         AdjustmentPolicy policy = load().AdjustmentPolicies.Single();
@@ -342,7 +342,7 @@ public sealed class ParserFieldMappingTests
     /// <param name="path">The ingestion-path label.</param>
     /// <param name="load">The loader to exercise.</param>
     [TestMethod]
-    [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(Loaders))]
     public void Load_RuleWithoutOverrides_ShouldLeaveOverridesNull(string path, Func<NotableDateResource> load)
     {
         NotableDateRule rule = Concept(load(), "mothers-day").Rules.Single();
@@ -350,6 +350,6 @@ public sealed class ParserFieldMappingTests
         Assert.IsNull(rule.Category, $"{path} category");
         Assert.IsNull(rule.NonWorking, $"{path} nonWorking");
         Assert.IsNull(rule.DurationDays, $"{path} durationDays");
-        Assert.AreEqual(0, rule.AdjustmentPolicyRefs.Count, $"{path} adjustments");
+        Assert.IsEmpty(rule.AdjustmentPolicyRefs, $"{path} adjustments");
     }
 }

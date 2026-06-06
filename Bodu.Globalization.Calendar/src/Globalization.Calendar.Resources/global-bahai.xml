@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Baha'i notable-date catalogue
+  ================================================================================================================
+
+  A common-library catalogue of Baha'i holy days that can be represented with the current strategy set. The Badi
+  calendar is not yet exposed as a schema calendar system, so Naw-Ruz is modelled by the engine's vernal-equinox
+  algorithm and the fixed-position solar holy days are authored as offsets from that anchor. The Twin Holy Birthdays
+  are intentionally omitted because they require the Baha'i lunar/equinox rule and should be added only when a dedicated
+  algorithm is available.
+
+  Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
+  stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend adjustment
+  there. The catalogue default category is Religious; a pack that observes one as a public holiday overrides
+  category/nonWorking on its own <Use>.
+
+  Note on precision: the Baha'i calendar is tied to the vernal equinox at Tehran. The built-in vernal-equinox algorithm
+  computes the equinox date using the engine's generic astronomical calculation. Territory packs can override years or
+  register a Tehran-specific Badi-calendar algorithm where exact Baha'i calendar dates are required.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-bahai">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Naw-Ruz anchor and Ridvan period
+      ============================================================================================================
+    -->
+
+    <!-- Naw-Ruz — Baha'i New Year at the vernal equinox. Strategy: Algorithm "vernal-equinox". -->
+    <NotableDate id="naw-ruz" displayName="Naw-Ruz" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="vernal-equinox" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ridvan — twelve-day festival beginning 31 days after Naw-Ruz; a 12-day span. -->
+    <NotableDate id="ridvan" displayName="Ridvan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="12">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- First Day of Ridvan — 31 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="first-day-of-ridvan" displayName="First Day of Ridvan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ninth Day of Ridvan — 39 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="ninth-day-of-ridvan" displayName="Ninth Day of Ridvan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Twelfth Day of Ridvan — 42 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="twelfth-day-of-ridvan" displayName="Twelfth Day of Ridvan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="42" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Baha'i fixed-position solar holy days
+      ============================================================================================================
+      These are expressed as day offsets from Naw-Ruz so they follow the same equinox anchor and year boundary as the
+      Baha'i calendar approximation above.
+    -->
+
+    <!-- Declaration of the Bab — 64 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="declaration-of-the-bab" displayName="Declaration of the Bab" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="64" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ascension of Baha'u'llah — 69 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="ascension-of-bahaullah" displayName="Ascension of Baha'u'llah" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="69" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Martyrdom of the Bab — 111 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="martyrdom-of-the-bab" displayName="Martyrdom of the Bab" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="111" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of the Covenant — 250 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="day-of-the-covenant" displayName="Day of the Covenant" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="250" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ascension of Abdu'l-Baha — 252 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <NotableDate id="ascension-of-abdul-baha" displayName="Ascension of Abdu'l-Baha" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="252" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

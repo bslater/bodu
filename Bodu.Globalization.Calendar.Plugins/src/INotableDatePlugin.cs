@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDatePlugin.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,12 +14,12 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <para>
 /// This is the marker every plugin shares; capability-specific contracts derive from it — for example
 /// <see cref="INotableDateAlgorithmPlugin" />, which contributes custom algorithms. A host activates the plugin through
-/// <see cref="NotableDatePluginLoader" /> and reads <see cref="Name" /> and <see cref="Version" /> purely for reporting;
-/// neither participates in trust evaluation, which is governed entirely by the <see cref="IPluginTrustPolicy" />.
+/// <see cref="NotableDatePluginLoader" /> and reads <see cref="Name" /> and <see cref="Version" /> purely for
+/// reporting; neither participates in trust evaluation, which is governed entirely by the
+/// <see cref="IPluginTrustPolicy" />.
 /// </para>
 /// </remarks>
-/// <seealso cref="INotableDateAlgorithmPlugin" />
-/// <seealso cref="NotableDatePluginLoader" />
+/// <seealso cref="INotableDateAlgorithmPlugin" /> <seealso cref="NotableDatePluginLoader" />
 public interface INotableDatePlugin
 {
     /// <summary>

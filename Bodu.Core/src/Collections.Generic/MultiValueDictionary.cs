@@ -434,11 +434,11 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         /// <param name="capacity">The initial capacity for the mutable value list.</param>
         public ValueBucket(int capacity = 0)
         {
-            this.Values = capacity > 0
+            Values = capacity > 0
                 ? new List<TValue>(capacity)
                 : [];
 
-            this.ReadOnlyValues = this.Values.AsReadOnly();
+            ReadOnlyValues = Values.AsReadOnly();
         }
 
         /// <summary>

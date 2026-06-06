@@ -74,7 +74,7 @@ public partial class DateOnlyExtensionsTests
         DateOnly date = DateOnly.MaxValue.AddDays(-6); // 9999-12-25
         DateOnly actual = date.LastDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
 
-        Assert.IsTrue(actual <= DateOnly.MaxValue);
+        Assert.IsLessThanOrEqualTo(DateOnly.MaxValue, actual);
         Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
     }
 
@@ -114,7 +114,7 @@ public partial class DateOnlyExtensionsTests
         DateOnly input = DateOnly.MinValue;
         DateOnly actual = input.LastDateOfWeek(CultureInfo.InvariantCulture);
 
-        Assert.IsTrue(actual >= DateOnly.MinValue);
+        Assert.IsGreaterThanOrEqualTo(DateOnly.MinValue, actual);
     }
 
     /// <summary>

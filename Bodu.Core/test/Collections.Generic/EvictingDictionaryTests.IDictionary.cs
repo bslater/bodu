@@ -55,7 +55,7 @@ public partial class EvictingDictionaryTests
     public void IDictionary_Contains_WhenKeyDoesNotExist_ShouldReturnFalse()
     {
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
-        Assert.IsFalse(dictionary.Contains("nope"));
+        Assert.DoesNotContain("nope", dictionary);
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public partial class EvictingDictionaryTests
     {
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("key", 99);
-        Assert.IsTrue(dictionary.Contains("key"));
+        Assert.Contains("key", dictionary);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public partial class EvictingDictionaryTests
     {
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("exists", 1);
-        Assert.IsFalse(dictionary.Contains(123));
+        Assert.DoesNotContain(123, dictionary);
     }
 
     /// <summary>
@@ -202,7 +202,7 @@ public partial class EvictingDictionaryTests
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("key", 1);
         dictionary.Remove("key");
-        Assert.IsFalse(dictionary.Contains("key"));
+        Assert.DoesNotContain("key", dictionary);
     }
 
     /// <summary>

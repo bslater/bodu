@@ -167,12 +167,12 @@ public sealed class NotableDateTraversalExtensionTests
     /// <param name="expected">The expected number of working days yielded.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(SingleDayWorkingYieldRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(SingleDayWorkingYieldRows))]
     public void EnumerateWorkingDays_WhenSingleDayRange_ShouldYieldExpectedCount(int year, int month, int day, int expected)
     {
         DateOnly d = new(year, month, day);
 
-        Assert.AreEqual(expected, d.EnumerateWorkingDays(d, HolidayService, "XX").Count());
+        Assert.HasCount(expected, d.EnumerateWorkingDays(d, HolidayService, "XX"));
     }
 
     /// <summary>
@@ -183,7 +183,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         DateOnly[] reversed = new DateOnly(2026, 1, 11).EnumerateWorkingDays(new DateOnly(2026, 1, 5), HolidayService, "XX").ToArray();
 
-        Assert.AreEqual(0, reversed.Length);
+        Assert.IsEmpty(reversed);
     }
 
     /// <summary>
@@ -222,12 +222,12 @@ public sealed class NotableDateTraversalExtensionTests
     /// <param name="expected">The expected number of non-working days yielded.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(SingleDayNonWorkingYieldRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(SingleDayNonWorkingYieldRows))]
     public void EnumerateNonWorkingDays_WhenSingleDayRange_ShouldYieldExpectedCount(int year, int month, int day, int expected)
     {
         DateOnly d = new(year, month, day);
 
-        Assert.AreEqual(expected, d.EnumerateNonWorkingDays(d, HolidayService, "XX").Count());
+        Assert.HasCount(expected, d.EnumerateNonWorkingDays(d, HolidayService, "XX"));
     }
 
     /// <summary>

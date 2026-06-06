@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PluginNotTrustedException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ public sealed class PluginNotTrustedException : NotableDatePluginException
     public PluginNotTrustedException(string message, string assemblyName, string? reason)
         : base(message)
     {
-        this.AssemblyName = assemblyName;
-        this.Reason = reason;
+        AssemblyName = assemblyName;
+        Reason = reason;
     }
 
     /// <summary>

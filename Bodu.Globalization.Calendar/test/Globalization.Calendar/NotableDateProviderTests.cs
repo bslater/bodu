@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,14 +38,14 @@ public sealed class NotableDateProviderTests
         private readonly DateOnly _date;
 
         public FoundersDayProvider(DateOnly date) =>
-            this._date = date;
+            _date = date;
 
         /// <inheritdoc />
         public IEnumerable<NotableDate> GetNotableDates(DateRange range, string territory)
         {
             yield return new NotableDate(
-                this._date,
-                this._date,
+                _date,
+                _date,
                 false,
                 new NotableDateRuleIdentity("provider", "founders-day", "x"),
                 "Founders Day",
@@ -84,7 +84,7 @@ public sealed class NotableDateProviderTests
 
         IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31)), Territory);
 
-        Assert.IsTrue(results.Any(r => r.NotableDateId == "new-year"));
+        Assert.Contains(r => r.NotableDateId == "new-year", results);
         NotableDate founders = results.Single(r => r.NotableDateId == "founders-day");
         Assert.AreEqual(new DateOnly(2025, 3, 15), founders.Date);
     }
@@ -99,8 +99,8 @@ public sealed class NotableDateProviderTests
 
         IReadOnlyList<NotableDate> january = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 31)), Territory);
 
-        Assert.IsFalse(january.Any(r => r.NotableDateId == "founders-day"));
-        Assert.IsTrue(january.Any(r => r.NotableDateId == "new-year"));
+        Assert.DoesNotContain(r => r.NotableDateId == "founders-day", january);
+        Assert.Contains(r => r.NotableDateId == "new-year", january);
     }
 
     /// <summary>
@@ -113,11 +113,11 @@ public sealed class NotableDateProviderTests
         DateRange year = new(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31));
 
         IReadOnlyList<NotableDate> observances = service.Resolve(year, Territory, NotableDateFilter.ForCategory(NotableDateCategory.Observance));
-        Assert.IsTrue(observances.Any(r => r.NotableDateId == "founders-day"));
-        Assert.IsFalse(observances.Any(r => r.NotableDateId == "new-year"));
+        Assert.Contains(r => r.NotableDateId == "founders-day", observances);
+        Assert.DoesNotContain(r => r.NotableDateId == "new-year", observances);
 
         IReadOnlyList<NotableDate> holidays = service.Resolve(year, Territory, NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
-        Assert.IsFalse(holidays.Any(r => r.NotableDateId == "founders-day"));
+        Assert.DoesNotContain(r => r.NotableDateId == "founders-day", holidays);
     }
 
     /// <summary>
@@ -130,6 +130,6 @@ public sealed class NotableDateProviderTests
 
         IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31)), Territory);
 
-        Assert.IsFalse(results.Any(r => r.NotableDateId == "founders-day"));
+        Assert.DoesNotContain(r => r.NotableDateId == "founders-day", results);
     }
 }

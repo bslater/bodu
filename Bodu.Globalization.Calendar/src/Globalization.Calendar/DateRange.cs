@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateRange.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,14 +41,14 @@ public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
     /// <see langword="true" /> when the start is on or before the end; otherwise <see langword="false" />.
     /// </returns>
     public bool IsValid =>
-        this.StartDate <= this.EndDate;
+        StartDate <= EndDate;
 
     /// <summary>
     /// Gets the number of days the range spans, inclusive of both endpoints.
     /// </summary>
     /// <returns>The inclusive day count, or zero when the range is not well-formed.</returns>
     public int DayCount =>
-        this.IsValid ? (this.EndDate.DayNumber - this.StartDate.DayNumber) + 1 : 0;
+        IsValid ? (EndDate.DayNumber - StartDate.DayNumber) + 1 : 0;
 
     /// <summary>
     /// Determines whether the range contains the supplied date.
@@ -58,7 +58,7 @@ public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
     /// <see langword="true" /> if the date falls within the range; otherwise <see langword="false" />.
     /// </returns>
     public bool Contains(DateOnly date) =>
-        date >= this.StartDate && date <= this.EndDate;
+        date >= StartDate && date <= EndDate;
 
     /// <summary>
     /// Determines whether the range fully contains the supplied range.
@@ -69,7 +69,7 @@ public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
     /// this range; otherwise <see langword="false" />.
     /// </returns>
     public bool Contains(DateRange other) =>
-        this.IsValid && other.IsValid && this.StartDate <= other.StartDate && other.EndDate <= this.EndDate;
+        IsValid && other.IsValid && StartDate <= other.StartDate && other.EndDate <= EndDate;
 
     /// <summary>
     /// Determines whether the range shares at least one day with the supplied range.
@@ -80,5 +80,5 @@ public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
     /// <see langword="false" />.
     /// </returns>
     public bool Intersects(DateRange other) =>
-        this.IsValid && other.IsValid && this.StartDate <= other.EndDate && other.StartDate <= this.EndDate;
+        IsValid && other.IsValid && StartDate <= other.EndDate && other.StartDate <= EndDate;
 }

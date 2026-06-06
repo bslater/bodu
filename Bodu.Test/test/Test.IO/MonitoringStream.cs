@@ -24,25 +24,25 @@ public sealed class MonitoringStream
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="inner" /> is null.</exception>
     public MonitoringStream(Stream inner)
     {
-        this._inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     }
 
     /// <inheritdoc />
-    public override bool CanRead => this._inner.CanRead;
+    public override bool CanRead => _inner.CanRead;
 
     /// <inheritdoc />
-    public override bool CanSeek => this._inner.CanSeek;
+    public override bool CanSeek => _inner.CanSeek;
 
     /// <inheritdoc />
-    public override bool CanWrite => this._inner.CanWrite;
+    public override bool CanWrite => _inner.CanWrite;
 
     /// <inheritdoc />
-    public override long Length => this._inner.Length;
+    public override long Length => _inner.Length;
 
     /// <inheritdoc />
     public override long Position
     {
-        get => this.position;
+        get => position;
         set => throw new NotSupportedException();
     }
 
@@ -52,16 +52,16 @@ public sealed class MonitoringStream
     public IReadOnlyList<(long Offset, int Count)> Reads => reads;
 
     /// <inheritdoc />
-    public override void Flush() => this._inner.Flush();
+    public override void Flush() => _inner.Flush();
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        var bytesRead = this._inner.Read(buffer, offset, count);
+        var bytesRead = _inner.Read(buffer, offset, count);
         if (bytesRead > 0)
         {
-            this.reads.Add((this.position, bytesRead));
-            this.position += bytesRead;
+            reads.Add((position, bytesRead));
+            position += bytesRead;
         }
         return bytesRead;
     }
@@ -69,11 +69,11 @@ public sealed class MonitoringStream
     /// <inheritdoc />
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        var bytesRead = await this._inner.ReadAsync(buffer, offset, count, cancellationToken);
+        var bytesRead = await _inner.ReadAsync(buffer, offset, count, cancellationToken);
         if (bytesRead > 0)
         {
-            this.reads.Add((this.position, bytesRead));
-            this.position += bytesRead;
+            reads.Add((position, bytesRead));
+            position += bytesRead;
         }
         return bytesRead;
     }
@@ -116,13 +116,13 @@ public sealed class MonitoringStream
     /// <inheritdoc />
     public override void Write(byte[] buffer, int offset, int count)
     {
-        this._inner.Write(buffer, offset, count);
-        this.position += count;
+        _inner.Write(buffer, offset, count);
+        position += count;
     }
 
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        this.position += count;
-        return this._inner.WriteAsync(buffer, offset, count, cancellationToken);
+        position += count;
+        return _inner.WriteAsync(buffer, offset, count, cancellationToken);
     }
 }

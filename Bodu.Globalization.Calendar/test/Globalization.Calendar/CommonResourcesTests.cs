@@ -95,7 +95,7 @@ public sealed class CommonResourcesTests
             .Select(name => name[prefix.Length..^4])
             .ToList();
 
-        Assert.IsTrue(catalogues.Count >= 2, "expected the bundled catalogues to be embedded");
+        Assert.IsGreaterThanOrEqualTo(2, catalogues.Count, "expected the bundled catalogues to be embedded");
 
         foreach (var catalogue in catalogues)
         {
@@ -103,7 +103,7 @@ public sealed class CommonResourcesTests
             Assert.IsNotNull(content, $"catalogue '{catalogue}' did not resolve");
 
             NotableDateResource resource = NotableDateResourceLoader.Load(content!, CommonNotableDateResources.Resolver);
-            Assert.IsTrue(resource.NotableDates.Count > 0, $"catalogue '{catalogue}' has no concepts");
+            Assert.IsNotEmpty(resource.NotableDates, $"catalogue '{catalogue}' has no concepts");
         }
     }
 }

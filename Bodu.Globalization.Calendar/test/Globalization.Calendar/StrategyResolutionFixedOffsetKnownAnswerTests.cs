@@ -117,8 +117,8 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             "expected at least one error diagnostic for the unresolved offset reference");
     }
 
@@ -134,7 +134,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' on {date:yyyy-MM-dd}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' on {date:yyyy-MM-dd}");
         Assert.AreEqual(date, matches[0].Date, $"{notableDateId} {date:yyyy-MM-dd}");
     }
 

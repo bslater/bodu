@@ -45,7 +45,7 @@ public abstract class ReadOnlyCollectionContractTests<TCollection, TItem>
     {
         TCollection collection = CreateEmpty();
 
-        Assert.AreEqual(0, collection.Count);
+        Assert.IsEmpty(collection);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public abstract class ReadOnlyCollectionContractTests<TCollection, TItem>
         TItem[] items = [CreateItem(0), CreateItem(1), CreateItem(2)];
         TCollection collection = Create(items);
 
-        Assert.AreEqual(items.Length, collection.Count);
+        Assert.HasCount(items.Length, collection);
     }
 
     /// <summary>

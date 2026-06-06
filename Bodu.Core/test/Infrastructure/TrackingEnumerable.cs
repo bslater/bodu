@@ -32,9 +32,9 @@ public sealed class TrackingEnumerable<T>
     /// <param name="onItemAccess">An optional callback for each item accessed.</param>
     public TrackingEnumerable(IEnumerable<T> source, Action? onEnumerate = null, Action<int>? onItemAccess = null)
     {
-        this._source = source ?? throw new ArgumentNullException(nameof(source));
-        this._onEnumerate = onEnumerate ?? (() => { });
-        this._onItemAccess = onItemAccess;
+        _source = source ?? throw new ArgumentNullException(nameof(source));
+        _onEnumerate = onEnumerate ?? (() => { });
+        _onItemAccess = onItemAccess;
     }
 
     /// <summary>

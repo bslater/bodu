@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PatchRuleOverride.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -54,15 +54,15 @@ internal sealed class PatchRuleOverride : NotableDateRuleOverride
     {
         ThrowHelper.ThrowIfNull(ruleRef);
 
-        this.RuleRef = ruleRef;
-        this.Priority = priority;
-        this.Category = category;
-        this.NonWorking = nonWorking;
-        this.DurationDays = durationDays;
-        this.Applicability = applicability;
-        this.Strategy = strategy;
-        this.AdjustmentPolicyRefs = adjustmentPolicyRefs;
-        this.Tags = tags;
+        RuleRef = ruleRef;
+        Priority = priority;
+        Category = category;
+        NonWorking = nonWorking;
+        DurationDays = durationDays;
+        Applicability = applicability;
+        Strategy = strategy;
+        AdjustmentPolicyRefs = adjustmentPolicyRefs;
+        Tags = tags;
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateValidationDiagnostic.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,5 +22,5 @@ public sealed record NotableDateValidationDiagnostic(
     /// </summary>
     /// <returns>The diagnostic formatted as <c>[Severity] Code: Message</c>.</returns>
     public override string ToString() =>
-        $"[{this.Severity}] {this.Code}: {this.Message}";
+        $"[{Severity}] {Code}: {Message}";
 }

@@ -39,6 +39,12 @@
       locale and sighting convention. The same keys are used by the shipping India region pack.
     -->
 
+
+    <!-- Vasant Panchami — spring festival on Magha shukla panchami; computed lunar date. -->
+    <NotableDate id="vasant-panchami" displayName="Vasant Panchami" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="vasant-panchami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!-- Saraswati Puja — observed on Vasant Panchami (Magha shukla panchami); shares the vasant-panchami computation. -->
     <NotableDate id="saraswati-puja" displayName="Saraswati Puja" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="vasant-panchami" /></Strategy></Rule></Rules>

@@ -44,8 +44,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the seeded overload throws <see cref="ArgumentNullException"/> when the accumulator function is
-    /// <see langword="null"/>.
+    /// Verifies that the seeded overload throws <see cref="ArgumentNullException" /> when the accumulator function is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForSeededOverload_ShouldThrowExactly()
@@ -377,8 +377,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the selector overload throws <see cref="ArgumentNullException"/> when the result selector is
-    /// <see langword="null"/>.
+    /// Verifies that the selector overload throws <see cref="ArgumentNullException" /> when the result selector is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForSelectorOverload_ShouldThrowExactly()
@@ -532,8 +532,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         Assert.AreEqual(22, v2);
     }
     /// <summary>
-    /// Verifies that the default-seed overload throws <see cref="ArgumentNullException"/> when the source sequence is
-    /// <see langword="null"/>.
+    /// Verifies that the default-seed overload throws <see cref="ArgumentNullException" /> when the source sequence is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Aggregate_WhenSourceIsNull_ForDefaultSeedOverload_ShouldThrowExactly()

@@ -246,7 +246,7 @@ public sealed class RuleApplicabilityTests
         var national = Territories("AU").MatchSpecificity("AU-NSW");
         var subnational = Territories("AU-NSW").MatchSpecificity("AU-NSW");
 
-        Assert.IsTrue(subnational > national);
+        Assert.IsGreaterThan(national, subnational);
     }
 
     // -----------------------------------------------------------------------------------------------------------

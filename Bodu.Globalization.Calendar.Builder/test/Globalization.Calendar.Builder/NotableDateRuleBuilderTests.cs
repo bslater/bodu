@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -43,7 +41,7 @@ public class NotableDateRuleBuilderTests
     {
         NotableDateResource resource = BuildRule(r => r.Fixed(12, 25));
 
-        Assert.AreEqual(1, resource.NotableDates.Count);
+        Assert.HasCount(1, resource.NotableDates);
     }
 
     /// <summary>

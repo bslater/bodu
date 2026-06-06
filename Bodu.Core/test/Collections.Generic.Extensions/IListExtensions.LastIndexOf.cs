@@ -24,7 +24,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     ];
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the backward range
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when the backward range
     /// extends before the start of the list.
     /// </summary>
     [TestMethod]
@@ -196,8 +196,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when
-    /// <paramref name="startIndex"/> equals <see cref="ICollection{T}.Count"/>.
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// <paramref name="startIndex" /> equals <see cref="ICollection{T}.Count" />.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenStartIndexEqualsCount_ShouldThrowExactly()
@@ -211,8 +211,8 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when
-    /// <paramref name="startIndex"/> is negative on a non-empty list.
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// <paramref name="startIndex" /> is negative on a non-empty list.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WhenStartIndexIsNegative_ShouldThrowExactly()

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResourceLoaderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,8 +22,8 @@ public sealed class NotableDateResourceLoaderTests
     {
         NotableDateResource resource = MinimalNotableDates.Load();
 
-        Assert.AreEqual(3, resource.NotableDates.Count, "notable-date count");
+        Assert.HasCount(3, resource.NotableDates, "notable-date count");
         Assert.AreEqual(5, resource.RuleCount, "rule count");
-        Assert.AreEqual(1, resource.AdjustmentPolicies.Count, "adjustment-policy count");
+        Assert.HasCount(1, resource.AdjustmentPolicies, "adjustment-policy count");
     }
 }

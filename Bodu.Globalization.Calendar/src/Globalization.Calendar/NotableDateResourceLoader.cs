@@ -28,8 +28,7 @@ namespace Bodu.Globalization.Calendar;
 /// <strong>When to use.</strong> Call <see cref="Load(string)" /> / <see cref="LoadJson(string)" /> (or the
 /// <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document imports
 /// shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the data-pack
-/// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the
-/// embedded resources for you.
+/// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources for you.
 /// </para>
 /// </remarks>
 /// <example>
@@ -53,10 +52,9 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateResource" />
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDateValidationException" />
-/// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
+/// <seealso cref="NotableDateResource" /> <seealso cref="NotableDateService" />
+/// <seealso cref="NotableDateValidationException" /> <seealso href="../guides/calendar/building-the-service.html">
+/// Building and extending the service (guide)</seealso>
 public static class NotableDateResourceLoader
 {
     /// <summary>
@@ -385,7 +383,7 @@ public static class NotableDateResourceLoader
                             r.Applicability.Calendar,
                             r.Applicability.FromYear,
                             r.Applicability.ToYear,
-                            new[] { use.Territory! },
+                            [use.Territory!],
                             r.Applicability.OnlyYears,
                             r.Applicability.ExceptYears,
                             r.Applicability.EveryYears,

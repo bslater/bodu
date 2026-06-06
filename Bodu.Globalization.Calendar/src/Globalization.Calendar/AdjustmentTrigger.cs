@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentTrigger.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,7 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Identifies the condition that determines whether an adjustment policy applies to a calculated occurrence.
 /// </summary>
-/// <seealso cref="AdjustmentAction" />
-/// <seealso cref="AdjustmentPolicy" />
+/// <seealso cref="AdjustmentAction" /> <seealso cref="AdjustmentPolicy" />
 /// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public enum AdjustmentTrigger
 {

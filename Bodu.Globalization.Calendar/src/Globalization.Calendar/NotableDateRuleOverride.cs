@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleOverride.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ internal abstract class NotableDateRuleOverride
     {
         ThrowHelper.ThrowIfNull(notableDateRef);
 
-        this.NotableDateRef = notableDateRef;
+        NotableDateRef = notableDateRef;
     }
 
     /// <summary>

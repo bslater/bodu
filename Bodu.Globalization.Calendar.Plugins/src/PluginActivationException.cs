@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PluginActivationException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed class PluginActivationException : NotableDatePluginException
     public PluginActivationException(string message, Type? pluginType)
         : base(message)
     {
-        this.PluginType = pluginType;
+        PluginType = pluginType;
     }
 
     /// <summary>
@@ -32,7 +32,34 @@ public sealed class PluginActivationException : NotableDatePluginException
     public PluginActivationException(string message, Type? pluginType, Exception innerException)
         : base(message, innerException)
     {
-        this.PluginType = pluginType;
+        PluginType = pluginType;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginActivationException" /> class.
+    /// </summary>
+    /// <param name="message">The message describing the failure.</param>
+    public PluginActivationException(string message)
+        : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginActivationException" /> class.
+    /// </summary>
+    /// <param name="message">The message describing the failure.</param>
+    /// <param name="innerException">The underlying cause.</param>
+    public PluginActivationException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginActivationException" /> class.
+    /// </summary>
+    public PluginActivationException()
+        : base()
+    {
     }
 
     /// <summary>

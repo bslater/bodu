@@ -52,12 +52,12 @@ public sealed class UmmAlQuraCalendarKnownAnswerTests
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.IsTrue(ids.Contains("ramadan"));
-        Assert.IsTrue(ids.Contains("eid-al-fitr"));
-        Assert.IsTrue(ids.Contains("eid-al-adha"));
-        Assert.IsTrue(ids.Contains("islamic-new-year"));
-        Assert.IsTrue(ids.Contains("day-of-ashura"));
-        Assert.IsTrue(ids.Contains("mawlid-al-nabi"));
+        Assert.Contains("ramadan", ids);
+        Assert.Contains("eid-al-fitr", ids);
+        Assert.Contains("eid-al-adha", ids);
+        Assert.Contains("islamic-new-year", ids);
+        Assert.Contains("day-of-ashura", ids);
+        Assert.Contains("mawlid-al-nabi", ids);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public sealed class UmmAlQuraCalendarKnownAnswerTests
     {
         List<NotableDate> matches = ResolveForYear(CreateService(), notableDateId, year);
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' anchored in {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' anchored in {year}");
         Assert.AreEqual(new DateOnly(year, expectedMonth, expectedDay), matches[0].Date, $"{notableDateId} {year}");
     }
 
@@ -121,7 +121,7 @@ public sealed class UmmAlQuraCalendarKnownAnswerTests
     {
         List<NotableDate> matches = ResolveForYear(CreateService(), notableDateId, 2024);
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' anchored in 2024");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' anchored in 2024");
         Assert.AreEqual(expectedDuration, matches[0].DurationDays, notableDateId);
     }
 }

@@ -82,8 +82,8 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="index"/>
-    /// exceeds <see cref="ICollection{T}.Count"/>.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when <paramref name="index" />
+    /// exceeds <see cref="ICollection{T}.Count" />.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenIndexExceedsCount_ShouldThrowExactly()
@@ -97,7 +97,7 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the start index is negative.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException" /> when the start index is negative.
     /// </summary>
     [TestMethod]
     public void IndexOf_WhenIndexIsNegative_ShouldThrowExactly()

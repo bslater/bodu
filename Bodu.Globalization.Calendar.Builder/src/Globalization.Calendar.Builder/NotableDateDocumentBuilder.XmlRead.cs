@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilder.XmlRead.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,11 +24,11 @@ public sealed partial class NotableDateDocumentBuilder
         if (element is null)
             return;
 
-        this._metadataName = (string?)element.Element(BuilderXml.Namespace + "Name");
-        this._metadataDescription = (string?)element.Element(BuilderXml.Namespace + "Description");
-        this._sources.Clear();
+        _metadataName = (string?)element.Element(BuilderXml.Namespace + "Name");
+        _metadataDescription = (string?)element.Element(BuilderXml.Namespace + "Description");
+        _sources.Clear();
         foreach (XElement source in element.Elements(BuilderXml.Namespace + "Source"))
-            this._sources.Add(source.Value);
+            _sources.Add(source.Value);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         ResolutionPolicyBuilder policy = new();
         WeekPattern? workingWeek = null;
-        string? workingDays = (string?)element.Attribute("workingDays");
+        var workingDays = (string?)element.Attribute("workingDays");
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
@@ -54,7 +54,7 @@ public sealed partial class NotableDateDocumentBuilder
             ParseNullableEnum<ObservedDateRangePolicy>((string?)element.Attribute("observedDateRangePolicy")),
             workingWeek);
 
-        this._resolutionPolicy = policy;
+        _resolutionPolicy = policy;
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public sealed partial class NotableDateDocumentBuilder
             return;
 
         foreach (XElement policyElement in element.Elements(BuilderXml.Namespace + "AdjustmentPolicy"))
-            this._adjustmentPolicies.Add(ReadAdjustmentPolicy(policyElement));
+            _adjustmentPolicies.Add(ReadAdjustmentPolicy(policyElement));
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public sealed partial class NotableDateDocumentBuilder
             foreach (XElement weekday in trigger.Elements(BuilderXml.Namespace + "Weekday"))
                 weekdays.Add(ParseEnum<DayOfWeek>((string?)weekday.Attribute("value")));
 
-            string? month = (string?)trigger.Attribute("month");
+            var month = (string?)trigger.Attribute("month");
             policy.SetParsedTrigger(
                 ParseNullableEnum<AdjustmentTrigger>((string?)trigger.Attribute("type")),
                 weekdays,
@@ -222,7 +222,7 @@ public sealed partial class NotableDateDocumentBuilder
             foreach (XElement useElement in importElement.Elements(BuilderXml.Namespace + "Use"))
                 import.AddUse(ReadImportUse(useElement));
 
-            this._imports.Add(import);
+            _imports.Add(import);
         }
     }
 
@@ -262,7 +262,7 @@ public sealed partial class NotableDateDocumentBuilder
             return;
 
         foreach (XElement definitionElement in element.Elements(BuilderXml.Namespace + "NotableDate"))
-            this._definitions.Add(ReadNotableDate(definitionElement));
+            _definitions.Add(ReadNotableDate(definitionElement));
     }
 
     /// <summary>
@@ -389,7 +389,7 @@ public sealed partial class NotableDateDocumentBuilder
             }
         }
 
-        this._overrides = overrides;
+        _overrides = overrides;
     }
 
     /// <summary>
@@ -410,7 +410,8 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Parses an enumeration value from its string form, returning the default when the value is absent or unrecognized.
+    /// Parses an enumeration value from its string form, returning the default when the value is absent or
+    /// unrecognized.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The string form, or <see langword="null" /> when absent.</param>

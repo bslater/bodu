@@ -28,7 +28,7 @@ public sealed partial class IEnumerableExtensionsTests_Index
     /// Verifies that <c>Index</c> returns an empty sequence for an empty source.
     /// </summary>
     [TestMethod]
-    public void Index_WhenSourceIsEmpty_ShouldReturnEmptySequence() => Assert.AreEqual(0, Array.Empty<int>().Index().Count());
+    public void Index_WhenSourceIsEmpty_ShouldReturnEmptySequence() => Assert.IsEmpty(Array.Empty<int>().Index());
 
     /// <summary>
     /// Verifies that <c>Index</c> defers enumeration of the source until the result is iterated.

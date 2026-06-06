@@ -208,7 +208,7 @@ public sealed class ImportResolutionTests
             _ = NotableDateResourceLoader.Load(A, Resolver(("a", A), ("b", B)));
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-IMPORT-CYCLE"));
+        Assert.Contains(d => d.Code == "BODU-CAL-IMPORT-CYCLE", ex.Diagnostics);
     }
 
     /// <summary>
@@ -229,6 +229,6 @@ public sealed class ImportResolutionTests
             _ = NotableDateResourceLoader.Load(Region, Resolver());
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-IMPORT-MISSING"));
+        Assert.Contains(d => d.Code == "BODU-CAL-IMPORT-MISSING", ex.Diagnostics);
     }
 }

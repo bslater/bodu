@@ -118,7 +118,7 @@ public sealed class NotableDateFilterTests
         IReadOnlyList<NotableDate> results = CreateService()
             .Resolve(new DateOnly(2023, 2, 3), "XX", NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         Assert.AreEqual("spring-week", results[0].NotableDateId);
     }
 }

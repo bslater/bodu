@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompositePluginTrustPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
     {
         ThrowHelper.ThrowIfNull(policies);
 
-        this._policies = policies.ToArray();
+        _policies = policies.ToArray();
     }
 
     /// <inheritdoc />
@@ -35,7 +35,7 @@ public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
     {
         ThrowHelper.ThrowIfNull(context);
 
-        foreach (IPluginTrustPolicy policy in this._policies)
+        foreach (IPluginTrustPolicy policy in _policies)
         {
             PluginTrustResult result = policy.Evaluate(context);
             if (!result.IsTrusted)

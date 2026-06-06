@@ -35,8 +35,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" /> <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class EuropeCalendarData
 {
@@ -49,11 +48,11 @@ public static class EuropeCalendarData
     /// Gets the country codes the Europe pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[]
-    {
+    public static IReadOnlyList<string> SupportedCountries { get; } =
+    [
         "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "GR", "HR",
         "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
-    };
+    ];
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.
@@ -78,8 +77,8 @@ public static class EuropeCalendarData
     }
 
     /// <summary>
-    /// Resolves an imported resource name to its content. The pan-European <c>europe-common</c> hub is served from
-    /// this pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c> and
+    /// Resolves an imported resource name to its content. The pan-European <c>europe-common</c> hub is served from this
+    /// pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c> and
     /// <c>global-core</c>, including those that <c>europe-common</c> itself imports) is delegated to
     /// <see cref="CommonNotableDateResources" />.
     /// </summary>

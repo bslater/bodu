@@ -32,8 +32,8 @@ public sealed class ParserValidationTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Code == expectedCode && d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Code == expectedCode && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             $"Expected diagnostic '{expectedCode}'. Actual: {string.Join("; ", ex.Diagnostics.Select(d => d.Code))}");
     }
 
@@ -315,7 +315,7 @@ public sealed class ParserValidationTests
             _ = NotableDateResourceLoader.LoadJson(json);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-DAY"), "BODU-CAL-DAY");
+        Assert.Contains(d => d.Code == "BODU-CAL-DAY", ex.Diagnostics, "BODU-CAL-DAY");
     }
 
     /// <summary>
@@ -337,7 +337,7 @@ public sealed class ParserValidationTests
             _ = NotableDateResourceLoader.LoadJson(json);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-OFFSET-MISSING"), "BODU-CAL-OFFSET-MISSING");
+        Assert.Contains(d => d.Code == "BODU-CAL-OFFSET-MISSING", ex.Diagnostics, "BODU-CAL-OFFSET-MISSING");
     }
 
     /// <summary>
@@ -359,7 +359,7 @@ public sealed class ParserValidationTests
             _ = NotableDateResourceLoader.LoadJson(json);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-ALGORITHM"), "BODU-CAL-ALGORITHM");
+        Assert.Contains(d => d.Code == "BODU-CAL-ALGORITHM", ex.Diagnostics, "BODU-CAL-ALGORITHM");
     }
 
     /// <summary>
@@ -381,7 +381,7 @@ public sealed class ParserValidationTests
             _ = NotableDateResourceLoader.LoadJson(json);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-YEARS"), "BODU-CAL-YEARS");
+        Assert.Contains(d => d.Code == "BODU-CAL-YEARS", ex.Diagnostics, "BODU-CAL-YEARS");
     }
 
     /// <summary>
@@ -412,8 +412,8 @@ public sealed class ParserValidationTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-DAY"), "BODU-CAL-DAY");
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-ADJREF"), "BODU-CAL-ADJREF");
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-DUP-RULE"), "BODU-CAL-DUP-RULE");
+        Assert.Contains(d => d.Code == "BODU-CAL-DAY", ex.Diagnostics, "BODU-CAL-DAY");
+        Assert.Contains(d => d.Code == "BODU-CAL-ADJREF", ex.Diagnostics, "BODU-CAL-ADJREF");
+        Assert.Contains(d => d.Code == "BODU-CAL-DUP-RULE", ex.Diagnostics, "BODU-CAL-DUP-RULE");
     }
 }

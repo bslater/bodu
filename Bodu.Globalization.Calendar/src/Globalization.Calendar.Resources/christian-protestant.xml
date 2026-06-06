@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Protestant Christian notable-date catalogue (Western / Gregorian calendar)
+  ================================================================================================================
+
+  A common-library catalogue of Protestant-specific notable dates that sit beside, rather than replace,
+  common.christian-western. The shared Western Christian catalogue already carries the Easter cluster, Epiphany,
+  Candlemas, Annunciation, All Saints, Christmas, and the other broadly Western feasts. This catalogue only defines
+  Protestant-specific or Protestant-weighted concepts such as Reformation observances and denominational commemorations.
+
+  Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
+  stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend adjustment
+  there. The catalogue default category is Religious; a pack that observes one as a public holiday overrides
+  category/nonWorking on its own <Use>.
+
+  Movable Protestant observances that depend on Easter import the Western Easter anchor from common.christian-western
+  under the local alias "western-easter-sunday". The imported anchor is used only as the calculation base for local
+  OffsetFromRule strategies in this catalogue.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.christian-protestant">
+
+  <Imports>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" as="western-easter-sunday" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Reformation observances
+      ============================================================================================================
+      Reformation Day is the principal Protestant-specific fixed observance. Reformation Sunday is supplied as a
+      separate concept because many church calendars observe it liturgically on the preceding or coincident Sunday.
+    -->
+
+    <!-- Reformation Day — 31 October; Protestant commemoration of the Reformation. Strategy: Fixed day-of-month. -->
+    <NotableDate id="reformation-day" displayName="Reformation Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Reformation Sunday — Sunday on or before 31 October. Strategy: WeekdayNearDate. -->
+    <NotableDate id="reformation-sunday" displayName="Reformation Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><WeekdayNearDate month="October" day="31" dayOfWeek="Sunday" direction="OnOrBefore" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Protestant liturgical Sundays and denominational commemorations
+      ============================================================================================================
+      These dates are common in Protestant liturgical calendars but are not universal civil holidays. Territory or
+      denomination packs can import only the concepts they use.
+    -->
+
+    <!-- Transfiguration Sunday — Sunday before Ash Wednesday in many Protestant calendars. Strategy: OffsetFromRule, 49 days before Easter. -->
+    <NotableDate id="transfiguration-sunday" displayName="Transfiguration Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="western-easter-sunday" ruleRef="default" offsetDays="-49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- All Saints' Sunday — first Sunday on or after All Saints' Day. Strategy: WeekdayNearDate. -->
+    <NotableDate id="all-saints-sunday" displayName="All Saints' Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><WeekdayNearDate month="November" day="1" dayOfWeek="Sunday" direction="OnOrAfter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Aldersgate Day — 24 May; Methodist commemoration of John Wesley's Aldersgate experience. Strategy: Fixed day-of-month. -->
+    <NotableDate id="aldersgate-day" displayName="Aldersgate Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="May" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

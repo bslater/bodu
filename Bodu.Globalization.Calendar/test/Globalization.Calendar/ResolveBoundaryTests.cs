@@ -94,7 +94,7 @@ public sealed class ResolveBoundaryTests
         IReadOnlyList<NotableDate> results = FixedService(7, 4, fromYear: 2026, toYear: 2026)
             .Resolve(new DateRange(new DateOnly(2026, 7, 4), new DateOnly(2026, 7, 4)), Territory);
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         Assert.AreEqual(new DateOnly(2026, 7, 4), results[0].Date);
     }
 
@@ -113,7 +113,7 @@ public sealed class ResolveBoundaryTests
         IReadOnlyList<NotableDate> results = new NotableDateService(NotableDateResourceLoader.Load(xml))
             .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), Territory);
 
-        Assert.AreEqual(0, results.Count);
+        Assert.IsEmpty(results);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public sealed class ResolveBoundaryTests
 
         NotableDate[] annual = results.Where(n => n.NotableDateId == "anchor").OrderBy(n => n.Date).ToArray();
 
-        Assert.AreEqual(expectedCount, annual.Length);
+        Assert.HasCount(expectedCount, annual);
         for (var i = 0; i < annual.Length; i++)
             Assert.AreEqual(new DateOnly(startYear + i, 1, 1), annual[i].Date);
     }
@@ -293,7 +293,7 @@ public sealed class ResolveBoundaryTests
     /// <returns>The single occurrence.</returns>
     private static NotableDate Single(IReadOnlyList<NotableDate> results)
     {
-        Assert.AreEqual(1, results.Count, "expected exactly one occurrence");
+        Assert.HasCount(1, results, "expected exactly one occurrence");
         return results[0];
     }
 
@@ -306,7 +306,7 @@ public sealed class ResolveBoundaryTests
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
         var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }
 }

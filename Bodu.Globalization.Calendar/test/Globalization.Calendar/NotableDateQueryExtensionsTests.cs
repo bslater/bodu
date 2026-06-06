@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateQueryExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public sealed class NotableDateQueryExtensionsTests
     [TestMethod]
     public void Resolve_ByYear_ShouldReturnAllOccurrencesInYear()
     {
-        Assert.AreEqual(2, Service.Resolve(2026, "XX").Count);
+        Assert.HasCount(2, Service.Resolve(2026, "XX"));
     }
 
     /// <summary>
@@ -72,6 +72,6 @@ public sealed class NotableDateQueryExtensionsTests
     [TestMethod]
     public void GetNotableDatesInYear_ShouldReturnWholeYear()
     {
-        Assert.AreEqual(2, new DateOnly(2026, 6, 1).GetNotableDatesInYear(Service, "XX").Count);
+        Assert.HasCount(2, new DateOnly(2026, 6, 1).GetNotableDatesInYear(Service, "XX"));
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentPolicyBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,8 +33,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateDocumentBuilder" />
-/// <seealso cref="NotableDateRuleBuilder" />
+/// <seealso cref="NotableDateDocumentBuilder" /> <seealso cref="NotableDateRuleBuilder" />
 /// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public sealed class AdjustmentPolicyBuilder
 {
@@ -159,7 +158,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <param name="id">The stable identifier of the policy.</param>
     internal AdjustmentPolicyBuilder(string id)
     {
-        this._id = id;
+        _id = id;
     }
 
     /// <summary>
@@ -167,161 +166,161 @@ public sealed class AdjustmentPolicyBuilder
     /// </summary>
     /// <returns>The policy identifier.</returns>
     internal string Id =>
-        this._id;
+        _id;
 
     /// <summary>
     /// Gets the configured priority.
     /// </summary>
     /// <returns>The priority, or <see langword="null" /> when unset.</returns>
     internal int? Priority =>
-        this._priority;
+        _priority;
 
     /// <summary>
     /// Gets the configured description.
     /// </summary>
     /// <returns>The description, or <see langword="null" /> when unset.</returns>
     internal string? Description =>
-        this._description;
+        _description;
 
     /// <summary>
     /// Gets the configured scope.
     /// </summary>
     /// <returns>The scope builder, or <see langword="null" /> when the policy applies globally.</returns>
     internal AdjustmentScopeBuilder? Scope =>
-        this._scope;
+        _scope;
 
     /// <summary>
     /// Gets the configured trigger type.
     /// </summary>
     /// <returns>The trigger type, or <see langword="null" /> when unset.</returns>
     internal AdjustmentTrigger? TriggerType =>
-        this._triggerType;
+        _triggerType;
 
     /// <summary>
     /// Gets the weekdays attached to the trigger.
     /// </summary>
     /// <returns>The weekdays; empty when none are configured.</returns>
     internal IReadOnlyList<DayOfWeek> TriggerWeekdays =>
-        this._triggerWeekdays;
+        _triggerWeekdays;
 
     /// <summary>
     /// Gets the trigger comparison month.
     /// </summary>
     /// <returns>The month, or <see langword="null" /> when unset.</returns>
     internal int? TriggerMonth =>
-        this._triggerMonth;
+        _triggerMonth;
 
     /// <summary>
     /// Gets the trigger comparison day.
     /// </summary>
     /// <returns>The day, or <see langword="null" /> when unset.</returns>
     internal int? TriggerDay =>
-        this._triggerDay;
+        _triggerDay;
 
     /// <summary>
     /// Gets the trigger week ordinal.
     /// </summary>
     /// <returns>The week ordinal, or <see langword="null" /> when unset.</returns>
     internal WeekOrdinal? TriggerWeekOrdinal =>
-        this._triggerWeekOrdinal;
+        _triggerWeekOrdinal;
 
     /// <summary>
     /// Gets the trigger custom-handler key.
     /// </summary>
     /// <returns>The handler key, or <see langword="null" /> when unset.</returns>
     internal string? TriggerHandlerKey =>
-        this._triggerHandlerKey;
+        _triggerHandlerKey;
 
     /// <summary>
     /// Gets the configured action type.
     /// </summary>
     /// <returns>The action type, or <see langword="null" /> when unset.</returns>
     internal AdjustmentAction? ActionType =>
-        this._actionType;
+        _actionType;
 
     /// <summary>
     /// Gets the action day offset.
     /// </summary>
     /// <returns>The day offset, or <see langword="null" /> when unset.</returns>
     internal int? ActionDays =>
-        this._actionDays;
+        _actionDays;
 
     /// <summary>
     /// Gets the action target weekday.
     /// </summary>
     /// <returns>The weekday, or <see langword="null" /> when unset.</returns>
     internal DayOfWeek? ActionDayOfWeek =>
-        this._actionDayOfWeek;
+        _actionDayOfWeek;
 
     /// <summary>
     /// Gets the maximum search horizon in days.
     /// </summary>
     /// <returns>The horizon, or <see langword="null" /> when unset.</returns>
     internal int? ActionMaxSearchDays =>
-        this._actionMaxSearchDays;
+        _actionMaxSearchDays;
 
     /// <summary>
     /// Gets the action skip-weekends flag.
     /// </summary>
     /// <returns>The flag, or <see langword="null" /> when unset.</returns>
     internal bool? ActionSkipWeekends =>
-        this._actionSkipWeekends;
+        _actionSkipWeekends;
 
     /// <summary>
     /// Gets the action skip-non-working-dates flag.
     /// </summary>
     /// <returns>The flag, or <see langword="null" /> when unset.</returns>
     internal bool? ActionSkipNonWorkingDates =>
-        this._actionSkipNonWorkingDates;
+        _actionSkipNonWorkingDates;
 
     /// <summary>
     /// Gets the replacement concept reference for a replace action.
     /// </summary>
     /// <returns>The concept reference, or <see langword="null" /> when unset.</returns>
     internal string? ActionNotableDateRef =>
-        this._actionNotableDateRef;
+        _actionNotableDateRef;
 
     /// <summary>
     /// Gets the replacement rule reference for a replace action.
     /// </summary>
     /// <returns>The rule reference, or <see langword="null" /> when unset.</returns>
     internal string? ActionRuleRef =>
-        this._actionRuleRef;
+        _actionRuleRef;
 
     /// <summary>
     /// Gets the action custom-handler key.
     /// </summary>
     /// <returns>The handler key, or <see langword="null" /> when unset.</returns>
     internal string? ActionHandlerKey =>
-        this._actionHandlerKey;
+        _actionHandlerKey;
 
     /// <summary>
     /// Gets the configured emission mode.
     /// </summary>
     /// <returns>The emission mode, or <see langword="null" /> when unset.</returns>
     internal EmissionMode? EmissionModeValue =>
-        this._emissionMode;
+        _emissionMode;
 
     /// <summary>
     /// Gets the emission reason.
     /// </summary>
     /// <returns>The reason, or <see langword="null" /> when unset.</returns>
     internal string? EmissionReason =>
-        this._emissionReason;
+        _emissionReason;
 
     /// <summary>
     /// Gets the emission non-working flag.
     /// </summary>
     /// <returns>The flag, or <see langword="null" /> when unset.</returns>
     internal bool? EmissionNonWorking =>
-        this._emissionNonWorking;
+        _emissionNonWorking;
 
     /// <summary>
     /// Gets the custom handler parameters.
     /// </summary>
     /// <returns>The parameter map; empty when none are configured.</returns>
     internal IReadOnlyDictionary<string, string> Parameters =>
-        this._parameters;
+        _parameters;
 
     /// <summary>
     /// Sets the priority of the policy.
@@ -330,7 +329,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder WithPriority(int priority)
     {
-        this._priority = priority;
+        _priority = priority;
         return this;
     }
 
@@ -344,7 +343,7 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNull(description);
 
-        this._description = description;
+        _description = description;
         return this;
     }
 
@@ -358,9 +357,9 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNull(configure);
 
-        AdjustmentScopeBuilder scope = this._scope ?? new AdjustmentScopeBuilder();
+        AdjustmentScopeBuilder scope = _scope ?? new AdjustmentScopeBuilder();
         configure(scope);
-        this._scope = scope;
+        _scope = scope;
         return this;
     }
 
@@ -371,7 +370,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder When(AdjustmentTrigger type)
     {
-        this._triggerType = type;
+        _triggerType = type;
         return this;
     }
 
@@ -385,8 +384,8 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNull(days);
 
-        this._triggerWeekdays.Clear();
-        this._triggerWeekdays.AddRange(days);
+        _triggerWeekdays.Clear();
+        _triggerWeekdays.AddRange(days);
         return this;
     }
 
@@ -401,7 +400,7 @@ public sealed class AdjustmentPolicyBuilder
         ThrowHelper.ThrowIfLessThan(month, 1);
         ThrowHelper.ThrowIfGreaterThan(month, 12);
 
-        this._triggerMonth = month;
+        _triggerMonth = month;
         return this;
     }
 
@@ -416,7 +415,7 @@ public sealed class AdjustmentPolicyBuilder
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
-        this._triggerDay = day;
+        _triggerDay = day;
         return this;
     }
 
@@ -427,7 +426,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder WithTriggerWeekOrdinal(WeekOrdinal weekOrdinal)
     {
-        this._triggerWeekOrdinal = weekOrdinal;
+        _triggerWeekOrdinal = weekOrdinal;
         return this;
     }
 
@@ -443,7 +442,7 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(handlerKey);
 
-        this._triggerHandlerKey = handlerKey;
+        _triggerHandlerKey = handlerKey;
         return this;
     }
 
@@ -454,7 +453,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder Then(AdjustmentAction type)
     {
-        this._actionType = type;
+        _actionType = type;
         return this;
     }
 
@@ -465,7 +464,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder WithActionDays(int days)
     {
-        this._actionDays = days;
+        _actionDays = days;
         return this;
     }
 
@@ -476,7 +475,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder WithActionDayOfWeek(DayOfWeek dayOfWeek)
     {
-        this._actionDayOfWeek = dayOfWeek;
+        _actionDayOfWeek = dayOfWeek;
         return this;
     }
 
@@ -490,7 +489,7 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfLessThan(maxSearchDays, 1);
 
-        this._actionMaxSearchDays = maxSearchDays;
+        _actionMaxSearchDays = maxSearchDays;
         return this;
     }
 
@@ -501,7 +500,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder SkipWeekends(bool value = true)
     {
-        this._actionSkipWeekends = value;
+        _actionSkipWeekends = value;
         return this;
     }
 
@@ -512,7 +511,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder SkipNonWorkingDates(bool value = true)
     {
-        this._actionSkipNonWorkingDates = value;
+        _actionSkipNonWorkingDates = value;
         return this;
     }
 
@@ -529,8 +528,8 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
-        this._actionNotableDateRef = notableDateRef;
-        this._actionRuleRef = string.IsNullOrEmpty(ruleRef) ? null : ruleRef;
+        _actionNotableDateRef = notableDateRef;
+        _actionRuleRef = string.IsNullOrEmpty(ruleRef) ? null : ruleRef;
         return this;
     }
 
@@ -546,7 +545,7 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(handlerKey);
 
-        this._actionHandlerKey = handlerKey;
+        _actionHandlerKey = handlerKey;
         return this;
     }
 
@@ -557,7 +556,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder Emit(EmissionMode mode)
     {
-        this._emissionMode = mode;
+        _emissionMode = mode;
         return this;
     }
 
@@ -571,7 +570,7 @@ public sealed class AdjustmentPolicyBuilder
     {
         ThrowHelper.ThrowIfNull(reason);
 
-        this._emissionReason = reason;
+        _emissionReason = reason;
         return this;
     }
 
@@ -582,7 +581,7 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>The same <see cref="AdjustmentPolicyBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentPolicyBuilder EmitNonWorking(bool value = true)
     {
-        this._emissionNonWorking = value;
+        _emissionNonWorking = value;
         return this;
     }
 
@@ -601,7 +600,7 @@ public sealed class AdjustmentPolicyBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
         ThrowHelper.ThrowIfNull(value);
 
-        this._parameters[key] = value;
+        _parameters[key] = value;
         return this;
     }
 
@@ -613,8 +612,8 @@ public sealed class AdjustmentPolicyBuilder
     /// </exception>
     internal void EnsureComplete()
     {
-        if (this._triggerType is null || this._actionType is null || this._emissionMode is null)
-            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_AdjustmentPolicyIncomplete, this._id));
+        if (_triggerType is null || _actionType is null || _emissionMode is null)
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_AdjustmentPolicyIncomplete, _id));
     }
 
     /// <summary>
@@ -625,9 +624,9 @@ public sealed class AdjustmentPolicyBuilder
     /// <param name="scope">The scope builder, or <see langword="null" />.</param>
     internal void SetParsedHeader(int? priority, string? description, AdjustmentScopeBuilder? scope)
     {
-        this._priority = priority;
-        this._description = description;
-        this._scope = scope;
+        _priority = priority;
+        _description = description;
+        _scope = scope;
     }
 
     /// <summary>
@@ -641,13 +640,13 @@ public sealed class AdjustmentPolicyBuilder
     /// <param name="handlerKey">The trigger handler key, or <see langword="null" />.</param>
     internal void SetParsedTrigger(AdjustmentTrigger? type, IEnumerable<DayOfWeek> weekdays, int? month, int? day, WeekOrdinal? weekOrdinal, string? handlerKey)
     {
-        this._triggerType = type;
-        this._triggerWeekdays.Clear();
-        this._triggerWeekdays.AddRange(weekdays);
-        this._triggerMonth = month;
-        this._triggerDay = day;
-        this._triggerWeekOrdinal = weekOrdinal;
-        this._triggerHandlerKey = handlerKey;
+        _triggerType = type;
+        _triggerWeekdays.Clear();
+        _triggerWeekdays.AddRange(weekdays);
+        _triggerMonth = month;
+        _triggerDay = day;
+        _triggerWeekOrdinal = weekOrdinal;
+        _triggerHandlerKey = handlerKey;
     }
 
     /// <summary>
@@ -664,15 +663,15 @@ public sealed class AdjustmentPolicyBuilder
     /// <param name="handlerKey">The action handler key, or <see langword="null" />.</param>
     internal void SetParsedAction(AdjustmentAction? type, int? days, DayOfWeek? dayOfWeek, int? maxSearchDays, bool? skipWeekends, bool? skipNonWorkingDates, string? notableDateRef, string? ruleRef, string? handlerKey)
     {
-        this._actionType = type;
-        this._actionDays = days;
-        this._actionDayOfWeek = dayOfWeek;
-        this._actionMaxSearchDays = maxSearchDays;
-        this._actionSkipWeekends = skipWeekends;
-        this._actionSkipNonWorkingDates = skipNonWorkingDates;
-        this._actionNotableDateRef = notableDateRef;
-        this._actionRuleRef = ruleRef;
-        this._actionHandlerKey = handlerKey;
+        _actionType = type;
+        _actionDays = days;
+        _actionDayOfWeek = dayOfWeek;
+        _actionMaxSearchDays = maxSearchDays;
+        _actionSkipWeekends = skipWeekends;
+        _actionSkipNonWorkingDates = skipNonWorkingDates;
+        _actionNotableDateRef = notableDateRef;
+        _actionRuleRef = ruleRef;
+        _actionHandlerKey = handlerKey;
     }
 
     /// <summary>
@@ -683,9 +682,9 @@ public sealed class AdjustmentPolicyBuilder
     /// <param name="nonWorking">The emission non-working flag, or <see langword="null" />.</param>
     internal void SetParsedEmission(EmissionMode? mode, string? reason, bool? nonWorking)
     {
-        this._emissionMode = mode;
-        this._emissionReason = reason;
-        this._emissionNonWorking = nonWorking;
+        _emissionMode = mode;
+        _emissionReason = reason;
+        _emissionNonWorking = nonWorking;
     }
 
     /// <summary>
@@ -694,9 +693,9 @@ public sealed class AdjustmentPolicyBuilder
     /// <param name="parameters">The parameter map.</param>
     internal void SetParsedParameters(IEnumerable<KeyValuePair<string, string>> parameters)
     {
-        this._parameters.Clear();
+        _parameters.Clear();
         foreach (KeyValuePair<string, string> pair in parameters)
-            this._parameters[pair.Key] = pair.Value;
+            _parameters[pair.Key] = pair.Value;
     }
 
     /// <summary>
@@ -705,12 +704,12 @@ public sealed class AdjustmentPolicyBuilder
     /// <returns>A new <see cref="AdjustmentPolicyBuilder" /> carrying the same configured state.</returns>
     internal AdjustmentPolicyBuilder Clone()
     {
-        AdjustmentPolicyBuilder clone = new(this._id);
-        clone.SetParsedHeader(this._priority, this._description, this._scope?.Clone());
-        clone.SetParsedTrigger(this._triggerType, this._triggerWeekdays, this._triggerMonth, this._triggerDay, this._triggerWeekOrdinal, this._triggerHandlerKey);
-        clone.SetParsedAction(this._actionType, this._actionDays, this._actionDayOfWeek, this._actionMaxSearchDays, this._actionSkipWeekends, this._actionSkipNonWorkingDates, this._actionNotableDateRef, this._actionRuleRef, this._actionHandlerKey);
-        clone.SetParsedEmission(this._emissionMode, this._emissionReason, this._emissionNonWorking);
-        clone.SetParsedParameters(this._parameters);
+        AdjustmentPolicyBuilder clone = new(_id);
+        clone.SetParsedHeader(_priority, _description, _scope?.Clone());
+        clone.SetParsedTrigger(_triggerType, _triggerWeekdays, _triggerMonth, _triggerDay, _triggerWeekOrdinal, _triggerHandlerKey);
+        clone.SetParsedAction(_actionType, _actionDays, _actionDayOfWeek, _actionMaxSearchDays, _actionSkipWeekends, _actionSkipNonWorkingDates, _actionNotableDateRef, _actionRuleRef, _actionHandlerKey);
+        clone.SetParsedEmission(_emissionMode, _emissionReason, _emissionNonWorking);
+        clone.SetParsedParameters(_parameters);
         return clone;
     }
 }

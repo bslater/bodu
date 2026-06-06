@@ -107,7 +107,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenForCategory_EmitsOnlyMatchingCategory()
     {
         AssertResolves(
-            new[] { "australia-day", "boxing-day", "christmas-day", "year-end-holiday" },
+            ["australia-day", "boxing-day", "christmas-day", "year-end-holiday"],
             NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
     }
 
@@ -119,7 +119,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenWithTag_EmitsTaggedConcepts()
     {
         AssertResolves(
-            new[] { "australia-day", "bank-holiday", "boxing-day", "christmas-day", "year-end-holiday" },
+            ["australia-day", "bank-holiday", "boxing-day", "christmas-day", "year-end-holiday"],
             NotableDateFilter.WithTag("Public"));
     }
 
@@ -131,7 +131,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenIsNonWorkingDay_EmitsOnlyNonWorkingConcepts()
     {
         AssertResolves(
-            new[] { "australia-day", "bank-holiday", "boxing-day", "christmas-day", "labour-day", "year-end-holiday" },
+            ["australia-day", "bank-holiday", "boxing-day", "christmas-day", "labour-day", "year-end-holiday"],
             NotableDateFilter.IsNonWorkingDay());
     }
 
@@ -147,7 +147,7 @@ public sealed class FilterCombinatorTests
         IReadOnlyList<NotableDate> resolved = CreateService().Resolve(range, "XX", NotableDateFilter.WasAdjusted());
 
         Assert.IsTrue(resolved.All(r => r.IsObserved));
-        Assert.AreEqual(1, resolved.Count);
+        Assert.HasCount(1, resolved);
         NotableDate observed = resolved[0];
         Assert.AreEqual("year-end-holiday", observed.NotableDateId);
         Assert.AreEqual(new DateOnly(2023, 1, 2), observed.Date);
@@ -179,7 +179,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenAnd_EmitsIntersection()
     {
         AssertResolves(
-            new[] { "boxing-day", "christmas-day" },
+            ["boxing-day", "christmas-day"],
             NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday).And(NotableDateFilter.WithTag("Christian")));
     }
 
@@ -230,7 +230,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenOr_EmitsUnion()
     {
         AssertResolves(
-            new[] { "hanukkah", "labour-day" },
+            ["hanukkah", "labour-day"],
             NotableDateFilter.ForCategory(NotableDateCategory.Religious).Or(NotableDateFilter.ForCategory(NotableDateCategory.Civic)));
     }
 
@@ -273,11 +273,11 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenNot_EmitsComplement()
     {
         AssertResolves(
-            new[] { "australia-day", "bank-holiday", "boxing-day", "christmas-day", "year-end-holiday" },
+            ["australia-day", "bank-holiday", "boxing-day", "christmas-day", "year-end-holiday"],
             NotableDateFilter.WithTag("Public"));
 
         AssertResolves(
-            new[] { "hanukkah", "labour-day", "lunar-festival" },
+            ["hanukkah", "labour-day", "lunar-festival"],
             NotableDateFilter.WithTag("Public").Not());
     }
 
@@ -293,7 +293,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenAllOf_EmitsConjunction()
     {
         AssertResolves(
-            new[] { "australia-day", "boxing-day", "christmas-day", "year-end-holiday" },
+            ["australia-day", "boxing-day", "christmas-day", "year-end-holiday"],
             NotableDateFilter.AllOf(
                 NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday),
                 NotableDateFilter.IsNonWorkingDay(),
@@ -335,7 +335,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenAnyOf_EmitsDisjunction()
     {
         AssertResolves(
-            new[] { "hanukkah", "labour-day", "lunar-festival" },
+            ["hanukkah", "labour-day", "lunar-festival"],
             NotableDateFilter.AnyOf(
                 NotableDateFilter.WithTag("Workers"),
                 NotableDateFilter.WithTag("Jewish"),
@@ -350,7 +350,7 @@ public sealed class FilterCombinatorTests
     public void Resolve_WhenAnyOfWithSingleFilter_DelegatesToThatFilter()
     {
         AssertResolves(
-            new[] { "bank-holiday" },
+            ["bank-holiday"],
             NotableDateFilter.AnyOf(NotableDateFilter.ForCategory(NotableDateCategory.BankHoliday)));
     }
 
@@ -397,7 +397,7 @@ public sealed class FilterCombinatorTests
             .And(NotableDateFilter.WithTag("Christian"))
             .Or(NotableDateFilter.ForCategory(NotableDateCategory.Religious));
 
-        AssertResolves(new[] { "boxing-day", "christmas-day", "hanukkah" }, filter);
+        AssertResolves(["boxing-day", "christmas-day", "hanukkah"], filter);
     }
 
     /// <summary>

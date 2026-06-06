@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OverrideBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public sealed class OverrideBuilder
     /// </summary>
     /// <returns>The override entries, in declaration order.</returns>
     internal IReadOnlyList<OverrideEntry> Entries =>
-        this._entries;
+        _entries;
 
     /// <summary>
     /// Adds a new rule to an existing concept.
@@ -39,7 +39,8 @@ public sealed class OverrideBuilder
     /// <param name="configure">A delegate that configures the new rule.</param>
     /// <returns>The same <see cref="OverrideBuilder" /> instance, enabling chained calls.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="notableDateRef" /> or <paramref name="ruleId" /> is <see langword="null" />, empty, or white-space.
+    /// <paramref name="notableDateRef" /> or <paramref name="ruleId" /> is <see langword="null" />, empty, or
+    /// white-space.
     /// </exception>
     /// <exception cref="ArgumentNullException"><paramref name="configure" /> is <see langword="null" />.</exception>
     public OverrideBuilder AddRule(string notableDateRef, string ruleId, Action<NotableDateRuleBuilder> configure)
@@ -50,7 +51,7 @@ public sealed class OverrideBuilder
 
         NotableDateRuleBuilder rule = new(ruleId);
         configure(rule);
-        this._entries.Add(new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, rule));
+        _entries.Add(new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, rule));
         return this;
     }
 
@@ -62,7 +63,8 @@ public sealed class OverrideBuilder
     /// <param name="configure">A delegate that configures the sections to patch.</param>
     /// <returns>The same <see cref="OverrideBuilder" /> instance, enabling chained calls.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="notableDateRef" /> or <paramref name="ruleRef" /> is <see langword="null" />, empty, or white-space.
+    /// <paramref name="notableDateRef" /> or <paramref name="ruleRef" /> is <see langword="null" />, empty, or
+    /// white-space.
     /// </exception>
     /// <exception cref="ArgumentNullException"><paramref name="configure" /> is <see langword="null" />.</exception>
     public OverrideBuilder PatchRule(string notableDateRef, string ruleRef, Action<NotableDateRuleBuilder> configure)
@@ -73,7 +75,7 @@ public sealed class OverrideBuilder
 
         NotableDateRuleBuilder rule = new(ruleRef);
         configure(rule);
-        this._entries.Add(new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule));
+        _entries.Add(new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule));
         return this;
     }
 
@@ -84,14 +86,15 @@ public sealed class OverrideBuilder
     /// <param name="ruleRef">The identifier of the rule to remove.</param>
     /// <returns>The same <see cref="OverrideBuilder" /> instance, enabling chained calls.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="notableDateRef" /> or <paramref name="ruleRef" /> is <see langword="null" />, empty, or white-space.
+    /// <paramref name="notableDateRef" /> or <paramref name="ruleRef" /> is <see langword="null" />, empty, or
+    /// white-space.
     /// </exception>
     public OverrideBuilder RemoveRule(string notableDateRef, string ruleRef)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
         ThrowHelper.ThrowIfNullOrWhiteSpace(ruleRef);
 
-        this._entries.Add(new OverrideEntry(OverrideOperation.RemoveRule, notableDateRef, ruleRef, null));
+        _entries.Add(new OverrideEntry(OverrideOperation.RemoveRule, notableDateRef, ruleRef, null));
         return this;
     }
 
@@ -100,7 +103,7 @@ public sealed class OverrideBuilder
     /// </summary>
     /// <param name="entry">The override entry to add.</param>
     internal void AddEntry(OverrideEntry entry) =>
-        this._entries.Add(entry);
+        _entries.Add(entry);
 
     /// <summary>
     /// Creates a deep copy of this override builder.
@@ -109,7 +112,7 @@ public sealed class OverrideBuilder
     internal OverrideBuilder Clone()
     {
         OverrideBuilder clone = new();
-        foreach (OverrideEntry entry in this._entries)
+        foreach (OverrideEntry entry in _entries)
             clone._entries.Add(entry.Clone());
 
         return clone;

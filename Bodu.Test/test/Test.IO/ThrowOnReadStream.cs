@@ -38,14 +38,14 @@ public sealed class ThrowOnReadStream
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        this.WasRead = true;
+        WasRead = true;
         throw new InvalidOperationException("The stream should not be read.");
     }
 
     /// <inheritdoc />
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        this.WasRead = true;
+        WasRead = true;
         return Task.FromException<int>(new InvalidOperationException("The stream should not be read."));
     }
 
@@ -53,7 +53,7 @@ public sealed class ThrowOnReadStream
     /// <inheritdoc />
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        this.WasRead = true;
+        WasRead = true;
         return ValueTask.FromException<int>(new InvalidOperationException("The stream should not be read."));
     }
 #endif

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,8 +21,7 @@ namespace Bodu.Globalization.Calendar;
 /// public constructor exists for advanced code-first assembly; most consumers never call it directly.
 /// </para>
 /// </remarks>
-/// <seealso cref="NotableDateResourceLoader" />
-/// <seealso cref="NotableDateService" />
+/// <seealso cref="NotableDateResourceLoader" /> <seealso cref="NotableDateService" />
 /// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
 public sealed class NotableDateResource
 {
@@ -48,11 +47,11 @@ public sealed class NotableDateResource
         ThrowHelper.ThrowIfNull(adjustmentPolicies);
         ThrowHelper.ThrowIfNull(notableDates);
 
-        this.ResourceId = resourceId;
-        this.SchemaVersion = schemaVersion;
-        this.ResolutionPolicy = resolutionPolicy;
-        this.AdjustmentPolicies = adjustmentPolicies.ToArray();
-        this.NotableDates = notableDates.ToArray();
+        ResourceId = resourceId;
+        SchemaVersion = schemaVersion;
+        ResolutionPolicy = resolutionPolicy;
+        AdjustmentPolicies = adjustmentPolicies.ToArray();
+        NotableDates = notableDates.ToArray();
     }
 
     /// <summary>
@@ -90,7 +89,7 @@ public sealed class NotableDateResource
     /// </summary>
     /// <returns>The aggregate rule count.</returns>
     public int RuleCount =>
-        this.NotableDates.Sum(d => d.Rules.Count);
+        NotableDates.Sum(d => d.Rules.Count);
 
     /// <summary>
     /// Builds the full identity of a rule belonging to this resource.
@@ -106,7 +105,7 @@ public sealed class NotableDateResource
         ThrowHelper.ThrowIfNull(definition);
         ThrowHelper.ThrowIfNull(rule);
 
-        return new NotableDateRuleIdentity(this.ResourceId, definition.Id, rule.Id);
+        return new NotableDateRuleIdentity(ResourceId, definition.Id, rule.Id);
     }
 
     /// <summary>
@@ -119,7 +118,7 @@ public sealed class NotableDateResource
     {
         ThrowHelper.ThrowIfNull(id);
 
-        foreach (AdjustmentPolicy policy in this.AdjustmentPolicies)
+        foreach (AdjustmentPolicy policy in AdjustmentPolicies)
         {
             if (string.Equals(policy.Id, id, StringComparison.Ordinal))
                 return policy;

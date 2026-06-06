@@ -18,8 +18,8 @@ public partial class ConcurrentHashSetTests
 
         set.Add(7);
 
-        Assert.AreEqual(1, set.Count);
-        Assert.IsTrue(set.Contains(7));
+        Assert.HasCount(1, set);
+        Assert.Contains(7, set);
     }
 
     /// <summary>
@@ -43,13 +43,13 @@ public partial class ConcurrentHashSetTests
     {
         ICollection<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        Assert.IsTrue(set.Contains(2));
+        Assert.Contains(2, set);
         Assert.IsTrue(set.Remove(2));
-        Assert.IsFalse(set.Contains(2));
-        Assert.AreEqual(2, set.Count);
+        Assert.DoesNotContain(2, set);
+        Assert.HasCount(2, set);
 
         set.Clear();
-        Assert.AreEqual(0, set.Count);
+        Assert.IsEmpty(set);
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public partial class ConcurrentHashSetTests
     {
         IReadOnlyCollection<int> set = new ConcurrentHashSet<int>([1, 2, 3, 4]);
 
-        Assert.AreEqual(4, set.Count);
+        Assert.HasCount(4, set);
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4 }, set.ToList());
     }
 

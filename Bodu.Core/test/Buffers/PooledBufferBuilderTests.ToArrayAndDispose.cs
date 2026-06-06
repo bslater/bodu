@@ -38,7 +38,7 @@ public partial class PooledBufferBuilderTests
 
         var result = builder.ToArrayAndDispose();
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             builder.Append(0);

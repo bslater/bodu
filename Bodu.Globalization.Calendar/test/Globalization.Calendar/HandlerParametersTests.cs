@@ -155,6 +155,6 @@ public sealed class HandlerParametersTests
 
         AdjustmentPolicy policy = NotableDateResourceLoader.Load(xml).AdjustmentPolicies.Single();
 
-        Assert.AreEqual(0, policy.HandlerParameters.Count);
+        Assert.IsEmpty(policy.HandlerParameters);
     }
 }

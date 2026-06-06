@@ -16,8 +16,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="AdjustmentPolicy.SkipNonWorkingDates" /> flag.
 /// </para>
 /// </remarks>
-/// <seealso cref="AdjustmentTrigger" />
-/// <seealso cref="AdjustmentPolicy" />
+/// <seealso cref="AdjustmentTrigger" /> <seealso cref="AdjustmentPolicy" />
 /// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public enum AdjustmentAction
 {

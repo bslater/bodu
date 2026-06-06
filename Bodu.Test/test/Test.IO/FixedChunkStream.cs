@@ -43,7 +43,7 @@ public sealed class FixedChunkStream
         if (chunkSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(chunkSize), "Chunk size must be greater than zero.");
 
-        this.ChunkSize = chunkSize;
+        ChunkSize = chunkSize;
     }
 
     /// <summary>
@@ -53,9 +53,9 @@ public sealed class FixedChunkStream
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
-        => base.Read(buffer, offset, Math.Min(count, this.ChunkSize));
+        => base.Read(buffer, offset, Math.Min(count, ChunkSize));
 
     /// <inheritdoc />
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-        => base.ReadAsync(buffer[..Math.Min(buffer.Length, this.ChunkSize)], cancellationToken);
+        => base.ReadAsync(buffer[..Math.Min(buffer.Length, ChunkSize)], cancellationToken);
 }

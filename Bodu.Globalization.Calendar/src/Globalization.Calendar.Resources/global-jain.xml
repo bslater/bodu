@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Jain notable-date catalogue
+  ================================================================================================================
+
+  A common-library catalogue of high-reuse Jain notable dates. The schema does not currently expose a dedicated Jain
+  lunisolar calendar, so this catalogue derives Jain observances from the existing solar-anchored Hindu lunar algorithm
+  keys where the relevant tithi is already modelled. The dependency is calendrical only: territory packs can override
+  any sect-specific, regional, or published panchanga date.
+
+  Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
+  stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend adjustment
+  there. The catalogue default category is Religious; a pack that observes one as a public holiday overrides
+  category/nonWorking on its own <Use>.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-jain">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Jain lunisolar observances derived from existing engine algorithms
+      ============================================================================================================
+      The helper anchors below use existing Hindu lunar algorithm keys. The public Jain concepts are expressed as
+      offsets from those anchors where the Jain date is a fixed tithi distance from the supported calculation.
+    -->
+
+    <!-- Mahavir Jayanti — Chaitra shukla trayodashi. Strategy: OffsetFromRule, four days after the Ram Navami calculation. -->
+    <NotableDate id="mahavir-jayanti" displayName="Mahavir Jayanti" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="ram-navami-anchor" ruleRef="default" offsetDays="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Paryushana (Shvetambara) — eight-day annual Jain festival ending at Samvatsari. Strategy: OffsetFromRule from Samvatsari. -->
+    <NotableDate id="paryushana-shvetambara" displayName="Paryushana (Shvetambara)" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="8">
+        <Strategy><OffsetFromRule notableDateRef="samvatsari" ruleRef="default" offsetDays="-7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Samvatsari — forgiveness day concluding Shvetambara Paryushana, commonly aligned to Bhadrapada shukla chaturthi. -->
+    <NotableDate id="samvatsari" displayName="Samvatsari" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="ganesh-chaturthi" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Das Lakshan (Digambara) — ten-day Digambara festival beginning after Samvatsari in common modern calendars. -->
+    <NotableDate id="das-lakshan" displayName="Das Lakshan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default" durationDays="10">
+        <Strategy><OffsetFromRule notableDateRef="samvatsari" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Jain Diwali — commemoration of Mahavira's nirvana, coinciding with the Diwali new-moon calculation. -->
+    <NotableDate id="jain-diwali" displayName="Jain Diwali" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Maun Agiyaras — Kartik shukla ekadashi. Strategy: OffsetFromRule, eleven days after Jain Diwali. -->
+    <NotableDate id="maun-agiyaras" displayName="Maun Agiyaras" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="jain-diwali" ruleRef="default" offsetDays="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Kartik Purnima — Kartik full moon, important for Jain pilgrimage. Strategy: OffsetFromRule, fifteen days after Jain Diwali. -->
+    <NotableDate id="kartik-purnima" displayName="Kartik Purnima" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="jain-diwali" ruleRef="default" offsetDays="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Ram Navami anchor — calculation anchor for Mahavir Jayanti only. Territory packs should import mahavir-jayanti
+      rather than this helper concept unless they need the underlying Chaitra shukla navami date.
+    -->
+    <NotableDate id="ram-navami-anchor" displayName="Ram Navami Anchor" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Algorithm key="ram-navami" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

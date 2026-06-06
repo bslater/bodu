@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CustomAdjustmentTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -123,7 +123,7 @@ public sealed class CustomAdjustmentTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-REPLACE-MISSING"));
+        Assert.Contains(d => d.Code == "BODU-CAL-REPLACE-MISSING", ex.Diagnostics);
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ public sealed class CustomAdjustmentTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-REPLACE-MISSING"));
+        Assert.Contains(d => d.Code == "BODU-CAL-REPLACE-MISSING", ex.Diagnostics);
     }
 
     /// <summary>
@@ -217,6 +217,6 @@ public sealed class CustomAdjustmentTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-HANDLER-MISSING"));
+        Assert.Contains(d => d.Code == "BODU-CAL-HANDLER-MISSING", ex.Diagnostics);
     }
 }

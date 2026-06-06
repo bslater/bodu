@@ -17,12 +17,20 @@ wildcard in the project file, and are resolved by name through
 | `global-core` | Civil core: New Year's Day, International Workers' Day, New Year's Eve. |
 | `christian-western` | Western (Gregorian) Christian feasts: the Easter Sunday anchor plus Good Friday, Maundy Thursday, Easter Monday, Ascension, Whit Sunday/Monday, Corpus Christi, All Saints', Christmas Eve/Day, Boxing Day. |
 | `christian-orthodox` | Orthodox Easter anchor and its derived feasts, plus fixed Orthodox observances. |
-| `global-islamic`, `global-islamic-umm-al-qura` | Hijri and Umm al-Qura festivals (Ramadan, Eid al-Fitr, Eid al-Adha, …). |
-| `global-jewish` | Hebrew-calendar festivals (Passover, Rosh Hashanah, Yom Kippur, Hanukkah, …). |
-| `global-hindu` | Solar-anchored lunar festivals (Diwali, Holi, Navaratri, …). |
-| `global-buddhist` | Vesak, Asalha Puja, Losar, and related observances. |
+| `catholic` | Catholic solemnities, Marian feast days, Easter-derived Catholic observances, and selected patronal/cultural feast days. |
+| `christian-protestant` | Protestant-specific observances such as Reformation Day/Sunday, Transfiguration Sunday, All Saints' Sunday, and Aldersgate Day. |
+| `christian-anglican` | Anglican apostles, evangelists, and fixed calendar feasts not already carried by `christian-western`. |
+| `christian-oriental-orthodox` | Oriental Orthodox Pascha cluster plus common Coptic, Armenian, Ethiopian, and Eritrean fixed-date observances. |
+| `global-islamic`, `global-islamic-umm-al-qura` | Hijri and Umm al-Qura festivals (Ramadan, Laylat al-Qadr, Eid al-Fitr, Hajj, Eid al-Adha, …). |
+| `global-jewish` | Hebrew-calendar festivals (Passover, Rosh Hashanah, Yom Kippur, Sukkot, Simchat Torah, Hanukkah, …). |
+| `global-hindu` | Solar-anchored lunar festivals (Vasant Panchami, Diwali, Holi, Navaratri, …). |
+| `global-buddhist` | Vesak, Asalha Puja, Losar, Vassa, East Asian Buddha's Birthday, and related observances. |
+| `global-sikh` | Sikh observances (Vaisakhi, Gurpurabs, Bandi Chhor Divas, Hola Mohalla, martyrdom days). |
+| `global-jain` | Jain observances (Mahavir Jayanti, Paryushana, Samvatsari, Das Lakshan, Jain Diwali). |
+| `global-bahai` | Baha'i holy days representable with the current equinox and offset strategies. |
 | `global-lunar` | Chinese lunisolar festivals and solar terms (Lunar New Year, Qingming, Mid-Autumn, …). |
 | `global-persian` | Persian-calendar observances (Nowruz, Sizdah Bedar, Yalda). |
+| `global-zoroastrian` | Zoroastrian Fasli/Iranian-style observances using Persian-calendar dates. |
 | `global-anchors` | Cross-tradition anchors (Lunar New Year, Ramadan start, Orthodox Easter) for offset rules. |
 | `global-cultural`, `global-un`, `global-remembrance`, `global-health`, `global-food`, `global-science`, `global-environment`, `global-education`, `global-social`, `global-family`, `global-family-social`, `global-animals`, `global-multiday-normalization` | Gregorian observance families. |
 | `global-all` | Aggregate that imports every catalogue above. |

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRule.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ namespace Bodu.Globalization.Calendar;
 /// concept; when <see langword="null" /> the parent value applies.
 /// </para>
 /// </remarks>
-/// <seealso cref="NotableDateDefinition" />
-/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="NotableDateDefinition" /> <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and
+/// adjustment-policy reference (guide)</seealso> <seealso href="../guides/calendar/rule-authoring.html">Authoring
+/// notable date rules (guide)</seealso>
 public sealed class NotableDateRule
 {
     /// <summary>
@@ -61,15 +61,15 @@ public sealed class NotableDateRule
         ThrowHelper.ThrowIfNull(adjustmentPolicyRefs);
         ThrowHelper.ThrowIfNull(tags);
 
-        this.Id = id;
-        this.Priority = priority;
-        this.Category = category;
-        this.NonWorking = nonWorking;
-        this.DurationDays = durationDays;
-        this.Applicability = applicability;
-        this.Strategy = strategy;
-        this.AdjustmentPolicyRefs = adjustmentPolicyRefs.ToArray();
-        this.Tags = tags.ToArray();
+        Id = id;
+        Priority = priority;
+        Category = category;
+        NonWorking = nonWorking;
+        DurationDays = durationDays;
+        Applicability = applicability;
+        Strategy = strategy;
+        AdjustmentPolicyRefs = adjustmentPolicyRefs.ToArray();
+        Tags = tags.ToArray();
     }
 
     /// <summary>

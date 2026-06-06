@@ -20,8 +20,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </para>
 /// <para>
 /// This gives byte-level tamper resistance without requiring a strong name. It does not roll with plugin versions —
-/// pinning a fresh digest when the plugin is updated is the consumer's responsibility. An assembly loaded in memory
-/// (no file, so no hash) is always rejected.
+/// pinning a fresh digest when the plugin is updated is the consumer's responsibility. An assembly loaded in memory (no
+/// file, so no hash) is always rejected.
 /// </para>
 /// </remarks>
 public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
@@ -39,18 +39,18 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
     /// <paramref name="allowedHashesByAssemblyName" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Assembly names are compared case-insensitively. Entries with a blank name or a <see langword="null" /> digest are
-    /// ignored; an empty map rejects every assembly.
+    /// Assembly names are compared case-insensitively. Entries with a blank name or a <see langword="null" /> digest
+    /// are ignored; an empty map rejects every assembly.
     /// </remarks>
     public FileHashPluginTrustPolicy(IReadOnlyDictionary<string, byte[]> allowedHashesByAssemblyName)
     {
         ThrowHelper.ThrowIfNull(allowedHashesByAssemblyName);
 
-        this._allowedHashesByAssemblyName = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        _allowedHashesByAssemblyName = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
         foreach (KeyValuePair<string, byte[]> entry in allowedHashesByAssemblyName)
         {
             if (!string.IsNullOrWhiteSpace(entry.Key) && entry.Value is not null)
-                this._allowedHashesByAssemblyName[entry.Key] = entry.Value;
+                _allowedHashesByAssemblyName[entry.Key] = entry.Value;
         }
     }
 
@@ -66,7 +66,7 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
         if (context.FileHash is null)
             return PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashUnavailable, context.AssemblyName));
 
-        if (!this._allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out var expected))
+        if (!_allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out var expected))
             return PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNotAllowed, context.AssemblyName));
 
         return CryptographicOperations.FixedTimeEquals(expected, context.FileHash)

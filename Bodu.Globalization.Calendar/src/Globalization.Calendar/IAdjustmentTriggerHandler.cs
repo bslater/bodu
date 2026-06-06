@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IAdjustmentTriggerHandler.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,10 +34,9 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="AdjustmentTriggerContext" />
-/// <seealso cref="AdjustmentTrigger" />
-/// <seealso cref="IAdjustmentTriggerHandlerRegistry" />
-/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
+/// <seealso cref="AdjustmentTriggerContext" /> <seealso cref="AdjustmentTrigger" />
+/// <seealso cref="IAdjustmentTriggerHandlerRegistry" /> <seealso href="../guides/calendar/adjustment-rules.html">
+/// Observance adjustment rules (guide)</seealso>
 public interface IAdjustmentTriggerHandler
 {
     /// <summary>

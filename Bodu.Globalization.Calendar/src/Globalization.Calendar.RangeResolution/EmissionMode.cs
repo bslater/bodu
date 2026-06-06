@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EmissionMode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// by the emitted occurrence, not by the query shape.
 /// </para>
 /// </remarks>
-/// <seealso cref="AdjustmentPolicy" />
-/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
+/// <seealso cref="AdjustmentPolicy" /> <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment
+/// rules (guide)</seealso>
 public enum EmissionMode
 {
     /// <summary>

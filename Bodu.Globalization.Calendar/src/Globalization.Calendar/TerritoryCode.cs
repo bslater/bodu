@@ -40,8 +40,8 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateService" />
-/// <seealso href="../guides/calendar/territories.html">Territories and regional composition (guide)</seealso>
+/// <seealso cref="INotableDateService" /> <seealso href="../guides/calendar/territories.html">Territories and regional
+/// composition (guide)</seealso>
 public readonly struct TerritoryCode : IEquatable<TerritoryCode>
 {
     /// <summary>
@@ -61,8 +61,8 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     /// <param name="subdivision">The normalized uppercase subdivision part, or <see langword="null" />.</param>
     private TerritoryCode(string country, string? subdivision)
     {
-        this._country = country;
-        this._subdivision = subdivision;
+        _country = country;
+        _subdivision = subdivision;
     }
 
     /// <summary>
@@ -70,28 +70,28 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     /// </summary>
     /// <returns><see langword="true" /> when no code is held; otherwise <see langword="false" />.</returns>
     public bool IsEmpty =>
-        this._country is null;
+        _country is null;
 
     /// <summary>
     /// Gets the country part of the code.
     /// </summary>
     /// <returns>The uppercase two-letter country, or the empty string for the default value.</returns>
     public string Country =>
-        this._country ?? string.Empty;
+        _country ?? string.Empty;
 
     /// <summary>
     /// Gets the subdivision part of the code.
     /// </summary>
     /// <returns>The uppercase subdivision, or <see langword="null" /> when the code is country-only.</returns>
     public string? Subdivision =>
-        this._subdivision;
+        _subdivision;
 
     /// <summary>
     /// Gets a value indicating whether the code names a subdivision rather than a bare country.
     /// </summary>
     /// <returns><see langword="true" /> when a subdivision is present; otherwise <see langword="false" />.</returns>
     public bool IsSubdivision =>
-        this._subdivision is not null;
+        _subdivision is not null;
 
     /// <summary>
     /// Gets the parent country code for a subdivision.
@@ -101,7 +101,7 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     /// or the default value when this code is empty.
     /// </returns>
     public TerritoryCode Parent =>
-        this._country is null ? default : new TerritoryCode(this._country, null);
+        _country is null ? default : new TerritoryCode(_country, null);
 
     /// <summary>
     /// Converts a string to a <see cref="TerritoryCode" />, throwing when the string is not a valid code.
@@ -216,27 +216,27 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     /// </returns>
     public bool Contains(TerritoryCode other)
     {
-        if (this.IsEmpty || other.IsEmpty)
+        if (IsEmpty || other.IsEmpty)
             return false;
 
-        if (this.Equals(other))
+        if (Equals(other))
             return true;
 
-        return !this.IsSubdivision && string.Equals(this._country, other._country, StringComparison.Ordinal);
+        return !IsSubdivision && string.Equals(_country, other._country, StringComparison.Ordinal);
     }
 
     /// <inheritdoc />
     public bool Equals(TerritoryCode other) =>
-        string.Equals(this._country, other._country, StringComparison.Ordinal)
-        && string.Equals(this._subdivision, other._subdivision, StringComparison.Ordinal);
+        string.Equals(_country, other._country, StringComparison.Ordinal)
+        && string.Equals(_subdivision, other._subdivision, StringComparison.Ordinal);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) =>
-        obj is TerritoryCode other && this.Equals(other);
+        obj is TerritoryCode other && Equals(other);
 
     /// <inheritdoc />
     public override int GetHashCode() =>
-        HashCode.Combine(this._country, this._subdivision);
+        HashCode.Combine(_country, _subdivision);
 
     /// <summary>
     /// Returns the canonical string form of the code.
@@ -245,9 +245,9 @@ public readonly struct TerritoryCode : IEquatable<TerritoryCode>
     /// The country, the country and subdivision joined by a hyphen, or the empty string when default.
     /// </returns>
     public override string ToString() =>
-        this._country is null ? string.Empty
-        : this._subdivision is null ? this._country
-        : string.Concat(this._country, "-", this._subdivision);
+        _country is null ? string.Empty
+        : _subdivision is null ? _country
+        : string.Concat(_country, "-", _subdivision);
 
     /// <summary>
     /// Determines whether a string is a valid two-letter country part.

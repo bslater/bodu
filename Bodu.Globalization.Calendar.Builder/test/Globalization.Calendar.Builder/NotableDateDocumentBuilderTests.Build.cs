@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.Build.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -21,9 +18,9 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateResource resource = SampleDocument().Build();
 
         Assert.AreEqual("demo.sample", resource.ResourceId);
-        Assert.AreEqual(4, resource.NotableDates.Count);
+        Assert.HasCount(4, resource.NotableDates);
         Assert.AreEqual(RangeResolution.DuplicatePolicy.KeepFirst, resource.ResolutionPolicy.DuplicatePolicy);
-        Assert.AreEqual(1, resource.AdjustmentPolicies.Count);
+        Assert.HasCount(1, resource.AdjustmentPolicies);
     }
 
     /// <summary>

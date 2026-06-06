@@ -14,9 +14,9 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// <strong>Construction.</strong> A filter is created through the static factory methods on this class — for example
-/// <see cref="ForCategory(NotableDateCategory)" />, <see cref="WithTag(string)" />,
-/// <see cref="IsNonWorkingDay()" />, and <see cref="InDateRange(DateOnly, DateOnly)" />. There is no public
-/// constructor; every factory returns an immutable instance.
+/// <see cref="ForCategory(NotableDateCategory)" />, <see cref="WithTag(string)" />, <see cref="IsNonWorkingDay()" />,
+/// and <see cref="InDateRange(DateOnly, DateOnly)" />. There is no public constructor; every factory returns an
+/// immutable instance.
 /// </para>
 /// <para>
 /// <strong>Composition.</strong> Filters combine through the instance operators <see cref="And(NotableDateFilter)" />,
@@ -55,9 +55,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDate" />
-/// <seealso cref="INotableDateService" />
-/// <seealso cref="NotableDateCategory" />
+/// <seealso cref="NotableDate" /> <seealso cref="INotableDateService" /> <seealso cref="NotableDateCategory" />
 /// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public sealed class NotableDateFilter
 {
@@ -75,7 +73,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(predicate);
 
-        this._predicate = predicate;
+        _predicate = predicate;
     }
 
     /// <summary>
@@ -88,7 +86,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(notableDate);
 
-        return this._predicate(notableDate);
+        return _predicate(notableDate);
     }
 
     /// <summary>
@@ -266,7 +264,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(other);
 
-        return new NotableDateFilter(n => this._predicate(n) && other._predicate(n));
+        return new NotableDateFilter(n => _predicate(n) && other._predicate(n));
     }
 
     /// <summary>
@@ -279,7 +277,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(other);
 
-        return new NotableDateFilter(n => this._predicate(n) || other._predicate(n));
+        return new NotableDateFilter(n => _predicate(n) || other._predicate(n));
     }
 
     /// <summary>
@@ -287,5 +285,5 @@ public sealed class NotableDateFilter
     /// </summary>
     /// <returns>A filter matching exactly the occurrences this filter does not.</returns>
     public NotableDateFilter Not() =>
-        new(n => !this._predicate(n));
+        new(n => !_predicate(n));
 }

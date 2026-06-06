@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyResolutionContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,8 +49,8 @@ public sealed class StrategyResolutionContext
     {
         ThrowHelper.ThrowIfNull(resource);
 
-        this._resource = resource;
-        this.Algorithms = algorithms;
+        _resource = resource;
+        Algorithms = algorithms;
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public sealed class StrategyResolutionContext
     public DateOnly? ResolveReference(string notableDateRef, string? ruleRef, int year)
     {
         NotableDateDefinition? definition = null;
-        foreach (NotableDateDefinition candidate in this._resource.NotableDates)
+        foreach (NotableDateDefinition candidate in _resource.NotableDates)
         {
             if (string.Equals(candidate.Id, notableDateRef, StringComparison.Ordinal))
             {
@@ -90,8 +90,8 @@ public sealed class StrategyResolutionContext
         if (rule is null)
             return null;
 
-        NotableDateRuleIdentity identity = this._resource.GetIdentity(definition, rule);
-        if (!this._inProgress.Add(identity))
+        NotableDateRuleIdentity identity = _resource.GetIdentity(definition, rule);
+        if (!_inProgress.Add(identity))
             return null;
 
         try
@@ -100,7 +100,7 @@ public sealed class StrategyResolutionContext
         }
         finally
         {
-            this._inProgress.Remove(identity);
+            _inProgress.Remove(identity);
         }
     }
 

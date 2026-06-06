@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Oriental Orthodox Christian notable-date catalogue
+  ================================================================================================================
+
+  A common-library catalogue of high-reuse Oriental Orthodox notable dates, with emphasis on the Coptic, Ethiopian,
+  Eritrean, Armenian, Syriac, and related Oriental Orthodox traditions. This file sits beside common.christian-orthodox:
+  that catalogue models the Eastern Orthodox Julian-paschalion Pascha cluster and Old-Calendar fixed feasts. This
+  catalogue defines Oriental Orthodox concepts that territory packs may observe, including Coptic/Oriental fixed civil
+  dates and an Oriental Pascha cluster based on the engine's Orthodox Easter algorithm.
+
+  Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
+  stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend adjustment
+  there. The catalogue default category is Religious; a pack that observes one as a cultural or public holiday overrides
+  category/nonWorking on its own <Use>.
+
+  Note on calendar precision: the bundled schema does not currently expose a Coptic, Ethiopic, Armenian, or Syriac
+  calendar system. Fixed dates below therefore use their common civil Gregorian equivalents in the modern era. The
+  Oriental Easter anchor uses the existing orthodox-easter algorithm as the shared Alexandrian/Julian-paschalion base;
+  territory packs can override any rite-specific exceptions or calendar transfers.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.christian-oriental-orthodox">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Oriental Orthodox Pascha anchor and derived feasts
+      ============================================================================================================
+      The anchor uses the existing orthodox-easter algorithm. This provides a practical common base for Coptic and
+      related Oriental Orthodox Pascha observances in the civil Gregorian year.
+    -->
+
+    <!-- Oriental Orthodox Easter Sunday — Pascha / Resurrection Feast. Strategy: Algorithm "orthodox-easter". -->
+    <NotableDate id="oriental-orthodox-easter-sunday" displayName="Oriental Orthodox Easter Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><Algorithm key="orthodox-easter" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Palm Sunday — Sunday before Pascha. Strategy: OffsetFromRule, seven days before Easter. -->
+    <NotableDate id="oriental-orthodox-palm-sunday" displayName="Oriental Orthodox Palm Sunday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="-7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Covenant Thursday — Thursday of Holy Week. Strategy: OffsetFromRule, three days before Easter. -->
+    <NotableDate id="oriental-orthodox-covenant-thursday" displayName="Oriental Orthodox Covenant Thursday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="-3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Good Friday — Great Friday of Holy Week. Strategy: OffsetFromRule, two days before Easter. -->
+    <NotableDate id="oriental-orthodox-good-friday" displayName="Oriental Orthodox Good Friday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Holy Saturday — eve of Pascha. Strategy: OffsetFromRule, one day before Easter. -->
+    <NotableDate id="oriental-orthodox-holy-saturday" displayName="Oriental Orthodox Holy Saturday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="-1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Easter Monday — day after Pascha. Strategy: OffsetFromRule, one day after Easter. -->
+    <NotableDate id="oriental-orthodox-easter-monday" displayName="Oriental Orthodox Easter Monday" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Ascension Day — fortieth day of Pascha. Strategy: OffsetFromRule, 39 days after Easter. -->
+    <NotableDate id="oriental-orthodox-ascension-day" displayName="Oriental Orthodox Ascension Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Pentecost — fiftieth day of Pascha. Strategy: OffsetFromRule, 49 days after Easter. -->
+    <NotableDate id="oriental-orthodox-pentecost" displayName="Oriental Orthodox Pentecost" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability fromYear="1583" />
+        <Strategy><OffsetFromRule notableDateRef="oriental-orthodox-easter-sunday" ruleRef="default" offsetDays="49" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      Fixed Oriental Orthodox civil-date observances
+      ============================================================================================================
+      These are common civil Gregorian equivalents used by Oriental Orthodox communities in the current era. Precise
+      local calendars, leap-year shifts, and rite-specific transfers should be handled by territory or rite packs.
+    -->
+
+    <!-- Armenian Christmas and Theophany — 6 January; Armenian Apostolic combined Nativity and Baptism observance. -->
+    <NotableDate id="armenian-christmas-and-theophany" displayName="Armenian Christmas and Theophany" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Christmas Day — 7 January; common civil date for Coptic, Ethiopian, and related Nativity observances. -->
+    <NotableDate id="oriental-orthodox-christmas-day" displayName="Oriental Orthodox Christmas Day" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oriental Orthodox Theophany — 19 January; common civil date for Coptic and related Theophany / Timkat observances. -->
+    <NotableDate id="oriental-orthodox-theophany" displayName="Oriental Orthodox Theophany" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="January" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Coptic New Year (Nayrouz) — 11 September by common civil convention. Strategy: Fixed day-of-month. -->
+    <NotableDate id="coptic-new-year" displayName="Coptic New Year" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="September" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Meskel — 27 September; Ethiopian and Eritrean Orthodox feast of the Finding of the True Cross. Strategy: Fixed day-of-month. -->
+    <NotableDate id="meskel" displayName="Meskel" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="September" day="27" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

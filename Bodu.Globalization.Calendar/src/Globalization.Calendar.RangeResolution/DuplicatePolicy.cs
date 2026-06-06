@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DuplicatePolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// The recommended default is <see cref="Error" />, which surfaces accidental rule collapse rather than hiding it.
 /// </para>
 /// </remarks>
-/// <seealso cref="ResolutionPolicy" />
-/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
+/// <seealso cref="ResolutionPolicy" /> <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity,
+/// priority, and observed-date resolution (guide)</seealso>
 public enum DuplicatePolicy
 {
     /// <summary>

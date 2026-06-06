@@ -58,6 +58,16 @@
         <Strategy><OffsetFromRule notableDateRef="asalha-puja" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
+
+    <!--
+      Buddha's Birthday (East Asian) — eighth day of the fourth Chinese lunisolar month, used by several East Asian
+      Buddhist calendars. Strategy: Fixed Chinese lunisolar month/day with leap-month skipping.
+    -->
+    <NotableDate id="buddhas-birthday-east-asian" displayName="Buddha's Birthday (East Asian)" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="ChineseLunisolar" />
+        <Strategy><Fixed month="4" day="8" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!-- Bodhi Day — Mahayana commemoration of the Buddha's enlightenment; commonly fixed to 8 December. -->
     <NotableDate id="bodhi-day" displayName="Bodhi Day" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>

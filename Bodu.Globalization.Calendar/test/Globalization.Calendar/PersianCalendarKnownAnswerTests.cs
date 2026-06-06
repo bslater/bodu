@@ -52,9 +52,9 @@ public sealed class PersianCalendarKnownAnswerTests
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.IsTrue(ids.Contains("nowruz"));
-        Assert.IsTrue(ids.Contains("sizdah-bedar"));
-        Assert.IsTrue(ids.Contains("yalda-night"));
+        Assert.Contains("nowruz", ids);
+        Assert.Contains("sizdah-bedar", ids);
+        Assert.Contains("yalda-night", ids);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public sealed class PersianCalendarKnownAnswerTests
     {
         List<NotableDate> matches = ResolveForYear(CreateService(), notableDateId, year);
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' anchored in {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' anchored in {year}");
         Assert.AreEqual(new DateOnly(year, expectedMonth, expectedDay), matches[0].Date, $"{notableDateId} {year}");
     }
 
@@ -105,7 +105,7 @@ public sealed class PersianCalendarKnownAnswerTests
     {
         List<NotableDate> matches = ResolveForYear(CreateService(), "nowruz", 2024);
 
-        Assert.AreEqual(1, matches.Count, "expected exactly one 'nowruz' anchored in 2024");
+        Assert.HasCount(1, matches, "expected exactly one 'nowruz' anchored in 2024");
         Assert.AreEqual(13, matches[0].DurationDays);
     }
 
@@ -124,7 +124,7 @@ public sealed class PersianCalendarKnownAnswerTests
         {
             List<NotableDate> matches = ResolveForYear(service, "nowruz", year);
 
-            Assert.AreEqual(1, matches.Count, $"Nowruz unresolved for Gregorian year {year}.");
+            Assert.HasCount(1, matches, $"Nowruz unresolved for Gregorian year {year}.");
             Assert.AreEqual(3, matches[0].Date.Month, $"Nowruz {year} fell outside March: {matches[0].Date:yyyy-MM-dd}.");
             Assert.IsTrue(
                 matches[0].Date.Day is 20 or 21,

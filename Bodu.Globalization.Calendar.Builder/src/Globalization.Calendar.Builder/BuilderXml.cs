@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BuilderXml.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using System.Xml.Linq;
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Provides shared constants and helpers used by the XML and JSON serializers for the v2 notable-date document
-/// schema, including the document namespace and English month-name conversions.
+/// Provides shared constants and helpers used by the XML and JSON serializers for the v2 notable-date document schema,
+/// including the document namespace and English month-name conversions.
 /// </summary>
 internal static class BuilderXml
 {
@@ -34,7 +34,7 @@ internal static class BuilderXml
     /// The full English month names indexed one-based from January (index 1) to December (index 12).
     /// </summary>
     private static readonly string[] s_monthNames =
-    {
+    [
         string.Empty,
         "January",
         "February",
@@ -48,7 +48,7 @@ internal static class BuilderXml
         "October",
         "November",
         "December",
-    };
+    ];
 
     /// <summary>
     /// Converts a one-based month number into its full English month name.
@@ -56,7 +56,7 @@ internal static class BuilderXml
     /// <param name="month">The one-based month number in the range 1 to 12.</param>
     /// <returns>The full English month name, or the original number formatted as a string when out of range.</returns>
     internal static string GetMonthName(int month) =>
-        month >= 1 && month <= 12 ? s_monthNames[month] : month.ToString(CultureInfo.InvariantCulture);
+        month is >= 1 and <= 12 ? s_monthNames[month] : month.ToString(CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Parses a month token expressed as either a full English month name or an integer between 1 and 12.
@@ -68,10 +68,10 @@ internal static class BuilderXml
     /// </exception>
     internal static int ParseMonth(string value)
     {
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
             return numeric;
 
-        for (int i = 1; i <= 12; i++)
+        for (var i = 1; i <= 12; i++)
         {
             if (string.Equals(s_monthNames[i], value, StringComparison.OrdinalIgnoreCase))
                 return i;
@@ -114,10 +114,11 @@ internal static class BuilderXml
     /// </summary>
     /// <param name="value">The raw attribute value, or <see langword="null" /> when absent.</param>
     /// <returns>
-    /// The parsed integer, or <see langword="null" /> when <paramref name="value" /> is <see langword="null" /> or blank.
+    /// The parsed integer, or <see langword="null" /> when <paramref name="value" /> is <see langword="null" /> or
+    /// blank.
     /// </returns>
     internal static int? ParseInt(string? value) =>
         string.IsNullOrEmpty(value)
             ? null
-            : int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : null;
+            : int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
 }

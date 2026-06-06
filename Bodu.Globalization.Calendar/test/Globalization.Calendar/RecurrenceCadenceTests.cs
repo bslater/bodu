@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RecurrenceCadenceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -107,8 +107,8 @@ public sealed class RecurrenceCadenceTests
     {
         INotableDateService service = new NotableDateService(NotableDateResourceLoader.Load(Xml));
 
-        Assert.AreEqual(1, service.Resolve(new DateOnly(2024, 7, 1), Territory).Count, "2024 on cadence");
-        Assert.AreEqual(0, service.Resolve(new DateOnly(2025, 7, 1), Territory).Count, "2025 off cadence");
-        Assert.AreEqual(1, service.Resolve(new DateOnly(2028, 7, 1), Territory).Count, "2028 on cadence");
+        Assert.HasCount(1, service.Resolve(new DateOnly(2024, 7, 1), Territory), "2024 on cadence");
+        Assert.IsEmpty(service.Resolve(new DateOnly(2025, 7, 1), Territory), "2025 off cadence");
+        Assert.HasCount(1, service.Resolve(new DateOnly(2028, 7, 1), Territory), "2028 on cadence");
     }
 }

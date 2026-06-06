@@ -38,8 +38,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" /> <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AmericasCalendarData
 {
@@ -52,7 +51,7 @@ public static class AmericasCalendarData
     /// Gets the country codes the Americas pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "CA", "US" };
+    public static IReadOnlyList<string> SupportedCountries { get; } = ["CA", "US"];
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.

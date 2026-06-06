@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RelativeWeekdayInMonthStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Calculates a notable date that falls on a weekday relative to an anchor weekday occurrence within a month, such as
 /// the Tuesday after the first Monday of November (United States general election day).
 /// </summary>
-/// <seealso cref="IDateCalculationStrategy" />
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
+/// date rules (guide)</seealso>
 public sealed class RelativeWeekdayInMonthStrategy : IDateCalculationStrategy
 {
     /// <summary>
@@ -32,11 +32,11 @@ public sealed class RelativeWeekdayInMonthStrategy : IDateCalculationStrategy
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
 
-        this.Month = month;
-        this.DayOfWeek = dayOfWeek;
-        this.WeekOrdinal = weekOrdinal;
-        this.RelativeDayOfWeek = relativeDayOfWeek;
-        this.Direction = direction;
+        Month = month;
+        DayOfWeek = dayOfWeek;
+        WeekOrdinal = weekOrdinal;
+        RelativeDayOfWeek = relativeDayOfWeek;
+        Direction = direction;
     }
 
     /// <summary>
@@ -72,9 +72,9 @@ public sealed class RelativeWeekdayInMonthStrategy : IDateCalculationStrategy
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
-        if (WeekdayMath.NthWeekdayInMonth(year, this.Month, this.DayOfWeek, this.WeekOrdinal) is not DateOnly anchor)
+        if (WeekdayMath.NthWeekdayInMonth(year, Month, DayOfWeek, WeekOrdinal) is not DateOnly anchor)
             return null;
 
-        return WeekdayMath.SeekOrNull(anchor, this.RelativeDayOfWeek, this.Direction);
+        return WeekdayMath.SeekOrNull(anchor, RelativeDayOfWeek, Direction);
     }
 }

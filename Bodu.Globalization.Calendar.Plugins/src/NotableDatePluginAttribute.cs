@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDatePluginAttribute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed class NotableDatePluginAttribute : Attribute
     {
         ThrowHelper.ThrowIfNull(pluginType);
 
-        this.PluginType = pluginType;
+        PluginType = pluginType;
     }
 
     /// <summary>

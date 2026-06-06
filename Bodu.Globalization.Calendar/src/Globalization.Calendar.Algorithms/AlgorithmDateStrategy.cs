@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlgorithmDateStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// zone appropriate to the observance (for example Japan Standard Time for the Japanese equinox holidays).
 /// </para>
 /// </remarks>
-/// <seealso cref="IDateCalculationStrategy" />
-/// <seealso cref="INotableDateAlgorithm" />
+/// <seealso cref="IDateCalculationStrategy" /> <seealso cref="INotableDateAlgorithm" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
 {
@@ -70,7 +69,7 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
     {
         ThrowHelper.ThrowIfNull(key);
 
-        this.Key = key;
+        Key = key;
     }
 
     /// <summary>
@@ -93,7 +92,7 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
         if (year < 1 || year > 9999)
             return null;
 
-        return this.Key switch
+        return Key switch
         {
             WesternEasterKey => EasterCalculator.Western(year),
             OrthodoxEasterKey => EasterCalculator.Orthodox(year),
@@ -106,8 +105,8 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
             "asalha-puja" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 6, 15)),
             "losar" => LunarPhaseCalculator.NewMoonOnOrAfter(new DateOnly(year, 1, 20)),
             "matariki" => MatarikiCalendar.Resolve(year),
-            _ when HinduLunarCalculator.IsFestivalKey(this.Key) => HinduLunarCalculator.Resolve(this.Key, year),
-            _ => context.Algorithms is INotableDateAlgorithmRegistry registry && registry.TryGet(this.Key, out INotableDateAlgorithm? algorithm) && algorithm is not null
+            _ when HinduLunarCalculator.IsFestivalKey(Key) => HinduLunarCalculator.Resolve(Key, year),
+            _ => context.Algorithms is INotableDateAlgorithmRegistry registry && registry.TryGet(Key, out INotableDateAlgorithm? algorithm) && algorithm is not null
                 ? algorithm.Calculate(year)
                 : null,
         };

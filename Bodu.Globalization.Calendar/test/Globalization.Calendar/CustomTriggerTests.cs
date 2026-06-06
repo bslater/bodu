@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CustomTriggerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,8 +58,8 @@ public sealed class CustomTriggerTests
         /// <inheritdoc />
         public bool ShouldAdjust(AdjustmentTriggerContext context)
         {
-            this.Seen.Add((context.Territory, context.Policy.Id));
-            this.SeenBaseDates.Add(context.BaseDate);
+            Seen.Add((context.Territory, context.Policy.Id));
+            SeenBaseDates.Add(context.BaseDate);
             return false;
         }
     }
@@ -132,8 +132,8 @@ public sealed class CustomTriggerTests
 
         _ = Single(service, 2025, "custom-trigger-holiday");
 
-        Assert.IsTrue(handler.Seen.Contains(("XX", "leap-shift")));
-        Assert.IsTrue(handler.SeenBaseDates.Contains(new DateOnly(2025, 3, 1)));
+        Assert.Contains(("XX", "leap-shift"), handler.Seen);
+        Assert.Contains(new DateOnly(2025, 3, 1), handler.SeenBaseDates);
     }
 
     /// <summary>
@@ -165,6 +165,6 @@ public sealed class CustomTriggerTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-TRIGGER-HANDLER-MISSING"));
+        Assert.Contains(d => d.Code == "BODU-CAL-TRIGGER-HANDLER-MISSING", ex.Diagnostics);
     }
 }

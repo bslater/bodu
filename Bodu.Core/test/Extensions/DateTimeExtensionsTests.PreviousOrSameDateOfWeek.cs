@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
@@ -91,7 +89,7 @@ public partial class DateTimeExtensionsTests
         var input = DateTime.MaxValue;
         var actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Saturday);
 
-        Assert.IsTrue(actual <= DateTime.MaxValue);
+        Assert.IsLessThanOrEqualTo(DateTime.MaxValue, actual);
     }
 
     /// <summary>

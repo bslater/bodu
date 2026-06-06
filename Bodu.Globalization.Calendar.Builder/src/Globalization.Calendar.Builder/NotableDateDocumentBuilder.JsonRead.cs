@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilder.JsonRead.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,10 +39,10 @@ public sealed partial class NotableDateDocumentBuilder
         if (metadata is null)
             return;
 
-        this._metadataName = (string?)metadata["name"];
-        this._metadataDescription = (string?)metadata["description"];
-        this._sources.Clear();
-        this._sources.AddRange(ReadStringArray(metadata["sources"] as JsonArray));
+        _metadataName = (string?)metadata["name"];
+        _metadataDescription = (string?)metadata["description"];
+        _sources.Clear();
+        _sources.AddRange(ReadStringArray(metadata["sources"] as JsonArray));
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public sealed partial class NotableDateDocumentBuilder
             return;
 
         WeekPattern? workingWeek = null;
-        string? workingDays = (string?)policyJson["workingDays"];
+        var workingDays = (string?)policyJson["workingDays"];
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
@@ -68,7 +68,7 @@ public sealed partial class NotableDateDocumentBuilder
             ParseNullableEnum<ObservedDateRangePolicy>((string?)policyJson["observedDateRangePolicy"]),
             workingWeek);
 
-        this._resolutionPolicy = policy;
+        _resolutionPolicy = policy;
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public sealed partial class NotableDateDocumentBuilder
         foreach (JsonNode? node in array)
         {
             if (node is JsonObject policyJson)
-                this._adjustmentPolicies.Add(ReadAdjustmentPolicyJson(policyJson));
+                _adjustmentPolicies.Add(ReadAdjustmentPolicyJson(policyJson));
         }
     }
 
@@ -173,7 +173,7 @@ public sealed partial class NotableDateDocumentBuilder
         foreach (JsonNode? node in array)
         {
             if (node is JsonObject definitionJson)
-                this._definitions.Add(ReadNotableDateJson(definitionJson));
+                _definitions.Add(ReadNotableDateJson(definitionJson));
         }
     }
 
@@ -214,7 +214,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static NotableDateRuleBuilder ReadRuleJson(JsonObject ruleJson)
     {
         NotableDateRuleBuilder rule = new((string?)ruleJson["id"] ?? string.Empty);
-        JsonObject? applicability = ruleJson["applicability"] as JsonObject;
+        var applicability = ruleJson["applicability"] as JsonObject;
 
         rule.SetParsedScalars(
             (int?)ruleJson["priority"],
@@ -256,7 +256,7 @@ public sealed partial class NotableDateDocumentBuilder
                 overrides.AddEntry(ReadOverrideJson(overrideJson));
         }
 
-        this._overrides = overrides;
+        _overrides = overrides;
     }
 
     /// <summary>
@@ -266,8 +266,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed override entry.</returns>
     private static OverrideEntry ReadOverrideJson(JsonObject overrideJson)
     {
-        string notableDateRef = (string?)overrideJson["notableDateRef"] ?? string.Empty;
-        string operation = (string?)overrideJson["operation"] ?? string.Empty;
+        var notableDateRef = (string?)overrideJson["notableDateRef"] ?? string.Empty;
+        var operation = (string?)overrideJson["operation"] ?? string.Empty;
 
         switch (operation)
         {
@@ -293,7 +293,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed patch override entry.</returns>
     private static OverrideEntry ReadPatchOverrideJson(JsonObject overrideJson, string notableDateRef)
     {
-        string ruleRef = (string?)overrideJson["ruleRef"] ?? string.Empty;
+        var ruleRef = (string?)overrideJson["ruleRef"] ?? string.Empty;
         NotableDateRuleBuilder rule = new(ruleRef);
         rule.SetParsedScalars(
             (int?)overrideJson["priority"],
@@ -325,7 +325,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (KeyValuePair<string, JsonNode?> property in strategyJson)
         {
-            if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out string? elementName))
+            if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out var elementName))
                 continue;
 
             XElement element = new(BuilderXml.Namespace + elementName);
@@ -339,8 +339,8 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Converts a JSON strategy attribute value into the string form expected by the XML schema, normalizing months
-    /// and Boolean literals.
+    /// Converts a JSON strategy attribute value into the string form expected by the XML schema, normalizing months and
+    /// Boolean literals.
     /// </summary>
     /// <param name="name">The attribute name.</param>
     /// <param name="value">The attribute value, or <see langword="null" />.</param>

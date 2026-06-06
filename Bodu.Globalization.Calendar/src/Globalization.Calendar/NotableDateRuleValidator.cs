@@ -17,7 +17,7 @@ internal static class NotableDateRuleValidator
     /// <summary>
     /// The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.
     /// </summary>
-    private static readonly int[] s_maxDaysPerMonth = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    private static readonly int[] s_maxDaysPerMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     /// <summary>
     /// Validates the assembled resource, recording an error diagnostic for each violation.
@@ -259,29 +259,29 @@ internal static class NotableDateRuleValidator
         switch (rule.Strategy)
         {
             case OffsetFromRuleStrategy offset:
-            {
-                var reference = string.IsNullOrEmpty(offset.RuleRef)
-                    ? offset.NotableDateRef
-                    : $"{offset.NotableDateRef}/{offset.RuleRef}";
-
-                var matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
-                if (matches == 0)
                 {
-                    diagnostics.Add(new NotableDateValidationDiagnostic(
-                        NotableDateValidationSeverity.Error,
-                        "BODU-CAL-OFFSET-MISSING",
-                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
-                }
-                else if (matches > 1)
-                {
-                    diagnostics.Add(new NotableDateValidationDiagnostic(
-                        NotableDateValidationSeverity.Error,
-                        "BODU-CAL-OFFSET-AMBIGUOUS",
-                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
-                }
+                    var reference = string.IsNullOrEmpty(offset.RuleRef)
+                        ? offset.NotableDateRef
+                        : $"{offset.NotableDateRef}/{offset.RuleRef}";
 
-                break;
-            }
+                    var matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
+                    if (matches == 0)
+                    {
+                        diagnostics.Add(new NotableDateValidationDiagnostic(
+                            NotableDateValidationSeverity.Error,
+                            "BODU-CAL-OFFSET-MISSING",
+                            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
+                    }
+                    else if (matches > 1)
+                    {
+                        diagnostics.Add(new NotableDateValidationDiagnostic(
+                            NotableDateValidationSeverity.Error,
+                            "BODU-CAL-OFFSET-AMBIGUOUS",
+                            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
+                    }
+
+                    break;
+                }
 
             case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key) && !(algorithms?.Contains(algorithm.Key) ?? false):
                 diagnostics.Add(new NotableDateValidationDiagnostic(

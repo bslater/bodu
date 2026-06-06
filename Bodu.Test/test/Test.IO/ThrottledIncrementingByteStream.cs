@@ -22,19 +22,19 @@ public sealed class ThrottledIncrementingByteStream
     public ThrottledIncrementingByteStream(int size, int readDelay = 1000)
         : base(size)
     {
-        this.throttleDelayMs = readDelay;
+        throttleDelayMs = readDelay;
     }
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        Thread.Sleep(this.throttleDelayMs); // simulate delay
+        Thread.Sleep(throttleDelayMs); // simulate delay
         return base.Read(buffer, offset, count);
     }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        await Task.Delay(this.throttleDelayMs, cancellationToken); // simulate delay
+        await Task.Delay(throttleDelayMs, cancellationToken); // simulate delay
 
         // explicitly handle cancellation
         cancellationToken.ThrowIfCancellationRequested();

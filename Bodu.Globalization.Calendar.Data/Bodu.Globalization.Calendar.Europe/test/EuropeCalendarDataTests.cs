@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -80,7 +79,7 @@ public sealed class EuropeCalendarDataTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
         Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
     }
@@ -98,7 +97,7 @@ public sealed class EuropeCalendarDataTests
             IReadOnlyList<NotableDate> holidays = EuropeCalendarData.CreateService(country)
                 .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
 
-            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
+            Assert.IsNotEmpty(holidays, $"{country} resolved no holidays for 2024");
         }
     }
 
@@ -126,7 +125,7 @@ public sealed class EuropeCalendarDataTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
         Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
     }
@@ -154,8 +153,8 @@ public sealed class EuropeCalendarDataTests
     {
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        Assert.AreEqual(1, EuropeCalendarData.CreateService("FR-67").Resolve(year, "FR-67").Count(r => r.NotableDateId == "good-friday"),
-            "Good Friday should resolve for Alsace-Moselle (FR-67)");
+        Assert.ContainsSingle(r => r.NotableDateId == "good-friday",
+EuropeCalendarData.CreateService("FR-67").Resolve(year, "FR-67"), "Good Friday should resolve for Alsace-Moselle (FR-67)");
         Assert.AreEqual(0, EuropeCalendarData.CreateService("FR").Resolve(year, "FR").Count(r => r.NotableDateId == "good-friday"),
             "Good Friday should not resolve for a plain national France query");
 

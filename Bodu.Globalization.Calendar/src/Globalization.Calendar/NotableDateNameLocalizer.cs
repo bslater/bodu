@@ -43,7 +43,7 @@ public sealed class NotableDateNameLocalizer : INotableDateNameLocalizer
         ThrowHelper.ThrowIfNull(culture);
         ThrowHelper.ThrowIfNull(displayName);
 
-        this._names[(notableDateId, culture.Name)] = displayName;
+        _names[(notableDateId, culture.Name)] = displayName;
         return this;
     }
 
@@ -59,7 +59,7 @@ public sealed class NotableDateNameLocalizer : INotableDateNameLocalizer
         CultureInfo current = culture;
         while (true)
         {
-            if (this._names.TryGetValue((notableDate.NotableDateId, current.Name), out var name))
+            if (_names.TryGetValue((notableDate.NotableDateId, current.Name), out var name))
                 return name;
 
             // The invariant culture (empty name) is the parent of its own parent and the end of every fallback chain.

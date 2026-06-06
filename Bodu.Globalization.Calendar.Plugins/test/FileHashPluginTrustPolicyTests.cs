@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileHashPluginTrustPolicyTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed class FileHashPluginTrustPolicyTests
     /// <summary>
     /// A sample pinned digest.
     /// </summary>
-    private static readonly byte[] Hash = { 1, 2, 3, 4 };
+    private static readonly byte[] Hash = [1, 2, 3, 4];
 
     /// <summary>
     /// Verifies that a matching hash under the pinned name is trusted.
@@ -37,7 +37,7 @@ public sealed class FileHashPluginTrustPolicyTests
     public void Evaluate_WhenHashDiffers_ShouldReject()
     {
         FileHashPluginTrustPolicy policy = new(new Dictionary<string, byte[]> { ["Plug"] = Hash });
-        PluginTrustContext context = new("Plug", "/x/Plug.dll", new byte[] { 9, 9, 9, 9 });
+        PluginTrustContext context = new("Plug", "/x/Plug.dll", [9, 9, 9, 9]);
 
         Assert.IsFalse(policy.Evaluate(context).IsTrusted);
     }

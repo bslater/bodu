@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EasterKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -620,7 +620,7 @@ public sealed class EasterKnownAnswerTests
     /// <param name="day">The expected day.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(GregorianRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GregorianRows))]
     public void WesternEaster_MatchesKnownAnswer(int year, int month, int day) =>
         AssertEaster("western-easter", year, month, day);
 
@@ -632,7 +632,7 @@ public sealed class EasterKnownAnswerTests
     /// <param name="day">The expected day.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(JulianRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(JulianRows))]
     public void OrthodoxEaster_MatchesKnownAnswer(int year, int month, int day) =>
         AssertEaster("orthodox-easter", year, month, day);
 }

@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.Serialization.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using System.Xml.Linq;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -21,7 +19,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void ToXDocument_WhenDocumentAuthored_ShouldEmitV2RootElement()
     {
-        XDocument document = SampleDocument().ToXDocument();
+        var document = SampleDocument().ToXDocument();
 
         Assert.IsNotNull(document.Root);
         Assert.AreEqual(SchemaNamespace + "NotableDateResource", document.Root!.Name);
@@ -42,7 +40,7 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateResource direct = builder.Build();
 
         Assert.AreEqual(direct.ResourceId, fromXml.ResourceId);
-        Assert.AreEqual(direct.NotableDates.Count, fromXml.NotableDates.Count);
+        Assert.HasCount(direct.NotableDates.Count, fromXml.NotableDates);
     }
 
     /// <summary>
@@ -56,7 +54,7 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateResource fromJson = NotableDateResourceLoader.LoadJson(builder.ToJson());
 
         Assert.AreEqual("demo.sample", fromJson.ResourceId);
-        Assert.AreEqual(4, fromJson.NotableDates.Count);
+        Assert.HasCount(4, fromJson.NotableDates);
     }
 
     /// <summary>

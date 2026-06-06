@@ -22,9 +22,7 @@ namespace Bodu.Globalization.Calendar;
 /// substitute past a day already taken by another holiday.
 /// </para>
 /// </remarks>
-/// <seealso cref="AdjustmentScope" />
-/// <seealso cref="AdjustmentTrigger" />
-/// <seealso cref="AdjustmentAction" />
+/// <seealso cref="AdjustmentScope" /> <seealso cref="AdjustmentTrigger" /> <seealso cref="AdjustmentAction" />
 /// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public sealed class AdjustmentPolicy
 {
@@ -117,28 +115,28 @@ public sealed class AdjustmentPolicy
         ThrowHelper.ThrowIfNull(scope);
         ThrowHelper.ThrowIfNull(triggerWeekdays);
 
-        this.Id = id;
-        this.Priority = priority;
-        this.Scope = scope;
-        this.Trigger = trigger;
-        this.TriggerWeekdays = triggerWeekdays.ToArray();
-        this.Action = action;
-        this.ActionWeekday = actionWeekday;
-        this.ActionDays = actionDays;
-        this.MaxSearchDays = maxSearchDays;
-        this.SkipWeekends = skipWeekends;
-        this.SkipNonWorkingDates = skipNonWorkingDates;
-        this.Emission = emission;
-        this.Reason = reason;
-        this.NonWorking = nonWorking;
-        this.TriggerMonth = triggerMonth;
-        this.TriggerDay = triggerDay;
-        this.TriggerWeekOrdinal = triggerWeekOrdinal;
-        this.ActionNotableDateRef = actionNotableDateRef;
-        this.ActionRuleRef = actionRuleRef;
-        this.ActionHandlerKey = actionHandlerKey;
-        this.TriggerHandlerKey = triggerHandlerKey;
-        this.HandlerParameters = handlerParameters ?? s_emptyParameters;
+        Id = id;
+        Priority = priority;
+        Scope = scope;
+        Trigger = trigger;
+        TriggerWeekdays = triggerWeekdays.ToArray();
+        Action = action;
+        ActionWeekday = actionWeekday;
+        ActionDays = actionDays;
+        MaxSearchDays = maxSearchDays;
+        SkipWeekends = skipWeekends;
+        SkipNonWorkingDates = skipNonWorkingDates;
+        Emission = emission;
+        Reason = reason;
+        NonWorking = nonWorking;
+        TriggerMonth = triggerMonth;
+        TriggerDay = triggerDay;
+        TriggerWeekOrdinal = triggerWeekOrdinal;
+        ActionNotableDateRef = actionNotableDateRef;
+        ActionRuleRef = actionRuleRef;
+        ActionHandlerKey = actionHandlerKey;
+        TriggerHandlerKey = triggerHandlerKey;
+        HandlerParameters = handlerParameters ?? s_emptyParameters;
     }
 
     /// <summary>
@@ -297,16 +295,16 @@ public sealed class AdjustmentPolicy
     /// they are evaluated by the resolving service and never fire here.
     /// </remarks>
     public bool IsTriggered(DateOnly date, WeekPattern workingWeek) =>
-        this.Trigger switch
+        Trigger switch
         {
             AdjustmentTrigger.Always => true,
-            AdjustmentTrigger.IfDayOfWeek => this.TriggerWeekdays.Contains(date.DayOfWeek),
+            AdjustmentTrigger.IfDayOfWeek => TriggerWeekdays.Contains(date.DayOfWeek),
             AdjustmentTrigger.IfWeekend => !workingWeek.Contains(date.DayOfWeek),
             AdjustmentTrigger.IfWeekday => workingWeek.Contains(date.DayOfWeek),
             AdjustmentTrigger.IfLeapYear => DateTime.IsLeapYear(date.Year),
-            AdjustmentTrigger.IfBeforeFixedDate => this.ComparesFixedDate(date, before: true),
-            AdjustmentTrigger.IfAfterFixedDate => this.ComparesFixedDate(date, before: false),
-            AdjustmentTrigger.IfNthOccurrenceInMonth => this.IsNthOccurrenceInMonth(date),
+            AdjustmentTrigger.IfBeforeFixedDate => ComparesFixedDate(date, before: true),
+            AdjustmentTrigger.IfAfterFixedDate => ComparesFixedDate(date, before: false),
+            AdjustmentTrigger.IfNthOccurrenceInMonth => IsNthOccurrenceInMonth(date),
             _ => false,
         };
 
@@ -318,7 +316,7 @@ public sealed class AdjustmentPolicy
     /// <returns>The comparison result, or <see langword="false" /> when the comparison date is unconfigured.</returns>
     private bool ComparesFixedDate(DateOnly date, bool before)
     {
-        if (this.TriggerMonth is not int month || this.TriggerDay is not int day || month is < 1 or > 12)
+        if (TriggerMonth is not int month || TriggerDay is not int day || month is < 1 or > 12)
             return false;
 
         var clampedDay = Math.Min(day, DateTime.DaysInMonth(date.Year, month));
@@ -334,7 +332,7 @@ public sealed class AdjustmentPolicy
     /// <returns><see langword="true" /> when the occurrence matches the configured ordinal and weekday.</returns>
     private bool IsNthOccurrenceInMonth(DateOnly date)
     {
-        if (this.TriggerWeekdays.Count == 0 || this.TriggerWeekOrdinal is not WeekOrdinal ordinal || date.DayOfWeek != this.TriggerWeekdays[0])
+        if (TriggerWeekdays.Count == 0 || TriggerWeekOrdinal is not WeekOrdinal ordinal || date.DayOfWeek != TriggerWeekdays[0])
             return false;
 
         if (ordinal == WeekOrdinal.Last)
@@ -358,13 +356,13 @@ public sealed class AdjustmentPolicy
     {
         ThrowHelper.ThrowIfNull(isOccupied);
 
-        return this.Action switch
+        return Action switch
         {
-            AdjustmentAction.AddDays => date.AddDays(this.ActionDays),
-            AdjustmentAction.MoveToNextWeekday => this.ActionWeekday is DayOfWeek next ? WeekdayMath.OnOrAfter(date, next) : date,
-            AdjustmentAction.MoveToPreviousWeekday => this.ActionWeekday is DayOfWeek previous ? WeekdayMath.OnOrBefore(date, previous) : date,
-            AdjustmentAction.MoveToNextWorkingDay => this.SeekWorkingDay(date, step: 1, isOccupied, workingWeek),
-            AdjustmentAction.MoveToPreviousWorkingDay => this.SeekWorkingDay(date, step: -1, isOccupied, workingWeek),
+            AdjustmentAction.AddDays => date.AddDays(ActionDays),
+            AdjustmentAction.MoveToNextWeekday => ActionWeekday is DayOfWeek next ? WeekdayMath.OnOrAfter(date, next) : date,
+            AdjustmentAction.MoveToPreviousWeekday => ActionWeekday is DayOfWeek previous ? WeekdayMath.OnOrBefore(date, previous) : date,
+            AdjustmentAction.MoveToNextWorkingDay => SeekWorkingDay(date, step: 1, isOccupied, workingWeek),
+            AdjustmentAction.MoveToPreviousWorkingDay => SeekWorkingDay(date, step: -1, isOccupied, workingWeek),
             _ => date,
         };
     }
@@ -380,10 +378,10 @@ public sealed class AdjustmentPolicy
     /// <returns>The first working day found, or the last scanned day when the bound is reached.</returns>
     private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
     {
-        var bound = this.MaxSearchDays ?? DefaultMaxSearchDays;
+        var bound = MaxSearchDays ?? DefaultMaxSearchDays;
 
         DateOnly cursor = date.AddDays(step);
-        for (var i = 0; i < bound && this.IsBlocked(cursor, isOccupied, workingWeek); i++)
+        for (var i = 0; i < bound && IsBlocked(cursor, isOccupied, workingWeek); i++)
             cursor = cursor.AddDays(step);
 
         return cursor;
@@ -397,6 +395,6 @@ public sealed class AdjustmentPolicy
     /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns><see langword="true" /> if the day is blocked; otherwise <see langword="false" />.</returns>
     private bool IsBlocked(DateOnly date, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek) =>
-        (this.SkipWeekends && !workingWeek.Contains(date.DayOfWeek))
-        || (this.SkipNonWorkingDates && isOccupied(date));
+        (SkipWeekends && !workingWeek.Contains(date.DayOfWeek))
+        || (SkipNonWorkingDates && isOccupied(date));
 }

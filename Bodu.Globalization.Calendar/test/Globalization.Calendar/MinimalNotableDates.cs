@@ -19,14 +19,16 @@ internal static class MinimalNotableDates
         LoadResource("minimal.xml");
 
     /// <summary>
-    /// Loads the minimal notable-date document with a <c>RemoveRule</c> override targeting the Puerto Rico Constitution Day rule.
+    /// Loads the minimal notable-date document with a <c>RemoveRule</c> override targeting the Puerto Rico Constitution
+    /// Day rule.
     /// </summary>
     /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
     public static NotableDateResource LoadWithRemoveOverride() =>
         LoadResource("minimal-remove-pr-rule.xml");
 
     /// <summary>
-    /// Loads the minimal notable-date document with a <c>PatchRule</c> override targeting the Puerto Rico Constitution Day rule.
+    /// Loads the minimal notable-date document with a <c>PatchRule</c> override targeting the Puerto Rico Constitution
+    /// Day rule.
     /// </summary>
     /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
     public static NotableDateResource LoadWithPatchOverride() =>

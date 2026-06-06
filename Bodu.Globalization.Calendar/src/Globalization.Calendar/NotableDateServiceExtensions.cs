@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,8 +26,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateService" />
-/// <seealso cref="NotableDateFilter" />
+/// <seealso cref="INotableDateService" /> <seealso cref="NotableDateFilter" />
 /// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public static class NotableDateServiceExtensions
 {

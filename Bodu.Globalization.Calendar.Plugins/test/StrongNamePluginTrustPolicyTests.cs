@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrongNamePluginTrustPolicyTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed class StrongNamePluginTrustPolicyTests
     [TestMethod]
     public void Evaluate_WhenTokenInAllowlist_ShouldTrust()
     {
-        StrongNamePluginTrustPolicy policy = new(new[] { Token });
+        StrongNamePluginTrustPolicy policy = new([Token]);
         PluginTrustContext context = new("Plug", null, null, Token);
 
         Assert.IsTrue(policy.Evaluate(context).IsTrusted);
@@ -36,7 +36,7 @@ public sealed class StrongNamePluginTrustPolicyTests
     [TestMethod]
     public void Evaluate_WhenTokenCaseDiffers_ShouldTrust()
     {
-        StrongNamePluginTrustPolicy policy = new(new[] { "B77A5C561934E089" });
+        StrongNamePluginTrustPolicy policy = new(["B77A5C561934E089"]);
         PluginTrustContext context = new("Plug", null, null, Token);
 
         Assert.IsTrue(policy.Evaluate(context).IsTrusted);
@@ -48,7 +48,7 @@ public sealed class StrongNamePluginTrustPolicyTests
     [TestMethod]
     public void Evaluate_WhenTokenNotInAllowlist_ShouldReject()
     {
-        StrongNamePluginTrustPolicy policy = new(new[] { "0000000000000000" });
+        StrongNamePluginTrustPolicy policy = new(["0000000000000000"]);
         PluginTrustContext context = new("Plug", null, null, Token);
 
         Assert.IsFalse(policy.Evaluate(context).IsTrusted);
@@ -60,7 +60,7 @@ public sealed class StrongNamePluginTrustPolicyTests
     [TestMethod]
     public void Evaluate_WhenNotStrongNamed_ShouldReject()
     {
-        StrongNamePluginTrustPolicy policy = new(new[] { Token });
+        StrongNamePluginTrustPolicy policy = new([Token]);
         PluginTrustContext context = new("Plug", null, null, null);
 
         Assert.IsFalse(policy.Evaluate(context).IsTrusted);
@@ -84,7 +84,7 @@ public sealed class StrongNamePluginTrustPolicyTests
     [TestMethod]
     public void Evaluate_WhenContextIsNull_ShouldThrowArgumentNullException()
     {
-        StrongNamePluginTrustPolicy policy = new(new[] { Token });
+        StrongNamePluginTrustPolicy policy = new([Token]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

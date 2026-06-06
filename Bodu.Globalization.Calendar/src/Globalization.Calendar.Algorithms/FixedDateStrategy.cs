@@ -18,10 +18,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// leap-month skip (for the Chinese lunisolar calendar).
 /// </para>
 /// </remarks>
-/// <seealso cref="IDateCalculationStrategy" />
-/// <seealso cref="CalendarSystem" />
-/// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)</seealso>
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="IDateCalculationStrategy" /> <seealso cref="CalendarSystem" />
+/// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)
+/// </seealso> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class FixedDateStrategy : IDateCalculationStrategy
 {
     /// <summary>
@@ -62,12 +61,12 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
         else if (monthAlias is null)
             ThrowHelper.ThrowIfOutOfRange(month, 1, 13);
 
-        this.Month = month;
-        this.Day = day;
-        this.Calendar = calendar;
-        this.SweepCalendarYears = sweepCalendarYears;
-        this.SkipLeapMonth = skipLeapMonth;
-        this.MonthAlias = monthAlias;
+        Month = month;
+        Day = day;
+        Calendar = calendar;
+        SweepCalendarYears = sweepCalendarYears;
+        SkipLeapMonth = skipLeapMonth;
+        MonthAlias = monthAlias;
     }
 
     /// <summary>
@@ -112,21 +111,21 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
         if (year < 1 || year > 9999)
             return null;
 
-        if (this.Calendar == CalendarSystem.Gregorian)
+        if (Calendar == CalendarSystem.Gregorian)
         {
-            if (this.Month is < 1 or > 12 || this.Day > DateTime.DaysInMonth(year, this.Month))
+            if (Month is < 1 or > 12 || Day > DateTime.DaysInMonth(year, Month))
                 return null;
 
-            return new DateOnly(year, this.Month, this.Day);
+            return new DateOnly(year, Month, Day);
         }
 
         return CalendarSystems.ResolveFixed(
-            this.Calendar,
-            this.Month,
-            this.MonthAlias,
-            this.Day,
-            this.SweepCalendarYears,
-            this.SkipLeapMonth,
+            Calendar,
+            Month,
+            MonthAlias,
+            Day,
+            SweepCalendarYears,
+            SkipLeapMonth,
             year);
     }
 
@@ -144,16 +143,16 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
         if (year < 1 || year > 9999)
             return [];
 
-        if (this.Calendar == CalendarSystem.Gregorian)
-            return this.Calculate(year, context) is DateOnly date ? new[] { date } : [];
+        if (Calendar == CalendarSystem.Gregorian)
+            return Calculate(year, context) is DateOnly date ? new[] { date } : [];
 
         return CalendarSystems.ResolveFixedAll(
-            this.Calendar,
-            this.Month,
-            this.MonthAlias,
-            this.Day,
-            this.SweepCalendarYears,
-            this.SkipLeapMonth,
+            Calendar,
+            Month,
+            MonthAlias,
+            Day,
+            SweepCalendarYears,
+            SkipLeapMonth,
             year);
     }
 }

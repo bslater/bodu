@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateCollisionResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,9 +36,9 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="CollisionPolicy" />
-/// <seealso cref="NotableDateService" />
-/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
+/// <seealso cref="CollisionPolicy" /> <seealso cref="NotableDateService" />
+/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date
+/// resolution (guide)</seealso>
 public interface INotableDateCollisionResolver
 {
     /// <summary>

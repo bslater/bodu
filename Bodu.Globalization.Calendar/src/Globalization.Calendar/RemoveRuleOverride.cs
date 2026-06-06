@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RemoveRuleOverride.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ internal sealed class RemoveRuleOverride : NotableDateRuleOverride
     {
         ThrowHelper.ThrowIfNull(ruleRef);
 
-        this.RuleRef = ruleRef;
+        RuleRef = ruleRef;
     }
 
     /// <summary>

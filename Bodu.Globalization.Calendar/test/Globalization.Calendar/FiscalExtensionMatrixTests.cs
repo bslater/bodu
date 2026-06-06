@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FiscalExtensionMatrixTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -105,7 +105,7 @@ public sealed class FiscalExtensionMatrixTests
     /// <param name="lastDay">Ignored.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalYearBoundaryRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FiscalYearBoundaryRows))]
     public void FirstWorkingDayOfFiscalYear_WhenSweepingStartMonths_ShouldReturnExpectedDate(
         int year, int month, int day, int startMonth,
         int firstYear, int firstMonth, int firstDay,
@@ -132,7 +132,7 @@ public sealed class FiscalExtensionMatrixTests
     /// <param name="lastDay">The expected last-working-day day.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalYearBoundaryRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FiscalYearBoundaryRows))]
     public void LastWorkingDayOfFiscalYear_WhenSweepingStartMonths_ShouldReturnExpectedDate(
         int year, int month, int day, int startMonth,
         int firstYear, int firstMonth, int firstDay,
@@ -159,7 +159,7 @@ public sealed class FiscalExtensionMatrixTests
     /// <param name="lastDay">Ignored.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalQuarterBoundaryRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FiscalQuarterBoundaryRows))]
     public void FirstWorkingDayOfFiscalQuarter_WhenSweepingStartMonths_ShouldReturnExpectedDate(
         int year, int month, int day, int startMonth,
         int firstYear, int firstMonth, int firstDay,
@@ -186,7 +186,7 @@ public sealed class FiscalExtensionMatrixTests
     /// <param name="lastDay">The expected last-working-day day.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalQuarterBoundaryRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FiscalQuarterBoundaryRows))]
     public void LastWorkingDayOfFiscalQuarter_WhenSweepingStartMonths_ShouldReturnExpectedDate(
         int year, int month, int day, int startMonth,
         int firstYear, int firstMonth, int firstDay,

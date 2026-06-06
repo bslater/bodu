@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDefinitionBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,8 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// duration, non-working) once, then add each variant with
 /// <see cref="AddRule(string, System.Action{NotableDateRuleBuilder})" />; a rule may override the defaults it needs to.
 /// Configure the builder inside
-/// <see cref="NotableDateDocumentBuilder.AddNotableDate(string, string, NotableDateCategory, System.Action{NotableDateDefinitionBuilder})" />.
+/// <see cref="NotableDateDocumentBuilder.AddNotableDate(string, string, NotableDateCategory, System.Action{NotableDateDefinitionBuilder})" />
+/// .
 /// </para>
 /// </remarks>
 /// <example>
@@ -31,8 +32,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateDocumentBuilder" />
-/// <seealso cref="NotableDateRuleBuilder" />
+/// <seealso cref="NotableDateDocumentBuilder" /> <seealso cref="NotableDateRuleBuilder" />
 /// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class NotableDateDefinitionBuilder
 {
@@ -79,9 +79,9 @@ public sealed class NotableDateDefinitionBuilder
     /// <param name="category">The category of the concept.</param>
     internal NotableDateDefinitionBuilder(string id, string displayName, NotableDateCategory category)
     {
-        this._id = id;
-        this._displayName = displayName;
-        this._category = category;
+        _id = id;
+        _displayName = displayName;
+        _category = category;
     }
 
     /// <summary>
@@ -89,49 +89,49 @@ public sealed class NotableDateDefinitionBuilder
     /// </summary>
     /// <returns>The concept identifier.</returns>
     internal string Id =>
-        this._id;
+        _id;
 
     /// <summary>
     /// Gets the human-readable display name of the concept.
     /// </summary>
     /// <returns>The display name.</returns>
     internal string DisplayName =>
-        this._displayName;
+        _displayName;
 
     /// <summary>
     /// Gets the category of the concept.
     /// </summary>
     /// <returns>The category.</returns>
     internal NotableDateCategory Category =>
-        this._category;
+        _category;
 
     /// <summary>
     /// Gets the default duration in days.
     /// </summary>
     /// <returns>The default duration, or <see langword="null" /> when unset.</returns>
     internal int? DefaultDurationDays =>
-        this._defaultDurationDays;
+        _defaultDurationDays;
 
     /// <summary>
     /// Gets the default non-working flag.
     /// </summary>
     /// <returns>The default flag, or <see langword="null" /> when unset.</returns>
     internal bool? DefaultNonWorkingDay =>
-        this._defaultNonWorkingDay;
+        _defaultNonWorkingDay;
 
     /// <summary>
     /// Gets the concept-level tags.
     /// </summary>
     /// <returns>The tags; empty when none are configured.</returns>
     internal IReadOnlyList<string> Tags =>
-        this._tags;
+        _tags;
 
     /// <summary>
     /// Gets the rules belonging to the concept.
     /// </summary>
     /// <returns>The rule builders, in declaration order.</returns>
     internal IReadOnlyList<NotableDateRuleBuilder> Rules =>
-        this._rules;
+        _rules;
 
     /// <summary>
     /// Sets the human-readable display name of the concept.
@@ -145,7 +145,7 @@ public sealed class NotableDateDefinitionBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(displayName);
 
-        this._displayName = displayName;
+        _displayName = displayName;
         return this;
     }
 
@@ -156,7 +156,7 @@ public sealed class NotableDateDefinitionBuilder
     /// <returns>The same <see cref="NotableDateDefinitionBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateDefinitionBuilder WithCategory(NotableDateCategory category)
     {
-        this._category = category;
+        _category = category;
         return this;
     }
 
@@ -170,7 +170,7 @@ public sealed class NotableDateDefinitionBuilder
     {
         ThrowHelper.ThrowIfLessThan(days, 1);
 
-        this._defaultDurationDays = days;
+        _defaultDurationDays = days;
         return this;
     }
 
@@ -181,7 +181,7 @@ public sealed class NotableDateDefinitionBuilder
     /// <returns>The same <see cref="NotableDateDefinitionBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateDefinitionBuilder AsNonWorkingByDefault(bool value = true)
     {
-        this._defaultNonWorkingDay = value;
+        _defaultNonWorkingDay = value;
         return this;
     }
 
@@ -197,7 +197,7 @@ public sealed class NotableDateDefinitionBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
 
-        this._tags.Add(tag);
+        _tags.Add(tag);
         return this;
     }
 
@@ -211,8 +211,8 @@ public sealed class NotableDateDefinitionBuilder
     {
         ThrowHelper.ThrowIfNull(tags);
 
-        this._tags.Clear();
-        this._tags.AddRange(tags);
+        _tags.Clear();
+        _tags.AddRange(tags);
         return this;
     }
 
@@ -233,7 +233,7 @@ public sealed class NotableDateDefinitionBuilder
 
         NotableDateRuleBuilder rule = new(id);
         configure(rule);
-        this._rules.Add(rule);
+        _rules.Add(rule);
         return this;
     }
 
@@ -242,7 +242,7 @@ public sealed class NotableDateDefinitionBuilder
     /// </summary>
     /// <param name="rule">The rule builder to add.</param>
     internal void AddRule(NotableDateRuleBuilder rule) =>
-        this._rules.Add(rule);
+        _rules.Add(rule);
 
     /// <summary>
     /// Sets the concept scalars and tags directly when reconstructing a builder from a parsed document.
@@ -252,10 +252,10 @@ public sealed class NotableDateDefinitionBuilder
     /// <param name="tags">The concept-level tags.</param>
     internal void SetParsedValues(int? defaultDurationDays, bool? defaultNonWorkingDay, IEnumerable<string> tags)
     {
-        this._defaultDurationDays = defaultDurationDays;
-        this._defaultNonWorkingDay = defaultNonWorkingDay;
-        this._tags.Clear();
-        this._tags.AddRange(tags);
+        _defaultDurationDays = defaultDurationDays;
+        _defaultNonWorkingDay = defaultNonWorkingDay;
+        _tags.Clear();
+        _tags.AddRange(tags);
     }
 
     /// <summary>
@@ -264,9 +264,9 @@ public sealed class NotableDateDefinitionBuilder
     /// <returns>A new <see cref="NotableDateDefinitionBuilder" /> carrying the same configured state.</returns>
     internal NotableDateDefinitionBuilder Clone()
     {
-        NotableDateDefinitionBuilder clone = new(this._id, this._displayName, this._category);
-        clone.SetParsedValues(this._defaultDurationDays, this._defaultNonWorkingDay, this._tags);
-        foreach (NotableDateRuleBuilder rule in this._rules)
+        NotableDateDefinitionBuilder clone = new(_id, _displayName, _category);
+        clone.SetParsedValues(_defaultDurationDays, _defaultNonWorkingDay, _tags);
+        foreach (NotableDateRuleBuilder rule in _rules)
             clone._rules.Add(rule.Clone());
 
         return clone;

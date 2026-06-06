@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.SaveLoad.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.IO;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -17,13 +14,13 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk()
     {
-        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.xml");
+        var path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.xml");
         try
         {
             SampleDocument().Save(path);
             Assert.IsTrue(File.Exists(path));
 
-            NotableDateDocumentBuilder loaded = NotableDateDocumentBuilder.Load(path);
+            var loaded = NotableDateDocumentBuilder.Load(path);
 
             CollectionAssert.AreEqual(ResolvedSample(SampleDocument().Build()), ResolvedSample(loaded.Build()));
         }
@@ -39,13 +36,13 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk()
     {
-        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.json");
+        var path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.json");
         try
         {
             SampleDocument().Save(path);
             Assert.IsTrue(File.Exists(path));
 
-            NotableDateDocumentBuilder loaded = NotableDateDocumentBuilder.Load(path);
+            var loaded = NotableDateDocumentBuilder.Load(path);
 
             CollectionAssert.AreEqual(ResolvedSample(SampleDocument().Build()), ResolvedSample(loaded.Build()));
         }
@@ -61,7 +58,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void Save_WhenExtensionUnrecognized_ShouldThrowArgumentException()
     {
-        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.txt");
+        var path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.txt");
 
         _ = Assert.ThrowsExactly<ArgumentException>(() => SampleDocument().Save(path));
     }

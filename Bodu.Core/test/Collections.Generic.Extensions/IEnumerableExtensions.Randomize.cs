@@ -11,7 +11,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 {
 
     /// <summary>
-    /// Provides <see cref="RandomizationMode"/> values that require a non-null count parameter.
+    /// Provides <see cref="RandomizationMode" /> values that require a non-null count parameter.
     /// </summary>
     public static IEnumerable<object[]> GetModesRequiringCount() =>
     [
