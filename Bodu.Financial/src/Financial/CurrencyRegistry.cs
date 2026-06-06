@@ -192,7 +192,7 @@ public static class CurrencyRegistry
     /// </returns>
     public static bool TryRegister(CurrencyInfo info)
     {
-        if (info is null || !IsValid(info))
+        if (!CurrencyInfoValidator.TryValidate(info))
             return false;
 
         return s_custom.TryAdd(info.IsoCode, info);
@@ -211,24 +211,6 @@ public static class CurrencyRegistry
     {
         CurrencyInfoValidator.Validate(info, nameof(info));
         s_custom[info.IsoCode] = info;
-    }
-
-    /// <summary>
-    /// Determines whether <paramref name="info" /> satisfies the registry's metadata rules without throwing.
-    /// </summary>
-    /// <param name="info">The currency metadata to test.</param>
-    /// <returns><see langword="true" /> when the metadata is valid; otherwise <see langword="false" />.</returns>
-    private static bool IsValid(CurrencyInfo info)
-    {
-        try
-        {
-            CurrencyInfoValidator.Validate(info, nameof(info));
-            return true;
-        }
-        catch (ArgumentException)
-        {
-            return false;
-        }
     }
 
     /// <summary>

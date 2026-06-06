@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Bodu.Financial;
@@ -92,6 +93,57 @@ internal static class CurrencyInfoValidator
                 paramName);
         }
     }
+
+    /// <summary>
+    /// Determines whether <paramref name="info" /> satisfies every currency-metadata rule, without throwing.
+    /// </summary>
+    /// <param name="info">The currency metadata to test.</param>
+    /// <returns><see langword="true" /> when the metadata is valid; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// Mirrors the rules enforced by <see cref="Validate" /> so that <see cref="CurrencyRegistry" /> can report an
+    /// invalid candidate as a result on its non-throwing registration paths rather than by catching an exception.
+    /// </remarks>
+    public static bool TryValidate([NotNullWhen(true)] CurrencyInfo? info)
+    {
+        if (info is null || !IsValidIsoCode(info.IsoCode))
+            return false;
+
+        if ((uint)info.MinorUnits > MaxMinorUnits)
+            return false;
+
+        if (info.CashRoundingIncrement < 0m)
+            return false;
+
+        if (info.CashRoundingIncrement != 0m)
+        {
+            var scaled = info.CashRoundingIncrement * MinorUnitFactor(info.MinorUnits);
+            if (scaled != decimal.Truncate(scaled))
+                return false;
+        }
+
+        if ((uint)info.NumericCode >= NumericCodeUpperBound)
+            return false;
+
+        if (info.SuccessorIsoCode is not null && !IsValidIsoCode(info.SuccessorIsoCode))
+            return false;
+
+        // A non-historic currency must not carry demonetization metadata.
+        if (!info.IsHistoric && (info.DemonetizedOn is not null || info.SuccessorIsoCode is not null))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="value" /> is a non-null, three-character uppercase ASCII ISO 4217-style code.
+    /// </summary>
+    /// <param name="value">The candidate code.</param>
+    /// <returns><see langword="true" /> when the code is well formed.</returns>
+    private static bool IsValidIsoCode([NotNullWhen(true)] string? value) =>
+        value is { Length: 3 }
+            && char.IsAsciiLetterUpper(value[0])
+            && char.IsAsciiLetterUpper(value[1])
+            && char.IsAsciiLetterUpper(value[2]);
 
     /// <summary>
     /// Computes <c>10 ^ minorUnits</c> as a <see cref="decimal" />.

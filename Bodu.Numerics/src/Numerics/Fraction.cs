@@ -60,6 +60,16 @@ public readonly partial struct Fraction<T>
     private static readonly T s_maxBacking;
 
     /// <summary>
+    /// <see cref="s_minBacking" /> widened to <see cref="BigInteger" />, cached for the non-throwing narrowing check.
+    /// </summary>
+    private static readonly BigInteger s_minBackingBig;
+
+    /// <summary>
+    /// <see cref="s_maxBacking" /> widened to <see cref="BigInteger" />, cached for the non-throwing narrowing check.
+    /// </summary>
+    private static readonly BigInteger s_maxBackingBig;
+
+    /// <summary>
     /// The canonical numerator. Carries the sign of the rational value.
     /// </summary>
     private readonly T _numerator;
@@ -76,6 +86,11 @@ public readonly partial struct Fraction<T>
     static Fraction()
     {
         s_isBounded = TryGetBounds(out s_minBacking, out s_maxBacking);
+        if (s_isBounded)
+        {
+            s_minBackingBig = BigInteger.CreateChecked(s_minBacking);
+            s_maxBackingBig = BigInteger.CreateChecked(s_maxBacking);
+        }
     }
 
     /// <summary>
@@ -256,16 +271,20 @@ public readonly partial struct Fraction<T>
     /// <returns><see langword="true" /> if the value was created; otherwise, <see langword="false" />.</returns>
     public static bool TryCreate(T numerator, T denominator, out Fraction<T> result)
     {
-        try
-        {
-            result = new Fraction<T>(numerator, denominator);
-            return true;
-        }
-        catch (ArithmeticException)
+        if (T.IsZero(denominator))
         {
             result = default;
             return false;
         }
+
+        if (TryReduceToCanonical(BigInteger.CreateChecked(numerator), BigInteger.CreateChecked(denominator), out T n, out T d))
+        {
+            result = new Fraction<T>(n, d, canonical: true);
+            return true;
+        }
+
+        result = default;
+        return false;
     }
 
     /// <summary>
@@ -351,16 +370,73 @@ public readonly partial struct Fraction<T>
     /// <returns><see langword="true" /> if the value was created; otherwise, <see langword="false" />.</returns>
     public static bool TryFromBigInteger(BigInteger numerator, BigInteger denominator, out Fraction<T> result)
     {
-        try
-        {
-            result = FromBigInteger(numerator, denominator);
-            return true;
-        }
-        catch (ArithmeticException)
+        if (denominator.IsZero)
         {
             result = default;
             return false;
         }
+
+        if (TryReduceToCanonical(numerator, denominator, out T n, out T d))
+        {
+            result = new Fraction<T>(n, d, canonical: true);
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Reduces a numerator and denominator of arbitrary magnitude to canonical form and narrows both components to
+    /// <typeparamref name="T" /> without throwing.
+    /// </summary>
+    /// <param name="numerator">The numerator, assumed to pair with a non-zero <paramref name="denominator" />.</param>
+    /// <param name="denominator">The non-zero denominator.</param>
+    /// <param name="canonicalNumerator">On success, the reduced numerator narrowed to <typeparamref name="T" />.</param>
+    /// <param name="canonicalDenominator">On success, the reduced, strictly positive denominator narrowed to <typeparamref name="T" />.</param>
+    /// <returns>
+    /// <see langword="true" /> when both canonical components fit <typeparamref name="T" />; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Shared non-throwing core behind <see cref="TryCreate" /> and <see cref="TryFromBigInteger" />; the throwing
+    /// constructor and <see cref="FromBigInteger" /> retain their own narrowing so their <see cref="OverflowException" />
+    /// carries the framework conversion message.
+    /// </remarks>
+    private static bool TryReduceToCanonical(BigInteger numerator, BigInteger denominator, out T canonicalNumerator, out T canonicalDenominator)
+    {
+        if (denominator.Sign < 0)
+        {
+            numerator = -numerator;
+            denominator = -denominator;
+        }
+
+        var g = BigInteger.GreatestCommonDivisor(numerator, denominator);
+        if (g > BigInteger.One)
+        {
+            numerator /= g;
+            denominator /= g;
+        }
+
+        return TryNarrow(numerator, out canonicalNumerator) & TryNarrow(denominator, out canonicalDenominator);
+    }
+
+    /// <summary>
+    /// Narrows a <see cref="BigInteger" /> to <typeparamref name="T" /> without throwing, range-checking first when
+    /// <typeparamref name="T" /> is bounded.
+    /// </summary>
+    /// <param name="value">The value to narrow.</param>
+    /// <param name="result">On success, <paramref name="value" /> as <typeparamref name="T" />; otherwise the default.</param>
+    /// <returns><see langword="true" /> when <paramref name="value" /> fits <typeparamref name="T" />.</returns>
+    private static bool TryNarrow(BigInteger value, out T result)
+    {
+        if (s_isBounded && (value < s_minBackingBig || value > s_maxBackingBig))
+        {
+            result = default!;
+            return false;
+        }
+
+        result = T.CreateChecked(value);
+        return true;
     }
 
     /// <summary>
@@ -371,20 +447,36 @@ public readonly partial struct Fraction<T>
     /// <returns><see langword="true" /> if the backing type is bounded; otherwise, <see langword="false" />.</returns>
     private static bool TryGetBounds(out T minValue, out T maxValue)
     {
-        // The IMinMaxValue<T> constraint cannot be placed on Fraction<T> without excluding unbounded backing
-        // types, so it is probed reflectively: a constraint violation on T surfaces as an ArgumentException.
-        try
-        {
-            minValue = InvokeExtreme(nameof(MinValueOf));
-            maxValue = InvokeExtreme(nameof(MaxValueOf));
-            return true;
-        }
-        catch (ArgumentException)
+        // The IMinMaxValue<T> constraint cannot be placed on Fraction<T> without excluding unbounded backing types,
+        // so boundedness is detected by scanning T's implemented interfaces rather than by catching a constraint
+        // violation. The reflective MinValue/MaxValue read below runs only once T is known to implement the
+        // interface, so the constrained MakeGenericMethod call can no longer throw.
+        if (!ImplementsMinMaxValue())
         {
             minValue = default!;
             maxValue = default!;
             return false;
         }
+
+        minValue = InvokeExtreme(nameof(MinValueOf));
+        maxValue = InvokeExtreme(nameof(MaxValueOf));
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" /> and therefore
+    /// exposes a finite range.
+    /// </summary>
+    /// <returns><see langword="true" /> when <typeparamref name="T" /> is a bounded type.</returns>
+    private static bool ImplementsMinMaxValue()
+    {
+        foreach (Type contract in typeof(T).GetInterfaces())
+        {
+            if (contract.IsGenericType && contract.GetGenericTypeDefinition() == typeof(IMinMaxValue<>))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>
