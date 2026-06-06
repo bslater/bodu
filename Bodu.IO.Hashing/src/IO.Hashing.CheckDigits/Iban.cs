@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.Checksums;
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm

@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.Checksums;
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Identifies the alphabet from which a single-character check-digit algorithm may emit its check character.

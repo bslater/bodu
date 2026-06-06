@@ -6,7 +6,6 @@
 
 using System.Globalization;
 
-using Bodu.IO.Hashing.Checksums;
 
 namespace Bodu.IO.Hashing.CheckDigits;
 
