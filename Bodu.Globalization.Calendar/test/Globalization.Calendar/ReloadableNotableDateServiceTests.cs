@@ -129,8 +129,10 @@ public sealed class ReloadableNotableDateServiceTests
         provider.Reload(NotableDateResourceLoader.Load(TwoConceptDroppedXml));
 
         IReadOnlyList<NotableDate> after = service.Resolve(Year2025, "XX");
-        Assert.HasCount(1, after);
-        Assert.AreEqual("keep", after[0].NotableDateId);
+
+        CollectionAssert.AreEqual(
+            new[] { ("keep", new DateOnly(2025, 1, 1)) },
+            after.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     /// <summary>
