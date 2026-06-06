@@ -137,9 +137,9 @@ public sealed class AsiaPacificCalendarDataTests
             .Resolve(new DateRange(new DateOnly(2020, 1, 1), new DateOnly(2020, 12, 31)), "AU-WA")
             .Single(r => r.NotableDateId == "anzac-day");
 
-        Assert.AreEqual(new DateOnly(2020, 4, 27), wa.Date);
-        Assert.IsTrue(wa.IsObserved);
-        Assert.AreEqual("wa", wa.RuleId);
+        Assert.AreEqual(
+            (new DateOnly(2020, 4, 27), true, "wa"),
+            (wa.Date, wa.IsObserved, wa.RuleId));
     }
 
     /// <summary>
@@ -269,9 +269,9 @@ public sealed class AsiaPacificCalendarDataTests
             .ToList();
 
         Assert.HasCount(1, matches, "a day inside the span returns the occurrence");
-        Assert.AreEqual(new DateOnly(2024, 2, 10), matches[0].Date, "span start");
-        Assert.AreEqual(7, matches[0].DurationDays, "duration");
-        Assert.AreEqual(new DateOnly(2024, 2, 16), matches[0].EndDate, "span end");
+        Assert.AreEqual(
+            (new DateOnly(2024, 2, 10), 7, new DateOnly(2024, 2, 16)),
+            (matches[0].Date, matches[0].DurationDays, matches[0].EndDate));
     }
 
     /// <summary>
