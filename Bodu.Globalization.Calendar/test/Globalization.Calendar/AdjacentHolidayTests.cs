@@ -34,14 +34,14 @@ public sealed class AdjacentHolidayTests
             .Resolve(new DateRange(new DateOnly(2021, 12, 20), new DateOnly(2021, 12, 31)), "AU");
 
         NotableDate christmas = Single(results, "christmas-day");
-        Assert.AreEqual(new DateOnly(2021, 12, 27), christmas.Date, "Christmas observed Monday");
-        Assert.AreEqual(new DateOnly(2021, 12, 25), christmas.ActualDate);
-        Assert.IsTrue(christmas.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2021, 12, 27), (DateOnly?)new DateOnly(2021, 12, 25), true),
+            (christmas.Date, christmas.ActualDate, christmas.IsObserved));
 
         NotableDate boxing = Single(results, "boxing-day");
-        Assert.AreEqual(new DateOnly(2021, 12, 28), boxing.Date, "Boxing Day advances to Tuesday");
-        Assert.AreEqual(new DateOnly(2021, 12, 26), boxing.ActualDate);
-        Assert.IsTrue(boxing.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2021, 12, 28), (DateOnly?)new DateOnly(2021, 12, 26), true),
+            (boxing.Date, boxing.ActualDate, boxing.IsObserved));
     }
 
     /// <summary>
@@ -55,29 +55,45 @@ public sealed class AdjacentHolidayTests
             .Resolve(new DateRange(new DateOnly(2016, 12, 20), new DateOnly(2016, 12, 31)), "AU");
 
         NotableDate christmas = Single(results, "christmas-day");
-        Assert.AreEqual(new DateOnly(2016, 12, 27), christmas.Date, "Christmas substitute skips Boxing Day's Monday");
-        Assert.AreEqual(new DateOnly(2016, 12, 25), christmas.ActualDate);
-        Assert.IsTrue(christmas.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2016, 12, 27), (DateOnly?)new DateOnly(2016, 12, 25), true),
+            (christmas.Date, christmas.ActualDate, christmas.IsObserved));
 
         NotableDate boxing = Single(results, "boxing-day");
-        Assert.AreEqual(new DateOnly(2016, 12, 26), boxing.Date, "Boxing Day keeps its Monday");
-        Assert.IsFalse(boxing.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2016, 12, 26), false),
+            (boxing.Date, boxing.IsObserved));
     }
 
     /// <summary>
-    /// Verifies that single-day queries agree with the range result and that the suppressed weekend actuals are not
-    /// emitted. (2021)
+    /// Verifies that a single-day query agrees with the range result, emitting the expected observed concept on its
+    /// substitute day. In 2021 Christmas is observed on Monday 27 December and Boxing Day on Tuesday 28 December.
     /// </summary>
+    /// <param name="month">The queried month.</param>
+    /// <param name="day">The queried day of December 2021.</param>
+    /// <param name="expectedId">The concept id expected on that day.</param>
     [TestMethod]
-    public void Resolve_WhenQueriedByDay_IsConsistentWithRangeAndSuppressesActuals()
+    [DataRow(12, 27, "christmas-day")]  // Christmas observed Monday
+    [DataRow(12, 28, "boxing-day")]     // Boxing Day observed Tuesday
+    public void Resolve_WhenQueriedByDay_EmitsExpectedConcept(int month, int day, string expectedId)
     {
-        NotableDateService service = CreateService();
+        NotableDate match = Single(CreateService().Resolve(new DateOnly(2021, month, day), "AU"), expectedId);
 
-        Assert.AreEqual("christmas-day", Single(service.Resolve(new DateOnly(2021, 12, 27), "AU"), "christmas-day").NotableDateId);
-        Assert.AreEqual("boxing-day", Single(service.Resolve(new DateOnly(2021, 12, 28), "AU"), "boxing-day").NotableDateId);
+        Assert.AreEqual(expectedId, match.NotableDateId);
+    }
 
-        Assert.IsEmpty(service.Resolve(new DateOnly(2021, 12, 25), "AU"), "Christmas Saturday actual suppressed");
-        Assert.IsEmpty(service.Resolve(new DateOnly(2021, 12, 26), "AU"), "Boxing Day Sunday actual suppressed");
+    /// <summary>
+    /// Verifies that a weekend actual date suppressed by an observed-only substitution emits nothing. In 2021 the Saturday
+    /// 25 December Christmas actual and the Sunday 26 December Boxing Day actual are both suppressed.
+    /// </summary>
+    /// <param name="month">The queried month.</param>
+    /// <param name="day">The queried day of December 2021.</param>
+    [TestMethod]
+    [DataRow(12, 25)]  // Christmas Saturday actual suppressed
+    [DataRow(12, 26)]  // Boxing Day Sunday actual suppressed
+    public void Resolve_WhenQueriedOnSuppressedWeekendActual_EmitsNothing(int month, int day)
+    {
+        Assert.IsEmpty(CreateService().Resolve(new DateOnly(2021, month, day), "AU"));
     }
 
     /// <summary>
