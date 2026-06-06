@@ -4,7 +4,7 @@ title: Cross-region comparison matrix
 
 # Cross-region comparison matrix
 
-The most widely-shared notable dates across the v2 region packs, by bundle. Cells: **N** non-working public holiday · **O** observed (working) · **S** subdivision-only · **—** not in the pack. The top 18 concepts by country count are shown; per-country detail is on the [region pages](index.md#by-region), concept definitions on the [theme pages](index.md#by-theme).
+The most widely-shared notable dates across the region packs, by bundle. Cells: **N** non-working public holiday · **O** observed (working) · **S** subdivision-only · **—** not in the pack. The top 18 concepts by country count are shown; per-country detail is on the [region pages](index.md#by-region), concept definitions on the [theme pages](index.md#by-theme).
 
 ## Americas
 
@@ -77,5 +77,5 @@ The most widely-shared notable dates across the v2 region packs, by bundle. Cell
 
 ---
 
-*Generated from the v2 notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 

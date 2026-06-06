@@ -12,7 +12,7 @@ These extensions are **not** auto-imported. Add the using directive explicitly:
 using Bodu.Extensions;
 ```
 
-Every method takes an `INotableDateService service` and a territory `string`. Working-day operations accept an optional trailing `WeekPattern? workingWeek = null`; notable-date operations accept an optional trailing `NotableDateFilter? filter = null`. The service is always passed explicitly — there is no ambient context in v2.
+Every method takes an `INotableDateService service` and a territory `string`. Working-day operations accept an optional trailing `WeekPattern? workingWeek = null`; notable-date operations accept an optional trailing `NotableDateFilter? filter = null`. The service is always passed explicitly — there is no ambient context.
 
 `DateOnly` is the authoritative surface and carries the full method set. The `DateTime` and `DateTimeOffset` surfaces are a subset (see [Surface differences](#surface-differences)).
 

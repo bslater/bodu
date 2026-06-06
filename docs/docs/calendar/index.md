@@ -6,7 +6,7 @@ title: Bodu.Globalization.Calendar — Introduction
 
 **Bodu.Globalization.Calendar** resolves authored calendar rules into concrete notable dates such as public holidays, observances, religious festivals, and regional events. Consumers query dates by year, date, or range and territory, optionally filter by category, tag, or duration, and use the resolved dates for working-day-aware arithmetic.
 
-Rules are authored on the v2 cookbook schema as XML or JSON, import from a set of bundled common catalogues, and load eagerly into an immutable, validated resource. More advanced scenarios extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and trust-gated plugins.
+Rules are authored on the notable-date schema as XML or JSON, import from a set of bundled common catalogues, and load eagerly into an immutable, validated resource. More advanced scenarios extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and trust-gated plugins.
 
 ## Calendar package family
 
@@ -34,7 +34,7 @@ A single notable date flows through the library in this order:
 
 ![Notable date flow — from authored document to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
 
-A **rule document** is authored text on the cookbook schema. **`NotableDateResourceLoader`** parses it, resolves its imports against the bundled common catalogues, applies any overrides, validates it, and produces an immutable **`NotableDateResource`**. A **`NotableDateService`** is built over that resource; for each requested year, date, or range it resolves every applicable rule using the rule's strategy (fixed date, *n*th weekday, weekday-near-date, offset from another rule, or a named algorithm), runs the referenced adjustment policies against the *nominal* date, settles same-day collisions, and emits the resolved **`NotableDate`** set. Consumers then query that set by territory, category, tag, or date range, or feed it into the working-day extensions.
+A **rule document** is authored text on the notable-date schema. **`NotableDateResourceLoader`** parses it, resolves its imports against the bundled common catalogues, applies any overrides, validates it, and produces an immutable **`NotableDateResource`**. A **`NotableDateService`** is built over that resource; for each requested year, date, or range it resolves every applicable rule using the rule's strategy (fixed date, *n*th weekday, weekday-near-date, offset from another rule, or a named algorithm), runs the referenced adjustment policies against the *nominal* date, settles same-day collisions, and emits the resolved **`NotableDate`** set. Consumers then query that set by territory, category, tag, or date range, or feed it into the working-day extensions.
 
 ## Key concepts
 

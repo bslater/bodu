@@ -4,7 +4,7 @@ title: Rule identity, priority, and observed-date resolution
 
 # Rule identity, priority, and observed-date resolution
 
-This guide covers the resolution semantics a cookbook author needs once a rule set grows beyond a handful of fixed dates: how occurrences are *identified*, how *priority* arbitrates same-day collisions, how the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> settles duplicates and collisions, and how the <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> / <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> pair governs observed-date range inclusion.
+This guide covers the resolution semantics an author needs once a rule set grows beyond a handful of fixed dates: how occurrences are *identified*, how *priority* arbitrates same-day collisions, how the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> settles duplicates and collisions, and how the <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> / <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> pair governs observed-date range inclusion.
 
 For the element-by-element reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md). For the end-to-end materialisation flow, see [The resolution pipeline](resolution-pipeline.md).
 
@@ -167,7 +167,7 @@ IReadOnlyList<NotableDate> dates = service.Resolve(window, "AU");
 // is inside the window and is returned; the nominal 25 Dec falls outside it.
 ```
 
-> `ObservedDateRangePolicy` replaces the v1 notion of an "observed-date mode" set on a service-options object. In v2 the two concerns are split: *emission* is authored per adjustment policy (`EmissionMode`), and *range inclusion* is authored once per resource (`ObservedDateRangePolicy`).
+> Emission and range inclusion are two separate concerns: *emission* is authored per adjustment policy (`EmissionMode`), and *range inclusion* is authored once per resource (`ObservedDateRangePolicy`).
 
 ---
 

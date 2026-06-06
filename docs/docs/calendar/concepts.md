@@ -12,7 +12,7 @@ For the high-level shape of the library and the resolution pipeline diagram, sta
 
 ![Notable date flow — from authored document to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
 
-The pipeline reads left to right. A **rule document** is authored on the cookbook schema and **loaded** into an immutable **`NotableDateResource`**; each notable-date concept carries one or more **`NotableDateRule`** recipes; a rule's **strategy** computes a *nominal date* for the requested year; an **adjustment policy** may shift it to an *observed date*; same-day **collisions** are settled by the resource's **resolution policy**; and consumers query the result via **`Resolve`**, working-day arithmetic, and filters.
+The pipeline reads left to right. A **rule document** is authored on the notable-date schema and **loaded** into an immutable **`NotableDateResource`**; each notable-date concept carries one or more **`NotableDateRule`** recipes; a rule's **strategy** computes a *nominal date* for the requested year; an **adjustment policy** may shift it to an *observed date*; same-day **collisions** are settled by the resource's **resolution policy**; and consumers query the result via **`Resolve`**, working-day arithmetic, and filters.
 
 Every term below corresponds to a stage or an input of that pipeline.
 
@@ -20,7 +20,7 @@ Every term below corresponds to a stage or an input of that pipeline.
 
 ## Document, resource, definition, rule
 
-A **rule document** is authored text (XML or JSON) on the v2 cookbook schema (`urn:bodu:globalization:calendar`). <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> parses it, resolves its imports, applies any overrides, validates it, and returns a **resource**.
+A **rule document** is authored text (XML or JSON) on the notable-date schema (`urn:bodu:globalization:calendar`). <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> parses it, resolves its imports, applies any overrides, validates it, and returns a **resource**.
 
 A **resource** (<xref:Bodu.Globalization.Calendar.NotableDateResource>) is the immutable, fully validated result of loading a document — a resolution policy, a set of adjustment policies, and a list of notable-date definitions. It is the unit a <xref:Bodu.Globalization.Calendar.NotableDateService> is built over.
 
