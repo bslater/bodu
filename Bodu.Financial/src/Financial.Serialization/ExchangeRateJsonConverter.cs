@@ -84,6 +84,7 @@ public sealed class ExchangeRateJsonConverter
         decimal? rate = null;
         string? provider = null;
         var isInverted = false;
+        decimal? observedRate = null;
         var seenFrom = false;
         var seenTo = false;
         var seenPair = false;
@@ -91,6 +92,7 @@ public sealed class ExchangeRateJsonConverter
         var seenRate = false;
         var seenProvider = false;
         var seenIsInverted = false;
+        var seenObservedRate = false;
 
         while (reader.Read())
         {
@@ -146,6 +148,12 @@ public sealed class ExchangeRateJsonConverter
                 seenIsInverted = true;
                 isInverted = ReadBoolProperty(ref reader, "isInverted");
             }
+            else if (string.Equals(propertyName, "observedRate", StringComparison.OrdinalIgnoreCase))
+            {
+                if (seenObservedRate) throw DuplicateProperty("observedRate");
+                seenObservedRate = true;
+                observedRate = ReadDecimalProperty(ref reader, "observedRate");
+            }
             else
             {
                 reader.Skip();
@@ -167,7 +175,11 @@ public sealed class ExchangeRateJsonConverter
 
         try
         {
-            return new ExchangeRate(from, to, date.Value, rate.Value, provider, isInverted);
+            // When the originally observed rate is present, restore both the reported multiplier and the observed rate
+            // exactly so neither is recomputed (and re-rounded) from the other; otherwise use the reported multiplier.
+            return observedRate is not null
+                ? ExchangeRate.FromComponents(from, to, date.Value, rate.Value, observedRate.Value, provider, isInverted)
+                : new ExchangeRate(from, to, date.Value, rate.Value, provider, isInverted);
         }
         catch (ArgumentException ex)
         {
@@ -189,7 +201,10 @@ public sealed class ExchangeRateJsonConverter
             writer.WriteNumber("rate", value.Rate);
             writer.WriteString("provider", value.Provider);
             if (value.IsInverted)
+            {
                 writer.WriteBoolean("isInverted", true);
+                writer.WriteNumber("observedRate", value.ObservedRate);
+            }
         }
         else
         {
@@ -199,6 +214,8 @@ public sealed class ExchangeRateJsonConverter
             writer.WriteNumber("rate", value.Rate);
             writer.WriteString("provider", value.Provider);
             writer.WriteBoolean("isInverted", value.IsInverted);
+            if (value.IsInverted)
+                writer.WriteNumber("observedRate", value.ObservedRate);
         }
 
         writer.WriteEndObject();
