@@ -68,12 +68,11 @@ internal static class HinduLunarCalculator
     };
 
     /// <summary>
-    /// Determines whether the supplied algorithm key names a recognized Hindu festival.
+    /// Gets the algorithm keys of every recognized Hindu lunisolar festival.
     /// </summary>
-    /// <param name="key">The algorithm key.</param>
-    /// <returns><see langword="true" /> if the festival is recognized; otherwise <see langword="false" />.</returns>
-    public static bool IsFestivalKey(string key) =>
-        s_festivals.ContainsKey(key);
+    /// <returns>The recognized festival keys.</returns>
+    public static IReadOnlyCollection<string> FestivalKeys =>
+        s_festivals.Keys;
 
     /// <summary>
     /// Computes the approximate Gregorian date of a recognized festival for the supplied year.

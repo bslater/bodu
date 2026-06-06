@@ -33,34 +33,6 @@ public sealed class AlgorithmDateStrategy
     public const string OrthodoxEasterKey = "orthodox-easter";
 
     /// <summary>
-    /// The UTC offset, in hours, of Japan Standard Time, used to date the Japanese equinox holidays.
-    /// </summary>
-    private const double JapanStandardTimeOffset = 9.0;
-
-    /// <summary>
-    /// The UTC offset, in hours, of China Standard Time, used to date Qingming.
-    /// </summary>
-    private const double ChinaStandardTimeOffset = 8.0;
-
-    /// <summary>
-    /// The set of algorithm keys the engine recognizes by a closed-form or tabular computation, excluding the Hindu
-    /// festival keys handled by <see cref="HinduLunarCalculator" />.
-    /// </summary>
-    private static readonly HashSet<string> s_knownKeys = new(StringComparer.Ordinal)
-    {
-        WesternEasterKey,
-        OrthodoxEasterKey,
-        "vernal-equinox",
-        "autumnal-equinox",
-        "jp-vernal-equinox",
-        "jp-autumnal-equinox",
-        "qingming",
-        "vesak",
-        "losar",
-        "matariki",
-    };
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="AlgorithmDateStrategy" /> class.
     /// </summary>
     /// <param name="key">The algorithm key identifying the computation.</param>
@@ -79,35 +51,32 @@ public sealed class AlgorithmDateStrategy
     public string Key { get; }
 
     /// <summary>
-    /// Determines whether the supplied algorithm key is recognized by the engine.
+    /// Determines whether the supplied algorithm key is recognized by a built-in algorithm.
     /// </summary>
     /// <param name="key">The algorithm key to test.</param>
-    /// <returns><see langword="true" /> if the key is recognized; otherwise <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> if a built-in algorithm is registered for the key; otherwise <see langword="false" />.</returns>
     public static bool IsKnownKey(string key) =>
-        key is not null && (s_knownKeys.Contains(key) || HinduLunarCalculator.IsFestivalKey(key));
+        key is not null && DefaultNotableDateAlgorithms.Registry.Contains(key);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// A key registered in the context's custom registry takes precedence over a built-in registration of the same key,
+    /// so a document may override a built-in algorithm; an unrecognized key produces no occurrence.
+    /// </remarks>
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
         if (year is < 1 or > 9999)
             return null;
 
-        return Key switch
+        if (context.Algorithms is INotableDateAlgorithmRegistry custom
+            && custom.TryGet(Key, out INotableDateAlgorithm? customAlgorithm)
+            && customAlgorithm is not null)
         {
-            WesternEasterKey => EasterCalculator.Western(year),
-            OrthodoxEasterKey => EasterCalculator.Orthodox(year),
-            "vernal-equinox" => SolarTermCalculator.VernalEquinox(year, 0.0),
-            "autumnal-equinox" => SolarTermCalculator.AutumnalEquinox(year, 0.0),
-            "jp-vernal-equinox" => SolarTermCalculator.VernalEquinox(year, JapanStandardTimeOffset),
-            "jp-autumnal-equinox" => SolarTermCalculator.AutumnalEquinox(year, JapanStandardTimeOffset),
-            "qingming" => SolarTermCalculator.Qingming(year, ChinaStandardTimeOffset),
-            "vesak" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 5, 1)),
-            "losar" => TibetanLosarCalculator.Losar(year),
-            "matariki" => MatarikiCalendar.Resolve(year),
-            _ when HinduLunarCalculator.IsFestivalKey(Key) => HinduLunarCalculator.Resolve(Key, year),
-            _ => context.Algorithms is INotableDateAlgorithmRegistry registry && registry.TryGet(Key, out INotableDateAlgorithm? algorithm) && algorithm is not null
-                ? algorithm.Calculate(year)
-                : null,
-        };
+            return customAlgorithm.Calculate(year);
+        }
+
+        return DefaultNotableDateAlgorithms.Registry.TryGet(Key, out INotableDateAlgorithm? builtIn) && builtIn is not null
+            ? builtIn.Calculate(year)
+            : null;
     }
 }
