@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>

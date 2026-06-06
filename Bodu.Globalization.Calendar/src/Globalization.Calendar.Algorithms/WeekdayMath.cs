@@ -1,73 +1,23 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekdayMath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides shared weekday-seeking and nth-weekday-in-month arithmetic used by the weekday-based strategies.
+/// Provides the calendar-specific weekday-seeking and nth-weekday-in-month helpers used by the weekday-based strategies.
 /// </summary>
+/// <remarks>
+/// The underlying weekday navigation is supplied by the <see cref="DateOnlyExtensions" /> primitives in
+/// <c>Bodu.Core</c> (<see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> and its
+/// <c>OrSame</c>/<c>Previous</c>/<c>Nearest</c> companions). This type layers on only the behavior the resolution
+/// pipeline requires that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a
+/// null-returning (rather than throwing) result at the year extremes and for ordinals that do not occur in a month.
+/// </remarks>
 internal static class WeekdayMath
 {
-    /// <summary>
-    /// Returns the supplied date if it already falls on the target weekday, otherwise the first such weekday after it.
-    /// </summary>
-    /// <param name="date">The anchor date.</param>
-    /// <param name="dayOfWeek">The target weekday.</param>
-    /// <returns>The matching date on or after <paramref name="date" />.</returns>
-    public static DateOnly OnOrAfter(DateOnly date, DayOfWeek dayOfWeek)
-    {
-        var delta = ((int)dayOfWeek - (int)date.DayOfWeek + 7) % 7;
-        return date.AddDays(delta);
-    }
-
-    /// <summary>
-    /// Returns the first occurrence of the target weekday strictly after the supplied date.
-    /// </summary>
-    /// <param name="date">The anchor date.</param>
-    /// <param name="dayOfWeek">The target weekday.</param>
-    /// <returns>The matching date after <paramref name="date" />.</returns>
-    public static DateOnly After(DateOnly date, DayOfWeek dayOfWeek) =>
-        OnOrAfter(date.AddDays(1), dayOfWeek);
-
-    /// <summary>
-    /// Returns the supplied date if it already falls on the target weekday, otherwise the first such weekday before it.
-    /// </summary>
-    /// <param name="date">The anchor date.</param>
-    /// <param name="dayOfWeek">The target weekday.</param>
-    /// <returns>The matching date on or before <paramref name="date" />.</returns>
-    public static DateOnly OnOrBefore(DateOnly date, DayOfWeek dayOfWeek)
-    {
-        var delta = ((int)date.DayOfWeek - (int)dayOfWeek + 7) % 7;
-        return date.AddDays(-delta);
-    }
-
-    /// <summary>
-    /// Returns the first occurrence of the target weekday strictly before the supplied date.
-    /// </summary>
-    /// <param name="date">The anchor date.</param>
-    /// <param name="dayOfWeek">The target weekday.</param>
-    /// <returns>The matching date before <paramref name="date" />.</returns>
-    public static DateOnly Before(DateOnly date, DayOfWeek dayOfWeek) =>
-        OnOrBefore(date.AddDays(-1), dayOfWeek);
-
-    /// <summary>
-    /// Returns the occurrence of the target weekday closest to the supplied date in either direction.
-    /// </summary>
-    /// <param name="date">The anchor date.</param>
-    /// <param name="dayOfWeek">The target weekday.</param>
-    /// <returns>The closest matching date.</returns>
-    public static DateOnly Nearest(DateOnly date, DayOfWeek dayOfWeek)
-    {
-        DateOnly after = OnOrAfter(date, dayOfWeek);
-        DateOnly before = OnOrBefore(date, dayOfWeek);
-        return (after.DayNumber - date.DayNumber) <= (date.DayNumber - before.DayNumber) ? after : before;
-    }
-
     /// <summary>
     /// Seeks the target weekday relative to an anchor using the supplied proximity rule.
     /// </summary>
@@ -78,11 +28,11 @@ internal static class WeekdayMath
     public static DateOnly Seek(DateOnly anchor, DayOfWeek dayOfWeek, WeekdayProximity proximity) =>
         proximity switch
         {
-            WeekdayProximity.Before => Before(anchor, dayOfWeek),
-            WeekdayProximity.OnOrBefore => OnOrBefore(anchor, dayOfWeek),
-            WeekdayProximity.Nearest => Nearest(anchor, dayOfWeek),
-            WeekdayProximity.OnOrAfter => OnOrAfter(anchor, dayOfWeek),
-            WeekdayProximity.After => After(anchor, dayOfWeek),
+            WeekdayProximity.Before => anchor.PreviousDateOfWeek(dayOfWeek),
+            WeekdayProximity.OnOrBefore => anchor.PreviousOrSameDateOfWeek(dayOfWeek),
+            WeekdayProximity.Nearest => anchor.NearestDateOfWeek(dayOfWeek),
+            WeekdayProximity.OnOrAfter => anchor.NextOrSameDateOfWeek(dayOfWeek),
+            WeekdayProximity.After => anchor.NextDateOfWeek(dayOfWeek),
             _ => anchor,
         };
 
@@ -132,10 +82,10 @@ internal static class WeekdayMath
         if (ordinal == WeekOrdinal.Last)
         {
             DateOnly lastDay = new(year, month, DateTime.DaysInMonth(year, month));
-            return OnOrBefore(lastDay, dayOfWeek);
+            return lastDay.PreviousOrSameDateOfWeek(dayOfWeek);
         }
 
-        DateOnly firstMatch = OnOrAfter(new DateOnly(year, month, 1), dayOfWeek);
+        DateOnly firstMatch = new DateOnly(year, month, 1).NextOrSameDateOfWeek(dayOfWeek);
         DateOnly result = firstMatch.AddDays(7 * ((int)ordinal - 1));
         return result.Month == month ? result : null;
     }

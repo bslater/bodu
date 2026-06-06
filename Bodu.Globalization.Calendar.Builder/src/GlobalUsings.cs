@@ -5,6 +5,3 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 global using Bodu.Extensions;
-global using Bodu.Globalization.Calendar;
-global using Bodu.Globalization.Calendar.Algorithms;
-global using Bodu.Globalization.Calendar.RangeResolution;

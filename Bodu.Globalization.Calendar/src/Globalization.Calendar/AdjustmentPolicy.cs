@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -361,8 +359,8 @@ public sealed class AdjustmentPolicy
         return Action switch
         {
             AdjustmentAction.AddDays => date.AddDays(ActionDays),
-            AdjustmentAction.MoveToNextWeekday => ActionWeekday is DayOfWeek next ? WeekdayMath.OnOrAfter(date, next) : date,
-            AdjustmentAction.MoveToPreviousWeekday => ActionWeekday is DayOfWeek previous ? WeekdayMath.OnOrBefore(date, previous) : date,
+            AdjustmentAction.MoveToNextWeekday => ActionWeekday is DayOfWeek next ? date.NextOrSameDateOfWeek(next) : date,
+            AdjustmentAction.MoveToPreviousWeekday => ActionWeekday is DayOfWeek previous ? date.PreviousOrSameDateOfWeek(previous) : date,
             AdjustmentAction.MoveToNextWorkingDay => SeekWorkingDay(date, step: 1, isOccupied, workingWeek),
             AdjustmentAction.MoveToPreviousWorkingDay => SeekWorkingDay(date, step: -1, isOccupied, workingWeek),
             _ => date,
