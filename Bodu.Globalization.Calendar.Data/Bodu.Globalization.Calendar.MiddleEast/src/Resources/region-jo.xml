@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Jordan (JO) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "JO". The civil
+  days (New Year, Labour Day) and the Islamic festivals are imported from the middleeast-common hub (tabular Hijri,
+  so the festival dates may differ by a day or two from the locally proclaimed moon-sighting); Christmas is imported
+  from the Western Christian catalogue (a public holiday for Jordan's Christian community); Independence Day is
+  declared inline. Jordan keeps a Friday/Saturday weekend, declared via the working-week pattern.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.jo">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" workingDays="1111100" />
+
+  <Imports>
+    <Import resource="middleeast-common">
+      <Use notableDateRef="new-years-day" territory="JO" />
+      <Use notableDateRef="workers-day" territory="JO" />
+      <Use notableDateRef="eid-al-fitr" territory="JO" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="JO" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="islamic-new-year" territory="JO" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="JO" category="PublicHoliday" nonWorking="true" />
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="christmas-day" territory="JO" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Independence Day (Eid al-Istiqlal) — 25 May, marking the 1946 independence from the British mandate. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-jo" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="jo"><Applicability><Territory code="JO" /></Applicability><Strategy><Fixed month="May" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
