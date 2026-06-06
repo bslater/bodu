@@ -4,7 +4,7 @@
   Australia (AU) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-au.xml to the v2 cookbook schema. National rules are scoped to territory "AU"; state
+  Authored on the notable-date schema. National rules are scoped to territory "AU"; state
   and territory rules use their ISO 3166-2 subdivision codes (AU-NSW, AU-VIC, AU-QLD, AU-SA, AU-WA, AU-TAS, AU-NT,
   AU-ACT).
 
@@ -334,7 +334,7 @@
       King's Birthday — observed by every state and territory, on the second Monday in June except:
         WA  — last Monday in September (proclaimed annually; approximated here).
         QLD — first Monday in October from 2016 onward (the fromYear bound excludes earlier years, when QLD observed
-              it in June). A pre-2016 QLD query therefore returns no King's Birthday, matching the v1 data.
+              it in June). A pre-2016 QLD query therefore returns no King's Birthday, matching the source data.
       Strategy: DayOfWeekInMonth.
     -->
     <NotableDate id="kings-birthday" displayName="King's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -416,7 +416,7 @@
     <!--
       South Australia — Proclamation Day: 26 December, observed in lieu of Boxing Day, with a weekend roll. (The
       national Boxing Day import also resolves on 26 December; under KeepAll both are returned for an AU-SA query,
-      matching the v1 data.)
+      matching the source data.)
     -->
     <NotableDate id="proclamation-day" displayName="Proclamation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules>

@@ -14,7 +14,7 @@
   <PropertyGroup>
     <Version>1.0.0</Version>
     <Title>Bodu Calendar — Builder</Title>
-    <Description>Fluent, chainable C# API for authoring Bodu.Globalization.Calendar notable-date documents on the v2 cookbook schema, with full XML serialization and a JSON-subset surface for load and save.</Description>
+    <Description>Fluent, chainable C# API for authoring Bodu.Globalization.Calendar notable-date documents on the notable-date schema, with full XML serialization and a JSON-subset surface for load and save.</Description>
     <PackageTags>$(PackageTags);calendar;notable-dates;authoring;builder;xml;json</PackageTags>
   </PropertyGroup>
 

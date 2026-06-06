@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Singapore notable-date resource, migrated from the v1 region-sg.xml to the v2 cookbook schema. The shared civil and
+  Singapore notable-date resource on the notable-date schema. The shared civil and
   Christian observances (New Year's Day, Easter Sunday, Good Friday, Christmas) are imported from the common global-core
   and christian-western catalogues; the remaining multi-religious public holidays draw on three further calendars:
   Chinese lunisolar (Chinese New Year), tabular Hijri (the two Hari Raya festivals), and astronomical lunar/lunisolar

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Multi-day normalization catalogue (Western / Gregorian calendar), migrated from the v1 global-multiday-normalization.xml
-  to the v2 cookbook schema. Holds shared multi-day observance definitions not already owned by a more specific thematic
+  Multi-day normalization catalogue (Western / Gregorian calendar) on the notable-date schema. Holds shared multi-day observance definitions not already owned by a more specific thematic
   catalogue; prefer the source thematic file when a multi-day observance already exists there. Convention: durationDays
   is inclusive of the resolved start date, so durationDays="7" spans the start date plus the next six calendar days. A
   territory pack imports only the concepts it observes and supplies its own territory scope, category, non-working flag,

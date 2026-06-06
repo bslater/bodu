@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  South Korean notable-date resource, migrated from the v1 region-kr.xml to the v2 cookbook schema. The shared New Year's
+  South Korean notable-date resource on the notable-date schema. The shared New Year's
   Day and Christmas Day are imported from the common global-core and christian-western catalogues; the national and lunar
   holidays remain inline. Seollal and Chuseok are expressed as fixed dates in the Chinese lunisolar calendar; Buddha's
   Birthday is the eighth day of the fourth lunar month (the Korean reckoning, more accurate here than the full-moon Vesak
-  the v1 file imported). Seollal and Chuseok carry their statutory three-day durationDays span.
+  the source file imported). Seollal and Chuseok carry their statutory three-day durationDays span.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.kr">
 

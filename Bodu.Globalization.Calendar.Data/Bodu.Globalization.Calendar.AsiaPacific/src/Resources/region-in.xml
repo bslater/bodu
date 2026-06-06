@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Indian notable-date resource, migrated from the v1 region-in.xml to the v2 cookbook schema. The shared Christian
+  Indian notable-date resource on the notable-date schema. The shared Christian
   observances (Easter Sunday, Good Friday, Christmas) are imported from the common christian-western catalogue with
   India's religious, non-public overrides. National holidays are Gregorian; the solar festivals Makar Sankranti and
   Pongal are fixed (14 January); the Islamic festivals use the tabular Hijri calendar; and the Hindu lunisolar festivals

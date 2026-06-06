@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Buddhist notable-date catalogue, migrated from the v1 global-buddhist.xml to the v2 cookbook schema. The Theravada
+  Buddhist notable-date catalogue on the notable-date schema. The Theravada
   full-moon observances Vesak and Asalha Puja and the Tibetan New Year Losar are computed astronomically by the engine's
   lunar-phase algorithms (the same keys the shipping region packs use). Parinirvana Day and Bodhi Day follow their most
   widely observed fixed Gregorian conventions. Vassa (the Rains Retreat) begins the day after Asalha Puja and is authored

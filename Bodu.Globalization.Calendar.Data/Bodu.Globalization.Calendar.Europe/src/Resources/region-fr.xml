@@ -4,7 +4,7 @@
   France (FR) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-fr.xml to the v2 cookbook schema. National rules are scoped to territory "FR"; the
+  Authored on the notable-date schema. National rules are scoped to territory "FR"; the
   Alsace-Moselle local feasts (Good Friday and Saint Stephen's Day) are scoped to the départements that observe
   them (FR-67 Bas-Rhin, FR-68 Haut-Rhin, FR-57 Moselle).
 

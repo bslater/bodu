@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Provides access to the embedded Middle East notable-date resource pack (the United Arab Emirates, Saudi Arabia,
-/// Israel, Turkey, Qatar, and Jordan), built on the v2 cookbook schema.
+/// Israel, Turkey, Qatar, and Jordan), built on the notable-date schema.
 /// </summary>
 /// <remarks>
 /// <para>

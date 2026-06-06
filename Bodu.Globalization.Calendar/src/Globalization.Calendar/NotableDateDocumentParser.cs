@@ -18,12 +18,12 @@ namespace Bodu.Globalization.Calendar;
 internal static class NotableDateDocumentParser
 {
     /// <summary>
-    /// The manifest resource name of the embedded v2 notable-date document XSD.
+    /// The manifest resource name of the embedded notable-date document XSD.
     /// </summary>
     private const string SchemaResourceName = "Bodu.Globalization.Calendar.NotableDates.v2.xsd";
 
     /// <summary>
-    /// The XML namespace of the v2 notable-date document vocabulary.
+    /// The XML namespace of the notable-date document vocabulary.
     /// </summary>
     private static readonly XNamespace s_ns = "urn:bodu:globalization:calendar";
 

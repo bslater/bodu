@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Turkey (TR) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "TR". The civil
+  Turkey (TR) notable-date resource on the notable-date schema. National rules are scoped to territory "TR". The civil
   New Year and Labour Day, and the two religious festivals (Ramazan Bayramı = Eid al-Fitr, Kurban Bayramı = Eid
   al-Adha), are imported from the middleeast-common hub (tabular Hijri, so the festival dates may differ by a day or
   two from the official almanac); the secular national days are declared inline. Turkey keeps a Saturday/Sunday

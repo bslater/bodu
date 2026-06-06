@@ -4,7 +4,7 @@
   Poland (PL) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-pl.xml to the v2 cookbook schema. All rules are scoped to territory "PL".
+  Authored on the notable-date schema. All rules are scoped to territory "PL".
 
   How this resource is built:
 

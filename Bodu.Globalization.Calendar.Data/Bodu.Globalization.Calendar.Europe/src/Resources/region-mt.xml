@@ -2,7 +2,7 @@
 <!--
   Malta (MT) — notable-date resource pack.
 
-  Migrated from the v1 region-mt.xml to the v2 cookbook schema. All rules are scoped to territory "MT"; Malta has no
+  Authored on the notable-date schema. All rules are scoped to territory "MT"; Malta has no
   subdivision-specific public holidays.
 
   How this resource is built:

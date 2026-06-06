@@ -4,7 +4,7 @@
   europe-common — pan-European common notable-date hub
   ================================================================================================================
 
-  Reinstated from the v1 europe-common.xml. This is the single consolidation point the European region packs import
+  This is the single consolidation point the European region packs import
   their shared observances from, instead of each pack importing the common catalogues (global-core,
   christian-western, global-family, global-cultural) separately and re-declaring the common Catholic feasts.
 
@@ -13,7 +13,7 @@
     * The shared civil, Western Christian, family, and cultural concepts are RE-EXPORTED here from the common
       catalogues. They carry their catalogue defaults (category, non-working flag, calculation strategy); a region
       pack supplies its own territory scope and, where required, overrides the category, non-working flag, or
-      weekend adjustment on its own import <Use> directive. The v2 import resolver resolves europe-common's own
+      weekend adjustment on its own import <Use> directive. The import resolver resolves europe-common's own
       imports transitively, so a region that imports a concept from here receives the fully resolved catalogue rule.
 
     * The common Catholic fixed-date feasts the main catalogues do not carry — Assumption of Mary and Immaculate

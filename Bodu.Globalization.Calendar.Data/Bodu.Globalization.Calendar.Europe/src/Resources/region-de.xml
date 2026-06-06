@@ -4,7 +4,7 @@
   Germany (DE) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-de.xml to the v2 cookbook schema. The nine nationwide public holidays (Feiertage)
+  Authored on the notable-date schema. The nine nationwide public holidays (Feiertage)
   are scoped to territory "DE"; the further holidays established under individual state legislation are scoped to
   their ISO 3166-2 subdivision codes (DE-BW, DE-BY, DE-BE, DE-BB, DE-HB, DE-HH, DE-HE, DE-MV, DE-NI, DE-NW, DE-RP,
   DE-SL, DE-SN, DE-ST, DE-SH, DE-TH).
@@ -20,7 +20,7 @@
       statutory non-working day (Epiphany in BW/BY/ST; Corpus Christi in BW/BY/HE/NW/RP/SL; the Assumption in
       BY/SL; Reformation Day across the northern and eastern states; All Saints' in BW/BY/NW/RP/SL; Repentance and
       Prayer Day in SN). A plain "DE" national query returns none of them, and they resolve as non-working only in
-      their states — matching the v1 data, which scoped them per-Land, not nationally.
+      their states — matching the source data, which scoped them per-Land, not nationally.
 
   International Women's Day carries two rules under one concept: a nationwide recognition observance (working) and
   a non-working public-holiday rule for Berlin and Mecklenburg-Vorpommern (from 2019). Territory shadowing returns

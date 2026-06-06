@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Provides access to the embedded Asia-Pacific notable-date resource pack (Australia, China, Japan, New Zealand),
-/// migrated to the v2 cookbook schema.
+/// built on the notable-date schema.
 /// </summary>
 /// <remarks>
 /// <para>

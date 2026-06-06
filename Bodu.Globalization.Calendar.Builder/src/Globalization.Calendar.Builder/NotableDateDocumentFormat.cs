@@ -14,7 +14,7 @@ public enum NotableDateDocumentFormat
 {
     /// <summary>
     /// The full-fidelity XML form in the <c>urn:bodu:globalization:calendar</c> namespace, capable of expressing every
-    /// feature of the v2 cookbook schema.
+    /// feature of the notable-date schema.
     /// </summary>
     Xml = 0,
 

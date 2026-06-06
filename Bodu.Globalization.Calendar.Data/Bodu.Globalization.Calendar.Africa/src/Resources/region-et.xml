@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Ethiopia (ET) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "ET".
+  Ethiopia (ET) notable-date resource on the notable-date schema. National rules are scoped to territory "ET".
 
   Ethiopia keeps the Ethiopic (Ge'ez) calendar, which the engine does not implement, and its Christian feasts follow
   the Orthodox (Julian) paschal cycle. This pack therefore:

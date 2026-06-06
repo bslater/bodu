@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Nigeria (NG) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "NG". The civil
+  Nigeria (NG) notable-date resource on the notable-date schema. National rules are scoped to territory "NG". The civil
   and Western Christian days (New Year, Good Friday, Easter Monday, Workers' Day, Christmas, Boxing Day) and the
   Islamic festivals (the two Eids and Mawlid, tabular Hijri so they may differ by a day or two from the gazette) are
   imported from the africa-common hub; the two national days are declared inline.

@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Provides access to the embedded Africa notable-date resource pack (South Africa, Nigeria, Kenya, Ghana, Ethiopia,
-/// Egypt, and Morocco), built on the v2 cookbook schema.
+/// Egypt, and Morocco), built on the notable-date schema.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Jordan (JO) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "JO". The civil
+  Jordan (JO) notable-date resource on the notable-date schema. National rules are scoped to territory "JO". The civil
   days (New Year, Labour Day) and the Islamic festivals are imported from the middleeast-common hub (tabular Hijri,
   so the festival dates may differ by a day or two from the locally proclaimed moon-sighting); Christmas is imported
   from the Western Christian catalogue (a public holiday for Jordan's Christian community); Independence Day is

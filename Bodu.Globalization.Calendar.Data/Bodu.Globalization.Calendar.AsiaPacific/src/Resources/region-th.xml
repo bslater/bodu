@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Thailand (TH) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "TH". The
+  Thailand (TH) notable-date resource on the notable-date schema. National rules are scoped to territory "TH". The
   civil days (New Year, Labour Day, New Year's Eve) are imported from the global-core catalogue; the Buddhist
   observance Visakha Bucha (Vesak) is imported from the global Buddhist catalogue (a computed lunar date, so it may
   differ by a day or two from the gazette). The royal, national, and Songkran holidays are declared inline. Thailand

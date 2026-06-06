@@ -2,7 +2,7 @@
 <!--
   Slovenia (SI) — notable-date resource pack.
 
-  Migrated from the v1 region-si.xml to the v2 cookbook schema. All rules are scoped to territory "SI"; Slovenia has
+  Authored on the notable-date schema. All rules are scoped to territory "SI"; Slovenia has
   no subdivision-specific public holidays.
 
   How this resource is built:

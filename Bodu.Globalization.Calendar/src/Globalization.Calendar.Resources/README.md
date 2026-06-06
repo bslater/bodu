@@ -1,7 +1,7 @@
 ﻿# Common notable-date catalogues
 
 These XML files are the shared, reusable notable-date catalogues bundled with
-`Bodu.Globalization.Calendar`, expressed on the v2 cookbook schema. They define
+`Bodu.Globalization.Calendar`, expressed on the notable-date schema. They define
 common observances **once** so territory packs can *inherit* them instead of
 redefining each date inline.
 

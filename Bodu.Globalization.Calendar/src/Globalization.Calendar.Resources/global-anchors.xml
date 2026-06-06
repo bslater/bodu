@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Anchor notable-date catalogue, migrated from the v1 global-anchors.xml to the v2 cookbook schema. These concepts
+  Anchor notable-date catalogue on the notable-date schema. These concepts
   define base dates intended for use as OffsetFromRule anchors in other catalogues, and as stand-alone reference dates.
   Orthodox Easter is the computed Julian paschalion anchor (algorithm key "orthodox-easter"); Lunar New Year is the
   first day of the first month of the Chinese lunisolar calendar (its fifteen-day festival span carried as durationDays);
