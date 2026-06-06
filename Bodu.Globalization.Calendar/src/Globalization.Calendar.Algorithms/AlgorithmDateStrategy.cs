@@ -55,7 +55,6 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
         "jp-autumnal-equinox",
         "qingming",
         "vesak",
-        "asalha-puja",
         "losar",
         "matariki",
     };
@@ -102,8 +101,7 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
             "jp-autumnal-equinox" => SolarTermCalculator.AutumnalEquinox(year, JapanStandardTimeOffset),
             "qingming" => SolarTermCalculator.Qingming(year, ChinaStandardTimeOffset),
             "vesak" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 5, 1)),
-            "asalha-puja" => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 6, 15)),
-            "losar" => LunarPhaseCalculator.NewMoonOnOrAfter(new DateOnly(year, 1, 20)),
+            "losar" => TibetanLosarCalculator.Losar(year),
             "matariki" => MatarikiCalendar.Resolve(year),
             _ when HinduLunarCalculator.IsFestivalKey(Key) => HinduLunarCalculator.Resolve(Key, year),
             _ => context.Algorithms is INotableDateAlgorithmRegistry registry && registry.TryGet(Key, out INotableDateAlgorithm? algorithm) && algorithm is not null

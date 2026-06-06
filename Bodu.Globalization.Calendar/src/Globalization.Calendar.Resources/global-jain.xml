@@ -54,10 +54,9 @@
       <Rules><Rule id="default"><Strategy><Algorithm key="diwali" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Maun Agiyaras — Kartik shukla ekadashi. Strategy: OffsetFromRule, eleven days after Jain Diwali. -->
+    <!-- Maun Agiyaras (Maun Ekadashi) — Margashirsha shukla ekadashi; computed lunar date. -->
     <NotableDate id="maun-agiyaras" displayName="Maun Agiyaras" category="Religious" defaultNonWorkingDay="false">
-      <Rules><Rule id="default">
-        <Strategy><OffsetFromRule notableDateRef="jain-diwali" ruleRef="default" offsetDays="11" /></Strategy></Rule></Rules>
+      <Rules><Rule id="default"><Strategy><Algorithm key="maun-agiyaras" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Kartik Purnima — Kartik full moon, important for Jain pilgrimage. Strategy: OffsetFromRule, fifteen days after Jain Diwali. -->
