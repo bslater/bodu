@@ -229,6 +229,15 @@ public sealed partial class NotableDateDocumentBuilder
         if (policy.ObservedDateRangePolicy is ObservedDateRangePolicy observed) result["observedDateRangePolicy"] = observed.ToString();
         if (policy.WorkingWeek is WeekPattern week) result["workingDays"] = week.ToString("01");
 
+        if (policy.CategoryPrecedence is { Count: > 0 } precedence)
+        {
+            JsonArray array = new();
+            foreach (NotableDateCategory category in precedence)
+                array.Add(category.ToString());
+
+            result["categoryPrecedence"] = array;
+        }
+
         return result;
     }
 

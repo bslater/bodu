@@ -156,7 +156,22 @@ internal static class NotableDateDocumentParser
             ParseEnum(element.Attribute("spanCollisionPolicy")?.Value, CollisionPolicy.KeepAll),
             ParseEnum(element.Attribute("priorityDirection")?.Value, PriorityDirection.HigherWins),
             ParseEnum(element.Attribute("observedDateRangePolicy")?.Value, ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
-            ParseWorkingWeek(element.Attribute("workingDays")?.Value));
+            ParseWorkingWeek(element.Attribute("workingDays")?.Value),
+            ParseCategoryPrecedence(element.Element(s_ns + "CategoryPrecedence")));
+    }
+
+    /// <summary>
+    /// Parses the optional category precedence declared by the resolution policy, returning <see langword="null" />
+    /// when the element is absent so the resource falls back to the built-in precedence.
+    /// </summary>
+    /// <param name="element">The <c>CategoryPrecedence</c> element, or <see langword="null" />.</param>
+    /// <returns>The authored precedence, or <see langword="null" /> when absent.</returns>
+    private static IReadOnlyList<NotableDateCategory>? ParseCategoryPrecedence(XElement? element)
+    {
+        if (element is null)
+            return null;
+
+        return [.. element.Elements(s_ns + "Category").Select(c => ParseEnum(c.Attribute("value")?.Value, NotableDateCategory.None))];
     }
 
     /// <summary>

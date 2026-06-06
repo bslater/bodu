@@ -168,6 +168,15 @@ public sealed partial class NotableDateDocumentBuilder
         if (policy.ObservedDateRangePolicy is ObservedDateRangePolicy observed) element.SetAttributeValue("observedDateRangePolicy", observed.ToString());
         if (policy.WorkingWeek is WeekPattern week) element.SetAttributeValue("workingDays", week.ToString("01"));
 
+        if (policy.CategoryPrecedence is { Count: > 0 } precedence)
+        {
+            XElement precedenceElement = new(BuilderXml.Namespace + "CategoryPrecedence");
+            foreach (NotableDateCategory category in precedence)
+                precedenceElement.Add(new XElement(BuilderXml.Namespace + "Category", new XAttribute("value", category.ToString())));
+
+            element.AddFirst(precedenceElement);
+        }
+
         return element;
     }
 

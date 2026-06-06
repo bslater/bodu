@@ -78,7 +78,8 @@
         "spanCollisionPolicy": { "$ref": "#/$defs/collisionPolicy" },
         "priorityDirection": { "$ref": "#/$defs/priorityDirection" },
         "observedDateRangePolicy": { "$ref": "#/$defs/observedDateRangePolicy" },
-        "workingDays": { "$ref": "#/$defs/weekPattern" }
+        "workingDays": { "$ref": "#/$defs/weekPattern" },
+        "categoryPrecedence": { "type": "array", "items": { "$ref": "#/$defs/notableDateCategory" } }
       }
     },
     "adjustmentScope": {

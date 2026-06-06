@@ -59,6 +59,12 @@ public sealed class ResolutionPolicyBuilder
     internal WeekPattern? WorkingWeek { get; private set; }
 
     /// <summary>
+    /// Gets the configured category precedence, highest-winning first.
+    /// </summary>
+    /// <returns>The category precedence, or <see langword="null" /> when unset.</returns>
+    internal IReadOnlyList<NotableDateCategory>? CategoryPrecedence { get; private set; }
+
+    /// <summary>
     /// Sets the policy that governs how duplicate concept definitions are reconciled.
     /// </summary>
     /// <param name="policy">The duplicate-resolution policy.</param>
@@ -127,6 +133,21 @@ public sealed class ResolutionPolicyBuilder
     }
 
     /// <summary>
+    /// Sets the category precedence applied by <see cref="CollisionPolicy.CategoryPriority" />, ordered
+    /// highest-winning first.
+    /// </summary>
+    /// <param name="precedence">The categories in descending precedence order.</param>
+    /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="precedence" /> is <see langword="null" />.</exception>
+    public ResolutionPolicyBuilder WithCategoryPrecedence(params NotableDateCategory[] precedence)
+    {
+        ThrowHelper.ThrowIfNull(precedence);
+
+        CategoryPrecedence = (NotableDateCategory[])precedence.Clone();
+        return this;
+    }
+
+    /// <summary>
     /// Creates a deep copy of this builder.
     /// </summary>
     /// <returns>A new <see cref="ResolutionPolicyBuilder" /> carrying the same configured values.</returns>
@@ -139,6 +160,7 @@ public sealed class ResolutionPolicyBuilder
             PriorityDirection = PriorityDirection,
             ObservedDateRangePolicy = ObservedDateRangePolicy,
             WorkingWeek = WorkingWeek,
+            CategoryPrecedence = CategoryPrecedence,
         };
 
     /// <summary>
@@ -153,7 +175,8 @@ public sealed class ResolutionPolicyBuilder
         || SpanCollisionPolicy is not null
         || PriorityDirection is not null
         || ObservedDateRangePolicy is not null
-        || WorkingWeek is not null;
+        || WorkingWeek is not null
+        || CategoryPrecedence is not null;
 
     /// <summary>
     /// Sets the configured values directly when reconstructing a builder from a parsed document.
@@ -164,13 +187,15 @@ public sealed class ResolutionPolicyBuilder
     /// <param name="priorityDirection">The priority direction, or <see langword="null" />.</param>
     /// <param name="observedDateRangePolicy">The observed-date range policy, or <see langword="null" />.</param>
     /// <param name="workingWeek">The working week, or <see langword="null" />.</param>
+    /// <param name="categoryPrecedence">The category precedence, or <see langword="null" />.</param>
     internal void SetParsedValues(
         DuplicatePolicy? duplicatePolicy,
         CollisionPolicy? sameDayCollisionPolicy,
         CollisionPolicy? spanCollisionPolicy,
         PriorityDirection? priorityDirection,
         ObservedDateRangePolicy? observedDateRangePolicy,
-        WeekPattern? workingWeek)
+        WeekPattern? workingWeek,
+        IReadOnlyList<NotableDateCategory>? categoryPrecedence = null)
     {
         DuplicatePolicy = duplicatePolicy;
         SameDayCollisionPolicy = sameDayCollisionPolicy;
@@ -178,5 +203,6 @@ public sealed class ResolutionPolicyBuilder
         PriorityDirection = priorityDirection;
         ObservedDateRangePolicy = observedDateRangePolicy;
         WorkingWeek = workingWeek;
+        CategoryPrecedence = categoryPrecedence;
     }
 }

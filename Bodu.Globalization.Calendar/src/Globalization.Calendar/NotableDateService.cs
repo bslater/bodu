@@ -250,26 +250,23 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Returns the collision-precedence rank of a category, where a higher rank wins a category collision.
+    /// Returns the collision-precedence rank of a category from the resource's configured category precedence, where a
+    /// higher rank wins a category collision and a category absent from the precedence ranks below every listed one.
     /// </summary>
     /// <param name="category">The category to rank.</param>
     /// <returns>The precedence rank.</returns>
-    private static int CategoryRank(NotableDateCategory category) =>
-        category switch
+    private int CategoryRank(NotableDateCategory category)
+    {
+        IReadOnlyList<NotableDateCategory> precedence = _resource.ResolutionPolicy.CategoryPrecedence;
+
+        for (var index = 0; index < precedence.Count; index++)
         {
-            NotableDateCategory.PublicHoliday => 11,
-            NotableDateCategory.BankHoliday => 10,
-            NotableDateCategory.Remembrance => 9,
-            NotableDateCategory.Religious => 8,
-            NotableDateCategory.Civic => 7,
-            NotableDateCategory.Seasonal => 6,
-            NotableDateCategory.Cultural => 5,
-            NotableDateCategory.School => 4,
-            NotableDateCategory.Regional => 3,
-            NotableDateCategory.Observance => 2,
-            NotableDateCategory.Other => 1,
-            _ => 0,
-        };
+            if (precedence[index] == category)
+                return precedence.Count - index;
+        }
+
+        return 0;
+    }
 
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException">

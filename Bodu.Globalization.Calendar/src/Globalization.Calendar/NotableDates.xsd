@@ -40,12 +40,21 @@
   </xs:complexType>
 
   <xs:complexType name="ResolutionPolicy">
+    <xs:sequence>
+      <xs:element name="CategoryPrecedence" type="nd:CategoryPrecedence" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
     <xs:attribute name="duplicatePolicy" type="nd:duplicatePolicy" use="optional" default="Error" />
     <xs:attribute name="sameDayCollisionPolicy" type="nd:collisionPolicy" use="optional" default="KeepAll" />
     <xs:attribute name="spanCollisionPolicy" type="nd:collisionPolicy" use="optional" default="KeepAll" />
     <xs:attribute name="priorityDirection" type="nd:priorityDirection" use="optional" default="HigherWins" />
     <xs:attribute name="observedDateRangePolicy" type="nd:observedDateRangePolicy" use="optional" default="ObservedOccurrenceControlsInclusion" />
     <xs:attribute name="workingDays" type="nd:weekPattern" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="CategoryPrecedence">
+    <xs:sequence>
+      <xs:element name="Category" type="nd:CategoryRef" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="AdjustmentPolicies">

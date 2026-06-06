@@ -59,6 +59,10 @@ public sealed partial class NotableDateDocumentBuilder
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
+        IReadOnlyList<NotableDateCategory>? categoryPrecedence = policyJson["categoryPrecedence"] is not JsonArray array
+            ? null
+            : [.. array.Select(item => ParseNullableEnum<NotableDateCategory>((string?)item) ?? NotableDateCategory.None)];
+
         ResolutionPolicyBuilder policy = new();
         policy.SetParsedValues(
             ParseNullableEnum<DuplicatePolicy>((string?)policyJson["duplicatePolicy"]),
@@ -66,7 +70,8 @@ public sealed partial class NotableDateDocumentBuilder
             ParseNullableEnum<CollisionPolicy>((string?)policyJson["spanCollisionPolicy"]),
             ParseNullableEnum<PriorityDirection>((string?)policyJson["priorityDirection"]),
             ParseNullableEnum<ObservedDateRangePolicy>((string?)policyJson["observedDateRangePolicy"]),
-            workingWeek);
+            workingWeek,
+            categoryPrecedence);
 
         _resolutionPolicy = policy;
     }

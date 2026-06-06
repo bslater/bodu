@@ -111,7 +111,22 @@ internal static class NotableDateJsonDocumentParser
             ParseEnum(GetString(policy, "spanCollisionPolicy"), CollisionPolicy.KeepAll),
             ParseEnum(GetString(policy, "priorityDirection"), PriorityDirection.HigherWins),
             ParseEnum(GetString(policy, "observedDateRangePolicy"), ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
-            ParseWorkingWeek(GetString(policy, "workingDays")));
+            ParseWorkingWeek(GetString(policy, "workingDays")),
+            ParseCategoryPrecedence(policy));
+    }
+
+    /// <summary>
+    /// Parses the optional <c>categoryPrecedence</c> array declared by the resolution policy, returning
+    /// <see langword="null" /> when the property is absent so the resource falls back to the built-in precedence.
+    /// </summary>
+    /// <param name="policy">The <c>resolutionPolicy</c> object.</param>
+    /// <returns>The authored precedence, or <see langword="null" /> when absent.</returns>
+    private static IReadOnlyList<NotableDateCategory>? ParseCategoryPrecedence(JsonElement policy)
+    {
+        if (GetProperty(policy, "categoryPrecedence") is not JsonElement array || array.ValueKind != JsonValueKind.Array)
+            return null;
+
+        return [.. array.EnumerateArray().Select(c => ParseEnum(c.GetString(), NotableDateCategory.None))];
     }
 
     /// <summary>
