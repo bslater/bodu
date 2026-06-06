@@ -21,9 +21,6 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="parts" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     /// <remarks>
     /// For example, <c>new Money&lt;USD&gt;(0.10m).Allocate(3)</c> returns <c>[0.04, 0.03, 0.03]</c>, and
     /// <c>new Money&lt;USD&gt;(-10m).Allocate(3)</c> returns <c>[-3.34, -3.33, -3.33]</c>. When the amount has fewer
@@ -34,9 +31,9 @@ public readonly partial struct Money<TCurrency>
     {
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);
 
-        var factor = CurrencyMetadata<TCurrency>.Value.MinorUnitFactor;
+        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
         Span<decimal> shares = parts <= MoneyMath.StackAllocShareThreshold ? stackalloc decimal[parts] : new decimal[parts];
-        MoneyMath.AllocateEvenly(_amount, factor, shares);
+        MoneyMath.AllocateEvenly(_amount, minorUnits, shares);
 
         var result = new Money<TCurrency>[parts];
         for (var i = 0; i < parts; i++)
@@ -62,15 +59,12 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="ratios" /> is empty, contains a negative element, or sums to zero.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     public Money<TCurrency>[] Allocate(ReadOnlySpan<decimal> ratios)
     {
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
-        var factor = CurrencyMetadata<TCurrency>.Value.MinorUnitFactor;
-        decimal[] shares = MoneyMath.AllocateByRatios(_amount, factor, ratios);
+        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
+        decimal[] shares = MoneyMath.AllocateByRatios(_amount, minorUnits, ratios);
 
         var result = new Money<TCurrency>[shares.Length];
         for (var i = 0; i < shares.Length; i++)

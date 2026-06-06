@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Financial;
 
 /// <summary>
@@ -53,28 +55,26 @@ internal static class MoneyMath
     /// cref="System.Span{T}.Length" /> slots so the per-slot amounts sum exactly to <paramref name="amount" />.
     /// </summary>
     /// <param name="amount">The amount to distribute, already at the currency's minor-unit precision.</param>
-    /// <param name="factor">The minor-unit factor <c>10^MinorUnits</c> for the currency.</param>
+    /// <param name="minorUnits">The currency's minor-unit precision, in the inclusive range <c>[0, 28]</c>.</param>
     /// <param name="shares">The destination buffer; each element receives one share in major units.</param>
-    /// <exception cref="OverflowException">
-    /// The scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     /// <remarks>
     /// The residual minor units are handed out one per slot from the start of the buffer, preserving the sign of
-    /// <paramref name="amount" />.
+    /// <paramref name="amount" />. Minor-unit counts are evaluated with <see cref="BigInteger" /> so large amounts
+    /// allocate exactly rather than overflowing a fixed-width integer.
     /// </remarks>
-    internal static void AllocateEvenly(decimal amount, decimal factor, Span<decimal> shares)
+    internal static void AllocateEvenly(decimal amount, int minorUnits, Span<decimal> shares)
     {
         var parts = shares.Length;
-        var minorTotal = decimal.ToInt64(amount * factor);
-        var basePer = minorTotal / parts;
-        var residual = minorTotal - (basePer * parts);
-        long sign = residual >= 0 ? 1 : -1;
-        var residualMagnitude = Math.Abs(residual);
+        BigInteger minorTotal = ToMinorUnits(amount, minorUnits);
+        BigInteger basePer = minorTotal / parts;
+        BigInteger residual = minorTotal - (basePer * parts);
+        int sign = residual.Sign >= 0 ? 1 : -1;
+        var residualMagnitude = (int)BigInteger.Abs(residual);
 
         for (var i = 0; i < parts; i++)
         {
-            var share = basePer + (i < residualMagnitude ? sign : 0);
-            shares[i] = share / factor;
+            BigInteger share = basePer + (i < residualMagnitude ? sign : 0);
+            shares[i] = FromMinorUnits(share, minorUnits);
         }
     }
 
@@ -83,41 +83,44 @@ internal static class MoneyMath
     /// to their magnitudes, with the resulting shares summing exactly to <paramref name="amount" />.
     /// </summary>
     /// <param name="amount">The amount to distribute, already at the currency's minor-unit precision.</param>
-    /// <param name="factor">The minor-unit factor <c>10^MinorUnits</c> for the currency.</param>
+    /// <param name="minorUnits">The currency's minor-unit precision, in the inclusive range <c>[0, 28]</c>.</param>
     /// <param name="ratios">The validated, non-negative weights; at least one must be strictly positive.</param>
     /// <returns>
     /// The per-ratio amounts in major units. Residual minor units are distributed by the largest-remainder
     /// (Hamilton) method — each slot receives one extra unit in descending order of its fractional remainder, ties
     /// broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
-    /// <exception cref="OverflowException">
-    /// The scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
-    internal static decimal[] AllocateByRatios(decimal amount, decimal factor, ReadOnlySpan<decimal> ratios)
+    /// <remarks>
+    /// The proportional split retains the established <see cref="decimal" /> remainder arithmetic so its results are
+    /// unchanged, while the integer share counts are held in <see cref="BigInteger" /> so a large minor-unit total no
+    /// longer overflows a fixed-width integer.
+    /// </remarks>
+    internal static decimal[] AllocateByRatios(decimal amount, int minorUnits, ReadOnlySpan<decimal> ratios)
     {
         var totalWeight = 0m;
         for (var i = 0; i < ratios.Length; i++)
             totalWeight += ratios[i];
 
-        var minorTotalSigned = decimal.ToInt64(amount * factor);
-        long sign = minorTotalSigned >= 0 ? 1 : -1;
-        var minorTotal = Math.Abs(minorTotalSigned);
+        BigInteger minorTotalSigned = ToMinorUnits(amount, minorUnits);
+        int sign = minorTotalSigned.Sign >= 0 ? 1 : -1;
+        BigInteger minorTotal = BigInteger.Abs(minorTotalSigned);
+        var minorTotalDecimal = (decimal)minorTotal;
 
         // Compute floored shares over absolute minor units; track each slot's fractional remainder so the residual
         // can go to the slot with the largest remainder (Hamilton / largest-remainder method).
-        var shares = new long[ratios.Length];
+        var shares = new BigInteger[ratios.Length];
         var remainders = new decimal[ratios.Length];
-        long allocated = 0;
+        BigInteger allocated = BigInteger.Zero;
         for (var i = 0; i < ratios.Length; i++)
         {
-            var exact = minorTotal * ratios[i] / totalWeight;
+            var exact = minorTotalDecimal * ratios[i] / totalWeight;
             var floored = decimal.Truncate(exact);
-            shares[i] = (long)floored;
+            shares[i] = (BigInteger)floored;
             remainders[i] = exact - floored;
             allocated += shares[i];
         }
 
-        var residual = minorTotal - allocated;
+        var residual = (int)(minorTotal - allocated);
         if (residual > 0)
         {
             // Sort indices by (descending remainder, ascending index) so ties fall back to stable input order.
@@ -132,7 +135,7 @@ internal static class MoneyMath
                 return cmp != 0 ? cmp : a.CompareTo(b);
             });
 
-            long distributed = 0;
+            var distributed = 0;
             for (var k = 0; k < order.Length && distributed < residual; k++)
             {
                 var idx = order[k];
@@ -146,9 +149,49 @@ internal static class MoneyMath
 
         var result = new decimal[ratios.Length];
         for (var i = 0; i < ratios.Length; i++)
-            result[i] = sign * shares[i] / factor;
+            result[i] = FromMinorUnits(sign < 0 ? -shares[i] : shares[i], minorUnits);
 
         return result;
+    }
+
+    /// <summary>
+    /// Converts an amount already at minor-unit precision to its exact integer minor-unit count, scaling through
+    /// <see cref="BigInteger" /> so the result never overflows.
+    /// </summary>
+    /// <param name="amount">The amount, already rounded to <paramref name="minorUnits" /> fractional digits.</param>
+    /// <param name="minorUnits">The currency's minor-unit precision.</param>
+    /// <returns>The amount expressed as a signed integer count of minor units.</returns>
+    internal static BigInteger ToMinorUnits(decimal amount, int minorUnits)
+    {
+        Span<int> bits = stackalloc int[4];
+        decimal.GetBits(amount, bits);
+
+        var scale = (bits[3] >> 16) & 0xFF;
+        var negative = bits[3] < 0;
+
+        BigInteger significand = ((BigInteger)(uint)bits[2] << 64) | ((BigInteger)(uint)bits[1] << 32) | (uint)bits[0];
+
+        // amount = significand * 10^-scale; the minor-unit count is significand * 10^(minorUnits - scale). A
+        // value at minor-unit precision always has scale <= minorUnits, so the exponent is non-negative; the
+        // defensive divide handles any value carrying spurious trailing-zero scale.
+        BigInteger minor = scale <= minorUnits
+            ? significand * BigInteger.Pow(10, minorUnits - scale)
+            : significand / BigInteger.Pow(10, scale - minorUnits);
+
+        return negative ? -minor : minor;
+    }
+
+    /// <summary>
+    /// Converts a signed integer minor-unit count back to a major-unit <see cref="decimal" /> at
+    /// <paramref name="minorUnits" /> precision.
+    /// </summary>
+    /// <param name="minor">The signed minor-unit count.</param>
+    /// <param name="minorUnits">The currency's minor-unit precision.</param>
+    /// <returns>The amount in major units.</returns>
+    internal static decimal FromMinorUnits(BigInteger minor, int minorUnits)
+    {
+        BigInteger quotient = BigInteger.DivRem(minor, BigInteger.Pow(10, minorUnits), out BigInteger remainder);
+        return (decimal)quotient + ((decimal)remainder / MinorUnitFactor(minorUnits));
     }
 
     /// <summary>

@@ -137,16 +137,19 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that allocating an amount whose scaled minor-unit count exceeds the range of a 64-bit signed integer
-    /// throws <see cref="OverflowException" />.
+    /// allocates exactly via <see cref="System.Numerics.BigInteger" /> scaling, with the shares summing to the
+    /// original.
     /// </summary>
     [TestMethod]
-    public void Allocate_WhenAmountExceedsInt64MinorUnits_ShouldThrowOverflowException()
+    public void Allocate_WhenScaledMinorUnitsExceedInt64_ShouldAllocateExactlyAndSumToOriginal()
     {
         var huge = Money.From(100_000_000_000_000_000m, "USD");
 
-        _ = Assert.ThrowsExactly<OverflowException>(() =>
-        {
-            _ = huge.Allocate([1m, 1m]);
-        });
+        Money[] shares = huge.Allocate([1m, 1m]);
+
+        Assert.AreEqual(2, shares.Length);
+        Assert.AreEqual(Money.From(50_000_000_000_000_000m, "USD"), shares[0]);
+        Assert.AreEqual(Money.From(50_000_000_000_000_000m, "USD"), shares[1]);
+        Assert.AreEqual(huge, shares[0] + shares[1]);
     }
 }

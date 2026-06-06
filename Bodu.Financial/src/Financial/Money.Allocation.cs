@@ -20,17 +20,13 @@ public readonly partial struct Money
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="parts" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// The scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     public Money[] Allocate(int parts)
     {
         EnsureHasCurrency();
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);
 
-        var factor = MoneyMath.MinorUnitFactor(MinorUnits);
         Span<decimal> shares = parts <= MoneyMath.StackAllocShareThreshold ? stackalloc decimal[parts] : new decimal[parts];
-        MoneyMath.AllocateEvenly(_amount, factor, shares);
+        MoneyMath.AllocateEvenly(_amount, MinorUnits, shares);
 
         var result = new Money[parts];
         for (var i = 0; i < parts; i++)
@@ -52,16 +48,12 @@ public readonly partial struct Money
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="ArgumentException">The ratios are empty, contain a negative value, or sum to zero.</exception>
-    /// <exception cref="OverflowException">
-    /// The scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     public Money[] Allocate(ReadOnlySpan<decimal> ratios)
     {
         EnsureHasCurrency();
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
-        var factor = MoneyMath.MinorUnitFactor(MinorUnits);
-        decimal[] shares = MoneyMath.AllocateByRatios(_amount, factor, ratios);
+        decimal[] shares = MoneyMath.AllocateByRatios(_amount, MinorUnits, ratios);
 
         var result = new Money[shares.Length];
         for (var i = 0; i < shares.Length; i++)
