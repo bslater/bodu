@@ -73,11 +73,14 @@ public sealed class ParserMonthTokenTests
                 "rules": [ { "id": "r", "strategy": { "fixed": { "month": 7, "day": 4 } } } ] } ] }
             """));
 
-        Assert.AreEqual(7, xml.Month, "XML month");
-        Assert.AreEqual(4, xml.Day, "XML day");
-        Assert.IsNull(xml.MonthAlias, "XML alias");
-        Assert.AreEqual(7, json.Month, "JSON month");
-        Assert.IsNull(json.MonthAlias, "JSON alias");
+        Assert.AreEqual(
+            (7, 4, (string?)null),
+            (xml.Month, xml.Day, xml.MonthAlias),
+            "XML month/day/alias");
+        Assert.AreEqual(
+            (7, (string?)null),
+            (json.Month, json.MonthAlias),
+            "JSON month/alias");
     }
 
     /// <summary>
@@ -227,8 +230,10 @@ public sealed class ParserMonthTokenTests
 
         FixedDateStrategy strategy = Strategy(NotableDateResourceLoader.Load(xml));
 
-        Assert.AreEqual(13, strategy.Month, "month");
-        Assert.IsNull(strategy.MonthAlias, "alias");
+        Assert.AreEqual(
+            (13, (string?)null),
+            (strategy.Month, strategy.MonthAlias),
+            "month/alias");
     }
 
     /// <summary>
@@ -272,16 +277,26 @@ public sealed class ParserMonthTokenTests
 
     /// <summary>
     /// Verifies that an unrecognised month name on a Gregorian <c>Fixed</c> rule is rejected with the
-    /// <c>BODU-CAL-MONTH</c> diagnostic, in both XML and JSON.
+    /// <c>BODU-CAL-MONTH</c> diagnostic when loaded from XML.
     /// </summary>
     [TestMethod]
-    public void Load_WhenGregorianFixedMonthIsUnknownName_ShouldThrowMonthDiagnostic()
+    public void Load_WhenGregorianFixedMonthIsUnknownName_ForXml_ShouldThrowMonthDiagnostic()
     {
         NotableDateValidationException xmlEx = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
             _ = NotableDateResourceLoader.Load(GregorianFixedXml("Smarch"));
         });
 
+        Assert.Contains(d => d.Code == "BODU-CAL-MONTH", xmlEx.Diagnostics, "XML BODU-CAL-MONTH");
+    }
+
+    /// <summary>
+    /// Verifies that an unrecognised month name on a Gregorian <c>Fixed</c> rule is rejected with the
+    /// <c>BODU-CAL-MONTH</c> diagnostic when loaded from JSON.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenGregorianFixedMonthIsUnknownName_ForJson_ShouldThrowMonthDiagnostic()
+    {
         NotableDateValidationException jsonEx = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
             _ = NotableDateResourceLoader.LoadJson(
@@ -292,7 +307,6 @@ public sealed class ParserMonthTokenTests
                 """);
         });
 
-        Assert.Contains(d => d.Code == "BODU-CAL-MONTH", xmlEx.Diagnostics, "XML BODU-CAL-MONTH");
         Assert.Contains(d => d.Code == "BODU-CAL-MONTH", jsonEx.Diagnostics, "JSON BODU-CAL-MONTH");
     }
 
