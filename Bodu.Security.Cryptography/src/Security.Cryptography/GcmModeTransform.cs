@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -202,19 +203,14 @@ public sealed class GcmModeTransform
     {
         _cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 
-        if (cipher.BlockSize != BlockSize)
-        {
-            throw new ArgumentException(
-                $"GCM requires a block cipher with a {BlockSize / 8}-byte block size.",
-                nameof(cipher));
-        }
+        CryptographyThrowHelper.ThrowIfBlockSizeNotEqualTo(cipher, BlockSize, "GCM", nameof(cipher));
 
         if (useInitialCounterBlock)
         {
             if (nonceOrJ0.Length != BlockSize / 8)
             {
                 throw new ArgumentException(
-                    $"The initial counter block must be exactly {BlockSize / 8} bytes.",
+                    string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_InitialCounterBlockLength, BlockSize / 8),
                     parameterName);
             }
         }
@@ -223,7 +219,7 @@ public sealed class GcmModeTransform
             if (nonceOrJ0.Length != NonceSize / 8)
             {
                 throw new ArgumentException(
-                    $"The GCM nonce must be exactly {NonceSize / 8} bytes.",
+                    string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_GcmNonceLength, NonceSize / 8),
                     parameterName);
             }
         }
@@ -254,7 +250,7 @@ public sealed class GcmModeTransform
         if (IncrementCounter32(_counter))
         {
             throw new ArgumentException(
-                "The initial counter block must not end in 0xFFFFFFFF; inc32(J0) would collide with J0 itself.",
+                CryptoResourceStrings.Arg_Invalid_InitialCounterBlockReserved,
                 parameterName);
         }
     }
@@ -277,7 +273,7 @@ public sealed class GcmModeTransform
         if (length > MaxPlaintextBytes)
         {
             throw new CryptographicException(
-                $"GCM plaintext length {length} exceeds the SP 800-38D §5.2.1.1 limit of {MaxPlaintextBytes} bytes per (key, nonce) pair.");
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_GcmPlaintextLengthExceeded, length, MaxPlaintextBytes));
         }
     }
 
@@ -295,7 +291,7 @@ public sealed class GcmModeTransform
         if (length > MaxAadBytes)
         {
             throw new CryptographicException(
-                $"GCM associated-data length {length} exceeds the SP 800-38D §5.2.1.1 limit of {MaxAadBytes} bytes per (key, nonce) pair.");
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_GcmAadLengthExceeded, length, MaxAadBytes));
         }
     }
 
@@ -615,7 +611,7 @@ public sealed class GcmModeTransform
                 if (wrapped && offset + (BlockSize / 8) < input.Length)
                 {
                     throw new CryptographicException(
-                        "GCM 32-bit counter would wrap past 0xFFFFFFFF; the message length exceeds the maximum allowed per (key, nonce) pair.");
+                        CryptoResourceStrings.Crypt_Invalid_GcmCounterWrap);
                 }
             }
         }
@@ -686,7 +682,7 @@ public sealed class GcmModeTransform
         if (_completed)
         {
             throw new InvalidOperationException(
-                "This GCM transform has already completed and cannot be reused. Create a new instance per message.");
+                CryptoResourceStrings.Op_Invalid_GcmTransformCompleted);
         }
     }
 

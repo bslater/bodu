@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -124,7 +126,7 @@ public static class BlockCipherModeFactory
         if (iv.Length != requiredSize / 8)
         {
             throw new ArgumentException(
-                $"The initialization vector must be {requiredSize} bits ({requiredSize / 8} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_IvLengthForMode, requiredSize, requiredSize / 8, iv.Length * 8, iv.Length),
                 name);
         }
     }

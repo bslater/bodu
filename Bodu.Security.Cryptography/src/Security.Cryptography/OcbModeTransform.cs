@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -124,17 +125,12 @@ public sealed class OcbModeTransform
         if (cipher is null) throw new ArgumentNullException(nameof(cipher));
         CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        if (cipher.BlockSize != BlockSizeBits)
-        {
-            throw new ArgumentException(
-                $"OCB requires a block cipher with a {BlockSizeBits / 8}-byte block size.",
-                nameof(cipher));
-        }
+        CryptographyThrowHelper.ThrowIfBlockSizeNotEqualTo(cipher, BlockSizeBits, "OCB", nameof(cipher));
 
         if (tagSize < 8 || tagSize > cipher.BlockSize || tagSize % 8 != 0)
         {
             throw new ArgumentException(
-                $"Tag size ({tagSize} bits) must be a positive multiple of 8 between 8 and the cipher block size ({cipher.BlockSize} bits).",
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_OcbTagSize, tagSize, cipher.BlockSize),
                 nameof(tagSize));
         }
 

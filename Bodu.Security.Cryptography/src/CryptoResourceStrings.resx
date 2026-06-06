@@ -262,4 +262,46 @@
   <data name="Op_NotSupported_Poly1305Padding" xml:space="preserve">
     <value>Poly1305 does not use block padding.</value>
   </data>
+  <data name="Arg_Invalid_CipherBlockSizeRequired" xml:space="preserve">
+    <value>{0} requires a cipher with a {1}-byte block size.</value>
+  </data>
+  <data name="Arg_Invalid_GcmNonceLength" xml:space="preserve">
+    <value>The GCM nonce must be exactly {0} bytes.</value>
+  </data>
+  <data name="Arg_Invalid_InitialCounterBlockLength" xml:space="preserve">
+    <value>The initial counter block must be exactly {0} bytes.</value>
+  </data>
+  <data name="Arg_Invalid_InitialCounterBlockReserved" xml:space="preserve">
+    <value>The initial counter block must not end in 0xFFFFFFFF; inc32(J0) would collide with J0 itself.</value>
+  </data>
+  <data name="Arg_Invalid_IvLengthForMode" xml:space="preserve">
+    <value>The initialization vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes).</value>
+  </data>
+  <data name="Arg_Invalid_OcbTagSize" xml:space="preserve">
+    <value>Tag size ({0} bits) must be a positive multiple of 8 between 8 and the cipher block size ({1} bits).</value>
+  </data>
+  <data name="Arg_Invalid_XtsCipherBlockSizeMismatch" xml:space="preserve">
+    <value>The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits).</value>
+  </data>
+  <data name="Arg_Invalid_XtsTweakLength" xml:space="preserve">
+    <value>Tweak length ({0} bytes) must equal the cipher block size ({1} bytes).</value>
+  </data>
+  <data name="Crypt_Invalid_GcmAadLengthExceeded" xml:space="preserve">
+    <value>GCM associated-data length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair.</value>
+  </data>
+  <data name="Crypt_Invalid_GcmCounterWrap" xml:space="preserve">
+    <value>GCM 32-bit counter would wrap past 0xFFFFFFFF; the message length exceeds the maximum allowed per (key, nonce) pair.</value>
+  </data>
+  <data name="Crypt_Invalid_GcmPlaintextLengthExceeded" xml:space="preserve">
+    <value>GCM plaintext length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair.</value>
+  </data>
+  <data name="Op_Invalid_Blake3CvStackDepth" xml:space="preserve">
+    <value>BLAKE3 CV stack exceeded its {0}-level maximum tree depth.</value>
+  </data>
+  <data name="Op_Invalid_GcmTransformCompleted" xml:space="preserve">
+    <value>This GCM transform has already completed and cannot be reused. Create a new instance per message.</value>
+  </data>
+  <data name="Op_Invalid_MerkleChannelCompleted" xml:space="preserve">
+    <value>Write to level-{0} channel failed. The channel was completed before all nodes were submitted.</value>
+  </data>
 </root>

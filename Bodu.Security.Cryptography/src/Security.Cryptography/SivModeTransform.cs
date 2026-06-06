@@ -129,19 +129,9 @@ public sealed class SivModeTransform
         ThrowHelper.ThrowIfNull(ctrCipher);
         CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
-        if (s2vCipher.BlockSize != BlockSizeBits)
-        {
-            throw new ArgumentException(
-                $"SIV requires an S2V cipher with a {BlockSizeBits / 8}-byte block size.",
-                nameof(s2vCipher));
-        }
+        CryptographyThrowHelper.ThrowIfBlockSizeNotEqualTo(s2vCipher, BlockSizeBits, "SIV S2V", nameof(s2vCipher));
 
-        if (ctrCipher.BlockSize != BlockSizeBits)
-        {
-            throw new ArgumentException(
-                $"SIV requires a CTR cipher with a {BlockSizeBits / 8}-byte block size.",
-                nameof(ctrCipher));
-        }
+        CryptographyThrowHelper.ThrowIfBlockSizeNotEqualTo(ctrCipher, BlockSizeBits, "SIV CTR", nameof(ctrCipher));
 
         _s2vCipher = s2vCipher;
         _ctrCipher = ctrCipher;

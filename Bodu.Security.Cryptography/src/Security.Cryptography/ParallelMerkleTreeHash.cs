@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Channels;
@@ -441,7 +442,7 @@ public sealed class ParallelMerkleTreeHash
         if (!_levelChannels[level].Writer.TryWrite(hash))
         {
             throw new InvalidOperationException(
-                $"Write to level-{level} channel failed. The channel was completed before all nodes were submitted.");
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Op_Invalid_MerkleChannelCompleted, level));
         }
     }
 

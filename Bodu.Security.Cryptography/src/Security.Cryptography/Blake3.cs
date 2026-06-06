@@ -4,11 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
-using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -598,7 +599,7 @@ public sealed partial class Blake3
 
         if (_cvStackDepth >= MaxCvStackDepth)
             throw new InvalidOperationException(
-                $"BLAKE3 CV stack exceeded its {MaxCvStackDepth}-level maximum tree depth.");
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Op_Invalid_Blake3CvStackDepth, MaxCvStackDepth));
 
         working.CopyTo(_cvStack.AsSpan(_cvStackDepth * 8, 8));
         _cvStackDepth++;
