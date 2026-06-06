@@ -15,7 +15,8 @@ namespace Bodu.Globalization.Calendar;
 /// patch cannot clear a value back to <see langword="null" /> in this first cut.
 /// </para>
 /// </remarks>
-internal sealed class PatchRuleOverride : NotableDateRuleOverride
+internal sealed class PatchRuleOverride
+    : NotableDateRuleOverride
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PatchRuleOverride" /> class.

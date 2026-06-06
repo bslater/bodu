@@ -99,7 +99,7 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(tasks);
 
         Assert.IsEmpty(errors, "No exceptions expected under capacity-1 churn.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1);
+        Assert.IsTrue(buffer.Count is >= 0 and <= 1);
     }
 
     //[TestMethod]
@@ -208,7 +208,7 @@ public partial class ConcurrentCircularBufferTests
 
         task.Wait();
 
-        Assert.IsTrue(output.All(v => v >= 0 && v < 1000));
+        Assert.IsTrue(output.All(v => v is >= 0 and < 1000));
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
@@ -273,7 +273,7 @@ public partial class ConcurrentCircularBufferTests
             buffer.TryDequeue(out _);
         });
 
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 3);
+        Assert.IsTrue(buffer.Count is >= 0 and <= 3);
     }
 
 }

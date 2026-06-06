@@ -70,7 +70,7 @@ public class LookAndSayTests
         foreach (var term in SequenceGenerator.LookAndSay(8))
         {
             foreach (var ch in term)
-                Assert.IsTrue(ch >= '0' && ch <= '9', $"Term '{term}' contained a non-digit character '{ch}'.");
+                Assert.IsTrue(ch is >= '0' and <= '9', $"Term '{term}' contained a non-digit character '{ch}'.");
         }
     }
 

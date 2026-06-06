@@ -215,7 +215,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Assert.IsEmpty(failures);
-        Assert.IsTrue(lengths.All(len => len >= 0 && len <= 16));
+        Assert.IsTrue(lengths.All(len => len is >= 0 and <= 16));
     }
 
     /// <summary>

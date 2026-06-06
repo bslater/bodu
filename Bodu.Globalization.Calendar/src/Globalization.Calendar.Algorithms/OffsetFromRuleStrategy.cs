@@ -18,7 +18,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
-public sealed class OffsetFromRuleStrategy : IDateCalculationStrategy
+public sealed class OffsetFromRuleStrategy
+    : IDateCalculationStrategy
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OffsetFromRuleStrategy" /> class.

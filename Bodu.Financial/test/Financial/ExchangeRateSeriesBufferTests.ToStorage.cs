@@ -64,12 +64,11 @@ public partial class ExchangeRateSeriesBufferTests
     public void FromStorage_WhenSeeded_ShouldCopyAllObservations()
     {
         var source = ExchangeRateSeriesStorage.Create(
-            new[]
-            {
+            [
                 new ExchangeRateObservation(DateOnly.FromDayNumber(1000), 1.4m),
                 new ExchangeRateObservation(DateOnly.FromDayNumber(1010), 1.5m),
                 new ExchangeRateObservation(DateOnly.FromDayNumber(1020), 1.6m),
-            },
+            ],
             ObservationsParam);
 
         var buffer = ExchangeRateSeriesBuffer.FromStorage(source);
@@ -88,7 +87,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void FromStorage_WhenBufferMutated_ShouldNotAffectSourceStorage()
     {
         var source = ExchangeRateSeriesStorage.Create(
-            new[] { new ExchangeRateObservation(DateOnly.FromDayNumber(1000), 1.4m) },
+            [new ExchangeRateObservation(DateOnly.FromDayNumber(1000), 1.4m)],
             ObservationsParam);
 
         var buffer = ExchangeRateSeriesBuffer.FromStorage(source);

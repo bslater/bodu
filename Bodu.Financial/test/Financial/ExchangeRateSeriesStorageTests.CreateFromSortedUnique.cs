@@ -52,8 +52,8 @@ public partial class ExchangeRateSeriesStorageTests
     public void CreateFromSortedUnique_WhenSingleEntry_ShouldExposeBothFirstAndLastDate()
     {
         var storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(
-            new[] { 1234 },
-            new[] { 2.5m });
+            [1234],
+            [2.5m]);
 
         Assert.AreEqual(1, storage.Count);
         Assert.AreEqual(DateOnly.FromDayNumber(1234), storage.FirstDate);

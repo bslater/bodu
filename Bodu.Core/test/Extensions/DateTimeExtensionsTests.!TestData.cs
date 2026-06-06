@@ -106,37 +106,37 @@ public partial class DateTimeExtensionsTests
 
     public static IEnumerable<object[]> DayOfWeekOccurrenceInMonthTestData()
     {
-        yield return new object[] { new DateTime(2024, 04, 07), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 01), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 02), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 03), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 04), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 05), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 06), WeekOfMonthOrdinal.First };
-        yield return new object[] { new DateTime(2024, 04, 14), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 08), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 09), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 10), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 11), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 12), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 13), WeekOfMonthOrdinal.Second };
-        yield return new object[] { new DateTime(2024, 04, 21), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 15), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 16), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 17), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 18), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 19), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 20), WeekOfMonthOrdinal.Third };
-        yield return new object[] { new DateTime(2024, 04, 28), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 22), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 23), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 24), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 25), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 26), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 27), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 28), WeekOfMonthOrdinal.Fourth };
-        yield return new object[] { new DateTime(2024, 04, 29), WeekOfMonthOrdinal.Fifth };
-        yield return new object[] { new DateTime(2024, 04, 30), WeekOfMonthOrdinal.Fifth };
+        yield return new object[] { new DateTime(2024, 04, 07), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 01), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 02), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 03), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 04), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 05), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 06), WeekOrdinal.First };
+        yield return new object[] { new DateTime(2024, 04, 14), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 08), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 09), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 10), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 11), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 12), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 13), WeekOrdinal.Second };
+        yield return new object[] { new DateTime(2024, 04, 21), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 15), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 16), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 17), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 18), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 19), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 20), WeekOrdinal.Third };
+        yield return new object[] { new DateTime(2024, 04, 28), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 22), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 23), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 24), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 25), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 26), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 27), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 28), WeekOrdinal.Fourth };
+        yield return new object[] { new DateTime(2024, 04, 29), WeekOrdinal.Fifth };
+        yield return new object[] { new DateTime(2024, 04, 30), WeekOrdinal.Fifth };
     }
 
     public static IEnumerable<object[]> DaysInMonthTestData()
@@ -1926,53 +1926,53 @@ public partial class DateTimeExtensionsTests
 
     public static IEnumerable<object[]> NthDateOfWeekInMonthTestData()
     {
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 02) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 09) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 16) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 23) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Fifth, new DateTime(2024, 04, 30) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 30) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.First, new DateTime(2024, 04, 02) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Second, new DateTime(2024, 04, 09) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Third, new DateTime(2024, 04, 16) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Fourth, new DateTime(2024, 04, 23) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Fifth, new DateTime(2024, 04, 30) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Last, new DateTime(2024, 04, 30) };
 
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 01) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 02) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 03) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 04) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 05) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 09) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 10) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 11) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 21) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 15) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 16) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 17) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 18) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 19) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOfMonthOrdinal.Third, new DateTime(2024, 04, 20) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 28) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 22) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 23) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 24) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 25) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 26) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOfMonthOrdinal.Fourth, new DateTime(2024, 04, 27) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 28) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 29) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 30) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 24) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 25) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 26) };
-        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOfMonthOrdinal.Last, new DateTime(2024, 04, 27) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOrdinal.First, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOrdinal.First, new DateTime(2024, 04, 01) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.First, new DateTime(2024, 04, 02) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOrdinal.First, new DateTime(2024, 04, 03) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOrdinal.First, new DateTime(2024, 04, 04) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOrdinal.First, new DateTime(2024, 04, 05) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOrdinal.First, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOrdinal.Second, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOrdinal.Second, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Second, new DateTime(2024, 04, 09) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOrdinal.Second, new DateTime(2024, 04, 10) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOrdinal.Second, new DateTime(2024, 04, 11) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOrdinal.Second, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOrdinal.Second, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOrdinal.Third, new DateTime(2024, 04, 21) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOrdinal.Third, new DateTime(2024, 04, 15) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Third, new DateTime(2024, 04, 16) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOrdinal.Third, new DateTime(2024, 04, 17) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOrdinal.Third, new DateTime(2024, 04, 18) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOrdinal.Third, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOrdinal.Third, new DateTime(2024, 04, 20) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOrdinal.Fourth, new DateTime(2024, 04, 28) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOrdinal.Fourth, new DateTime(2024, 04, 22) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Fourth, new DateTime(2024, 04, 23) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOrdinal.Fourth, new DateTime(2024, 04, 24) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOrdinal.Fourth, new DateTime(2024, 04, 25) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOrdinal.Fourth, new DateTime(2024, 04, 26) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOrdinal.Fourth, new DateTime(2024, 04, 27) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, WeekOrdinal.Last, new DateTime(2024, 04, 28) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, WeekOrdinal.Last, new DateTime(2024, 04, 29) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOrdinal.Last, new DateTime(2024, 04, 30) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Wednesday, WeekOrdinal.Last, new DateTime(2024, 04, 24) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Thursday, WeekOrdinal.Last, new DateTime(2024, 04, 25) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Friday, WeekOrdinal.Last, new DateTime(2024, 04, 26) };
+        yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Saturday, WeekOrdinal.Last, new DateTime(2024, 04, 27) };
 
-        yield return new object[] { new DateTime(2024, 02, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.First, new DateTime(2024, 02, 01) }; // Feb 1st Thursday
-        yield return new object[] { new DateTime(2024, 02, 01), DayOfWeek.Thursday, WeekOfMonthOrdinal.Last, new DateTime(2024, 02, 29) };  // Leap year - last Thursday
-        yield return new object[] { new DateTime(2023, 02, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.First, new DateTime(2023, 02, 07) };  // Non-leap Feb - last Sunday
-        yield return new object[] { new DateTime(2023, 02, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Last, new DateTime(2023, 02, 28) };   // Non-Leap year - last Thursday
+        yield return new object[] { new DateTime(2024, 02, 01), DayOfWeek.Thursday, WeekOrdinal.First, new DateTime(2024, 02, 01) }; // Feb 1st Thursday
+        yield return new object[] { new DateTime(2024, 02, 01), DayOfWeek.Thursday, WeekOrdinal.Last, new DateTime(2024, 02, 29) };  // Leap year - last Thursday
+        yield return new object[] { new DateTime(2023, 02, 01), DayOfWeek.Tuesday, WeekOrdinal.First, new DateTime(2023, 02, 07) };  // Non-leap Feb - last Sunday
+        yield return new object[] { new DateTime(2023, 02, 01), DayOfWeek.Tuesday, WeekOrdinal.Last, new DateTime(2023, 02, 28) };   // Non-Leap year - last Thursday
     }
 
     public static IEnumerable<object[]> PreviousDateOfWeekTestData()

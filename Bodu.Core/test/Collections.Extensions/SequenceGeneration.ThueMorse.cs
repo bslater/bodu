@@ -67,7 +67,7 @@ public class ThueMorseTests
     public void ThueMorse_WhenEnumerated_ShouldYieldOnlyZeroOrOne()
     {
         foreach (var v in SequenceGenerator.ThueMorse(32))
-            Assert.IsTrue(v == 0 || v == 1, $"Expected 0 or 1, got {v}.");
+            Assert.IsTrue(v is 0 or 1, $"Expected 0 or 1, got {v}.");
     }
 
 }

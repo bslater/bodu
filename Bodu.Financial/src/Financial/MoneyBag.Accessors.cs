@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBag.Accessors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,9 @@ public sealed partial class MoneyBag
     /// </summary>
     /// <param name="isoCode">The ISO 4217 code.</param>
     /// <param name="balance">When this method returns <see langword="true" />, the runtime-tagged balance.</param>
-    /// <returns><see langword="true" /> when the bag has an entry for the currency; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the bag has an entry for the currency; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
     public bool TryGetBalance(string isoCode, out Money balance)
     {

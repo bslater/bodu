@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ICurrencyLookup.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,7 +44,9 @@ public interface ICurrencyLookup
     /// </summary>
     /// <param name="symbol">The currency symbol.</param>
     /// <param name="matches">When this method returns <see langword="true" />, the matching currencies.</param>
-    /// <returns><see langword="true" /> when at least one currency was found; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when at least one currency was found; otherwise <see langword="false" />.
+    /// </returns>
     bool TryBySymbol(string symbol, out IReadOnlyList<CurrencyInfo> matches);
 
     /// <summary>
@@ -52,7 +54,9 @@ public interface ICurrencyLookup
     /// </summary>
     /// <param name="regionCode">The ISO 3166 region code.</param>
     /// <param name="matches">When this method returns <see langword="true" />, the matching currencies.</param>
-    /// <returns><see langword="true" /> when at least one currency was found; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when at least one currency was found; otherwise <see langword="false" />.
+    /// </returns>
     bool TryByRegion(string regionCode, out IReadOnlyList<CurrencyInfo> matches);
 
     /// <summary>

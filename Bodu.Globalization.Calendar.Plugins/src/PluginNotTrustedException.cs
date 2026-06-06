@@ -9,7 +9,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <summary>
 /// The exception thrown when a trust policy rejects a candidate plugin assembly.
 /// </summary>
-public sealed class PluginNotTrustedException : NotableDatePluginException
+public sealed class PluginNotTrustedException
+    : NotableDatePluginException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class.

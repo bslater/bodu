@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AfricaCalendarData.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,8 +36,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" /> <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AfricaCalendarData
 {
@@ -50,7 +49,7 @@ public static class AfricaCalendarData
     /// Gets the country codes the Africa pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "EG", "ET", "GH", "KE", "MA", "NG", "ZA" };
+    public static IReadOnlyList<string> SupportedCountries { get; } = ["EG", "ET", "GH", "KE", "MA", "NG", "ZA"];
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.
@@ -75,8 +74,8 @@ public static class AfricaCalendarData
     }
 
     /// <summary>
-    /// Resolves an imported resource name to its content. The pan-regional <c>africa-common</c> hub is served from
-    /// this pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c>,
+    /// Resolves an imported resource name to its content. The pan-regional <c>africa-common</c> hub is served from this
+    /// pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c>,
     /// <c>christian-orthodox</c>, and <c>global-islamic</c>, including those that <c>africa-common</c> itself imports)
     /// is delegated to <see cref="CommonNotableDateResources" />.
     /// </summary>

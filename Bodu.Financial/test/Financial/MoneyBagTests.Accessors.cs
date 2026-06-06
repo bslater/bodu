@@ -29,7 +29,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FromBalances_WhenGivenSequence_ShouldBuildBag()
     {
-        var bag = MoneyBag.FromBalances(new[] { new Money(10m, "USD"), new Money(2m, "EUR") });
+        var bag = MoneyBag.FromBalances([new Money(10m, "USD"), new Money(2m, "EUR")]);
 
         Assert.AreEqual(2, bag.Count);
     }

@@ -128,7 +128,7 @@ public partial class XorShiftRandomTests
         var rng = new XorShiftRandom();
         var actual = rng.Next(100);
 
-        Assert.IsTrue(actual >= 0 && actual < 100, $"Result {actual} is out of expected range.");
+        Assert.IsTrue(actual is >= 0 and < 100, $"Result {actual} is out of expected range.");
     }
     /// <summary>
     /// Verifies that <see cref="XorShiftRandom.Next" />, when SeedIsNotSame, returns the expected value.
@@ -177,7 +177,7 @@ public partial class XorShiftRandomTests
         for (var i = 0; i < 1000; i++)
         {
             var actual = rng.Next(100);
-            Assert.IsTrue(actual >= 0 && actual < 100);
+            Assert.IsTrue(actual is >= 0 and < 100);
         }
     }
 
@@ -203,7 +203,7 @@ public partial class XorShiftRandomTests
         for (var i = 0; i < 1000; i++)
         {
             var actual = rng.Next(10, 20);
-            Assert.IsTrue(actual >= 10 && actual < 20);
+            Assert.IsTrue(actual is >= 10 and < 20);
         }
     }
 
@@ -330,7 +330,7 @@ public partial class XorShiftRandomTests
         for (var i = 0; i < 10_000; i++)
         {
             var value = rng.Next(int.MinValue, int.MaxValue);
-            Assert.IsTrue(value >= int.MinValue && value < int.MaxValue, $"value={value} outside [int.MinValue, int.MaxValue).");
+            Assert.IsTrue(value is >= int.MinValue and < int.MaxValue, $"value={value} outside [int.MinValue, int.MaxValue).");
         }
     }
 

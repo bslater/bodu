@@ -93,7 +93,7 @@ public sealed class Serpent128Cipher
     /// </exception>
     public Serpent128Cipher(ReadOnlySpan<byte> key)
     {
-        if (key.Length != 16 && key.Length != 24 && key.Length != 32)
+        if (key.Length is not 16 and not 24 and not 32)
         {
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, "128, 192, 256"),

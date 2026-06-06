@@ -16,7 +16,7 @@ public partial class CryptoHelpersTests
     public static IEnumerable<object[]> ValidPaddingCases() =>
     [
         // PaddingMode, InputHex, BlockSize, ExpectedHex Typical valid cases
-        new object[] { PaddingMode.PKCS7, "102030", 8, "1020300505050505" },
+        [PaddingMode.PKCS7, "102030", 8, "1020300505050505"],
         [PaddingMode.ANSIX923, "102030", 8, "1020300000000005"],
         [PaddingMode.ISO10126, "102030", 8, "102030????????05"],
         [PaddingMode.Zeros, "102030", 8, "1020300000000000"],
@@ -53,7 +53,7 @@ public partial class CryptoHelpersTests
     public static IEnumerable<object[]> InvalidPaddingCases() =>
     [
         // PaddingMode, InputHex, BlockSize, ExpectedExceptionType, DestinationSize PaddingMode.None but input not aligned
-        new object[] { PaddingMode.None, "01020304", 8, typeof(CryptographicException) },
+        [PaddingMode.None, "01020304", 8, typeof(CryptographicException)],
 
         // Invalid padding mode (enum not defined)
         [(PaddingMode)999, "0102", 8, typeof(CryptographicException)],

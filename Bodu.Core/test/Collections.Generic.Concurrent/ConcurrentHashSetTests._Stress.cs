@@ -200,7 +200,7 @@ public partial class ConcurrentHashSetTests
         Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
         Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
         Assert.IsGreaterThan(0, operations, "Workers must have exercised the set during the stress run.");
-        Assert.IsTrue(finalCount >= 0 && finalCount <= keySpace, "Count must remain within the legal key range.");
+        Assert.IsTrue(finalCount is >= 0 and <= keySpace, "Count must remain within the legal key range.");
         Assert.HasCount(finalCount, snapshot, "Count and ToArray().Length must agree once the workers quiesce.");
     }
 

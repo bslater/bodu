@@ -19,7 +19,8 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="CultureInfo.InvariantCulture" /> supplies a default that applies when no more specific culture matches.
 /// </para>
 /// </remarks>
-public sealed class NotableDateNameLocalizer : INotableDateNameLocalizer
+public sealed class NotableDateNameLocalizer
+    : INotableDateNameLocalizer
 {
     /// <summary>
     /// The registered display names keyed by concept id and culture name.

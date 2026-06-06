@@ -10,7 +10,7 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> throws
+    /// Verifies that <see cref="DateTimeExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOrdinal)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the requested ordinal does not exist in the supplied month.
     /// </summary>
     [TestMethod]
@@ -19,7 +19,7 @@ public partial class DateTimeExtensionsTests
         // February 2023 only has 4 Mondays; requesting the fifth must throw.
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetNthDateOfWeekInMonth(2023, 2, DayOfWeek.Monday, WeekOfMonthOrdinal.Fifth);
+            _ = DateTimeExtensions.GetNthDateOfWeekInMonth(2023, 2, DayOfWeek.Monday, WeekOrdinal.Fifth);
         });
     }
 

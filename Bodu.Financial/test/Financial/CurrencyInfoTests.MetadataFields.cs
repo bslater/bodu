@@ -36,8 +36,8 @@ public partial class CurrencyInfoTests
             Symbol = "$",
             InternationalSymbol = "US$",
             NativeName = "US Dollar",
-            RegionCodes = new[] { "US", "EC" },
-            AlternativeSymbols = new[] { "US$" },
+            RegionCodes = ["US", "EC"],
+            AlternativeSymbols = ["US$"],
         };
 
         Assert.AreEqual("$", info.Symbol);

@@ -62,7 +62,7 @@ public partial class ConcurrentCircularBufferTests
         for (var i = 0; i < 1000; i++)
             Assert.IsTrue(buffer.TryEnqueue(new TestItem(i)));
 
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= MinCapacity);
+        Assert.IsTrue(buffer.Count is >= 0 and <= MinCapacity);
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(NthDateOfWeekInMonthTestData))]
-    public void NthDateOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
+    public void NthDateOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOrdinal ordinal, DateTime expected)
     {
         var actual = input.NthDateOfWeekInMonth(dayOfWeek, ordinal);
 
@@ -38,12 +38,12 @@ public partial class DateTimeExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            input.NthDateOfWeekInMonth(invalidDay, WeekOfMonthOrdinal.First);
+            input.NthDateOfWeekInMonth(invalidDay, WeekOrdinal.First);
         });
     }
 
     /// <summary>
-    /// Verifies that requesting <see cref="WeekOfMonthOrdinal.Fifth" /> in a month that has only four occurrences throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that requesting <see cref="WeekOrdinal.Fifth" /> in a month that has only four occurrences throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void NthDateOfWeekInMonth_WhenFifthDoesNotExist_ShouldThrowExactly()
@@ -52,7 +52,7 @@ public partial class DateTimeExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            input.NthDateOfWeekInMonth(DayOfWeek.Wednesday, WeekOfMonthOrdinal.Fifth);
+            input.NthDateOfWeekInMonth(DayOfWeek.Wednesday, WeekOrdinal.Fifth);
         });
     }
 
@@ -64,13 +64,13 @@ public partial class DateTimeExtensionsTests
     {
         var input = new DateTime(2024, 1, 30);
 
-        var actual = input.NthDateOfWeekInMonth(DayOfWeek.Sunday, WeekOfMonthOrdinal.First);
+        var actual = input.NthDateOfWeekInMonth(DayOfWeek.Sunday, WeekOrdinal.First);
 
         Assert.IsTrue(actual < input);
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.NthDateOfWeekInMonth(DateTime, DayOfWeek, WeekOfMonthOrdinal)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// Verifies that <see cref="DateTimeExtensions.NthDateOfWeekInMonth(DateTime, DayOfWeek, WeekOrdinal)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
     /// </summary>
     [TestMethod]
     [DataRow(DateTimeKind.Unspecified)]
@@ -79,19 +79,19 @@ public partial class DateTimeExtensionsTests
     public void NthDateOfWeekInMonth_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
     {
         var input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
-        var actual = input.NthDateOfWeekInMonth(DayOfWeek.Wednesday, WeekOfMonthOrdinal.Second);
+        var actual = input.NthDateOfWeekInMonth(DayOfWeek.Wednesday, WeekOrdinal.Second);
 
         Assert.AreEqual(kind, actual.Kind);
     }
 
     /// <summary>
-    /// Verifies that an undefined <see cref="WeekOfMonthOrdinal" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that an undefined <see cref="WeekOrdinal" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void NthDateOfWeekInMonth_WhenOrdinalIsInvalidEnum_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 1, 1);
-        WeekOfMonthOrdinal invalidOrdinal = (WeekOfMonthOrdinal)999;
+        WeekOrdinal invalidOrdinal = (WeekOrdinal)999;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -100,11 +100,11 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the static <see cref="DateTimeExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> overload returns the same nth-occurrence date as the instance overload.
+    /// Verifies that the static <see cref="DateTimeExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOrdinal)" /> overload returns the same nth-occurrence date as the instance overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(NthDateOfWeekInMonthTestData))]
-    public void NthDateOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
+    public void NthDateOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOrdinal ordinal, DateTime expected)
     {
         int year = input.Year, month = input.Month;
 

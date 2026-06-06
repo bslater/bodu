@@ -178,7 +178,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsNotEmpty(evicted, "Expected at least one eviction.");
         Assert.IsTrue(evicted.All(x => x != null));
-        Assert.IsTrue(evicted.All(x => x.Value >= 0 && x.Value < 100));
+        Assert.IsTrue(evicted.All(x => x.Value is >= 0 and < 100));
     }
 
     /// <summary>

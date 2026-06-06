@@ -41,7 +41,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenSkipSizeIsZero_ShouldReturnSingleSize()
     {
-        KeySizes[] sizes = new[] { new KeySizes(128, 128, 0) };
+        KeySizes[] sizes = [new KeySizes(128, 128, 0)];
 
         var result = CryptographyHelper.FormatLegalSizes(sizes);
 
@@ -55,7 +55,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenRangeWithSkip_ShouldReturnAllSteps()
     {
-        KeySizes[] sizes = new[] { new KeySizes(128, 256, 64) };
+        KeySizes[] sizes = [new KeySizes(128, 256, 64)];
 
         var result = CryptographyHelper.FormatLegalSizes(sizes);
 
@@ -69,11 +69,11 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenMultipleRanges_ShouldDeduplicateAndOrderAscending()
     {
-        KeySizes[] sizes = new[]
-        {
+        KeySizes[] sizes =
+        [
             new KeySizes(256, 256, 0),
             new KeySizes(128, 192, 64)
-        };
+        ];
 
         var result = CryptographyHelper.FormatLegalSizes(sizes);
 

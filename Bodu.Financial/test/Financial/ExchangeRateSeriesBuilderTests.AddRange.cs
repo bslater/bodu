@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.AddRange.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,11 +36,11 @@ public partial class ExchangeRateSeriesBuilderTests
     {
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
 
-        builder.AddRange(new (DateOnly Date, decimal Rate)[]
-        {
+        builder.AddRange(
+        [
             (new DateOnly(2024, 1, 1), 1.5m),
             (new DateOnly(2024, 1, 3), 1.6m),
-        });
+        ]);
 
         Assert.AreEqual(2, builder.Count);
         Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out var first));
@@ -58,11 +58,11 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2024, 1, 1), 1.5m);
 
-        builder.UpsertRange(new (DateOnly Date, decimal Rate)[]
-        {
+        builder.UpsertRange(
+        [
             (new DateOnly(2024, 1, 1), 1.55m),
             (new DateOnly(2024, 1, 2), 1.6m),
-        });
+        ]);
 
         Assert.AreEqual(2, builder.Count);
         Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out var replaced));

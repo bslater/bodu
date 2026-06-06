@@ -19,8 +19,11 @@ internal static class EasterCalculator
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
     /// <returns>The date of Western Easter Sunday in <paramref name="year" />.</returns>
-    public static DateOnly Western(int year)
+    public static DateOnly? Western(int year)
     {
+        if (year is < 1 or > 9999)
+            return null;
+
         var a = year % 19;
         var b = year / 100;
         var c = year % 100;
@@ -44,8 +47,11 @@ internal static class EasterCalculator
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
     /// <returns>The Gregorian date of Orthodox Easter Sunday in <paramref name="year" />.</returns>
-    public static DateOnly Orthodox(int year)
+    public static DateOnly? Orthodox(int year)
     {
+        if (year is < 1 or > 9999)
+            return null;
+
         var a = year % 4;
         var b = year % 7;
         var c = year % 19;

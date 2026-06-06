@@ -13,7 +13,7 @@ public partial class FixedDatedExchangeRateProviderTests
     private static readonly ExchangeRatePair s_usdAud = new("USD", "AUD");
 
     private static ExchangeRateSeries Series(string provider, decimal rate) =>
-        new(s_usdAud, provider, new (DateOnly Date, decimal Rate)[] { (new DateOnly(2024, 1, 1), rate) });
+        new(s_usdAud, provider, [(new DateOnly(2024, 1, 1), rate)]);
 
     /// <summary>
     /// Verifies that the book-based constructor rejects a <see langword="null" /> book.
@@ -35,7 +35,7 @@ public partial class FixedDatedExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenBookHasOneProviderPerPair_ShouldResolveRate()
     {
-        ExchangeRateBook book = new(new[] { Series("RBA", 1.5m) });
+        ExchangeRateBook book = new([Series("RBA", 1.5m)]);
         FixedDatedExchangeRateProvider provider = new(book);
 
         var found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
@@ -52,7 +52,7 @@ public partial class FixedDatedExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenBookContainsMultipleProvidersForPair_WithoutPriority_ShouldThrowArgumentException()
     {
-        ExchangeRateBook book = new(new[] { Series("RBA", 1.5m), Series("ECB", 1.6m) });
+        ExchangeRateBook book = new([Series("RBA", 1.5m), Series("ECB", 1.6m)]);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
@@ -69,8 +69,8 @@ public partial class FixedDatedExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenBookContainsMultipleProvidersForPair_WithPriority_ShouldUseFirstListedProvider()
     {
-        ExchangeRateBook book = new(new[] { Series("RBA", 1.5m), Series("ECB", 1.6m) });
-        FixedDatedExchangeRateProvider provider = new(book, new[] { "ECB", "RBA" });
+        ExchangeRateBook book = new([Series("RBA", 1.5m), Series("ECB", 1.6m)]);
+        FixedDatedExchangeRateProvider provider = new(book, ["ECB", "RBA"]);
 
         var found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
 
@@ -86,10 +86,10 @@ public partial class FixedDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenPreferredProviderHasNoRateAndFallbackProviderDoes_ShouldUseFallback()
     {
-        ExchangeRateSeries rba = new(s_usdAud, "RBA", new (DateOnly, decimal)[] { (new DateOnly(2024, 1, 1), 1.5m) });
-        ExchangeRateSeries ecb = new(s_usdAud, "ECB", new (DateOnly, decimal)[] { (new DateOnly(2024, 1, 2), 1.6m) });
-        ExchangeRateBook book = new(new[] { rba, ecb });
-        FixedDatedExchangeRateProvider provider = new(book, new[] { "RBA", "ECB" });
+        ExchangeRateSeries rba = new(s_usdAud, "RBA", [(new DateOnly(2024, 1, 1), 1.5m)]);
+        ExchangeRateSeries ecb = new(s_usdAud, "ECB", [(new DateOnly(2024, 1, 2), 1.6m)]);
+        ExchangeRateBook book = new([rba, ecb]);
+        FixedDatedExchangeRateProvider provider = new(book, ["RBA", "ECB"]);
 
         // RBA has nothing for 2024-01-02; ECB does. Exact requires the date to match exactly.
         var found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 2), null, out ExchangeRateLookupResult result);
@@ -105,7 +105,7 @@ public partial class FixedDatedExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenProviderPriorityIsNull_ShouldThrowArgumentNullException()
     {
-        ExchangeRateBook book = new(new[] { Series("RBA", 1.5m) });
+        ExchangeRateBook book = new([Series("RBA", 1.5m)]);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>

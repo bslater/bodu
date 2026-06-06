@@ -260,7 +260,7 @@ public sealed class DelimitedReader : IDisposable
                 continue;
             }
 
-            if (next == '\r' || next == '\n')
+            if (next is '\r' or '\n')
             {
                 ConsumeLineEnding();
                 break;
@@ -420,7 +420,7 @@ public sealed class DelimitedReader : IDisposable
 
             var c = _buffer[_pos];
 
-            if (c == '\n' || c == '\r')
+            if (c is '\n' or '\r')
                 return;
 
             _pos++;

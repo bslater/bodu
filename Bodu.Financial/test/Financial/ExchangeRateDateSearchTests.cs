@@ -9,7 +9,7 @@ namespace Bodu.Financial;
 [TestClass]
 public class ExchangeRateDateSearchTests
 {
-    private static readonly int[] s_dayNumbers = { 1000, 1010, 1020 };
+    private static readonly int[] s_dayNumbers = [1000, 1010, 1020];
 
     /// <summary>
     /// Verifies that <see cref="ExchangeRateDateResolution.PreviousOnOrBefore" /> selects the previous index when

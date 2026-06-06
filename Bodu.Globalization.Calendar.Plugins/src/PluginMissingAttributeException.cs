@@ -9,7 +9,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <summary>
 /// The exception thrown when a candidate assembly does not declare a <see cref="NotableDatePluginAttribute" />.
 /// </summary>
-public sealed class PluginMissingAttributeException : NotableDatePluginException
+public sealed class PluginMissingAttributeException
+    : NotableDatePluginException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class.

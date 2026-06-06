@@ -9,9 +9,9 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Provides the shared validation, sorting, and deduplication pipeline used by
-/// <see cref="ExchangeRateSeriesStorage" /> and <see cref="ExchangeRateSeriesBuffer" /> to turn raw observation
-/// input into a sorted strictly-ascending sequence of <c>(dayNumber, rate)</c> pairs.
+/// Provides the shared validation, sorting, and deduplication pipeline used by <see cref="ExchangeRateSeriesStorage" />
+/// and <see cref="ExchangeRateSeriesBuffer" /> to turn raw observation input into a sorted strictly-ascending sequence
+/// of <c>(dayNumber, rate)</c> pairs.
 /// </summary>
 internal static class ExchangeRateObservationNormalizer
 {

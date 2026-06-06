@@ -32,7 +32,8 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 /// <seealso cref="MutableNotableDateResourceProvider" /> <seealso cref="NotableDateService" />
 /// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
-public sealed class ReloadableNotableDateService : INotableDateService
+public sealed class ReloadableNotableDateService
+    : INotableDateService
 {
     /// <summary>
     /// The provider supplying the resource currently in effect.

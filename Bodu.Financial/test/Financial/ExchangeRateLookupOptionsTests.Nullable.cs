@@ -33,10 +33,9 @@ public partial class ExchangeRateLookupOptionsTests
         ExchangeRateSeries series = new(
             pair,
             "RBA",
-            new (DateOnly Date, decimal Rate)[]
-            {
+            [
                 (new DateOnly(2024, 1, 1), 1.5m),
-            });
+            ]);
 
         var found = series.TryGetRate(new DateOnly(2024, 1, 1), options: null, out var resolvedDate, out var rate);
 
@@ -56,10 +55,9 @@ public partial class ExchangeRateLookupOptionsTests
         ExchangeRateSeries series = new(
             pair,
             "RBA",
-            new (DateOnly Date, decimal Rate)[]
-            {
+            [
                 (new DateOnly(2024, 1, 1), 1.5m),
-            });
+            ]);
 
         var found = series.TryGetRate(new DateOnly(2024, 1, 2), options: null, out _, out _);
 

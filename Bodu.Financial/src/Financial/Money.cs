@@ -68,8 +68,8 @@ public readonly partial struct Money
     private readonly byte _explicitScalePlusOne;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding
-    /// the amount to the currency's minor-unit precision using banker's rounding.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
+    /// amount to the currency's minor-unit precision using banker's rounding.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>

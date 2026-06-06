@@ -97,7 +97,7 @@ public partial class CryptoHelpersTests
     public void ThrowIfInvalidBlockSize_WhenLengthMatches_ShouldNotThrow()
     {
         var value = new byte[8];
-        KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
+        KeySizes[] legal = [new KeySizes(64, 64, 0)];
 
         CryptographyThrowHelper.ThrowIfInvalidBlockSize(value, 64, legal);
     }
@@ -109,7 +109,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenValueIsNull_ShouldThrowExactly()
     {
-        KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
+        KeySizes[] legal = [new KeySizes(64, 64, 0)];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -140,7 +140,7 @@ public partial class CryptoHelpersTests
     public void ThrowIfInvalidBlockSize_WhenLengthDoesNotMatch_ShouldThrowExactly()
     {
         var value = new byte[6];
-        KeySizes[] legal = new[] { new KeySizes(64, 64, 0) };
+        KeySizes[] legal = [new KeySizes(64, 64, 0)];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -169,7 +169,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenSkipSizeIsZero_ShouldFormatMinSizeOnly()
     {
-        KeySizes[] keySizes = new[] { new KeySizes(128, 256, 0) };
+        KeySizes[] keySizes = [new KeySizes(128, 256, 0)];
 
         Assert.AreEqual("128", CryptographyHelper.FormatLegalSizes(keySizes));
     }
@@ -181,7 +181,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenSkipSizeIsPositive_ShouldFormatAllAllowedSizes()
     {
-        KeySizes[] keySizes = new[] { new KeySizes(128, 256, 64) };
+        KeySizes[] keySizes = [new KeySizes(128, 256, 64)];
 
         Assert.AreEqual("128, 192, 256", CryptographyHelper.FormatLegalSizes(keySizes));
     }
@@ -193,11 +193,11 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenMultipleOverlappingEntries_ShouldReturnDistinctOrderedValues()
     {
-        KeySizes[] keySizes = new[]
-        {
+        KeySizes[] keySizes =
+        [
             new KeySizes(256, 256, 0),
             new KeySizes(128, 192, 64),
-        };
+        ];
 
         Assert.AreEqual("128, 192, 256", CryptographyHelper.FormatLegalSizes(keySizes));
     }

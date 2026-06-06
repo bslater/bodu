@@ -26,8 +26,8 @@ public readonly partial struct Money
     /// Gets a value indicating whether this value is a default-initialised, currency-less <see cref="Money" />.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when this value was produced by <c>default(Money)</c> and therefore carries no
-    /// currency; otherwise <see langword="false" />.
+    /// <see langword="true" /> when this value was produced by <c>default(Money)</c> and therefore carries no currency;
+    /// otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// A default-initialised <see cref="Money" /> is the unavoidable zero value of the struct, not a valid financial

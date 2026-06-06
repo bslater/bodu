@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
+
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
@@ -12,7 +14,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
-public sealed class RelativeWeekdayInMonthStrategy : IDateCalculationStrategy
+public sealed class RelativeWeekdayInMonthStrategy
+    : IDateCalculationStrategy
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RelativeWeekdayInMonthStrategy" /> class.

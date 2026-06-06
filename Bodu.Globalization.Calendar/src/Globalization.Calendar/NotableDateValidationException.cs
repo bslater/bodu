@@ -34,7 +34,8 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 /// <seealso cref="NotableDateValidationDiagnostic" /> <seealso cref="NotableDateResourceLoader" />
 /// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
-public sealed class NotableDateValidationException : Exception
+public sealed class NotableDateValidationException
+    : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateValidationException" /> class.

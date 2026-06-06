@@ -24,7 +24,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// file, so no hash) is always rejected.
 /// </para>
 /// </remarks>
-public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
+public sealed class FileHashPluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <summary>
     /// The case-insensitive map from assembly name to pinned SHA-256 digest.

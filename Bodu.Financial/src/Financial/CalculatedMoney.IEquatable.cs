@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalculatedMoney.IEquatable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,7 +13,9 @@ public readonly partial struct CalculatedMoney
     /// Determines whether this value equals <paramref name="other" /> in both amount and currency.
     /// </summary>
     /// <param name="other">The value to compare against.</param>
-    /// <returns><see langword="true" /> when both the amount and ISO code match; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when both the amount and ISO code match; otherwise <see langword="false" />.
+    /// </returns>
     public bool Equals(CalculatedMoney other) =>
         _amount == other._amount && string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal);
 
@@ -31,8 +33,10 @@ public readonly partial struct CalculatedMoney
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when equal.</returns>
-    public static bool operator ==(CalculatedMoney left, CalculatedMoney right) =>
-        left.Equals(right);
+    public static bool operator ==(CalculatedMoney left, CalculatedMoney right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two values differ.
@@ -40,6 +44,8 @@ public readonly partial struct CalculatedMoney
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when they differ.</returns>
-    public static bool operator !=(CalculatedMoney left, CalculatedMoney right) =>
-        !left.Equals(right);
+    public static bool operator !=(CalculatedMoney left, CalculatedMoney right)
+    {
+        return !left.Equals(right);
+    }
 }

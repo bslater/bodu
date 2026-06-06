@@ -19,6 +19,11 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// (nija) month, so intercalary years resolve correctly.
 /// </para>
 /// <para>
+/// Although the supported keys are Hindu in origin, the same panchanga arithmetic resolves the lunisolar dates of
+/// observances in other Indian-origin traditions that fall on a shared tithi, such as the Buddhist Asalha Puja (Asadha
+/// purnima) and the Jain Maun Agiyaras (Margashirsha shukla ekadashi).
+/// </para>
+/// <para>
 /// Results are accurate to within a day or two for the modern era. The Lahiri ayanamsa and the mean tithi length are
 /// approximations, so a festival whose tithi begins very near sunrise can differ by a day from a published panchanga.
 /// Festivals fixed by a nakshatra rather than a tithi (for example Onam) are not modelled here.
@@ -56,6 +61,10 @@ internal static class HinduLunarCalculator
         ["vasant-panchami"] = (11, 4, false),  // Magha shukla 5.
         ["maha-shivaratri"] = (11, 28, false), // Amanta Magha krishna 14 (purnimanta Phalguna).
         ["holi"] = (12, 0, true),              // Phalguna purnima.
+
+        // Lunisolar coordinates shared with other Indian-origin traditions, resolved by the same panchanga arithmetic.
+        ["asalha-puja"] = (4, 0, true),        // Asadha purnima (Buddhist Asalha Puja / Dhamma Day).
+        ["maun-agiyaras"] = (9, 10, false),    // Margashirsha shukla 11 (Jain Maun Agiyaras / Maun Ekadashi).
     };
 
     /// <summary>

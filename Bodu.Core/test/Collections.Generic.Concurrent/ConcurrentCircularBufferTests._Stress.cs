@@ -952,14 +952,14 @@ public partial class ConcurrentCircularBufferTests
                         Interlocked.Increment(ref writeAttempts);
 
                         var countAfterWrite = buffer.Count;
-                        if (countAfterWrite < 0 || countAfterWrite > MinCapacity)
+                        if (countAfterWrite is < 0 or > MinCapacity)
                             Interlocked.Increment(ref countViolations);
 
                         buffer.TryDequeue(out TestItem? _);
                         Interlocked.Increment(ref readAttempts);
 
                         var countAfterRead = buffer.Count;
-                        if (countAfterRead < 0 || countAfterRead > MinCapacity)
+                        if (countAfterRead is < 0 or > MinCapacity)
                             Interlocked.Increment(ref countViolations);
                     }
                     catch (Exception ex)

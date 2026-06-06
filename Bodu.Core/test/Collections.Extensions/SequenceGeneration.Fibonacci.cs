@@ -90,7 +90,7 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenMinimumIsTwentyOne_ShouldExcludeLowerValues()
     {
-        var expected = Values.Where(n => n >= 21 && n < 35).ToArray();
+        var expected = Values.Where(n => n is >= 21 and < 35).ToArray();
         var actual = SequenceGenerator.Fibonacci(21, 35).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -102,7 +102,7 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeBoundsSingleValue_ShouldReturnThatValue()
     {
-        var expected = Values.Where(n => n >= 21 && n < 22).ToArray();
+        var expected = Values.Where(n => n is >= 21 and < 22).ToArray();
         var actual = SequenceGenerator.Fibonacci(21, 22).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -113,7 +113,7 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeIsFiveToFifteen_ShouldReturnSubset()
     {
-        var expected = Values.Where(n => n >= 5 && n < 15).ToArray();
+        var expected = Values.Where(n => n is >= 5 and < 15).ToArray();
         var actual = SequenceGenerator.Fibonacci(5, 15).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -134,7 +134,7 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeIsZeroToHundred_ShouldReturnExpectedValues()
     {
-        var expected = Values.Where(n => n >= 0 && n < 100).ToArray();
+        var expected = Values.Where(n => n is >= 0 and < 100).ToArray();
         var actual = SequenceGenerator.Fibonacci(0, 100).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
