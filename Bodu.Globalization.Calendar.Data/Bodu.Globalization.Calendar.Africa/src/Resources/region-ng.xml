@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Nigeria (NG) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "NG". The civil
+  and Western Christian days (New Year, Good Friday, Easter Monday, Workers' Day, Christmas, Boxing Day) and the
+  Islamic festivals (the two Eids and Mawlid, tabular Hijri so they may differ by a day or two from the gazette) are
+  imported from the africa-common hub; the two national days are declared inline.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ng">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="africa-common">
+      <Use notableDateRef="new-years-day" territory="NG" />
+      <Use notableDateRef="good-friday" territory="NG" />
+      <Use notableDateRef="easter-sunday" territory="NG" />
+      <Use notableDateRef="easter-monday" territory="NG" />
+      <Use notableDateRef="workers-day" territory="NG" />
+      <Use notableDateRef="eid-al-fitr" territory="NG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="NG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="NG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="NG" />
+      <Use notableDateRef="boxing-day" territory="NG" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Democracy Day — 12 June, marking the 1993 election; moved to this date in 2019 (previously 29 May). Strategy: Fixed day-of-month. -->
+    <NotableDate id="democracy-day-ng" displayName="Democracy Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ng"><Applicability fromYear="2019"><Territory code="NG" /></Applicability><Strategy><Fixed month="June" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day — 1 October, marking the 1960 independence from the United Kingdom. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-ng" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ng"><Applicability><Territory code="NG" /></Applicability><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

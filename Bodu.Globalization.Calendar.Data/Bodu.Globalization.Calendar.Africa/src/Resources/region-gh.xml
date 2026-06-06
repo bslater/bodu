@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Ghana (GH) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "GH". The civil
+  and Western Christian days and the two Islamic Eids (tabular Hijri, so they may differ by a day or two from the
+  gazette) are imported from the africa-common hub; the national days, including the first-Friday-of-December Farmers'
+  Day, are declared inline.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.gh">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="africa-common">
+      <Use notableDateRef="new-years-day" territory="GH" />
+      <Use notableDateRef="good-friday" territory="GH" />
+      <Use notableDateRef="easter-sunday" territory="GH" />
+      <Use notableDateRef="easter-monday" territory="GH" />
+      <Use notableDateRef="workers-day" territory="GH" />
+      <Use notableDateRef="eid-al-fitr" territory="GH" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="GH" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="GH" />
+      <Use notableDateRef="boxing-day" territory="GH" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Constitution Day — 7 January, marking the 1993 constitution; observed since 2019. Strategy: Fixed day-of-month. -->
+    <NotableDate id="constitution-day-gh" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="gh"><Applicability fromYear="2019"><Territory code="GH" /></Applicability><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day — 6 March, marking the 1957 independence. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-gh" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="gh"><Applicability><Territory code="GH" /></Applicability><Strategy><Fixed month="March" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Founders' Day — 4 August, honoring the founders of the nation. Strategy: Fixed day-of-month. -->
+    <NotableDate id="founders-day-gh" displayName="Founders' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="gh"><Applicability fromYear="2019"><Territory code="GH" /></Applicability><Strategy><Fixed month="August" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Kwame Nkrumah Memorial Day — 21 September, the birthday of Ghana's first president. Strategy: Fixed day-of-month. -->
+    <NotableDate id="kwame-nkrumah-day" displayName="Kwame Nkrumah Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="gh"><Applicability fromYear="2019"><Territory code="GH" /></Applicability><Strategy><Fixed month="September" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Farmers' Day — the first Friday of December. Strategy: DayOfWeekInMonth (first Friday). -->
+    <NotableDate id="farmers-day" displayName="Farmers' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="gh"><Applicability><Territory code="GH" /></Applicability><Strategy><DayOfWeekInMonth month="December" dayOfWeek="Friday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
