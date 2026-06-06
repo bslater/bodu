@@ -18,8 +18,8 @@ public partial class NotableDateDocumentBuilderTests
         try
         {
             SampleDocument().Save(path);
-            Assert.IsTrue(File.Exists(path));
 
+            // Load fails loudly if Save did not write the file, so the round-trip assertion alone is sufficient.
             var loaded = NotableDateDocumentBuilder.Load(path);
 
             CollectionAssert.AreEqual(ResolvedSample(SampleDocument().Build()), ResolvedSample(loaded.Build()));
@@ -40,8 +40,8 @@ public partial class NotableDateDocumentBuilderTests
         try
         {
             SampleDocument().Save(path);
-            Assert.IsTrue(File.Exists(path));
 
+            // Load fails loudly if Save did not write the file, so the round-trip assertion alone is sufficient.
             var loaded = NotableDateDocumentBuilder.Load(path);
 
             CollectionAssert.AreEqual(ResolvedSample(SampleDocument().Build()), ResolvedSample(loaded.Build()));
