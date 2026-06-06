@@ -105,25 +105,35 @@ public sealed class AfricaCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that a South African holiday falling on a Sunday is observed on the following Monday with the observed
-    /// flag, while a holiday on a Saturday is not moved.
+    /// Verifies that a South African holiday falling on a Sunday is observed on the following Monday and carries the
+    /// observed flag. Youth Day (16 June) fell on a Sunday in 2024 and is observed on Monday 17 June.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenSouthAfricanHolidayFallsOnSunday_IsObservedOnMonday()
     {
-        // Youth Day (16 June) fell on a Sunday in 2024 and is observed on Monday 17 June.
         NotableDate moved = AfricaCalendarData.CreateService("ZA")
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "ZA")
             .Single(r => r.NotableDateId == "youth-day");
-        Assert.AreEqual(new DateOnly(2024, 6, 17), moved.Date, "Sunday holiday is observed on the Monday");
-        Assert.IsTrue(moved.IsObserved, "the moved holiday carries the observed flag");
 
-        // Freedom Day (27 April) fell on a Saturday in 2024 and is not moved.
+        Assert.AreEqual(
+            (new DateOnly(2024, 6, 17), true),
+            (moved.Date, moved.IsObserved));
+    }
+
+    /// <summary>
+    /// Verifies that a South African holiday falling on a Saturday is not moved and remains unobserved. Freedom Day
+    /// (27 April) fell on a Saturday in 2024 and stays on its calendar date.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenSouthAfricanHolidayFallsOnSaturday_IsNotMoved()
+    {
         NotableDate notMoved = AfricaCalendarData.CreateService("ZA")
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "ZA")
             .Single(r => r.NotableDateId == "freedom-day");
-        Assert.AreEqual(new DateOnly(2024, 4, 27), notMoved.Date, "Saturday holiday is not moved");
-        Assert.IsFalse(notMoved.IsObserved, "a Saturday holiday is not an in-lieu observation");
+
+        Assert.AreEqual(
+            (new DateOnly(2024, 4, 27), false),
+            (notMoved.Date, notMoved.IsObserved));
     }
 
     /// <summary>
