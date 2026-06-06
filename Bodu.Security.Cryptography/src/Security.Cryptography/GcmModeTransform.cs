@@ -511,19 +511,26 @@ public sealed class GcmModeTransform
         {
             h.CopyTo(v);
 
+            // Constant-time bit-serial multiply: every iteration touches z and v unconditionally.
+            // The two secret-dependent decisions — whether bit i of x is set, and whether the bit
+            // shifted out of v is set — are folded in through 0x00/0xFF masks instead of branches,
+            // so neither control flow nor memory-access pattern depends on x, h, or the GHASH state.
             for (var i = 0; i < 128; i++)
             {
-                if ((x[i >> 3] & (0x80 >> (i & 7))) != 0)
-                    for (var j = 0; j < BlockSize / 8; j++) z[j] ^= v[j];
+                // bit i of x in big-endian bit order; bitMask is 0xFF when set, 0x00 otherwise.
+                var bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
+                for (var j = 0; j < BlockSize / 8; j++)
+                    z[j] ^= (byte)(v[j] & bitMask);
 
-                var lsb = (v[15] & 0x01) != 0;
+                // lsbMask is 0xFF when the bit about to be shifted out of v is set, 0x00 otherwise.
+                var lsbMask = (byte)(-(v[15] & 0x01));
 
                 for (var j = 15; j > 0; j--)
                     v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
                 v[0] >>= 1;
 
-                // Reduce by R = 0xE1 || 0…0 (representing x⁷ + x² + x + 1) when the shifted-out bit is set.
-                if (lsb) v[0] ^= 0xE1;
+                // Reduce by R = 0xE1 || 0…0 (representing x⁷ + x² + x + 1) when that bit was set.
+                v[0] ^= (byte)(0xE1 & lsbMask);
             }
 
             z.CopyTo(result);
