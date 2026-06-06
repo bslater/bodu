@@ -371,11 +371,6 @@ public sealed class Blowfish
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 
 }

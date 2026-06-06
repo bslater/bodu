@@ -172,12 +172,7 @@ public abstract partial class SerpentBlockCipherBase
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 
     /// <summary>
     /// Applies the Serpent S-box identified by <paramref name="sBoxIndex" /> to the four 32-bit words in bitsliced

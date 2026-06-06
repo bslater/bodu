@@ -282,11 +282,6 @@ public abstract partial class ThreefishBlockCipher
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 
 }

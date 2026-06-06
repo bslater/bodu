@@ -320,12 +320,7 @@ public abstract class AsconXof<T>
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 
     /// <summary>
     /// Finalizes a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte

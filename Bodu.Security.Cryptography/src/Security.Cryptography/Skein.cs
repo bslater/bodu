@@ -108,9 +108,6 @@ public abstract partial class Skein<T>
     private bool _hasProcessedAnyMessageBlock;
     private bool _isChainingValueCached;
 
-#if !NET6_0_OR_GREATER
-    private bool _finalized;
-#endif
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skein{T}" /> class using a pre-constructed cipher supplied by a
@@ -230,10 +227,6 @@ public abstract partial class Skein<T>
         if (KeyValue is null)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
-#if !NET6_0_OR_GREATER
-        State = 0;
-        _finalized = false;
-#endif
         _pendingBytes = 0;
         _messageBytesProcessed = 0UL;
         _hasProcessedAnyMessageBlock = false;
@@ -249,13 +242,6 @@ public abstract partial class Skein<T>
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
 
-#if !NET6_0_OR_GREATER
-        ThrowHelper.ThrowIfLessThan(ibStart, 0);
-        ThrowHelper.ThrowIfLessThan(cbSize, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-#endif
 
         HashCore(array.AsSpan(ibStart, cbSize));
     }
@@ -265,10 +251,6 @@ public abstract partial class Skein<T>
     {
         ThrowIfDisposed();
 
-#if !NET6_0_OR_GREATER
-        if (_finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-#endif
 
         EnsureChainingStateReadyForHashing();
         AbsorbMessage(source);
@@ -286,12 +268,6 @@ public abstract partial class Skein<T>
     {
         ThrowIfDisposed();
 
-#if !NET6_0_OR_GREATER
-        if (_finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-        _finalized = true;
-        State = 2;
-#endif
 
         EnsureChainingStateReadyForHashing();
 

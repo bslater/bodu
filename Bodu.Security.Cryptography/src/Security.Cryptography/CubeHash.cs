@@ -141,9 +141,6 @@ public sealed class CubeHash
     private int _rounds;
     private uint[] _state;
 
-#if !NET6_0_OR_GREATER
-    private bool _finalized; // flag to block reuse in older .NET
-#endif
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CubeHash" /> class with default parameters: 512-bit output, 32-byte
@@ -457,10 +454,6 @@ public sealed class CubeHash
     public override void Initialize()
     {
         ThrowIfDisposed();
-#if !NET6_0_OR_GREATER
-        State = 0;
-        _finalized = false;
-#endif
         _pendingBytes = 0;
 
         EnsureInitialized();
@@ -537,13 +530,6 @@ public sealed class CubeHash
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
-#if !NET6_0_OR_GREATER
-        ThrowHelper.ThrowIfLessThan(ibStart, 0);
-        ThrowHelper.ThrowIfLessThan(cbSize, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-#endif
         EnsureInitialized();
         HashCore(array.AsSpan(ibStart, cbSize));
     }
@@ -611,12 +597,6 @@ public sealed class CubeHash
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();
-#if !NET6_0_OR_GREATER
-        if (_finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-        _finalized = true;
-        State = 2;
-#endif
         EnsureInitialized();
 
         // Append the 0x80 padding byte at the current pending-byte position within the state
@@ -824,12 +804,7 @@ public sealed class CubeHash
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 
     /// <summary>
     /// Throws an exception if algorithm configuration is attempted after state mutation.

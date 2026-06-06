@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0_OR_GREATER
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -78,5 +77,3 @@ internal static partial class HashingThrowHelper
                 HashingResourceStrings.Op_Invalid_AlgorithmAlreadyStarted);
     }
 }
-
-#endif

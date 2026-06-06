@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0_OR_GREATER
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -535,5 +534,3 @@ internal static partial class CryptographyThrowHelper
         return false;
     }
 }
-
-#endif

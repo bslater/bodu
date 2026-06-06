@@ -139,10 +139,6 @@ public abstract class BlockHashAlgorithm<T>
     {
         ThrowIfDisposed();
 
-#if !NET6_0_OR_GREATER
-    if (_finalized)
-        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-#endif
 
         ProcessBlocks(source);
     }
@@ -159,10 +155,6 @@ public abstract class BlockHashAlgorithm<T>
     {
         ThrowIfDisposed();
 
-#if !NET6_0_OR_GREATER
-    if (_finalized)
-        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-#endif
 
         if (ShouldPadFinalBlock())
         {

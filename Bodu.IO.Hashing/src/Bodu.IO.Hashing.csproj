@@ -13,24 +13,6 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
-  <!--
-    HashingThrowHelper is split into a CallerArgumentExpression variant and a NetStandard variant:
-      - HashingThrowHelper.*NetStandard.cs       : compiled for netstandard2.0 / netstandard2.1,
-                                                   where CallerArgumentExpressionAttribute is unavailable.
-      - HashingThrowHelper.*CallerExpression.cs  : compiled for all other targets (net5.0+),
-                                                   where CallerArgumentExpressionAttribute is supported.
-  -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <Compile Remove="HashingThrowHelper.*CallerExpression.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-    <Compile Remove="HashingThrowHelper.*NetStandard.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.IO.Hashing.Test</_Parameter1>
