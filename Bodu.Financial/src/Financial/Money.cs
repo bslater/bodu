@@ -116,7 +116,7 @@ public readonly partial struct Money
                 nameof(isoCode));
         }
 
-        _amount = decimal.Round(amount, info.MinorUnits, rounding);
+        _amount = MoneyMath.Round(amount, info.MinorUnits, rounding);
         _isoCode = isoCode;
         _explicitScalePlusOne = 0;
     }
@@ -197,7 +197,7 @@ public readonly partial struct Money
     /// <param name="amount">The raw amount to round.</param>
     /// <returns>The updated <see cref="Money" />.</returns>
     private Money WithRoundedAmount(decimal amount) =>
-        new(decimal.Round(amount, MinorUnits, MidpointRounding.ToEven), _isoCode, _explicitScalePlusOne);
+        new(MoneyMath.Round(amount, MinorUnits, MidpointRounding.ToEven), _isoCode, _explicitScalePlusOne);
 
     /// <summary>
     /// Returns a copy of this value with <paramref name="amount" /> rounded to this value's minor-unit precision using
@@ -207,7 +207,7 @@ public readonly partial struct Money
     /// <param name="rounding">The midpoint-rounding rule applied to <paramref name="amount" />.</param>
     /// <returns>The updated <see cref="Money" />.</returns>
     private Money WithRoundedAmount(decimal amount, MidpointRounding rounding) =>
-        new(decimal.Round(amount, MinorUnits, rounding), _isoCode, _explicitScalePlusOne);
+        new(MoneyMath.Round(amount, MinorUnits, rounding), _isoCode, _explicitScalePlusOne);
 
     /// <summary>
     /// Throws when this value is a default-initialised, currency-less <see cref="Money" /> that must not participate in

@@ -94,7 +94,7 @@ public readonly partial struct Money<TCurrency>
     /// </exception>
     public Money(decimal amount)
     {
-        _amount = decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven);
+        _amount = MoneyMath.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public readonly partial struct Money<TCurrency>
     /// </exception>
     public Money(decimal amount, MidpointRounding rounding)
     {
-        _amount = decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, rounding);
+        _amount = MoneyMath.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, rounding);
     }
 
     /// <summary>
@@ -152,7 +152,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="amount">The amount to test.</param>
     /// <returns><see langword="true" /> when the amount is at minor-unit precision.</returns>
     private static bool IsAtMinorUnitPrecision(decimal amount) =>
-        decimal.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven) == amount;
+        MoneyMath.Round(amount, CurrencyMetadata<TCurrency>.Value.MinorUnits, MidpointRounding.ToEven) == amount;
 
     /// <summary>
     /// A typed discriminator that selects the no-normalization initialization path on the private
