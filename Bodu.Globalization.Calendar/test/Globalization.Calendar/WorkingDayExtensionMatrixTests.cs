@@ -88,17 +88,21 @@ public sealed class WorkingDayExtensionMatrixTests
     }
 
     /// <summary>
-    /// Verifies that a weekend day, a holiday, and an ordinary weekday are classified correctly. In 2026, 1 January is a
-    /// Thursday (a non-working holiday), 3 January is a Saturday, and 2 January is an ordinary working day.
+    /// Verifies that a non-working holiday, a weekend day, and an ordinary weekday are each classified correctly under the
+    /// default Monday-to-Friday working week. In 2026, 1 January is a Thursday holiday, 3 January is a Saturday, and
+    /// 2 January is an ordinary working day.
     /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expected">The expected working-day classification.</param>
     [TestMethod]
-    public void IsWorkingDay_WhenWeekendHolidayOrWeekday_ShouldClassifyEach()
+    [DataRow(2026, 1, 1, false)]  // Thursday holiday
+    [DataRow(2026, 1, 3, false)]  // Saturday
+    [DataRow(2026, 1, 2, true)]   // ordinary weekday
+    public void IsWorkingDay_WhenDayIsHolidayWeekendOrWeekday_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
-        INotableDateService service = Service;
-
-        Assert.IsFalse(new DateOnly(2026, 1, 1).IsWorkingDay(service, "XX"), "1 January holiday");
-        Assert.IsFalse(new DateOnly(2026, 1, 3).IsWorkingDay(service, "XX"), "Saturday");
-        Assert.IsTrue(new DateOnly(2026, 1, 2).IsWorkingDay(service, "XX"), "ordinary weekday");
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWorkingDay(Service, "XX"));
     }
 
     /// <summary>
@@ -134,18 +138,36 @@ public sealed class WorkingDayExtensionMatrixTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, WeekPattern?)" /> reports weekend days
-    /// under the default working week and respects a custom working week.
+    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, WeekPattern?)" /> reports Saturday and Sunday
+    /// as weekend days, and a weekday as non-weekend, under the default Monday-to-Friday working week.
     /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expected">The expected weekend classification.</param>
     [TestMethod]
-    public void IsWeekend_WhenDefaultAndCustomWeek_ShouldClassifyByWorkingWeek()
+    [DataRow(2026, 1, 10, true)]   // Saturday is a weekend by default
+    [DataRow(2026, 1, 11, true)]   // Sunday is a weekend by default
+    [DataRow(2026, 1, 5, false)]   // Monday is not a weekend by default
+    public void IsWeekend_WhenDefaultWorkingWeek_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
-        Assert.IsTrue(new DateOnly(2026, 1, 10).IsWeekend(), "Saturday is a weekend by default");
-        Assert.IsFalse(new DateOnly(2026, 1, 5).IsWeekend(), "Monday is not a weekend by default");
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWeekend());
+    }
 
-        // Under a Monday-to-Saturday working week, Saturday is a working day and Sunday is the only weekend day.
-        Assert.IsFalse(new DateOnly(2026, 1, 10).IsWeekend(WeekPattern.MondayToSaturday), "Saturday is working in a six-day week");
-        Assert.IsTrue(new DateOnly(2026, 1, 11).IsWeekend(WeekPattern.MondayToSaturday), "Sunday remains a weekend");
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, WeekPattern?)" /> treats Saturday as a working
+    /// day and Sunday as the sole weekend under a Monday-to-Saturday working week.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expected">The expected weekend classification.</param>
+    [TestMethod]
+    [DataRow(2026, 1, 10, false)]  // Saturday is working in a six-day week
+    [DataRow(2026, 1, 11, true)]   // Sunday remains a weekend
+    public void IsWeekend_WhenMondayToSaturdayWeek_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
+    {
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWeekend(WeekPattern.MondayToSaturday));
     }
 
     /// <summary>
@@ -209,43 +231,76 @@ public sealed class WorkingDayExtensionMatrixTests
     }
 
     /// <summary>
-    /// Verifies that a working-day input is returned unchanged by every snap helper.
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToWorkingDay" /> returns a working-day input unchanged.
     /// </summary>
     [TestMethod]
-    public void Snap_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
+    public void SnapToWorkingDay_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
     {
         DateOnly input = new(2026, 1, 6);
-        INotableDateService service = Service;
 
-        Assert.AreEqual(input, input.SnapToWorkingDay(service, "XX"));
-        Assert.AreEqual(input, input.SnapToWorkingDayBackward(service, "XX"));
-        Assert.AreEqual(input, input.SnapToNearestWorkingDay(service, "XX"));
+        Assert.AreEqual(input, input.SnapToWorkingDay(Service, "XX"));
     }
 
     /// <summary>
-    /// Verifies that a Saturday snaps forward to the following Monday and backward to the prior Friday.
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToWorkingDayBackward" /> returns a working-day input unchanged.
     /// </summary>
     [TestMethod]
-    public void SnapToWorkingDay_WhenSaturday_ShouldSnapForwardAndBackward()
+    public void SnapToWorkingDayBackward_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
     {
-        DateOnly saturday = new(2026, 1, 3);
-        INotableDateService service = Service;
+        DateOnly input = new(2026, 1, 6);
 
-        Assert.AreEqual(new DateOnly(2026, 1, 5), saturday.SnapToWorkingDay(service, "XX"));
-        Assert.AreEqual(new DateOnly(2026, 1, 2), saturday.SnapToWorkingDayBackward(service, "XX"));
+        Assert.AreEqual(input, input.SnapToWorkingDayBackward(Service, "XX"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToNearestWorkingDay" /> returns a working-day input unchanged.
+    /// </summary>
+    [TestMethod]
+    public void SnapToNearestWorkingDay_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
+    {
+        DateOnly input = new(2026, 1, 6);
+
+        Assert.AreEqual(input, input.SnapToNearestWorkingDay(Service, "XX"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToWorkingDay" /> snaps a Saturday forward to the following
+    /// Monday.
+    /// </summary>
+    [TestMethod]
+    public void SnapToWorkingDay_WhenSaturday_ShouldReturnFollowingMonday()
+    {
+        Assert.AreEqual(new DateOnly(2026, 1, 5), new DateOnly(2026, 1, 3).SnapToWorkingDay(Service, "XX"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToWorkingDayBackward" /> snaps a Saturday backward to the
+    /// prior Friday.
+    /// </summary>
+    [TestMethod]
+    public void SnapToWorkingDayBackward_WhenSaturday_ShouldReturnPriorFriday()
+    {
+        Assert.AreEqual(new DateOnly(2026, 1, 2), new DateOnly(2026, 1, 3).SnapToWorkingDayBackward(Service, "XX"));
     }
 
     /// <summary>
     /// Verifies that the nearest snap chooses the closer side: a Saturday is one day from Friday and snaps backward,
     /// while a Sunday is one day from Monday and snaps forward.
     /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expectedYear">The expected result year.</param>
+    /// <param name="expectedMonth">The expected result month.</param>
+    /// <param name="expectedDay">The expected result day.</param>
     [TestMethod]
-    public void SnapToNearestWorkingDay_WhenWeekend_ShouldChooseCloserSide()
+    [DataRow(2026, 1, 3, 2026, 1, 2)]  // Saturday -> prior Friday
+    [DataRow(2026, 1, 4, 2026, 1, 5)]  // Sunday -> next Monday
+    public void SnapToNearestWorkingDay_WhenWeekend_ShouldChooseCloserSide(int year, int month, int day, int expectedYear, int expectedMonth, int expectedDay)
     {
-        INotableDateService service = Service;
-
-        Assert.AreEqual(new DateOnly(2026, 1, 2), new DateOnly(2026, 1, 3).SnapToNearestWorkingDay(service, "XX"), "Saturday -> prior Friday");
-        Assert.AreEqual(new DateOnly(2026, 1, 5), new DateOnly(2026, 1, 4).SnapToNearestWorkingDay(service, "XX"), "Sunday -> next Monday");
+        Assert.AreEqual(
+            new DateOnly(expectedYear, expectedMonth, expectedDay),
+            new DateOnly(year, month, day).SnapToNearestWorkingDay(Service, "XX"));
     }
 
     /// <summary>
@@ -304,16 +359,23 @@ public sealed class WorkingDayExtensionMatrixTests
     }
 
     /// <summary>
-    /// Verifies that adding working days skips the fixture holiday and the weekend. From Wednesday 31 December 2025,
-    /// three working days are 2 January (Friday), 5 January (Monday) and 6 January (Tuesday).
+    /// Verifies that adding working days forward skips the fixture holiday and the weekend. From Wednesday 31 December 2025,
+    /// three working days forward are 2 January (Friday), 5 January (Monday) and 6 January (Tuesday).
     /// </summary>
     [TestMethod]
-    public void AddWorkingDays_WhenCrossingHolidayAndWeekend_ShouldSkipNonWorkingDays()
+    public void AddWorkingDays_WhenCrossingHolidayAndWeekendForward_ShouldSkipNonWorkingDays()
     {
-        INotableDateService service = Service;
+        Assert.AreEqual(new DateOnly(2026, 1, 6), new DateOnly(2025, 12, 31).AddWorkingDays(3, Service, "XX"));
+    }
 
-        Assert.AreEqual(new DateOnly(2026, 1, 6), new DateOnly(2025, 12, 31).AddWorkingDays(3, service, "XX"));
-        Assert.AreEqual(new DateOnly(2025, 12, 31), new DateOnly(2026, 1, 6).AddWorkingDays(-3, service, "XX"));
+    /// <summary>
+    /// Verifies that subtracting working days skips the fixture holiday and the weekend. From Tuesday 6 January 2026, three
+    /// working days back are 5 January (Monday), 2 January (Friday) and 31 December 2025 (Wednesday).
+    /// </summary>
+    [TestMethod]
+    public void AddWorkingDays_WhenCrossingHolidayAndWeekendBackward_ShouldSkipNonWorkingDays()
+    {
+        Assert.AreEqual(new DateOnly(2025, 12, 31), new DateOnly(2026, 1, 6).AddWorkingDays(-3, Service, "XX"));
     }
 
     /// <summary>
@@ -366,17 +428,20 @@ public sealed class WorkingDayExtensionMatrixTests
     }
 
     /// <summary>
-    /// Verifies that a custom Sunday-to-Thursday working week treats Friday as a non-working day and Sunday as a working
-    /// day. 15 May 2026 is a Friday and 17 May 2026 is a Sunday.
+    /// Verifies that a custom Sunday-to-Thursday working week treats Friday as a non-working day while Sunday and Thursday
+    /// remain working. In 2026, 15 May is a Friday, 17 May is a Sunday and 14 May is a Thursday.
     /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expected">The expected working-day classification.</param>
     [TestMethod]
-    public void IsWorkingDay_WhenSundayToThursdayWeek_ShouldTreatFridayAsNonWorking()
+    [DataRow(2026, 5, 15, false)]  // Friday is non-working
+    [DataRow(2026, 5, 17, true)]   // Sunday is working
+    [DataRow(2026, 5, 14, true)]   // Thursday is working
+    public void IsWorkingDay_WhenSundayToThursdayWeek_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
-        INotableDateService service = Service;
-
-        Assert.IsFalse(new DateOnly(2026, 5, 15).IsWorkingDay(service, "XX", WeekPattern.SundayToThursday), "Friday is non-working");
-        Assert.IsTrue(new DateOnly(2026, 5, 17).IsWorkingDay(service, "XX", WeekPattern.SundayToThursday), "Sunday is working");
-        Assert.IsTrue(new DateOnly(2026, 5, 14).IsWorkingDay(service, "XX", WeekPattern.SundayToThursday), "Thursday is working");
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWorkingDay(Service, "XX", WeekPattern.SundayToThursday));
     }
 
     /// <summary>
