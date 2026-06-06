@@ -27,62 +27,77 @@ public sealed class RecurrenceCadenceTests
         new(CalendarSystem.Gregorian, fromYear, null, Array.Empty<string>(), Array.Empty<int>(), Array.Empty<int>(), everyYears, anchorYear);
 
     /// <summary>
-    /// Verifies that a cadence anchored on <c>fromYear</c> applies only on the on-cadence years.
+    /// Verifies that a cadence anchored on <c>fromYear</c> (2024, every four years) applies only on the on-cadence
+    /// years and never below the lower bound.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expected">Whether the cadence applies in that year.</param>
     [TestMethod]
-    public void AppliesTo_EveryFourYearsFromYear_ShouldApplyOnCadenceOnly()
+    [DataRow(2024, true)]
+    [DataRow(2025, false)]
+    [DataRow(2026, false)]
+    [DataRow(2027, false)]
+    [DataRow(2028, true)]
+    [DataRow(2023, false)]  // below fromYear
+    public void AppliesTo_EveryFourYearsFromYear_ShouldApplyOnCadenceOnly(int year, bool expected)
     {
         RuleApplicability a = App(2024, 4, null);
 
-        Assert.IsTrue(a.AppliesTo(Territory, 2024));
-        Assert.IsFalse(a.AppliesTo(Territory, 2025));
-        Assert.IsFalse(a.AppliesTo(Territory, 2026));
-        Assert.IsFalse(a.AppliesTo(Territory, 2027));
-        Assert.IsTrue(a.AppliesTo(Territory, 2028));
-        Assert.IsFalse(a.AppliesTo(Territory, 2023), "below fromYear");
+        Assert.AreEqual(expected, a.AppliesTo(Territory, year));
     }
 
     /// <summary>
-    /// Verifies that a cadence without a lower bound anchors on year zero.
+    /// Verifies that a cadence without a lower bound anchors on year zero, so an every-four-years cadence applies on
+    /// years divisible by four.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expected">Whether the cadence applies in that year.</param>
     [TestMethod]
-    public void AppliesTo_EveryFourYearsWithoutFromYear_ShouldAnchorOnZero()
+    [DataRow(2020, true)]
+    [DataRow(2021, false)]
+    [DataRow(2022, false)]
+    [DataRow(2023, false)]
+    [DataRow(2024, true)]
+    public void AppliesTo_EveryFourYearsWithoutFromYear_ShouldAnchorOnZero(int year, bool expected)
     {
         RuleApplicability a = App(null, 4, null);
 
-        Assert.IsTrue(a.AppliesTo(Territory, 2020));
-        Assert.IsFalse(a.AppliesTo(Territory, 2021));
-        Assert.IsFalse(a.AppliesTo(Territory, 2022));
-        Assert.IsFalse(a.AppliesTo(Territory, 2023));
-        Assert.IsTrue(a.AppliesTo(Territory, 2024));
+        Assert.AreEqual(expected, a.AppliesTo(Territory, year));
     }
 
     /// <summary>
-    /// Verifies that an explicit anchor year sets the cadence phase, including years before the anchor.
+    /// Verifies that an explicit anchor year (2024) sets the cadence phase, including on-cadence years before the
+    /// anchor.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expected">Whether the cadence applies in that year.</param>
     [TestMethod]
-    public void AppliesTo_EveryFourYearsWithExplicitAnchor_ShouldAnchorThere()
+    [DataRow(2024, true)]
+    [DataRow(2028, true)]
+    [DataRow(2020, true)]   // on cadence before the anchor
+    [DataRow(2025, false)]
+    public void AppliesTo_EveryFourYearsWithExplicitAnchor_ShouldAnchorThere(int year, bool expected)
     {
         RuleApplicability a = App(null, 4, 2024);
 
-        Assert.IsTrue(a.AppliesTo(Territory, 2024));
-        Assert.IsTrue(a.AppliesTo(Territory, 2028));
-        Assert.IsTrue(a.AppliesTo(Territory, 2020));
-        Assert.IsFalse(a.AppliesTo(Territory, 2025));
+        Assert.AreEqual(expected, a.AppliesTo(Territory, year));
     }
 
     /// <summary>
-    /// Verifies that a cadence of one (or zero) imposes no restriction, applying every year.
+    /// Verifies that a cadence of one (or zero) imposes no restriction, applying in every year.
     /// </summary>
-    [DataRow(1)]
-    [DataRow(0)]
+    /// <param name="everyYears">The recurrence interval under test.</param>
+    /// <param name="year">The civil year under test.</param>
     [TestMethod]
-    public void AppliesTo_EveryYearsOfOneOrZero_ShouldApplyAnnually(int everyYears)
+    [DataRow(1, 2024)]
+    [DataRow(1, 2025)]
+    [DataRow(0, 2024)]
+    [DataRow(0, 2025)]
+    public void AppliesTo_EveryYearsOfOneOrZero_ShouldApplyAnnually(int everyYears, int year)
     {
         RuleApplicability a = App(null, everyYears, null);
 
-        Assert.IsTrue(a.AppliesTo(Territory, 2024));
-        Assert.IsTrue(a.AppliesTo(Territory, 2025));
+        Assert.IsTrue(a.AppliesTo(Territory, year));
     }
 
     /// <summary>
@@ -100,15 +115,19 @@ public sealed class RecurrenceCadenceTests
     """;
 
     /// <summary>
-    /// Verifies that a quadrennial rule resolves end to end through the service only on its on-cadence years.
+    /// Verifies that a quadrennial rule resolves end to end through the service, emitting one occurrence on its
+    /// on-cadence years and nothing off cadence.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expectedCount">The expected number of emitted occurrences on 1 July of that year.</param>
     [TestMethod]
-    public void Resolve_QuadrennialRule_ShouldEmitOnlyOnCadenceYears()
+    [DataRow(2024, 1)]  // on cadence
+    [DataRow(2025, 0)]  // off cadence
+    [DataRow(2028, 1)]  // on cadence
+    public void Resolve_QuadrennialRule_ShouldEmitOnlyOnCadenceYears(int year, int expectedCount)
     {
         INotableDateService service = new NotableDateService(NotableDateResourceLoader.Load(Xml));
 
-        Assert.HasCount(1, service.Resolve(new DateOnly(2024, 7, 1), Territory), "2024 on cadence");
-        Assert.IsEmpty(service.Resolve(new DateOnly(2025, 7, 1), Territory), "2025 off cadence");
-        Assert.HasCount(1, service.Resolve(new DateOnly(2028, 7, 1), Territory), "2028 on cadence");
+        Assert.HasCount(expectedCount, service.Resolve(new DateOnly(year, 7, 1), Territory));
     }
 }
