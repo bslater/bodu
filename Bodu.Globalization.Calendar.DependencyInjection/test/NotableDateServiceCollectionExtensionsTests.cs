@@ -42,8 +42,9 @@ public sealed class NotableDateServiceCollectionExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
         IReadOnlyList<NotableDate> holidays = service.Resolve(new DateOnly(2026, 1, 1), "XX");
 
-        Assert.HasCount(1, holidays);
-        Assert.AreEqual("new-years-day", holidays[0].NotableDateId);
+        CollectionAssert.AreEqual(
+            new[] { ("new-years-day", new DateOnly(2026, 1, 1)) },
+            holidays.Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     /// <summary>
@@ -90,8 +91,24 @@ public sealed class NotableDateServiceCollectionExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the reloadable registration resolves a service whose results follow a runtime reload performed
-    /// through the registered provider.
+    /// Verifies that the reloadable registration resolves the initially-loaded resource before any reload, emitting the
+    /// 1 January occurrence from the January document.
+    /// </summary>
+    [TestMethod]
+    public void AddReloadableNotableDateService_BeforeReload_ResolvesInitialResource()
+    {
+        ServiceProvider provider = new ServiceCollection()
+            .AddReloadableNotableDateService(NotableDateResourceLoader.Load(Xml))
+            .BuildServiceProvider();
+
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        Assert.AreEqual(new DateOnly(2026, 1, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+    }
+
+    /// <summary>
+    /// Verifies that, after a runtime reload performed through the registered provider, the resolved service reflects the
+    /// new resource, emitting the 1 February occurrence from the reloaded document.
     /// </summary>
     [TestMethod]
     public void AddReloadableNotableDateService_AfterProviderReload_ReflectsNewResource()
@@ -112,8 +129,6 @@ public sealed class NotableDateServiceCollectionExtensionsTests
             .BuildServiceProvider();
 
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
-        Assert.AreEqual(new DateOnly(2026, 1, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
-
         provider.GetRequiredService<MutableNotableDateResourceProvider>().Reload(NotableDateResourceLoader.Load(februaryXml));
 
         Assert.AreEqual(new DateOnly(2026, 2, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
