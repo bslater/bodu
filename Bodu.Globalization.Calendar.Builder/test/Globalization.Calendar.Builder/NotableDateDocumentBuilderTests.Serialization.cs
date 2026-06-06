@@ -22,8 +22,9 @@ public partial class NotableDateDocumentBuilderTests
         var document = SampleDocument().ToXDocument();
 
         Assert.IsNotNull(document.Root);
-        Assert.AreEqual(SchemaNamespace + "NotableDateResource", document.Root!.Name);
-        Assert.AreEqual("demo.sample", (string?)document.Root.Attribute("resourceId"));
+        Assert.AreEqual(
+            (SchemaNamespace + "NotableDateResource", (string?)"demo.sample"),
+            (document.Root!.Name, (string?)document.Root.Attribute("resourceId")));
         Assert.IsNotNull(document.Root.Attribute("schemaVersion"));
     }
 
@@ -39,8 +40,9 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateResource fromXml = NotableDateResourceLoader.Load(builder.ToXml());
         NotableDateResource direct = builder.Build();
 
-        Assert.AreEqual(direct.ResourceId, fromXml.ResourceId);
-        Assert.HasCount(direct.NotableDates.Count, fromXml.NotableDates);
+        Assert.AreEqual(
+            (direct.ResourceId, direct.NotableDates.Count),
+            (fromXml.ResourceId, fromXml.NotableDates.Count));
     }
 
     /// <summary>
@@ -53,8 +55,9 @@ public partial class NotableDateDocumentBuilderTests
 
         NotableDateResource fromJson = NotableDateResourceLoader.LoadJson(builder.ToJson());
 
-        Assert.AreEqual("demo.sample", fromJson.ResourceId);
-        Assert.HasCount(4, fromJson.NotableDates);
+        Assert.AreEqual(
+            ("demo.sample", 4),
+            (fromJson.ResourceId, fromJson.NotableDates.Count));
     }
 
     /// <summary>
