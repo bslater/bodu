@@ -91,22 +91,31 @@ public sealed class BahaiHolyDayKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies that Naw-Ruz always falls on 19, 20 or 21 March (the equinox window) across a multi-decade span, and that
-    /// the Festival of Ridvan preserves its authored twelve-day duration.
+    /// Verifies that Naw-Ruz always falls within the equinox window of 19, 20 or 21 March across the multi-decade span
+    /// 2000-2050.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void Resolve_NawRuzAcrossDecades_FallsInEquinoxWindow_AndRidvanSpansTwelveDays()
+    public void Resolve_NawRuzAcrossDecades_ShouldFallInEquinoxWindow()
     {
         NotableDateService service = CreateService();
 
-        for (var year = 2000; year <= 2050; year++)
-        {
-            NotableDate nawRuz = CommonCatalogues.ResolveSingle(service, "naw-ruz", year);
-            Assert.AreEqual(3, nawRuz.Date.Month, $"Naw-Ruz {year} fell outside March: {nawRuz.Date:yyyy-MM-dd}");
-            Assert.IsTrue(nawRuz.Date.Day is 19 or 20 or 21, $"Naw-Ruz {year} fell on March {nawRuz.Date.Day}");
-        }
+        DateOnly[] outsideWindow = Enumerable
+            .Range(2000, 51)
+            .Select(year => CommonCatalogues.ResolveSingle(service, "naw-ruz", year).Date)
+            .Where(date => date.Month != 3 || date.Day is not (19 or 20 or 21))
+            .ToArray();
 
-        Assert.AreEqual(12, CommonCatalogues.ResolveSingle(service, "ridvan", 2025).DurationDays);
+        CollectionAssert.AreEqual(Array.Empty<DateOnly>(), outsideWindow);
+    }
+
+    /// <summary>
+    /// Verifies that the Festival of Ridvan preserves its authored twelve-day duration.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_Ridvan_ShouldSpanTwelveDays()
+    {
+        Assert.AreEqual(12, CommonCatalogues.ResolveSingle(CreateService(), "ridvan", 2025).DurationDays);
     }
 }
