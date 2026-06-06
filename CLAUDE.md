@@ -20,9 +20,9 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Resource-driven notable-date engine on the v2 cookbook schema: rule model, date-calculation strategies and astronomical algorithms (`Algorithms`), range resolution (`RangeResolution`), observed-date adjustments, working-day extensions (`Bodu.Extensions`), and `NotableDateService`. |
 | `Bodu.Globalization.Calendar.Plugins` | `Bodu.Globalization.Calendar.Plugins/` | Trust-gated external plugin loading for assemblies contributing custom `INotableDateAlgorithm` implementations. |
 | `Bodu.Globalization.Calendar.Builder` | `Bodu.Globalization.Calendar.Builder/` | Fluent authoring API (`NotableDateDocumentBuilder`) that constructs notable-date documents on the v2 cookbook schema, with full XML and JSON-subset serialization (`ToXml`/`ToJson`/`Save`) and parsing (`FromXml`/`FromJson`/`Load`); materializes a `NotableDateResource` via the loader. |
-| `Bodu.Globalization.Calendar.Data.Americas` | `…Calendar.Data.Americas/` | Bundled calendar rules for the Americas territory bundle (e.g. US). |
-| `Bodu.Globalization.Calendar.Data.AsiaPacific` | `…Calendar.Data.AsiaPacific/` | Asia-Pacific bundle (e.g. AU including subdivisions). |
-| `Bodu.Globalization.Calendar.Data.Europe` | `…Calendar.Data.Europe/` | Europe bundle (e.g. GB, FR). |
+| `Bodu.Globalization.Calendar.Americas` | `…Calendar.Data.Americas/` | Bundled calendar rules for the Americas territory bundle (e.g. US). |
+| `Bodu.Globalization.Calendar.AsiaPacific` | `…Calendar.Data.AsiaPacific/` | Asia-Pacific bundle (e.g. AU including subdivisions). |
+| `Bodu.Globalization.Calendar.Europe` | `…Calendar.Data.Europe/` | Europe bundle (e.g. GB, FR). |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `…Calendar.DependencyInjection/` | `IServiceCollection` extensions for registering calendar services. |
 | `BouncyCastle.Crypto` | `bc-csharp/crypto/src/` | Third-party vendor reference (used by Cryptography tests for reference vectors). |
 | `docs` | `docs/` | DocFX documentation project. |

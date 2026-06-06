@@ -31,9 +31,9 @@ The calendar runtime is intentionally small. Region-specific holiday data, fluen
 |---|---|---|---|
 | `Bodu.Globalization.Calendar.DependencyInjection` | Stable | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. | `Bodu.Globalization.Calendar`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Globalization.Calendar.Plugins` | Stable | Trust-gated loading of external assemblies that contribute custom `INotableDateAlgorithm` implementations. | `Bodu.Globalization.Calendar` |
-| `Bodu.Globalization.Calendar.Data.Americas` | Stable | Curated public-holiday rules for the Americas territory bundle (e.g. `US`, `CA`). | `Bodu.Globalization.Calendar` |
-| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Stable | Asia-Pacific bundle (e.g. `AU` with subdivisions, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`). | `Bodu.Globalization.Calendar` |
-| `Bodu.Globalization.Calendar.Data.Europe` | Stable | Europe bundle (e.g. `DE`, `ES`, `FR`, `GB`, `IT`, `NL`). | `Bodu.Globalization.Calendar` |
+| `Bodu.Globalization.Calendar.Americas` | Stable | Curated public-holiday rules for the Americas territory bundle (e.g. `US`, `CA`). | `Bodu.Globalization.Calendar` |
+| `Bodu.Globalization.Calendar.AsiaPacific` | Stable | Asia-Pacific bundle (e.g. `AU` with subdivisions, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`). | `Bodu.Globalization.Calendar` |
+| `Bodu.Globalization.Calendar.Europe` | Stable | Europe bundle (e.g. `DE`, `ES`, `FR`, `GB`, `IT`, `NL`). | `Bodu.Globalization.Calendar` |
 | `Bodu.Globalization.Calendar.Builder` | Stable | Fluent, chainable C# API for authoring notable-date documents on the v2 cookbook schema, with XML / JSON serialization and load/save. | `Bodu.Globalization.Calendar` |
 
 See the [Calendar introduction](calendar/index.md) for how the companion packages compose with the runtime, and the [data-packs guide](../guides/calendar/data-packs.md) for per-bundle install commands and territory coverage.
@@ -68,9 +68,9 @@ dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 dotnet add package Bodu.Globalization.Calendar.Plugins
 
 # Calendar regional data packs (install only what you need)
-dotnet add package Bodu.Globalization.Calendar.Data.Americas
-dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
-dotnet add package Bodu.Globalization.Calendar.Data.Europe
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Europe
 ```
 
 ## Design principles

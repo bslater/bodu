@@ -51,9 +51,9 @@ immediate publishing target. Five packages are queued:
 | `Bodu.Numerics` | 1.0.0 | Initial release. `Fraction<T>` over any `IBinaryInteger<T>` and `Interval<T>` over any `INumber<T>`. |
 | `Bodu.Financial` | 1.0.0 | Initial release. `Money<TCurrency>`, `MoneyValue`, `MoneyBag`, the ISO 4217 catalogue, and the timeless + dated FX provider stack. References `Bodu.Numerics`. |
 | `Bodu.Globalization.Calendar` | 1.1.0 | Multi-assembly rule resolution; embedded `region-*.xml` resources removed. **Behavioural change** — parameterless `NotableDateService()` no longer ships every region's rules; consumers must reference a data pack. |
-| `Bodu.Globalization.Calendar.Data.Americas` | 1.0.0 | Initial release. US and CA. |
-| `Bodu.Globalization.Calendar.Data.AsiaPacific` | 1.0.0 | Initial release. AU, CN, IN, JP, KR, MY, NZ, SG. |
-| `Bodu.Globalization.Calendar.Data.Europe` | 1.0.0 | Initial release. DE, ES, FR, GB, IE, IT, NL, SE. |
+| `Bodu.Globalization.Calendar.Americas` | 1.0.0 | Initial release. US and CA. |
+| `Bodu.Globalization.Calendar.AsiaPacific` | 1.0.0 | Initial release. AU, CN, IN, JP, KR, MY, NZ, SG. |
+| `Bodu.Globalization.Calendar.Europe` | 1.0.0 | Initial release. DE, ES, FR, GB, IE, IT, NL, SE. |
 
 **Release order.** The four Calendar packages must release together, as
 Calendar 1.1.0 is the breaking change that necessitates the data packs.
@@ -399,7 +399,7 @@ calendar services.
 - **Add `IOptionsMonitor<NotableDateOptions>` rebuild support** so
   config changes propagate without a process restart.
 
-### `Bodu.Globalization.Calendar.Data.Americas`
+### `Bodu.Globalization.Calendar.Americas`
 
 Current state: shipping in `[Unreleased]` 1.0.0. US, CA.
 
@@ -411,7 +411,7 @@ Current state: shipping in `[Unreleased]` 1.0.0. US, CA.
   are not religious or civil holidays, but they are the next natural
   layer of "notable dates" the service should answer.
 
-### `Bodu.Globalization.Calendar.Data.AsiaPacific`
+### `Bodu.Globalization.Calendar.AsiaPacific`
 
 Current state: shipping in `[Unreleased]` 1.0.0. AU, CN, IN, JP, KR,
 MY, NZ, SG.
@@ -428,7 +428,7 @@ MY, NZ, SG.
   `global-islamic.xml`; both have explicit subdivisions that follow
   Saudi sighting).
 
-### `Bodu.Globalization.Calendar.Data.Europe`
+### `Bodu.Globalization.Calendar.Europe`
 
 Current state: shipping in `[Unreleased]` 1.0.0. DE, ES, FR, GB, IE,
 IT, NL, SE.

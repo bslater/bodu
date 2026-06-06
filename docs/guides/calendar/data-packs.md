@@ -14,9 +14,9 @@ All three packs live in the `Bodu.Globalization.Calendar.Data` namespace and exp
 
 | Package | Type | Territories |
 |---|---|---|
-| **Bodu.Globalization.Calendar.Data.Americas** | <xref:Bodu.Globalization.Calendar.AmericasCalendarData> | Canada (`CA`), United States (`US`) |
-| **Bodu.Globalization.Calendar.Data.AsiaPacific** | <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Singapore (`SG`) |
-| **Bodu.Globalization.Calendar.Data.Europe** | <xref:Bodu.Globalization.Calendar.EuropeCalendarData> | 28 EU/EEA territories: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
+| **Bodu.Globalization.Calendar.Americas** | <xref:Bodu.Globalization.Calendar.AmericasCalendarData> | Canada (`CA`), United States (`US`) |
+| **Bodu.Globalization.Calendar.AsiaPacific** | <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Singapore (`SG`) |
+| **Bodu.Globalization.Calendar.Europe** | <xref:Bodu.Globalization.Calendar.EuropeCalendarData> | 28 EU/EEA territories: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
 
 Each pack depends on `Bodu.Globalization.Calendar` and embeds only the `region-<cc>.xml` files for its territories. National rules are authored at the country level (`AU`, `US`, `GB`); state / province / region variants use the canonical ISO 3166-2 subdivision suffix (`AU-NSW`, `US-CA`, `GB-SCT`). See [Territories and regional composition](territories.md) for the parsing, containment, and composition rules that govern how these codes interact at query time.
 
@@ -27,9 +27,9 @@ Each pack depends on `Bodu.Globalization.Calendar` and embeds only the `region-<
 dotnet add package Bodu.Globalization.Calendar
 
 # Add one or more data packs depending on the regions you need:
-dotnet add package Bodu.Globalization.Calendar.Data.Americas
-dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
-dotnet add package Bodu.Globalization.Calendar.Data.Europe
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Europe
 ```
 
 ## The pack surface
@@ -50,7 +50,6 @@ Use `CreateService` when you only need a single market — it does the load-and-
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.Americas;
 
 NotableDateService service = AmericasCalendarData.CreateService("US");
 
@@ -74,9 +73,6 @@ A `NotableDateService` is built over a single resource, so a service from one pa
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.Americas;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
-using Bodu.Globalization.Calendar.Data.Europe;
 
 NotableDateService us = AmericasCalendarData.CreateService("US");
 NotableDateService gb = EuropeCalendarData.CreateService("GB");
@@ -95,7 +91,6 @@ When you want the resource alone — to register it through dependency injection
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 NotableDateResource au = AsiaPacificCalendarData.LoadResource("AU-WA");
 
@@ -109,7 +104,6 @@ The `Bodu.Globalization.Calendar.DependencyInjection` companion registers <xref:
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.Americas;
 using Microsoft.Extensions.DependencyInjection;
 
 builder.Services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
@@ -131,7 +125,7 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 ### Americas — `AmericasCalendarData` {#americas}
 
-**Package:** `Bodu.Globalization.Calendar.Data.Americas`
+**Package:** `Bodu.Globalization.Calendar.Americas`
 **Namespace:** `Bodu.Globalization.Calendar.Data`
 **Type:** <xref:Bodu.Globalization.Calendar.AmericasCalendarData>
 
@@ -139,7 +133,7 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 ### Asia-Pacific — `AsiaPacificCalendarData` {#asia-pacific}
 
-**Package:** `Bodu.Globalization.Calendar.Data.AsiaPacific`
+**Package:** `Bodu.Globalization.Calendar.AsiaPacific`
 **Namespace:** `Bodu.Globalization.Calendar.Data`
 **Type:** <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData>
 
@@ -147,7 +141,7 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 ### Europe — `EuropeCalendarData` {#europe}
 
-**Package:** `Bodu.Globalization.Calendar.Data.Europe`
+**Package:** `Bodu.Globalization.Calendar.Europe`
 **Namespace:** `Bodu.Globalization.Calendar.Data`
 **Type:** <xref:Bodu.Globalization.Calendar.EuropeCalendarData>
 

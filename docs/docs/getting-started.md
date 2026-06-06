@@ -31,9 +31,9 @@ dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 
 # Optional region-specific calendar data packs:
-dotnet add package Bodu.Globalization.Calendar.Data.Americas
-dotnet add package Bodu.Globalization.Calendar.Data.Europe
-dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.Europe
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
 ```
 
 ## Bodu.Core
@@ -104,7 +104,6 @@ ulong digest = BitConverter.ToUInt64(sip.ComputeHash(data));
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 

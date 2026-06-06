@@ -33,7 +33,7 @@
     Path to docs/guides/toc.yml; the script surgically inserts/updates the catalogue group under the calendar node.
 
 .PARAMETER XsdPath
-    Path to NotableDates.v2.xsd, used only when -ValidateXsd is supplied.
+    Path to NotableDates.xsd, used only when -ValidateXsd is supplied.
 
 .PARAMETER ValidateXsd
     When set, validates every resource against the v2 schema and reports violations (off by default).
@@ -50,13 +50,13 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$CommonResourcesPath = (Join-Path $PSScriptRoot 'src' 'Globalization.Calendar' 'Resources'),
-    [string]$AmericasPath        = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data.Americas'    'src' 'Resources'),
-    [string]$AsiaPacificPath     = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data.AsiaPacific' 'src' 'Resources'),
-    [string]$EuropePath          = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data.Europe'      'src' 'Resources'),
+    [string]$CommonResourcesPath = (Join-Path $PSScriptRoot 'src' 'Globalization.Calendar.Resources'),
+    [string]$AmericasPath        = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.Americas'    'src' 'Resources'),
+    [string]$AsiaPacificPath     = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.AsiaPacific' 'src' 'Resources'),
+    [string]$EuropePath          = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.Europe'      'src' 'Resources'),
     [string]$OutputDir           = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'calendar' 'catalogue'),
     [string]$TocPath             = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'toc.yml'),
-    [string]$XsdPath             = (Join-Path $PSScriptRoot 'src' 'Globalization.Calendar' 'NotableDates.v2.xsd'),
+    [string]$XsdPath             = (Join-Path $PSScriptRoot 'src' 'Globalization.Calendar' 'NotableDates.xsd'),
     [switch]$ValidateXsd,
     [int]$AwarenessSampleCap = 12
 )

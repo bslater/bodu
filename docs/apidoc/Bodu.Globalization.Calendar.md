@@ -75,9 +75,9 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 National public-holiday resources ship in three companion assemblies (namespace `Bodu.Globalization.Calendar.Data`) so the data can be re-released independently of the runtime:
 
-- **Bodu.Globalization.Calendar.Data.Americas** — `CA`, `US` (and subdivisions).
-- **Bodu.Globalization.Calendar.Data.Europe** — 28 EU/EEA territories including `DE`, `ES`, `FR`, `GB`, `IE`, `IT`, `NL`, `SE`.
-- **Bodu.Globalization.Calendar.Data.AsiaPacific** — `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
+- **Bodu.Globalization.Calendar.Americas** — `CA`, `US` (and subdivisions).
+- **Bodu.Globalization.Calendar.Europe** — 28 EU/EEA territories including `DE`, `ES`, `FR`, `GB`, `IE`, `IT`, `NL`, `SE`.
+- **Bodu.Globalization.Calendar.AsiaPacific** — `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
 
 Each pack exposes a static factory — <xref:Bodu.Globalization.Calendar.AmericasCalendarData>, <xref:Bodu.Globalization.Calendar.EuropeCalendarData>, <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> — with `SupportedCountries`, `LoadResource(territory)` (returns a `NotableDateResource` with imports resolved against the bundled common catalogues), and `CreateService(territory)` (the resource pre-wired into a `NotableDateService`). See the [Calendar data packs](~/guides/calendar/data-packs.md) guide.
 
@@ -85,7 +85,6 @@ Each pack exposes a static factory — <xref:Bodu.Globalization.Calendar.America
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 using Bodu.Extensions;                       // working-day extension methods
 
 // 1. Build a service from a companion data pack (loads + validates the resource, resolving imports).

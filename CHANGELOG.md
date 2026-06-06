@@ -78,8 +78,8 @@ If your code constructs `new NotableDateService()` and queries regional holidays
 var service = new NotableDateService();
 var auDates = service.GetNotableDates(2026, "AU");
 
-// After — install Bodu.Globalization.Calendar.Data.AsiaPacific and pass its provider:
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
+// After — install Bodu.Globalization.Calendar.AsiaPacific and pass its provider:
+using Bodu.Globalization.Calendar;
 
 var service = new NotableDateService(
     ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
@@ -89,15 +89,15 @@ var auDates = service.GetNotableDates(2026, "AU");
 
 Use `<Pack>CalendarData.CreateProviders()` to enumerate every country in a pack at once. See the [Calendar data packs](docs/guides/calendar/data-packs.md) guide for full composition patterns.
 
-### Bodu.Globalization.Calendar.Data.Americas — 1.0.0
+### Bodu.Globalization.Calendar.Americas — 1.0.0
 
 Initial release. Ships embedded notable-date rules for the United States (`US`) and Canada (`CA`). Exposes a static `AmericasCalendarData` factory with per-country `CreateUnitedStatesProvider()` / `CreateCanadaProvider()` and bulk `CreateProviders()` helpers that pre-wire the `[pack, main library]` assembly chain.
 
-### Bodu.Globalization.Calendar.Data.Europe — 1.0.0
+### Bodu.Globalization.Calendar.Europe — 1.0.0
 
 Initial release. Ships embedded notable-date rules for Germany (`DE`), Spain (`ES`), France (`FR`), the United Kingdom (`GB`), Ireland (`IE`), Italy (`IT`), the Netherlands (`NL`), and Sweden (`SE`). Exposes a static `EuropeCalendarData` factory with per-country and bulk `CreateProviders()` helpers.
 
-### Bodu.Globalization.Calendar.Data.AsiaPacific — 1.0.0
+### Bodu.Globalization.Calendar.AsiaPacific — 1.0.0
 
 Initial release. Ships embedded notable-date rules for Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), and Singapore (`SG`). Exposes a static `AsiaPacificCalendarData` factory with per-country and bulk `CreateProviders()` helpers.
 
