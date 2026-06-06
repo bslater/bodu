@@ -2,9 +2,17 @@
 
 Managed implementations of modern and legacy cryptographic primitives for .NET 8. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, and the supporting transform infrastructure to compose them. All algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `KeyedHashAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`).
 
-## Not a FIPS-validated provider
+## Security posture and limitations
 
-This library is **not** a FIPS-validated cryptographic module and is not intended for environments that require FIPS 140-2 / 140-3 certification. For FIPS-validated AES, SHA-2, RNG, and similar primitives use the platform-provided `System.Security.Cryptography` types and the underlying OS provider. The algorithms here are managed implementations suitable for development, interop with non-FIPS systems, research, and use cases where the available BCL primitives do not cover what is needed (Blake2/Blake3, Ascon, Skein, Poly1305, SipHash, Threefish, Serpent, Camellia, Blowfish, Skipjack, OCB / EAX / SIV / GCM-SIV modes, etc.).
+Read this before using the library for anything that matters.
+
+- **Not independently audited.** These are managed, from-scratch implementations. They are pinned to published known-answer vectors for *functional* correctness, but they have **not** undergone an independent security audit. Treat them as suitable for development, interop with non-FIPS systems, research, and education — not as a drop-in for a hardened production provider.
+- **Not FIPS-validated.** This is not a FIPS 140-2 / 140-3 cryptographic module. For FIPS-validated AES, SHA-2, RNG, and similar primitives use the platform-provided `System.Security.Cryptography` types and the underlying OS provider.
+- **Side-channel resistance is best-effort, not guaranteed.** Constant-time behaviour is implemented where practical: tag and hash comparisons use `CryptographicOperations.FixedTimeEquals` and padding removal is branchless. Work is ongoing to remove secret-dependent branches and table lookups from GHASH and the software table-based ciphers (Blowfish, Twofish, Camellia, Tiger, Whirlpool, Snefru). Managed code runs on a JIT and GC the library does not control, so timing/cache invariance cannot be guaranteed end-to-end regardless. For workloads with a real side-channel adversary, prefer the hardware-backed BCL primitives.
+- **AES delegates to the BCL.** `AesBlockCipher` wraps the platform `System.Security.Cryptography.Aes` (hardware-accelerated, constant-time, FIPS-validated). Everything else in the package is a bespoke managed implementation.
+- **This is a toolbox, not a safe-by-default API.** ECB, `NoPadding`, raw CBC, and unauthenticated stream ciphers are all first-class. Prefer an AEAD mode (GCM, EAX, OCB, or a nonce-misuse-resistant SIV / GCM-SIV) unless you have a specific reason not to, and read the per-type remarks for the failure modes.
+
+The primitives provided here exist mainly to cover what the BCL does not ship (Blake2/Blake3, Ascon, Skein, Poly1305, SipHash, Threefish, Serpent, Camellia, Blowfish, Skipjack, OCB / EAX / SIV / GCM-SIV modes, etc.).
 
 ## Algorithm support matrix
 
