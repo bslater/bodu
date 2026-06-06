@@ -286,29 +286,36 @@ public static class NotableDateResourceLoader
                 continue;
             }
 
-            var content = resourceResolver(import.Resource);
-            if (content is null)
+            try
             {
-                AddError(diagnostics, "BODU-CAL-IMPORT-MISSING", CalendarResourceStrings.Validation_ImportResourceNotFound, import.Resource);
+                var content = resourceResolver(import.Resource);
+                if (content is null)
+                {
+                    AddError(diagnostics, "BODU-CAL-IMPORT-MISSING", CalendarResourceStrings.Validation_ImportResourceNotFound, import.Resource);
+                    continue;
+                }
+
+                ParsedNotableDateDocument source = ParseAny(content, diagnostics);
+                (List<AdjustmentPolicy> sourcePolicies, List<NotableDateDefinition> sourceConcepts) =
+                    ResolveImports(source, resourceResolver, visiting, diagnostics);
+
+                foreach (AdjustmentPolicy policy in sourcePolicies)
+                {
+                    if (policyIds.Add(policy.Id))
+                        policies.Add(policy);
+                }
+
+                foreach (NotableDateDefinition concept in SelectImportedConcepts(import, sourceConcepts, diagnostics))
+                {
+                    if (importedIds.Add(concept.Id))
+                        imported.Add(concept);
+                }
+            }
+            finally
+            {
+                // Leave the in-progress set exactly as it was found so a resource imported on two distinct branches is
+                // not mistaken for a cycle, regardless of how the body above exits.
                 visiting.Remove(import.Resource);
-                continue;
-            }
-
-            ParsedNotableDateDocument source = ParseAny(content, diagnostics);
-            (List<AdjustmentPolicy> sourcePolicies, List<NotableDateDefinition> sourceConcepts) =
-                ResolveImports(source, resourceResolver, visiting, diagnostics);
-            visiting.Remove(import.Resource);
-
-            foreach (AdjustmentPolicy policy in sourcePolicies)
-            {
-                if (policyIds.Add(policy.Id))
-                    policies.Add(policy);
-            }
-
-            foreach (NotableDateDefinition concept in SelectImportedConcepts(import, sourceConcepts, diagnostics))
-            {
-                if (importedIds.Add(concept.Id))
-                    imported.Add(concept);
             }
         }
 
@@ -398,15 +405,37 @@ public static class NotableDateResourceLoader
     }
 
     /// <summary>
-    /// Parses imported content as JSON when it begins with an object, otherwise as XML.
+    /// Parses imported content as JSON when its first significant character opens a JSON value, otherwise as XML.
     /// </summary>
     /// <param name="content">The resource content.</param>
     /// <param name="diagnostics">The collection that receives parse diagnostics.</param>
     /// <returns>The parsed document.</returns>
     private static ParsedNotableDateDocument ParseAny(string content, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
-        content.TrimStart().StartsWith('{')
+        LooksLikeJson(content)
             ? NotableDateJsonDocumentParser.Parse(content, diagnostics)
             : NotableDateDocumentParser.Parse(content, diagnostics);
+
+    /// <summary>
+    /// Determines whether content is JSON rather than XML by inspecting its first significant character, skipping a
+    /// leading byte-order mark and any white-space so a BOM-prefixed or indented document is not misrouted.
+    /// </summary>
+    /// <param name="content">The resource content.</param>
+    /// <returns>
+    /// <see langword="true" /> when the first significant character opens a JSON object or array; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool LooksLikeJson(string content)
+    {
+        foreach (var character in content)
+        {
+            if (character == '\uFEFF' || char.IsWhiteSpace(character))
+                continue;
+
+            return character is '{' or '[';
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Adds an error diagnostic formatted from a resource string.

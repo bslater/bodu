@@ -37,6 +37,11 @@ internal static class NotableDateJsonDocumentParser
     /// <returns>The parsed document.</returns>
     private static JsonDocument ParseDocument(string json)
     {
+        // System.Text.Json rejects a leading byte-order mark, which a UTF-8 string loaded from a BOM-prefixed source can
+        // carry; strip it so such content parses rather than failing on its first byte.
+        if (json.Length > 0 && json[0] == '\uFEFF')
+            json = json[1..];
+
         try
         {
             return JsonDocument.Parse(json);
