@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Xml;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -159,4 +160,63 @@ internal static class NotableDateDocumentParseHelpers
         value is not null && Enum.TryParse(value, ignoreCase: true, out TEnum result) && Enum.IsDefined(result)
             ? result
             : null;
+
+    /// <summary>
+    /// Parses an integer value, falling back to a default when parsing fails.
+    /// </summary>
+    /// <param name="value">The raw value.</param>
+    /// <param name="fallback">The value returned when parsing fails.</param>
+    /// <returns>The parsed integer, or <paramref name="fallback" />.</returns>
+    public static int ParseInt(string? value, int fallback) =>
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : fallback;
+
+    /// <summary>
+    /// Parses an optional integer value.
+    /// </summary>
+    /// <param name="value">The raw value, or <see langword="null" />.</param>
+    /// <returns>The parsed integer, or <see langword="null" /> when absent or invalid.</returns>
+    public static int? ParseNullableInt(string? value) =>
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
+
+    /// <summary>
+    /// Parses a boolean value expressed in XML-schema form (<c>true</c>/<c>false</c>/<c>1</c>/<c>0</c>), falling back to
+    /// a default when parsing fails.
+    /// </summary>
+    /// <param name="value">The raw value.</param>
+    /// <param name="fallback">The value returned when parsing fails.</param>
+    /// <returns>The parsed boolean, or <paramref name="fallback" />.</returns>
+    public static bool ParseBool(string? value, bool fallback)
+    {
+        if (value is null)
+            return fallback;
+
+        try
+        {
+            return XmlConvert.ToBoolean(value);
+        }
+        catch (FormatException)
+        {
+            return fallback;
+        }
+    }
+
+    /// <summary>
+    /// Parses an optional boolean value expressed in XML-schema form.
+    /// </summary>
+    /// <param name="value">The raw value, or <see langword="null" />.</param>
+    /// <returns>The parsed boolean, or <see langword="null" /> when absent or invalid.</returns>
+    public static bool? ParseNullableBool(string? value)
+    {
+        if (value is null)
+            return null;
+
+        try
+        {
+            return XmlConvert.ToBoolean(value);
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+    }
 }
