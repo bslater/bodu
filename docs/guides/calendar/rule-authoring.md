@@ -108,7 +108,7 @@ A one-line example of each:
 <Strategy><Algorithm key="western-easter" /></Strategy>
 ```
 
-`month` accepts either a number (`1`–`12`) or an English month name (`January`). `weekOrdinal` is a <xref:Bodu.Globalization.Calendar.WeekOrdinal> value (`First`…`Fifth`, `Last`); `direction` is a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`). For per-element attribute tables and worked examples see [NotableDateRule and adjustment-policy reference](rule-reference.md); for the `<Algorithm>` key catalogue and custom algorithms see [Date calculation algorithms](algorithms.md).
+`month` accepts either a number (`1`–`12`) or an English month name (`January`). `weekOrdinal` is a <xref:Bodu.Extensions.WeekOrdinal> value (`First`…`Fifth`, `Last`); `direction` is a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`). For per-element attribute tables and worked examples see [NotableDateRule and adjustment-policy reference](rule-reference.md); for the `<Algorithm>` key catalogue and custom algorithms see [Date calculation algorithms](algorithms.md).
 
 ---
 

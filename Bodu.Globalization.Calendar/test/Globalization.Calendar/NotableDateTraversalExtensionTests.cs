@@ -308,9 +308,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         NotableDate? result = new DateOnly(2026, 6, 15).NextNotableDate(CalendarService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(new DateOnly(2026, 12, 25), result.Date);
-        Assert.AreEqual("christmas-day", result.NotableDateId);
+        NotableDateAssert.AssertOccurrence(result, "christmas-day", new DateOnly(2026, 12, 25));
     }
 
     /// <summary>
@@ -321,9 +319,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         NotableDate? result = new DateOnly(2026, 12, 31).NextNotableDate(CalendarService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(new DateOnly(2027, 1, 1), result.Date);
-        Assert.AreEqual("new-years-day", result.NotableDateId);
+        NotableDateAssert.AssertOccurrence(result, "new-years-day", new DateOnly(2027, 1, 1));
     }
 
     /// <summary>
@@ -335,9 +331,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         NotableDate? result = new DateOnly(2026, 1, 1).NextNotableDate(CalendarService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(new DateOnly(2026, 4, 1), result.Date);
-        Assert.AreEqual("festival", result.NotableDateId);
+        NotableDateAssert.AssertOccurrence(result, "festival", new DateOnly(2026, 4, 1));
     }
 
     /// <summary>
@@ -350,8 +344,7 @@ public sealed class NotableDateTraversalExtensionTests
 
         NotableDate? result = new DateOnly(2026, 1, 15).NextNotableDate(CalendarService, "XX", filter);
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual("anzac-day", result.NotableDateId);
+        NotableDateAssert.AssertOccurrence(result, "anzac-day", new DateOnly(2026, 4, 25));
     }
 
     /// <summary>
@@ -364,9 +357,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         NotableDate? result = new DateOnly(2026, 6, 3).NextNotableDate(SpanService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual("holiday", result.NotableDateId);
-        Assert.AreEqual(new DateOnly(2026, 8, 15), result.Date);
+        NotableDateAssert.AssertOccurrence(result, "holiday", new DateOnly(2026, 8, 15));
     }
 
     /// <summary>
@@ -386,9 +377,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         NotableDate? result = new DateOnly(2026, 6, 15).PreviousNotableDate(CalendarService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(new DateOnly(2026, 4, 25), result.Date);
-        Assert.AreEqual("anzac-day", result.NotableDateId);
+        NotableDateAssert.AssertOccurrence(result, "anzac-day", new DateOnly(2026, 4, 25));
     }
 
     /// <summary>
@@ -401,9 +390,7 @@ public sealed class NotableDateTraversalExtensionTests
         // Before 1 January 2026 the latest prior occurrence is Christmas Day 2025.
         NotableDate? result = new DateOnly(2026, 1, 1).PreviousNotableDate(CalendarService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(new DateOnly(2025, 12, 25), result.Date);
-        Assert.AreEqual("christmas-day", result.NotableDateId);
+        NotableDateAssert.AssertOccurrence(result, "christmas-day", new DateOnly(2025, 12, 25));
     }
 
     /// <summary>
@@ -415,9 +402,7 @@ public sealed class NotableDateTraversalExtensionTests
     {
         NotableDate? result = new DateOnly(2026, 6, 3).PreviousNotableDate(SpanService, "XX");
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual("festival", result.NotableDateId);
-        Assert.AreEqual(new DateOnly(2026, 6, 1), result.Date);
+        NotableDateAssert.AssertOccurrence(result, "festival", new DateOnly(2026, 6, 1));
     }
 
     /// <summary>
@@ -432,8 +417,7 @@ public sealed class NotableDateTraversalExtensionTests
 
         DateTime next = start.NextWorkingDay(HolidayService, "XX");
 
-        Assert.AreEqual(new DateOnly(2026, 1, 2), DateOnly.FromDateTime(next));
-        Assert.AreEqual(new TimeSpan(14, 30, 0), next.TimeOfDay);
+        Assert.AreEqual(new DateTime(2026, 1, 2, 14, 30, 0, DateTimeKind.Utc), next);
         Assert.AreEqual(DateTimeKind.Utc, next.Kind);
     }
 
@@ -461,8 +445,7 @@ public sealed class NotableDateTraversalExtensionTests
 
         DateTime result = start.AddWorkingDays(3, HolidayService, "XX");
 
-        Assert.AreEqual(new DateOnly(2026, 1, 6), DateOnly.FromDateTime(result));
-        Assert.AreEqual(new TimeSpan(6, 0, 0), result.TimeOfDay);
+        Assert.AreEqual(new DateTime(2026, 1, 6, 6, 0, 0, DateTimeKind.Unspecified), result);
         Assert.AreEqual(DateTimeKind.Unspecified, result.Kind);
     }
 
@@ -499,8 +482,7 @@ public sealed class NotableDateTraversalExtensionTests
 
         DateTimeOffset next = start.NextWorkingDay(HolidayService, "XX");
 
-        Assert.AreEqual(new DateOnly(2026, 1, 2), DateOnly.FromDateTime(next.DateTime));
-        Assert.AreEqual(new TimeSpan(14, 30, 0), next.TimeOfDay);
+        Assert.AreEqual(new DateTimeOffset(2026, 1, 2, 14, 30, 0, TimeSpan.FromHours(5)), next);
         Assert.AreEqual(TimeSpan.FromHours(5), next.Offset);
     }
 
@@ -516,8 +498,7 @@ public sealed class NotableDateTraversalExtensionTests
 
         DateTimeOffset monday = friday.AddWorkingDays(1, HolidayService, "XX");
 
-        Assert.AreEqual(new DateOnly(2026, 5, 18), DateOnly.FromDateTime(monday.DateTime));
-        Assert.AreEqual(new TimeSpan(9, 30, 0), monday.TimeOfDay);
+        Assert.AreEqual(new DateTimeOffset(2026, 5, 18, 9, 30, 0, TimeSpan.FromHours(-8)), monday);
         Assert.AreEqual(TimeSpan.FromHours(-8), monday.Offset);
     }
 

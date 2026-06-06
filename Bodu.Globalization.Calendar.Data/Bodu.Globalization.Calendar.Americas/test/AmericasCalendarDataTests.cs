@@ -411,34 +411,54 @@ public sealed class AmericasCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that a Colombian Emiliani-law holiday is observed on the following Monday when its calendar date is
-    /// not a Monday (carrying the observed flag), and on its calendar date when it already falls on a Monday.
+    /// Verifies that a Colombian Emiliani-law holiday whose calendar date is not a Monday is observed on the following
+    /// Monday and carries the observed flag. Epiphany 2024 fell on a Saturday and is observed on Monday 8 January.
     /// </summary>
     [TestMethod]
-    public void Resolve_ColombianEmilianiHoliday_IsObservedOnFollowingMonday()
+    public void Resolve_ColombianEmilianiHoliday_WhenNotOnMonday_IsObservedOnFollowingMonday()
     {
         NotableDate moved = Single("CO", 2024, "epiphany");
-        Assert.AreEqual(new DateOnly(2024, 1, 8), moved.Date, "Epiphany 2024 fell on a Saturday and is observed the following Monday");
-        Assert.IsTrue(moved.IsObserved, "the moved Emiliani holiday should carry the observed flag");
 
-        NotableDate notMoved = Single("CO", 2025, "epiphany");
-        Assert.AreEqual(new DateOnly(2025, 1, 6), notMoved.Date, "Epiphany 2025 already falls on a Monday");
-        Assert.IsFalse(notMoved.IsObserved, "a holiday already on a Monday is not moved");
+        Assert.AreEqual(
+            (new DateOnly(2024, 1, 8), true),
+            (moved.Date, moved.IsObserved));
     }
 
     /// <summary>
-    /// Verifies that a Brazilian state holiday resolves for its state but not for a plain national query, confirming
-    /// subdivision scoping.
+    /// Verifies that a Colombian Emiliani-law holiday already falling on a Monday is not moved and remains unobserved.
+    /// Epiphany 2025 already falls on Monday 6 January.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_ColombianEmilianiHoliday_WhenAlreadyOnMonday_IsNotMoved()
+    {
+        NotableDate notMoved = Single("CO", 2025, "epiphany");
+
+        Assert.AreEqual(
+            (new DateOnly(2025, 1, 6), false),
+            (notMoved.Date, notMoved.IsObserved));
+    }
+
+    /// <summary>
+    /// Verifies that the São Paulo Constitutionalist Revolution holiday resolves for the São Paulo subdivision query.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenBrazilianStateHolidayQueriedForState_ReturnsSingleResult()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
+        Assert.AreEqual(1, AmericasCalendarData.CreateService("BR-SP").Resolve(year, "BR-SP").Count(r => r.NotableDateId == "constitutionalist-revolution"));
+    }
+
+    /// <summary>
+    /// Verifies that the São Paulo Constitutionalist Revolution holiday does not resolve for a plain national Brazil
+    /// query, confirming subdivision scoping.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenBrazilianStateHolidayQueriedNationally_ReturnsNoResult()
     {
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        Assert.AreEqual(1, AmericasCalendarData.CreateService("BR-SP").Resolve(year, "BR-SP").Count(r => r.NotableDateId == "constitutionalist-revolution"),
-            "São Paulo should observe the Constitutionalist Revolution");
-        Assert.AreEqual(0, AmericasCalendarData.CreateService("BR").Resolve(year, "BR").Count(r => r.NotableDateId == "constitutionalist-revolution"),
-            "a plain national Brazil query should not");
+        Assert.AreEqual(0, AmericasCalendarData.CreateService("BR").Resolve(year, "BR").Count(r => r.NotableDateId == "constitutionalist-revolution"));
     }
 
     /// <summary>

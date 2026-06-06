@@ -68,9 +68,9 @@ public sealed class AdjustmentEmissionMatrixTests
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ActualOnly"), 2022);
 
         Assert.HasCount(1, results);
-        Assert.AreEqual(new DateOnly(2022, 1, 1), results[0].Date);
-        Assert.IsFalse(results[0].IsObserved);
-        Assert.IsNull(results[0].AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2022, 1, 1), false, (string?)null),
+            (results[0].Date, results[0].IsObserved, results[0].AdjustmentPolicyId));
     }
 
     /// <summary>
@@ -83,10 +83,9 @@ public sealed class AdjustmentEmissionMatrixTests
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ObservedOnly"), 2022);
 
         Assert.HasCount(1, results);
-        Assert.AreEqual(new DateOnly(2022, 1, 3), results[0].Date);
-        Assert.AreEqual(new DateOnly(2022, 1, 1), results[0].ActualDate);
-        Assert.IsTrue(results[0].IsObserved);
-        Assert.AreEqual("mondayise", results[0].AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2022, 1, 3), (DateOnly?)new DateOnly(2022, 1, 1), true, (string?)"mondayise"),
+            (results[0].Date, results[0].ActualDate, results[0].IsObserved, results[0].AdjustmentPolicyId));
     }
 
     /// <summary>
@@ -98,9 +97,9 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ActualAndObserved"), 2022);
 
-        Assert.HasCount(2, results);
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "observed occurrence");
+        CollectionAssert.AreEqual(
+            new[] { (new DateOnly(2022, 1, 1), false), (new DateOnly(2022, 1, 3), true) },
+            results.OrderBy(r => r.Date).Select(r => (r.Date, r.IsObserved)).ToArray());
     }
 
     /// <summary>
@@ -112,9 +111,9 @@ public sealed class AdjustmentEmissionMatrixTests
     {
         IReadOnlyList<NotableDate> results = ResolveNewYear(EmissionService("ObservedAsAdditional"), 2022);
 
-        Assert.HasCount(2, results);
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "additional observed occurrence");
+        CollectionAssert.AreEqual(
+            new[] { (new DateOnly(2022, 1, 1), false), (new DateOnly(2022, 1, 3), true) },
+            results.OrderBy(r => r.Date).Select(r => (r.Date, r.IsObserved)).ToArray());
     }
 
     /// <summary>
@@ -212,8 +211,9 @@ public sealed class AdjustmentEmissionMatrixTests
             .Resolve(new DateRange(new DateOnly(2026, 12, 25), new DateOnly(2026, 12, 31)), Territory)
             .Single(r => r.NotableDateId == "probe");
 
-        Assert.AreEqual(new DateOnly(2026, 12, 26), match.Date);
-        Assert.AreEqual("shift-one", match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2026, 12, 26), (string?)"shift-one"),
+            (match.Date, match.AdjustmentPolicyId));
     }
 
     /// <summary>
@@ -227,8 +227,9 @@ public sealed class AdjustmentEmissionMatrixTests
             .Resolve(new DateRange(new DateOnly(2026, 12, 25), new DateOnly(2026, 12, 31)), Territory)
             .Single(r => r.NotableDateId == "probe");
 
-        Assert.AreEqual(new DateOnly(2026, 12, 28), match.Date);
-        Assert.AreEqual("shift-three", match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2026, 12, 28), (string?)"shift-three"),
+            (match.Date, match.AdjustmentPolicyId));
     }
 
     /// <summary>
@@ -276,8 +277,9 @@ public sealed class AdjustmentEmissionMatrixTests
             .Resolve(new DateRange(new DateOnly(2026, 12, 26), new DateOnly(2026, 12, 31)), Territory)
             .Single(r => r.NotableDateId == "probe");
 
-        Assert.AreEqual(new DateOnly(2026, 12, 28), match.Date);
-        Assert.AreEqual("weekend-only", match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2026, 12, 28), (string?)"weekend-only"),
+            (match.Date, match.AdjustmentPolicyId));
     }
 
     /// <summary>
@@ -311,8 +313,8 @@ public sealed class AdjustmentEmissionMatrixTests
             .Resolve(new DateRange(new DateOnly(2026, 12, 26), new DateOnly(2026, 12, 31)), Territory)
             .Single(r => r.NotableDateId == "probe");
 
-        Assert.AreEqual(new DateOnly(2026, 12, 26), match.Date);
-        Assert.IsFalse(match.IsObserved);
-        Assert.IsNull(match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2026, 12, 26), false, (string?)null),
+            (match.Date, match.IsObserved, match.AdjustmentPolicyId));
     }
 }

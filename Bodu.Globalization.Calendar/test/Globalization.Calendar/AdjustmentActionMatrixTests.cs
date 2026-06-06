@@ -116,8 +116,9 @@ public sealed class AdjustmentActionMatrixTests
     {
         NotableDate match = Single(AddDaysService(0), "probe", new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 1));
 
-        Assert.AreEqual(new DateOnly(2026, 7, 1), match.Date);
-        Assert.AreEqual("shift", match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2026, 7, 1), (string?)"shift"),
+            (match.Date, match.AdjustmentPolicyId));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -342,8 +343,9 @@ public sealed class AdjustmentActionMatrixTests
         // Probe anchor Wed 23 Dec → step to Thu 24 Dec (occupied by blocker, skipped) → Fri 25 Dec (free working day).
         NotableDate probe = Single(service, "probe", new DateOnly(2026, 12, 1), new DateOnly(2026, 12, 31));
 
-        Assert.AreEqual(new DateOnly(2026, 12, 25), probe.Date);
-        Assert.AreEqual(new DateOnly(2026, 12, 23), probe.ActualDate);
+        Assert.AreEqual(
+            (new DateOnly(2026, 12, 25), (DateOnly?)new DateOnly(2026, 12, 23)),
+            (probe.Date, probe.ActualDate));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -382,9 +384,9 @@ public sealed class AdjustmentActionMatrixTests
 
         NotableDate match = Single(service, "replacement", new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 31));
 
-        Assert.AreEqual(new DateOnly(2026, 7, 15), match.Date);
-        Assert.AreEqual(new DateOnly(2026, 7, 1), match.ActualDate);
-        Assert.IsTrue(match.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2026, 7, 15), (DateOnly?)new DateOnly(2026, 7, 1), true),
+            (match.Date, match.ActualDate, match.IsObserved));
     }
 
     /// <summary>
@@ -416,8 +418,8 @@ public sealed class AdjustmentActionMatrixTests
 
         NotableDate match = Single(service, "probe", new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 5));
 
-        Assert.AreEqual(new DateOnly(2026, 7, 1), match.Date);
-        Assert.IsFalse(match.IsObserved);
-        Assert.IsNull(match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (new DateOnly(2026, 7, 1), false, (string?)null),
+            (match.Date, match.IsObserved, match.AdjustmentPolicyId));
     }
 }

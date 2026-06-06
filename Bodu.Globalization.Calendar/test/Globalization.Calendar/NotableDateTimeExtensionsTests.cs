@@ -96,13 +96,12 @@ public sealed class NotableDateTimeExtensionsTests
 
         DateTime next = start.NextWorkingDay(Service, "XX");
 
-        Assert.AreEqual(new DateOnly(2026, 1, 2), DateOnly.FromDateTime(next));
-        Assert.AreEqual(new TimeSpan(14, 30, 0), next.TimeOfDay);
+        Assert.AreEqual(new DateTime(2026, 1, 2, 14, 30, 0, DateTimeKind.Utc), next);
         Assert.AreEqual(DateTimeKind.Utc, next.Kind);
     }
 
     /// <summary>
-    /// Verifies that the holiday is reported as a non-working day.
+    /// Verifies that <see cref="NotableDateTimeExtensions.IsWorkingDay" /> reports the holiday as not a working day.
     /// </summary>
     [TestMethod]
     public void IsWorkingDay_OnHoliday_ShouldBeFalse()
@@ -110,6 +109,16 @@ public sealed class NotableDateTimeExtensionsTests
         DateTime holiday = new(2026, 1, 1, 9, 0, 0, DateTimeKind.Utc);
 
         Assert.IsFalse(holiday.IsWorkingDay(Service, "XX"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateTimeExtensions.IsNonWorkingDay" /> reports the holiday as a non-working day.
+    /// </summary>
+    [TestMethod]
+    public void IsNonWorkingDay_OnHoliday_ShouldBeTrue()
+    {
+        DateTime holiday = new(2026, 1, 1, 9, 0, 0, DateTimeKind.Utc);
+
         Assert.IsTrue(holiday.IsNonWorkingDay(Service, "XX"));
     }
 

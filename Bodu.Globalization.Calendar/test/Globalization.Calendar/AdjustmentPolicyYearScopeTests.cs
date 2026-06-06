@@ -55,60 +55,80 @@ public sealed class AdjustmentPolicyYearScopeTests
         service.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 1, 7)), Territory).Single();
 
     /// <summary>
-    /// Verifies that a <c>fromYear</c> scope applies the substitution from that year onward but not before.
+    /// Verifies that a <c>fromYear="2022"</c> scope applies the substitution from that year onward but not before,
+    /// emitting the observed Monday in scope and the unshifted Saturday actual date out of scope. 1 January is a
+    /// Saturday in both 2011 and 2022.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expectedObserved">Whether the substitution applies in that year.</param>
+    /// <param name="expectedMonth">The expected emitted month.</param>
+    /// <param name="expectedDay">The expected emitted day.</param>
     [TestMethod]
-    public void FromYear_AppliesFromThatYearOnward()
+    [DataRow(2022, true, 1, 3)]    // in scope -> observed Monday 3 January
+    [DataRow(2011, false, 1, 1)]   // before fromYear -> unshifted Saturday 1 January
+    public void FromYear_AppliesFromThatYearOnward(int year, bool expectedObserved, int expectedMonth, int expectedDay)
     {
         INotableDateService service = Build("""<Scope fromYear="2022" />""");
 
-        NotableDate applied = ResolveNewYear(service, 2022);
-        Assert.IsTrue(applied.IsObserved);
-        Assert.AreEqual(new DateOnly(2022, 1, 3), applied.Date);
+        NotableDate occurrence = ResolveNewYear(service, year);
 
-        // 1 January 2011 is also a Saturday, but it precedes the policy's fromYear, so no substitution applies.
-        NotableDate notApplied = ResolveNewYear(service, 2011);
-        Assert.IsFalse(notApplied.IsObserved);
-        Assert.AreEqual(new DateOnly(2011, 1, 1), notApplied.Date);
+        Assert.AreEqual(
+            (expectedObserved, new DateOnly(year, expectedMonth, expectedDay)),
+            (occurrence.IsObserved, occurrence.Date));
     }
 
     /// <summary>
-    /// Verifies that a <c>toYear</c> scope applies the substitution up to that year but not after.
+    /// Verifies that a <c>toYear="2022"</c> scope applies the substitution up to that year but not after, emitting the
+    /// observed Monday in scope and the unshifted weekend actual date out of scope. 1 January is a Saturday in 2022 and
+    /// a Sunday in 2023.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expectedObserved">Whether the substitution applies in that year.</param>
+    /// <param name="expectedMonth">The expected emitted month.</param>
+    /// <param name="expectedDay">The expected emitted day.</param>
     [TestMethod]
-    public void ToYear_AppliesUpToThatYear()
+    [DataRow(2022, true, 1, 3)]    // in scope -> observed Monday 3 January
+    [DataRow(2023, false, 1, 1)]   // after toYear -> unshifted Sunday 1 January
+    public void ToYear_AppliesUpToThatYear(int year, bool expectedObserved, int expectedMonth, int expectedDay)
     {
         INotableDateService service = Build("""<Scope toYear="2022" />""");
 
-        Assert.IsTrue(ResolveNewYear(service, 2022).IsObserved);
+        NotableDate occurrence = ResolveNewYear(service, year);
 
-        NotableDate after = ResolveNewYear(service, 2023);
-        Assert.IsFalse(after.IsObserved);
-        Assert.AreEqual(new DateOnly(2023, 1, 1), after.Date);
+        Assert.AreEqual(
+            (expectedObserved, new DateOnly(year, expectedMonth, expectedDay)),
+            (occurrence.IsObserved, occurrence.Date));
     }
 
     /// <summary>
-    /// Verifies that an <c>OnlyYear</c> scope applies the substitution only in the listed year.
+    /// Verifies that an <c>OnlyYear="2022"</c> scope applies the substitution only in the listed year.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expectedObserved">Whether the substitution applies in that year.</param>
     [TestMethod]
-    public void OnlyYears_AppliesOnlyInListedYears()
+    [DataRow(2022, true)]   // listed year -> observed
+    [DataRow(2023, false)]  // unlisted year -> not observed
+    public void OnlyYears_AppliesOnlyInListedYears(int year, bool expectedObserved)
     {
         INotableDateService service = Build("""<Scope><OnlyYear value="2022" /></Scope>""");
 
-        Assert.IsTrue(ResolveNewYear(service, 2022).IsObserved);
-        Assert.IsFalse(ResolveNewYear(service, 2023).IsObserved);
+        Assert.AreEqual(expectedObserved, ResolveNewYear(service, year).IsObserved);
     }
 
     /// <summary>
-    /// Verifies that an <c>ExceptYear</c> scope suppresses the substitution in the listed year while applying elsewhere.
+    /// Verifies that an <c>ExceptYear="2022"</c> scope suppresses the substitution in the listed year while applying
+    /// elsewhere.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expectedObserved">Whether the substitution applies in that year.</param>
     [TestMethod]
-    public void ExceptYears_SuppressesListedYears()
+    [DataRow(2022, false)]  // excluded year -> not observed
+    [DataRow(2023, true)]   // other year -> observed
+    public void ExceptYears_SuppressesListedYears(int year, bool expectedObserved)
     {
         INotableDateService service = Build("""<Scope><ExceptYear value="2022" /></Scope>""");
 
-        Assert.IsFalse(ResolveNewYear(service, 2022).IsObserved);
-        Assert.IsTrue(ResolveNewYear(service, 2023).IsObserved);
+        Assert.AreEqual(expectedObserved, ResolveNewYear(service, year).IsObserved);
     }
 
     /// <summary>

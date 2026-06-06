@@ -24,20 +24,28 @@ public sealed class AdjustmentTests
         NotableDateFixtures.Resolver("adjustments.xml");
 
     /// <summary>
-    /// Verifies that the observed-only emission emits only the Monday observance and suppresses the weekend actual date.
+    /// Verifies that the observed-only emission suppresses the weekend actual date, emitting nothing on 1 January 2022 (a
+    /// Saturday).
+    /// </summary>
+    [TestMethod]
+    public void Emission_ObservedOnly_WhenWeekendActualDate_ShouldSuppressActual()
+    {
+        Assert.AreEqual(0, Count(CreateResolver().Resolve(new DateOnly(2022, 1, 1), Territory), "observed-only"));
+    }
+
+    /// <summary>
+    /// Verifies that the observed-only emission emits the observed Monday occurrence carrying the actual date and the
+    /// adjustment-policy id. 1 January 2022 (a Saturday) is observed on Monday 3 January.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void Emission_ObservedOnly_EmitsObservedAndSuppressesActual()
+    public void Emission_ObservedOnly_WhenObservedMonday_ShouldEmitObservedWithPolicy()
     {
-        NotableDateService resolver = CreateResolver();
+        NotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2022, 1, 3), Territory), "observed-only");
 
-        Assert.AreEqual(0, Count(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "observed-only"), "actual suppressed");
-
-        NotableDate observed = Single(resolver.Resolve(new DateOnly(2022, 1, 3), Territory), "observed-only");
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2022, 1, 1), observed.ActualDate);
-        Assert.AreEqual("weekend-next-monday-observed", observed.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2022, 1, 1), (string?)"weekend-next-monday-observed"),
+            (observed.IsObserved, observed.ActualDate, observed.AdjustmentPolicyId));
     }
 
     /// <summary>
@@ -51,9 +59,9 @@ public sealed class AdjustmentTests
             .Where(r => r.NotableDateId == "actual-and-observed")
             .ToList();
 
-        Assert.HasCount(2, results);
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "observed occurrence");
+        CollectionAssert.AreEqual(
+            new[] { (new DateOnly(2022, 1, 1), false), (new DateOnly(2022, 1, 3), true) },
+            results.OrderBy(r => r.Date).Select(r => (r.Date, r.IsObserved)).ToArray());
     }
 
     /// <summary>
@@ -67,54 +75,78 @@ public sealed class AdjustmentTests
             .Where(r => r.NotableDateId == "observed-additional")
             .ToList();
 
-        Assert.HasCount(2, results);
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 1) && !r.IsObserved, results, "actual occurrence");
-        Assert.Contains(r => r.Date == new DateOnly(2022, 1, 3) && r.IsObserved, results, "additional observed occurrence");
+        CollectionAssert.AreEqual(
+            new[] { (new DateOnly(2022, 1, 1), false), (new DateOnly(2022, 1, 3), true) },
+            results.OrderBy(r => r.Date).Select(r => (r.Date, r.IsObserved)).ToArray());
     }
 
     /// <summary>
-    /// Verifies that the actual-only emission keeps the weekend actual date and emits nothing on the computed Monday.
+    /// Verifies that the actual-only emission keeps the weekend actual date as an unobserved occurrence carrying no
+    /// adjustment-policy id.
     /// </summary>
     [TestMethod]
-    public void Emission_ActualOnly_KeepsActualAndIgnoresObserved()
+    public void Emission_ActualOnly_WhenWeekendActualDate_ShouldKeepUnobservedActual()
     {
-        NotableDateService resolver = CreateResolver();
+        NotableDate actual = Single(CreateResolver().Resolve(new DateOnly(2022, 1, 1), Territory), "actual-only");
 
-        NotableDate actual = Single(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "actual-only");
-        Assert.IsFalse(actual.IsObserved);
-        Assert.IsNull(actual.AdjustmentPolicyId);
-
-        Assert.AreEqual(0, Count(resolver.Resolve(new DateOnly(2022, 1, 3), Territory), "actual-only"), "no observed emitted");
+        Assert.AreEqual(
+            (false, (string?)null),
+            (actual.IsObserved, actual.AdjustmentPolicyId));
     }
 
     /// <summary>
-    /// Verifies that the suppress emission removes the occurrence on a weekend but leaves it on a weekday.
+    /// Verifies that the actual-only emission emits nothing on the computed Monday substitute.
     /// </summary>
     [TestMethod]
-    public void Emission_Suppress_RemovesWeekendOccurrenceOnly()
+    public void Emission_ActualOnly_WhenComputedMonday_ShouldNotEmitObserved()
     {
-        NotableDateService resolver = CreateResolver();
-
-        Assert.AreEqual(0, Count(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "suppress-weekend"), "weekend suppressed");
-
-        NotableDate weekday = Single(resolver.Resolve(new DateOnly(2026, 1, 1), Territory), "suppress-weekend");
-        Assert.IsFalse(weekday.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 1), weekday.Date);
+        Assert.AreEqual(0, Count(CreateResolver().Resolve(new DateOnly(2022, 1, 3), Territory), "actual-only"));
     }
 
     /// <summary>
-    /// Verifies that an always trigger with an add-days action shifts every occurrence by the configured number of days.
+    /// Verifies that the suppress emission removes the occurrence when 1 January falls on a weekend (2022, a Saturday).
     /// </summary>
     [TestMethod]
-    public void Action_AddDays_WithAlwaysTrigger_ShiftsEveryOccurrence()
+    public void Emission_Suppress_WhenWeekend_ShouldRemoveOccurrence()
     {
-        NotableDateService resolver = CreateResolver();
+        Assert.AreEqual(0, Count(CreateResolver().Resolve(new DateOnly(2022, 1, 1), Territory), "suppress-weekend"));
+    }
 
-        NotableDate observed = Single(resolver.Resolve(new DateOnly(2026, 1, 2), Territory), "always-shift");
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 1), observed.ActualDate);
+    /// <summary>
+    /// Verifies that the suppress emission leaves the occurrence in place when 1 January falls on a weekday (2026, a
+    /// Thursday), emitting the unobserved actual date.
+    /// </summary>
+    [TestMethod]
+    public void Emission_Suppress_WhenWeekday_ShouldKeepOccurrence()
+    {
+        NotableDate weekday = Single(CreateResolver().Resolve(new DateOnly(2026, 1, 1), Territory), "suppress-weekend");
 
-        Assert.AreEqual(0, Count(resolver.Resolve(new DateOnly(2026, 1, 1), Territory), "always-shift"), "actual suppressed by observed-only");
+        Assert.AreEqual(
+            (false, new DateOnly(2026, 1, 1)),
+            (weekday.IsObserved, weekday.Date));
+    }
+
+    /// <summary>
+    /// Verifies that an always trigger with an add-days action shifts the occurrence forward by the configured day,
+    /// emitting an observed 2 January 2026 that carries the 1 January actual date.
+    /// </summary>
+    [TestMethod]
+    public void Action_AddDays_WithAlwaysTrigger_WhenShifted_ShouldEmitObservedWithActualDate()
+    {
+        NotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2026, 1, 2), Territory), "always-shift");
+
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2026, 1, 1)),
+            (observed.IsObserved, observed.ActualDate));
+    }
+
+    /// <summary>
+    /// Verifies that the add-days shift, emitted observed-only, suppresses the unshifted 1 January actual date.
+    /// </summary>
+    [TestMethod]
+    public void Action_AddDays_WithAlwaysTrigger_WhenActualDate_ShouldSuppressActual()
+    {
+        Assert.AreEqual(0, Count(CreateResolver().Resolve(new DateOnly(2026, 1, 1), Territory), "always-shift"));
     }
 
     /// <summary>
@@ -126,21 +158,26 @@ public sealed class AdjustmentTests
     {
         NotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2022, 12, 30), Territory), "prev-friday");
 
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2022, 12, 30), observed.Date);
-        Assert.AreEqual(new DateOnly(2023, 1, 1), observed.ActualDate);
+        Assert.AreEqual(
+            (true, new DateOnly(2022, 12, 30), (DateOnly?)new DateOnly(2023, 1, 1)),
+            (observed.IsObserved, observed.Date, observed.ActualDate));
     }
 
     /// <summary>
-    /// Verifies that the move-to-next-working-day action moves weekend occurrences forward to Monday.
+    /// Verifies that the move-to-next-working-day action moves a weekend 1 January occurrence forward to the following
+    /// Monday. 1 January 2022 (a Saturday) is observed on Monday 3 January; 1 January 2023 (a Sunday) on Monday 2 January.
     /// </summary>
+    /// <param name="year">The observed Monday year.</param>
+    /// <param name="month">The observed Monday month.</param>
+    /// <param name="day">The observed Monday day.</param>
     [TestMethod]
-    public void Action_MoveToNextWorkingDay_MovesWeekendForwardToMonday()
+    [DataRow(2022, 1, 3)]  // 1 Jan 2022 Saturday -> Monday 3 Jan
+    [DataRow(2023, 1, 2)]  // 1 Jan 2023 Sunday -> Monday 2 Jan
+    public void Action_MoveToNextWorkingDay_WhenWeekendOccurrence_ShouldMoveToMonday(int year, int month, int day)
     {
-        NotableDateService resolver = CreateResolver();
+        DateOnly monday = new(year, month, day);
 
-        Assert.AreEqual(new DateOnly(2022, 1, 3), Single(resolver.Resolve(new DateOnly(2022, 1, 3), Territory), "next-working-day").Date);
-        Assert.AreEqual(new DateOnly(2023, 1, 2), Single(resolver.Resolve(new DateOnly(2023, 1, 2), Territory), "next-working-day").Date);
+        Assert.AreEqual(monday, Single(CreateResolver().Resolve(monday, Territory), "next-working-day").Date);
     }
 
     /// <summary>
@@ -151,24 +188,35 @@ public sealed class AdjustmentTests
     {
         NotableDate observed = Single(CreateResolver().Resolve(new DateOnly(2021, 12, 31), Territory), "prev-working-day");
 
-        Assert.AreEqual(new DateOnly(2021, 12, 31), observed.Date);
-        Assert.AreEqual(new DateOnly(2022, 1, 1), observed.ActualDate);
+        Assert.AreEqual(
+            (new DateOnly(2021, 12, 31), (DateOnly?)new DateOnly(2022, 1, 1)),
+            (observed.Date, observed.ActualDate));
     }
 
     /// <summary>
-    /// Verifies that the if-weekday trigger fires only on weekdays.
+    /// Verifies that the if-weekday trigger fires on a weekday occurrence, emitting an observed 3 January 2026 that carries
+    /// the 1 January actual date.
     /// </summary>
     [TestMethod]
-    public void Trigger_IfWeekday_FiresOnWeekdaysOnly()
+    public void Trigger_IfWeekday_WhenWeekday_ShouldFireAndShift()
     {
-        NotableDateService resolver = CreateResolver();
+        NotableDate weekday = Single(CreateResolver().Resolve(new DateOnly(2026, 1, 3), Territory), "weekday-shift");
 
-        NotableDate weekday = Single(resolver.Resolve(new DateOnly(2026, 1, 3), Territory), "weekday-shift");
-        Assert.IsTrue(weekday.IsObserved, "weekday occurrence shifted");
-        Assert.AreEqual(new DateOnly(2026, 1, 1), weekday.ActualDate);
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2026, 1, 1)),
+            (weekday.IsObserved, weekday.ActualDate));
+    }
 
-        NotableDate weekend = Single(resolver.Resolve(new DateOnly(2022, 1, 1), Territory), "weekday-shift");
-        Assert.IsFalse(weekend.IsObserved, "weekend occurrence unchanged");
+    /// <summary>
+    /// Verifies that the if-weekday trigger does not fire on a weekend occurrence, leaving 1 January 2022 (a Saturday)
+    /// unobserved.
+    /// </summary>
+    [TestMethod]
+    public void Trigger_IfWeekday_WhenWeekend_ShouldNotFire()
+    {
+        NotableDate weekend = Single(CreateResolver().Resolve(new DateOnly(2022, 1, 1), Territory), "weekday-shift");
+
+        Assert.IsFalse(weekend.IsObserved);
     }
 
     /// <summary>

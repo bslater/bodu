@@ -141,7 +141,7 @@ The `Bodu.Extensions` namespace ships several enums that encode the *shape* of a
 | Type | Encodes |
 |---|---|
 | <xref:Bodu.Extensions.CalendarQuarterDefinition> | The start month of Q1 — `JanuaryToDecember`, `JulyToJune`, `AprilToMarch`, `April6ToApril5` (UK tax year), `March25ToMarch24` (Lady Day), `OctoberToSeptember`, `FebruaryToJanuary`, plus `Custom` for externally defined rules. Drives `FirstDateOfQuarter`, `LastDateOfQuarter`, `Quarter`, `FiscalYear`. |
-| <xref:Bodu.Extensions.WeekOfMonthOrdinal> | The ordinal position of a weekday in a month — `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`. Drives `NthDateOfWeekInMonth` and the recurrence-rule patterns. |
+| <xref:Bodu.Extensions.WeekOrdinal> | The ordinal position of a weekday in a month — `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`. Drives `NthDateOfWeekInMonth` and the recurrence-rule patterns. |
 | <xref:Bodu.Extensions.FiscalWeekPattern> | The 4-4-5 / 4-5-4 / 5-4-4 split for retail-style 13-week fiscal quarters. Each quarter is always 13 weeks; the pattern only affects fiscal-period boundaries inside the quarter. The extra week in a 53-week fiscal year is always appended to the final period of Q4. |
 | <xref:Bodu.WorkingDaysOfWeek> | Named working-week presets — `MondayToFriday`, `MondayToSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, and others — plus `Custom` for caller-supplied `WeekPattern` schedules. Drives `IsWeekday`, `IsWeekend`, `IsInWorkingWeek`, `NextWeekday`. |
 | <xref:Bodu.Extensions.IWeekendDefinitionProvider> | The injection seam for non-enumerable weekend rules — pass an implementation to override the built-in `WorkingDaysOfWeek` presets when an application needs hybrid, rotating, or domain-specific weekend logic. |

@@ -17,10 +17,9 @@ public partial class NotableDateDocumentBuilderTests
     {
         NotableDateResource resource = SampleDocument().Build();
 
-        Assert.AreEqual("demo.sample", resource.ResourceId);
-        Assert.HasCount(4, resource.NotableDates);
-        Assert.AreEqual(RangeResolution.DuplicatePolicy.KeepFirst, resource.ResolutionPolicy.DuplicatePolicy);
-        Assert.HasCount(1, resource.AdjustmentPolicies);
+        Assert.AreEqual(
+            ("demo.sample", 4, RangeResolution.DuplicatePolicy.KeepFirst, 1),
+            (resource.ResourceId, resource.NotableDates.Count, resource.ResolutionPolicy.DuplicatePolicy, resource.AdjustmentPolicies.Count));
     }
 
     /// <summary>
@@ -33,8 +32,9 @@ public partial class NotableDateDocumentBuilderTests
 
         NotableDate newYear = service.Resolve(2026, "US").Single(n => n.NotableDateId == "new-years-day");
 
-        Assert.AreEqual(new DateOnly(2026, 1, 1), newYear.Date);
-        Assert.AreEqual("New Year's Day", newYear.DisplayName);
+        Assert.AreEqual(
+            (new DateOnly(2026, 1, 1), "New Year's Day"),
+            (newYear.Date, newYear.DisplayName));
     }
 
     /// <summary>
@@ -88,9 +88,9 @@ public partial class NotableDateDocumentBuilderTests
         // 1 January 2028 falls on a Saturday; the weekend-to-monday policy moves it to Monday 3 January.
         NotableDate newYear = service.Resolve(2028, "US").Single(n => n.NotableDateId == "new-years-day");
 
-        Assert.IsTrue(newYear.IsObserved);
-        Assert.AreEqual(new DateOnly(2028, 1, 1), newYear.ActualDate);
-        Assert.AreEqual(new DateOnly(2028, 1, 3), newYear.Date);
+        Assert.AreEqual(
+            (new DateOnly(2028, 1, 3), (DateOnly?)new DateOnly(2028, 1, 1), true),
+            (newYear.Date, newYear.ActualDate, newYear.IsObserved));
     }
 
     /// <summary>

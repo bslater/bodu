@@ -93,19 +93,29 @@ public sealed class NotableDateFilterTests
     }
 
     /// <summary>
-    /// Verifies that conjunction keeps only occurrences matching every filter, and disjunction keeps occurrences
-    /// matching either.
+    /// Verifies that conjunction keeps only occurrences matching every filter, so a major-and-public-holiday filter
+    /// keeps the two major public holidays.
     /// </summary>
     [TestMethod]
-    public void Resolve_WhenComposedWithAndOr_AppliesBooleanLogic()
+    public void Resolve_WhenComposedWithAnd_KeepsConjunction()
     {
         NotableDateFilter majorPublicHoliday = NotableDateFilter.WithTag("major")
             .And(NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
-        CollectionAssert.AreEqual(new[] { "new-year", "spring-week" }, Resolve(majorPublicHoliday));
 
+        CollectionAssert.AreEqual(new[] { "new-year", "spring-week" }, Resolve(majorPublicHoliday));
+    }
+
+    /// <summary>
+    /// Verifies that disjunction keeps occurrences matching either filter, so a cultural-or-long filter keeps the
+    /// cultural festival and the multi-day span.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenComposedWithOr_KeepsDisjunction()
+    {
         var culturalOrLong = NotableDateFilter.AnyOf(
             NotableDateFilter.ForCategory(NotableDateCategory.Cultural),
             NotableDateFilter.WithMinDuration(2));
+
         CollectionAssert.AreEqual(new[] { "culture-fest", "spring-week" }, Resolve(culturalOrLong));
     }
 
@@ -118,7 +128,8 @@ public sealed class NotableDateFilterTests
         IReadOnlyList<NotableDate> results = CreateService()
             .Resolve(new DateOnly(2023, 2, 3), "XX", NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
 
-        Assert.HasCount(1, results);
-        Assert.AreEqual("spring-week", results[0].NotableDateId);
+        CollectionAssert.AreEqual(
+            new[] { "spring-week" },
+            results.Select(r => r.NotableDateId).ToArray());
     }
 }

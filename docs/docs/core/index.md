@@ -71,7 +71,7 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
 | <xref:Bodu.Extensions.IComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
-| <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOfMonthOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
+| <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
 
 ### `Bodu.Globalization.Extensions`
 Culture-aware date / calendar helpers built on top of <xref:System.Globalization.DateTimeFormatInfo>.

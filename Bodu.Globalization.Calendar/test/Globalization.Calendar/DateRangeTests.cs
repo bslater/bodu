@@ -24,41 +24,61 @@ public sealed class DateRangeTests
     /// <summary>
     /// Verifies that a range contains a range fully within its bounds, including an identical range.
     /// </summary>
+    /// <param name="outerStart">The outer range start day.</param>
+    /// <param name="outerEnd">The outer range end day.</param>
+    /// <param name="innerStart">The inner range start day.</param>
+    /// <param name="innerEnd">The inner range end day.</param>
     [TestMethod]
-    public void Contains_WhenInnerWithinOuter_ShouldReturnTrue()
+    [DataRow(1, 10, 3, 7)]    // strictly within
+    [DataRow(1, 10, 1, 10)]   // identical range
+    public void Contains_WhenInnerWithinOuter_ShouldReturnTrue(int outerStart, int outerEnd, int innerStart, int innerEnd)
     {
-        Assert.IsTrue(Range(1, 10).Contains(Range(3, 7)));
-        Assert.IsTrue(Range(1, 10).Contains(Range(1, 10)));
+        Assert.IsTrue(Range(outerStart, outerEnd).Contains(Range(innerStart, innerEnd)));
     }
 
     /// <summary>
     /// Verifies that a range does not contain a range that extends past either bound.
     /// </summary>
+    /// <param name="outerStart">The outer range start day.</param>
+    /// <param name="outerEnd">The outer range end day.</param>
+    /// <param name="innerStart">The inner range start day.</param>
+    /// <param name="innerEnd">The inner range end day.</param>
     [TestMethod]
-    public void Contains_WhenInnerExtendsBeyond_ShouldReturnFalse()
+    [DataRow(3, 7, 1, 10)]    // inner extends past both bounds
+    [DataRow(1, 5, 4, 8)]     // inner extends past the upper bound
+    public void Contains_WhenInnerExtendsBeyond_ShouldReturnFalse(int outerStart, int outerEnd, int innerStart, int innerEnd)
     {
-        Assert.IsFalse(Range(3, 7).Contains(Range(1, 10)));
-        Assert.IsFalse(Range(1, 5).Contains(Range(4, 8)));
+        Assert.IsFalse(Range(outerStart, outerEnd).Contains(Range(innerStart, innerEnd)));
     }
 
     /// <summary>
     /// Verifies that containment is false when either range is not well-formed.
     /// </summary>
+    /// <param name="outerStart">The outer range start day.</param>
+    /// <param name="outerEnd">The outer range end day.</param>
+    /// <param name="innerStart">The inner range start day.</param>
+    /// <param name="innerEnd">The inner range end day.</param>
     [TestMethod]
-    public void Contains_WhenEitherRangeInvalid_ShouldReturnFalse()
+    [DataRow(10, 1, 3, 7)]    // outer range reversed
+    [DataRow(1, 10, 7, 3)]    // inner range reversed
+    public void Contains_WhenEitherRangeInvalid_ShouldReturnFalse(int outerStart, int outerEnd, int innerStart, int innerEnd)
     {
-        Assert.IsFalse(Range(10, 1).Contains(Range(3, 7)));
-        Assert.IsFalse(Range(1, 10).Contains(Range(7, 3)));
+        Assert.IsFalse(Range(outerStart, outerEnd).Contains(Range(innerStart, innerEnd)));
     }
 
     /// <summary>
     /// Verifies that overlapping ranges intersect, regardless of order.
     /// </summary>
+    /// <param name="firstStart">The first range start day.</param>
+    /// <param name="firstEnd">The first range end day.</param>
+    /// <param name="secondStart">The second range start day.</param>
+    /// <param name="secondEnd">The second range end day.</param>
     [TestMethod]
-    public void Intersects_WhenRangesOverlap_ShouldReturnTrue()
+    [DataRow(1, 5, 4, 8)]     // overlap
+    [DataRow(4, 8, 1, 5)]     // overlap with operands swapped
+    public void Intersects_WhenRangesOverlap_ShouldReturnTrue(int firstStart, int firstEnd, int secondStart, int secondEnd)
     {
-        Assert.IsTrue(Range(1, 5).Intersects(Range(4, 8)));
-        Assert.IsTrue(Range(4, 8).Intersects(Range(1, 5)));
+        Assert.IsTrue(Range(firstStart, firstEnd).Intersects(Range(secondStart, secondEnd)));
     }
 
     /// <summary>

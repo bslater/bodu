@@ -73,18 +73,31 @@ public sealed class ExtendedTriggerTests
         Service.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX").Single(r => r.NotableDateId == id);
 
     /// <summary>
-    /// Verifies that the leap-year trigger fires only in leap years.
+    /// Verifies that the leap-year trigger fires in a leap year, shifting the observed date back one day. 1 March 2024 is
+    /// observed on 29 February 2024.
     /// </summary>
     [TestMethod]
-    public void IfLeapYear_FiresOnlyInLeapYears()
+    public void IfLeapYear_WhenLeapYear_ShouldFireAndShift()
     {
         NotableDate leap = Single(2024, "march-first");
-        Assert.IsTrue(leap.IsObserved);
-        Assert.AreEqual(new DateOnly(2024, 2, 29), leap.Date);
 
+        Assert.AreEqual(
+            (true, new DateOnly(2024, 2, 29)),
+            (leap.IsObserved, leap.Date));
+    }
+
+    /// <summary>
+    /// Verifies that the leap-year trigger does not fire in a common year, leaving the occurrence on its actual date.
+    /// 1 March 2025 is emitted unobserved.
+    /// </summary>
+    [TestMethod]
+    public void IfLeapYear_WhenCommonYear_ShouldNotFire()
+    {
         NotableDate common = Single(2025, "march-first");
-        Assert.IsFalse(common.IsObserved);
-        Assert.AreEqual(new DateOnly(2025, 3, 1), common.Date);
+
+        Assert.AreEqual(
+            (false, new DateOnly(2025, 3, 1)),
+            (common.IsObserved, common.Date));
     }
 
     /// <summary>
@@ -94,8 +107,10 @@ public sealed class ExtendedTriggerTests
     public void IfBeforeFixedDate_FiresWhenEarlier()
     {
         NotableDate match = Single(2025, "jan-fifteen");
-        Assert.IsTrue(match.IsObserved);
-        Assert.AreEqual(new DateOnly(2025, 1, 20), match.Date);
+
+        Assert.AreEqual(
+            (true, new DateOnly(2025, 1, 20)),
+            (match.IsObserved, match.Date));
     }
 
     /// <summary>
@@ -105,8 +120,10 @@ public sealed class ExtendedTriggerTests
     public void IfAfterFixedDate_FiresWhenLater()
     {
         NotableDate match = Single(2025, "nov-fifteen");
-        Assert.IsTrue(match.IsObserved);
-        Assert.AreEqual(new DateOnly(2025, 11, 18), match.Date);
+
+        Assert.AreEqual(
+            (true, new DateOnly(2025, 11, 18)),
+            (match.IsObserved, match.Date));
     }
 
     /// <summary>
@@ -117,7 +134,9 @@ public sealed class ExtendedTriggerTests
     public void IfNthOccurrenceInMonth_FiresOnTheConfiguredOrdinal()
     {
         NotableDate match = Single(2025, "second-monday");
-        Assert.IsTrue(match.IsObserved);
-        Assert.AreEqual(new DateOnly(2025, 6, 10), match.Date);
+
+        Assert.AreEqual(
+            (true, new DateOnly(2025, 6, 10)),
+            (match.IsObserved, match.Date));
     }
 }

@@ -320,18 +320,18 @@ public sealed class AdjustmentTriggerMatrixTests
     /// non-leap occurrence year, so <see cref="AdjustmentTrigger.IfBeforeFixedDate" /> evaluates without overflow: an
     /// occurrence on 28 February 2026 is not strictly before the clamped 28 February pivot. 2026 is not a leap year.
     /// </summary>
+    /// <param name="strategyDay">The day of February 2026 the holiday's fixed strategy resolves to.</param>
+    /// <param name="expectedFire">Whether the trigger is expected to fire against the clamped 28 February pivot.</param>
     [TestMethod]
-    public void IfBeforeFixedDate_WhenComparisonIsFeb29InNonLeapYear_ShouldClampToFeb28()
+    [DataRow(15, true)]   // 15 Feb is strictly before the clamped 28 Feb pivot → fire
+    [DataRow(28, false)]  // 28 Feb equals the clamped pivot, not strictly before → no fire
+    public void IfBeforeFixedDate_WhenComparisonIsFeb29InNonLeapYear_ShouldClampToFeb28(int strategyDay, bool expectedFire)
     {
-        // Occurrence on 15 Feb 2026 → strictly before the clamped 28 Feb pivot → fires.
-        Assert.IsTrue(FixedDateService("IfBeforeFixedDate", "February", 29, "February", 15)
+        NotableDate match = FixedDateService("IfBeforeFixedDate", "February", 29, "February", strategyDay)
             .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), Territory)
-            .Single(r => r.NotableDateId == "probe").IsObserved);
+            .Single(r => r.NotableDateId == "probe");
 
-        // Occurrence on 28 Feb 2026 → equals the clamped pivot, not strictly before → does not fire.
-        Assert.IsFalse(FixedDateService("IfBeforeFixedDate", "February", 29, "February", 28)
-            .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), Territory)
-            .Single(r => r.NotableDateId == "probe").IsObserved);
+        Assert.AreEqual(expectedFire, match.IsObserved);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -413,7 +413,8 @@ public sealed class AdjustmentTriggerMatrixTests
             .Resolve(new DateRange(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 30)), Territory)
             .Single(r => r.NotableDateId == "probe");
 
-        Assert.IsFalse(match.IsObserved);
-        Assert.IsNull(match.AdjustmentPolicyId);
+        Assert.AreEqual(
+            (false, (string?)null),
+            (match.IsObserved, match.AdjustmentPolicyId));
     }
 }

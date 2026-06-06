@@ -118,15 +118,18 @@ public sealed class RuleApplicabilityTests
     /// Verifies that an <c>ExceptYear</c> inside a <c>fromYear</c>/<c>toYear</c> window is suppressed while the rest of
     /// the window remains applicable.
     /// </summary>
+    /// <param name="year">The Gregorian year being resolved.</param>
+    /// <param name="expected">The expected applicability outcome for the 2020-2030 window excepting 2025.</param>
     [TestMethod]
-    public void AppliesTo_WhenWindowWithExceptYear_ShouldSuppressOnlyThatYear()
+    [DataRow(2024, true)]   // inside window
+    [DataRow(2025, false)]  // excepted year
+    [DataRow(2026, true)]   // inside window
+    [DataRow(2019, false)]  // below window
+    public void AppliesTo_WhenWindowWithExceptYear_ShouldSuppressOnlyThatYear(int year, bool expected)
     {
         RuleApplicability applicability = Years(2020, 2030, exceptYears: [2025]);
 
-        Assert.IsTrue(applicability.AppliesTo("XX", 2024));
-        Assert.IsFalse(applicability.AppliesTo("XX", 2025));
-        Assert.IsTrue(applicability.AppliesTo("XX", 2026));
-        Assert.IsFalse(applicability.AppliesTo("XX", 2019));
+        Assert.AreEqual(expected, applicability.AppliesTo("XX", year));
     }
 
     /// <summary>
@@ -186,14 +189,17 @@ public sealed class RuleApplicabilityTests
     /// <summary>
     /// Verifies that a rule scoped to several territories matches a request against any one of them.
     /// </summary>
+    /// <param name="requested">The requested territory code.</param>
+    /// <param name="expected">Whether the US/AU-scoped rule is expected to match the request.</param>
     [TestMethod]
-    public void MatchesTerritory_WhenMultipleScopes_ShouldMatchAnyListed()
+    [DataRow("US", true)]       // first listed scope
+    [DataRow("AU-NSW", true)]   // subnational of a listed scope
+    [DataRow("CA", false)]      // unlisted scope
+    public void MatchesTerritory_WhenMultipleScopes_ShouldMatchAnyListed(string requested, bool expected)
     {
         RuleApplicability applicability = Territories("US", "AU");
 
-        Assert.IsTrue(applicability.MatchesTerritory("US"));
-        Assert.IsTrue(applicability.MatchesTerritory("AU-NSW"));
-        Assert.IsFalse(applicability.MatchesTerritory("CA"));
+        Assert.AreEqual(expected, applicability.MatchesTerritory(requested));
     }
 
     /// <summary>
@@ -292,22 +298,47 @@ public sealed class RuleApplicabilityTests
     }
 
     /// <summary>
-    /// Verifies that <c>OnlyYear</c> and <c>ExceptYear</c> rules are emitted exactly for the listed and unlisted years
-    /// when resolved through the service.
+    /// Verifies that an <c>OnlyYear</c> rule is emitted exactly for the listed years and suppressed otherwise when
+    /// resolved through the service.
     /// </summary>
+    /// <param name="year">The Gregorian year to resolve.</param>
+    /// <param name="expected">Whether the only-years concept is expected to be emitted.</param>
     [TestMethod]
-    public void Resolve_WhenOnlyAndExceptYears_EmitsAccordingToSets()
+    [DataRow(2024, true)]   // listed
+    [DataRow(2025, false)]  // unlisted
+    [DataRow(2026, true)]   // listed
+    public void Resolve_WhenOnlyYearsRule_EmitsAccordingToSet(int year, bool expected)
     {
-        Assert.IsTrue(Emits("only-years", "XX", 2024));
-        Assert.IsFalse(Emits("only-years", "XX", 2025));
-        Assert.IsTrue(Emits("only-years", "XX", 2026));
+        Assert.AreEqual(expected, Emits("only-years", "XX", year));
+    }
 
-        Assert.IsTrue(Emits("except-2025", "XX", 2024));
-        Assert.IsFalse(Emits("except-2025", "XX", 2025));
+    /// <summary>
+    /// Verifies that an <c>ExceptYear</c> rule is suppressed for the listed year and emitted otherwise when resolved
+    /// through the service.
+    /// </summary>
+    /// <param name="year">The Gregorian year to resolve.</param>
+    /// <param name="expected">Whether the except-2025 concept is expected to be emitted.</param>
+    [TestMethod]
+    [DataRow(2024, true)]   // not excepted
+    [DataRow(2025, false)]  // excepted
+    public void Resolve_WhenExceptYearRule_EmitsAccordingToSet(int year, bool expected)
+    {
+        Assert.AreEqual(expected, Emits("except-2025", "XX", year));
+    }
 
-        Assert.IsTrue(Emits("windowed-except", "XX", 2024));
-        Assert.IsFalse(Emits("windowed-except", "XX", 2025));
-        Assert.IsFalse(Emits("windowed-except", "XX", 2031));
+    /// <summary>
+    /// Verifies that a windowed rule with an <c>ExceptYear</c> is suppressed for the excepted year and for years outside
+    /// the window, and emitted otherwise, when resolved through the service.
+    /// </summary>
+    /// <param name="year">The Gregorian year to resolve.</param>
+    /// <param name="expected">Whether the windowed-except concept is expected to be emitted.</param>
+    [TestMethod]
+    [DataRow(2024, true)]   // inside window, not excepted
+    [DataRow(2025, false)]  // excepted year
+    [DataRow(2031, false)]  // outside window
+    public void Resolve_WhenWindowedExceptRule_EmitsAccordingToSet(int year, bool expected)
+    {
+        Assert.AreEqual(expected, Emits("windowed-except", "XX", year));
     }
 
     /// <summary>
@@ -329,27 +360,31 @@ public sealed class RuleApplicabilityTests
     /// Verifies that a subnational-only rule is emitted for its subdivision but not for the national request, when
     /// resolved through the service.
     /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="expected">Whether the subnational-nsw concept is expected to be emitted.</param>
     [TestMethod]
-    public void Resolve_WhenSubnationalRule_EmitsOnlyForSubdivision()
+    [DataRow("AU-NSW", true)]  // the scoped subdivision
+    [DataRow("AU", false)]     // the national request
+    public void Resolve_WhenSubnationalRule_EmitsOnlyForSubdivision(string territory, bool expected)
     {
-        Assert.IsTrue(Emits("subnational-nsw", "AU-NSW", 2026));
-        Assert.IsFalse(Emits("subnational-nsw", "AU", 2026));
+        Assert.AreEqual(expected, Emits("subnational-nsw", territory, 2026));
     }
 
     /// <summary>
-    /// Verifies that when a concept carries both a national and a narrower subdivision rule, a subdivision request emits
-    /// only the narrower rule (it shadows the national one) while any other subdivision falls back to the national rule.
+    /// Verifies that when a concept carries both a national and a narrower subdivision rule, the scoped subdivision emits
+    /// the narrower rule (it shadows the national one) while any other subdivision falls back to the national rule.
     /// </summary>
+    /// <param name="territory">The requested subdivision code.</param>
+    /// <param name="expectedRuleId">The rule id expected to win for the request.</param>
     [TestMethod]
-    public void Resolve_WhenTerritoryShadowing_NarrowerRuleShadowsNationalRule()
+    [DataRow("AU-NSW", "nsw")]       // scoped subdivision shadows the national rule
+    [DataRow("AU-VIC", "national")]  // other subdivision falls back to the national rule
+    public void Resolve_WhenTerritoryShadowing_NarrowerRuleShadowsNationalRule(string territory, string expectedRuleId)
     {
         DateRange range = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
-        NotableDateService service = CreateService();
 
-        NotableDate nsw = service.Resolve(range, "AU-NSW").Single(r => r.NotableDateId == "shadowed");
-        Assert.AreEqual("nsw", nsw.RuleId);
+        NotableDate match = CreateService().Resolve(range, territory).Single(r => r.NotableDateId == "shadowed");
 
-        NotableDate vic = service.Resolve(range, "AU-VIC").Single(r => r.NotableDateId == "shadowed");
-        Assert.AreEqual("national", vic.RuleId);
+        Assert.AreEqual(expectedRuleId, match.RuleId);
     }
 }

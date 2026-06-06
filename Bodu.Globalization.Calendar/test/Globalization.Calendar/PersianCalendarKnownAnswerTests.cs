@@ -38,23 +38,23 @@ public sealed class PersianCalendarKnownAnswerTests
             .ToList();
 
     /// <summary>
-    /// Verifies that all three Persian observances declared in <c>persian.xml</c> resolve for a representative
-    /// Gregorian year.
+    /// Verifies that each Persian observance declared in <c>persian.xml</c> resolves for a representative Gregorian
+    /// year.
     /// </summary>
+    /// <param name="notableDateId">The notable-date id expected to resolve.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    public void Resolve_WhenLoadingPersian_ResolvesAllThreeObservances()
+    [DataRow("nowruz")]
+    [DataRow("sizdah-bedar")]
+    [DataRow("yalda-night")]
+    public void Resolve_WhenLoadingPersian_ShouldResolveObservance(string notableDateId)
     {
-        NotableDateService service = CreateService();
-
-        var ids = service
+        var ids = CreateService()
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.Contains("nowruz", ids);
-        Assert.Contains("sizdah-bedar", ids);
-        Assert.Contains("yalda-night", ids);
+        Assert.Contains(notableDateId, ids);
     }
 
     /// <summary>
@@ -125,10 +125,9 @@ public sealed class PersianCalendarKnownAnswerTests
             List<NotableDate> matches = ResolveForYear(service, "nowruz", year);
 
             Assert.HasCount(1, matches, $"Nowruz unresolved for Gregorian year {year}.");
-            Assert.AreEqual(3, matches[0].Date.Month, $"Nowruz {year} fell outside March: {matches[0].Date:yyyy-MM-dd}.");
             Assert.IsTrue(
-                matches[0].Date.Day is 20 or 21,
-                $"Nowruz {year} fell on March {matches[0].Date.Day} (expected 20 or 21).");
+                matches[0].Date == new DateOnly(year, 3, 20) || matches[0].Date == new DateOnly(year, 3, 21),
+                $"Nowruz {year} fell on {matches[0].Date:yyyy-MM-dd} (expected 20 or 21 March).");
         }
     }
 }

@@ -94,8 +94,9 @@ public sealed class ResolveBoundaryTests
         IReadOnlyList<NotableDate> results = FixedService(7, 4, fromYear: 2026, toYear: 2026)
             .Resolve(new DateRange(new DateOnly(2026, 7, 4), new DateOnly(2026, 7, 4)), Territory);
 
-        Assert.HasCount(1, results);
-        Assert.AreEqual(new DateOnly(2026, 7, 4), results[0].Date);
+        CollectionAssert.AreEqual(
+            new[] { new DateOnly(2026, 7, 4) },
+            results.Select(r => r.Date).ToArray());
     }
 
     /// <summary>
@@ -166,8 +167,9 @@ public sealed class ResolveBoundaryTests
             .Resolve(new DateRange(new DateOnly(9999, 12, 1), DateOnly.MaxValue), Territory);
 
         NotableDate span = Single(results);
-        Assert.AreEqual(new DateOnly(9999, 12, 25), span.Date);
-        Assert.AreEqual(new DateOnly(9999, 12, 31), span.EndDate);
+        Assert.AreEqual(
+            (new DateOnly(9999, 12, 25), new DateOnly(9999, 12, 31)),
+            (span.Date, span.EndDate));
     }
 
     // =====================================================================================================================

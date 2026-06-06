@@ -90,42 +90,67 @@ public sealed class NonWorkingDayTriggerTests
         new NotableDateService(NotableDateResourceLoader.Load(Xml));
 
     /// <summary>
-    /// Verifies that a non-working holiday colliding with another non-working holiday on a working day fires the
-    /// non-working-day trigger and is observed on the next free working day.
+    /// Verifies that the unadjusted holiday of a colliding pair keeps the contested working day, emitting on its actual
+    /// date. Collide A has no adjustment, so it remains on Thursday 1 January 2026.
+    /// </summary>
+    [TestMethod]
+    public void IfNonWorkingDay_WhenCollidingWithAnotherHoliday_ShouldKeepFirstHolidayOnContestedDay()
+    {
+        IReadOnlyList<NotableDate> thursday = Build().Resolve(new DateOnly(2026, 1, 1), Territory);
+
+        Assert.Contains(n => n.NotableDateId == "collide-a" && !n.IsObserved, thursday, "Collide A on its actual day");
+    }
+
+    /// <summary>
+    /// Verifies that the adjusted holiday of a colliding pair leaves the contested working day, because the non-working-day
+    /// trigger fires when the day is already claimed. Collide B is absent from Thursday 1 January 2026.
+    /// </summary>
+    [TestMethod]
+    public void IfNonWorkingDay_WhenCollidingWithAnotherHoliday_ShouldMoveSecondHolidayOffContestedDay()
+    {
+        IReadOnlyList<NotableDate> thursday = Build().Resolve(new DateOnly(2026, 1, 1), Territory);
+
+        Assert.DoesNotContain(n => n.NotableDateId == "collide-b", thursday, "Collide B moved off the contested day");
+    }
+
+    /// <summary>
+    /// Verifies that the adjusted holiday of a colliding pair is observed on the next free working day, carrying its actual
+    /// date. Collide B (Thursday 1 January 2026) is observed on Friday 2 January.
     /// </summary>
     [TestMethod]
     public void IfNonWorkingDay_WhenCollidingWithAnotherHoliday_ShouldObserveOnNextWorkingDay()
     {
-        INotableDateService service = Build();
+        NotableDate observed = Build().Resolve(new DateOnly(2026, 1, 2), Territory).Single(n => n.NotableDateId == "collide-b");
 
-        // Collide A keeps the contested Thursday; Collide B does not appear on it.
-        IReadOnlyList<NotableDate> thursday = service.Resolve(new DateOnly(2026, 1, 1), Territory);
-        Assert.Contains(n => n.NotableDateId == "collide-a" && !n.IsObserved, thursday, "Collide A on its actual day");
-        Assert.DoesNotContain(n => n.NotableDateId == "collide-b", thursday, "Collide B moved off the contested day");
-
-        // Collide B is observed on the next working day (Friday 2 January).
-        IReadOnlyList<NotableDate> friday = service.Resolve(new DateOnly(2026, 1, 2), Territory);
-        NotableDate observed = friday.Single(n => n.NotableDateId == "collide-b");
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 1), observed.ActualDate);
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2026, 1, 1)),
+            (observed.IsObserved, observed.ActualDate));
     }
 
     /// <summary>
-    /// Verifies that the non-working-day trigger fires for a holiday falling on a weekend and moves it to the next
-    /// working day, skipping the weekend.
+    /// Verifies that the non-working-day trigger suppresses the weekend actual date of a holiday emitted observed-only.
+    /// The Saturday 3 January 2026 occurrence does not appear on its actual date.
+    /// </summary>
+    [TestMethod]
+    public void IfNonWorkingDay_WhenHolidayFallsOnWeekend_ShouldSuppressWeekendActual()
+    {
+        Assert.DoesNotContain(
+            n => n.NotableDateId == "weekend-holiday", Build().Resolve(new DateOnly(2026, 1, 3), Territory),
+            "Saturday actual suppressed");
+    }
+
+    /// <summary>
+    /// Verifies that the non-working-day trigger moves a weekend holiday to the next working day, skipping the weekend,
+    /// carrying its actual date. Saturday 3 January 2026 is observed on Monday 5 January.
     /// </summary>
     [TestMethod]
     public void IfNonWorkingDay_WhenHolidayFallsOnWeekend_ShouldObserveOnNextWorkingDay()
     {
-        INotableDateService service = Build();
+        NotableDate observed = Build().Resolve(new DateOnly(2026, 1, 5), Territory).Single(n => n.NotableDateId == "weekend-holiday");
 
-        Assert.DoesNotContain(
-            n => n.NotableDateId == "weekend-holiday", service.Resolve(new DateOnly(2026, 1, 3), Territory),
-            "Saturday actual suppressed");
-
-        NotableDate observed = service.Resolve(new DateOnly(2026, 1, 5), Territory).Single(n => n.NotableDateId == "weekend-holiday");
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 3), observed.ActualDate);
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2026, 1, 3)),
+            (observed.IsObserved, observed.ActualDate));
     }
 
     /// <summary>
@@ -137,26 +162,35 @@ public sealed class NonWorkingDayTriggerTests
     {
         NotableDate actual = Build().Resolve(new DateOnly(2026, 1, 8), Territory).Single(n => n.NotableDateId == "lone-working");
 
-        Assert.IsFalse(actual.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 8), actual.Date);
+        Assert.AreEqual(
+            (false, new DateOnly(2026, 1, 8)),
+            (actual.IsObserved, actual.Date));
     }
 
     /// <summary>
-    /// Verifies that the working-day trigger fires for a lone holiday on a working day and shifts it by the configured
-    /// number of days.
+    /// Verifies that the working-day trigger suppresses the actual working-day date of a holiday emitted observed-only.
+    /// The Thursday 15 January 2026 occurrence does not appear on its actual date.
+    /// </summary>
+    [TestMethod]
+    public void IfWorkingDay_WhenHolidayOnWorkingDay_ShouldSuppressActual()
+    {
+        Assert.DoesNotContain(
+            n => n.NotableDateId == "working-shift", Build().Resolve(new DateOnly(2026, 1, 15), Territory),
+            "actual Thursday suppressed by observed-only");
+    }
+
+    /// <summary>
+    /// Verifies that the working-day trigger shifts a lone holiday on a working day by the configured number of days,
+    /// carrying its actual date. Thursday 15 January 2026 is observed two days later on 17 January.
     /// </summary>
     [TestMethod]
     public void IfWorkingDay_WhenHolidayOnWorkingDay_ShouldShiftOccurrence()
     {
-        INotableDateService service = Build();
+        NotableDate observed = Build().Resolve(new DateOnly(2026, 1, 17), Territory).Single(n => n.NotableDateId == "working-shift");
 
-        Assert.DoesNotContain(
-            n => n.NotableDateId == "working-shift", service.Resolve(new DateOnly(2026, 1, 15), Territory),
-            "actual Thursday suppressed by observed-only");
-
-        NotableDate observed = service.Resolve(new DateOnly(2026, 1, 17), Territory).Single(n => n.NotableDateId == "working-shift");
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 15), observed.ActualDate);
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2026, 1, 15)),
+            (observed.IsObserved, observed.ActualDate));
     }
 
     /// <summary>
@@ -168,7 +202,8 @@ public sealed class NonWorkingDayTriggerTests
     {
         NotableDate actual = Build().Resolve(new DateOnly(2026, 1, 10), Territory).Single(n => n.NotableDateId == "weekend-no-shift");
 
-        Assert.IsFalse(actual.IsObserved);
-        Assert.AreEqual(new DateOnly(2026, 1, 10), actual.Date);
+        Assert.AreEqual(
+            (false, new DateOnly(2026, 1, 10)),
+            (actual.IsObserved, actual.Date));
     }
 }

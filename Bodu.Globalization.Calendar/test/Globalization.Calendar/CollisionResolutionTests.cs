@@ -94,8 +94,7 @@ public sealed class CollisionResolutionTests
         NotableDateService service = new(NotableDateResourceLoader.Load(Document("HighestPriorityOnly")));
         IReadOnlyList<NotableDate> march = service.Resolve(new DateOnly(2025, 3, 3), "XX");
 
-        Assert.HasCount(1, march);
-        Assert.AreEqual("other-day", march[0].NotableDateId);
+        CollectionAssert.AreEqual(new[] { "other-day" }, march.Select(r => r.NotableDateId).ToList());
     }
 
     /// <summary>

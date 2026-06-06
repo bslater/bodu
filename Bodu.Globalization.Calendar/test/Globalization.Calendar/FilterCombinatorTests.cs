@@ -146,11 +146,10 @@ public sealed class FilterCombinatorTests
         DateRange range = new(new DateOnly(2022, 12, 25), new DateOnly(2023, 1, 5));
         IReadOnlyList<NotableDate> resolved = CreateService().Resolve(range, "XX", NotableDateFilter.WasAdjusted());
 
-        Assert.IsTrue(resolved.All(r => r.IsObserved));
-        Assert.HasCount(1, resolved);
-        NotableDate observed = resolved[0];
-        Assert.AreEqual("year-end-holiday", observed.NotableDateId);
-        Assert.AreEqual(new DateOnly(2023, 1, 2), observed.Date);
+        // The only emitted occurrence is the observed Year-End Holiday substitute on Monday 2 January 2023.
+        CollectionAssert.AreEqual(
+            new[] { ("year-end-holiday", new DateOnly(2023, 1, 2), true) },
+            resolved.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date, r.IsObserved)).ToArray());
     }
 
     // -----------------------------------------------------------------------------------------------------------
@@ -158,17 +157,22 @@ public sealed class FilterCombinatorTests
     // -----------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.And" /> matches an occurrence only when both component filters match.
+    /// Verifies that <see cref="NotableDateFilter.And" /> of a category filter and a non-working filter matches an
+    /// occurrence only when both component filters match.
     /// </summary>
+    /// <param name="category">The occurrence category.</param>
+    /// <param name="isNonWorkingDay">Whether the occurrence is a non-working day.</param>
+    /// <param name="expected">The expected match result.</param>
     [TestMethod]
-    public void Matches_WhenAnd_RequiresBothComponents()
+    [DataRow(NotableDateCategory.PublicHoliday, true, true)]    // both components match
+    [DataRow(NotableDateCategory.PublicHoliday, false, false)]  // non-working component fails
+    [DataRow(NotableDateCategory.Observance, true, false)]      // category component fails
+    public void Matches_WhenAnd_ShouldRequireBothComponents(NotableDateCategory category, bool isNonWorkingDay, bool expected)
     {
         NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday)
             .And(NotableDateFilter.IsNonWorkingDay());
 
-        Assert.IsTrue(filter.Matches(Occurrence(NotableDateCategory.PublicHoliday, isNonWorkingDay: true)));
-        Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.PublicHoliday, isNonWorkingDay: false)));
-        Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.Observance, isNonWorkingDay: true)));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(category, isNonWorkingDay: isNonWorkingDay)));
     }
 
     /// <summary>
@@ -210,17 +214,22 @@ public sealed class FilterCombinatorTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.Or" /> matches an occurrence when either component filter matches.
+    /// Verifies that <see cref="NotableDateFilter.Or" /> of a category filter and a non-working filter matches an
+    /// occurrence when either component filter matches.
     /// </summary>
+    /// <param name="category">The occurrence category.</param>
+    /// <param name="isNonWorkingDay">Whether the occurrence is a non-working day.</param>
+    /// <param name="expected">The expected match result.</param>
     [TestMethod]
-    public void Matches_WhenOr_AcceptsEitherComponent()
+    [DataRow(NotableDateCategory.Observance, true, true)]       // non-working component matches
+    [DataRow(NotableDateCategory.PublicHoliday, false, true)]   // category component matches
+    [DataRow(NotableDateCategory.Observance, false, false)]     // neither component matches
+    public void Matches_WhenOr_ShouldAcceptEitherComponent(NotableDateCategory category, bool isNonWorkingDay, bool expected)
     {
         NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday)
             .Or(NotableDateFilter.IsNonWorkingDay());
 
-        Assert.IsTrue(filter.Matches(Occurrence(NotableDateCategory.Observance, isNonWorkingDay: true)));
-        Assert.IsTrue(filter.Matches(Occurrence(NotableDateCategory.PublicHoliday, isNonWorkingDay: false)));
-        Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.Observance, isNonWorkingDay: false)));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(category, isNonWorkingDay: isNonWorkingDay)));
     }
 
     /// <summary>
@@ -254,15 +263,19 @@ public sealed class FilterCombinatorTests
     // -----------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.Not" /> inverts the underlying predicate for direct evaluation.
+    /// Verifies that <see cref="NotableDateFilter.Not" /> inverts the underlying category predicate for direct
+    /// evaluation.
     /// </summary>
+    /// <param name="category">The occurrence category.</param>
+    /// <param name="expected">The expected match result after negation.</param>
     [TestMethod]
-    public void Matches_WhenNot_InvertsPredicate()
+    [DataRow(NotableDateCategory.PublicHoliday, false)]  // negated category matches -> false
+    [DataRow(NotableDateCategory.Religious, true)]       // negated category does not match -> true
+    public void Matches_WhenNot_ShouldInvertPredicate(NotableDateCategory category, bool expected)
     {
         NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday).Not();
 
-        Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.PublicHoliday)));
-        Assert.IsTrue(filter.Matches(Occurrence(NotableDateCategory.Religious)));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(category)));
     }
 
     /// <summary>
@@ -401,11 +414,27 @@ public sealed class FilterCombinatorTests
     }
 
     /// <summary>
+    /// Provides directly constructed occurrences for the complex-composition matcher, each paired with its expected
+    /// match result against <c>(PublicHoliday OR Observance) AND NonWorking AND tag</c>.
+    /// </summary>
+    /// <returns>A sequence of <c>(string name, NotableDate occurrence, bool expected)</c> rows.</returns>
+    public static IEnumerable<object[]> ComplexCompositionRows()
+    {
+        yield return new object[] { "observance non-working tagged -> match", Occurrence(NotableDateCategory.Observance, isNonWorkingDay: true, tags: ["Public", "Religious"]), true };
+        yield return new object[] { "cultural fails category gate", Occurrence(NotableDateCategory.Cultural, isNonWorkingDay: true, tags: ["Public"]), false };
+        yield return new object[] { "working day fails non-working gate", Occurrence(NotableDateCategory.PublicHoliday, isNonWorkingDay: false, tags: ["Public"]), false };
+    }
+
+    /// <summary>
     /// Verifies that a complex composition <c>(PublicHoliday OR Observance) AND NonWorking AND tag</c> evaluates
     /// correctly over directly constructed occurrences.
     /// </summary>
+    /// <param name="name">A human-readable label for the row.</param>
+    /// <param name="occurrence">The occurrence under evaluation.</param>
+    /// <param name="expected">The expected match result.</param>
     [TestMethod]
-    public void Matches_WhenComplexComposition_EvaluatesCorrectly()
+    [DynamicData(nameof(ComplexCompositionRows))]
+    public void Matches_WhenComplexComposition_ShouldEvaluateCorrectly(string name, NotableDate occurrence, bool expected)
     {
         NotableDateFilter filter = NotableDateFilter.AnyOf(
                 NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday),
@@ -413,8 +442,6 @@ public sealed class FilterCombinatorTests
             .And(NotableDateFilter.IsNonWorkingDay())
             .And(NotableDateFilter.WithTag("Public"));
 
-        Assert.IsTrue(filter.Matches(Occurrence(NotableDateCategory.Observance, isNonWorkingDay: true, tags: ["Public", "Religious"])));
-        Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.Cultural, isNonWorkingDay: true, tags: ["Public"])));
-        Assert.IsFalse(filter.Matches(Occurrence(NotableDateCategory.PublicHoliday, isNonWorkingDay: false, tags: ["Public"])));
+        Assert.AreEqual(expected, filter.Matches(occurrence), name);
     }
 }

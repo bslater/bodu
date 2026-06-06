@@ -14,19 +14,47 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateOverrideTests
 {
     /// <summary>
-    /// Verifies that removing the Puerto Rico Constitution Day rule leaves the United States rule intact. (T12)
+    /// Verifies that removing the Puerto Rico Constitution Day rule leaves the sibling United States rule intact. (T12)
     /// </summary>
     [TestMethod]
-    public void Override_RemoveRule_WhenTargetingPuertoRicoConstitutionDay_DoesNotRemoveUnitedStatesRule()
+    public void Override_RemoveRule_WhenTargetingPuertoRicoConstitutionDay_ShouldKeepUnitedStatesRule()
     {
         NotableDateService resolver = new(MinimalNotableDates.LoadWithRemoveOverride());
 
         IReadOnlyList<NotableDate> unitedStates = resolver.Resolve(new DateOnly(2026, 9, 17), "US");
-        Assert.HasCount(1, unitedStates, "United States rule should survive the removal");
-        Assert.AreEqual("us-fixed-sep-17", unitedStates[0].RuleId);
+
+        CollectionAssert.AreEqual(
+            new[] { "us-fixed-sep-17" },
+            unitedStates.Select(r => r.RuleId).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that the remove override removes the targeted Puerto Rico Constitution Day rule. (T12)
+    /// </summary>
+    [TestMethod]
+    public void Override_RemoveRule_WhenTargetingPuertoRicoConstitutionDay_ShouldRemovePuertoRicoRule()
+    {
+        NotableDateService resolver = new(MinimalNotableDates.LoadWithRemoveOverride());
 
         IReadOnlyList<NotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
-        Assert.IsEmpty(puertoRico, "Puerto Rico rule should have been removed");
+
+        Assert.IsEmpty(puertoRico);
+    }
+
+    /// <summary>
+    /// Verifies that patching the Puerto Rico Constitution Day rule's category applies the patched category to the
+    /// Puerto Rico rule. (T13)
+    /// </summary>
+    [TestMethod]
+    public void Override_PatchRule_WhenTargetingPuertoRicoConstitutionDay_ShouldPatchPuertoRicoCategory()
+    {
+        NotableDateService resolver = new(MinimalNotableDates.LoadWithPatchOverride());
+
+        IReadOnlyList<NotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
+
+        CollectionAssert.AreEqual(
+            new[] { NotableDateCategory.PublicHoliday },
+            puertoRico.Select(r => r.Category).ToArray());
     }
 
     /// <summary>
@@ -34,16 +62,14 @@ public sealed class NotableDateOverrideTests
     /// rule's category. (T13)
     /// </summary>
     [TestMethod]
-    public void Override_PatchRule_WhenTargetingPuertoRicoConstitutionDay_DoesNotPatchUnitedStatesRule()
+    public void Override_PatchRule_WhenTargetingPuertoRicoConstitutionDay_ShouldLeaveUnitedStatesCategoryUnchanged()
     {
         NotableDateService resolver = new(MinimalNotableDates.LoadWithPatchOverride());
 
-        IReadOnlyList<NotableDate> puertoRico = resolver.Resolve(new DateOnly(2026, 7, 25), "PR");
-        Assert.HasCount(1, puertoRico);
-        Assert.AreEqual(NotableDateCategory.PublicHoliday, puertoRico[0].Category, "patched Puerto Rico category");
-
         IReadOnlyList<NotableDate> unitedStates = resolver.Resolve(new DateOnly(2026, 9, 17), "US");
-        Assert.HasCount(1, unitedStates);
-        Assert.AreEqual(NotableDateCategory.Observance, unitedStates[0].Category, "unchanged United States category");
+
+        CollectionAssert.AreEqual(
+            new[] { NotableDateCategory.Observance },
+            unitedStates.Select(r => r.Category).ToArray());
     }
 }

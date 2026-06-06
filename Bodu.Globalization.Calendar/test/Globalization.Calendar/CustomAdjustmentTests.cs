@@ -89,9 +89,9 @@ public sealed class CustomAdjustmentTests
 
         NotableDate match = Single(service, 2025, "moved-holiday");
 
-        Assert.AreEqual(new DateOnly(2025, 1, 10), match.Date);
-        Assert.AreEqual(new DateOnly(2025, 1, 1), match.ActualDate);
-        Assert.IsTrue(match.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2025, 1, 10), (DateOnly?)new DateOnly(2025, 1, 1), true),
+            (match.Date, match.ActualDate, match.IsObserved));
     }
 
     /// <summary>
@@ -169,9 +169,9 @@ public sealed class CustomAdjustmentTests
 
         NotableDate match = Single(service, 2025, "custom-holiday");
 
-        Assert.AreEqual(new DateOnly(2025, 3, 11), match.Date);
-        Assert.AreEqual(new DateOnly(2025, 3, 1), match.ActualDate);
-        Assert.IsTrue(match.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2025, 3, 11), (DateOnly?)new DateOnly(2025, 3, 1), true),
+            (match.Date, match.ActualDate, match.IsObserved));
     }
 
     /// <summary>
@@ -184,8 +184,9 @@ public sealed class CustomAdjustmentTests
 
         NotableDate match = Single(service, 2025, "custom-holiday");
 
-        Assert.AreEqual(new DateOnly(2025, 3, 1), match.Date);
-        Assert.AreEqual(new DateOnly(2025, 3, 1), match.ActualDate);
+        Assert.AreEqual(
+            (new DateOnly(2025, 3, 1), (DateOnly?)new DateOnly(2025, 3, 1)),
+            (match.Date, match.ActualDate));
     }
 
     /// <summary>

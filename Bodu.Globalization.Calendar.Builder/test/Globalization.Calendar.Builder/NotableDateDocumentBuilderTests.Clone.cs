@@ -20,7 +20,9 @@ public partial class NotableDateDocumentBuilderTests
         clone.AddNotableDate("independence-day", "Independence Day", NotableDateCategory.PublicHoliday, d => d
             .AddRule("default", r => r.ForTerritory("US").Fixed(7, 4)));
 
-        Assert.HasCount(4, original.Build().NotableDates);
-        Assert.HasCount(5, clone.Build().NotableDates);
+        // The original keeps its four definitions while the mutated clone gains the fifth.
+        Assert.AreEqual(
+            (4, 5),
+            (original.Build().NotableDates.Count, clone.Build().NotableDates.Count));
     }
 }

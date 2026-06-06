@@ -22,8 +22,8 @@ public sealed class NotableDateResourceLoaderTests
     {
         NotableDateResource resource = MinimalNotableDates.Load();
 
-        Assert.HasCount(3, resource.NotableDates, "notable-date count");
-        Assert.AreEqual(5, resource.RuleCount, "rule count");
-        Assert.HasCount(1, resource.AdjustmentPolicies, "adjustment-policy count");
+        Assert.AreEqual(
+            (3, 5, 1),
+            (resource.NotableDates.Count, resource.RuleCount, resource.AdjustmentPolicies.Count));
     }
 }

@@ -85,9 +85,9 @@ public sealed class CustomTriggerTests
 
         NotableDate match = Single(service, 2024, "custom-trigger-holiday");
 
-        Assert.AreEqual(new DateOnly(2024, 3, 11), match.Date);
-        Assert.AreEqual(new DateOnly(2024, 3, 1), match.ActualDate);
-        Assert.IsTrue(match.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2024, 3, 11), (DateOnly?)new DateOnly(2024, 3, 1), true),
+            (match.Date, match.ActualDate, match.IsObserved));
     }
 
     /// <summary>
@@ -101,8 +101,9 @@ public sealed class CustomTriggerTests
 
         NotableDate match = Single(service, 2025, "custom-trigger-holiday");
 
-        Assert.AreEqual(new DateOnly(2025, 3, 1), match.Date);
-        Assert.IsFalse(match.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2025, 3, 1), false),
+            (match.Date, match.IsObserved));
     }
 
     /// <summary>
@@ -115,8 +116,9 @@ public sealed class CustomTriggerTests
 
         NotableDate match = Single(service, 2024, "custom-trigger-holiday");
 
-        Assert.AreEqual(new DateOnly(2024, 3, 1), match.Date);
-        Assert.IsFalse(match.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2024, 3, 1), false),
+            (match.Date, match.IsObserved));
     }
 
     /// <summary>

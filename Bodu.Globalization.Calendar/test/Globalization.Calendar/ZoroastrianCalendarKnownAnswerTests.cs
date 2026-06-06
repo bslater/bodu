@@ -85,28 +85,33 @@ public sealed class ZoroastrianCalendarKnownAnswerTests
     /// <summary>
     /// Verifies that Zartosht No-Diso (11 Dey) always lands on the 31 December / 1 January boundary of the Gregorian
     /// year. Because that boundary straddles the year end, a given Gregorian year can contain zero, one or two
-    /// occurrences of the swept Persian date; every occurrence resolved across a multi-year span must fall on one of
-    /// those two civil dates.
+    /// occurrences of the swept Persian date; every occurrence resolved across 2023-2027 falls on one of those two civil
+    /// dates.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
     public void Resolve_ZartoshtNoDiso_FallsOnYearBoundary()
     {
         NotableDateService service = CreateService();
-        var occurrences = 0;
 
-        for (var year = 2023; year <= 2027; year++)
-        {
-            foreach (NotableDate occurrence in CommonCatalogues.ResolveForYear(service, "zartosht-no-diso", year))
+        DateOnly[] resolved = Enumerable
+            .Range(2023, 5)
+            .SelectMany(year => CommonCatalogues.ResolveForYear(service, "zartosht-no-diso", year))
+            .Select(occurrence => occurrence.Date)
+            .OrderBy(date => date)
+            .ToArray();
+
+        // Every occurrence lands on the 1 January / 31 December civil boundary; 2025 has none (its 11 Dey anchor fell on
+        // 31 December 2024) while 2024 carries two.
+        CollectionAssert.AreEqual(
+            new[]
             {
-                occurrences++;
-                var landsOnBoundary =
-                    (occurrence.Date.Month == 1 && occurrence.Date.Day == 1) ||
-                    (occurrence.Date.Month == 12 && occurrence.Date.Day == 31);
-                Assert.IsTrue(landsOnBoundary, $"zartosht-no-diso {year} fell on {occurrence.Date:yyyy-MM-dd}");
-            }
-        }
-
-        Assert.IsGreaterThan(0, occurrences, "expected at least one Zartosht No-Diso occurrence across 2023-2027");
+                new DateOnly(2023, 1, 1),
+                new DateOnly(2024, 1, 1),
+                new DateOnly(2024, 12, 31),
+                new DateOnly(2026, 1, 1),
+                new DateOnly(2027, 1, 1),
+            },
+            resolved);
     }
 }

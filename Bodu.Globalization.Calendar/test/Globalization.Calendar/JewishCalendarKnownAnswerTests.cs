@@ -55,20 +55,14 @@ public sealed class JewishCalendarKnownAnswerTests
     [TestCategory("Regression")]
     public void Resolve_WhenLoadingJewish_ResolvesAllSevenHolidays()
     {
-        NotableDateService service = CreateService();
-
-        var ids = service
+        var ids = CreateService()
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.Contains("rosh-hashanah", ids);
-        Assert.Contains("yom-kippur", ids);
-        Assert.Contains("sukkot", ids);
-        Assert.Contains("hanukkah", ids);
-        Assert.Contains("purim", ids);
-        Assert.Contains("passover", ids);
-        Assert.Contains("shavuot", ids);
+        CollectionAssert.IsSubsetOf(
+            new[] { "rosh-hashanah", "yom-kippur", "sukkot", "hanukkah", "purim", "passover", "shavuot" },
+            ids.ToArray());
     }
 
     /// <summary>

@@ -144,51 +144,114 @@ public sealed class EuropeCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that the Alsace-Moselle Good Friday resolves for a département query but not for a plain national
-    /// France query, and that the restored Assumption of Mary is a non-working public holiday in France.
+    /// Verifies that the Alsace-Moselle Good Friday resolves for a département query (FR-67), confirming the
+    /// subdivision-scoped rule applies for the départements that observe it.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void Resolve_FrenchAlsaceMoselleAndRestoredEntries_RespectScopeAndStatus()
+    public void Resolve_FrenchAlsaceMoselleGoodFriday_WhenQueriedForDepartement_ReturnsSingleResult()
     {
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        Assert.ContainsSingle(r => r.NotableDateId == "good-friday",
-EuropeCalendarData.CreateService("FR-67").Resolve(year, "FR-67"), "Good Friday should resolve for Alsace-Moselle (FR-67)");
-        Assert.AreEqual(0, EuropeCalendarData.CreateService("FR").Resolve(year, "FR").Count(r => r.NotableDateId == "good-friday"),
-            "Good Friday should not resolve for a plain national France query");
-
-        // The Assumption (15 August) is a statutory non-working public holiday in France — checked on the occurrence
-        // flag rather than the IsNonWorkingDay extension, which also treats weekends as non-working.
-        NotableDate assumption = EuropeCalendarData.CreateService("FR").Resolve(year, "FR").Single(r => r.NotableDateId == "assumption-of-mary");
-        Assert.IsTrue(assumption.IsNonWorkingDay, "the Assumption should be a non-working public holiday in France");
+        Assert.ContainsSingle(r => r.NotableDateId == "good-friday", EuropeCalendarData.CreateService("FR-67").Resolve(year, "FR-67"));
     }
 
     /// <summary>
-    /// Verifies that the German federal-state religious feasts resolve as non-working public holidays for the Länder
-    /// that observe them but not for a plain national query or a non-observing state, confirming the audit re-scoping.
+    /// Verifies that the Alsace-Moselle Good Friday does not resolve for a plain national France query, confirming the
+    /// subdivision scoping.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void Resolve_GermanStateFeasts_AreScopedToTheirLaender()
+    public void Resolve_FrenchAlsaceMoselleGoodFriday_WhenQueriedNationally_ReturnsNoResult()
     {
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        // Epiphany (6 Jan) is a non-working public holiday in Bavaria, but resolves for neither a plain national
-        // query (DE-BW/BY/ST does not match "DE") nor a non-observing state (Berlin).
-        NotableDate bavarianEpiphany = EuropeCalendarData.CreateService("DE-BY").Resolve(year, "DE-BY").Single(r => r.NotableDateId == "epiphany");
-        Assert.IsTrue(bavarianEpiphany.IsNonWorkingDay, "Epiphany should be a non-working public holiday in Bavaria");
-        Assert.AreEqual(0, EuropeCalendarData.CreateService("DE").Resolve(year, "DE").Count(r => r.NotableDateId == "epiphany"),
-            "Epiphany should not resolve for a plain national Germany query");
-        Assert.AreEqual(0, EuropeCalendarData.CreateService("DE-BE").Resolve(year, "DE-BE").Count(r => r.NotableDateId == "epiphany"),
-            "Epiphany should not resolve for Berlin");
+        Assert.AreEqual(0, EuropeCalendarData.CreateService("FR").Resolve(year, "FR").Count(r => r.NotableDateId == "good-friday"));
+    }
 
-        // International Women's Day (8 Mar) is a non-working public holiday in Berlin but a working observance
-        // nationally — the two-rule concept with territory shadowing returns the state rule for BE and the national
-        // rule for a plain DE query.
+    /// <summary>
+    /// Verifies that the restored Assumption of Mary (15 August) is a non-working public holiday in France — checked on
+    /// the occurrence flag rather than the IsNonWorkingDay extension, which also treats weekends as non-working.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_FrenchAssumptionOfMary_IsNonWorkingPublicHoliday()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
+        NotableDate assumption = EuropeCalendarData.CreateService("FR").Resolve(year, "FR").Single(r => r.NotableDateId == "assumption-of-mary");
+
+        Assert.IsTrue(assumption.IsNonWorkingDay);
+    }
+
+    /// <summary>
+    /// Verifies that Epiphany (6 January) is a non-working public holiday in Bavaria, confirming the Länder-scoped feast
+    /// resolves for a state that observes it.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_GermanEpiphany_WhenQueriedForBavaria_IsNonWorkingPublicHoliday()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
+        NotableDate bavarianEpiphany = EuropeCalendarData.CreateService("DE-BY").Resolve(year, "DE-BY").Single(r => r.NotableDateId == "epiphany");
+
+        Assert.IsTrue(bavarianEpiphany.IsNonWorkingDay);
+    }
+
+    /// <summary>
+    /// Verifies that Epiphany does not resolve for a plain national Germany query, confirming the feast is scoped to the
+    /// observing Länder rather than the nation.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_GermanEpiphany_WhenQueriedNationally_ReturnsNoResult()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
+        Assert.AreEqual(0, EuropeCalendarData.CreateService("DE").Resolve(year, "DE").Count(r => r.NotableDateId == "epiphany"));
+    }
+
+    /// <summary>
+    /// Verifies that Epiphany does not resolve for Berlin (a non-observing state), confirming the feast is scoped to the
+    /// Länder that observe it.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_GermanEpiphany_WhenQueriedForNonObservingState_ReturnsNoResult()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
+        Assert.AreEqual(0, EuropeCalendarData.CreateService("DE-BE").Resolve(year, "DE-BE").Count(r => r.NotableDateId == "epiphany"));
+    }
+
+    /// <summary>
+    /// Verifies that International Women's Day (8 March) is a non-working public holiday in Berlin, confirming the state
+    /// rule shadows the national rule for a Berlin query.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_GermanWomensDay_WhenQueriedForBerlin_IsNonWorkingPublicHoliday()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
         NotableDate berlinWomensDay = EuropeCalendarData.CreateService("DE-BE").Resolve(year, "DE-BE").Single(r => r.NotableDateId == "womens-day");
-        Assert.IsTrue(berlinWomensDay.IsNonWorkingDay, "Women's Day should be a non-working public holiday in Berlin");
+
+        Assert.IsTrue(berlinWomensDay.IsNonWorkingDay);
+    }
+
+    /// <summary>
+    /// Verifies that International Women's Day is a working observance for a plain national Germany query, confirming the
+    /// national rule applies where no shadowing state rule matches.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Resolve_GermanWomensDay_WhenQueriedNationally_IsWorkingObservance()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
         NotableDate nationalWomensDay = EuropeCalendarData.CreateService("DE").Resolve(year, "DE").Single(r => r.NotableDateId == "womens-day");
-        Assert.IsFalse(nationalWomensDay.IsNonWorkingDay, "Women's Day should be a working observance nationally");
+
+        Assert.IsFalse(nationalWomensDay.IsNonWorkingDay);
     }
 }

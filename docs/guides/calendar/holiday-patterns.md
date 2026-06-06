@@ -157,7 +157,7 @@ The full trigger / action / emission catalogue, and the AU/NZ, UK, and US patter
 
 ## Floating weekday-of-month holiday
 
-A holiday defined as the *n*th occurrence of a weekday in a month uses `<DayOfWeekInMonth>` with a <xref:Bodu.Globalization.Calendar.WeekOrdinal> (`First`…`Fifth`, `Last`).
+A holiday defined as the *n*th occurrence of a weekday in a month uses `<DayOfWeekInMonth>` with a <xref:Bodu.Extensions.WeekOrdinal> (`First`…`Fifth`, `Last`).
 
 ```xml
 <NotableDate id="thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">

@@ -76,30 +76,36 @@ public sealed class ScopedRemovalTests
         service.Resolve(date, territory).Count(r => r.NotableDateId == "holiday");
 
     /// <summary>
-    /// Verifies that a PatchRule override excluding a year removes the occurrence for that year alone while leaving
-    /// neighbouring years intact.
+    /// Verifies that a PatchRule override excluding 2025 removes the 1 January occurrence for that year alone while
+    /// leaving neighbouring years intact.
     /// </summary>
+    /// <param name="year">The civil year under test.</param>
+    /// <param name="expectedCount">The expected number of emitted occurrences on 1 January of that year.</param>
     [TestMethod]
-    public void PatchRuleExceptYear_WhenYearExcluded_ShouldRemoveOccurrenceForThatYearOnly()
+    [DataRow(2024, 1)]  // neighbouring year intact
+    [DataRow(2025, 0)]  // excluded year removed
+    [DataRow(2026, 1)]  // neighbouring year intact
+    public void PatchRuleExceptYear_WhenYearExcluded_ShouldRemoveOccurrenceForThatYearOnly(int year, int expectedCount)
     {
         NotableDateService service = new(NotableDateResourceLoader.Load(YearScopedXml));
 
-        Assert.AreEqual(1, Count(service, new DateOnly(2024, 1, 1), "XX"));
-        Assert.AreEqual(0, Count(service, new DateOnly(2025, 1, 1), "XX"));
-        Assert.AreEqual(1, Count(service, new DateOnly(2026, 1, 1), "XX"));
+        Assert.AreEqual(expectedCount, Count(service, new DateOnly(year, 1, 1), "XX"));
     }
 
     /// <summary>
-    /// Verifies that an AddRule override injecting a more-specific suppressing rule removes the occurrence for that
-    /// subterritory alone while leaving the parent and sibling subterritories intact.
+    /// Verifies that an AddRule override injecting a more-specific suppressing rule removes the 26 January 2025
+    /// occurrence for the shadowed subterritory alone while leaving the parent and sibling subterritories intact.
     /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="expectedCount">The expected number of emitted occurrences for that territory.</param>
     [TestMethod]
-    public void AddRuleSuppressShadow_WhenSubterritoryShadowed_ShouldRemoveOccurrenceForThatTerritoryOnly()
+    [DataRow("AU", 1)]       // national parent intact
+    [DataRow("AU-NSW", 0)]   // shadowed subterritory removed
+    [DataRow("AU-VIC", 1)]   // sibling subterritory intact
+    public void AddRuleSuppressShadow_WhenSubterritoryShadowed_ShouldRemoveOccurrenceForThatTerritoryOnly(string territory, int expectedCount)
     {
         NotableDateService service = new(NotableDateResourceLoader.Load(TerritoryScopedXml));
 
-        Assert.AreEqual(1, Count(service, new DateOnly(2025, 1, 26), "AU"));
-        Assert.AreEqual(0, Count(service, new DateOnly(2025, 1, 26), "AU-NSW"));
-        Assert.AreEqual(1, Count(service, new DateOnly(2025, 1, 26), "AU-VIC"));
+        Assert.AreEqual(expectedCount, Count(service, new DateOnly(2025, 1, 26), territory));
     }
 }
