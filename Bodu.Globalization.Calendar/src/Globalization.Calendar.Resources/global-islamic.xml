@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Islamic (Hijri) notable-date catalogue, migrated from the v1 global-islamic.xml to the v2 cookbook schema and extended
-  with the common Hajj/Ramadan observances that were absent from the first migration pass. The principal observances of
+  Islamic (Hijri) notable-date catalogue on the notable-date schema, extended with the common Hajj/Ramadan observances. The principal observances of
   the Islamic lunar calendar are expressed as fixed dates in the tabular Hijri calendar (System.Globalization.HijriCalendar)
   and swept onto the requested Gregorian year, so the dates follow the engine's tabular reckoning rather than local
   moon-sighting and may differ from gazetted dates by up to two days. A territory pack imports the concepts it observes

@@ -2,7 +2,7 @@
 <!--
   Luxembourg (LU) — notable-date resource pack.
 
-  Migrated from the v1 region-lu.xml to the v2 cookbook schema. All rules are scoped to territory "LU"; Luxembourg has
+  Authored on the notable-date schema. All rules are scoped to territory "LU"; Luxembourg has
   no subdivision-specific public holidays.
 
   How this resource is built:

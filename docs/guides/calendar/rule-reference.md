@@ -4,7 +4,7 @@ title: NotableDateRule and adjustment-policy reference
 
 # NotableDateRule and adjustment-policy reference
 
-This page is the authoritative element-by-element reference for the v2 document model on the cookbook schema (`urn:bodu:globalization:calendar`): the `<NotableDate>` concept, the `<Rule>` recipe, the `<Applicability>` filter, each of the six `<Strategy>` elements, and the reusable `<AdjustmentPolicy>` shape. For the vocabulary it assumes, start with [Core concepts](../../docs/calendar/concepts.md). For how to assemble a whole document — imports and overrides — see [Authoring notable date rules](rule-authoring.md). For where the service processes these elements, see [The resolution pipeline](resolution-pipeline.md).
+This page is the authoritative element-by-element reference for the document model on the notable-date schema (`urn:bodu:globalization:calendar`): the `<NotableDate>` concept, the `<Rule>` recipe, the `<Applicability>` filter, each of the six `<Strategy>` elements, and the reusable `<AdjustmentPolicy>` shape. For the vocabulary it assumes, start with [Core concepts](../../docs/calendar/concepts.md). For how to assemble a whole document — imports and overrides — see [Authoring notable date rules](rule-authoring.md). For where the service processes these elements, see [The resolution pipeline](resolution-pipeline.md).
 
 A rule is authored as XML or JSON and loaded into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource>; the loaded form is exposed through <xref:Bodu.Globalization.Calendar.NotableDateDefinition> and <xref:Bodu.Globalization.Calendar.NotableDateRule>, which are immutable and constructed by the loader — there is no object-initializer authoring API.
 

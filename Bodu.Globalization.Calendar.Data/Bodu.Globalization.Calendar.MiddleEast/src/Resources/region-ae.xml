@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  United Arab Emirates (AE) notable-date resource on the v2 cookbook schema. National rules are scoped to territory
+  United Arab Emirates (AE) notable-date resource on the notable-date schema. National rules are scoped to territory
   "AE". The civil New Year and the Islamic festivals are imported from the middleeast-common hub (tabular Hijri, so
   the festival dates may differ by a day or two from the locally proclaimed moon-sighting); the national days are
   declared inline. The United Arab Emirates moved to a Saturday/Sunday weekend in 2022, so the default

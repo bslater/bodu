@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Ghana (GH) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "GH". The civil
+  Ghana (GH) notable-date resource on the notable-date schema. National rules are scoped to territory "GH". The civil
   and Western Christian days and the two Islamic Eids (tabular Hijri, so they may differ by a day or two from the
   gazette) are imported from the africa-common hub; the national days, including the first-Friday-of-December Farmers'
   Day, are declared inline.

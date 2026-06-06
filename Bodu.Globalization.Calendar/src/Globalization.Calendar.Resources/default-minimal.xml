@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Default minimal notable-date catalogue, migrated from the v1 default-minimal.xml to the v2 cookbook schema. It provides
+  Default minimal notable-date catalogue on the notable-date schema. It provides
   a single, country-neutral concept (New Year's Day) so a consumer has a usable catalogue without referencing a region
   pack. Following the common-catalogue convention, the concept carries only the bare calculation strategy with the stable
   rule id "default"; a territory pack supplies its own non-working flag and any weekend-roll adjustment through the import

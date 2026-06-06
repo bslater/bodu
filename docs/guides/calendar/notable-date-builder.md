@@ -4,7 +4,7 @@ title: Authoring with the notable-date builder
 
 # Authoring with the notable-date builder
 
-`Bodu.Globalization.Calendar.Builder` is a fluent, chainable API for authoring notable-date documents in C#. It is the programmatic peer of the XML / JSON authoring path in [Authoring notable date rules](rule-authoring.md): both produce the same v2 cookbook document, feed the same resolution pipeline, and validate through the same loader — but the builder keeps everything in code, so documents can be composed, cloned, serialized, and round-tripped without writing XML by hand.
+`Bodu.Globalization.Calendar.Builder` is a fluent, chainable API for authoring notable-date documents in C#. It is the programmatic peer of the XML / JSON authoring path in [Authoring notable date rules](rule-authoring.md): both produce the same notable-date document, feed the same resolution pipeline, and validate through the same loader — but the builder keeps everything in code, so documents can be composed, cloned, serialized, and round-tripped without writing XML by hand.
 
 For the vocabulary it assumes (document vs. resource, definition vs. rule, strategy, adjustment policy, nominal vs. observed) read [Core concepts](../../docs/calendar/concepts.md) first. For the full type list see the [`Bodu.Globalization.Calendar.Builder` reference](xref:Bodu.Globalization.Calendar.Builder).
 

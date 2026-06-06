@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Aggregate notable-date catalogue, migrated from the v1 global-all.xml to the v2 cookbook schema. It imports every other
+  Aggregate notable-date catalogue on the notable-date schema. It imports every other
   bundled common catalogue with no <Use> directives, so each import contributes its full concept set, producing a broad,
-  country-neutral catalogue for consumers that want every shared observance at once. As in v1, this aggregate is the
+  country-neutral catalogue for consumers that want every shared observance at once. This aggregate is the
   appropriate place for import-all because it is intentionally broad; territory packs should cherry-pick individual
   concepts instead. Concept identifiers that appear in more than one source (for example the Hijri festivals shared by the
   tabular and Umm al-Qura Islamic catalogues, or Lunar New Year shared by the anchors and lunar catalogues) are

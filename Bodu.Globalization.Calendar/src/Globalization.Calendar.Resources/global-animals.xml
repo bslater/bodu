@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Global animal and wildlife notable-date catalogue (Western / Gregorian calendar), migrated from the v1
-  global-animals.xml to the v2 cookbook schema. These are internationally recognized animal welfare and wildlife
+  Global animal and wildlife notable-date catalogue (Western / Gregorian calendar) on the notable-date schema. These are internationally recognized animal welfare and wildlife
   conservation observances; they are not universally public holidays. A territory pack imports only the concepts it
   observes and supplies its own territory scope, category, non-working flag, and weekend adjustment through the import
   <Use> directive; the shared concepts therefore carry the bare calculation strategy with the stable rule id "default".

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Chinese and East Asian lunisolar notable-date catalogue, migrated from the v1 global-lunar.xml to the v2 cookbook
-  schema. The lunar festivals are expressed as fixed dates in the Chinese lunisolar calendar
+  Chinese and East Asian lunisolar notable-date catalogue on the notable-date schema. The lunar festivals are expressed as fixed dates in the Chinese lunisolar calendar
   (System.Globalization.ChineseLunisolarCalendar); skipLeapMonth advances the conventional ordinal month past any
   intercalary leap month in the same year. Qingming uses the engine's astronomical solar-term algorithm; the Winter
   Solstice festival is approximated by its most frequent civil Gregorian date. Lantern Festival is a fixed fourteen-day

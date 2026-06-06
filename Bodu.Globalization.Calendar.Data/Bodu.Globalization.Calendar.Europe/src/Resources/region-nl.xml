@@ -4,7 +4,7 @@
   Netherlands (NL) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-nl.xml to the v2 cookbook schema. All rules are scoped to territory "NL".
+  Authored on the notable-date schema. All rules are scoped to territory "NL".
 
   How this resource is built:
 

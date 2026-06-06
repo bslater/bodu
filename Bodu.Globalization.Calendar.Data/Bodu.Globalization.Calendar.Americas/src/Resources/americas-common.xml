@@ -14,7 +14,7 @@
       RE-EXPORTED here from the common catalogues (global-core, christian-western, catholic, global-family,
       global-cultural, global-environment, global-un). They carry their catalogue defaults (category, non-working
       flag, calculation strategy); a region pack supplies its own territory scope and, where required, overrides the
-      category, non-working flag, or weekend adjustment on its own import <Use> directive. The v2 import resolver
+      category, non-working flag, or weekend adjustment on its own import <Use> directive. The import resolver
       resolves this hub's own imports transitively, so a region that imports a concept from here receives the fully
       resolved catalogue rule.
 

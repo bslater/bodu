@@ -4,7 +4,7 @@
   Italy (IT) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-it.xml to the v2 cookbook schema. All rules are scoped to territory "IT"; the
+  Authored on the notable-date schema. All rules are scoped to territory "IT"; the
   patron-saint feasts that vary by comune are not modelled.
 
   How this resource is built:

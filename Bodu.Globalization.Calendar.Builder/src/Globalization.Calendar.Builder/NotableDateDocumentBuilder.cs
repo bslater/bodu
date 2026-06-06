@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Provides a fluent, chainable API for authoring a Bodu notable-date document on the v2 cookbook schema, with
+/// Provides a fluent, chainable API for authoring a Bodu notable-date document on the notable-date schema, with
 /// full-fidelity XML serialization, a JSON-subset surface, and materialization into a
 /// <see cref="NotableDateResource" /> through the canonical loader.
 /// </summary>

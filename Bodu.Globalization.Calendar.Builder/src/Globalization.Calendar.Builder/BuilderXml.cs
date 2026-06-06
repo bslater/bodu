@@ -10,13 +10,13 @@ using System.Xml.Linq;
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Provides shared constants and helpers used by the XML and JSON serializers for the v2 notable-date document schema,
+/// Provides shared constants and helpers used by the XML and JSON serializers for the notable-date document schema,
 /// including the document namespace and English month-name conversions.
 /// </summary>
 internal static class BuilderXml
 {
     /// <summary>
-    /// The XML namespace URI of the v2 notable-date document schema.
+    /// The XML namespace URI of the notable-date document schema.
     /// </summary>
     internal const string NamespaceUri = "urn:bodu:globalization:calendar";
 
@@ -26,7 +26,7 @@ internal static class BuilderXml
     internal const string DefaultSchemaVersion = "1.0";
 
     /// <summary>
-    /// The reusable <see cref="XNamespace" /> for the v2 notable-date document schema.
+    /// The reusable <see cref="XNamespace" /> for the notable-date document schema.
     /// </summary>
     internal static readonly XNamespace Namespace = XNamespace.Get(NamespaceUri);
 

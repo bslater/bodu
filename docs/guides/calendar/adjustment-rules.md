@@ -6,7 +6,7 @@ title: Observance adjustment rules
 
 An **adjustment policy** shifts a resolved *nominal* date — the date the resolution strategy computed — into an *observed* date when a trigger condition fires. Most real-world public-holiday systems require adjustments: Christmas moving to a Monday when it falls on a Saturday, ANZAC Day moving to the next working day when it collides with a weekend, or a substitute Monday for any date that falls on a Sunday.
 
-In the v2 cookbook schema an adjustment policy is **reusable and named**: it is declared once in the document's top-level `<AdjustmentPolicies>` element and referenced from a rule by id. There are **no inline per-rule adjustment definitions** — a rule always points at a policy with `<Adjustment policyRef="…" />`. This page covers nominal vs. observed dates, the reusable <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> model, the full <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> and <xref:Bodu.Globalization.Calendar.AdjustmentAction> catalogues, the `<Emission>` element and <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> values, `<Scope>`, and how to plug in a custom trigger or action.
+In the notable-date schema, an adjustment policy is **reusable and named**: it is declared once in the document's top-level `<AdjustmentPolicies>` element and referenced from a rule by id. There are **no inline per-rule adjustment definitions** — a rule always points at a policy with `<Adjustment policyRef="…" />`. This page covers nominal vs. observed dates, the reusable <xref:Bodu.Globalization.Calendar.AdjustmentPolicy> model, the full <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> and <xref:Bodu.Globalization.Calendar.AdjustmentAction> catalogues, the `<Emission>` element and <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> values, `<Scope>`, and how to plug in a custom trigger or action.
 
 For the element-by-element reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md). For where adjustments sit in the overall resolution process, see [The resolution pipeline](resolution-pipeline.md).
 
@@ -33,7 +33,7 @@ foreach (NotableDate date in service.Resolve(2027, "AU"))
 }
 ```
 
-`NotableDate.IsObserved` is the v2 flag (there is no `WasAdjusted` *property* — `NotableDateFilter.WasAdjusted()` is a filter factory you can compose into a query):
+`NotableDate.IsObserved` is the flag (there is no `WasAdjusted` *property* — `NotableDateFilter.WasAdjusted()` is a filter factory you can compose into a query):
 
 ```csharp
 // Only the adjusted (observed) occurrences for the year.

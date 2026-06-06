@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Philippines (PH) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "PH". The
+  Philippines (PH) notable-date resource on the notable-date schema. National rules are scoped to territory "PH". The
   civil and Western Christian days (New Year, Holy Week, All Saints'/All Souls', Christmas) are imported from the
   global-core and christian-western catalogues; the two nationally observed Islamic festivals from the global Islamic
   catalogue (tabular Hijri, so they may differ by a day or two from the gazette). The national, historical, and

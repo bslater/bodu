@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Taiwan (TW) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "TW". The civil
+  Taiwan (TW) notable-date resource on the notable-date schema. National rules are scoped to territory "TW". The civil
   days (Founding Day / New Year, Labour Day) are imported from the global-core catalogue; the traditional festivals
   are Chinese-lunisolar dates declared inline, and Tomb-Sweeping Day uses the astronomical Qingming solar-term
   algorithm. Taiwan numbers years in the Minguo (ROC) era, which is a display offset only and does not affect the

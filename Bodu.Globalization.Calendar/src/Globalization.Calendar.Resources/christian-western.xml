@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Western (Gregorian) Christian notable-date catalogue, migrated from the v1 christian-gregorian.xml to the v2 cookbook
-  schema. Easter Sunday is the computed anchor (valid from the 1583 Gregorian reform); the surrounding feasts are
+  Western (Gregorian) Christian notable-date catalogue on the notable-date schema. Easter Sunday is the computed anchor (valid from the 1583 Gregorian reform); the surrounding feasts are
   offsets from it. A territory pack imports the concepts it observes and supplies its own territory scope, category,
   non-working flag, and weekend adjustment through the import <Use> directive. The shared rules use the stable rule id
   "default", so a territory-local rule that offsets from Easter references <OffsetFromRule ... ruleRef="default" />.
@@ -92,8 +91,7 @@
     </NotableDate>
 
     <!--
-      Lenten and post-Pentecost movable feasts. These complete the Easter-derived cluster carried by the v1
-      christian-gregorian.xml catalogue so a territory pack can cherry-pick them by import. Each offsets from the
+      Lenten and post-Pentecost movable feasts. These complete the Easter-derived cluster carried by this catalogue so a territory pack can cherry-pick them by import. Each offsets from the
       Easter Sunday anchor and is a working religious observance by default.
     -->
 

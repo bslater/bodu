@@ -6,9 +6,9 @@ uid: Bodu.Globalization.Calendar.Builder
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Builder** is a fluent, chainable C# API for authoring [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md) notable-date documents on the v2 cookbook schema. It is the in-code peer of hand-writing the XML or JSON: the same document model, assembled through a nested builder hierarchy, then serialized to a schema-valid form, saved to a file, or materialized straight into a <xref:Bodu.Globalization.Calendar.NotableDateResource>.
+**Bodu.Globalization.Calendar.Builder** is a fluent, chainable C# API for authoring [`Bodu.Globalization.Calendar`](Bodu.Globalization.Calendar.md) notable-date documents. It is the in-code peer of hand-writing the XML or JSON: the same document model, assembled through a nested builder hierarchy, then serialized to a schema-valid form, saved to a file, or materialized straight into a <xref:Bodu.Globalization.Calendar.NotableDateResource>.
 
-Reach for it when rule sets are produced programmatically — exporting curated data packs, composing documents in tests, or transforming an external holiday source into the cookbook schema — rather than editing XML by hand.
+Reach for it when rule sets are produced programmatically — exporting curated data packs, composing documents in tests, or transforming an external holiday source into the notable-date schema — rather than editing XML by hand.
 
 ## Static documentation
 

@@ -4,7 +4,7 @@
   Sweden (SE) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-se.xml to the v2 cookbook schema. All rules are scoped to territory "SE".
+  Authored on the notable-date schema. All rules are scoped to territory "SE".
 
   How this resource is built:
 

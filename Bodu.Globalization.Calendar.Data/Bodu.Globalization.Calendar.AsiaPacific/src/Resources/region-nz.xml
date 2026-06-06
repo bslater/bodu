@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  New Zealand notable-date resource, migrated from the v1 region-nz.xml to the v2 cookbook schema. Shared civil and
+  New Zealand notable-date resource on the notable-date schema. Shared civil and
   Christian observances (New Year's Day, Easter, Christmas, Boxing Day) are imported from the common catalogues with
   per-territory overrides; the territory-specific holidays remain inline. Easter Saturday offsets from the imported
   Easter Sunday rule (id "default"). Matariki uses the gazetted-date algorithm. The paired New Year / Day after New

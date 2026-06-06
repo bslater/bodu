@@ -4,7 +4,7 @@
   Denmark (DK) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-dk.xml to the v2 cookbook schema. All rules are scoped to territory "DK".
+  Authored on the notable-date schema. All rules are scoped to territory "DK".
 
   How this resource is built:
 

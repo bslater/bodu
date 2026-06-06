@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Israel (IL) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "IL". The
+  Israel (IL) notable-date resource on the notable-date schema. National rules are scoped to territory "IL". The
   Jewish religious holidays are imported from the global-jewish catalogue (Hebrew calendar, deterministic reckoning);
   the major festivals are re-scoped to non-working public holidays, while Hanukkah remains a working observance.
   Independence Day (Yom Ha'atzmaut) is computed as an offset from Passover (5 Iyar = Passover + 20 days); the
