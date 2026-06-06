@@ -90,7 +90,6 @@ namespace Bodu.Numerics;
 ///]]>
 /// </code>
 /// </example>
-[Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(IntervalJsonConverterFactory))]
 public readonly partial struct Interval<T>

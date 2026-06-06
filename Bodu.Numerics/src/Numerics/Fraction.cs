@@ -38,7 +38,6 @@ namespace Bodu.Numerics;
 /// <see cref="OverflowException" /> at run time.
 /// </para>
 /// </remarks>
-[Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(FractionJsonConverterFactory))]
 public readonly partial struct Fraction<T>

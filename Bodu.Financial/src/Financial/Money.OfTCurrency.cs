@@ -59,7 +59,6 @@ namespace Bodu.Financial;
 /// .
 /// </para>
 /// </remarks>
-[Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(MoneyOfTCurrencyJsonConverterFactory))]
 public readonly partial struct Money<TCurrency>

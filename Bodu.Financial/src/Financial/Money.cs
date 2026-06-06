@@ -40,7 +40,6 @@ namespace Bodu.Financial;
 /// .
 /// </para>
 /// </remarks>
-[Serializable]
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(MoneyJsonConverter))]
 public readonly partial struct Money
