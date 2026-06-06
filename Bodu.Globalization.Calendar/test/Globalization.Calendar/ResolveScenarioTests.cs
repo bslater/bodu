@@ -89,9 +89,9 @@ public sealed class ResolveScenarioTests
     {
         IReadOnlyList<NotableDate> results = ChristmasService().Resolve(new DateOnly(2026, 12, 25), Territory);
 
-        Assert.HasCount(1, results);
-        Assert.AreEqual("christmas-day", results[0].NotableDateId);
-        Assert.AreEqual(new DateOnly(2026, 12, 25), results[0].Date);
+        CollectionAssert.AreEqual(
+            new[] { ("christmas-day", new DateOnly(2026, 12, 25)) },
+            results.Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     /// <summary>
@@ -160,11 +160,16 @@ public sealed class ResolveScenarioTests
         IReadOnlyList<NotableDate> results = NotableDateFixtures.Resolver("resolve-easter.xml")
             .Resolve(new DateRange(new DateOnly(2026, 2, 1), new DateOnly(2026, 4, 30)), "US");
 
-        Assert.AreEqual(new DateOnly(2026, 2, 18), Single(results, "start-of-lent").Date);
-        Assert.AreEqual(new DateOnly(2026, 3, 29), Single(results, "palm-sunday").Date);
-        Assert.AreEqual(new DateOnly(2026, 4, 3), Single(results, "good-friday").Date);
-        Assert.AreEqual(new DateOnly(2026, 4, 5), Single(results, "easter-sunday").Date);
-        Assert.AreEqual(new DateOnly(2026, 4, 6), Single(results, "easter-monday").Date);
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                ("start-of-lent", new DateOnly(2026, 2, 18)),
+                ("palm-sunday", new DateOnly(2026, 3, 29)),
+                ("good-friday", new DateOnly(2026, 4, 3)),
+                ("easter-sunday", new DateOnly(2026, 4, 5)),
+                ("easter-monday", new DateOnly(2026, 4, 6)),
+            },
+            results.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     /// <summary>
@@ -177,9 +182,9 @@ public sealed class ResolveScenarioTests
         IReadOnlyList<NotableDate> results = NotableDateFixtures.Resolver("resolve-easter.xml")
             .Resolve(new DateRange(new DateOnly(2026, 3, 25), new DateOnly(2026, 3, 31)), "US");
 
-        Assert.HasCount(1, results);
-        Assert.AreEqual("palm-sunday", results[0].NotableDateId);
-        Assert.AreEqual(new DateOnly(2026, 3, 29), results[0].Date);
+        CollectionAssert.AreEqual(
+            new[] { ("palm-sunday", new DateOnly(2026, 3, 29)) },
+            results.Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     // =====================================================================================================================
@@ -210,8 +215,13 @@ public sealed class ResolveScenarioTests
         IReadOnlyList<NotableDate> results = new NotableDateService(NotableDateResourceLoader.Load(xml))
             .Resolve(new DateRange(new DateOnly(2026, 12, 25), new DateOnly(2026, 12, 27)), Territory);
 
-        Assert.AreEqual(new DateOnly(2026, 12, 25), Single(results, "christmas-day").Date);
-        Assert.AreEqual(new DateOnly(2026, 12, 26), Single(results, "boxing-day").Date);
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                ("christmas-day", new DateOnly(2026, 12, 25)),
+                ("boxing-day", new DateOnly(2026, 12, 26)),
+            },
+            results.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     // =====================================================================================================================
@@ -229,9 +239,9 @@ public sealed class ResolveScenarioTests
             .Resolve(new DateRange(new DateOnly(2026, 12, 28), new DateOnly(2027, 1, 10)), Territory);
 
         NotableDate festival = Single(results, "year-end-festival");
-        Assert.AreEqual(new DateOnly(2026, 12, 30), festival.Date);
-        Assert.AreEqual(7, festival.DurationDays);
-        Assert.AreEqual(new DateOnly(2027, 1, 5), festival.EndDate);
+        Assert.AreEqual(
+            (new DateOnly(2026, 12, 30), 7, new DateOnly(2027, 1, 5)),
+            (festival.Date, festival.DurationDays, festival.EndDate));
     }
 
     /// <summary>
@@ -291,8 +301,9 @@ public sealed class ResolveScenarioTests
 
         NotableDate[] festivals = results.Where(n => n.NotableDateId == "year-end-festival").ToArray();
         Assert.HasCount(1, festivals);
-        Assert.AreEqual(new DateOnly(2025, 12, 30), festivals[0].Date);
-        Assert.AreEqual(7, festivals[0].DurationDays);
+        Assert.AreEqual(
+            (new DateOnly(2025, 12, 30), 7),
+            (festivals[0].Date, festivals[0].DurationDays));
     }
 
     /// <summary>
@@ -306,9 +317,9 @@ public sealed class ResolveScenarioTests
             .Resolve(new DateRange(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 30)), Territory);
 
         NotableDate programme = Single(results, "year-long-programme");
-        Assert.AreEqual(new DateOnly(2026, 1, 1), programme.Date);
-        Assert.AreEqual(365, programme.DurationDays);
-        Assert.AreEqual(new DateOnly(2026, 12, 31), programme.EndDate);
+        Assert.AreEqual(
+            (new DateOnly(2026, 1, 1), 365, new DateOnly(2026, 12, 31)),
+            (programme.Date, programme.DurationDays, programme.EndDate));
     }
 
     // =====================================================================================================================
@@ -416,14 +427,14 @@ public sealed class ResolveScenarioTests
             .Resolve(new DateRange(new DateOnly(2021, 12, 25), new DateOnly(2021, 12, 31)), "AU");
 
         NotableDate christmas = Single(results, "christmas-day");
-        Assert.AreEqual(new DateOnly(2021, 12, 27), christmas.Date);
-        Assert.AreEqual(new DateOnly(2021, 12, 25), christmas.ActualDate);
-        Assert.IsTrue(christmas.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2021, 12, 27), (DateOnly?)new DateOnly(2021, 12, 25), true),
+            (christmas.Date, christmas.ActualDate, christmas.IsObserved));
 
         NotableDate boxing = Single(results, "boxing-day");
-        Assert.AreEqual(new DateOnly(2021, 12, 28), boxing.Date);
-        Assert.AreEqual(new DateOnly(2021, 12, 26), boxing.ActualDate);
-        Assert.IsTrue(boxing.IsObserved);
+        Assert.AreEqual(
+            (new DateOnly(2021, 12, 28), (DateOnly?)new DateOnly(2021, 12, 26), true),
+            (boxing.Date, boxing.ActualDate, boxing.IsObserved));
     }
 
     // =====================================================================================================================
