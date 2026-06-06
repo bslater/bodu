@@ -59,21 +59,35 @@ public sealed class NotableDatePluginLoaderTests
         INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(TestAssembly, new AllowAllPluginTrustPolicy());
 
         Assert.IsInstanceOfType<TestPlugin>(plugin);
-        Assert.AreEqual("Test Plugin", plugin.Name);
-        Assert.AreEqual(new Version(1, 2, 3), plugin.Version);
+        Assert.AreEqual(
+            ("Test Plugin", new Version(1, 2, 3)),
+            (plugin.Name, plugin.Version));
     }
 
     /// <summary>
-    /// Verifies that registering the plugin's algorithms makes its key resolvable by the engine.
+    /// Verifies that registering a plugin contributing a single algorithm reports one registered algorithm.
     /// </summary>
     [TestMethod]
-    public void RegisterAlgorithms_MakesThePluginKeyResolvable()
+    public void RegisterAlgorithms_WhenPluginHasOneAlgorithm_ReturnsRegisteredCount()
     {
         INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(TestAssembly, new AllowAllPluginTrustPolicy());
         NotableDateAlgorithmRegistry registry = new();
 
         var count = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
+
         Assert.AreEqual(1, count);
+    }
+
+    /// <summary>
+    /// Verifies that, once the plugin's algorithms are registered, the engine resolves a notable date that references
+    /// the plugin's key to the algorithm-computed occurrence (1 July).
+    /// </summary>
+    [TestMethod]
+    public void RegisterAlgorithms_WhenKeyRegistered_ResolvesPluginAlgorithmOccurrence()
+    {
+        INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(TestAssembly, new AllowAllPluginTrustPolicy());
+        NotableDateAlgorithmRegistry registry = new();
+        _ = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
 
         const string Xml = """
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.plugin">
@@ -162,7 +176,8 @@ public sealed class NotableDatePluginLoaderTests
             : Convert.ToHexString(tokenBytes).ToLowerInvariant();
 
         Assert.IsNotNull(captured);
-        Assert.AreEqual(TestAssembly.GetName().Name, captured!.AssemblyName);
-        Assert.AreEqual(expectedToken, captured.PublicKeyToken);
+        Assert.AreEqual(
+            (TestAssembly.GetName().Name, (string?)expectedToken),
+            ((string?)captured!.AssemblyName, captured.PublicKeyToken));
     }
 }
