@@ -75,7 +75,8 @@ public sealed class NotableDateProviderTests
             provider is null ? null : new[] { provider });
 
     /// <summary>
-    /// Verifies that a provider's occurrence is resolved alongside the resource's authored holiday.
+    /// Verifies that a provider's occurrence is resolved alongside the resource's authored holiday, so the year query
+    /// yields both the authored New Year's Day and the provider's Founders Day.
     /// </summary>
     [TestMethod]
     public void Provider_ContributesOccurrenceAlongsideResource()
@@ -84,13 +85,14 @@ public sealed class NotableDateProviderTests
 
         IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31)), Territory);
 
-        Assert.Contains(r => r.NotableDateId == "new-year", results);
-        NotableDate founders = results.Single(r => r.NotableDateId == "founders-day");
-        Assert.AreEqual(new DateOnly(2025, 3, 15), founders.Date);
+        CollectionAssert.AreEqual(
+            new[] { ("new-year", new DateOnly(2025, 1, 1)), ("founders-day", new DateOnly(2025, 3, 15)) },
+            results.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     /// <summary>
-    /// Verifies that a provider occurrence outside the requested range is excluded.
+    /// Verifies that a provider occurrence outside the requested range is excluded, so a January query yields only the
+    /// authored New Year's Day and not the March Founders Day.
     /// </summary>
     [TestMethod]
     public void Provider_OccurrenceOutsideRange_IsExcluded()
@@ -99,24 +101,39 @@ public sealed class NotableDateProviderTests
 
         IReadOnlyList<NotableDate> january = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 31)), Territory);
 
-        Assert.DoesNotContain(r => r.NotableDateId == "founders-day", january);
-        Assert.Contains(r => r.NotableDateId == "new-year", january);
+        CollectionAssert.AreEqual(
+            new[] { ("new-year", new DateOnly(2025, 1, 1)) },
+            january.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date)).ToArray());
     }
 
     /// <summary>
-    /// Verifies that the query filter applies to provider occurrences just as it does to resource occurrences.
+    /// Verifies that an Observance category filter applies to provider occurrences, yielding only the provider's
+    /// Founders Day observance and excluding the authored public holiday.
     /// </summary>
     [TestMethod]
-    public void Provider_OccurrenceRespectsQueryFilter()
+    public void Provider_WhenFilteredByObservance_ShouldYieldOnlyProviderOccurrence()
     {
         INotableDateService service = Build(new FoundersDayProvider(new DateOnly(2025, 3, 15)));
         DateRange year = new(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31));
 
         IReadOnlyList<NotableDate> observances = service.Resolve(year, Territory, NotableDateFilter.ForCategory(NotableDateCategory.Observance));
-        Assert.Contains(r => r.NotableDateId == "founders-day", observances);
-        Assert.DoesNotContain(r => r.NotableDateId == "new-year", observances);
+
+        CollectionAssert.AreEqual(
+            new[] { ("founders-day", new DateOnly(2025, 3, 15)) },
+            observances.OrderBy(r => r.Date).Select(r => (r.NotableDateId, r.Date)).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a PublicHoliday category filter excludes the provider's Observance occurrence.
+    /// </summary>
+    [TestMethod]
+    public void Provider_WhenFilteredByPublicHoliday_ShouldExcludeProviderOccurrence()
+    {
+        INotableDateService service = Build(new FoundersDayProvider(new DateOnly(2025, 3, 15)));
+        DateRange year = new(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31));
 
         IReadOnlyList<NotableDate> holidays = service.Resolve(year, Territory, NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
+
         Assert.DoesNotContain(r => r.NotableDateId == "founders-day", holidays);
     }
 

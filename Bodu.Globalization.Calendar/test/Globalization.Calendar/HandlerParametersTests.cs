@@ -98,8 +98,9 @@ public sealed class HandlerParametersTests
 
         NotableDate observed = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 10)), Territory).Single();
 
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2025, 1, 6), observed.Date);
+        Assert.AreEqual(
+            (true, new DateOnly(2025, 1, 6)),
+            (observed.IsObserved, observed.Date));
     }
 
     /// <summary>
@@ -114,8 +115,9 @@ public sealed class HandlerParametersTests
 
         NotableDate observed = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 10)), Territory).Single();
 
-        Assert.IsTrue(observed.IsObserved);
-        Assert.AreEqual(new DateOnly(2025, 1, 3), observed.Date);
+        Assert.AreEqual(
+            (true, new DateOnly(2025, 1, 3)),
+            (observed.IsObserved, observed.Date));
     }
 
     /// <summary>
