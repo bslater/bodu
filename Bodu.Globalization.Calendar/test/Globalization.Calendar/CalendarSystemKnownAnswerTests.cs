@@ -56,29 +56,35 @@ public sealed class CalendarSystemKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies that a multi-day occurrence carries its duration and end date, is returned by a single-day query for a
-    /// day inside its span, and is excluded by a query that falls entirely before or after the span.
+    /// Verifies that a multi-day occurrence is returned by a single-day query for a day inside its span, carrying its
+    /// span start, duration, and end date. Golden Week 2024 spans 29 April to 5 May.
     /// </summary>
     [TestMethod]
-    public void Resolve_MultiDayOccurrence_IsIncludedWhenTheQueryIntersectsTheSpan()
+    public void Resolve_MultiDayOccurrence_WhenQueryInsideSpan_ReturnsOccurrenceWithSpan()
     {
-        NotableDateService service = CreateService();
-
-        var inside = service
+        var inside = CreateService()
             .Resolve(new DateOnly(2024, 5, 2), "XX")
             .Where(r => r.NotableDateId == "golden-week")
             .ToList();
 
         Assert.HasCount(1, inside, "a day inside the span returns the occurrence");
-        Assert.AreEqual(new DateOnly(2024, 4, 29), inside[0].Date, "span start");
-        Assert.AreEqual(7, inside[0].DurationDays, "duration");
-        Assert.AreEqual(new DateOnly(2024, 5, 5), inside[0].EndDate, "span end");
+        Assert.AreEqual(
+            (new DateOnly(2024, 4, 29), 7, new DateOnly(2024, 5, 5)),
+            (inside[0].Date, inside[0].DurationDays, inside[0].EndDate));
+    }
 
-        var before = service.Resolve(new DateOnly(2024, 4, 28), "XX").Count(r => r.NotableDateId == "golden-week");
-        var after = service.Resolve(new DateOnly(2024, 5, 6), "XX").Count(r => r.NotableDateId == "golden-week");
-
-        Assert.AreEqual(0, before, "a day before the span is excluded");
-        Assert.AreEqual(0, after, "a day after the span is excluded");
+    /// <summary>
+    /// Verifies that a multi-day occurrence is excluded by a single-day query that falls entirely before or after its
+    /// span. Golden Week 2024 spans 29 April to 5 May, so 28 April and 6 May are outside it.
+    /// </summary>
+    /// <param name="month">The queried month.</param>
+    /// <param name="day">The queried day of 2024.</param>
+    [TestMethod]
+    [DataRow(4, 28)]  // the day before the span
+    [DataRow(5, 6)]   // the day after the span
+    public void Resolve_MultiDayOccurrence_WhenQueryOutsideSpan_ExcludesOccurrence(int month, int day)
+    {
+        Assert.AreEqual(0, CreateService().Resolve(new DateOnly(2024, month, day), "XX").Count(r => r.NotableDateId == "golden-week"));
     }
 
     /// <summary>
@@ -104,8 +110,10 @@ public sealed class CalendarSystemKnownAnswerTests
 
         IGrouping<int, NotableDate> doubled = doubledYears[0];
         var dates = doubled.Select(r => r.Date).OrderBy(d => d).ToList();
-        Assert.AreEqual(doubled.Key, dates[0].Year, "first occurrence is in the Gregorian year");
-        Assert.AreEqual(doubled.Key, dates[1].Year, "second occurrence is in the same Gregorian year");
+        Assert.AreEqual(
+            (doubled.Key, doubled.Key),
+            (dates[0].Year, dates[1].Year),
+            "both occurrences are in the same Gregorian year");
         Assert.IsGreaterThan(300, dates[1].DayNumber - dates[0].DayNumber, "the two occurrences are about a lunar year apart");
     }
 }
