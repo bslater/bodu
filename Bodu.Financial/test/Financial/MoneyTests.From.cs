@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.From.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenIsoCodeIsValid_ShouldCreateMoneyMatchingArguments()
     {
-        Money money = Money.From(19.995m, "USD");
+        var money = Money.From(19.995m, "USD");
 
         Assert.AreEqual(20.00m, money.Amount);
         Assert.AreEqual("USD", money.IsoCode);
@@ -45,7 +45,7 @@ public partial class MoneyTests
     {
         CurrencyInfo info = CurrencyRegistry.Get("EUR");
 
-        Money money = Money.From(123.45m, info);
+        var money = Money.From(123.45m, info);
 
         Assert.AreEqual(123.45m, money.Amount);
         Assert.AreEqual("EUR", money.IsoCode);
@@ -71,7 +71,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenCurrencyCodeIsDefined_ShouldCreateMoneyMatchingCode()
     {
-        Money money = Money.From(50.25m, CurrencyCode.JPY);
+        var money = Money.From(50.25m, CurrencyCode.JPY);
 
         Assert.AreEqual(50m, money.Amount);
         Assert.AreEqual("JPY", money.IsoCode);

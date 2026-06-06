@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagTests.Accessors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class MoneyBagTests
     [TestCategory("Smoke")]
     public void Of_WhenDuplicateCurrencies_ShouldSumBalances()
     {
-        MoneyBag bag = MoneyBag.Of(new Money(10m, "USD"), new Money(5m, "USD"), new Money(2m, "EUR"));
+        var bag = MoneyBag.Of(new Money(10m, "USD"), new Money(5m, "USD"), new Money(2m, "EUR"));
 
         Assert.AreEqual(new Money(15m, "USD"), bag.GetBalance("USD"));
         Assert.AreEqual(new Money(2m, "EUR"), bag.GetBalance("EUR"));
@@ -29,7 +29,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FromBalances_WhenGivenSequence_ShouldBuildBag()
     {
-        MoneyBag bag = MoneyBag.FromBalances(new[] { new Money(10m, "USD"), new Money(2m, "EUR") });
+        var bag = MoneyBag.FromBalances(new[] { new Money(10m, "USD"), new Money(2m, "EUR") });
 
         Assert.AreEqual(2, bag.Count);
     }
@@ -41,7 +41,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void TryGetBalance_WhenPresentAndAbsent_ShouldReflectMembership()
     {
-        MoneyBag bag = MoneyBag.Of(new Money(10m, "USD"));
+        var bag = MoneyBag.Of(new Money(10m, "USD"));
 
         Assert.IsTrue(bag.TryGetBalance("USD", out Money usd));
         Assert.AreEqual(new Money(10m, "USD"), usd);
@@ -56,7 +56,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void GetBalance_WhenCurrencyInfo_ShouldResolveBalance()
     {
-        MoneyBag bag = MoneyBag.Of(new Money(10m, "USD"));
+        var bag = MoneyBag.Of(new Money(10m, "USD"));
 
         Assert.AreEqual(new Money(10m, "USD"), bag.GetBalance(CurrencyRegistry.Get("USD")));
     }
@@ -67,7 +67,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void GetBalance_WhenCurrencyCode_ShouldResolveBalance()
     {
-        MoneyBag bag = MoneyBag.Of(new Money(10m, "USD"));
+        var bag = MoneyBag.Of(new Money(10m, "USD"));
 
         Assert.AreEqual(new Money(10m, "USD"), bag.GetBalance(CurrencyCode.USD));
         Assert.IsNull(bag.GetBalance(CurrencyCode.EUR));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ResolveScenarioTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -376,7 +376,7 @@ public sealed class ResolveScenarioTests
             .ToArray();
 
         Assert.AreEqual(7, festivals.Length);
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             Assert.AreEqual($"festival-day-{i + 1}", festivals[i].NotableDateId);
             Assert.AreEqual(new DateOnly(2026, 12, 25 + i), festivals[i].Date);
@@ -503,7 +503,7 @@ public sealed class ResolveScenarioTests
     /// <returns>The matching occurrence.</returns>
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
-        List<NotableDate> matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
+        var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
         Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }

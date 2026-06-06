@@ -284,7 +284,7 @@ public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
         bool isInverted,
         out ExchangeRateLookupResult result)
     {
-        string[] priority = _providerPriority;
+        var priority = _providerPriority;
         for (var i = 0; i < priority.Length; i++)
         {
             if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)

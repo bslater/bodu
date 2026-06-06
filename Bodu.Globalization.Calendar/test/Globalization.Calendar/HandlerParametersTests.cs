@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HandlerParametersTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public sealed class HandlerParametersTests
     {
         /// <inheritdoc />
         public DateOnly? Adjust(AdjustmentHandlerContext context) =>
-            context.Parameters.TryGetValue("days", out string? value) && int.TryParse(value, out int days)
+            context.Parameters.TryGetValue("days", out var value) && int.TryParse(value, out var days)
                 ? context.BaseDate.AddDays(days)
                 : null;
     }
@@ -83,7 +83,7 @@ public sealed class HandlerParametersTests
     {
         /// <inheritdoc />
         public bool ShouldAdjust(AdjustmentTriggerContext context) =>
-            context.Parameters.TryGetValue("fire", out string? value) && string.Equals(value, "yes", StringComparison.Ordinal);
+            context.Parameters.TryGetValue("fire", out var value) && string.Equals(value, "yes", StringComparison.Ordinal);
     }
 
     /// <summary>

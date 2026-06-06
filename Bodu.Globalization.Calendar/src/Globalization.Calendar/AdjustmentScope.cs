@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentScope.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,8 +61,8 @@ public sealed class AdjustmentScope
         this.RuleRefs = ruleRefs.ToArray();
         this.FromYear = fromYear;
         this.ToYear = toYear;
-        this.OnlyYears = onlyYears?.ToArray() ?? Array.Empty<int>();
-        this.ExceptYears = exceptYears?.ToArray() ?? Array.Empty<int>();
+        this.OnlyYears = onlyYears?.ToArray() ?? [];
+        this.ExceptYears = exceptYears?.ToArray() ?? [];
     }
 
     /// <summary>
@@ -70,11 +70,11 @@ public sealed class AdjustmentScope
     /// </summary>
     /// <returns>An empty, global scope.</returns>
     public static AdjustmentScope Global { get; } = new AdjustmentScope(
-        Array.Empty<string>(),
-        Array.Empty<CalendarSystem>(),
-        Array.Empty<NotableDateCategory>(),
-        Array.Empty<string>(),
-        Array.Empty<string>());
+        [],
+        [],
+        [],
+        [],
+        []);
 
     /// <summary>
     /// Gets the territories the policy is limited to.

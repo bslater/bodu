@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AustraliaKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,7 +67,7 @@ public sealed class AustraliaKnownAnswerTests
     [DataRow("AU-ACT", 2026, "canberra-day", "2026-03-09", false)]
     public void Resolve_AustralianHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
-        DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
 
         NotableDate match = SingleForYear(territory, year, notableDateId);
 
@@ -88,7 +88,7 @@ public sealed class AustraliaKnownAnswerTests
     [DataRow("AU-QLD", 2015, "kings-birthday")]
     public void Resolve_WhenBeforeFirstYear_ReturnsNoResult(string territory, int year, string notableDateId)
     {
-        int count = CreateService()
+        var count = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
             .Count(r => r.NotableDateId == notableDateId);
 
@@ -102,7 +102,7 @@ public sealed class AustraliaKnownAnswerTests
     [TestMethod]
     public void Resolve_WhenNationalQuery_ExcludesSubdivisionHolidays()
     {
-        int count = CreateService()
+        var count = CreateService()
             .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "AU")
             .Count(r => r.NotableDateId == "labour-day");
 
@@ -137,7 +137,7 @@ public sealed class AustraliaKnownAnswerTests
     [TestMethod]
     public void Resolve_WhenAnzacDayInNewSouthWalesTrialYear_EmitsActualAndAdditionalMonday()
     {
-        List<NotableDate> trial = CreateService()
+        var trial = CreateService()
             .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "AU-NSW")
             .Where(r => r.NotableDateId == "anzac-day")
             .OrderBy(r => r.Date)
@@ -166,7 +166,7 @@ public sealed class AustraliaKnownAnswerTests
     /// <returns>The matching occurrence.</returns>
     private static NotableDate SingleForYear(string territory, int year, string notableDateId)
     {
-        List<NotableDate> matches = CreateService()
+        var matches = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();

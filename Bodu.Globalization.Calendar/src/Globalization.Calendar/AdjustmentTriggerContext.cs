@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentTriggerContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Globalization.Calendar;
 /// resolution context.
 /// </summary>
 /// <remarks>
-/// Trigger evaluation runs during candidate gathering, before placement, so no occupied-day probe is exposed: the set of
-/// claimed non-working days is still being assembled and would be unreliable. Handlers that need to reason about other
-/// occurrences should resolve them through <see cref="ResolutionContext" />.
+/// Trigger evaluation runs during candidate gathering, before placement, so no occupied-day probe is exposed: the set
+/// of claimed non-working days is still being assembled and would be unreliable. Handlers that need to reason about
+/// other occurrences should resolve them through <see cref="ResolutionContext" />.
 /// </remarks>
 public sealed class AdjustmentTriggerContext
 {

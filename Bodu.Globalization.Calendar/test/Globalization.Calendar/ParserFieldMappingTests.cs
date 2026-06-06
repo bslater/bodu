@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParserFieldMappingTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -203,7 +203,7 @@ public sealed class ParserFieldMappingTests
     [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
     public void Load_FixedStrategy_ShouldMapMonthAndDay(string path, Func<NotableDateResource> load)
     {
-        FixedDateStrategy strategy = (FixedDateStrategy)Concept(load(), "new-years-day").Rules.Single().Strategy;
+        var strategy = (FixedDateStrategy)Concept(load(), "new-years-day").Rules.Single().Strategy;
 
         Assert.AreEqual(1, strategy.Month, $"{path} month");
         Assert.AreEqual(1, strategy.Day, $"{path} day");
@@ -221,7 +221,7 @@ public sealed class ParserFieldMappingTests
     [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
     public void Load_DayOfWeekInMonthStrategy_ShouldMapFields(string path, Func<NotableDateResource> load)
     {
-        DayOfWeekInMonthStrategy strategy = (DayOfWeekInMonthStrategy)Concept(load(), "mothers-day").Rules.Single().Strategy;
+        var strategy = (DayOfWeekInMonthStrategy)Concept(load(), "mothers-day").Rules.Single().Strategy;
 
         Assert.AreEqual(5, strategy.Month, $"{path} month");
         Assert.AreEqual(DayOfWeek.Sunday, strategy.DayOfWeek, $"{path} dayOfWeek");
@@ -238,7 +238,7 @@ public sealed class ParserFieldMappingTests
     [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
     public void Load_RelativeWeekdayInMonthStrategy_ShouldMapFields(string path, Func<NotableDateResource> load)
     {
-        RelativeWeekdayInMonthStrategy strategy = (RelativeWeekdayInMonthStrategy)Concept(load(), "election-day").Rules.Single().Strategy;
+        var strategy = (RelativeWeekdayInMonthStrategy)Concept(load(), "election-day").Rules.Single().Strategy;
 
         Assert.AreEqual(11, strategy.Month, $"{path} month");
         Assert.AreEqual(DayOfWeek.Monday, strategy.DayOfWeek, $"{path} anchor dayOfWeek");
@@ -257,7 +257,7 @@ public sealed class ParserFieldMappingTests
     [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
     public void Load_WeekdayNearDateStrategy_ShouldMapFields(string path, Func<NotableDateResource> load)
     {
-        WeekdayNearDateStrategy strategy = (WeekdayNearDateStrategy)Concept(load(), "victoria-day").Rules.Single().Strategy;
+        var strategy = (WeekdayNearDateStrategy)Concept(load(), "victoria-day").Rules.Single().Strategy;
 
         Assert.AreEqual(5, strategy.Month, $"{path} month");
         Assert.AreEqual(24, strategy.Day, $"{path} day");
@@ -275,7 +275,7 @@ public sealed class ParserFieldMappingTests
     [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
     public void Load_AlgorithmStrategy_ShouldMapKey(string path, Func<NotableDateResource> load)
     {
-        AlgorithmDateStrategy strategy = (AlgorithmDateStrategy)Concept(load(), "easter-sunday").Rules.Single().Strategy;
+        var strategy = (AlgorithmDateStrategy)Concept(load(), "easter-sunday").Rules.Single().Strategy;
 
         Assert.AreEqual("western-easter", strategy.Key, $"{path} key");
     }
@@ -290,7 +290,7 @@ public sealed class ParserFieldMappingTests
     [DynamicData(nameof(Loaders), DynamicDataSourceType.Method)]
     public void Load_OffsetFromRuleStrategy_ShouldMapReferenceAndOffset(string path, Func<NotableDateResource> load)
     {
-        OffsetFromRuleStrategy strategy = (OffsetFromRuleStrategy)Concept(load(), "good-friday").Rules.Single().Strategy;
+        var strategy = (OffsetFromRuleStrategy)Concept(load(), "good-friday").Rules.Single().Strategy;
 
         Assert.AreEqual("easter-sunday", strategy.NotableDateRef, $"{path} notableDateRef");
         Assert.AreEqual("western", strategy.RuleRef, $"{path} ruleRef");

@@ -31,7 +31,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void DefaultAttribute_WhenSerializing_ShouldEmitCanonicalObjectShape()
     {
-        Interval<int> interval = Interval.ClosedOpen(1, 5);
+        var interval = Interval.ClosedOpen(1, 5);
 
         var json = JsonSerializer.Serialize(interval);
 
@@ -68,7 +68,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenRoundTrippingClosed_ShouldPreserveValue()
     {
-        Interval<int> original = Interval.Closed(1, 5);
+        var original = Interval.Closed(1, 5);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
         var json = JsonSerializer.Serialize(original, options);
@@ -85,7 +85,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenRoundTrippingOpen_ShouldPreserveValue()
     {
-        Interval<int> original = Interval.Open(1, 5);
+        var original = Interval.Open(1, 5);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
         var json = JsonSerializer.Serialize(original, options);
@@ -229,7 +229,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializingClosed_ShouldEmitClosedBracketForm()
     {
-        Interval<int> interval = Interval.Closed(1, 5);
+        var interval = Interval.Closed(1, 5);
 
         var json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Compact));
 
@@ -242,7 +242,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializingClosedOpen_ShouldEmitMixedBracketForm()
     {
-        Interval<int> interval = Interval.ClosedOpen(1, 5);
+        var interval = Interval.ClosedOpen(1, 5);
 
         var json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Compact));
 
@@ -266,7 +266,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenRoundTrippingInterval_ShouldPreserveValue()
     {
-        Interval<int> original = Interval.OpenClosed(2, 8);
+        var original = Interval.OpenClosed(2, 8);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Compact);
 
         var json = JsonSerializer.Serialize(original, options);
@@ -391,7 +391,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenBackedByDecimal_ShouldPreserveValue()
     {
-        Interval<decimal> original = Interval.Closed(1.5m, 9.75m);
+        var original = Interval.Closed(1.5m, 9.75m);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
         var json = JsonSerializer.Serialize(original, options);

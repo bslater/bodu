@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrongNamePluginTrustPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
         ThrowHelper.ThrowIfNull(allowedPublicKeyTokens);
 
         this._allowedTokens = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (string token in allowedPublicKeyTokens)
+        foreach (var token in allowedPublicKeyTokens)
         {
             if (!string.IsNullOrWhiteSpace(token))
                 this._allowedTokens.Add(token.Trim().ToLowerInvariant());

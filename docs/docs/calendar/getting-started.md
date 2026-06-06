@@ -12,9 +12,9 @@ Unfamiliar with terms like *document*, *resource*, *rule*, *nominal date*, or *t
 dotnet add package Bodu.Globalization.Calendar
 
 # Optional region-specific data packs (rules ship out-of-band on independent schedules):
-dotnet add package Bodu.Globalization.Calendar.Data.Americas
-dotnet add package Bodu.Globalization.Calendar.Data.Europe
-dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.Europe
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
 
 # Optional Microsoft.Extensions.DependencyInjection integration:
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
@@ -71,7 +71,6 @@ The companion data packs do the load-and-import wiring for you:
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
@@ -161,7 +160,6 @@ When the host is an ASP.NET Core application (or any `IServiceCollection`-based 
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 using Microsoft.Extensions.DependencyInjection;
 
 builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));

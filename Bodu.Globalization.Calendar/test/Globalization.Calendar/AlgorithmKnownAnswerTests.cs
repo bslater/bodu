@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlgorithmKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,9 +44,9 @@ public sealed class AlgorithmKnownAnswerTests
     [DataRow("matariki", 2025, "2025-06-20")]
     public void Resolve_AlgorithmStrategy_MatchesKnownAnswer(string notableDateId, int year, string expected)
     {
-        DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
 
-        List<NotableDate> matches = CreateService()
+        var matches = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "NZ")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
@@ -70,16 +70,16 @@ public sealed class AlgorithmKnownAnswerTests
     [DataRow("navaratri", 2022, "2022-09-26")]
     public void Resolve_HinduFestival_IsWithinToleranceOfKnownDate(string notableDateId, int year, string expected)
     {
-        DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
 
-        List<NotableDate> matches = CreateService()
+        var matches = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "NZ")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
         Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {year}");
 
-        int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
+        var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
         Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
     }
 
@@ -112,10 +112,10 @@ public sealed class AlgorithmKnownAnswerTests
         NotableDateService service = CreateService();
         List<string> failures = new();
 
-        foreach ((int year, string id, string expected) in knownAnswers)
+        foreach ((var year, var id, var expected) in knownAnswers)
         {
-            DateOnly expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
-            List<NotableDate> matches = service
+            var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+            var matches = service
                 .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "NZ")
                 .Where(r => r.NotableDateId == id)
                 .ToList();
@@ -126,7 +126,7 @@ public sealed class AlgorithmKnownAnswerTests
                 continue;
             }
 
-            int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
+            var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
             if (deltaDays > 2)
                 failures.Add($"{id} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate} (off by {deltaDays})");
         }

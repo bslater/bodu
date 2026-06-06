@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,8 +61,8 @@ internal static class NotableDateDocumentParser
 
         XElement root = document.Root ?? new XElement(s_ns + "NotableDateResource");
 
-        string resourceId = (string?)root.Attribute("resourceId") ?? string.Empty;
-        string schemaVersion = (string?)root.Attribute("schemaVersion") ?? string.Empty;
+        var resourceId = (string?)root.Attribute("resourceId") ?? string.Empty;
+        var schemaVersion = (string?)root.Attribute("schemaVersion") ?? string.Empty;
 
         ResolutionPolicy resolutionPolicy = ParseResolutionPolicy(root.Element(s_ns + "ResolutionPolicy"));
         List<AdjustmentPolicy> adjustmentPolicies = ParseAdjustmentPolicies(root.Element(s_ns + "AdjustmentPolicies"));
@@ -86,7 +86,7 @@ internal static class NotableDateDocumentParser
 
         foreach (XElement import in element.Elements(s_ns + "Import"))
         {
-            List<NotableDateImportUse> uses = import.Elements(s_ns + "Use")
+            var uses = import.Elements(s_ns + "Use")
                 .Select(use => new NotableDateImportUse(
                     (string?)use.Attribute("notableDateRef") ?? string.Empty,
                     (string?)use.Attribute("as"),
@@ -107,7 +107,9 @@ internal static class NotableDateDocumentParser
     /// when an <c>Adjustments</c> element is present and <see langword="null" /> when it is absent.
     /// </summary>
     /// <param name="use">The <c>Use</c> element.</param>
-    /// <returns>The replacement adjustment policy ids, or <see langword="null" /> to keep the source rules' adjustments.</returns>
+    /// <returns>
+    /// The replacement adjustment policy ids, or <see langword="null" /> to keep the source rules' adjustments.
+    /// </returns>
     private static IReadOnlyList<string>? ParseUseAdjustments(XElement use)
     {
         XElement? adjustments = use.Element(s_ns + "Adjustments");
@@ -131,7 +133,7 @@ internal static class NotableDateDocumentParser
             return;
 
         XmlSchemaSet schemas = new();
-        using (XmlReader schemaReader = XmlReader.Create(schemaStream))
+        using (var schemaReader = XmlReader.Create(schemaStream))
             schemas.Add(s_ns.NamespaceName, schemaReader);
 
         document.Validate(schemas, (sender, e) =>
@@ -193,7 +195,7 @@ internal static class NotableDateDocumentParser
             XElement? emission = policy.Element(s_ns + "Emission");
 
             IEnumerable<DayOfWeek> weekdays = trigger is null
-                ? Array.Empty<DayOfWeek>()
+                ? []
                 : trigger.Elements(s_ns + "Weekday").Select(w => ParseEnum(w.Attribute("value")?.Value, DayOfWeek.Monday));
 
             policies.Add(new AdjustmentPolicy(
@@ -237,7 +239,7 @@ internal static class NotableDateDocumentParser
         Dictionary<string, string> parameters = new(StringComparer.Ordinal);
         foreach (XElement param in element.Elements(s_ns + "Param"))
         {
-            string key = (string?)param.Attribute("key") ?? string.Empty;
+            var key = (string?)param.Attribute("key") ?? string.Empty;
             if (key.Length > 0)
                 parameters[key] = (string?)param.Attribute("value") ?? string.Empty;
         }
@@ -255,10 +257,10 @@ internal static class NotableDateDocumentParser
         if (value is null)
             return null;
 
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
             return numeric;
 
-        int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+        var index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
         return index >= 0 ? index + 1 : null;
     }
 
@@ -298,7 +300,7 @@ internal static class NotableDateDocumentParser
 
         foreach (XElement notableDate in element.Elements(s_ns + "NotableDate"))
         {
-            string id = (string?)notableDate.Attribute("id") ?? string.Empty;
+            var id = (string?)notableDate.Attribute("id") ?? string.Empty;
 
             definitions.Add(new NotableDateDefinition(
                 id,
@@ -341,7 +343,7 @@ internal static class NotableDateDocumentParser
     /// <returns>The parsed <see cref="NotableDateRule" />.</returns>
     private static NotableDateRule ParseRule(XElement element, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        string id = (string?)element.Attribute("id") ?? string.Empty;
+        var id = (string?)element.Attribute("id") ?? string.Empty;
         RuleApplicability applicability = ParseApplicability(element.Element(s_ns + "Applicability"));
 
         return new NotableDateRule(
@@ -364,7 +366,7 @@ internal static class NotableDateDocumentParser
     private static RuleApplicability ParseApplicability(XElement? element)
     {
         if (element is null)
-            return new RuleApplicability(CalendarSystem.Gregorian, null, null, Array.Empty<string>(), Array.Empty<int>(), Array.Empty<int>());
+            return new RuleApplicability(CalendarSystem.Gregorian, null, null, [], [], []);
 
         return new RuleApplicability(
             ParseEnum(element.Attribute("calendar")?.Value, CalendarSystem.Gregorian),
@@ -396,7 +398,7 @@ internal static class NotableDateDocumentParser
         {
             case "Fixed":
             {
-                (int month, string? monthAlias) = ParseFixedMonth(child.Attribute("month")?.Value, calendar, notableDateId, ruleId, diagnostics);
+                (var month, var monthAlias) = ParseFixedMonth(child.Attribute("month")?.Value, calendar, notableDateId, ruleId, diagnostics);
                 return new FixedDateStrategy(
                     month,
                     Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31),
@@ -485,7 +487,7 @@ internal static class NotableDateDocumentParser
 
         foreach (XElement operation in element.Elements())
         {
-            string notableDateRef = (string?)operation.Attribute("notableDateRef") ?? string.Empty;
+            var notableDateRef = (string?)operation.Attribute("notableDateRef") ?? string.Empty;
 
             if (operation.Name == s_ns + "RemoveRule")
             {
@@ -515,7 +517,7 @@ internal static class NotableDateDocumentParser
     /// <returns>The parsed <see cref="PatchRuleOverride" />.</returns>
     private static PatchRuleOverride ParsePatchRule(XElement operation, string notableDateRef, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        string ruleRef = (string?)operation.Attribute("ruleRef") ?? string.Empty;
+        var ruleRef = (string?)operation.Attribute("ruleRef") ?? string.Empty;
 
         XElement? applicabilityElement = operation.Element(s_ns + "Applicability");
         XElement? strategyElement = operation.Element(s_ns + "Strategy");
@@ -549,10 +551,10 @@ internal static class NotableDateDocumentParser
     {
         if (value is not null)
         {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
                 return numeric;
 
-            int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+            var index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
             if (index >= 0)
                 return index + 1;
         }
@@ -589,7 +591,7 @@ internal static class NotableDateDocumentParser
 
         if (value is not null)
         {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 13)
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 13)
                 return (numeric, null);
 
             switch (value)
@@ -654,7 +656,7 @@ internal static class NotableDateDocumentParser
     /// <param name="fallback">The value returned when parsing fails.</param>
     /// <returns>The parsed integer, or <paramref name="fallback" />.</returns>
     private static int ParseInt(string? value, int fallback) =>
-        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : fallback;
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : fallback;
 
     /// <summary>
     /// Parses an optional integer value.
@@ -662,7 +664,7 @@ internal static class NotableDateDocumentParser
     /// <param name="value">The raw value, or <see langword="null" />.</param>
     /// <returns>The parsed integer, or <see langword="null" /> when absent or invalid.</returns>
     private static int? ParseNullableInt(string? value) =>
-        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : null;
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
 
     /// <summary>
     /// Parses a boolean value, falling back to a default when parsing fails.

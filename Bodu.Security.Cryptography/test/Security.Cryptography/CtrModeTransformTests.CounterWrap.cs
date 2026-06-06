@@ -27,7 +27,7 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenCounterWouldWrapToInitial_ShouldThrowCryptographicException()
     {
         using var cipher = new SkipjackBlockCipher(new byte[10]);
-        int blockSize = cipher.BlockSize / 8;
+        var blockSize = cipher.BlockSize / 8;
 
         var initialCounter = new byte[blockSize];
         using var transform = new CtrModeTransform(cipher, initialCounter);
@@ -62,7 +62,7 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenCounterWrapLatched_ShouldThrowOnEverySubsequentCall()
     {
         using var cipher = new SkipjackBlockCipher(new byte[10]);
-        int blockSize = cipher.BlockSize / 8;
+        var blockSize = cipher.BlockSize / 8;
 
         using var transform = new CtrModeTransform(cipher, new byte[blockSize]);
 
@@ -73,7 +73,7 @@ public sealed partial class CtrModeTransformTests
         var input = new byte[blockSize];
         var output = new byte[blockSize];
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<CryptographicException>(() =>
             {

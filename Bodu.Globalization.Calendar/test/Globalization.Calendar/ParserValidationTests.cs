@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParserValidationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed class ParserValidationTests
     /// <param name="expectedCode">The diagnostic code expected among the failure diagnostics.</param>
     private static void AssertFixtureFailsWith(string fileName, string expectedCode)
     {
-        string xml = NotableDateFixtures.ReadText(fileName);
+        var xml = NotableDateFixtures.ReadText(fileName);
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryCodeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Parse_WhenCountryOnly_ShouldDecomposeToCountry()
     {
-        TerritoryCode code = TerritoryCode.Parse("AU");
+        var code = TerritoryCode.Parse("AU");
 
         Assert.AreEqual("AU", code.Country);
         Assert.IsNull(code.Subdivision);
@@ -33,7 +33,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Parse_WhenSubdivision_ShouldDecomposeToCountryAndSubdivision()
     {
-        TerritoryCode code = TerritoryCode.Parse("AU-NSW");
+        var code = TerritoryCode.Parse("AU-NSW");
 
         Assert.AreEqual("AU", code.Country);
         Assert.AreEqual("NSW", code.Subdivision);
@@ -47,7 +47,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Parse_WhenLowerCase_ShouldNormalizeToUpper()
     {
-        TerritoryCode code = TerritoryCode.Parse("au-nsw");
+        var code = TerritoryCode.Parse("au-nsw");
 
         Assert.AreEqual("AU-NSW", code.ToString());
     }
@@ -114,10 +114,10 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Contains_ShouldFollowParentChildSemantics()
     {
-        TerritoryCode au = TerritoryCode.Parse("AU");
-        TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
-        TerritoryCode vic = TerritoryCode.Parse("AU-VIC");
-        TerritoryCode us = TerritoryCode.Parse("US");
+        var au = TerritoryCode.Parse("AU");
+        var nsw = TerritoryCode.Parse("AU-NSW");
+        var vic = TerritoryCode.Parse("AU-VIC");
+        var us = TerritoryCode.Parse("US");
 
         Assert.IsTrue(au.Contains(au));
         Assert.IsTrue(au.Contains(nsw));
@@ -136,8 +136,8 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Equals_WhenSameCodeDifferentCase_ShouldBeEqual()
     {
-        TerritoryCode a = TerritoryCode.Parse("au-nsw");
-        TerritoryCode b = TerritoryCode.Parse("AU-NSW");
+        var a = TerritoryCode.Parse("au-nsw");
+        var b = TerritoryCode.Parse("AU-NSW");
 
         Assert.IsTrue(a == b);
         Assert.IsFalse(a != b);
@@ -163,7 +163,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Conversions_ShouldRoundTripThroughCanonicalForm()
     {
-        TerritoryCode code = (TerritoryCode)"au-nsw";
+        var code = (TerritoryCode)"au-nsw";
         string canonical = code;
 
         Assert.AreEqual("AU-NSW", canonical);

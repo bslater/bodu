@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyResolutionRelativeWeekdayKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -104,7 +104,7 @@ public sealed class StrategyResolutionRelativeWeekdayKnownAnswerTests
     /// <param name="anchorYear">The v1 anchor year the row originates from, used only in failure messages.</param>
     private static void AssertResolvesOn(string notableDateId, DateOnly date, int anchorYear)
     {
-        List<NotableDate> matches = s_service
+        var matches = s_service
             .Resolve(date, "XX")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
@@ -120,7 +120,7 @@ public sealed class StrategyResolutionRelativeWeekdayKnownAnswerTests
     /// <param name="year">The Gregorian year to scan.</param>
     private static void AssertNoOccurrenceInYear(string notableDateId, int year)
     {
-        int count = s_service
+        var count = s_service
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Count(r => r.NotableDateId == notableDateId);
 

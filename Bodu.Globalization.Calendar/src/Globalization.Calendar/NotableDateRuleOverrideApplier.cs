@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleOverrideApplier.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,11 +26,11 @@ internal static class NotableDateRuleOverrideApplier
         IReadOnlyList<NotableDateRuleOverride> overrides,
         ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        List<NotableDateDefinition> working = definitions.ToList();
+        var working = definitions.ToList();
 
         foreach (NotableDateRuleOverride operation in overrides)
         {
-            int index = working.FindIndex(d => string.Equals(d.Id, operation.NotableDateRef, StringComparison.Ordinal));
+            var index = working.FindIndex(d => string.Equals(d.Id, operation.NotableDateRef, StringComparison.Ordinal));
             if (index < 0)
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -62,8 +62,8 @@ internal static class NotableDateRuleOverrideApplier
         {
             case RemoveRuleOverride remove:
             {
-                List<NotableDateRule> rules = definition.Rules.ToList();
-                int removed = rules.RemoveAll(r => string.Equals(r.Id, remove.RuleRef, StringComparison.Ordinal));
+                var rules = definition.Rules.ToList();
+                var removed = rules.RemoveAll(r => string.Equals(r.Id, remove.RuleRef, StringComparison.Ordinal));
                 if (removed == 0)
                 {
                     AddRuleNotFound(diagnostics, remove.RuleRef, definition.Id);
@@ -75,8 +75,8 @@ internal static class NotableDateRuleOverrideApplier
 
             case PatchRuleOverride patch:
             {
-                List<NotableDateRule> rules = definition.Rules.ToList();
-                int ruleIndex = rules.FindIndex(r => string.Equals(r.Id, patch.RuleRef, StringComparison.Ordinal));
+                var rules = definition.Rules.ToList();
+                var ruleIndex = rules.FindIndex(r => string.Equals(r.Id, patch.RuleRef, StringComparison.Ordinal));
                 if (ruleIndex < 0)
                 {
                     AddRuleNotFound(diagnostics, patch.RuleRef, definition.Id);
@@ -89,7 +89,7 @@ internal static class NotableDateRuleOverrideApplier
 
             case AddRuleOverride add:
             {
-                List<NotableDateRule> rules = definition.Rules.ToList();
+                var rules = definition.Rules.ToList();
                 rules.Add(add.Rule);
                 return definition.WithRules(rules);
             }

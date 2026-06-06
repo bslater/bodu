@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Poly1305AeadCoreTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public class Poly1305AeadCoreTests
         var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
         var output = new byte[s_plaintext.Length + Poly1305AeadCore.TagBytes];
 
-        int written = Poly1305AeadCore.SealRfc8439(engine, s_associatedData, s_plaintext, output);
+        var written = Poly1305AeadCore.SealRfc8439(engine, s_associatedData, s_plaintext, output);
 
         Assert.AreEqual(output.Length, written);
         CollectionAssert.AreEqual(s_ciphertext, output.AsSpan(0, s_plaintext.Length).ToArray());
@@ -74,7 +74,7 @@ public class Poly1305AeadCoreTests
         s_tag.CopyTo(ciphertextWithTag, s_ciphertext.Length);
 
         var output = new byte[s_ciphertext.Length];
-        int written = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
+        var written = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
 
         Assert.AreEqual(s_plaintext.Length, written);
         CollectionAssert.AreEqual(s_plaintext, output);

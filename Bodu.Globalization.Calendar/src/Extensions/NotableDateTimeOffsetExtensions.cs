@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeOffsetExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,9 @@ public static class NotableDateTimeOffsetExtensions
     /// </summary>
     /// <param name="date">The value whose offset-local date is tested.</param>
     /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
-    /// <returns><see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsWeekend(this DateTimeOffset date, WeekPattern? workingWeek = null) =>
         DateOnly.FromDateTime(date.DateTime).IsWeekend(workingWeek);
 
@@ -79,7 +81,9 @@ public static class NotableDateTimeOffsetExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="filter">An optional filter the occurrence must satisfy.</param>
-    /// <returns><see langword="true" /> if at least one occurrence is emitted; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if at least one occurrence is emitted; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
@@ -176,7 +180,9 @@ public static class NotableDateTimeOffsetExtensions
     /// Advances the date by a signed number of working days, preserving the time-of-day and offset.
     /// </summary>
     /// <param name="date">The starting date.</param>
-    /// <param name="count">The number of working days to add; negative retreats, zero returns the date unchanged.</param>
+    /// <param name="count">
+    /// The number of working days to add; negative retreats, zero returns the date unchanged.
+    /// </param>
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="workingWeek">The working-week pattern, or <see langword="null" /> for Monday to Friday.</param>
@@ -217,7 +223,7 @@ public static class NotableDateTimeOffsetExtensions
     /// </exception>
     public static IEnumerable<DateTimeOffset> EnumerateWorkingDays(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
-        TimeOnly time = TimeOnly.FromTimeSpan(start.TimeOfDay);
+        var time = TimeOnly.FromTimeSpan(start.TimeOfDay);
         TimeSpan offset = start.Offset;
 
         return DateOnly.FromDateTime(start.DateTime)

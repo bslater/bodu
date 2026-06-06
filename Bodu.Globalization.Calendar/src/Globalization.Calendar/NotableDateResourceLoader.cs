@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResourceLoader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -78,7 +78,9 @@ public static class NotableDateResourceLoader
     /// resolver.
     /// </summary>
     /// <param name="xml">The notable-date document XML content.</param>
-    /// <param name="resourceResolver">A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
@@ -96,8 +98,12 @@ public static class NotableDateResourceLoader
     /// resolver and accepting custom algorithm keys registered in the supplied registry.
     /// </summary>
     /// <param name="xml">The notable-date document XML content.</param>
-    /// <param name="resourceResolver">A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.</param>
-    /// <param name="algorithms">A registry of custom algorithm keys to accept during validation, or <see langword="null" />.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="algorithms">
+    /// A registry of custom algorithm keys to accept during validation, or <see langword="null" />.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
@@ -138,7 +144,9 @@ public static class NotableDateResourceLoader
     /// resolver.
     /// </summary>
     /// <param name="stream">The stream containing the notable-date document XML.</param>
-    /// <param name="resourceResolver">A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
@@ -170,7 +178,9 @@ public static class NotableDateResourceLoader
     /// resolver.
     /// </summary>
     /// <param name="json">The notable-date document JSON content.</param>
-    /// <param name="resourceResolver">A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="json" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
@@ -212,8 +222,12 @@ public static class NotableDateResourceLoader
     /// </summary>
     /// <param name="document">The parsed root document.</param>
     /// <param name="resourceResolver">The resolver used to fetch imported resources.</param>
-    /// <param name="algorithms">A registry of custom algorithm keys to accept during validation, or <see langword="null" />.</param>
-    /// <param name="diagnostics">The diagnostics accumulated during parsing, extended by import resolution and validation.</param>
+    /// <param name="algorithms">
+    /// A registry of custom algorithm keys to accept during validation, or <see langword="null" />.
+    /// </param>
+    /// <param name="diagnostics">
+    /// The diagnostics accumulated during parsing, extended by import resolution and validation.
+    /// </param>
     /// <returns>The validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
@@ -234,7 +248,7 @@ public static class NotableDateResourceLoader
 
         NotableDateRuleValidator.Validate(resource, diagnostics, algorithms);
 
-        int errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
+        var errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
         if (errorCount > 0)
         {
             throw new NotableDateValidationException(
@@ -274,7 +288,7 @@ public static class NotableDateResourceLoader
                 continue;
             }
 
-            string? content = resourceResolver(import.Resource);
+            var content = resourceResolver(import.Resource);
             if (content is null)
             {
                 AddError(diagnostics, "BODU-CAL-IMPORT-MISSING", CalendarResourceStrings.Validation_ImportResourceNotFound, import.Resource);
@@ -301,7 +315,7 @@ public static class NotableDateResourceLoader
         }
 
         HashSet<string> localIds = new(document.NotableDates.Select(d => d.Id), StringComparer.Ordinal);
-        List<NotableDateDefinition> concepts = imported.Where(c => !localIds.Contains(c.Id)).ToList();
+        var concepts = imported.Where(c => !localIds.Contains(c.Id)).ToList();
         concepts.AddRange(document.NotableDates);
 
         return (policies, concepts);
@@ -349,12 +363,12 @@ public static class NotableDateResourceLoader
     /// <returns>The renamed and overridden concept.</returns>
     private static NotableDateDefinition ApplyUse(NotableDateDefinition concept, NotableDateImportUse use)
     {
-        string id = string.IsNullOrEmpty(use.As) ? concept.Id : use.As!;
+        var id = string.IsNullOrEmpty(use.As) ? concept.Id : use.As!;
         NotableDateCategory category = use.Category ?? concept.Category;
-        bool nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
+        var nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
 
-        bool overrideTerritory = !string.IsNullOrEmpty(use.Territory);
-        bool overrideAdjustments = use.AdjustmentPolicyRefs is not null;
+        var overrideTerritory = !string.IsNullOrEmpty(use.Territory);
+        var overrideAdjustments = use.AdjustmentPolicyRefs is not null;
 
         IReadOnlyList<NotableDateRule> rules = concept.Rules;
         if (overrideTerritory || overrideAdjustments)

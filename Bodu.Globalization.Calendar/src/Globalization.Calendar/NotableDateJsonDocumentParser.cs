@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateJsonDocumentParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -149,7 +149,7 @@ internal static class NotableDateJsonDocumentParser
 
             IEnumerable<DayOfWeek> weekdays = trigger is JsonElement t && GetProperty(t, "weekdays") is JsonElement w && w.ValueKind == JsonValueKind.Array
                 ? w.EnumerateArray().Select(v => ParseEnum(v.GetString(), DayOfWeek.Monday))
-                : Array.Empty<DayOfWeek>();
+                : [];
 
             policies.Add(new AdjustmentPolicy(
                 GetString(policy, "id") ?? string.Empty,
@@ -206,10 +206,10 @@ internal static class NotableDateJsonDocumentParser
         if (value is null)
             return null;
 
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
             return numeric;
 
-        int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+        var index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
         return index >= 0 ? index + 1 : null;
     }
 
@@ -249,7 +249,7 @@ internal static class NotableDateJsonDocumentParser
 
         foreach (JsonElement notableDate in array.EnumerateArray())
         {
-            string id = GetString(notableDate, "id") ?? string.Empty;
+            var id = GetString(notableDate, "id") ?? string.Empty;
 
             definitions.Add(new NotableDateDefinition(
                 id,
@@ -292,7 +292,7 @@ internal static class NotableDateJsonDocumentParser
     /// <returns>The parsed <see cref="NotableDateRule" />.</returns>
     private static NotableDateRule ParseRule(JsonElement element, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        string id = GetString(element, "id") ?? string.Empty;
+        var id = GetString(element, "id") ?? string.Empty;
         RuleApplicability applicability = ParseApplicability(GetProperty(element, "applicability"));
 
         return new NotableDateRule(
@@ -315,7 +315,7 @@ internal static class NotableDateJsonDocumentParser
     private static RuleApplicability ParseApplicability(JsonElement? element)
     {
         if (element is not JsonElement applicability)
-            return new RuleApplicability(CalendarSystem.Gregorian, null, null, Array.Empty<string>(), Array.Empty<int>(), Array.Empty<int>());
+            return new RuleApplicability(CalendarSystem.Gregorian, null, null, [], [], []);
 
         return new RuleApplicability(
             ParseEnum(GetString(applicability, "calendar"), CalendarSystem.Gregorian),
@@ -344,7 +344,7 @@ internal static class NotableDateJsonDocumentParser
 
         if (GetProperty(strategy, "fixed") is JsonElement fixedStrategy)
         {
-            (int month, string? monthAlias) = ParseFixedMonth(GetMonthToken(fixedStrategy), calendar, notableDateId, ruleId, diagnostics);
+            (var month, var monthAlias) = ParseFixedMonth(GetMonthToken(fixedStrategy), calendar, notableDateId, ruleId, diagnostics);
             return new FixedDateStrategy(
                 month,
                 Math.Clamp(GetInt(fixedStrategy, "day", 1), 1, 31),
@@ -383,7 +383,7 @@ internal static class NotableDateJsonDocumentParser
 
         if (GetProperty(strategy, "offsetFromRule") is JsonElement offsetFromRule)
         {
-            string? ruleRef = GetString(offsetFromRule, "ruleRef");
+            var ruleRef = GetString(offsetFromRule, "ruleRef");
             return new OffsetFromRuleStrategy(
                 GetString(offsetFromRule, "notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
@@ -410,8 +410,8 @@ internal static class NotableDateJsonDocumentParser
 
         foreach (JsonElement operation in array.EnumerateArray())
         {
-            string notableDateRef = GetString(operation, "notableDateRef") ?? string.Empty;
-            string op = GetString(operation, "operation") ?? string.Empty;
+            var notableDateRef = GetString(operation, "notableDateRef") ?? string.Empty;
+            var op = GetString(operation, "operation") ?? string.Empty;
 
             switch (op)
             {
@@ -472,10 +472,10 @@ internal static class NotableDateJsonDocumentParser
     {
         if (value is not null)
         {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
                 return numeric;
 
-            int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+            var index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
             if (index >= 0)
                 return index + 1;
         }
@@ -496,7 +496,9 @@ internal static class NotableDateJsonDocumentParser
     /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
     /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
-    /// <returns>A tuple of the one-based month (or <c>0</c> when an alias supplies it) and an optional Hebrew alias.</returns>
+    /// <returns>
+    /// A tuple of the one-based month (or <c>0</c> when an alias supplies it) and an optional Hebrew alias.
+    /// </returns>
     private static (int Month, string? Alias) ParseFixedMonth(string? value, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (calendar == CalendarSystem.Gregorian)
@@ -504,7 +506,7 @@ internal static class NotableDateJsonDocumentParser
 
         if (value is not null)
         {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 13)
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 13)
                 return (numeric, null);
 
             switch (value)
@@ -565,7 +567,7 @@ internal static class NotableDateJsonDocumentParser
     /// <param name="fallback">The value returned when the property is absent.</param>
     /// <returns>The integer value, or <paramref name="fallback" />.</returns>
     private static int GetInt(JsonElement element, string name, int fallback) =>
-        GetProperty(element, name) is JsonElement value && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int result) ? result : fallback;
+        GetProperty(element, name) is JsonElement value && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var result) ? result : fallback;
 
     /// <summary>
     /// Reads an optional integer property.
@@ -574,7 +576,7 @@ internal static class NotableDateJsonDocumentParser
     /// <param name="name">The property name.</param>
     /// <returns>The integer value, or <see langword="null" /> when absent.</returns>
     private static int? GetNullableInt(JsonElement element, string name) =>
-        GetProperty(element, name) is JsonElement value && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int result) ? result : null;
+        GetProperty(element, name) is JsonElement value && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var result) ? result : null;
 
     /// <summary>
     /// Reads a boolean property, falling back to a default when absent.
@@ -629,7 +631,7 @@ internal static class NotableDateJsonDocumentParser
         {
             foreach (JsonElement item in array.EnumerateArray())
             {
-                if (item.ValueKind == JsonValueKind.Number && item.TryGetInt32(out int result))
+                if (item.ValueKind == JsonValueKind.Number && item.TryGetInt32(out var result))
                     values.Add(result);
             }
         }

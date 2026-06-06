@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateFiscalExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,7 +49,9 @@ public static class NotableDateFiscalExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fiscalYearStartMonth" /> is not between 1 and 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="fiscalYearStartMonth" /> is not between 1 and 12.
+    /// </exception>
     public static DateOnly FirstWorkingDayOfFiscalYear(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -72,7 +74,9 @@ public static class NotableDateFiscalExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fiscalYearStartMonth" /> is not between 1 and 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="fiscalYearStartMonth" /> is not between 1 and 12.
+    /// </exception>
     public static DateOnly LastWorkingDayOfFiscalYear(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -96,7 +100,9 @@ public static class NotableDateFiscalExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fiscalYearStartMonth" /> is not between 1 and 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="fiscalYearStartMonth" /> is not between 1 and 12.
+    /// </exception>
     public static DateOnly FirstWorkingDayOfFiscalQuarter(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -119,7 +125,9 @@ public static class NotableDateFiscalExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fiscalYearStartMonth" /> is not between 1 and 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="fiscalYearStartMonth" /> is not between 1 and 12.
+    /// </exception>
     public static DateOnly LastWorkingDayOfFiscalQuarter(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -139,7 +147,7 @@ public static class NotableDateFiscalExtensions
     /// <returns>The fiscal year's first day.</returns>
     private static DateOnly FiscalYearStart(DateOnly date, int startMonth)
     {
-        int year = date.Month >= startMonth ? date.Year : date.Year - 1;
+        var year = date.Month >= startMonth ? date.Year : date.Year - 1;
         return new DateOnly(year, startMonth, 1);
     }
 
@@ -152,7 +160,7 @@ public static class NotableDateFiscalExtensions
     private static DateOnly FiscalQuarterStart(DateOnly date, int startMonth)
     {
         DateOnly yearStart = FiscalYearStart(date, startMonth);
-        int monthsSinceStart = ((date.Year - yearStart.Year) * 12) + date.Month - startMonth;
+        var monthsSinceStart = ((date.Year - yearStart.Year) * 12) + date.Month - startMonth;
         return yearStart.AddMonths((monthsSinceStart / 3) * 3);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesStorageTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Create_Observations_WhenInputsValid_ShouldStoreObservations()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1000, 1.4m), Obs(1010, 1.5m) },
             ObservationsParam);
 
@@ -86,7 +86,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Create_Observations_WhenUnsorted_ShouldStoreInAscendingOrder()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
             ObservationsParam);
 
@@ -103,7 +103,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Create_Tuples_WhenInputsValid_ShouldStoreObservations()
     {
-        ExchangeRateSeriesStorage storage = ExchangeRateSeriesStorage.Create(
+        var storage = ExchangeRateSeriesStorage.Create(
             new (DateOnly, decimal)[]
             {
                 (DateOnly.FromDayNumber(1000), 1.4m),

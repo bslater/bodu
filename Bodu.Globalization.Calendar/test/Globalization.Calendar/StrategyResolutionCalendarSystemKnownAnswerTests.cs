@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyResolutionCalendarSystemKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -130,7 +130,7 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
         Assert.AreEqual(1, matches.Count, "expected exactly one Adar II Purim in 2027");
 
         HebrewCalendar hebrew = new();
-        DateTime resolved = matches[0].Date.ToDateTime(TimeOnly.MinValue);
+        var resolved = matches[0].Date.ToDateTime(TimeOnly.MinValue);
         Assert.AreEqual(7, hebrew.GetMonth(resolved), "Adar II is month 7 of a leap Hebrew year");
         Assert.AreEqual(13, hebrew.GetMonthsInYear(hebrew.GetYear(resolved)), "the Hebrew year is a thirteen-month leap year");
     }

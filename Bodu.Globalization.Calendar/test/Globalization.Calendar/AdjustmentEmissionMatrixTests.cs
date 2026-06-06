@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentEmissionMatrixTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed class AdjustmentEmissionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService EmissionService(string emissionMode)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.emission-matrix">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>
@@ -165,7 +165,7 @@ public sealed class AdjustmentEmissionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService TwoWeekdayPolicyService(int firstPriority, int secondPriority)
     {
-        string xml = $"""
+        var xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.priority">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParserMonthTokenTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -324,7 +324,7 @@ public sealed class ParserMonthTokenTests
     [DataRow("32")]
     public void Load_WhenFixedDayIsOutOfSchemaRange_ShouldThrowSchemaDiagnostic(string day)
     {
-        string xml =
+        var xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.month">
               <NotableDates>
@@ -364,7 +364,7 @@ public sealed class ParserMonthTokenTests
             </NotableDateResource>
             """;
 
-        DayOfWeekInMonthStrategy strategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy;
+        var strategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy;
 
         Assert.AreEqual(10, strategy.Month, "month");
     }

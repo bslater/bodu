@@ -26,9 +26,9 @@ jobs:
         Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
         Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj
         Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj
-        Bodu.Globalization.Calendar.Data.Americas/test/Bodu.Globalization.Calendar.Data.Americas.Test.csproj
-        Bodu.Globalization.Calendar.Data.Europe/test/Bodu.Globalization.Calendar.Data.Europe.Test.csproj
-        Bodu.Globalization.Calendar.Data.AsiaPacific/test/Bodu.Globalization.Calendar.Data.AsiaPacific.Test.csproj
+        Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Americas/test/Bodu.Globalization.Calendar.Americas.Test.csproj
+        Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Europe/test/Bodu.Globalization.Calendar.Europe.Test.csproj
+        Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.AsiaPacific/test/Bodu.Globalization.Calendar.AsiaPacific.Test.csproj
 
     steps:
       - name: Checkout

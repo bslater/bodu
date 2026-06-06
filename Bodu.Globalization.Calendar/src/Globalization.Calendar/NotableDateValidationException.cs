@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateValidationException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public sealed class NotableDateValidationException : Exception
     /// Initializes a new instance of the <see cref="NotableDateValidationException" /> class.
     /// </summary>
     public NotableDateValidationException()
-        : this(string.Empty, Array.Empty<NotableDateValidationDiagnostic>())
+        : this(string.Empty, [])
     {
     }
 
@@ -50,7 +50,7 @@ public sealed class NotableDateValidationException : Exception
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     public NotableDateValidationException(string message)
-        : this(message, Array.Empty<NotableDateValidationDiagnostic>())
+        : this(message, [])
     {
     }
 
@@ -63,7 +63,7 @@ public sealed class NotableDateValidationException : Exception
     public NotableDateValidationException(string message, Exception innerException)
         : base(message, innerException)
     {
-        this.Diagnostics = Array.Empty<NotableDateValidationDiagnostic>();
+        this.Diagnostics = [];
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SchemaValidationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public sealed class SchemaValidationTests
     [TestMethod]
     public void Load_WhenXmlIsNotWellFormed_ThrowsFormatException()
     {
-        string xml = NotableDateFixtures.ReadText("invalid-not-wellformed.xml");
+        var xml = NotableDateFixtures.ReadText("invalid-not-wellformed.xml");
 
         _ = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -82,7 +82,7 @@ public sealed class SchemaValidationTests
     [DataRow("invalid-override-missing-rule.xml", "BODU-CAL-OVERRIDE-RULE")]
     public void Load_WhenDocumentIsInvalid_ThrowsWithExpectedDiagnostic(string fileName, string expectedCode)
     {
-        string xml = NotableDateFixtures.ReadText(fileName);
+        var xml = NotableDateFixtures.ReadText(fileName);
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {

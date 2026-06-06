@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDatePluginLoaderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -73,7 +73,7 @@ public sealed class NotableDatePluginLoaderTests
         INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(TestAssembly, new AllowAllPluginTrustPolicy());
         NotableDateAlgorithmRegistry registry = new();
 
-        int count = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
+        var count = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
         Assert.AreEqual(1, count);
 
         const string Xml = """
@@ -157,8 +157,8 @@ public sealed class NotableDatePluginLoaderTests
 
         _ = NotableDatePluginLoader.LoadFrom(TestAssembly, policy);
 
-        byte[]? tokenBytes = TestAssembly.GetName().GetPublicKeyToken();
-        string? expectedToken = tokenBytes is null || tokenBytes.Length == 0
+        var tokenBytes = TestAssembly.GetName().GetPublicKeyToken();
+        var expectedToken = tokenBytes is null || tokenBytes.Length == 0
             ? null
             : Convert.ToHexString(tokenBytes).ToLowerInvariant();
 

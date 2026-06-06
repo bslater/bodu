@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagTests.Storage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Balances_WhenAccessedRepeatedly_ShouldReturnSameImmutableInstance()
     {
-        MoneyBag bag = MoneyBag.Of(new Money(10m, "USD"), new Money(5m, "EUR"));
+        var bag = MoneyBag.Of(new Money(10m, "USD"), new Money(5m, "EUR"));
 
         Assert.AreSame(bag.Balances, bag.Balances);
     }

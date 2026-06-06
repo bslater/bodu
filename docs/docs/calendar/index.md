@@ -20,9 +20,9 @@ The calendar runtime is intentionally small. Region-specific holiday data and de
 | `Bodu.Globalization.Calendar.Builder` | Fluent, chainable C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save. See the [builder guide](../../guides/calendar/notable-date-builder.md). |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. See the [DI guide](../../guides/calendar/dependency-injection.md). |
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external assemblies that contribute custom date-calculation algorithms. See [Building and extending the service](../../guides/calendar/building-the-service.md). |
-| `Bodu.Globalization.Calendar.Data.Americas` | Curated public-holiday rules for `US`, `CA`. |
-| `Bodu.Globalization.Calendar.Data.Europe` | Curated rules for 28 European territories including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
-| `Bodu.Globalization.Calendar.Data.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. |
+| `Bodu.Globalization.Calendar.Americas` | Curated public-holiday rules for `US`, `CA`. |
+| `Bodu.Globalization.Calendar.Europe` | Curated rules for 28 European territories including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
+| `Bodu.Globalization.Calendar.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. |
 
 The data packs are independent NuGet packages, so consumers pull in only the regions they need. See the [Calendar data packs guide](../../guides/calendar/data-packs.md) for per-pack install commands, territory coverage, and registration patterns.
 

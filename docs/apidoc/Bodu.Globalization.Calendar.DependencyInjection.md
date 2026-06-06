@@ -27,7 +27,6 @@ The extension methods live in the `Microsoft.Extensions.DependencyInjection` nam
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 using Microsoft.Extensions.DependencyInjection;
 
 // From a companion data pack (or NotableDateResourceLoader.Load(...) for your own document):

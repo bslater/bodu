@@ -23,7 +23,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 - [`Bodu.Globalization.Calendar.Builder`](Bodu.Globalization.Calendar.Builder.md) — a fluent C# API for authoring notable-date documents on the v2 cookbook schema, with XML / JSON serialization and load/save.
 - [`Bodu.Globalization.Calendar.DependencyInjection`](Bodu.Globalization.Calendar.DependencyInjection.md) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` register `INotableDateService` as a singleton over a loaded `NotableDateResource`.
 - [`Bodu.Globalization.Calendar.Plugins`](Bodu.Globalization.Calendar.Plugins.md) — trust-gated loading of external assemblies that contribute custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations.
-- [`Bodu.Globalization.Calendar.Data.*`](Bodu.Globalization.Calendar.Data.md) — curated public-holiday resources for the Americas, Asia-Pacific, and Europe territory bundles.
+- [`Bodu.Globalization.Calendar.Data.*`](~/guides/calendar/data-packs.md) — curated public-holiday resources for the Americas, Asia-Pacific, and Europe territory bundles.
 
 ## Key types
 
@@ -75,17 +75,16 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 National public-holiday resources ship in three companion assemblies (namespace `Bodu.Globalization.Calendar.Data`) so the data can be re-released independently of the runtime:
 
-- **Bodu.Globalization.Calendar.Data.Americas** — `CA`, `US` (and subdivisions).
-- **Bodu.Globalization.Calendar.Data.Europe** — 28 EU/EEA territories including `DE`, `ES`, `FR`, `GB`, `IE`, `IT`, `NL`, `SE`.
-- **Bodu.Globalization.Calendar.Data.AsiaPacific** — `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
+- **Bodu.Globalization.Calendar.Americas** — `CA`, `US` (and subdivisions).
+- **Bodu.Globalization.Calendar.Europe** — 28 EU/EEA territories including `DE`, `ES`, `FR`, `GB`, `IE`, `IT`, `NL`, `SE`.
+- **Bodu.Globalization.Calendar.AsiaPacific** — `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
 
-Each pack exposes a static factory — <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData>, <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData>, <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData> — with `SupportedCountries`, `LoadResource(territory)` (returns a `NotableDateResource` with imports resolved against the bundled common catalogues), and `CreateService(territory)` (the resource pre-wired into a `NotableDateService`). See the [Calendar data packs](~/guides/calendar/data-packs.md) guide.
+Each pack exposes a static factory — <xref:Bodu.Globalization.Calendar.AmericasCalendarData>, <xref:Bodu.Globalization.Calendar.EuropeCalendarData>, <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> — with `SupportedCountries`, `LoadResource(territory)` (returns a `NotableDateResource` with imports resolved against the bundled common catalogues), and `CreateService(territory)` (the resource pre-wired into a `NotableDateService`). See the [Calendar data packs](~/guides/calendar/data-packs.md) guide.
 
 ## Example
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 using Bodu.Extensions;                       // working-day extension methods
 
 // 1. Build a service from a companion data pack (loads + validates the resource, resolving imports).

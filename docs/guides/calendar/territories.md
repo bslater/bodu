@@ -137,7 +137,6 @@ A query passes a single territory string, and the service returns every occurren
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 

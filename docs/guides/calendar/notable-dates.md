@@ -31,7 +31,6 @@ Each pack exposes a static factory with `CreateService(territory)` (and `LoadRes
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 // Loads Australia's resource (imports resolved against the bundled catalogues).
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
@@ -54,7 +53,6 @@ All examples below assume a service constructed with the relevant data pack.
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.Europe;
 
 NotableDateService service = EuropeCalendarData.CreateService("GB");
 
@@ -77,7 +75,6 @@ NotableDateFilter culturalOrObservance =
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
@@ -91,7 +88,6 @@ Multi-day events (`DurationDays > 1`) are included when their span intersects th
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
@@ -106,7 +102,6 @@ These are working-day extension methods in `Bodu.Extensions` (over `DateOnly`, `
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 using Bodu.Extensions;
 
 NotableDateService service = AsiaPacificCalendarData.CreateService("AU");

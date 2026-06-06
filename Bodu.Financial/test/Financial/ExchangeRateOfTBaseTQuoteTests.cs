@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateOfTBaseTQuoteTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -106,7 +106,7 @@ public class ExchangeRateOfTBaseTQuoteTests
     {
         var runtime = new ExchangeRate("USD", "AUD", SampleDate, 1.52m, SampleProvider);
 
-        ExchangeRate<USD, AUD> typed = ExchangeRate<USD, AUD>.FromRuntime(runtime);
+        var typed = ExchangeRate<USD, AUD>.FromRuntime(runtime);
 
         Assert.AreEqual(1.52m, typed.Rate);
         Assert.AreEqual("USD", typed.FromIsoCode);

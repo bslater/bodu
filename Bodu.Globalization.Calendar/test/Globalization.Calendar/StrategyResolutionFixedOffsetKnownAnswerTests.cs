@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyResolutionFixedOffsetKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     [DataRow("fixed-window-2020-2030", 2031, false)]   // above toYear
     public void Resolve_ApplicabilityWindow_AppliesOnlyWithinBounds(string notableDateId, int year, bool expectedApplies)
     {
-        int count = s_service
+        var count = s_service
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Count(r => r.NotableDateId == notableDateId);
 
@@ -110,7 +110,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     [TestMethod]
     public void Load_OffsetFromRuleReferenceMissing_ThrowsValidationException()
     {
-        string xml = NotableDateFixtures.ReadText("invalid-offset-missing.xml");
+        var xml = NotableDateFixtures.ReadText("invalid-offset-missing.xml");
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
@@ -129,7 +129,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     /// <param name="date">The expected occurrence date.</param>
     private static void AssertResolvesOn(string notableDateId, DateOnly date)
     {
-        List<NotableDate> matches = s_service
+        var matches = s_service
             .Resolve(date, "XX")
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
@@ -145,7 +145,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     /// <param name="year">The Gregorian year to scan.</param>
     private static void AssertNoOccurrenceInYear(string notableDateId, int year)
     {
-        int count = s_service
+        var count = s_service
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Count(r => r.NotableDateId == notableDateId);
 

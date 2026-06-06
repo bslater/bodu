@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateFilterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -103,7 +103,7 @@ public sealed class NotableDateFilterTests
             .And(NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
         CollectionAssert.AreEqual(new[] { "new-year", "spring-week" }, Resolve(majorPublicHoliday));
 
-        NotableDateFilter culturalOrLong = NotableDateFilter.AnyOf(
+        var culturalOrLong = NotableDateFilter.AnyOf(
             NotableDateFilter.ForCategory(NotableDateCategory.Cultural),
             NotableDateFilter.WithMinDuration(2));
         CollectionAssert.AreEqual(new[] { "culture-fest", "spring-week" }, Resolve(culturalOrLong));

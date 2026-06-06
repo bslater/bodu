@@ -168,9 +168,9 @@ public sealed class IntervalJsonConverter<T>
 
         T? lower = default;
         T? upper = default;
-        bool lowerInclusive = false;
-        bool upperInclusive = false;
-        bool empty = false;
+        var lowerInclusive = false;
+        var upperInclusive = false;
+        var empty = false;
         var lowerSeen = false;
         var upperSeen = false;
         var lowerInclusiveSeen = false;

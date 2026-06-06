@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CommonResourcesTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -90,16 +90,16 @@ public sealed class CommonResourcesTests
     {
         System.Reflection.Assembly assembly = typeof(CommonNotableDateResources).Assembly;
         const string prefix = "Bodu.Globalization.Calendar.Resources.";
-        List<string> catalogues = assembly.GetManifestResourceNames()
+        var catalogues = assembly.GetManifestResourceNames()
             .Where(name => name.StartsWith(prefix, StringComparison.Ordinal) && name.EndsWith(".xml", StringComparison.Ordinal))
             .Select(name => name[prefix.Length..^4])
             .ToList();
 
         Assert.IsTrue(catalogues.Count >= 2, "expected the bundled catalogues to be embedded");
 
-        foreach (string catalogue in catalogues)
+        foreach (var catalogue in catalogues)
         {
-            string? content = CommonNotableDateResources.Resolve(catalogue);
+            var content = CommonNotableDateResources.Resolve(catalogue);
             Assert.IsNotNull(content, $"catalogue '{catalogue}' did not resolve");
 
             NotableDateResource resource = NotableDateResourceLoader.Load(content!, CommonNotableDateResources.Resolver);

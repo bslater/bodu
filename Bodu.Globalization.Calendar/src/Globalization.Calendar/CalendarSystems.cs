@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarSystems.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,13 +67,21 @@ internal static class CalendarSystems
     /// Projects a fixed calendar-system month and day onto the requested Gregorian year.
     /// </summary>
     /// <param name="system">The non-Gregorian calendar system the month and day are expressed in.</param>
-    /// <param name="month">The one-based month within the calendar system, ignored when <paramref name="monthAlias" /> is set.</param>
-    /// <param name="monthAlias">A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.</param>
+    /// <param name="month">
+    /// The one-based month within the calendar system, ignored when <paramref name="monthAlias" /> is set.
+    /// </param>
+    /// <param name="monthAlias">
+    /// A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.
+    /// </param>
     /// <param name="day">The one-based day within the month.</param>
-    /// <param name="sweepCalendarYears">Whether to sweep the overlapping calendar years to locate the Gregorian occurrence.</param>
+    /// <param name="sweepCalendarYears">
+    /// Whether to sweep the overlapping calendar years to locate the Gregorian occurrence.
+    /// </param>
     /// <param name="skipLeapMonth">Whether a conventional Chinese month index skips an intercalary leap month.</param>
     /// <param name="gregorianYear">The Gregorian year to project onto.</param>
-    /// <returns>The projected Gregorian date, or <see langword="null" /> when no occurrence falls in the year.</returns>
+    /// <returns>
+    /// The projected Gregorian date, or <see langword="null" /> when no occurrence falls in the year.
+    /// </returns>
     public static DateOnly? ResolveFixed(
         CalendarSystem system,
         int month,
@@ -92,10 +100,16 @@ internal static class CalendarSystems
     /// year.
     /// </summary>
     /// <param name="system">The non-Gregorian calendar system the month and day are expressed in.</param>
-    /// <param name="month">The one-based month within the calendar system, ignored when <paramref name="monthAlias" /> is set.</param>
-    /// <param name="monthAlias">A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.</param>
+    /// <param name="month">
+    /// The one-based month within the calendar system, ignored when <paramref name="monthAlias" /> is set.
+    /// </param>
+    /// <param name="monthAlias">
+    /// A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.
+    /// </param>
     /// <param name="day">The one-based day within the month.</param>
-    /// <param name="sweepCalendarYears">Whether to sweep the overlapping calendar years to locate the Gregorian occurrences.</param>
+    /// <param name="sweepCalendarYears">
+    /// Whether to sweep the overlapping calendar years to locate the Gregorian occurrences.
+    /// </param>
     /// <param name="skipLeapMonth">Whether a conventional Chinese month index skips an intercalary leap month.</param>
     /// <param name="gregorianYear">The Gregorian year to project onto.</param>
     /// <returns>
@@ -113,7 +127,7 @@ internal static class CalendarSystems
     {
         System.Globalization.Calendar? calendar = Resolve(system);
         if (calendar is null)
-            return Array.Empty<DateOnly>();
+            return [];
 
         if (skipLeapMonth && calendar is ChineseLunisolarCalendar chinese)
             return Single(ResolveChineseLeapMonthSkip(chinese, month, day, gregorianYear));
@@ -128,9 +142,11 @@ internal static class CalendarSystems
     /// Wraps an optional date as a zero- or one-element read-only list.
     /// </summary>
     /// <param name="date">The date, or <see langword="null" />.</param>
-    /// <returns>An empty list when <paramref name="date" /> is <see langword="null" />; otherwise a single-element list.</returns>
+    /// <returns>
+    /// An empty list when <paramref name="date" /> is <see langword="null" />; otherwise a single-element list.
+    /// </returns>
     private static IReadOnlyList<DateOnly> Single(DateOnly? date) =>
-        date is DateOnly value ? new[] { value } : Array.Empty<DateOnly>();
+        date is DateOnly value ? new[] { value } : [];
 
     /// <summary>
     /// Resolves a Hebrew month alias to its one-based month number for the supplied leap-year state.
@@ -210,17 +226,17 @@ internal static class CalendarSystems
         }
         catch (ArgumentOutOfRangeException)
         {
-            return Array.Empty<DateOnly>();
+            return [];
         }
 
         List<DateOnly> matches = new();
 
-        for (int calendarYear = firstCalendarYear; calendarYear <= lastCalendarYear; calendarYear++)
+        for (var calendarYear = firstCalendarYear; calendarYear <= lastCalendarYear; calendarYear++)
         {
             int monthNumber;
             if (monthAlias is not null)
             {
-                bool isLeapYear = SafeGetMonthsInYear(calendar, calendarYear) == 13;
+                var isLeapYear = SafeGetMonthsInYear(calendar, calendarYear) == 13;
                 monthNumber = ResolveHebrewMonthAlias(monthAlias, isLeapYear);
                 if (monthNumber < 0)
                     continue;
@@ -274,12 +290,12 @@ internal static class CalendarSystems
         if (gregorianYear < calendar.MinSupportedDateTime.Year || gregorianYear >= calendar.MaxSupportedDateTime.Year)
             return null;
 
-        int monthsInYear = calendar.GetMonthsInYear(gregorianYear);
-        int leapMonth = calendar.GetLeapMonth(gregorianYear);
+        var monthsInYear = calendar.GetMonthsInYear(gregorianYear);
+        var leapMonth = calendar.GetLeapMonth(gregorianYear);
 
         // GetLeapMonth returns the 1-based position of the intercalary month, or 0 in a common year. A conventional
         // month at or after that slot is shifted forward one index to step over the inserted month.
-        int calendarMonth = leapMonth > 0 && month >= leapMonth ? month + 1 : month;
+        var calendarMonth = leapMonth > 0 && month >= leapMonth ? month + 1 : month;
         if (calendarMonth > monthsInYear)
             return null;
 

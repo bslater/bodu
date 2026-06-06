@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateDateSearchTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -205,7 +205,7 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNoCandidatesAvailable_ShouldFail()
     {
-        int[] empty = Array.Empty<int>();
+        var empty = Array.Empty<int>();
         var found = ExchangeRateDateSearch.TrySelectCandidate(
             empty, 1000, ExchangeRateDateResolution.Nearest, -1, 0, out var candidate);
 

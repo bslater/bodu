@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateFilter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -160,7 +160,9 @@ public sealed class NotableDateFilter
     /// </summary>
     /// <param name="notableDateId">The notable-date concept identifier to match.</param>
     /// <returns>A filter matching the concept identifier.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="notableDateId" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="notableDateId" /> is <see langword="null" />.
+    /// </exception>
     public static NotableDateFilter WithId(string notableDateId)
     {
         ThrowHelper.ThrowIfNull(notableDateId);
@@ -205,7 +207,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(tags);
 
-        string[] required = tags.ToArray();
+        var required = tags.ToArray();
         return new NotableDateFilter(n => required.All(t => n.Tags.Contains(t, StringComparer.Ordinal)));
     }
 

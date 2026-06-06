@@ -34,7 +34,6 @@ Pass a loaded resource — typically from a companion data pack, or from `Notabl
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.AsiaPacific;
 using Microsoft.Extensions.DependencyInjection;
 
 builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
@@ -46,7 +45,6 @@ The factory overload defers loading until the container builds the service, so t
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.Europe;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -85,7 +83,6 @@ When the rule set must change while the host is running, register the reloadable
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Data.Europe;
 using Microsoft.Extensions.DependencyInjection;
 
 builder.Services.AddReloadableNotableDateService(EuropeCalendarData.LoadResource("GB"));

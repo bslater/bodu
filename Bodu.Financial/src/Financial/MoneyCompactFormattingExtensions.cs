@@ -83,7 +83,7 @@ public static class MoneyCompactFormattingExtensions
         ThrowHelper.ThrowIfNegative(precision);
         RejectRoundTripSpecifier(format);
 
-        (decimal scaled, string suffix) = Scale(money.Amount);
+        (var scaled, var suffix) = Scale(money.Amount);
         ReadOnlySpan<char> formatWithPrecision = BuildFormatWithPrecision(format, precision, suffix.Length > 0);
 
         return Money<TCurrency>.FormatScaled(scaled, suffix, formatWithPrecision, provider);
@@ -119,7 +119,7 @@ public static class MoneyCompactFormattingExtensions
         ThrowHelper.ThrowIfNegative(precision);
         RejectRoundTripSpecifier(format);
 
-        (decimal scaled, string suffix) = Scale(money.Amount);
+        (var scaled, var suffix) = Scale(money.Amount);
         var formatWithPrecision = BuildFormatWithPrecision(format, precision, suffix.Length > 0).ToString();
 
         // Use Money's instance Format directly with the scaled amount via a temporary normalised wrapper.
@@ -140,7 +140,7 @@ public static class MoneyCompactFormattingExtensions
     private static (decimal Scaled, string Suffix) Scale(decimal amount)
     {
         var abs = Math.Abs(amount);
-        foreach ((decimal scale, string suffix) in s_thresholds)
+        foreach ((var scale, var suffix) in s_thresholds)
         {
             if (abs >= scale)
                 return (amount / scale, suffix);

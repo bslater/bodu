@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateBookTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class ExchangeRateBookTests
         ExchangeRateSeries series = BuildSeries(s_usdAud, "RBA", 1.5m);
         ExchangeRateBook book = new(new[] { series });
 
-        bool found = book.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? resolved);
+        var found = book.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? resolved);
 
         Assert.IsTrue(found);
         Assert.AreSame(series, resolved);
@@ -44,7 +44,7 @@ public partial class ExchangeRateBookTests
     {
         ExchangeRateBook book = new(new[] { BuildSeries(s_usdAud, "RBA", 1.5m) });
 
-        bool found = book.TryGetSeries(s_usdAud, "ECB", out ExchangeRateSeries? resolved);
+        var found = book.TryGetSeries(s_usdAud, "ECB", out ExchangeRateSeries? resolved);
 
         Assert.IsFalse(found);
         Assert.IsNull(resolved);
@@ -62,7 +62,7 @@ public partial class ExchangeRateBookTests
         ExchangeRateSeries other = BuildSeries(s_eurAud, "RBA", 1.7m);
         ExchangeRateBook book = new(new[] { rba, ecb, other });
 
-        HashSet<string> providers = book.GetSeries(s_usdAud).Select(s => s.Provider).ToHashSet();
+        var providers = book.GetSeries(s_usdAud).Select(s => s.Provider).ToHashSet();
 
         Assert.AreEqual(2, providers.Count);
         Assert.IsTrue(providers.Contains("RBA"));

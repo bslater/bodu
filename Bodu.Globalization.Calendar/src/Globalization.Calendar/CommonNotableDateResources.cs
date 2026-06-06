@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CommonNotableDateResources.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,9 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// A territory resource imports a common catalogue by name through an <c>Import</c> directive, then cherry-picks the
 /// concepts it observes and supplies its own territory and adjustment overrides. The <see cref="Resolver" /> delegate
-/// is the bridge: pass it to <see cref="NotableDateResourceLoader.Load(System.IO.Stream, System.Func{string, string})" />
-/// so those imports resolve against the embedded catalogues.
+/// is the bridge: pass it to
+/// <see cref="NotableDateResourceLoader.Load(System.IO.Stream, System.Func{string, string})" /> so those imports
+/// resolve against the embedded catalogues.
 /// </para>
 /// <para>
 /// Resource names are the bare catalogue identifiers (for example <c>global-core</c> or <c>christian-western</c>),
@@ -42,7 +43,9 @@ public static class CommonNotableDateResources
     /// Gets a resolver delegate that maps a common-catalogue name to its embedded XML content, suitable for passing to
     /// the import-aware <see cref="NotableDateResourceLoader" /> overloads.
     /// </summary>
-    /// <returns>A resolver over the embedded common catalogues that returns <see langword="null" /> for unknown names.</returns>
+    /// <returns>
+    /// A resolver over the embedded common catalogues that returns <see langword="null" /> for unknown names.
+    /// </returns>
     public static Func<string, string?> Resolver { get; } = Resolve;
 
     /// <summary>

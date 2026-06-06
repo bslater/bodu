@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateProviderTests.Book.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class FixedDatedExchangeRateProviderTests
         ExchangeRateBook book = new(new[] { Series("RBA", 1.5m) });
         FixedDatedExchangeRateProvider provider = new(book);
 
-        bool found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
+        var found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.5m, result.Rate.Rate);
@@ -72,7 +72,7 @@ public partial class FixedDatedExchangeRateProviderTests
         ExchangeRateBook book = new(new[] { Series("RBA", 1.5m), Series("ECB", 1.6m) });
         FixedDatedExchangeRateProvider provider = new(book, new[] { "ECB", "RBA" });
 
-        bool found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
+        var found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.6m, result.Rate.Rate);
@@ -92,7 +92,7 @@ public partial class FixedDatedExchangeRateProviderTests
         FixedDatedExchangeRateProvider provider = new(book, new[] { "RBA", "ECB" });
 
         // RBA has nothing for 2024-01-02; ECB does. Exact requires the date to match exactly.
-        bool found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 2), null, out ExchangeRateLookupResult result);
+        var found = provider.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 2), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.6m, result.Rate.Rate);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateLookupOptionsTests.Nullable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class ExchangeRateLookupOptionsTests
                 (new DateOnly(2024, 1, 1), 1.5m),
             });
 
-        bool found = series.TryGetRate(new DateOnly(2024, 1, 1), options: null, out var resolvedDate, out var rate);
+        var found = series.TryGetRate(new DateOnly(2024, 1, 1), options: null, out var resolvedDate, out var rate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(new DateOnly(2024, 1, 1), resolvedDate);
@@ -61,7 +61,7 @@ public partial class ExchangeRateLookupOptionsTests
                 (new DateOnly(2024, 1, 1), 1.5m),
             });
 
-        bool found = series.TryGetRate(new DateOnly(2024, 1, 2), options: null, out _, out _);
+        var found = series.TryGetRate(new DateOnly(2024, 1, 2), options: null, out _, out _);
 
         Assert.IsFalse(found);
     }

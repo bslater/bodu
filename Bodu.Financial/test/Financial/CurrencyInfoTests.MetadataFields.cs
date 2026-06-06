@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyInfoTests.MetadataFields.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void MetadataFields_WhenSetViaWithExpression_ShouldPreserveValues()
     {
-        CurrencyInfo info = new CurrencyInfo("USD", 2, 0m, false, null, null, "United States Dollar", 840)
+        var info = new CurrencyInfo("USD", 2, 0m, false, null, null, "United States Dollar", 840)
         {
             Symbol = "$",
             InternationalSymbol = "US$",
