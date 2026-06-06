@@ -205,15 +205,24 @@ public sealed class FilterMatrixTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithAnyTag" /> matches an occurrence carrying at least one accepted tag
-    /// and rejects one carrying none.
+    /// Verifies that <see cref="NotableDateFilter.WithAnyTag" /> matches an occurrence carrying at least one accepted tag.
     /// </summary>
     [TestMethod]
-    public void Matches_WhenWithAnyTag_ShouldReflectIntersection()
+    public void Matches_WhenWithAnyTagAndTagIntersects_ShouldReturnTrue()
     {
         var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
 
         Assert.IsTrue(filter.Matches(Occurrence(tags: ["Regional", "Federal"])));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateFilter.WithAnyTag" /> rejects an occurrence carrying none of the accepted tags.
+    /// </summary>
+    [TestMethod]
+    public void Matches_WhenWithAnyTagAndNoTagIntersects_ShouldReturnFalse()
+    {
+        var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
+
         Assert.IsFalse(filter.Matches(Occurrence(tags: ["Christian"])));
     }
 
@@ -233,15 +242,24 @@ public sealed class FilterMatrixTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateFilter.WithAllTags" /> matches an occurrence carrying every required tag and
-    /// rejects one missing any of them.
+    /// Verifies that <see cref="NotableDateFilter.WithAllTags" /> matches an occurrence carrying every required tag.
     /// </summary>
     [TestMethod]
-    public void Matches_WhenWithAllTags_ShouldRequireEveryTag()
+    public void Matches_WhenWithAllTagsAndEveryTagPresent_ShouldReturnTrue()
     {
         var filter = NotableDateFilter.WithAllTags("Public", "Christian");
 
         Assert.IsTrue(filter.Matches(Occurrence(tags: ["Christian", "Public", "Federal"])));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateFilter.WithAllTags" /> rejects an occurrence missing any required tag.
+    /// </summary>
+    [TestMethod]
+    public void Matches_WhenWithAllTagsAndATagMissing_ShouldReturnFalse()
+    {
+        var filter = NotableDateFilter.WithAllTags("Public", "Christian");
+
         Assert.IsFalse(filter.Matches(Occurrence(tags: ["Public"])));
     }
 
@@ -280,13 +298,16 @@ public sealed class FilterMatrixTests
     /// Verifies that <see cref="NotableDateFilter.WithName" /> matches an occurrence whose display name equals the
     /// requested name and rejects a differing name.
     /// </summary>
+    /// <param name="displayName">The display name carried by the occurrence under test.</param>
+    /// <param name="expected">Whether the occurrence is expected to match the requested name.</param>
     [TestMethod]
-    public void Matches_WhenWithName_ShouldReflectNameEquality()
+    [DataRow("Christmas Day", true)]   // exact match
+    [DataRow("Easter Sunday", false)]  // differing name
+    public void Matches_WhenWithName_ShouldReflectNameEquality(string displayName, bool expected)
     {
         var filter = NotableDateFilter.WithName("Christmas Day");
 
-        Assert.IsTrue(filter.Matches(Occurrence(displayName: "Christmas Day")));
-        Assert.IsFalse(filter.Matches(Occurrence(displayName: "Easter Sunday")));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(displayName: displayName)));
     }
 
     /// <summary>
@@ -318,13 +339,16 @@ public sealed class FilterMatrixTests
     /// Verifies that <see cref="NotableDateFilter.WithAnyName" /> matches an occurrence whose display name is one of the
     /// accepted values and rejects one that is not.
     /// </summary>
+    /// <param name="displayName">The display name carried by the occurrence under test.</param>
+    /// <param name="expected">Whether the occurrence is expected to match one of the accepted names.</param>
     [TestMethod]
-    public void Matches_WhenWithAnyName_ShouldReflectMembership()
+    [DataRow("Easter Sunday", true)]  // accepted member
+    [DataRow("Anzac Day", false)]     // not a member
+    public void Matches_WhenWithAnyName_ShouldReflectMembership(string displayName, bool expected)
     {
         var filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
 
-        Assert.IsTrue(filter.Matches(Occurrence(displayName: "Easter Sunday")));
-        Assert.IsFalse(filter.Matches(Occurrence(displayName: "Anzac Day")));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(displayName: displayName)));
     }
 
     /// <summary>
@@ -350,13 +374,16 @@ public sealed class FilterMatrixTests
     /// Verifies that <see cref="NotableDateFilter.WithId" /> matches an occurrence produced by the requested concept id
     /// and rejects one produced by a different concept.
     /// </summary>
+    /// <param name="notableDateId">The concept id carried by the occurrence under test.</param>
+    /// <param name="expected">Whether the occurrence is expected to match the requested id.</param>
     [TestMethod]
-    public void Matches_WhenWithId_ShouldReflectConceptIdentity()
+    [DataRow("christmas-day", true)]  // requested concept
+    [DataRow("boxing-day", false)]    // different concept
+    public void Matches_WhenWithId_ShouldReflectConceptIdentity(string notableDateId, bool expected)
     {
         var filter = NotableDateFilter.WithId("christmas-day");
 
-        Assert.IsTrue(filter.Matches(Occurrence(notableDateId: "christmas-day")));
-        Assert.IsFalse(filter.Matches(Occurrence(notableDateId: "boxing-day")));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(notableDateId: notableDateId)));
     }
 
     /// <summary>
@@ -474,14 +501,19 @@ public sealed class FilterMatrixTests
     /// Verifies that <see cref="NotableDateFilter.InDateRange" /> matches when the start and end coincide and the
     /// occurrence falls on that single day, and rejects an adjacent day.
     /// </summary>
+    /// <param name="year">The emitted year.</param>
+    /// <param name="month">The emitted month.</param>
+    /// <param name="day">The emitted day.</param>
+    /// <param name="expected">Whether the occurrence is expected to match the single-day 15 June 2024 range.</param>
     [TestMethod]
-    public void Matches_WhenInDateRangeStartEqualsEnd_ShouldMatchOnlyThatDay()
+    [DataRow(2024, 6, 15, true)]   // the single day
+    [DataRow(2024, 6, 16, false)]  // adjacent day
+    public void Matches_WhenInDateRangeStartEqualsEnd_ShouldMatchOnlyThatDay(int year, int month, int day, bool expected)
     {
-        DateOnly day = new(2024, 6, 15);
-        var filter = NotableDateFilter.InDateRange(day, day);
+        DateOnly single = new(2024, 6, 15);
+        var filter = NotableDateFilter.InDateRange(single, single);
 
-        Assert.IsTrue(filter.Matches(Occurrence(date: day)));
-        Assert.IsFalse(filter.Matches(Occurrence(date: new DateOnly(2024, 6, 16))));
+        Assert.AreEqual(expected, filter.Matches(Occurrence(date: new DateOnly(year, month, day))));
     }
 
     // -----------------------------------------------------------------------------------------------------------
