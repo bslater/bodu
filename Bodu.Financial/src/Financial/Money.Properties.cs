@@ -64,7 +64,7 @@ public readonly partial struct Money
     public int MinorUnits =>
         _explicitScalePlusOne > 0
             ? _explicitScalePlusOne - 1
-            : CurrencyRegistry.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
+            : CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
 
     /// <summary>
     /// Gets a value indicating whether this amount is zero.

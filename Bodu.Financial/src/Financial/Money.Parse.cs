@@ -111,9 +111,9 @@ public readonly partial struct Money :
         result = default;
         if (numericPart.IsEmpty) return false;
 
-        // The strict parser only yields a value for currencies registered in CurrencyRegistry; an unregistered code is
-        // a parse failure here (it cannot be constructed under the default reject policy) rather than an exception.
-        if (!CurrencyRegistry.Contains(iso))
+        // The strict parser only yields a value for currencies the ambient lookup knows; an unregistered code is a
+        // parse failure here (it cannot be constructed under the default reject policy) rather than an exception.
+        if (!CurrencyResolution.Contains(iso))
             return false;
 
         IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;

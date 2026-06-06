@@ -109,7 +109,7 @@ public readonly partial struct Money
         ThrowHelper.ThrowIfNull(isoCode);
         ValidateIsoCode(isoCode);
 
-        if (!CurrencyRegistry.TryGet(isoCode, out CurrencyInfo? info) || info is null)
+        if (!CurrencyResolution.TryGet(isoCode, out CurrencyInfo? info) || info is null)
         {
             throw new ArgumentException(
                 string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Invalid_UnknownCurrencyRejected, isoCode),
