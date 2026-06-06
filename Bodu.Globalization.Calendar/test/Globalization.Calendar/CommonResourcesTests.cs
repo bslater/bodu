@@ -18,67 +18,100 @@ public sealed class CommonResourcesTests
     /// Verifies that the resolver returns content for a bundled catalogue and <see langword="null" /> for an unknown
     /// name.
     /// </summary>
+    /// <param name="name">The catalogue name to resolve.</param>
+    /// <param name="expectContent">Whether the resolver is expected to return content.</param>
     [TestMethod]
-    public void Resolve_ForBundledCatalogue_ReturnsContentForKnownAndNullForUnknown()
+    [DataRow("global-core", true)]         // bundled catalogue
+    [DataRow("christian-western", true)]   // bundled catalogue
+    [DataRow("no-such-catalogue", false)]  // unknown name
+    public void Resolve_ForBundledCatalogue_ReturnsContentForKnownAndNullForUnknown(string name, bool expectContent)
     {
-        Assert.IsNotNull(CommonNotableDateResources.Resolve("global-core"));
-        Assert.IsNotNull(CommonNotableDateResources.Resolve("christian-western"));
-        Assert.IsNull(CommonNotableDateResources.Resolve("no-such-catalogue"));
+        Assert.AreEqual(expectContent, CommonNotableDateResources.Resolve(name) is not null);
     }
 
     /// <summary>
-    /// Verifies that a territory resource importing the bundled catalogues resolves the shared dates, computes the
-    /// Easter-anchored offsets, and applies the territory's own adjustment and category overrides.
+    /// A territory resource importing the bundled common catalogues and specializing several shared concepts with the
+    /// territory's own scope, category, non-working flag, and weekend adjustments.
+    /// </summary>
+    private const string Region = """
+    <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.demo">
+      <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+      <AdjustmentPolicies>
+        <AdjustmentPolicy id="sat-to-fri" priority="100">
+          <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /></Trigger>
+          <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
+          <Emission mode="ObservedOnly" reason="Observed Friday" />
+        </AdjustmentPolicy>
+        <AdjustmentPolicy id="sun-to-mon" priority="100">
+          <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
+          <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+          <Emission mode="ObservedOnly" reason="Observed Monday" />
+        </AdjustmentPolicy>
+      </AdjustmentPolicies>
+      <Imports>
+        <Import resource="global-core">
+          <Use notableDateRef="new-years-day" territory="ZZ">
+            <Adjustments><Adjustment policyRef="sat-to-fri" /><Adjustment policyRef="sun-to-mon" /></Adjustments>
+          </Use>
+        </Import>
+        <Import resource="christian-western">
+          <Use notableDateRef="easter-sunday" territory="ZZ" />
+          <Use notableDateRef="good-friday" territory="ZZ" category="Religious" nonWorking="false" />
+          <Use notableDateRef="christmas-day" territory="ZZ">
+            <Adjustments><Adjustment policyRef="sat-to-fri" /><Adjustment policyRef="sun-to-mon" /></Adjustments>
+          </Use>
+        </Import>
+      </Imports>
+      <NotableDates />
+    </NotableDateResource>
+    """;
+
+    /// <summary>
+    /// Builds a service over the territory <see cref="Region" /> resource resolved against the bundled common catalogues.
+    /// </summary>
+    /// <returns>A service for the region resource.</returns>
+    private static NotableDateService RegionService() =>
+        new(NotableDateResourceLoader.Load(Region, CommonNotableDateResources.Resolver));
+
+    /// <summary>
+    /// Verifies that a territory resource importing the bundled catalogues computes the Easter-anchored offset. Easter
+    /// Sunday 2024 resolves to 31 March.
     /// </summary>
     [TestMethod]
-    public void Import_FromBundledCatalogues_ResolvesSharedDatesWithTerritoryOverrides()
+    public void Import_FromBundledCatalogues_ResolvesEasterAnchoredOffset()
     {
-        const string Region = """
-        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.demo">
-          <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
-          <AdjustmentPolicies>
-            <AdjustmentPolicy id="sat-to-fri" priority="100">
-              <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /></Trigger>
-              <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
-              <Emission mode="ObservedOnly" reason="Observed Friday" />
-            </AdjustmentPolicy>
-            <AdjustmentPolicy id="sun-to-mon" priority="100">
-              <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
-              <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
-              <Emission mode="ObservedOnly" reason="Observed Monday" />
-            </AdjustmentPolicy>
-          </AdjustmentPolicies>
-          <Imports>
-            <Import resource="global-core">
-              <Use notableDateRef="new-years-day" territory="ZZ">
-                <Adjustments><Adjustment policyRef="sat-to-fri" /><Adjustment policyRef="sun-to-mon" /></Adjustments>
-              </Use>
-            </Import>
-            <Import resource="christian-western">
-              <Use notableDateRef="easter-sunday" territory="ZZ" />
-              <Use notableDateRef="good-friday" territory="ZZ" category="Religious" nonWorking="false" />
-              <Use notableDateRef="christmas-day" territory="ZZ">
-                <Adjustments><Adjustment policyRef="sat-to-fri" /><Adjustment policyRef="sun-to-mon" /></Adjustments>
-              </Use>
-            </Import>
-          </Imports>
-          <NotableDates />
-        </NotableDateResource>
-        """;
-
-        NotableDateService service = new(NotableDateResourceLoader.Load(Region, CommonNotableDateResources.Resolver));
         DateRange year2024 = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        // Easter Sunday 2024 is 31 March; the imported Good Friday offset resolves to 29 March.
-        Assert.AreEqual(new DateOnly(2024, 3, 31), service.Resolve(year2024, "ZZ").Single(r => r.NotableDateId == "easter-sunday").Date);
-        NotableDate goodFriday = service.Resolve(new DateOnly(2024, 3, 29), "ZZ").Single(r => r.NotableDateId == "good-friday");
-        Assert.AreEqual(NotableDateCategory.Religious, goodFriday.Category, "category override applied");
-        Assert.IsFalse(goodFriday.IsNonWorkingDay, "non-working override applied");
+        Assert.AreEqual(new DateOnly(2024, 3, 31), RegionService().Resolve(year2024, "ZZ").Single(r => r.NotableDateId == "easter-sunday").Date);
+    }
 
-        // New Year's Day 2023 falls on a Sunday; the sun-to-mon override observes it on Monday 2 January.
-        NotableDate newYear = service.Resolve(new DateOnly(2023, 1, 2), "ZZ").Single(r => r.NotableDateId == "new-years-day");
-        Assert.IsTrue(newYear.IsObserved);
-        Assert.AreEqual(new DateOnly(2023, 1, 1), newYear.ActualDate);
+    /// <summary>
+    /// Verifies that a territory resource importing the bundled catalogues applies its category and non-working overrides.
+    /// The imported Good Friday (29 March 2024) carries the territory's Religious category and working-day override.
+    /// </summary>
+    [TestMethod]
+    public void Import_FromBundledCatalogues_AppliesGoodFridayOverrides()
+    {
+        NotableDate goodFriday = RegionService().Resolve(new DateOnly(2024, 3, 29), "ZZ").Single(r => r.NotableDateId == "good-friday");
+
+        Assert.AreEqual(
+            (NotableDateCategory.Religious, false),
+            (goodFriday.Category, goodFriday.IsNonWorkingDay),
+            "category and non-working overrides applied");
+    }
+
+    /// <summary>
+    /// Verifies that a territory resource importing the bundled catalogues applies its own weekend adjustment. New Year's
+    /// Day 2023 (a Sunday) is observed on Monday 2 January, carrying the actual date.
+    /// </summary>
+    [TestMethod]
+    public void Import_FromBundledCatalogues_ObservesNewYearOverride()
+    {
+        NotableDate newYear = RegionService().Resolve(new DateOnly(2023, 1, 2), "ZZ").Single(r => r.NotableDateId == "new-years-day");
+
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2023, 1, 1)),
+            (newYear.IsObserved, newYear.ActualDate));
     }
 
     /// <summary>
