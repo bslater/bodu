@@ -24,6 +24,24 @@ namespace Bodu.Globalization.Calendar;
 /// and renders as the empty string.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
+/// TerritoryCode au = nsw.Parent;          // AU
+/// bool contains = au.Contains(nsw);        // true — a country contains its subdivisions
+///
+/// // The implicit string conversion feeds the resolution surface directly.
+/// IReadOnlyList<NotableDate> dates = service.Resolve(2026, nsw);
+///
+/// // Lenient parsing for untrusted input.
+/// if (TerritoryCode.TryParse(userInput, out TerritoryCode code))
+///     dates = service.Resolve(2026, code);
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateService" />
+/// <seealso href="../guides/calendar/territories.html">Territories and regional composition (guide)</seealso>
 public readonly struct TerritoryCode : IEquatable<TerritoryCode>
 {
     /// <summary>

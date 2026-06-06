@@ -17,6 +17,8 @@ namespace Bodu.Globalization.Calendar;
 /// satisfy every populated dimension.
 /// </para>
 /// </remarks>
+/// <seealso cref="AdjustmentPolicy" />
+/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public sealed class AdjustmentScope
 {
     /// <summary>

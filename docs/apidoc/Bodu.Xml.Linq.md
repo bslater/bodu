@@ -30,5 +30,5 @@ IEnumerable<XElement> matches = root.XPathSelectElements(
 ## Notes
 
 - **Single-fragment scope.** The resolver reflects the element's in-scope namespaces only; declarations on ancestors outside the fragment are not visible.
-- **Used by the calendar rule parsers.** The XML rule provider relies on this helper to resolve the `urn:bodu:globalization:calendar` prefix when authored rule files use prefixed elements.
-- **See also:** the [Bodu.Core introduction](~/docs/core/index.md), <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider>.
+- **Calendar rule documents.** Authored notable-date rule files use the `urn:bodu:globalization:calendar` namespace; this helper resolves in-scope namespace prefixes when reading prefixed elements from such a fragment.
+- **See also:** the [Bodu.Core introduction](~/docs/core/index.md) and <xref:Bodu.Globalization.Calendar>.

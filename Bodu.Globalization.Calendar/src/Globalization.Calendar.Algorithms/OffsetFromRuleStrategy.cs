@@ -16,6 +16,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// produces no occurrence; the loader reports the unresolved or ambiguous reference as a validation error.
 /// </para>
 /// </remarks>
+/// <seealso cref="IDateCalculationStrategy" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class OffsetFromRuleStrategy : IDateCalculationStrategy
 {
     /// <summary>

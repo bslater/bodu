@@ -14,7 +14,27 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Keys are matched ordinally and are case-sensitive, mirroring the engine's built-in algorithm keys. Registering a key
 /// that is already present replaces the previous algorithm.
 /// </para>
+/// <para>
+/// <strong>When to use.</strong> Populate a registry with custom <see cref="INotableDateAlgorithm" /> implementations,
+/// then pass it to <see cref="NotableDateResourceLoader" /> (so a document may reference the keys during validation) and
+/// to the <see cref="NotableDateService" /> (so they resolve at query time).
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+///     .Register("contoso.march-equinox", new MarchEquinoxAlgorithm())
+///     .Register("contoso.harvest-moon", new HarvestMoonAlgorithm());
+///
+/// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml, _ => null, registry);
+/// NotableDateService service = new(resource, registry);
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateAlgorithm" />
+/// <seealso cref="NotableDateService" />
+/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
 {
     /// <summary>

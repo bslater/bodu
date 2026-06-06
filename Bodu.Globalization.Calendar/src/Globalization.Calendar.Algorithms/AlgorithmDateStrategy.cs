@@ -17,6 +17,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// zone appropriate to the observance (for example Japan Standard Time for the Japanese equinox holidays).
 /// </para>
 /// </remarks>
+/// <seealso cref="IDateCalculationStrategy" />
+/// <seealso cref="INotableDateAlgorithm" />
+/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
 {
     /// <summary>

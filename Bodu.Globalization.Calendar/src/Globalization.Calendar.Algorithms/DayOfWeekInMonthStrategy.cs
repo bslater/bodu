@@ -10,6 +10,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Calculates a notable date that falls on the nth (or last) occurrence of a weekday within a month, such as the fourth
 /// Thursday of November or the last Monday of May.
 /// </summary>
+/// <seealso cref="IDateCalculationStrategy" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class DayOfWeekInMonthStrategy : IDateCalculationStrategy
 {
     /// <summary>

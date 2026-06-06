@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Globalization.Calendar.Resources\catholic.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\christian-orthodox.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\christian-western.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\default-minimal.xml" />
@@ -63,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Globalization.Calendar.Resources\catholic.xml" />
     <None Remove="Globalization.Calendar.Resources\christian-orthodox.xml" />
     <None Remove="Globalization.Calendar.Resources\christian-western.xml" />
     <None Remove="Globalization.Calendar.Resources\default-minimal.xml" />

@@ -22,6 +22,10 @@ namespace Bodu.Globalization.Calendar;
 /// substitute past a day already taken by another holiday.
 /// </para>
 /// </remarks>
+/// <seealso cref="AdjustmentScope" />
+/// <seealso cref="AdjustmentTrigger" />
+/// <seealso cref="AdjustmentAction" />
+/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public sealed class AdjustmentPolicy
 {
     /// <summary>

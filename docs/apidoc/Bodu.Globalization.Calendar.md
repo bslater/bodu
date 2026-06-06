@@ -20,6 +20,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 ## Companion packages
 
+- [`Bodu.Globalization.Calendar.Builder`](Bodu.Globalization.Calendar.Builder.md) — a fluent C# API for authoring notable-date documents on the v2 cookbook schema, with XML / JSON serialization and load/save.
 - [`Bodu.Globalization.Calendar.DependencyInjection`](Bodu.Globalization.Calendar.DependencyInjection.md) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` register `INotableDateService` as a singleton over a loaded `NotableDateResource`.
 - [`Bodu.Globalization.Calendar.Plugins`](Bodu.Globalization.Calendar.Plugins.md) — trust-gated loading of external assemblies that contribute custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations.
 - [`Bodu.Globalization.Calendar.Data.*`](Bodu.Globalization.Calendar.Data.md) — curated public-holiday resources for the Americas, Asia-Pacific, and Europe territory bundles.

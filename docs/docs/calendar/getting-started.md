@@ -21,6 +21,9 @@ dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 
 # Optional trust-gated external algorithm plugins:
 dotnet add package Bodu.Globalization.Calendar.Plugins
+
+# Optional fluent C# document-authoring API:
+dotnet add package Bodu.Globalization.Calendar.Builder
 ```
 
 See the [package matrix](../package-matrix.md) for the full taxonomy and the [Calendar package family diagram](index.md#calendar-package-family) for how the runtime and companions compose.

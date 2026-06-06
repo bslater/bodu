@@ -18,6 +18,21 @@ namespace Bodu.Globalization.Calendar;
 /// service is constructed. Construction is cheap, so reloads are inexpensive.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// MutableNotableDateResourceProvider provider = new(NotableDateResourceLoader.Load(initialXml));
+/// INotableDateService service = new ReloadableNotableDateService(provider);
+///
+/// IReadOnlyList<NotableDate> before = service.Resolve(2026, "US");
+/// provider.Reload(NotableDateResourceLoader.Load(updatedXml));
+/// IReadOnlyList<NotableDate> after = service.Resolve(2026, "US"); // reflects the reloaded data
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="MutableNotableDateResourceProvider" />
+/// <seealso cref="NotableDateService" />
+/// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public sealed class ReloadableNotableDateService : INotableDateService
 {
     /// <summary>

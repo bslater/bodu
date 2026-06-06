@@ -12,6 +12,26 @@ namespace Bodu.Globalization.Calendar;
 /// Provides extension methods that apply an <see cref="INotableDateNameLocalizer" /> to resolved occurrences, replacing
 /// each display name with its culture-specific form.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Resolution always emits the authored (invariant) display name; localization is a separate, opt-in step applied to
+/// the results. When the localizer supplies no name for an occurrence in the requested culture, that occurrence is
+/// returned unchanged so the invariant name remains as a fallback.
+/// </para>
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// IReadOnlyList<NotableDate> dates = service.Resolve(2026, "CA-QC");
+///
+/// // Replace display names with their French-Canadian forms where the localizer has them.
+/// INotableDateNameLocalizer localizer = new NotableDateNameLocalizer(translations);
+/// IReadOnlyList<NotableDate> localized = dates.Localize(localizer, CultureInfo.GetCultureInfo("fr-CA"));
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="INotableDateNameLocalizer" />
+/// <seealso cref="NotableDate" />
 public static class NotableDateLocalizationExtensions
 {
     /// <summary>

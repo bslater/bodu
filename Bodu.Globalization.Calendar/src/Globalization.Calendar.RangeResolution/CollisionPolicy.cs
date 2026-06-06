@@ -12,9 +12,12 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <remarks>
 /// <para>
 /// The recommended default is <see cref="KeepAll" />, because multiple notable dates can legitimately occur on the same
-/// day. The first cut of the v2 engine retains all resolved occurrences.
+/// day. The other policies thin a same-day group by priority or category, or defer to an
+/// <see cref="INotableDateCollisionResolver" /> when set to <see cref="Custom" />.
 /// </para>
 /// </remarks>
+/// <seealso cref="INotableDateCollisionResolver" />
+/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
 public enum CollisionPolicy
 {
     /// <summary>

@@ -27,6 +27,7 @@ A **rule document** is authored on the cookbook schema and loaded into an immuta
 | `Bodu.Extensions` | Working-day arithmetic over `DateOnly`, `DateTime`, and `DateTimeOffset` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … | [Working-day arithmetic](working-days.md) |
 | `Bodu.Globalization.Calendar.Data` | Region-specific public-holiday resources shipped in the `Bodu.Globalization.Calendar.Data.Americas`, `.Europe`, and `.AsiaPacific` companion packages. | [Calendar data packs](data-packs.md) |
 | `Microsoft.Extensions.DependencyInjection` | `IServiceCollection.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` from the DI companion package. | [Calendar dependency injection](dependency-injection.md) |
+| `Bodu.Globalization.Calendar.Builder` | Fluent C# authoring of notable-date documents — `NotableDateDocumentBuilder`, XML / JSON serialization, and load/save. | [Authoring with the notable-date builder](notable-date-builder.md) |
 
 ## Guides
 
@@ -42,6 +43,11 @@ A **rule document** is authored on the cookbook schema and loaded into an immuta
 <div class="bodu-card">
   <h3><a href="rule-authoring.md">Authoring notable date rules</a></h3>
   <p>How to author your own rule documents in XML / JSON — definitions, rules, strategies, importing the bundled common catalogues with <code>&lt;Use&gt;</code> directives, and layering ID-targeted <code>&lt;Overrides&gt;</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="notable-date-builder.md">Authoring with the notable-date builder</a></h3>
+  <p>The fluent C# peer of XML / JSON authoring — <code>NotableDateDocumentBuilder</code> assembles definitions, rules, adjustment policies, imports, and overrides, then serializes to XML / JSON, saves to a file, or builds a <code>NotableDateResource</code>.</p>
 </div>
 
 </div>

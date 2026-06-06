@@ -18,6 +18,28 @@ namespace Bodu.Globalization.Calendar;
 /// occurrences.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Move the occurrence to the next day that is not already claimed by another non-working date.
+/// public sealed class NextFreeDayHandler : IAdjustmentHandler
+/// {
+///     public DateOnly? Adjust(AdjustmentHandlerContext context)
+///     {
+///         DateOnly date = context.BaseDate;
+///         while (context.IsOccupied(date))
+///             date = date.AddDays(1);
+///
+///         return date == context.BaseDate ? null : date; // null leaves it on the calculated date
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
+/// <seealso cref="AdjustmentHandlerContext" />
+/// <seealso cref="AdjustmentAction" />
+/// <seealso cref="IAdjustmentHandlerRegistry" />
+/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public interface IAdjustmentHandler
 {
     /// <summary>

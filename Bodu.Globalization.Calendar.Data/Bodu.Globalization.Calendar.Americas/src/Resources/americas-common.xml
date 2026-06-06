@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  americas-common — pan-American common notable-date hub
+  ================================================================================================================
+
+  The single consolidation point the Americas region packs (region-us, region-ca, and any future Americas pack)
+  import their shared observances from, mirroring the europe-common hub. It exists so a concept observed across the
+  region is defined exactly once and imported, never re-declared in two region files.
+
+  How this resource is built:
+
+    * The shared civil, Western Christian, Catholic patron-saint, family, cultural, and environmental concepts are
+      RE-EXPORTED here from the common catalogues (global-core, christian-western, catholic, global-family,
+      global-cultural, global-environment, global-un). They carry their catalogue defaults (category, non-working
+      flag, calculation strategy); a region pack supplies its own territory scope and, where required, overrides the
+      category, non-working flag, or weekend adjustment on its own import <Use> directive. The v2 import resolver
+      resolves this hub's own imports transitively, so a region that imports a concept from here receives the fully
+      resolved catalogue rule.
+
+    * Concepts that are pan-American but not international enough to belong in the common library are DEFINED INLINE
+      here as the single regional source of truth:
+        - Groundhog Day (2 February), a North-American cultural observance shared by the US and Canada.
+        - Thanksgiving, which is genuinely shared but calculated differently in each country: the United States
+          observes it on the fourth Thursday of November and Canada on the second Monday of October. Rather than
+          declaring two separate concepts, it is defined once here carrying one territory-scoped rule per country;
+          territory containment selects the right rule, and each region imports the single concept (without a
+          territory override, so both rules are preserved).
+
+  Anchor note: any Easter-derived date a region adopts (Good Friday, Easter Monday, Mardi Gras / Shrove Tuesday)
+  resolves against the Easter Sunday anchor, which is re-exported here too. Importing an offset feast pulls the
+  anchor transitively.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.americas-common">
+
+  <Imports>
+    <!-- Civil core. New Year's Day and New Year's Eve, re-exported under their global canonical names. -->
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" />
+      <Use notableDateRef="new-years-eve" />
+    </Import>
+    <!--
+      Western Christian feasts and the Easter anchor. Re-exported with their catalogue defaults: the public holidays
+      (Good Friday, Easter Monday, Christmas Day, Boxing Day) carry nonWorking="true"; the rest are working
+      observances. Shrove Tuesday (Mardi Gras) and Ash Wednesday support the Gulf-coast carnival observances.
+    -->
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" />
+      <Use notableDateRef="good-friday" />
+      <Use notableDateRef="easter-monday" />
+      <Use notableDateRef="shrove-tuesday" />
+      <Use notableDateRef="ash-wednesday" />
+      <Use notableDateRef="christmas-eve" />
+      <Use notableDateRef="christmas-day" />
+      <Use notableDateRef="boxing-day" />
+    </Import>
+    <!-- Catholic patron-saint feast days (working religious observances by default; a region re-scopes as needed). -->
+    <Import resource="catholic">
+      <Use notableDateRef="st-patricks-day" />
+      <Use notableDateRef="st-georges-day" />
+    </Import>
+    <!-- Family observances (recognition-only working days): the second-Sunday-May / third-Sunday-June North-American forms. -->
+    <Import resource="global-family">
+      <Use notableDateRef="mothers-day" />
+      <Use notableDateRef="fathers-day" />
+    </Import>
+    <!-- Cultural observances (recognition-only). -->
+    <Import resource="global-cultural">
+      <Use notableDateRef="valentines-day" />
+      <Use notableDateRef="cinco-de-mayo" />
+      <Use notableDateRef="halloween" />
+    </Import>
+    <!-- Environmental observance. -->
+    <Import resource="global-environment">
+      <Use notableDateRef="earth-day" />
+    </Import>
+    <!-- United Nations international day observed in Canada. -->
+    <Import resource="global-un">
+      <Use notableDateRef="international-womens-day" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      Pan-American concepts defined here once as the single regional source of truth, so both region packs import
+      them rather than each re-declaring them.
+    -->
+
+    <!-- Groundhog Day — 2 February; a North-American folk tradition forecasting the arrival of spring. A working cultural observance, observed in both the US and Canada. Strategy: Fixed day-of-month. -->
+    <NotableDate id="groundhog-day" displayName="Groundhog Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="February" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Thanksgiving — shared by the US and Canada but on different days. One concept, one territory-scoped rule per
+      country: the United States observes the fourth Thursday of November (rule "us"); Canada observes the second
+      Monday of October (rule "ca"). Each region imports this concept without a territory override so both rules are
+      preserved, and containment resolves the correct one. The US retail days (Black Friday, Cyber Monday) offset
+      from the "us" rule. Strategy: DayOfWeekInMonth.
+    -->
+    <NotableDate id="thanksgiving" displayName="Thanksgiving Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="us"><Applicability><Territory code="US" /></Applicability><Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy></Rule>
+        <Rule id="ca"><Applicability><Territory code="CA" /></Applicability><Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
+      </Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

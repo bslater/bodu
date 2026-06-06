@@ -10,6 +10,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Calculates a notable date that falls on a weekday on, before, after, or nearest to a fixed month and day, such as
 /// the Monday on or after 24 May.
 /// </summary>
+/// <seealso cref="IDateCalculationStrategy" />
+/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class WeekdayNearDateStrategy : IDateCalculationStrategy
 {
     /// <summary>

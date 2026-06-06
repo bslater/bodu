@@ -15,6 +15,8 @@ namespace Bodu.Globalization.Calendar;
 /// notable dates may share a category freely. A rule may override the category inherited from its parent notable date.
 /// </para>
 /// </remarks>
+/// <seealso cref="NotableDateFilter" />
+/// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public enum NotableDateCategory
 {
     /// <summary>
