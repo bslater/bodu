@@ -21,6 +21,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <param name="NonWorking">Whether the occurrence is a non-working day that claims the days it occupies.</param>
 /// <param name="DurationDays">The number of days the occurrence spans, inclusive of the first day.</param>
 /// <param name="Tags">The tags declared by the rule that produced the occurrence.</param>
+/// <param name="Definition">The notable-date concept that produced the occurrence.</param>
+/// <param name="Rule">The rule that produced the occurrence.</param>
 internal sealed record ResolutionCandidate(
     NotableDateRuleIdentity Identity,
     string DisplayName,
@@ -30,4 +32,6 @@ internal sealed record ResolutionCandidate(
     int Priority,
     bool NonWorking,
     int DurationDays,
-    IReadOnlyList<string> Tags);
+    IReadOnlyList<string> Tags,
+    NotableDateDefinition Definition,
+    NotableDateRule Rule);

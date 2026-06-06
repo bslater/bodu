@@ -100,7 +100,7 @@ public sealed class NotableDatePluginLoaderTests
         </NotableDateResource>
         """;
 
-        NotableDateService service = new(NotableDateResourceLoader.Load(Xml, _ => null, registry), registry);
+        NotableDateService service = new(NotableDateResourceLoader.Load(Xml, _ => null, registry), new NotableDateServiceOptions { Algorithms = registry });
         NotableDate match = service
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
             .Single(r => r.NotableDateId == "test-day");

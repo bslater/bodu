@@ -81,7 +81,7 @@ public sealed class CustomTriggerTests
     public void CustomTrigger_WhenHandlerReportsFire_ShouldApplyAction()
     {
         AdjustmentTriggerHandlerRegistry triggers = new AdjustmentTriggerHandlerRegistry().Register("fire-in-leap", new FireInLeapYearHandler());
-        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), null, null, null, triggers);
+        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), new NotableDateServiceOptions { TriggerHandlers = triggers });
 
         NotableDate match = Single(service, 2024, "custom-trigger-holiday");
 
@@ -97,7 +97,7 @@ public sealed class CustomTriggerTests
     public void CustomTrigger_WhenHandlerReportsNoFire_ShouldLeaveUnadjusted()
     {
         AdjustmentTriggerHandlerRegistry triggers = new AdjustmentTriggerHandlerRegistry().Register("fire-in-leap", new FireInLeapYearHandler());
-        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), null, null, null, triggers);
+        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), new NotableDateServiceOptions { TriggerHandlers = triggers });
 
         NotableDate match = Single(service, 2025, "custom-trigger-holiday");
 
@@ -130,7 +130,7 @@ public sealed class CustomTriggerTests
     {
         CapturingHandler handler = new();
         AdjustmentTriggerHandlerRegistry triggers = new AdjustmentTriggerHandlerRegistry().Register("fire-in-leap", handler);
-        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), null, null, null, triggers);
+        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), new NotableDateServiceOptions { TriggerHandlers = triggers });
 
         _ = Single(service, 2025, "custom-trigger-holiday");
 

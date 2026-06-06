@@ -46,7 +46,7 @@ public sealed class CustomAlgorithmTests
         NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry().Register("pi-day", new PiDayAlgorithm());
 
         NotableDateResource resource = NotableDateResourceLoader.Load(Xml, _ => null, registry);
-        NotableDateService service = new(resource, registry);
+        NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
 
         NotableDate match = service
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")

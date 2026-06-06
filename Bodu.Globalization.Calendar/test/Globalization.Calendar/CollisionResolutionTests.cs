@@ -43,7 +43,7 @@ public sealed class CollisionResolutionTests
     /// <returns>The surviving notable-date identifiers.</returns>
     private static List<string> ResolveNewYear(string policy, INotableDateCollisionResolver? resolver = null)
     {
-        NotableDateService service = new(NotableDateResourceLoader.Load(Document(policy)), null, resolver);
+        NotableDateService service = new(NotableDateResourceLoader.Load(Document(policy)), new NotableDateServiceOptions { CollisionResolver = resolver });
         return service.Resolve(new DateOnly(2025, 1, 1), "XX")
             .Select(r => r.NotableDateId).OrderBy(s => s, StringComparer.Ordinal).ToList();
     }

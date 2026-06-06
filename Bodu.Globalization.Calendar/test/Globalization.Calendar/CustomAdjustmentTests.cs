@@ -165,7 +165,7 @@ public sealed class CustomAdjustmentTests
     public void CustomAction_WhenHandlerRegistered_ShouldUseHandlerDate()
     {
         AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry().Register("shift-ten", new ShiftTenHandler());
-        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), null, null, handlers);
+        NotableDateService service = new(NotableDateResourceLoader.Load(CustomXml), new NotableDateServiceOptions { Handlers = handlers });
 
         NotableDate match = Single(service, 2025, "custom-holiday");
 

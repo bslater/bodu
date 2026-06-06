@@ -68,11 +68,7 @@ public sealed class NotableDateProviderTests
     private static INotableDateService Build(INotableDateProvider? provider) =>
         new NotableDateService(
             NotableDateResourceLoader.Load(Xml),
-            null,
-            null,
-            null,
-            null,
-            provider is null ? null : new[] { provider });
+            new NotableDateServiceOptions { Providers = provider is null ? null : new[] { provider } });
 
     /// <summary>
     /// Verifies that a provider's occurrence is resolved alongside the resource's authored holiday, so the year query

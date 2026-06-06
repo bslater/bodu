@@ -85,133 +85,51 @@ public sealed class NotableDateService
     private readonly IReadOnlyList<INotableDateProvider>? _providers;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class.
+    /// The supported territories, computed once from the immutable resource.
+    /// </summary>
+    private readonly IReadOnlyList<string> _supportedTerritories;
+
+    /// <summary>
+    /// The supported calendar systems, computed once from the immutable resource.
+    /// </summary>
+    private readonly IReadOnlyList<CalendarSystem> _supportedCalendars;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class over a resource using only built-in
+    /// behaviour.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
     public NotableDateService(NotableDateResource resource)
-        : this(resource, null, null)
+        : this(resource, null)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry.
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class over a resource with the optional
+    /// collaborators supplied by <paramref name="options" />.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms)
-        : this(resource, algorithms, null)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry and
-    /// same-day collision resolver.
-    /// </summary>
-    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">
-    /// The collision resolver consulted when the resource's same-day collision policy is
-    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
+    /// <param name="options">
+    /// The optional collaborators consulted when a document references custom algorithms, collision resolution,
+    /// adjustment handlers, trigger handlers, or code-first providers, or <see langword="null" /> for built-ins only.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public NotableDateService(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms, INotableDateCollisionResolver? collisionResolver)
-        : this(resource, algorithms, collisionResolver, null)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry,
-    /// same-day collision resolver, and adjustment-handler registry.
-    /// </summary>
-    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">
-    /// The collision resolver consulted when the resource's same-day collision policy is
-    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
-    /// </param>
-    /// <param name="handlers">
-    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
-    /// or <see langword="null" />.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public NotableDateService(
-        NotableDateResource resource,
-        INotableDateAlgorithmRegistry? algorithms,
-        INotableDateCollisionResolver? collisionResolver,
-        IAdjustmentHandlerRegistry? handlers)
-        : this(resource, algorithms, collisionResolver, handlers, null)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class with a custom algorithm registry,
-    /// same-day collision resolver, adjustment-handler registry, and trigger-handler registry.
-    /// </summary>
-    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">
-    /// The collision resolver consulted when the resource's same-day collision policy is
-    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
-    /// </param>
-    /// <param name="handlers">
-    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
-    /// or <see langword="null" />.
-    /// </param>
-    /// <param name="triggerHandlers">
-    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />, or
-    /// <see langword="null" />.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public NotableDateService(
-        NotableDateResource resource,
-        INotableDateAlgorithmRegistry? algorithms,
-        INotableDateCollisionResolver? collisionResolver,
-        IAdjustmentHandlerRegistry? handlers,
-        IAdjustmentTriggerHandlerRegistry? triggerHandlers)
-        : this(resource, algorithms, collisionResolver, handlers, triggerHandlers, null)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class with the full set of collaborators,
-    /// including code-first notable-date providers.
-    /// </summary>
-    /// <param name="resource">The loaded resource the service draws occurrences from.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">
-    /// The collision resolver consulted when the resource's same-day collision policy is
-    /// <see cref="CollisionPolicy.Custom" />, or <see langword="null" />.
-    /// </param>
-    /// <param name="handlers">
-    /// The adjustment-handler registry consulted when an adjustment action is <see cref="AdjustmentAction.Custom" />,
-    /// or <see langword="null" />.
-    /// </param>
-    /// <param name="triggerHandlers">
-    /// The trigger-handler registry consulted when an adjustment trigger is <see cref="AdjustmentTrigger.Custom" />, or
-    /// <see langword="null" />.
-    /// </param>
-    /// <param name="providers">
-    /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public NotableDateService(
-        NotableDateResource resource,
-        INotableDateAlgorithmRegistry? algorithms,
-        INotableDateCollisionResolver? collisionResolver,
-        IAdjustmentHandlerRegistry? handlers,
-        IAdjustmentTriggerHandlerRegistry? triggerHandlers,
-        IEnumerable<INotableDateProvider>? providers)
+    public NotableDateService(NotableDateResource resource, NotableDateServiceOptions? options)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         _resource = resource;
-        _algorithms = algorithms;
-        _collisionResolver = collisionResolver;
-        _handlers = handlers;
-        _triggerHandlers = triggerHandlers;
-        _providers = providers?.ToArray();
+        _algorithms = options?.Algorithms;
+        _collisionResolver = options?.CollisionResolver;
+        _handlers = options?.Handlers;
+        _triggerHandlers = options?.TriggerHandlers;
+        _providers = options?.Providers?.ToArray();
+
+        // The resource is immutable, so the supported-territory and supported-calendar projections are computed once
+        // here rather than re-swept on every discovery call.
+        _supportedTerritories = ComputeSupportedTerritories(resource);
+        _supportedCalendars = ComputeSupportedCalendars(resource);
     }
 
     /// <inheritdoc />
@@ -374,16 +292,32 @@ public sealed class NotableDateService
 
     /// <inheritdoc />
     public IReadOnlyList<string> GetSupportedTerritories() =>
-        [.. _resource.NotableDates
+        _supportedTerritories;
+
+    /// <inheritdoc />
+    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
+        _supportedCalendars;
+
+    /// <summary>
+    /// Computes the distinct, ordered set of territories referenced by any rule in the resource.
+    /// </summary>
+    /// <param name="resource">The resource to project.</param>
+    /// <returns>The supported territories.</returns>
+    private static IReadOnlyList<string> ComputeSupportedTerritories(NotableDateResource resource) =>
+        [.. resource.NotableDates
             .SelectMany(definition => definition.Rules)
             .SelectMany(rule => rule.Applicability.Territories)
             .Where(territory => !string.IsNullOrWhiteSpace(territory))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)];
 
-    /// <inheritdoc />
-    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
-        [.. _resource.NotableDates
+    /// <summary>
+    /// Computes the distinct, ordered set of calendar systems referenced by any rule in the resource.
+    /// </summary>
+    /// <param name="resource">The resource to project.</param>
+    /// <returns>The supported calendar systems.</returns>
+    private static IReadOnlyList<CalendarSystem> ComputeSupportedCalendars(NotableDateResource resource) =>
+        [.. resource.NotableDates
             .SelectMany(definition => definition.Rules)
             .Select(rule => rule.Applicability.Calendar)
             .Distinct()
@@ -410,7 +344,6 @@ public sealed class NotableDateService
     private List<ResolutionCandidate> GatherCandidates(StrategyResolutionContext context, string territory, int firstYear, int lastYear, HashSet<DateOnly> occupied)
     {
         List<ResolutionCandidate> candidates = new();
-        List<(NotableDateDefinition Definition, NotableDateRule Rule)> sources = new();
         Dictionary<DateOnly, int> actualNonWorkingCounts = new();
 
         foreach (NotableDateDefinition definition in _resource.NotableDates)
@@ -444,8 +377,7 @@ public sealed class NotableDateService
 
                     foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
                     {
-                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, null, rule.Priority, nonWorking, durationDays, tags));
-                        sources.Add((definition, rule));
+                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, null, rule.Priority, nonWorking, durationDays, tags, definition, rule));
 
                         if (nonWorking)
                         {
@@ -461,7 +393,6 @@ public sealed class NotableDateService
         for (var i = 0; i < candidates.Count; i++)
         {
             ResolutionCandidate candidate = candidates[i];
-            (NotableDateDefinition definition, NotableDateRule rule) = sources[i];
 
             // A day is occupied "by another" when a non-working occurrence other than this one shares the date; the
             // candidate's own contribution to the tally is discounted so a lone holiday never collides with itself.
@@ -470,7 +401,7 @@ public sealed class NotableDateService
                 return actualNonWorkingCounts.GetValueOrDefault(day) > (candidate.NonWorking && day == candidate.BaseDate ? 1 : 0);
             }
 
-            AdjustmentPolicy? policy = SelectAdjustmentPolicy(definition, rule, candidate.Category, candidate.BaseDate, territory, context, workingWeek, OccupiedByAnother);
+            AdjustmentPolicy? policy = SelectAdjustmentPolicy(candidate.Definition, candidate.Rule, candidate.Category, candidate.BaseDate, territory, context, workingWeek, OccupiedByAnother);
             candidates[i] = candidate with { Policy = policy };
         }
 
@@ -554,7 +485,6 @@ public sealed class NotableDateService
                 break;
 
             case EmissionMode.ActualAndObserved:
-            case EmissionMode.ObservedAsAdditional:
                 AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
                 AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
                 Claim(occupied, observed, candidate);

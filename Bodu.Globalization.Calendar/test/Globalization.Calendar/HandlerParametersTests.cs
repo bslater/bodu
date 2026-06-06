@@ -94,7 +94,7 @@ public sealed class HandlerParametersTests
     {
         AdjustmentHandlerRegistry handlers = new();
         handlers.Register("shift", new ShiftByParameterHandler());
-        INotableDateService service = new NotableDateService(NotableDateResourceLoader.Load(ActionXml), null, null, handlers);
+        INotableDateService service = new NotableDateService(NotableDateResourceLoader.Load(ActionXml), new NotableDateServiceOptions { Handlers = handlers });
 
         NotableDate observed = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 10)), Territory).Single();
 
@@ -111,7 +111,7 @@ public sealed class HandlerParametersTests
     {
         AdjustmentTriggerHandlerRegistry triggers = new();
         triggers.Register("cond", new ParameterTriggerHandler());
-        INotableDateService service = new NotableDateService(NotableDateResourceLoader.Load(TriggerXml), null, null, null, triggers);
+        INotableDateService service = new NotableDateService(NotableDateResourceLoader.Load(TriggerXml), new NotableDateServiceOptions { TriggerHandlers = triggers });
 
         NotableDate observed = service.Resolve(new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 10)), Territory).Single();
 

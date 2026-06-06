@@ -126,7 +126,13 @@ public sealed class AdjustmentPolicy
         MaxSearchDays = maxSearchDays;
         SkipWeekends = skipWeekends;
         SkipNonWorkingDates = skipNonWorkingDates;
-        Emission = emission;
+
+        // ObservedAsAdditional is a retired alias of ActualAndObserved; normalize it here so every downstream consumer
+        // (resolution, serialization) sees a single canonical emission mode.
+#pragma warning disable CS0618 // Type or member is obsolete
+        Emission = emission == EmissionMode.ObservedAsAdditional ? EmissionMode.ActualAndObserved : emission;
+#pragma warning restore CS0618
+
         Reason = reason;
         NonWorking = nonWorking;
         TriggerMonth = triggerMonth;
