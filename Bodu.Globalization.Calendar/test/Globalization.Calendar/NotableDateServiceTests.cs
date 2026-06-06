@@ -79,22 +79,39 @@ public sealed class NotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that single-day and range queries return the same observed New Year's Day result regardless of query
-    /// width. (T05)
+    /// Verifies that a single-day query on the actual Saturday date returns nothing, since the observed-only emission
+    /// suppresses the base occurrence. (T05)
     /// </summary>
     [TestMethod]
-    public void Resolve_NewYearsDay_WhenSingleDayAndRangeQueriesUsed_ReturnsConsistentObservedResult()
+    public void Resolve_NewYearsDay_WhenSingleDayQueryOnActualDate_ReturnsNoResult()
     {
-        NotableDateService resolver = CreateResolver();
+        Assert.IsEmpty(CreateResolver().Resolve(new DateOnly(2022, 1, 1), "AU"));
+    }
 
-        Assert.IsEmpty(resolver.Resolve(new DateOnly(2022, 1, 1), "AU"), "actual-day query");
+    /// <summary>
+    /// Verifies that a single-day query on the observed Monday date returns the observed New Year's Day occurrence.
+    /// (T05)
+    /// </summary>
+    [TestMethod]
+    public void Resolve_NewYearsDay_WhenSingleDayQueryOnObservedDate_ReturnsObservedResult()
+    {
+        IReadOnlyList<NotableDate> observedDay = CreateResolver().Resolve(new DateOnly(2022, 1, 3), "AU");
 
-        IReadOnlyList<NotableDate> observedDay = resolver.Resolve(new DateOnly(2022, 1, 3), "AU");
-        Assert.HasCount(1, observedDay, "observed-day query");
+        Assert.HasCount(1, observedDay);
         Assert.AreEqual(new DateOnly(2022, 1, 3), observedDay[0].Date);
+    }
 
-        IReadOnlyList<NotableDate> range = resolver.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3)), "AU");
-        Assert.HasCount(1, range, "range query");
+    /// <summary>
+    /// Verifies that a range query spanning the actual and observed dates returns the same observed New Year's Day
+    /// result as the single-day observed query, regardless of query width. (T05)
+    /// </summary>
+    [TestMethod]
+    public void Resolve_NewYearsDay_WhenRangeQuerySpansActualAndObserved_ReturnsObservedResult()
+    {
+        IReadOnlyList<NotableDate> range = CreateResolver()
+            .Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3)), "AU");
+
+        Assert.HasCount(1, range);
         NotableDateAssert.AssertEqual(
             range[0],
             date: new DateOnly(2022, 1, 3),
@@ -217,9 +234,9 @@ public sealed class NotableDateServiceTests
         IReadOnlyList<NotableDate> results = CreateResolver()
             .Resolve(new DateRange(new DateOnly(2026, 7, 1), new DateOnly(2026, 9, 30)), "PR");
 
-        Assert.HasCount(1, results);
-        Assert.AreEqual(new DateOnly(2026, 7, 25), results[0].Date);
-        Assert.AreEqual("pr-fixed-jul-25", results[0].RuleId);
-        Assert.DoesNotContain(r => r.RuleId == "us-fixed-sep-17", results, "US rule must not leak into a PR query");
+        // The PR query must yield exactly the Puerto Rico Constitution Day rule and never the US September rule.
+        CollectionAssert.AreEqual(
+            new[] { ("pr-fixed-jul-25", new DateOnly(2026, 7, 25)) },
+            results.OrderBy(r => r.Date).Select(r => (r.RuleId, r.Date)).ToArray());
     }
 }
