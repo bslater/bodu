@@ -26,6 +26,16 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateResource
 {
     /// <summary>
+    /// The reusable adjustment policies indexed by their identifier for O(1) lookup, first-wins on duplicates.
+    /// </summary>
+    private readonly Dictionary<string, AdjustmentPolicy> _adjustmentPoliciesById;
+
+    /// <summary>
+    /// The notable-date concepts indexed by their identifier for O(1) lookup, first-wins on duplicates.
+    /// </summary>
+    private readonly Dictionary<string, NotableDateDefinition> _definitionsById;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateResource" /> class.
     /// </summary>
     /// <param name="resourceId">The stable identifier of the resource.</param>
@@ -52,6 +62,17 @@ public sealed class NotableDateResource
         ResolutionPolicy = resolutionPolicy;
         AdjustmentPolicies = [.. adjustmentPolicies];
         NotableDates = [.. notableDates];
+
+        // Index the immutable collections once so per-query lookups are O(1) rather than linear scans. Both indices are
+        // first-wins on a duplicate identifier, matching the historical linear-search behaviour these lookups replace;
+        // duplicate identifiers are themselves reported as errors by the validator during loading.
+        _adjustmentPoliciesById = new Dictionary<string, AdjustmentPolicy>(AdjustmentPolicies.Count, StringComparer.Ordinal);
+        foreach (AdjustmentPolicy policy in AdjustmentPolicies)
+            _adjustmentPoliciesById.TryAdd(policy.Id, policy);
+
+        _definitionsById = new Dictionary<string, NotableDateDefinition>(NotableDates.Count, StringComparer.Ordinal);
+        foreach (NotableDateDefinition definition in NotableDates)
+            _definitionsById.TryAdd(definition.Id, definition);
     }
 
     /// <summary>
@@ -118,12 +139,21 @@ public sealed class NotableDateResource
     {
         ThrowHelper.ThrowIfNull(id);
 
-        foreach (AdjustmentPolicy policy in AdjustmentPolicies)
-        {
-            if (string.Equals(policy.Id, id, StringComparison.Ordinal))
-                return policy;
-        }
+        return _adjustmentPoliciesById.TryGetValue(id, out AdjustmentPolicy? policy) ? policy : null;
+    }
 
-        return null;
+    /// <summary>
+    /// Finds the notable-date concept with the supplied identifier.
+    /// </summary>
+    /// <param name="id">The concept identifier to locate.</param>
+    /// <returns>
+    /// The matching <see cref="NotableDateDefinition" />, or <see langword="null" /> when none exists.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="id" /> is <see langword="null" />.</exception>
+    public NotableDateDefinition? FindDefinition(string id)
+    {
+        ThrowHelper.ThrowIfNull(id);
+
+        return _definitionsById.TryGetValue(id, out NotableDateDefinition? definition) ? definition : null;
     }
 }

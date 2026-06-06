@@ -41,24 +41,9 @@ public sealed class ReloadableNotableDateService
     private readonly INotableDateResourceProvider _provider;
 
     /// <summary>
-    /// The custom algorithm registry passed to each rebuilt inner service.
+    /// The optional collaborators passed to each rebuilt inner service, or <see langword="null" /> for built-ins only.
     /// </summary>
-    private readonly INotableDateAlgorithmRegistry? _algorithms;
-
-    /// <summary>
-    /// The custom collision resolver passed to each rebuilt inner service.
-    /// </summary>
-    private readonly INotableDateCollisionResolver? _collisionResolver;
-
-    /// <summary>
-    /// The custom adjustment-handler registry passed to each rebuilt inner service.
-    /// </summary>
-    private readonly IAdjustmentHandlerRegistry? _handlers;
-
-    /// <summary>
-    /// The custom trigger-handler registry passed to each rebuilt inner service.
-    /// </summary>
-    private readonly IAdjustmentTriggerHandlerRegistry? _triggerHandlers;
+    private readonly NotableDateServiceOptions? _options;
 
     /// <summary>
     /// Guards the paired update of <see cref="_inner" /> and <see cref="_builtFrom" />.
@@ -81,65 +66,29 @@ public sealed class ReloadableNotableDateService
     /// <param name="provider">The provider supplying the resource currently in effect.</param>
     /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
     public ReloadableNotableDateService(INotableDateResourceProvider provider)
-        : this(provider, null, null, null)
+        : this(provider, null)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ReloadableNotableDateService" /> class with custom extensibility
-    /// registries propagated to each rebuilt inner service.
+    /// Initializes a new instance of the <see cref="ReloadableNotableDateService" /> class with the optional
+    /// collaborators propagated to each rebuilt inner service.
     /// </summary>
     /// <param name="provider">The provider supplying the resource currently in effect.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">
-    /// The collision resolver consulted for a custom collision policy, or <see langword="null" />.
-    /// </param>
-    /// <param name="handlers">
-    /// The adjustment-handler registry consulted for a custom action, or <see langword="null" />.
+    /// <param name="options">
+    /// The optional collaborators propagated to each rebuilt inner <see cref="NotableDateService" />, or
+    /// <see langword="null" /> for built-ins only.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
-    public ReloadableNotableDateService(
-        INotableDateResourceProvider provider,
-        INotableDateAlgorithmRegistry? algorithms,
-        INotableDateCollisionResolver? collisionResolver,
-        IAdjustmentHandlerRegistry? handlers)
-        : this(provider, algorithms, collisionResolver, handlers, null)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReloadableNotableDateService" /> class with custom extensibility
-    /// registries, including a trigger-handler registry, propagated to each rebuilt inner service.
-    /// </summary>
-    /// <param name="provider">The provider supplying the resource currently in effect.</param>
-    /// <param name="algorithms">The custom algorithm registry, or <see langword="null" /> for built-ins only.</param>
-    /// <param name="collisionResolver">
-    /// The collision resolver consulted for a custom collision policy, or <see langword="null" />.
-    /// </param>
-    /// <param name="handlers">
-    /// The adjustment-handler registry consulted for a custom action, or <see langword="null" />.
-    /// </param>
-    /// <param name="triggerHandlers">
-    /// The trigger-handler registry consulted for a custom trigger, or <see langword="null" />.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
-    public ReloadableNotableDateService(
-        INotableDateResourceProvider provider,
-        INotableDateAlgorithmRegistry? algorithms,
-        INotableDateCollisionResolver? collisionResolver,
-        IAdjustmentHandlerRegistry? handlers,
-        IAdjustmentTriggerHandlerRegistry? triggerHandlers)
+    public ReloadableNotableDateService(INotableDateResourceProvider provider, NotableDateServiceOptions? options)
     {
         ThrowHelper.ThrowIfNull(provider);
 
         _provider = provider;
-        _algorithms = algorithms;
-        _collisionResolver = collisionResolver;
-        _handlers = handlers;
-        _triggerHandlers = triggerHandlers;
+        _options = options;
 
         _builtFrom = provider.Current;
-        _inner = new NotableDateService(_builtFrom, algorithms, collisionResolver, handlers, triggerHandlers);
+        _inner = new NotableDateService(_builtFrom, options);
     }
 
     /// <inheritdoc />
@@ -178,7 +127,7 @@ public sealed class ReloadableNotableDateService
         {
             if (!ReferenceEquals(current, _builtFrom))
             {
-                _inner = new NotableDateService(current, _algorithms, _collisionResolver, _handlers, _triggerHandlers);
+                _inner = new NotableDateService(current, _options);
                 _builtFrom = current;
             }
 

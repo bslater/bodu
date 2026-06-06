@@ -28,6 +28,20 @@ public sealed class CustomAlgorithmTests
     """;
 
     /// <summary>
+    /// A resource referencing the built-in <c>western-easter</c> algorithm key.
+    /// </summary>
+    private const string EasterXml = """
+    <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.easter">
+      <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+      <NotableDates>
+        <NotableDate id="easter" displayName="Easter" category="Religious" defaultNonWorkingDay="false">
+          <Rules><Rule id="x"><Strategy><Algorithm key="western-easter" /></Strategy></Rule></Rules>
+        </NotableDate>
+      </NotableDates>
+    </NotableDateResource>
+    """;
+
+    /// <summary>
     /// A custom algorithm placing the occurrence on 14 March.
     /// </summary>
     private sealed class PiDayAlgorithm : INotableDateAlgorithm
@@ -35,6 +49,16 @@ public sealed class CustomAlgorithmTests
         /// <inheritdoc />
         public DateOnly? Calculate(int year) =>
             new DateOnly(year, 3, 14);
+    }
+
+    /// <summary>
+    /// A custom algorithm placing every occurrence on 1 April, used to override a built-in key.
+    /// </summary>
+    private sealed class AprilFoolsAlgorithm : INotableDateAlgorithm
+    {
+        /// <inheritdoc />
+        public DateOnly? Calculate(int year) =>
+            new DateOnly(year, 4, 1);
     }
 
     /// <summary>
@@ -46,7 +70,7 @@ public sealed class CustomAlgorithmTests
         NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry().Register("pi-day", new PiDayAlgorithm());
 
         NotableDateResource resource = NotableDateResourceLoader.Load(Xml, _ => null, registry);
-        NotableDateService service = new(resource, registry);
+        NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
 
         NotableDate match = service
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
@@ -67,5 +91,40 @@ public sealed class CustomAlgorithmTests
         });
 
         Assert.Contains(d => d.Code == "BODU-CAL-ALGORITHM", ex.Diagnostics);
+    }
+
+    /// <summary>
+    /// Verifies that a custom algorithm registered under a built-in key takes precedence over the built-in computation.
+    /// </summary>
+    [TestMethod]
+    public void CustomAlgorithm_WhenRegisteredUnderBuiltInKey_OverridesBuiltIn()
+    {
+        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry().Register("western-easter", new AprilFoolsAlgorithm());
+
+        NotableDateResource resource = NotableDateResourceLoader.Load(EasterXml, _ => null, registry);
+        NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
+
+        NotableDate match = service
+            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
+            .Single(r => r.NotableDateId == "easter");
+
+        Assert.AreEqual(new DateOnly(2024, 4, 1), match.Date);
+    }
+
+    /// <summary>
+    /// Verifies that the built-in <c>western-easter</c> algorithm resolves without any custom registry, confirming the
+    /// built-in catalogue is available through the default registry.
+    /// </summary>
+    [TestMethod]
+    public void BuiltInAlgorithm_WhenNoCustomRegistry_ResolvesFromDefaultCatalogue()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.Load(EasterXml);
+        NotableDateService service = new(resource);
+
+        NotableDate match = service
+            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
+            .Single(r => r.NotableDateId == "easter");
+
+        Assert.AreEqual(new DateOnly(2024, 3, 31), match.Date);
     }
 }

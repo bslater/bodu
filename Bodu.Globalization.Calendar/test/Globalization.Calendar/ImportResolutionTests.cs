@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ImportResolutionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,6 +64,40 @@ public sealed class ImportResolutionTests
       </NotableDates>
     </NotableDateResource>
     """;
+
+    /// <summary>
+    /// An importing region resource that pulls in a JSON-projected source by name.
+    /// </summary>
+    private const string ImportJsonRegion = """
+    <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.region.json">
+      <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+      <Imports><Import resource="json-source" /></Imports>
+      <NotableDates>
+        <NotableDate id="local-day" displayName="Local Day" category="PublicHoliday" defaultNonWorkingDay="true">
+          <Rules><Rule id="r"><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+        </NotableDate>
+      </NotableDates>
+    </NotableDateResource>
+    """;
+
+    /// <summary>
+    /// Verifies that an imported JSON resource prefixed with a byte-order mark and leading white-space is still routed
+    /// to the JSON parser, so its concept resolves alongside the local one.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenImportedJsonHasLeadingBomAndWhitespace_RoutesToJsonParser()
+    {
+        const string jsonSource = """
+        { "schemaVersion": "1.0", "resourceId": "data.jsonsource",
+          "notableDates": [ { "id": "json-day", "displayName": "JSON Day", "category": "PublicHoliday", "defaultNonWorkingDay": true,
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 7, "day": 4 } } } ] } ] }
+        """;
+
+        NotableDateResource resource = NotableDateResourceLoader.Load(ImportJsonRegion, Resolver(("json-source", "\uFEFF\n    " + jsonSource)));
+        IReadOnlyList<NotableDate> results = new NotableDateService(resource).Resolve(new DateOnly(2026, 7, 4), "XX");
+
+        Assert.IsTrue(results.Any(r => r.NotableDateId == "json-day"));
+    }
 
     /// <summary>
     /// Verifies that importing every concept of a source brings them in alongside the local concepts.

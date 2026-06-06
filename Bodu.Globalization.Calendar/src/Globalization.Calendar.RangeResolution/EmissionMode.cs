@@ -39,6 +39,11 @@ public enum EmissionMode
     /// <summary>
     /// Emit the calculated occurrence normally and emit the adjusted occurrence as an additional observance.
     /// </summary>
+    /// <remarks>
+    /// This value behaves identically to <see cref="ActualAndObserved" /> and is normalized to it when an
+    /// <see cref="AdjustmentPolicy" /> is constructed. It is retained for document and binary compatibility only.
+    /// </remarks>
+    [Obsolete("Use ActualAndObserved; ObservedAsAdditional behaves identically and is normalized to it.")]
     ObservedAsAdditional,
 
     /// <summary>

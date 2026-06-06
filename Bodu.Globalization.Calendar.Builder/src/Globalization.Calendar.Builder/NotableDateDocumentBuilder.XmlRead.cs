@@ -46,13 +46,20 @@ public sealed partial class NotableDateDocumentBuilder
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
+        XElement? precedenceElement = element.Element(BuilderXml.Namespace + "CategoryPrecedence");
+        IReadOnlyList<NotableDateCategory>? categoryPrecedence = precedenceElement is null
+            ? null
+            : [.. precedenceElement.Elements(BuilderXml.Namespace + "Category")
+                .Select(c => ParseNullableEnum<NotableDateCategory>((string?)c.Attribute("value")) ?? NotableDateCategory.None)];
+
         policy.SetParsedValues(
             ParseNullableEnum<DuplicatePolicy>((string?)element.Attribute("duplicatePolicy")),
             ParseNullableEnum<CollisionPolicy>((string?)element.Attribute("sameDayCollisionPolicy")),
             ParseNullableEnum<CollisionPolicy>((string?)element.Attribute("spanCollisionPolicy")),
             ParseNullableEnum<PriorityDirection>((string?)element.Attribute("priorityDirection")),
             ParseNullableEnum<ObservedDateRangePolicy>((string?)element.Attribute("observedDateRangePolicy")),
-            workingWeek);
+            workingWeek,
+            categoryPrecedence);
 
         _resolutionPolicy = policy;
     }

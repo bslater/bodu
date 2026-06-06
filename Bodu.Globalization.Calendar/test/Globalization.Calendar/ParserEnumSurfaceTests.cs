@@ -211,7 +211,7 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("ActualOnly", EmissionMode.ActualOnly)]
     [DataRow("ObservedOnly", EmissionMode.ObservedOnly)]
     [DataRow("ActualAndObserved", EmissionMode.ActualAndObserved)]
-    [DataRow("ObservedAsAdditional", EmissionMode.ObservedAsAdditional)]
+    [DataRow("ObservedAsAdditional", EmissionMode.ActualAndObserved)]
     [DataRow("Suppress", EmissionMode.Suppress)]
     public void Load_WhenEmissionUsesSupportedValue_ShouldResolveExpectedEmission(string token, EmissionMode expected)
     {

@@ -73,16 +73,7 @@ public sealed class StrategyResolutionContext
     /// </returns>
     public DateOnly? ResolveReference(string notableDateRef, string? ruleRef, int year)
     {
-        NotableDateDefinition? definition = null;
-        foreach (NotableDateDefinition candidate in _resource.NotableDates)
-        {
-            if (string.Equals(candidate.Id, notableDateRef, StringComparison.Ordinal))
-            {
-                definition = candidate;
-                break;
-            }
-        }
-
+        NotableDateDefinition? definition = _resource.FindDefinition(notableDateRef);
         if (definition is null)
             return null;
 
