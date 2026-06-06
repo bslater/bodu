@@ -54,6 +54,7 @@
       <Use notableDateRef="palm-sunday" />
       <Use notableDateRef="maundy-thursday" />
       <Use notableDateRef="good-friday" />
+      <Use notableDateRef="holy-saturday" />
       <Use notableDateRef="easter-sunday" />
       <Use notableDateRef="easter-monday" />
       <Use notableDateRef="ascension-day" />

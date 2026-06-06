@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  Chile (CL) — notable-date resource pack
+  ================================================================================================================
+
+  National rules are scoped to territory "CL". Chile's public holidays are national, so there are no
+  subdivision-scoped rules.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian concepts (New Year's Day, Good Friday, Holy Saturday, Workers' Day, the
+      Assumption, All Saints' Day, the Immaculate Conception, Christmas, and the family observances) are IMPORTED
+      from the americas-common hub and given a CL territory scope, with the Marian and All Saints' feasts re-scoped
+      to non-working national holidays.
+
+    * Chile-specific concepts (Navy Day, Saints Peter and Paul, Our Lady of Mount Carmel, the Fiestas Patrias, Army
+      Day, the Meeting of Two Worlds, and the Day of the Evangelical Churches) are declared INLINE.
+
+  Note on movable holidays: under Ley 19.668 the Saints Peter and Paul (29 June), Meeting of Two Worlds (12
+  October), and Day of the Evangelical Churches (31 October) holidays shift to a neighbouring Monday or Friday in
+  some years. That traslado is not modeled here; these three resolve on their statutory base date. The remaining
+  holidays are fixed or Easter-derived and are exact.
+
+  Anchor note: Good Friday and Holy Saturday resolve against the Easter Sunday anchor re-exported by the hub.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.cl">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="americas-common">
+      <Use notableDateRef="new-years-day" territory="CL" />
+      <Use notableDateRef="good-friday" territory="CL" />
+      <Use notableDateRef="holy-saturday" territory="CL" />
+      <Use notableDateRef="easter-sunday" territory="CL" />
+      <Use notableDateRef="workers-day" territory="CL" />
+      <Use notableDateRef="assumption-of-mary" territory="CL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="CL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="immaculate-conception" territory="CL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mothers-day" territory="CL" />
+      <Use notableDateRef="fathers-day" territory="CL" />
+      <Use notableDateRef="christmas-day" territory="CL" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Navy Day (Día de las Glorias Navales) — 21 May, commemorating the 1879 Battle of Iquique. Strategy: Fixed day-of-month. -->
+    <NotableDate id="navy-day" displayName="Navy Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="May" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saints Peter and Paul (San Pedro y San Pablo) — 29 June (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
+    <NotableDate id="saints-peter-and-paul" displayName="Saints Peter and Paul" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="June" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Our Lady of Mount Carmel (Virgen del Carmen) — 16 July; the feast of Chile's patroness. Strategy: Fixed day-of-month. -->
+    <NotableDate id="our-lady-of-mount-carmel" displayName="Our Lady of Mount Carmel" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability fromYear="2007"><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="July" day="16" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Fiestas Patrias) — 18 September, marking the 1810 first government junta. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-cl" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="September" day="18" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Army Day (Día de las Glorias del Ejército) — 19 September. Strategy: Fixed day-of-month. -->
+    <NotableDate id="army-day-cl" displayName="Army Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="September" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Meeting of Two Worlds (Día del Encuentro de Dos Mundos) — 12 October (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
+    <NotableDate id="meeting-of-two-worlds" displayName="Meeting of Two Worlds" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="October" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of the Evangelical Churches (Día de las Iglesias Evangélicas) — 31 October (statutory base date; movable under Ley 19.668). Strategy: Fixed day-of-month. -->
+    <NotableDate id="evangelical-churches-day" displayName="Day of the Evangelical and Protestant Churches" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="cl"><Applicability fromYear="2008"><Territory code="CL" /></Applicability>
+        <Strategy><Fixed month="October" day="31" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

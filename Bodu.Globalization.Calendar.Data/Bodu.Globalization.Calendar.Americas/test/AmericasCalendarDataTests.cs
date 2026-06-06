@@ -234,6 +234,8 @@ public sealed class AmericasCalendarDataTests
     [DataRow("US-SD", 1989, "native-americans-day-sd")]
     [DataRow("US-DC", 2023, "inauguration-day")]
     [DataRow("US-DC", 2024, "inauguration-day")]
+    [DataRow("BR", 2023, "black-awareness-day")]
+    [DataRow("PE", 2023, "battle-of-junin")]
     public void Resolve_WhenBeforeFirstYear_ReturnsNoResult(string territory, int year, string notableDateId)
     {
         var count = AmericasCalendarData.CreateService(territory)
@@ -311,6 +313,133 @@ public sealed class AmericasCalendarDataTests
 
             Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
         }
+    }
+
+    /// <summary>
+    /// Verifies that Latin American holidays whose date floats from year to year resolve to independently-known
+    /// published dates — the Easter-derived Carnival, Corpus Christi and Holy Week feasts, the nth-weekday family
+    /// observances, the Argentine movable holidays, and the Colombian Emiliani Monday holidays — so the moving
+    /// holidays are pinned to confirmed calendar dates rather than merely structurally validated.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+
+    // Brazil: Carnival and Corpus Christi (Easter offsets) and the family observances on Brazilian dates.
+    [DataRow("BR", 2024, "good-friday", "2024-03-29")]
+    [DataRow("BR", 2024, "carnival-monday", "2024-02-12")]
+    [DataRow("BR", 2024, "carnival-tuesday", "2024-02-13")]
+    [DataRow("BR", 2025, "carnival-tuesday", "2025-03-04")]
+    [DataRow("BR", 2024, "corpus-christi", "2024-05-30")]
+    [DataRow("BR", 2025, "corpus-christi", "2025-06-19")]
+    [DataRow("BR", 2024, "mothers-day", "2024-05-12")]
+    [DataRow("BR", 2024, "fathers-day", "2024-08-11")]
+
+    // Argentina: Carnival, the third-Sunday family observances, and the movable holidays (Ley 27.399).
+    [DataRow("AR", 2024, "good-friday", "2024-03-29")]
+    [DataRow("AR", 2024, "carnival-monday", "2024-02-12")]
+    [DataRow("AR", 2024, "carnival-tuesday", "2024-02-13")]
+    [DataRow("AR", 2024, "mothers-day", "2024-10-20")]
+    [DataRow("AR", 2024, "fathers-day", "2024-06-16")]
+    [DataRow("AR", 2024, "guemes-day", "2024-06-17")]
+    [DataRow("AR", 2022, "diversity-day-ar", "2022-10-10")]
+
+    // Chile: Good Friday and Holy Saturday (Easter offsets) and Mother's Day.
+    [DataRow("CL", 2024, "good-friday", "2024-03-29")]
+    [DataRow("CL", 2024, "holy-saturday", "2024-03-30")]
+    [DataRow("CL", 2024, "mothers-day", "2024-05-12")]
+
+    // Colombia: Holy Week and the Emiliani Monday holidays (fixed-date moved to the following Monday) and the
+    // Easter-derived Monday holidays computed directly with their offset.
+    [DataRow("CO", 2024, "maundy-thursday", "2024-03-28")]
+    [DataRow("CO", 2024, "saint-joseph", "2024-03-25")]
+    [DataRow("CO", 2024, "ascension-day-co", "2024-05-13")]
+    [DataRow("CO", 2025, "ascension-day-co", "2025-06-02")]
+    [DataRow("CO", 2024, "corpus-christi-co", "2024-06-03")]
+    [DataRow("CO", 2024, "sacred-heart-co", "2024-06-10")]
+    [DataRow("CO", 2024, "saints-peter-and-paul", "2024-07-01")]
+    [DataRow("CO", 2024, "assumption-of-mary", "2024-08-19")]
+    [DataRow("CO", 2024, "dia-de-la-raza-co", "2024-10-14")]
+    [DataRow("CO", 2024, "all-saints-day", "2024-11-04")]
+
+    // Peru: Holy Week and Father's Day.
+    [DataRow("PE", 2024, "maundy-thursday", "2024-03-28")]
+    [DataRow("PE", 2024, "good-friday", "2024-03-29")]
+    [DataRow("PE", 2024, "fathers-day", "2024-06-16")]
+    public void Resolve_LatinAmericanFloatingHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single(territory, year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that representative fixed-date Latin American national holidays resolve to their known dates.
+    /// </summary>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("BR", 2024, "tiradentes", "2024-04-21")]
+    [DataRow("BR", 2024, "independence-day-br", "2024-09-07")]
+    [DataRow("BR", 2024, "nossa-senhora-aparecida", "2024-10-12")]
+    [DataRow("BR", 2024, "proclamation-of-the-republic", "2024-11-15")]
+    [DataRow("BR", 2024, "black-awareness-day", "2024-11-20")]
+    [DataRow("AR", 2024, "may-revolution-day", "2024-05-25")]
+    [DataRow("AR", 2024, "independence-day-ar", "2024-07-09")]
+    [DataRow("AR", 2024, "flag-day-ar", "2024-06-20")]
+    [DataRow("AR", 2024, "malvinas-day", "2024-04-02")]
+    [DataRow("CL", 2024, "navy-day", "2024-05-21")]
+    [DataRow("CL", 2024, "independence-day-cl", "2024-09-18")]
+    [DataRow("CL", 2024, "assumption-of-mary", "2024-08-15")]
+    [DataRow("CL", 2024, "immaculate-conception", "2024-12-08")]
+    [DataRow("CO", 2024, "independence-day-co", "2024-07-20")]
+    [DataRow("CO", 2024, "battle-of-boyaca", "2024-08-07")]
+    [DataRow("PE", 2024, "independence-day-pe", "2024-07-28")]
+    [DataRow("PE", 2024, "fiestas-patrias-day-two", "2024-07-29")]
+    [DataRow("PE", 2024, "santa-rosa-de-lima", "2024-08-30")]
+    [DataRow("PE", 2024, "battle-of-ayacucho", "2024-12-09")]
+    public void Resolve_LatinAmericanFixedHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single(territory, year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that a Colombian Emiliani-law holiday is observed on the following Monday when its calendar date is
+    /// not a Monday (carrying the observed flag), and on its calendar date when it already falls on a Monday.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_ColombianEmilianiHoliday_IsObservedOnFollowingMonday()
+    {
+        NotableDate moved = Single("CO", 2024, "epiphany");
+        Assert.AreEqual(new DateOnly(2024, 1, 8), moved.Date, "Epiphany 2024 fell on a Saturday and is observed the following Monday");
+        Assert.IsTrue(moved.IsObserved, "the moved Emiliani holiday should carry the observed flag");
+
+        NotableDate notMoved = Single("CO", 2025, "epiphany");
+        Assert.AreEqual(new DateOnly(2025, 1, 6), notMoved.Date, "Epiphany 2025 already falls on a Monday");
+        Assert.IsFalse(notMoved.IsObserved, "a holiday already on a Monday is not moved");
+    }
+
+    /// <summary>
+    /// Verifies that a Brazilian state holiday resolves for its state but not for a plain national query, confirming
+    /// subdivision scoping.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenBrazilianStateHolidayQueriedNationally_ReturnsNoResult()
+    {
+        DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
+
+        Assert.AreEqual(1, AmericasCalendarData.CreateService("BR-SP").Resolve(year, "BR-SP").Count(r => r.NotableDateId == "constitutionalist-revolution"),
+            "São Paulo should observe the Constitutionalist Revolution");
+        Assert.AreEqual(0, AmericasCalendarData.CreateService("BR").Resolve(year, "BR").Count(r => r.NotableDateId == "constitutionalist-revolution"),
+            "a plain national Brazil query should not");
     }
 
     /// <summary>
