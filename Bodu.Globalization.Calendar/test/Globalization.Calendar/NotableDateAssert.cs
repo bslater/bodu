@@ -47,4 +47,18 @@ internal static class NotableDateAssert
         Assert.AreEqual(category, actual.Category, "Category");
         Assert.AreEqual(adjustmentPolicyId, actual.AdjustmentPolicyId, "AdjustmentPolicyId");
     }
+
+    /// <summary>
+    /// Asserts that a resolved occurrence is present and matches the expected notable-date id and emitted date, so that a
+    /// single call captures the identity of one occurrence.
+    /// </summary>
+    /// <param name="occurrence">The resolved occurrence under test, or <see langword="null" /> when none was found.</param>
+    /// <param name="notableDateId">The expected notable-date id.</param>
+    /// <param name="date">The expected emitted date.</param>
+    public static void AssertOccurrence(NotableDate? occurrence, string notableDateId, DateOnly date)
+    {
+        Assert.IsNotNull(occurrence);
+        Assert.AreEqual(date, occurrence.Date, "Date");
+        Assert.AreEqual(notableDateId, occurrence.NotableDateId, "NotableDateId");
+    }
 }
