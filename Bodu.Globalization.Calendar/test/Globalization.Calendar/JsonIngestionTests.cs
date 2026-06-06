@@ -112,8 +112,9 @@ public sealed class JsonIngestionTests
         NotableDate? match = Single(2023, "new-years-day");
 
         Assert.IsNotNull(match);
-        Assert.IsTrue(match.IsObserved);
-        Assert.AreEqual(new DateOnly(2023, 1, 1), match.ActualDate);
+        Assert.AreEqual(
+            (true, (DateOnly?)new DateOnly(2023, 1, 1)),
+            (match.IsObserved, match.ActualDate));
     }
 
     /// <summary>
