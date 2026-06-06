@@ -14,9 +14,9 @@ All three packs live in the `Bodu.Globalization.Calendar.Data` namespace and exp
 
 | Package | Type | Territories |
 |---|---|---|
-| **Bodu.Globalization.Calendar.Data.Americas** | <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData> | Canada (`CA`), United States (`US`) |
-| **Bodu.Globalization.Calendar.Data.AsiaPacific** | <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Singapore (`SG`) |
-| **Bodu.Globalization.Calendar.Data.Europe** | <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData> | 28 EU/EEA territories: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
+| **Bodu.Globalization.Calendar.Data.Americas** | <xref:Bodu.Globalization.Calendar.AmericasCalendarData> | Canada (`CA`), United States (`US`) |
+| **Bodu.Globalization.Calendar.Data.AsiaPacific** | <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Singapore (`SG`) |
+| **Bodu.Globalization.Calendar.Data.Europe** | <xref:Bodu.Globalization.Calendar.EuropeCalendarData> | 28 EU/EEA territories: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
 
 Each pack depends on `Bodu.Globalization.Calendar` and embeds only the `region-<cc>.xml` files for its territories. National rules are authored at the country level (`AU`, `US`, `GB`); state / province / region variants use the canonical ISO 3166-2 subdivision suffix (`AU-NSW`, `US-CA`, `GB-SCT`). See [Territories and regional composition](territories.md) for the parsing, containment, and composition rules that govern how these codes interact at query time.
 
@@ -133,7 +133,7 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 **Package:** `Bodu.Globalization.Calendar.Data.Americas`
 **Namespace:** `Bodu.Globalization.Calendar.Data`
-**Type:** <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData>
+**Type:** <xref:Bodu.Globalization.Calendar.AmericasCalendarData>
 
 `SupportedCountries` = `CA`, `US`. National rules cover the federal calendar; subdivision rules (e.g. `US-CA` for California, `CA-ON` for Ontario) follow ISO 3166-2 conventions where present in the resource. All dates resolve through built-in strategies (`Fixed`, `DayOfWeekInMonth`, Easter via `Algorithm`), so no custom algorithm registration is required.
 
@@ -141,7 +141,7 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 **Package:** `Bodu.Globalization.Calendar.Data.AsiaPacific`
 **Namespace:** `Bodu.Globalization.Calendar.Data`
-**Type:** <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData>
+**Type:** <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData>
 
 `SupportedCountries` = `AU`, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. Many of these resources delegate to the built-in lunar, solar-term, and Hindu-festival algorithms described above; those keys ship with the base library, so the pack resolves without additional setup.
 
@@ -149,7 +149,7 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 **Package:** `Bodu.Globalization.Calendar.Data.Europe`
 **Namespace:** `Bodu.Globalization.Calendar.Data`
-**Type:** <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData>
+**Type:** <xref:Bodu.Globalization.Calendar.EuropeCalendarData>
 
 `SupportedCountries` = the 28 EU/EEA territories listed above (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`). National rules typically cover the federal calendar plus the major regional variants (`GB-SCT`, `GB-NIR`, `DE-BY` for Bavaria, …). All dates resolve through built-in strategies (most commonly Gregorian Easter via `Algorithm`), so no custom algorithm registration is required.
 

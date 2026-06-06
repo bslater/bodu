@@ -79,7 +79,7 @@ National public-holiday resources ship in three companion assemblies (namespace 
 - **Bodu.Globalization.Calendar.Data.Europe** — 28 EU/EEA territories including `DE`, `ES`, `FR`, `GB`, `IE`, `IT`, `NL`, `SE`.
 - **Bodu.Globalization.Calendar.Data.AsiaPacific** — `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
 
-Each pack exposes a static factory — <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData>, <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData>, <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData> — with `SupportedCountries`, `LoadResource(territory)` (returns a `NotableDateResource` with imports resolved against the bundled common catalogues), and `CreateService(territory)` (the resource pre-wired into a `NotableDateService`). See the [Calendar data packs](~/guides/calendar/data-packs.md) guide.
+Each pack exposes a static factory — <xref:Bodu.Globalization.Calendar.AmericasCalendarData>, <xref:Bodu.Globalization.Calendar.EuropeCalendarData>, <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> — with `SupportedCountries`, `LoadResource(territory)` (returns a `NotableDateResource` with imports resolved against the bundled common catalogues), and `CreateService(territory)` (the resource pre-wired into a `NotableDateService`). See the [Calendar data packs](~/guides/calendar/data-packs.md) guide.
 
 ## Example
 

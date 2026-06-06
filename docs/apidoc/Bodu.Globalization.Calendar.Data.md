@@ -20,9 +20,9 @@ Each pack loads a country's embedded `region-<cc>.xml`, resolves its `<Imports>`
 
 Three static factories, identical in shape:
 
-- <xref:Bodu.Globalization.Calendar.Data.AmericasCalendarData> — `SupportedCountries` = `CA`, `US`.
-- <xref:Bodu.Globalization.Calendar.Data.AsiaPacificCalendarData> — `SupportedCountries` = `AU`, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
-- <xref:Bodu.Globalization.Calendar.Data.EuropeCalendarData> — 28 EU/EEA territories (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`).
+- <xref:Bodu.Globalization.Calendar.AmericasCalendarData> — `SupportedCountries` = `CA`, `US`.
+- <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> — `SupportedCountries` = `AU`, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`.
+- <xref:Bodu.Globalization.Calendar.EuropeCalendarData> — 28 EU/EEA territories (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`).
 
 Each exposes:
 
