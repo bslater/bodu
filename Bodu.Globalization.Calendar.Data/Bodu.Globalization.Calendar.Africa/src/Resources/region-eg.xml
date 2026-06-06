@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Egypt (EG) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "EG". The civil
+  days, the Orthodox Easter anchor, and the Islamic festivals (tabular Hijri, so they may differ by a day or two from
+  the gazette) are imported from the africa-common hub; the Coptic Christmas, the Easter-anchored Sham Ennessim, and
+  the civil/national commemorations are declared inline. Coptic Christmas is the modern-era Gregorian projection of
+  the Coptic feast (29 Koiak). Egypt keeps a Friday/Saturday weekend, declared via the working-week pattern.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.eg">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" workingDays="1111100" />
+
+  <Imports>
+    <Import resource="africa-common">
+      <Use notableDateRef="new-years-day" territory="EG" />
+      <Use notableDateRef="orthodox-easter-sunday" territory="EG" />
+      <Use notableDateRef="workers-day" territory="EG" />
+      <Use notableDateRef="eid-al-fitr" territory="EG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="EG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="islamic-new-year" territory="EG" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="EG" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Coptic Christmas — 7 January (Gregorian projection of the Coptic feast). Strategy: Fixed day-of-month. -->
+    <NotableDate id="coptic-christmas" displayName="Coptic Christmas" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="eg"><Applicability><Territory code="EG" /></Applicability><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Revolution Day (25 January) — marking the 2011 revolution; also Police Day. Strategy: Fixed day-of-month. -->
+    <NotableDate id="january-25-revolution" displayName="Revolution Day (25 January)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="eg"><Applicability fromYear="2012"><Territory code="EG" /></Applicability><Strategy><Fixed month="January" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Sham Ennessim — the Monday following Coptic (Orthodox) Easter; an ancient spring festival. Strategy: OffsetFromRule from the imported Orthodox Easter anchor. -->
+    <NotableDate id="sham-ennessim" displayName="Sham Ennessim" category="Cultural" defaultNonWorkingDay="true">
+      <Rules><Rule id="eg"><Applicability><Territory code="EG" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="orthodox-easter-sunday" ruleRef="default" offsetDays="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Sinai Liberation Day — 25 April, marking the 1982 return of the Sinai. Strategy: Fixed day-of-month. -->
+    <NotableDate id="sinai-liberation-day" displayName="Sinai Liberation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="eg"><Applicability fromYear="1983"><Territory code="EG" /></Applicability><Strategy><Fixed month="April" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Revolution Day (23 July) — marking the 1952 revolution. Strategy: Fixed day-of-month. -->
+    <NotableDate id="july-23-revolution" displayName="Revolution Day (23 July)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="eg"><Applicability><Territory code="EG" /></Applicability><Strategy><Fixed month="July" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Armed Forces Day — 6 October, marking the 1973 war. Strategy: Fixed day-of-month. -->
+    <NotableDate id="armed-forces-day" displayName="Armed Forces Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="eg"><Applicability><Territory code="EG" /></Applicability><Strategy><Fixed month="October" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Morocco (MA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "MA". The civil
+  days and the Islamic festivals (tabular Hijri, so they may differ by a day or two from the gazette) are imported
+  from the africa-common hub; the national and royal commemorations are declared inline. Morocco keeps a
+  Saturday/Sunday weekend, so the default Monday-to-Friday working week applies.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ma">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="africa-common">
+      <Use notableDateRef="new-years-day" territory="MA" />
+      <Use notableDateRef="workers-day" territory="MA" />
+      <Use notableDateRef="eid-al-fitr" territory="MA" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="MA" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="islamic-new-year" territory="MA" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="MA" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Independence Manifesto Day — 11 January, marking the 1944 manifesto. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-manifesto-day" displayName="Independence Manifesto Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="January" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Amazigh New Year (Yennayer) — 14 January; a national holiday since 2024. Strategy: Fixed day-of-month. -->
+    <NotableDate id="amazigh-new-year" displayName="Amazigh New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability fromYear="2024"><Territory code="MA" /></Applicability><Strategy><Fixed month="January" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Throne Day (Eid Al Arch) — 30 July, marking the king's accession. Strategy: Fixed day-of-month. -->
+    <NotableDate id="throne-day" displayName="Throne Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="July" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Oued Ed-Dahab Day — 14 August, marking the 1979 recovery of Oued Ed-Dahab. Strategy: Fixed day-of-month. -->
+    <NotableDate id="oued-ed-dahab-day" displayName="Oued Ed-Dahab Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="August" day="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Revolution of the King and the People — 20 August. Strategy: Fixed day-of-month. -->
+    <NotableDate id="revolution-day-ma" displayName="Revolution of the King and the People" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="August" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Youth Day — 21 August, the king's birthday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="youth-day-ma" displayName="Youth Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="August" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Green March Day — 6 November, marking the 1975 Green March. Strategy: Fixed day-of-month. -->
+    <NotableDate id="green-march-day" displayName="Green March Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="November" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day — 18 November, marking the 1956 independence. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-ma" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ma"><Applicability><Territory code="MA" /></Applicability><Strategy><Fixed month="November" day="18" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

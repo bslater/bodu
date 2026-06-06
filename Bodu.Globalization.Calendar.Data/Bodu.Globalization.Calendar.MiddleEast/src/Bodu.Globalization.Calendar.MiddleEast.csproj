@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
@@ -14,18 +14,18 @@
 
   <PropertyGroup>
     <Version>1.0.0</Version>
-    <Title>Bodu Calendar Data — Asia-Pacific</Title>
-    <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering the Asia-Pacific region (Australia, China, Japan, New Zealand), built on the v2 cookbook schema. Exercises the Gregorian, Chinese lunisolar, equinox, lunar-phase, and gazetted-table strategies through the AsiaPacificCalendarData factory.</Description>
-    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;asia-pacific;au;cn;jp;nz</PackageTags>
+    <Title>Bodu Calendar Data — Middle East</Title>
+    <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering the Middle East (United Arab Emirates, Saudi Arabia, Israel, Turkey, Qatar, Jordan), built on the v2 cookbook schema. Exercises the tabular and Umm al-Qura Hijri, Hebrew, and Friday/Saturday working-week conventions through the MiddleEastCalendarData factory.</Description>
+    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;middle-east;ae;sa;il;tr</PackageTags>
   </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
+  <ItemGroup>
     <None Remove="Resources\*.xml" />
-    <!-- Region packs; the shared catalogues they import are resolved from the engine assembly. -->
+    <!-- Region packs and the shared middleeast-common hub they import from. -->
     <EmbeddedResource Include="Resources\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Globalization.Calendar.AsiaPacific.Test</_Parameter1>
+      <_Parameter1>Bodu.Globalization.Calendar.MiddleEast.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

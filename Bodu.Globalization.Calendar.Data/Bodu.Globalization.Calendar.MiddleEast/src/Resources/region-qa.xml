@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Qatar (QA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "QA". The two
+  Eids are imported from the middleeast-common hub (tabular Hijri, so they may differ by a day or two from the
+  locally proclaimed moon-sighting); the National Sports Day and National Day are declared inline. Qatar keeps a
+  Friday/Saturday weekend, declared via the working-week pattern (Sunday-to-Thursday working).
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.qa">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" workingDays="1111100" />
+
+  <Imports>
+    <Import resource="middleeast-common">
+      <Use notableDateRef="eid-al-fitr" territory="QA" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="QA" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- National Sports Day — the second Tuesday of February. Strategy: DayOfWeekInMonth (second Tuesday). -->
+    <NotableDate id="national-sports-day" displayName="National Sports Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="qa"><Applicability fromYear="2012"><Territory code="QA" /></Applicability><Strategy><DayOfWeekInMonth month="February" dayOfWeek="Tuesday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day — 18 December, marking the 1878 accession of Sheikh Jassim bin Mohammed Al Thani. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day-qa" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="qa"><Applicability><Territory code="QA" /></Applicability><Strategy><Fixed month="December" day="18" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

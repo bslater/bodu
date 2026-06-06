@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Israel (IL) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "IL". The
+  Jewish religious holidays are imported from the global-jewish catalogue (Hebrew calendar, deterministic reckoning);
+  the major festivals are re-scoped to non-working public holidays, while Hanukkah remains a working observance.
+  Independence Day (Yom Ha'atzmaut) is computed as an offset from Passover (5 Iyar = Passover + 20 days); the
+  day-of-week postponement that shifts the official observance by a day or two in some years is not modeled. Israel
+  keeps a Friday/Saturday weekend, declared via the working-week pattern (Sunday-to-Thursday working).
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.il">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" workingDays="1111100" />
+
+  <Imports>
+    <Import resource="global-jewish">
+      <Use notableDateRef="rosh-hashanah" territory="IL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="yom-kippur" territory="IL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="sukkot" territory="IL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="passover" territory="IL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="shavuot" territory="IL" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="hanukkah" territory="IL" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      Independence Day (Yom Ha'atzmaut) — 5 Iyar in the Hebrew calendar, computed as 20 days after the imported
+      Passover (15 Nisan) anchor. The official observance is postponed by a day or two in years where 5 Iyar would
+      fall adjacent to the Sabbath; that postponement is not modeled here. Strategy: OffsetFromRule from Passover.
+    -->
+    <NotableDate id="independence-day-il" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="il"><Applicability fromYear="1949"><Territory code="IL" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="passover" offsetDays="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  middleeast-common — Middle East common notable-date hub
+  ================================================================================================================
+
+  The single consolidation point the Middle East region packs import their shared observances from, mirroring the
+  europe-common and americas-common hubs. The Islamic festivals observed across most of the region are re-exported
+  here once from the global Islamic catalogue (tabular Hijri reckoning, so a pack's resolved date may differ by a day
+  or two from the locally proclaimed moon-sighting); a region pack supplies its own territory scope and, where it
+  uses the Umm al-Qura reckoning instead (Saudi Arabia), imports the Umm al-Qura catalogue directly rather than from
+  here. The civil New Year and Workers' Day are re-exported from the global civil core.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.middleeast-common">
+
+  <Imports>
+    <!-- Civil core. -->
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" />
+      <Use notableDateRef="workers-day" />
+    </Import>
+    <!-- Islamic festivals (tabular Hijri), re-exported with their catalogue defaults. -->
+    <Import resource="global-islamic">
+      <Use notableDateRef="eid-al-fitr" />
+      <Use notableDateRef="eid-al-adha" />
+      <Use notableDateRef="islamic-new-year" />
+      <Use notableDateRef="mawlid-al-nabi" />
+      <Use notableDateRef="day-of-ashura" />
+    </Import>
+  </Imports>
+
+</NotableDateResource>

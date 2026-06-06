@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="AmericasCalendarData.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="MiddleEastCalendarData.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,14 +10,14 @@ using System.Text;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides access to the embedded Americas notable-date resource pack (Canada and the United States), migrated to the
-/// v2 cookbook schema.
+/// Provides access to the embedded Middle East notable-date resource pack (the United Arab Emirates, Saudi Arabia,
+/// Israel, Turkey, Qatar, and Jordan), built on the v2 cookbook schema.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each supported country is a self-contained embedded resource. A territory may be a country code (<c>US</c>) or a
-/// subdivision (<c>CA-ON</c>); the subdivision selects the same country resource, and the resolver filters by the full
-/// territory at query time.
+/// Each supported country is a self-contained embedded resource. A territory may be a country code (<c>AE</c>) or a
+/// subdivision; the subdivision selects the same country resource, and the resolver filters by the full territory at
+/// query time. Several packs declare a Friday/Saturday working week so weekend semantics resolve correctly.
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Call <see cref="CreateService(string)" /> for a ready-to-query
@@ -28,19 +28,17 @@ namespace Bodu.Globalization.Calendar;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Query United States federal holidays for a year.
-/// NotableDateService service = AmericasCalendarData.CreateService("US");
+/// // Query United Arab Emirates public holidays for a year.
+/// NotableDateService service = MiddleEastCalendarData.CreateService("AE");
 /// DateRange year = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
-/// IReadOnlyList<NotableDate> holidays = service.Resolve(year, "US");
-///
-/// // A subdivision sees its province's rules layered over the country's.
-/// NotableDateService ontario = AmericasCalendarData.CreateService("CA-ON");
+/// IReadOnlyList<NotableDate> holidays = service.Resolve(year, "AE");
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" /> <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" />
+/// <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
-public static class AmericasCalendarData
+public static class MiddleEastCalendarData
 {
     /// <summary>
     /// The manifest-resource-name prefix shared by the bundle's region resources.
@@ -48,18 +46,15 @@ public static class AmericasCalendarData
     private const string ResourcePrefix = "Bodu.Globalization.Calendar.Resources.region-";
 
     /// <summary>
-    /// Gets the country codes the Americas pack provides resources for.
+    /// Gets the country codes the Middle East pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[]
-    {
-        "AR", "BR", "CA", "CL", "CO", "MX", "PE", "US",
-    };
+    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "AE", "IL", "JO", "QA", "SA", "TR" };
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.
     /// </summary>
-    /// <param name="territory">A country code or subdivision (for example <c>US</c> or <c>CA-ON</c>).</param>
+    /// <param name="territory">A country code or subdivision (for example <c>AE</c>).</param>
     /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The territory's country is not provided by this pack.</exception>
@@ -70,34 +65,34 @@ public static class AmericasCalendarData
         var country = CountryOf(territory);
         var resourceName = ResourcePrefix + country.ToLowerInvariant() + ".xml";
 
-        using Stream stream = typeof(AmericasCalendarData).Assembly.GetManifestResourceStream(resourceName)
+        using Stream stream = typeof(MiddleEastCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, "No Americas calendar resource for territory '{0}'.", territory),
+                string.Format(CultureInfo.InvariantCulture, "No Middle East calendar resource for territory '{0}'.", territory),
                 nameof(territory));
 
         return NotableDateResourceLoader.Load(stream, ResolveResource);
     }
 
     /// <summary>
-    /// Resolves an imported resource name to its content. The pan-American <c>americas-common</c> hub is served from
-    /// this pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c> and
-    /// <c>global-core</c>, including those that <c>americas-common</c> itself imports) is delegated to
+    /// Resolves an imported resource name to its content. The pan-regional <c>middleeast-common</c> hub is served
+    /// from this pack's embedded resources; every other name (the shared catalogues such as <c>global-islamic</c> and
+    /// <c>global-jewish</c>, including those that <c>middleeast-common</c> itself imports) is delegated to
     /// <see cref="CommonNotableDateResources" />.
     /// </summary>
     /// <param name="resourceName">The imported resource name, without extension.</param>
     /// <returns>The resource XML, or <see langword="null" /> when no resource of that name is available.</returns>
     private static string? ResolveResource(string resourceName) =>
-        string.Equals(resourceName, "americas-common", StringComparison.OrdinalIgnoreCase)
-            ? s_americasCommon.Value
+        string.Equals(resourceName, "middleeast-common", StringComparison.OrdinalIgnoreCase)
+            ? s_middleEastCommon.Value
             : CommonNotableDateResources.Resolve(resourceName);
 
     /// <summary>
-    /// The lazily-read XML content of the embedded <c>americas-common</c> hub resource.
+    /// The lazily-read XML content of the embedded <c>middleeast-common</c> hub resource.
     /// </summary>
-    private static readonly Lazy<string?> s_americasCommon = new(static () =>
+    private static readonly Lazy<string?> s_middleEastCommon = new(static () =>
     {
-        using Stream? stream = typeof(AmericasCalendarData).Assembly
-            .GetManifestResourceStream("Bodu.Globalization.Calendar.Resources.americas-common.xml");
+        using Stream? stream = typeof(MiddleEastCalendarData).Assembly
+            .GetManifestResourceStream("Bodu.Globalization.Calendar.Resources.middleeast-common.xml");
         if (stream is null)
             return null;
 
@@ -108,7 +103,7 @@ public static class AmericasCalendarData
     /// <summary>
     /// Builds a resolver over the resource for the country owning the supplied territory.
     /// </summary>
-    /// <param name="territory">A country code or subdivision (for example <c>US</c> or <c>CA-ON</c>).</param>
+    /// <param name="territory">A country code or subdivision (for example <c>AE</c>).</param>
     /// <returns>A service over the country's resource.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="territory" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The territory's country is not provided by this pack.</exception>

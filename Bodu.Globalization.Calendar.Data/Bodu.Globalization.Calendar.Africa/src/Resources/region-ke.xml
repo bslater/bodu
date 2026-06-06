@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Kenya (KE) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "KE". The civil
+  and Western Christian days and the two Islamic Eids (tabular Hijri, so they may differ by a day or two from the
+  gazette) are imported from the africa-common hub; the national days are declared inline.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ke">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="africa-common">
+      <Use notableDateRef="new-years-day" territory="KE" />
+      <Use notableDateRef="good-friday" territory="KE" />
+      <Use notableDateRef="easter-sunday" territory="KE" />
+      <Use notableDateRef="easter-monday" territory="KE" />
+      <Use notableDateRef="workers-day" territory="KE" />
+      <Use notableDateRef="eid-al-fitr" territory="KE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="KE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="KE" />
+      <Use notableDateRef="boxing-day" territory="KE" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Madaraka Day — 1 June, marking the 1963 attainment of internal self-rule. Strategy: Fixed day-of-month. -->
+    <NotableDate id="madaraka-day" displayName="Madaraka Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ke"><Applicability><Territory code="KE" /></Applicability><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mashujaa Day (Heroes' Day) — 20 October, honoring those who contributed to independence. Strategy: Fixed day-of-month. -->
+    <NotableDate id="mashujaa-day" displayName="Mashujaa Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ke"><Applicability><Territory code="KE" /></Applicability><Strategy><Fixed month="October" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Jamhuri Day — 12 December, marking the 1963 republic. Strategy: Fixed day-of-month. -->
+    <NotableDate id="jamhuri-day" displayName="Jamhuri Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ke"><Applicability><Territory code="KE" /></Applicability><Strategy><Fixed month="December" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

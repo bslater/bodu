@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Indonesia (ID) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "ID".
+  Indonesia's public holidays span its major faiths: the civil and Western Christian days are imported from the
+  global-core and christian-western catalogues; the Islamic festivals from the global Islamic catalogue (tabular
+  Hijri, so they may differ by a day or two from the moon-sighting gazette); Vesak (Waisak) from the global Buddhist
+  catalogue; and Chinese New Year (Imlek) is the Chinese lunisolar New Year declared inline. The Balinese Nyepi
+  (Saka new year) follows the Balinese saka calendar and is not modeled here.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.id">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="ID" />
+      <Use notableDateRef="workers-day" territory="ID" />
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="ID" />
+      <Use notableDateRef="good-friday" territory="ID" />
+      <Use notableDateRef="ascension-day" territory="ID" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-day" territory="ID" />
+    </Import>
+    <Import resource="global-islamic">
+      <Use notableDateRef="eid-al-fitr" territory="ID" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="ID" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="islamic-new-year" territory="ID" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="ID" category="PublicHoliday" nonWorking="true" />
+    </Import>
+    <Import resource="global-buddhist">
+      <Use notableDateRef="vesak" territory="ID" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Chinese New Year (Tahun Baru Imlek) — first day of the Chinese lunisolar year. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="chinese-new-year" displayName="Chinese New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="id"><Applicability calendar="ChineseLunisolar"><Territory code="ID" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Isra and Mi'raj (Isra Mikraj) — 27 Rajab in the Hijri calendar. Tabular reckoning. Strategy: Fixed Hijri month/day. -->
+    <NotableDate id="isra-miraj" displayName="Isra and Mi'raj" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="id"><Applicability calendar="Hijri"><Territory code="ID" /></Applicability><Strategy><Fixed month="7" day="27" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Pancasila Day (Hari Lahir Pancasila) — 1 June, marking the 1945 Pancasila address. Strategy: Fixed day-of-month. -->
+    <NotableDate id="pancasila-day" displayName="Pancasila Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="id"><Applicability fromYear="2017"><Territory code="ID" /></Applicability><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Hari Kemerdekaan) — 17 August, marking the 1945 proclamation. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-id" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="id"><Applicability><Territory code="ID" /></Applicability><Strategy><Fixed month="August" day="17" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

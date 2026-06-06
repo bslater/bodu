@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Vietnam (VN) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "VN". The
+  civil days (New Year, Labour Day) are imported from the global-core catalogue; the traditional festivals are
+  Chinese-lunisolar dates declared inline. Vietnam keeps its own lunar calendar (UTC+7), which usually but not
+  always coincides with the Chinese lunisolar calendar used here, so the lunar festivals may differ by a day in the
+  occasional divergent year. Tết carries its multi-day statutory span.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.vn">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="VN" />
+      <Use notableDateRef="workers-day" territory="VN" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Tết Nguyên Đán (Lunar New Year) — first day of the lunisolar year; the principal Vietnamese holiday, with a multi-day statutory span. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="lunar-new-year" displayName="Tết Nguyên Đán" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="vn" durationDays="5"><Applicability calendar="ChineseLunisolar"><Territory code="VN" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Hùng Kings' Commemoration Day — the 10th day of the third lunar month, honoring the legendary founding kings. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="hung-kings-festival" displayName="Hùng Kings' Commemoration Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="vn"><Applicability calendar="ChineseLunisolar"><Territory code="VN" /></Applicability><Strategy><Fixed month="3" day="10" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Reunification Day (Ngày Giải phóng miền Nam) — 30 April, marking the 1975 fall of Saigon. Strategy: Fixed day-of-month. -->
+    <NotableDate id="reunification-day" displayName="Reunification Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="vn"><Applicability><Territory code="VN" /></Applicability><Strategy><Fixed month="April" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day (Quốc khánh) — 2 September, marking the 1945 declaration of independence. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day-vn" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="vn"><Applicability><Territory code="VN" /></Applicability><Strategy><Fixed month="September" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mid-Autumn Festival (Tết Trung Thu) — the 15th day of the eighth lunar month; a cultural children's festival. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="mid-autumn-festival" displayName="Mid-Autumn Festival" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="vn"><Applicability calendar="ChineseLunisolar"><Territory code="VN" /></Applicability><Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

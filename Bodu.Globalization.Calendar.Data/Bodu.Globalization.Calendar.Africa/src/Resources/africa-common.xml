@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  africa-common — Africa common notable-date hub
+  ================================================================================================================
+
+  The single consolidation point the Africa region packs import their shared observances from, mirroring the
+  europe-common, americas-common, and middleeast-common hubs. It re-exports, once, the concepts shared across the
+  continent's overlapping Christian, Muslim, and civil calendars:
+
+    * Civil core (New Year's Day, Workers' Day) from global-core.
+    * Western Christian feasts (Good Friday, the Easter anchor, Easter Monday, Christmas, Boxing Day) from
+      christian-western, for the sub-Saharan packs.
+    * Orthodox Christian feasts (the Orthodox Easter anchor and Orthodox Good Friday) from christian-orthodox, for
+      the Ethiopian and Egyptian (Coptic) packs.
+    * Islamic festivals (the two Eids, the Islamic New Year, and Mawlid) from the tabular Hijri global-islamic
+      catalogue; a pack's resolved date may differ by a day or two from the locally proclaimed moon-sighting.
+
+  A region pack supplies its own territory scope and, where required, overrides the category, non-working flag, or
+  weekend adjustment on its own import directive.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.africa-common">
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" />
+      <Use notableDateRef="workers-day" />
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="good-friday" />
+      <Use notableDateRef="easter-sunday" />
+      <Use notableDateRef="easter-monday" />
+      <Use notableDateRef="christmas-day" />
+      <Use notableDateRef="boxing-day" />
+    </Import>
+    <Import resource="christian-orthodox">
+      <Use notableDateRef="orthodox-easter-sunday" />
+      <Use notableDateRef="orthodox-good-friday" />
+    </Import>
+    <Import resource="global-islamic">
+      <Use notableDateRef="eid-al-fitr" />
+      <Use notableDateRef="eid-al-adha" />
+      <Use notableDateRef="islamic-new-year" />
+      <Use notableDateRef="mawlid-al-nabi" />
+    </Import>
+  </Imports>
+
+</NotableDateResource>

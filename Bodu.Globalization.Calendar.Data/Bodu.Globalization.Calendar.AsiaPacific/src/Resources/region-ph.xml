@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Philippines (PH) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "PH". The
+  civil and Western Christian days (New Year, Holy Week, All Saints'/All Souls', Christmas) are imported from the
+  global-core and christian-western catalogues; the two nationally observed Islamic festivals from the global Islamic
+  catalogue (tabular Hijri, so they may differ by a day or two from the gazette). The national, historical, and
+  Chinese New Year observances are declared inline. The Immaculate Conception (8 December) is declared inline because
+  it is not part of the western-Christian catalogue.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ph">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="PH" />
+      <Use notableDateRef="workers-day" territory="PH" />
+      <Use notableDateRef="new-years-eve" territory="PH" />
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="PH" />
+      <Use notableDateRef="maundy-thursday" territory="PH" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="good-friday" territory="PH" />
+      <Use notableDateRef="holy-saturday" territory="PH" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-saints-day" territory="PH" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="all-souls-day" territory="PH" />
+      <Use notableDateRef="christmas-eve" territory="PH" />
+      <Use notableDateRef="christmas-day" territory="PH" />
+    </Import>
+    <Import resource="global-islamic">
+      <Use notableDateRef="eid-al-fitr" territory="PH" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="PH" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Chinese New Year — first day of the Chinese lunisolar year; a special (non-working) day. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="chinese-new-year" displayName="Chinese New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability calendar="ChineseLunisolar"><Territory code="PH" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- EDSA People Power Revolution Anniversary — 25 February, marking the 1986 revolution. Special non-working day. Strategy: Fixed day-of-month. -->
+    <NotableDate id="edsa-anniversary" displayName="EDSA People Power Revolution Anniversary" category="Civic" defaultNonWorkingDay="false">
+      <Rules><Rule id="ph"><Applicability fromYear="2002"><Territory code="PH" /></Applicability><Strategy><Fixed month="February" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of Valor (Araw ng Kagitingan) — 9 April, commemorating the 1942 fall of Bataan. Strategy: Fixed day-of-month. -->
+    <NotableDate id="day-of-valor" displayName="Day of Valor" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability><Territory code="PH" /></Applicability><Strategy><Fixed month="April" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Araw ng Kalayaan) — 12 June, marking the 1898 declaration. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-ph" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability><Territory code="PH" /></Applicability><Strategy><Fixed month="June" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ninoy Aquino Day — 21 August, marking the 1983 assassination of Benigno Aquino Jr. Special non-working day. Strategy: Fixed day-of-month. -->
+    <NotableDate id="ninoy-aquino-day" displayName="Ninoy Aquino Day" category="Civic" defaultNonWorkingDay="false">
+      <Rules><Rule id="ph"><Applicability fromYear="2004"><Territory code="PH" /></Applicability><Strategy><Fixed month="August" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Heroes' Day — the last Monday of August. Strategy: DayOfWeekInMonth (last Monday). -->
+    <NotableDate id="national-heroes-day" displayName="National Heroes' Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability><Territory code="PH" /></Applicability><Strategy><DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Last" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Bonifacio Day — 30 November, honoring the revolutionary Andrés Bonifacio. Strategy: Fixed day-of-month. -->
+    <NotableDate id="bonifacio-day" displayName="Bonifacio Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability><Territory code="PH" /></Applicability><Strategy><Fixed month="November" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Immaculate Conception — 8 December, a special non-working day. Strategy: Fixed day-of-month. -->
+    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability fromYear="2019"><Territory code="PH" /></Applicability><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Rizal Day — 30 December, marking the 1896 execution of José Rizal. Strategy: Fixed day-of-month. -->
+    <NotableDate id="rizal-day" displayName="Rizal Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ph"><Applicability><Territory code="PH" /></Applicability><Strategy><Fixed month="December" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
