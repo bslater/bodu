@@ -20,7 +20,7 @@ public partial class Blake3Tests
     /// </summary>
     private static IEnumerable<object[]> Blake3ReferenceVectors() =>
     [
-        new object[] { 0,      "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262" },
+        [0,      "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262"],
         [1,      "2d3adedff11b61f14c886e35afa036736dcd87a74d27b5c1510225d0f592e213"],
         [64,     "4eed7141ea4a5cd4b788606bd23f46e212af9cacebacdc7d1f4c6dc7f2511b98"],
         [65,     "de1e5fa0be70df6d2be8fffd0e99ceaa8eb6e8c93a63f2d8d1c30ecb6b263dee"],

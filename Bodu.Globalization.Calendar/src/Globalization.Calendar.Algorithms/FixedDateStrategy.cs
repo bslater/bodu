@@ -21,7 +21,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <seealso cref="IDateCalculationStrategy" /> <seealso cref="CalendarSystem" />
 /// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)
 /// </seealso> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
-public sealed class FixedDateStrategy : IDateCalculationStrategy
+public sealed class FixedDateStrategy
+    : IDateCalculationStrategy
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FixedDateStrategy" /> class for the Gregorian calendar.
@@ -108,7 +109,7 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
-        if (year < 1 || year > 9999)
+        if (year is < 1 or > 9999)
             return null;
 
         if (Calendar == CalendarSystem.Gregorian)
@@ -140,7 +141,7 @@ public sealed class FixedDateStrategy : IDateCalculationStrategy
     /// </returns>
     public IReadOnlyList<DateOnly> CalculateAll(int year, StrategyResolutionContext context)
     {
-        if (year < 1 || year > 9999)
+        if (year is < 1 or > 9999)
             return [];
 
         if (Calendar == CalendarSystem.Gregorian)

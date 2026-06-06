@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesTests.CopyOnWrite.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -144,7 +144,7 @@ public partial class ExchangeRateSeriesTests
     [TestMethod]
     public void WithoutRate_WhenRemovingLastObservation_ShouldThrowInvalidOperationException()
     {
-        ExchangeRateSeries series = new(s_usdAud, "RBA", new[] { new ExchangeRateObservation(new DateOnly(2026, 6, 1), 1.50m) });
+        ExchangeRateSeries series = new(s_usdAud, "RBA", [new ExchangeRateObservation(new DateOnly(2026, 6, 1), 1.50m)]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => series.WithoutRate(new DateOnly(2026, 6, 1)));
     }

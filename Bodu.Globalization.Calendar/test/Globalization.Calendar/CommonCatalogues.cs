@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CommonCatalogues.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,9 +50,9 @@ internal static class CommonCatalogues
     /// <returns>The occurrences anchored in the requested year.</returns>
     /// <remarks>
     /// <para>
-    /// The <c>Date.Year == year</c> filter discards an occurrence whose multi-day span or calendar-year sweep carries it
-    /// across the year boundary from an anchor in the adjacent Gregorian year (notably Hanukkah, which can begin 25 or 26
-    /// December and therefore also surfaces when the following year is queried).
+    /// The <c>Date.Year == year</c> filter discards an occurrence whose multi-day span or calendar-year sweep carries
+    /// it across the year boundary from an anchor in the adjacent Gregorian year (notably Hanukkah, which can begin 25
+    /// or 26 December and therefore also surfaces when the following year is queried).
     /// </para>
     /// </remarks>
     public static List<NotableDate> ResolveForYear(NotableDateService service, string notableDateId, int year) =>
@@ -63,8 +63,8 @@ internal static class CommonCatalogues
             .ToList();
 
     /// <summary>
-    /// Resolves the single occurrence of a named concept anchored in the supplied Gregorian year, asserting that exactly
-    /// one is produced.
+    /// Resolves the single occurrence of a named concept anchored in the supplied Gregorian year, asserting that
+    /// exactly one is produced.
     /// </summary>
     /// <param name="service">The service to resolve through.</param>
     /// <param name="notableDateId">The notable-date id to resolve.</param>

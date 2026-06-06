@@ -16,7 +16,7 @@ public partial class ExchangeRateBookTests
     private static readonly ExchangeRatePair s_eurAud = new("EUR", "AUD");
 
     private static ExchangeRateSeries BuildSeries(ExchangeRatePair pair, string provider, decimal rate) =>
-        new(pair, provider, new (DateOnly, decimal)[] { (new DateOnly(2024, 1, 1), rate) });
+        new(pair, provider, [(new DateOnly(2024, 1, 1), rate)]);
 
     /// <summary>
     /// Verifies that the smoke-tier happy path constructs a book from a single series and exposes it via the
@@ -27,7 +27,7 @@ public partial class ExchangeRateBookTests
     public void Book_WhenConstructedFromSingleSeries_ShouldExposeSeriesByKey()
     {
         ExchangeRateSeries series = BuildSeries(s_usdAud, "RBA", 1.5m);
-        ExchangeRateBook book = new(new[] { series });
+        ExchangeRateBook book = new([series]);
 
         var found = book.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? resolved);
 
@@ -42,7 +42,7 @@ public partial class ExchangeRateBookTests
     [TestMethod]
     public void TryGetSeries_WhenSeriesMissing_ShouldReturnFalse()
     {
-        ExchangeRateBook book = new(new[] { BuildSeries(s_usdAud, "RBA", 1.5m) });
+        ExchangeRateBook book = new([BuildSeries(s_usdAud, "RBA", 1.5m)]);
 
         var found = book.TryGetSeries(s_usdAud, "ECB", out ExchangeRateSeries? resolved);
 
@@ -60,7 +60,7 @@ public partial class ExchangeRateBookTests
         ExchangeRateSeries rba = BuildSeries(s_usdAud, "RBA", 1.5m);
         ExchangeRateSeries ecb = BuildSeries(s_usdAud, "ECB", 1.6m);
         ExchangeRateSeries other = BuildSeries(s_eurAud, "RBA", 1.7m);
-        ExchangeRateBook book = new(new[] { rba, ecb, other });
+        ExchangeRateBook book = new([rba, ecb, other]);
 
         var providers = book.GetSeries(s_usdAud).Select(s => s.Provider).ToHashSet();
 
@@ -81,7 +81,7 @@ public partial class ExchangeRateBookTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new ExchangeRateBook(new[] { first, duplicate });
+                _ = new ExchangeRateBook([first, duplicate]);
             },
             "series");
     }
@@ -120,12 +120,12 @@ public partial class ExchangeRateBookTests
     [TestMethod]
     public void Count_WhenMultipleSeries_ShouldReturnNumberOfDistinctKeys()
     {
-        ExchangeRateBook book = new(new[]
-        {
+        ExchangeRateBook book = new(
+        [
             BuildSeries(s_usdAud, "RBA", 1.5m),
             BuildSeries(s_usdAud, "ECB", 1.6m),
             BuildSeries(s_eurAud, "RBA", 1.7m),
-        });
+        ]);
 
         Assert.AreEqual(3, book.Count);
     }

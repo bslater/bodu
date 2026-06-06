@@ -71,7 +71,7 @@ public partial class DateTimeExtensionsTests
     {
         var input = new DateTime(2024, 8, 15);
         var actual = input.IsoWeekOfYear();
-        Assert.IsTrue(actual >= 1 && actual <= 53);
+        Assert.IsTrue(actual is >= 1 and <= 53);
     }
 
     /// <summary>

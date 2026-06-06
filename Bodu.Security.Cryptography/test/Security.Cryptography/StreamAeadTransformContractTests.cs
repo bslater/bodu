@@ -125,12 +125,12 @@ public abstract class StreamAeadTransformContractTests<TAead>
 
         if (SupportsAssociatedData)
         {
-            var written = enc.Encrypt(new byte[4], output, new byte[] { 1, 2, 3 });
+            var written = enc.Encrypt(new byte[4], output, [1, 2, 3]);
             Assert.AreEqual(output.Length, written);
         }
         else
         {
-            Assert.ThrowsExactly<ArgumentException>(() => { _ = enc.Encrypt(new byte[4], output, new byte[] { 1, 2, 3 }); });
+            Assert.ThrowsExactly<ArgumentException>(() => { _ = enc.Encrypt(new byte[4], output, [1, 2, 3]); });
         }
     }
 
@@ -212,12 +212,12 @@ public abstract class StreamAeadTransformContractTests<TAead>
         if (!SupportsAssociatedData)
             return;
 
-        var sealed_ = Seal(Pattern(8), new byte[] { 0xaa });
+        var sealed_ = Seal(Pattern(8), [0xaa]);
 
         using TAead dec = Create(Key(), Nonce());
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            _ = dec.Decrypt(sealed_, new byte[sealed_.Length - 16], new byte[] { 0xbb });
+            _ = dec.Decrypt(sealed_, new byte[sealed_.Length - 16], [0xbb]);
         });
     }
 

@@ -73,7 +73,7 @@ public partial class ConcurrentCircularBufferTests
             _ = buffer.TryDequeue(out _);
         }
 
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 2);
+        Assert.IsTrue(buffer.Count is >= 0 and <= 2);
     }
 
     /// <summary>

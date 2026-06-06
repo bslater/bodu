@@ -21,7 +21,7 @@ public sealed class SystemRandomAdapterTests
         for (var i = 0; i < 100; i++)
         {
             var value = adapter.Next(10);
-            Assert.IsTrue(value >= 0 && value < 10, $"Value {value} is outside [0, 10).");
+            Assert.IsTrue(value is >= 0 and < 10, $"Value {value} is outside [0, 10).");
         }
     }
     /// <summary>

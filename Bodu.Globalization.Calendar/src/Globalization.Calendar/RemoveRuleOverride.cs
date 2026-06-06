@@ -9,7 +9,8 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Represents an override operation that removes exactly one rule, identified by its notable-date and rule ids.
 /// </summary>
-internal sealed class RemoveRuleOverride : NotableDateRuleOverride
+internal sealed class RemoveRuleOverride
+    : NotableDateRuleOverride
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RemoveRuleOverride" /> class.

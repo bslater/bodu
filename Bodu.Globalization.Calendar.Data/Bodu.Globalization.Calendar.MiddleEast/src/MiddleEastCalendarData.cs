@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MiddleEastCalendarData.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,8 +35,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" /> <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class MiddleEastCalendarData
 {
@@ -49,7 +48,7 @@ public static class MiddleEastCalendarData
     /// Gets the country codes the Middle East pack provides resources for.
     /// </summary>
     /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
-    public static IReadOnlyList<string> SupportedCountries { get; } = new[] { "AE", "IL", "JO", "QA", "SA", "TR" };
+    public static IReadOnlyList<string> SupportedCountries { get; } = ["AE", "IL", "JO", "QA", "SA", "TR"];
 
     /// <summary>
     /// Loads the notable-date resource for the country owning the supplied territory.
@@ -74,8 +73,8 @@ public static class MiddleEastCalendarData
     }
 
     /// <summary>
-    /// Resolves an imported resource name to its content. The pan-regional <c>middleeast-common</c> hub is served
-    /// from this pack's embedded resources; every other name (the shared catalogues such as <c>global-islamic</c> and
+    /// Resolves an imported resource name to its content. The pan-regional <c>middleeast-common</c> hub is served from
+    /// this pack's embedded resources; every other name (the shared catalogues such as <c>global-islamic</c> and
     /// <c>global-jewish</c>, including those that <c>middleeast-common</c> itself imports) is delegated to
     /// <see cref="CommonNotableDateResources" />.
     /// </summary>

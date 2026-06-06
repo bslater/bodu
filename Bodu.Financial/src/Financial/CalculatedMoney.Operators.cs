@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalculatedMoney.Operators.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,16 +41,20 @@ public readonly partial struct CalculatedMoney
     /// </summary>
     /// <param name="value">The amount to negate.</param>
     /// <returns>The negated amount.</returns>
-    public static CalculatedMoney operator -(CalculatedMoney value) =>
-        value.WithAmount(-value._amount);
+    public static CalculatedMoney operator -(CalculatedMoney value)
+    {
+        return value.WithAmount(-value._amount);
+    }
 
     /// <summary>
     /// Returns the operand unchanged.
     /// </summary>
     /// <param name="value">The amount.</param>
     /// <returns>The unchanged value.</returns>
-    public static CalculatedMoney operator +(CalculatedMoney value) =>
-        value;
+    public static CalculatedMoney operator +(CalculatedMoney value)
+    {
+        return value;
+    }
 
     /// <summary>
     /// Multiplies a high-precision amount by a scalar without rounding.
@@ -58,8 +62,10 @@ public readonly partial struct CalculatedMoney
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar.</param>
     /// <returns>The full-precision product.</returns>
-    public static CalculatedMoney operator *(CalculatedMoney left, decimal right) =>
-        left.WithAmount(left._amount * right);
+    public static CalculatedMoney operator *(CalculatedMoney left, decimal right)
+    {
+        return left.WithAmount(left._amount * right);
+    }
 
     /// <summary>
     /// Multiplies a scalar by a high-precision amount without rounding.
@@ -67,8 +73,10 @@ public readonly partial struct CalculatedMoney
     /// <param name="left">The scalar.</param>
     /// <param name="right">The amount.</param>
     /// <returns>The full-precision product.</returns>
-    public static CalculatedMoney operator *(decimal left, CalculatedMoney right) =>
-        right.WithAmount(left * right._amount);
+    public static CalculatedMoney operator *(decimal left, CalculatedMoney right)
+    {
+        return right.WithAmount(left * right._amount);
+    }
 
     /// <summary>
     /// Divides a high-precision amount by a scalar without rounding.
@@ -77,8 +85,10 @@ public readonly partial struct CalculatedMoney
     /// <param name="right">The scalar divisor.</param>
     /// <returns>The full-precision quotient.</returns>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
-    public static CalculatedMoney operator /(CalculatedMoney left, decimal right) =>
-        left.WithAmount(left._amount / right);
+    public static CalculatedMoney operator /(CalculatedMoney left, decimal right)
+    {
+        return left.WithAmount(left._amount / right);
+    }
 
     /// <summary>
     /// Multiplies this amount by <paramref name="multiplier" /> without rounding.

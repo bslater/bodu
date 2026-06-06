@@ -16,7 +16,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void Enumerate_WhenInvoked_ShouldYieldInAscendingOrder()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
+            [Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
         var observations = storage.Enumerate().ToArray();
@@ -34,7 +34,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void Enumerate_WhenInvokedTwice_ShouldYieldEquivalentSequences()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1000, 1.4m), Obs(1010, 1.5m), Obs(1020, 1.6m) },
+            [Obs(1000, 1.4m), Obs(1010, 1.5m), Obs(1020, 1.6m)],
             ObservationsParam);
 
         var first = storage.Enumerate().ToArray();
@@ -51,7 +51,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void Enumerate_WhenInvoked_ShouldEmitDateAndRateTogether()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1000, 1.4m), Obs(1010, 1.5m) },
+            [Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
         var observations = storage.Enumerate().ToArray();

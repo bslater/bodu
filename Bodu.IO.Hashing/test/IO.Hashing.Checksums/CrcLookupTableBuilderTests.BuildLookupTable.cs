@@ -189,7 +189,7 @@ public partial class CrcLookupTableBuilderTests
         var table = CrcLookupTableBuilder.BuildLookupTable(1, 0x01, false);
         foreach (var entry in table)
         {
-            Assert.IsTrue(entry == 0 || entry == 1, "Only 1-bit values should appear.");
+            Assert.IsTrue(entry is 0 or 1, "Only 1-bit values should appear.");
         }
     }
 

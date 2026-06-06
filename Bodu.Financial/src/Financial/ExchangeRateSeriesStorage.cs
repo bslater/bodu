@@ -177,8 +177,8 @@ internal sealed class ExchangeRateSeriesStorage
     }
 
     /// <summary>
-    /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding
-    /// path so the round-trip through <see cref="DateOnly" /> can be avoided.
+    /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding path
+    /// so the round-trip through <see cref="DateOnly" /> can be avoided.
     /// </summary>
     /// <param name="dayNumbers">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
     /// <param name="rates">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
@@ -239,8 +239,8 @@ internal sealed class ExchangeRateSeriesStorage
     }
 
     /// <summary>
-    /// Adopts ownership of pre-validated strictly-ascending day-number and rate arrays. Asserts the invariants in
-    /// debug builds and skips revalidation in release builds.
+    /// Adopts ownership of pre-validated strictly-ascending day-number and rate arrays. Asserts the invariants in debug
+    /// builds and skips revalidation in release builds.
     /// </summary>
     /// <param name="dayNumbers">The strictly ascending unique day numbers. The instance takes ownership.</param>
     /// <param name="rates">The aligned strictly-positive rates. The instance takes ownership.</param>
@@ -270,7 +270,9 @@ internal sealed class ExchangeRateSeriesStorage
     /// Reports whether <paramref name="dayNumbers" /> is strictly ascending. Used only by debug assertions.
     /// </summary>
     /// <param name="dayNumbers">The day numbers to check.</param>
-    /// <returns><see langword="true" /> if every adjacent pair satisfies <c>a &lt; b</c>; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if every adjacent pair satisfies <c>a &lt; b</c>; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsStrictlyAscending(int[] dayNumbers)
     {
         for (var i = 1; i < dayNumbers.Length; i++)

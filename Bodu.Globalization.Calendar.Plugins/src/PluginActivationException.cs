@@ -10,7 +10,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// The exception thrown when the declared plugin type cannot be activated or does not implement
 /// <see cref="INotableDatePlugin" />.
 /// </summary>
-public sealed class PluginActivationException : NotableDatePluginException
+public sealed class PluginActivationException
+    : NotableDatePluginException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PluginActivationException" /> class.

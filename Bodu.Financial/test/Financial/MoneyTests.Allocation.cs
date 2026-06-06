@@ -32,7 +32,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenResidualFavoursLargerRemainders_ShouldUseLargestRemainderMethod()
     {
-        Money[] shares = Money.From(0.10m, "USD").Allocate(new[] { 3m, 2m, 2m });
+        Money[] shares = Money.From(0.10m, "USD").Allocate([3m, 2m, 2m]);
 
         Assert.AreEqual(Money.From(0.04m, "USD"), shares[0]);
         Assert.AreEqual(Money.From(0.03m, "USD"), shares[1]);
@@ -46,7 +46,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenRemaindersTie_ShouldBreakTieByInputOrder()
     {
-        Money[] shares = Money.From(0.05m, "USD").Allocate(new[] { 1m, 1m, 1m });
+        Money[] shares = Money.From(0.05m, "USD").Allocate([1m, 1m, 1m]);
 
         // Exact shares are 1.667 each; floored to [1,1,1], residual 2, all remainders equal => slots 0 and 1.
         Assert.AreEqual(Money.From(0.02m, "USD"), shares[0]);
@@ -60,7 +60,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenRatioIsZero_ShouldNotReceiveResidual()
     {
-        Money[] shares = Money.From(0.10m, "USD").Allocate(new[] { 1m, 0m, 1m });
+        Money[] shares = Money.From(0.10m, "USD").Allocate([1m, 0m, 1m]);
 
         Assert.AreEqual(Money.From(0.05m, "USD"), shares[0]);
         Assert.AreEqual(Money.From(0.00m, "USD"), shares[1]);
@@ -73,7 +73,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenAmountIsNegative_ShouldPreserveSignAndSum()
     {
-        Money[] shares = Money.From(-0.10m, "USD").Allocate(new[] { 3m, 2m, 2m });
+        Money[] shares = Money.From(-0.10m, "USD").Allocate([3m, 2m, 2m]);
 
         Assert.AreEqual(Money.From(-0.04m, "USD"), shares[0]);
         Assert.AreEqual(Money.From(-0.03m, "USD"), shares[1]);
@@ -87,7 +87,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenCurrencyHasZeroMinorUnits_ShouldAllocateWholeUnits()
     {
-        Money[] shares = Money.From(10m, "JPY").Allocate(new[] { 3m, 2m, 2m });
+        Money[] shares = Money.From(10m, "JPY").Allocate([3m, 2m, 2m]);
 
         Assert.AreEqual(Money.From(4m, "JPY"), shares[0]);
         Assert.AreEqual(Money.From(3m, "JPY"), shares[1]);
@@ -101,7 +101,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenCurrencyHasThreeMinorUnits_ShouldAllocateThousandths()
     {
-        Money[] shares = Money.From(0.010m, "BHD").Allocate(new[] { 3m, 2m, 2m });
+        Money[] shares = Money.From(0.010m, "BHD").Allocate([3m, 2m, 2m]);
 
         Assert.AreEqual(Money.From(0.004m, "BHD"), shares[0]);
         Assert.AreEqual(Money.From(0.003m, "BHD"), shares[1]);
@@ -115,7 +115,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Allocate_WhenUnevenRatios_ShouldStayWithinOneMinorUnitOfExactShare()
     {
-        decimal[] ratios = { 17m, 5m, 3m, 11m, 1m };
+        decimal[] ratios = [17m, 5m, 3m, 11m, 1m];
         var original = Money.From(1.23m, "USD");
 
         Money[] shares = original.Allocate(ratios);
@@ -146,7 +146,7 @@ public partial class MoneyTests
 
         _ = Assert.ThrowsExactly<OverflowException>(() =>
         {
-            _ = huge.Allocate(new[] { 1m, 1m });
+            _ = huge.Allocate([1m, 1m]);
         });
     }
 }

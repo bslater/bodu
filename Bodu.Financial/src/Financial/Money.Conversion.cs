@@ -25,8 +25,8 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime
-    /// currency matches <typeparamref name="TCurrency" />.
+    /// Converts this <see cref="Money" /> to a strongly-typed <see cref="Money{TCurrency}" /> when the runtime currency
+    /// matches <typeparamref name="TCurrency" />.
     /// </summary>
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <returns>The strongly-typed monetary value.</returns>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AllowAllPluginTrustPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// hash- or strong-name-based policy.
 /// </para>
 /// </remarks>
-public sealed class AllowAllPluginTrustPolicy : IPluginTrustPolicy
+public sealed class AllowAllPluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException"><paramref name="context" /> is <see langword="null" />.</exception>

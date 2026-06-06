@@ -16,7 +16,7 @@ public partial class CryptoHelpersTests
     public static IEnumerable<object[]> ValidDepaddingCases() =>
     [
         // Typical valid depad scenarios
-        new object[] { PaddingMode.PKCS7, "1020300505050505", "102030" },
+        [PaddingMode.PKCS7, "1020300505050505", "102030"],
         [PaddingMode.PKCS7, "0102030404040404", "01020304"],
         [PaddingMode.PKCS7, "0808080808080808", string.Empty],
         [PaddingMode.PKCS7, "1020304050607001", "10203040506070"],
@@ -50,7 +50,7 @@ public partial class CryptoHelpersTests
     public static IEnumerable<object[]> InvalidDepaddingCases() =>
     [
         // PKCS7: inconsistent padding values
-        new object[] { PaddingMode.PKCS7, "1020304050607000", 8, typeof(CryptographicException) }, // Pad count = 00 → invalid
+        [PaddingMode.PKCS7, "1020304050607000", 8, typeof(CryptographicException)], // Pad count = 00 → invalid
         [PaddingMode.PKCS7, "1020304005050505", 8, typeof(CryptographicException)], // Pad count = 05 → last 5 bytes must be 05 05 05 05 05
         [PaddingMode.PKCS7, "0102030405060709", 8, typeof(CryptographicException)], // Pad count = 09 → greater than block size (8) → invalid
 

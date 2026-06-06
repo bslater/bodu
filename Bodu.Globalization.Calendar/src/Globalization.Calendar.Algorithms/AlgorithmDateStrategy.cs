@@ -19,7 +19,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso cref="INotableDateAlgorithm" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
-public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
+public sealed class AlgorithmDateStrategy
+    : IDateCalculationStrategy
 {
     /// <summary>
     /// The algorithm key for Western (Gregorian) Easter Sunday.
@@ -88,7 +89,7 @@ public sealed class AlgorithmDateStrategy : IDateCalculationStrategy
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
-        if (year < 1 || year > 9999)
+        if (year is < 1 or > 9999)
             return null;
 
         return Key switch

@@ -15,7 +15,8 @@ namespace Bodu.Globalization.Calendar;
 /// handler.
 /// </para>
 /// </remarks>
-public sealed class AdjustmentTriggerHandlerRegistry : IAdjustmentTriggerHandlerRegistry
+public sealed class AdjustmentTriggerHandlerRegistry
+    : IAdjustmentTriggerHandlerRegistry
 {
     /// <summary>
     /// The registered handlers keyed by handler key.

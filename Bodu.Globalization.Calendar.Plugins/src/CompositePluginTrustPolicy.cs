@@ -10,7 +10,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// A trust policy that trusts a candidate only when every composed policy trusts it; the first rejection short-circuits
 /// and its reason is surfaced.
 /// </summary>
-public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
+public sealed class CompositePluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <summary>
     /// The composed policies, all of which must trust the candidate.

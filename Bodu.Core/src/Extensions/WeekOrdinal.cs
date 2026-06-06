@@ -10,7 +10,7 @@ namespace Bodu.Extensions;
 /// Specifies the ordinal position of a weekday within a given month. Commonly used in recurrence rules, such as "the
 /// second Tuesday of the month".
 /// </summary>
-public enum WeekOfMonthOrdinal
+public enum WeekOrdinal
 {
     /// <summary>
     /// Represents the first occurrence of a specific weekday in the month (e.g., the 1st Monday).

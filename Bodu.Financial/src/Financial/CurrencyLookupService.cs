@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyLookupService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -124,7 +124,7 @@ public sealed class CurrencyLookupService
 
         var region = new RegionInfo(culture.Name);
         return TryByIsoCode(region.ISOCurrencySymbol, out CurrencyInfo currency)
-            ? new[] { currency }
+            ? [currency]
             : Array.Empty<CurrencyInfo>();
     }
 

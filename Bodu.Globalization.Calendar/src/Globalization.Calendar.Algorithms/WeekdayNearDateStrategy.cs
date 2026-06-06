@@ -12,7 +12,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
-public sealed class WeekdayNearDateStrategy : IDateCalculationStrategy
+public sealed class WeekdayNearDateStrategy
+    : IDateCalculationStrategy
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WeekdayNearDateStrategy" /> class.

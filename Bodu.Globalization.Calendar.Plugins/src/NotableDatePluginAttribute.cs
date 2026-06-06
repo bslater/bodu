@@ -11,7 +11,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <see cref="INotableDatePlugin" />.
 /// </summary>
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
-public sealed class NotableDatePluginAttribute : Attribute
+public sealed class NotableDatePluginAttribute
+    : Attribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDatePluginAttribute" /> class.

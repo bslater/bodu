@@ -67,8 +67,10 @@ public readonly struct CalculatedMoney<TCurrency>
     /// <param name="left">The first amount.</param>
     /// <param name="right">The second amount.</param>
     /// <returns>The sum.</returns>
-    public static CalculatedMoney<TCurrency> operator +(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right) =>
-        new(left._amount + right._amount);
+    public static CalculatedMoney<TCurrency> operator +(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right)
+    {
+        return new(left._amount + right._amount);
+    }
 
     /// <summary>
     /// Subtracts one high-precision amount from another, preserving full precision.
@@ -76,16 +78,20 @@ public readonly struct CalculatedMoney<TCurrency>
     /// <param name="left">The minuend.</param>
     /// <param name="right">The subtrahend.</param>
     /// <returns>The difference.</returns>
-    public static CalculatedMoney<TCurrency> operator -(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right) =>
-        new(left._amount - right._amount);
+    public static CalculatedMoney<TCurrency> operator -(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right)
+    {
+        return new(left._amount - right._amount);
+    }
 
     /// <summary>
     /// Negates a high-precision amount.
     /// </summary>
     /// <param name="value">The amount to negate.</param>
     /// <returns>The negated amount.</returns>
-    public static CalculatedMoney<TCurrency> operator -(CalculatedMoney<TCurrency> value) =>
-        new(-value._amount);
+    public static CalculatedMoney<TCurrency> operator -(CalculatedMoney<TCurrency> value)
+    {
+        return new(-value._amount);
+    }
 
     /// <summary>
     /// Multiplies a high-precision amount by a scalar without rounding.
@@ -93,8 +99,10 @@ public readonly struct CalculatedMoney<TCurrency>
     /// <param name="left">The amount.</param>
     /// <param name="right">The scalar.</param>
     /// <returns>The full-precision product.</returns>
-    public static CalculatedMoney<TCurrency> operator *(CalculatedMoney<TCurrency> left, decimal right) =>
-        new(left._amount * right);
+    public static CalculatedMoney<TCurrency> operator *(CalculatedMoney<TCurrency> left, decimal right)
+    {
+        return new(left._amount * right);
+    }
 
     /// <summary>
     /// Divides a high-precision amount by a scalar without rounding.
@@ -103,8 +111,10 @@ public readonly struct CalculatedMoney<TCurrency>
     /// <param name="right">The scalar divisor.</param>
     /// <returns>The full-precision quotient.</returns>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
-    public static CalculatedMoney<TCurrency> operator /(CalculatedMoney<TCurrency> left, decimal right) =>
-        new(left._amount / right);
+    public static CalculatedMoney<TCurrency> operator /(CalculatedMoney<TCurrency> left, decimal right)
+    {
+        return new(left._amount / right);
+    }
 
     /// <summary>
     /// Materialises this high-precision amount as a settlement <see cref="Money{TCurrency}" />, rounding to
@@ -153,8 +163,10 @@ public readonly struct CalculatedMoney<TCurrency>
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when equal.</returns>
-    public static bool operator ==(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right) =>
-        left.Equals(right);
+    public static bool operator ==(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right)
+    {
+        return left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two values differ.
@@ -162,6 +174,8 @@ public readonly struct CalculatedMoney<TCurrency>
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns><see langword="true" /> when they differ.</returns>
-    public static bool operator !=(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right) =>
-        !left.Equals(right);
+    public static bool operator !=(CalculatedMoney<TCurrency> left, CalculatedMoney<TCurrency> right)
+    {
+        return !left.Equals(right);
+    }
 }

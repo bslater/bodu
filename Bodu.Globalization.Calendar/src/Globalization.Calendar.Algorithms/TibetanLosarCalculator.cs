@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TibetanLosarCalculator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// from the Chinese and Indian calendars, so in some years Losar falls a full lunation later than the new moon a naive
 /// "first new moon after a fixed date" rule would select. This calculator instead chooses, among the new moons of the
 /// year, the one whose apparent solar longitude is nearest <see cref="LosarSolarLongitude" />, which tracks the Tibetan
-/// first-month new moon across the leap-month divergences. The approximation reproduces the published Phukpa Gyalpo Losar
-/// dates for the modern era (validated across 2023-2030, including the late-falling 2027 and 2030 years) to within a day.
+/// first-month new moon across the leap-month divergences. The approximation reproduces the published Phukpa Gyalpo
+/// Losar dates for the modern era (validated across 2023-2030, including the late-falling 2027 and 2030 years) to
+/// within a day.
 /// </para>
 /// </remarks>
 internal static class TibetanLosarCalculator
@@ -32,10 +33,12 @@ internal static class TibetanLosarCalculator
     /// Computes the approximate Gregorian date of Tibetan New Year (Gyalpo Losar) for the supplied year.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
-    /// <returns>The Losar date, or <see langword="null" /> when the year is out of range or no new moon is found.</returns>
+    /// <returns>
+    /// The Losar date, or <see langword="null" /> when the year is out of range or no new moon is found.
+    /// </returns>
     public static DateOnly? Losar(int year)
     {
-        if (year < 1 || year > 9999)
+        if (year is < 1 or > 9999)
             return null;
 
         // Losar always falls between early February and early March, so the candidate new moon is one of the two or

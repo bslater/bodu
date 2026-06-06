@@ -40,7 +40,7 @@ public readonly struct IniComment : IEquatable<IniComment>
     public IniComment(char prefix, string text, int lineNumber = 0)
     {
         ThrowHelper.ThrowIfNull(text);
-        if (prefix != '#' && prefix != ';')
+        if (prefix is not '#' and not ';')
             throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniCommentPrefix, nameof(prefix));
 
         Prefix = prefix;

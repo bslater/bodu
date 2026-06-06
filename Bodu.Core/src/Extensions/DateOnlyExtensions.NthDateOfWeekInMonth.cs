@@ -20,10 +20,10 @@ public static partial class DateOnlyExtensions
     /// the nth Monday.
     /// </param>
     /// <param name="ordinal">
-    /// The ordinal occurrence to return. Valid values are <see cref="WeekOfMonthOrdinal.First" />,
-    /// <see cref="WeekOfMonthOrdinal.Second" />, <see cref="WeekOfMonthOrdinal.Third" />,
-    /// <see cref="WeekOfMonthOrdinal.Fourth" />, <see cref="WeekOfMonthOrdinal.Fifth" />, and
-    /// <see cref="WeekOfMonthOrdinal.Last" />. <see cref="WeekOfMonthOrdinal.Fifth" /> is valid only in months where
+    /// The ordinal occurrence to return. Valid values are <see cref="WeekOrdinal.First" />,
+    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />,
+    /// <see cref="WeekOrdinal.Fourth" />, <see cref="WeekOrdinal.Fifth" />, and
+    /// <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid only in months where
     /// five matching weekdays occur.
     /// </param>
     /// <returns>
@@ -32,28 +32,28 @@ public static partial class DateOnlyExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="WeekOfMonthOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
+    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
     /// in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple
     /// of seven days to reach the desired ordinal.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
-    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOfMonthOrdinal" /> enumeration, -or-
+    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or-
     /// the requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
     /// February).
     /// </exception>
-    public static DateOnly NthDateOfWeekInMonth(this DateOnly date, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal)
+    public static DateOnly NthDateOfWeekInMonth(this DateOnly date, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
 
         switch (ordinal)
         {
-            case Extensions.WeekOfMonthOrdinal.First:
+            case Extensions.WeekOrdinal.First:
                 return date.FirstDateOfWeekInMonth(dayOfWeek);
 
-            case Extensions.WeekOfMonthOrdinal.Last:
+            case Extensions.WeekOrdinal.Last:
                 return date.LastDateOfWeekInMonth(dayOfWeek);
 
             default:
@@ -84,10 +84,10 @@ public static partial class DateOnlyExtensions
     /// the nth Tuesday.
     /// </param>
     /// <param name="ordinal">
-    /// The ordinal occurrence to return. Valid values are <see cref="WeekOfMonthOrdinal.First" />,
-    /// <see cref="WeekOfMonthOrdinal.Second" />, <see cref="WeekOfMonthOrdinal.Third" />,
-    /// <see cref="WeekOfMonthOrdinal.Fourth" />, <see cref="WeekOfMonthOrdinal.Fifth" />, and
-    /// <see cref="WeekOfMonthOrdinal.Last" />. <see cref="WeekOfMonthOrdinal.Fifth" /> is valid only in months where
+    /// The ordinal occurrence to return. Valid values are <see cref="WeekOrdinal.First" />,
+    /// <see cref="WeekOrdinal.Second" />, <see cref="WeekOrdinal.Third" />,
+    /// <see cref="WeekOrdinal.Fourth" />, <see cref="WeekOrdinal.Fifth" />, and
+    /// <see cref="WeekOrdinal.Last" />. <see cref="WeekOrdinal.Fifth" /> is valid only in months where
     /// five matching weekdays occur.
     /// </param>
     /// <returns>
@@ -96,7 +96,7 @@ public static partial class DateOnlyExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="WeekOfMonthOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
+    /// For <see cref="WeekOrdinal.Last" />, the method returns the final matching <paramref name="dayOfWeek" />
     /// in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple
     /// of seven days to reach the desired ordinal.
     /// </para>
@@ -105,11 +105,11 @@ public static partial class DateOnlyExtensions
     /// Thrown if <paramref name="year" /> is less than the <c>Year</c> of <see cref="DateOnly.MinValue" /> or greater
     /// than that of <see cref="DateOnly.MaxValue" />, -or- <paramref name="month" /> is less than 1 or greater than 12,
     /// -or- <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
-    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOfMonthOrdinal" /> enumeration, -or-
+    /// <paramref name="ordinal" /> is not a defined value of the <see cref="WeekOrdinal" /> enumeration, -or-
     /// the requested <paramref name="ordinal" /> does not occur within the month (for example, a fifth Thursday in
     /// February).
     /// </exception>
-    public static DateOnly GetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal)
+    public static DateOnly GetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateOnly.MinValue.Year, DateOnly.MaxValue.Year);
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
@@ -118,10 +118,10 @@ public static partial class DateOnlyExtensions
 
         switch (ordinal)
         {
-            case Extensions.WeekOfMonthOrdinal.First:
+            case Extensions.WeekOrdinal.First:
                 return DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
 
-            case Extensions.WeekOfMonthOrdinal.Last:
+            case Extensions.WeekOrdinal.Last:
                 return DateOnly.FromDayNumber(DateOnlyExtensions.GetLastDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
 
             default:

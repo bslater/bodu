@@ -10,7 +10,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// A trust policy that delegates the decision to a caller-supplied function, suitable for runtime state, configuration,
 /// or remote attestation.
 /// </summary>
-public sealed class DelegatingPluginTrustPolicy : IPluginTrustPolicy
+public sealed class DelegatingPluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <summary>
     /// The decision function.

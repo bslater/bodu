@@ -15,17 +15,17 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSelectionPolicyIsProviderPriorityFirst_ShouldUseFirstSuccess()
     {
-        FixedDatedExchangeRateProvider first = new(new[]
-        {
+        FixedDatedExchangeRateProvider first = new(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.5m, "RBA"),
-        });
-        FixedDatedExchangeRateProvider second = new(new[]
-        {
+        ]);
+        FixedDatedExchangeRateProvider second = new(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.7m, "ECB"),
-        });
+        ]);
 
         CompositeDatedExchangeRateProvider composite = new(
-            new IDatedExchangeRateProvider[] { first, second },
+            [first, second],
             ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst);
 
         var found = composite.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result);
@@ -42,15 +42,15 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenSelectionPolicyIsExactDateBeforeProviderFallback_ShouldThrowNotSupported()
     {
-        IDatedExchangeRateProvider stub = new FixedDatedExchangeRateProvider(new[]
-        {
+        IDatedExchangeRateProvider stub = new FixedDatedExchangeRateProvider(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.5m, "RBA"),
-        });
+        ]);
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
             _ = new CompositeDatedExchangeRateProvider(
-                new[] { stub },
+                [stub],
                 ExchangeRateProviderSelectionPolicy.ExactDateBeforeProviderFallback);
         });
     }
@@ -61,15 +61,15 @@ public partial class CompositeDatedExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenSelectionPolicyIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        IDatedExchangeRateProvider stub = new FixedDatedExchangeRateProvider(new[]
-        {
+        IDatedExchangeRateProvider stub = new FixedDatedExchangeRateProvider(
+        [
             new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.5m, "RBA"),
-        });
+        ]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new CompositeDatedExchangeRateProvider(
-                new[] { stub },
+                [stub],
                 (ExchangeRateProviderSelectionPolicy)999);
         });
     }

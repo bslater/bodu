@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyLookupServiceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,7 +66,7 @@ public class CurrencyLookupServiceTests
         CurrencyRegistry.Replace(new CurrencyInfo("XQS", 2, 0m, false, null, null)
         {
             Symbol = "Ξ",
-            RegionCodes = new[] { "QQ" },
+            RegionCodes = ["QQ"],
         });
 
         // Build the service after registration so its lazy indexes include the custom entry.

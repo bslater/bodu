@@ -19,7 +19,7 @@ public partial class XorShiftRandomTests
         for (var i = 0; i < 1000; i++)
         {
             var value = rng.NextDouble();
-            Assert.IsTrue(value >= 0.0 && value < 1.0, $"Value {value} was not in range [0.0, 1.0).");
+            Assert.IsTrue(value is >= 0.0 and < 1.0, $"Value {value} was not in range [0.0, 1.0).");
         }
     }
 
@@ -34,7 +34,7 @@ public partial class XorShiftRandomTests
         for (var i = 0; i < 100; i++)
         {
             var value = rng.NextDouble();
-            Assert.IsTrue(value >= 0.0 && value < 1.0, $"Value {value} was not in range [0.0, 1.0).");
+            Assert.IsTrue(value is >= 0.0 and < 1.0, $"Value {value} was not in range [0.0, 1.0).");
         }
     }
 

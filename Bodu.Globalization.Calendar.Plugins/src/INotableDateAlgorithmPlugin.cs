@@ -39,7 +39,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </example>
 /// <seealso cref="NotableDatePluginAttribute" /> <seealso cref="NotableDatePluginLoader" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
-public interface INotableDateAlgorithmPlugin : INotableDatePlugin
+public interface INotableDateAlgorithmPlugin
+    : INotableDatePlugin
 {
     /// <summary>
     /// Gets the algorithms the plugin contributes, keyed by the algorithm key a rule references.

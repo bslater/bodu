@@ -15,7 +15,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void FirstDate_WhenStoragePopulated_ShouldReturnEarliestObservation()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
+            [Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
         Assert.AreEqual(DateOnly.FromDayNumber(1000), storage.FirstDate);
@@ -28,7 +28,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void LastDate_WhenStoragePopulated_ShouldReturnLatestObservation()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
+            [Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
         Assert.AreEqual(DateOnly.FromDayNumber(1020), storage.LastDate);
@@ -42,7 +42,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void FirstAndLastDate_WhenSingleEntry_ShouldMatch()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1234, 2.5m) },
+            [Obs(1234, 2.5m)],
             ObservationsParam);
 
         Assert.AreEqual(storage.FirstDate, storage.LastDate);

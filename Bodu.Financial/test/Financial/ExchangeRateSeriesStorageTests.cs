@@ -25,7 +25,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void Create_Observations_WhenInputsValid_ShouldStoreObservations()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1000, 1.4m), Obs(1010, 1.5m) },
+            [Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
         Assert.AreEqual(2, storage.Count);
@@ -57,7 +57,7 @@ public partial class ExchangeRateSeriesStorageTests
             () =>
             {
                 _ = ExchangeRateSeriesStorage.Create(
-                    new[] { Obs(1000, 1.4m), Obs(1010, 0m) },
+                    [Obs(1000, 1.4m), Obs(1010, 0m)],
                     ObservationsParam);
             },
             ObservationsParam);
@@ -74,7 +74,7 @@ public partial class ExchangeRateSeriesStorageTests
             () =>
             {
                 _ = ExchangeRateSeriesStorage.Create(
-                    new[] { Obs(1000, 1.4m), Obs(1000, 1.5m) },
+                    [Obs(1000, 1.4m), Obs(1000, 1.5m)],
                     ObservationsParam);
             },
             ObservationsParam);
@@ -87,7 +87,7 @@ public partial class ExchangeRateSeriesStorageTests
     public void Create_Observations_WhenUnsorted_ShouldStoreInAscendingOrder()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new[] { Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m) },
+            [Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
         var observations = storage.Enumerate().ToArray();
@@ -104,11 +104,10 @@ public partial class ExchangeRateSeriesStorageTests
     public void Create_Tuples_WhenInputsValid_ShouldStoreObservations()
     {
         var storage = ExchangeRateSeriesStorage.Create(
-            new (DateOnly, decimal)[]
-            {
+            [
                 (DateOnly.FromDayNumber(1000), 1.4m),
                 (DateOnly.FromDayNumber(1010), 1.5m),
-            },
+            ],
             RatesParam);
 
         Assert.AreEqual(2, storage.Count);
@@ -140,7 +139,7 @@ public partial class ExchangeRateSeriesStorageTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             ExchangeRateSeriesStorage.Create(
-                new (DateOnly, decimal)[] { (DateOnly.FromDayNumber(1000), 0m) },
+                [(DateOnly.FromDayNumber(1000), 0m)],
                 RatesParam));
 
         Assert.IsTrue(ex.Message.Contains(

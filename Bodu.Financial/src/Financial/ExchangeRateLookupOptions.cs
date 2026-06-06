@@ -140,7 +140,8 @@ public sealed class ExchangeRateLookupOptions
     /// The maximum permitted distance, in days, between requested and resolved dates.
     /// </param>
     /// <returns>
-    /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.NearestPreferPrevious" />.
+    /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.NearestPreferPrevious" />
+    /// .
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="toleranceDays" /> is negative.

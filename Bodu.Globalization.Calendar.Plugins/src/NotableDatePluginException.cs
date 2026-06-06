@@ -9,7 +9,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <summary>
 /// The base exception for failures encountered while loading a notable-date plugin.
 /// </summary>
-public class NotableDatePluginException : Exception
+public class NotableDatePluginException
+    : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class.

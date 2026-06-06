@@ -416,26 +416,26 @@ public sealed class TwofishBlockCipher
         // For 256-bit keys, prepend the fourth S-box key word layer.
         if (k == 4)
         {
-            value = ((i == 1 || i == 2) ? s_q0[value] : s_q1[value]) ^
+            value = ((i is 1 or 2) ? s_q0[value] : s_q1[value]) ^
                     (byte)(l[3] >> (8 * i));
         }
 
         // For 192- and 256-bit keys, prepend the third S-box key word layer.
         if (k >= 3)
         {
-            value = ((i == 2 || i == 3) ? s_q0[value] : s_q1[value]) ^
+            value = ((i is 2 or 3) ? s_q0[value] : s_q1[value]) ^
                     (byte)(l[2] >> (8 * i));
         }
 
         // Final two keyed q layers are present for all supported Twofish key sizes.
-        value = ((i == 0 || i == 2) ? s_q0[value] : s_q1[value]) ^
+        value = ((i is 0 or 2) ? s_q0[value] : s_q1[value]) ^
                 (byte)(l[1] >> (8 * i));
 
-        value = ((i == 0 || i == 1) ? s_q0[value] : s_q1[value]) ^
+        value = ((i is 0 or 1) ? s_q0[value] : s_q1[value]) ^
                 (byte)(l[0] >> (8 * i));
 
         // The last unkeyed q layer completes the byte-lane S-box before MDS multiplication.
-        value = (i == 1 || i == 3) ? s_q0[value] : s_q1[value];
+        value = (i is 1 or 3) ? s_q0[value] : s_q1[value];
 
         return MdsMultiplyColumn(i, (byte)value);
     }

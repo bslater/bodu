@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyParseMode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Financial;
 public enum MoneyParseMode
 {
     /// <summary>
-    /// Accept only the canonical <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or <c>"&lt;amount&gt; &lt;ISO&gt;"</c> forms with a
-    /// registered, uppercase ISO code. This is the default and matches the <see cref="IParsable{TSelf}" /> surface.
+    /// Accept only the canonical <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or <c>"&lt;amount&gt; &lt;ISO&gt;"</c> forms with
+    /// a registered, uppercase ISO code. This is the default and matches the <see cref="IParsable{TSelf}" /> surface.
     /// </summary>
     StrictIso = 0,
 

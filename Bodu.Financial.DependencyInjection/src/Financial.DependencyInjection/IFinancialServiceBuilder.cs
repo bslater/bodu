@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IFinancialServiceBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>
 /// Defines the fluent registration surface returned by
-/// <see cref="ServiceCollectionExtensions.AddBoduFinancial(IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />,
-/// mirroring the <c>IHttpClientBuilder</c> / <c>IMvcBuilder</c> pattern.
+/// <see cref="ServiceCollectionExtensions.AddBoduFinancial(IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration?, string)" />
+/// , mirroring the <c>IHttpClientBuilder</c> / <c>IMvcBuilder</c> pattern.
 /// </summary>
 public interface IFinancialServiceBuilder
 {

@@ -18,19 +18,19 @@ namespace Bodu.Security.Cryptography;
 public sealed class RngBiasContractTests
 {
     private static readonly string[] s_generateMethodNames =
-    {
+    [
         "GenerateKey",
         "GenerateIV",
         "GenerateNonce",
         "GenerateTweak",
-    };
+    ];
 
     private static readonly string[] s_forbiddenHelperNames =
-    {
+    [
         "GetRandomNonZeroBytes",
         "FillWithRandomNonZeroBytes",
         "TryFillWithRandomNonZeroBytes",
-    };
+    ];
 
     private static readonly int[] s_singleByteOperandSize = BuildOperandSizeTable(twoByte: false);
     private static readonly int[] s_twoByteOperandSize = BuildOperandSizeTable(twoByte: true);
@@ -132,7 +132,7 @@ public sealed class RngBiasContractTests
             var operandSize = s_singleByteOperandSize[first];
 
             // call (0x28), callvirt (0x6F), newobj (0x73): operand is a 4-byte metadata token.
-            if (first == 0x28 || first == 0x6F || first == 0x73)
+            if (first is 0x28 or 0x6F or 0x73)
             {
                 if (pos + 5 > il.Length) yield break;
                 yield return BinaryPrimitives.ReadInt32LittleEndian(il.AsSpan(pos + 1, 4));

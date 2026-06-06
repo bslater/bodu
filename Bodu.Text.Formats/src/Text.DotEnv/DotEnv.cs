@@ -239,6 +239,6 @@ public static partial class DotEnv
     /// <see langword="true" /> if <paramref name="c" /> is safe unquoted; otherwise, <see langword="false" />.
     /// </returns>
     private static bool IsUnquotableChar(char c) =>
-        (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
-        c == '_' || c == '.' || c == ',' || c == ':' || c == '/' || c == '@' || c == '+' || c == '-';
+c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or
+        '_' or '.' or ',' or ':' or '/' or '@' or '+' or '-';
 }

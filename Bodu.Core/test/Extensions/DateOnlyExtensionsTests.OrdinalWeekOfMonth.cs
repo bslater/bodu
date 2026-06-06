@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests))]
-    public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime inputDateTime, WeekOfMonthOrdinal expected)
+    public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime inputDateTime, WeekOrdinal expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
 
@@ -36,9 +36,9 @@ public partial class DateOnlyExtensionsTests
     public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
     {
         var leapDay = new DateOnly(2024, 2, 29); // Thursday
-        WeekOfMonthOrdinal actual = leapDay.OrdinalWeekOfMonth();
+        WeekOrdinal actual = leapDay.OrdinalWeekOfMonth();
 
-        Assert.AreEqual(WeekOfMonthOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
+        Assert.AreEqual(WeekOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
     }
 
 }

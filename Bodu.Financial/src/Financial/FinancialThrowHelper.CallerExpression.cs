@@ -255,7 +255,8 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
-    /// Throws when <paramref name="policy" /> is not a defined <see cref="CurrencyRegistrationConflictPolicy" /> member.
+    /// Throws when <paramref name="policy" /> is not a defined <see cref="CurrencyRegistrationConflictPolicy" />
+    /// member.
     /// </summary>
     /// <param name="policy">The conflict policy to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>

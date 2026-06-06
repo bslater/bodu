@@ -129,7 +129,7 @@ public static partial class Ini
                 if (line.IsEmpty)
                     continue;
 
-                if (line[0] == ';' || line[0] == '#')
+                if (line[0] is ';' or '#')
                 {
                     if (_options.PreserveComments)
                     {
