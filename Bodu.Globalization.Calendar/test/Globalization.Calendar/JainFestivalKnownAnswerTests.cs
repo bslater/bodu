@@ -14,10 +14,10 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Maun Agiyaras is a known divergence: the festival is traditionally Margashirsha shukla ekadashi, but the catalogue
-/// authors it as eleven days after Jain Diwali (Kartik shukla ekadashi), roughly a lunar month earlier. Its current
-/// behaviour is pinned as a characterization below and recorded in the verification report rather than validated against
-/// a published Maun Agiyaras date.
+/// Maun Agiyaras (Maun Ekadashi) is Margashirsha shukla ekadashi, computed by the engine's sidereal lunar calculator. It
+/// falls in late November or December and can occasionally land on 1 January of the following year, so — like other
+/// near-boundary swept dates — a given Gregorian year may contain no occurrence (2028 within the validated range); the
+/// years asserted below all resolve.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -56,6 +56,10 @@ public sealed class JainFestivalKnownAnswerTests
     [DataRow(2023, "kartik-purnima", 11, 27)]
     [DataRow(2024, "kartik-purnima", 11, 15)]
     [DataRow(2025, "kartik-purnima", 11, 5)]
+    [DataRow(2024, "maun-agiyaras", 12, 11)]   // Margashirsha shukla ekadashi
+    [DataRow(2025, "maun-agiyaras", 12, 1)]
+    [DataRow(2026, "maun-agiyaras", 12, 20)]
+    [DataRow(2027, "maun-agiyaras", 12, 9)]
     public void Resolve_JainFestival_IsWithinToleranceOfPublishedDate(int year, string notableDateId, int month, int day)
     {
         NotableDate festival = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, year);
@@ -110,27 +114,5 @@ public sealed class JainFestivalKnownAnswerTests
         NotableDate mahavirJayanti = CommonCatalogues.ResolveSingle(service, "mahavir-jayanti", year);
 
         Assert.AreEqual(ramNavami.Date.AddDays(4), mahavirJayanti.Date, $"mahavir-jayanti {year}");
-    }
-
-    /// <summary>
-    /// Documents the known Maun Agiyaras divergence: the catalogue currently resolves it to eleven days after Jain
-    /// Diwali (Kartik shukla ekadashi), whereas the traditional festival is Margashirsha shukla ekadashi, roughly a
-    /// lunar month later. This characterization pins the current behaviour so a future correction surfaces here; the
-    /// divergence itself is tracked in the verification report.
-    /// </summary>
-    /// <param name="year">The Gregorian year.</param>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DataRow(2023)]
-    [DataRow(2024)]
-    [DataRow(2025)]
-    public void Resolve_MaunAgiyaras_CurrentlyTracksKartikEkadashi_KnownDivergence(int year)
-    {
-        NotableDateService service = CreateService();
-
-        NotableDate jainDiwali = CommonCatalogues.ResolveSingle(service, "jain-diwali", year);
-        NotableDate maunAgiyaras = CommonCatalogues.ResolveSingle(service, "maun-agiyaras", year);
-
-        Assert.AreEqual(jainDiwali.Date.AddDays(11), maunAgiyaras.Date, $"maun-agiyaras {year} (current Kartik-ekadashi behaviour)");
     }
 }

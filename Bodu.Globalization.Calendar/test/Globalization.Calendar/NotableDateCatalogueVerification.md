@@ -19,9 +19,9 @@ Two reference classes are used:
   reference calendars (BCL `HebrewCalendar`, `HijriCalendar`, `UmAlQuraCalendar`,
   `PersianCalendar`; the Gregorian/Julian paschalion) are themselves the authority.
 - **Astronomically approximated** concepts (Hindu lunar, Baha'i equinox, Vesak, the
-  East Asian Buddha's birthday, Sikh/Jain lunar-derived) are pinned to published dates
-  with a **±2-day tolerance**, matching the engine's own documented accuracy and the
-  pre-existing `AlgorithmKnownAnswerTests` convention.
+  East Asian Buddha's birthday, Tibetan Losar, Asalha Puja, Sikh/Jain lunar-derived) are
+  pinned to published dates with a **±2-day tolerance**, matching the engine's own
+  documented accuracy and the pre-existing `AlgorithmKnownAnswerTests` convention.
 
 ## Summary
 
@@ -36,64 +36,58 @@ Two reference classes are used:
 | `global-zoroastrian` | 6 Persian-calendar observances | ✅ exact (BCL Persian; see Nowruz note) |
 | `global-hindu` | Makar Sankranti, Pongal, Saraswati Puja + lunar set | ✅ within ±2 |
 | `global-bahai` | Naw-Ruz + 8 solar holy days | ✅ within ±2; matches official 2025 Badí |
-| `global-sikh` | 4 fixed + 3 lunar-derived | ⚠️ see Guru Arjan Dev note |
-| `global-jain` | lunar-derived set | ⚠️ **Maun Agiyaras defect** |
-| `global-buddhist` | Vesak, Buddha's Birthday, fixed + Losar/Asalha/Vassa | ⚠️ **Losar & Asalha Puja defects** |
+| `global-sikh` | 4 fixed + 3 lunar-derived | ✅ within ±2 (see Guru Arjan Dev note) |
+| `global-jain` | lunar-derived set | ✅ within ±2 (**Maun Agiyaras fixed**) |
+| `global-buddhist` | Vesak, Buddha's Birthday, fixed + Losar/Asalha/Vassa | ✅ within ±2 (**Losar & Asalha fixed**) |
 | `global-all` | aggregate import | ✅ imports resolve end to end |
 
-## Defects (engine selects the wrong lunation — off by ~30 days)
+## Defects found and fixed
 
-These three concepts use fixed-window lunar heuristics that select the lunation a month
-before the observed festival in some years. They are **not** within the ±2-day
-approximation tolerance.
+Verification uncovered three lunation-selection defects, all from fixed-window lunar
+heuristics that selected the wrong lunation (off by ~30 days) in some years. None of the
+three keys is referenced by any shipping `Data.<Region>` pack — they live only in these
+common catalogues — so the fixes are contained. All three are now corrected and pinned to
+published dates by the known-answer tests.
 
 ### 1. Tibetan Losar — `global-buddhist`
 
-`losar` is computed as *first new moon on or after 20 January*. When a new moon falls in
-late January, it selects the lunation a month early.
+*Was:* `losar` = *first new moon on or after 20 January* → selected a late-January lunation
+a month early when one occurred (2023, 2025).
 
-| Year | Engine | Observed Losar | Δ |
-|---|---|---|---|
-| 2023 | 21 Jan | 21 Feb | −31 d ❌ |
-| 2024 | 9 Feb | 10 Feb | −1 d ✅ |
-| 2025 | 29 Jan | 28 Feb | −30 d ❌ |
-| 2026 | 17 Feb | 18 Feb | −1 d ✅ |
-| 2027 | 6 Feb | 7 Feb | −1 d ✅ |
+*Fix:* a new `TibetanLosarCalculator` selects the new moon whose apparent solar longitude
+is nearest the Tibetan first-month point (~333.5°), tracking the Phukpa leap-month
+divergences. Validated against the published Gyalpo Losar dates 2023–2030 (the engine
+returns the astronomical new moon, typically the day before the observed Losar):
 
-Sources: Tibetan Nuns Project, qppstudio, Wikipedia (Losar).
+| Year | Engine (new) | Published Gyalpo Losar |
+|---|---|---|
+| 2023 | 20 Feb | 21 Feb |
+| 2024 | 9 Feb | 10 Feb |
+| 2025 | 28 Feb | 28 Feb |
+| 2026 | 17 Feb | 18 Feb |
+| 2027 | **8 Mar** | **9 Mar** |
+| 2030 | 4 Mar | 5 Mar |
 
 ### 2. Asalha Puja & Vassa — `global-buddhist`
 
-`asalha-puja` is computed as *first full moon on or after 15 June*; `vassa` is one day
-later. When a full moon falls in the second half of June, it selects a month early.
+*Was:* `asalha-puja` = *first full moon on or after 15 June* → selected a late-June lunation
+a month early (2024, 2026, 2027). `vassa` (Asalha + 1) inherited it.
 
-| Year | Engine | Observed Asalha Puja | Δ |
-|---|---|---|---|
-| 2023 | 3 Jul | 3 Jul (India) / 1 Aug (Thai leap year) | ambiguous |
-| 2024 | 22 Jun | 21 Jul | −29 d ❌ |
-| 2025 | 10 Jul | 10 Jul | ✅ |
-| 2026 | 29 Jun | 29 Jul | −30 d ❌ |
-| 2027 | 19 Jun | ~19 Jul | −30 d ❌ |
-
-Sources: timeanddate, publicholidays.asia (Asahna Bucha / Khao Phansa), Wikipedia.
+*Fix:* `asalha-puja` now resolves through the engine's leap-month-aware sidereal calculator
+as the Asadha full moon (Guru Purnima). Validated against the published dates: 2024 = 21 Jul,
+2025 = 10 Jul, **2026 = 29 Jul** (leap year), 2027 = 18 Jul. (2023 follows the Indian Asadha
+full moon, 3 Jul; Thailand observed 1 Aug that leap year.)
 
 ### 3. Jain Maun Agiyaras — `global-jain`
 
-`maun-agiyaras` is authored as *Jain Diwali + 11 days* (Kartik shukla ekadashi). The
-festival (a.k.a. Maun Ekadashi) is **Margashirsha shukla ekadashi**, ~30 days later. The
-catalogue comment ("Kartik shukla ekadashi") names the wrong lunar month. Engine 2024
-resolves 12 Nov; the traditional festival is ~11 Dec 2024.
+*Was:* `maun-agiyaras` = *Jain Diwali + 11* (Kartik shukla ekadashi), a lunar month before the
+actual festival.
 
-> **Cannot determine intent.** If the author intended the Kartik shukla ekadashi (Dev
-> Uthani / Prabodhini Ekadashi), the id/display name is wrong; if they intended Maun
-> Agiyaras, the offset is wrong. This needs an authoring decision, so it is left as-is
-> and pinned as a characterization test rather than auto-changed.
-
-Source: tattvagyan.com (Maun Ekadashi = Magshar Sud 11).
-
-**Blast radius:** none of `losar`, `asalha-puja`, or `maun-agiyaras` is referenced by any
-shipping `Data.<Region>` pack — they live only in these common catalogues. `vesak` (the
-only lunar key the region packs use) is correct.
+*Fix:* it now resolves as **Margashirsha shukla ekadashi** (the consumer-expected Maun
+Ekadashi) through the sidereal calculator: 2024 = 11 Dec, 2025 = 30 Nov, 2026 = 19 Dec,
+2027 = 8 Dec. The festival falls in late November–December and can land on 1 January of the
+following year, so — like other near-boundary swept dates (e.g. Zartosht No-Diso) — a given
+Gregorian year may contain no occurrence (2028 within the validated range).
 
 ## Convention notes (defensible authoring choices, not defects)
 
@@ -122,18 +116,16 @@ only lunar key the region packs use) is correct.
 - **Baha'i** — the equinox-plus-offset model reproduces the **official 2025 Badí dates**
   exactly: First Day of Ridván 20 Apr, Declaration of the Báb 23 May, Ascension of
   Bahá'u'lláh 28 May.
-- **Hindu** — the lunar set resolves within ±2 of published panchanga dates (already
-  covered by `AlgorithmKnownAnswerTests`); the new solar harvest festivals are fixed at
-  14 January as authored.
-- **Vesak / East Asian Buddha's Birthday** — within ±2 across 2023–2027.
+- **Hindu** — the lunar set resolves within ±2 of published panchanga dates; the new solar
+  harvest festivals are fixed at 14 January as authored.
+- **Vesak / East Asian Buddha's Birthday** — within ±2 across 2023–2027 (Vesak 2026 = 1 May
+  is correct: that year's leap month follows Vaishakha, so Buddha Purnima is early-May while
+  the Asadha full moon is pushed to 29 July).
 
-## Recommendations
+## Sources
 
-1. **Fix the lunation heuristics** (`losar`, `asalha-puja`) so the search window keys off
-   the correct month, or compute against the proper Tibetan / Theravāda lunisolar month.
-2. **Resolve the Maun Agiyaras ambiguity** — correct either the offset or the id/name.
-3. Consider documenting the Coptic / Anglican / Nowruz convention choices in the catalogue
-   comments (some already are).
-
-The characterization tests for the three defects assert the engine's *current* output and
-the size of each divergence, so a future correction will fail them and prompt an update.
+Hebcal; published Orthodox/Western Easter tables; Saudi Umm al-Qura and gazetted Eid dates;
+Iranian civil calendar (time.ir); the Baha'i World Centre / national Baha'i community holy-day
+listings; drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
+Project, qppstudio and publicholidays.asia for Gyalpo Losar; timeanddate and publicholidays.asia
+for Asalha Puja / Khao Phansa.
