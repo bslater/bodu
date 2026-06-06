@@ -335,9 +335,10 @@ public sealed class LeapYearScenarioTests
             .Resolve(new DateRange(new DateOnly(2020, 2, 1), new DateOnly(2020, 3, 31)), Territory);
 
         NotableDate substitute = Single(results, "leap-day-holiday");
-        Assert.AreEqual(new DateOnly(2020, 3, 2), substitute.Date);
-        Assert.IsTrue(substitute.IsObserved);
-        Assert.AreEqual(new DateOnly(2020, 2, 29), substitute.ActualDate);
+
+        Assert.AreEqual(
+            (new DateOnly(2020, 3, 2), true, (DateOnly?)new DateOnly(2020, 2, 29)),
+            (substitute.Date, substitute.IsObserved, substitute.ActualDate));
     }
 
     /// <summary>
@@ -351,8 +352,10 @@ public sealed class LeapYearScenarioTests
             .Resolve(new DateRange(new DateOnly(2024, 2, 1), new DateOnly(2024, 3, 31)), Territory);
 
         NotableDate match = Single(results, "leap-day-holiday");
-        Assert.AreEqual(new DateOnly(2024, 2, 29), match.Date);
-        Assert.IsFalse(match.IsObserved);
+
+        Assert.AreEqual(
+            (new DateOnly(2024, 2, 29), false),
+            (match.Date, match.IsObserved));
     }
 
     // =====================================================================================================================

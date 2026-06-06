@@ -21,8 +21,8 @@ public sealed class SchemaValidationTests
     {
         NotableDateResource resource = NotableDateFixtures.Load("strategies.xml");
 
-        Assert.HasCount(12, resource.NotableDates, "notable-date count");
-        Assert.IsEmpty(resource.AdjustmentPolicies, "adjustment-policy count");
+        // (notable-date count, adjustment-policy count)
+        Assert.AreEqual((12, 0), (resource.NotableDates.Count, resource.AdjustmentPolicies.Count));
     }
 
     /// <summary>
@@ -33,8 +33,8 @@ public sealed class SchemaValidationTests
     {
         NotableDateResource resource = NotableDateFixtures.Load("adjustments.xml");
 
-        Assert.HasCount(10, resource.NotableDates, "notable-date count");
-        Assert.HasCount(10, resource.AdjustmentPolicies, "adjustment-policy count");
+        // (notable-date count, adjustment-policy count)
+        Assert.AreEqual((10, 10), (resource.NotableDates.Count, resource.AdjustmentPolicies.Count));
     }
 
     /// <summary>
