@@ -24,40 +24,10 @@
     </ItemGroup>
 
     <ItemGroup>
-    <None Remove="Resources\region-au.xml" />
-    <None Remove="Resources\region-cn.xml" />
-    <None Remove="Resources\region-in.xml" />
-    <None Remove="Resources\region-jp.xml" />
-    <None Remove="Resources\region-kr.xml" />
-    <None Remove="Resources\region-my.xml" />
-    <None Remove="Resources\region-nz.xml" />
-    <None Remove="Resources\region-sg.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\region-au.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-au.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-cn.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-cn.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-in.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-in.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-jp.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-jp.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-kr.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-kr.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-my.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-my.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-nz.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-nz.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\region-sg.xml">
-      <LogicalName>Bodu.Globalization.Calendar.Resources.region-sg.xml</LogicalName>
+    <None Remove="Resources\*.xml" />
+    <!-- Region packs; the shared catalogues they import are resolved from the engine assembly. -->
+    <EmbeddedResource Include="Resources\*.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

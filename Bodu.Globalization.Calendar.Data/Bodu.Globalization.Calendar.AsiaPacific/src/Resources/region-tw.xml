@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Taiwan (TW) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "TW". The civil
+  days (Founding Day / New Year, Labour Day) are imported from the global-core catalogue; the traditional festivals
+  are Chinese-lunisolar dates declared inline, and Tomb-Sweeping Day uses the astronomical Qingming solar-term
+  algorithm. Taiwan numbers years in the Minguo (ROC) era, which is a display offset only and does not affect the
+  underlying Gregorian dates. Lunar New Year carries its multi-day statutory span.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.tw">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="TW" />
+      <Use notableDateRef="workers-day" territory="TW" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Lunar New Year (Spring Festival) — first day of the Chinese lunisolar year, with a multi-day statutory span. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw" durationDays="5"><Applicability calendar="ChineseLunisolar"><Territory code="TW" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Peace Memorial Day (228) — 28 February, marking the 1947 incident. Strategy: Fixed day-of-month. -->
+    <NotableDate id="peace-memorial-day" displayName="Peace Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw"><Applicability fromYear="1997"><Territory code="TW" /></Applicability><Strategy><Fixed month="February" day="28" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Children's Day — 4 April. Strategy: Fixed day-of-month. -->
+    <NotableDate id="childrens-day-tw" displayName="Children's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw"><Applicability><Territory code="TW" /></Applicability><Strategy><Fixed month="April" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Tomb-Sweeping Day — the Qingming solar term, around 4-5 April. Strategy: Algorithm (computed solar term). -->
+    <NotableDate id="tomb-sweeping-day" displayName="Tomb-Sweeping Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw"><Applicability><Territory code="TW" /></Applicability><Strategy><Algorithm key="qingming" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Dragon Boat Festival — the fifth day of the fifth lunar month. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="dragon-boat-festival" displayName="Dragon Boat Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw"><Applicability calendar="ChineseLunisolar"><Territory code="TW" /></Applicability><Strategy><Fixed month="5" day="5" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mid-Autumn Festival — the 15th day of the eighth lunar month. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="mid-autumn-festival" displayName="Mid-Autumn Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw"><Applicability calendar="ChineseLunisolar"><Territory code="TW" /></Applicability><Strategy><Fixed month="8" day="15" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day (Double Ten) — 10 October, marking the 1911 Wuchang Uprising. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day-tw" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tw"><Applicability><Territory code="TW" /></Applicability><Strategy><Fixed month="October" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

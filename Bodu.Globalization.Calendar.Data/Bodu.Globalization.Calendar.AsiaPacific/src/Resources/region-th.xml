@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Thailand (TH) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "TH". The
+  civil days (New Year, Labour Day, New Year's Eve) are imported from the global-core catalogue; the Buddhist
+  observance Visakha Bucha (Vesak) is imported from the global Buddhist catalogue (a computed lunar date, so it may
+  differ by a day or two from the gazette). The royal, national, and Songkran holidays are declared inline. Thailand
+  numbers years in the Buddhist Era (CE + 543), which is a display offset only and does not affect the underlying
+  Gregorian dates. Makha Bucha (the third-lunar-month full moon) and Asanha Bucha (the eighth-lunar-month full moon)
+  are not modeled: the Thai ecclesiastical calendar inserts a leap month in some years (for example 2024), so the
+  astronomical full-moon computation diverges from the gazetted date by up to a month.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.th">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="TH" />
+      <Use notableDateRef="workers-day" territory="TH" />
+      <Use notableDateRef="new-years-eve" territory="TH" category="PublicHoliday" nonWorking="true" />
+    </Import>
+    <Import resource="global-buddhist">
+      <Use notableDateRef="vesak" territory="TH" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Chakri Memorial Day — 6 April, honoring the founding of the Chakri dynasty. Strategy: Fixed day-of-month. -->
+    <NotableDate id="chakri-day" displayName="Chakri Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability><Territory code="TH" /></Applicability><Strategy><Fixed month="April" day="6" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Songkran (Thai New Year) — 13-15 April, a three-day water festival. Strategy: Fixed day-of-month with a three-day span. -->
+    <NotableDate id="songkran" displayName="Songkran" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th" durationDays="3"><Applicability><Territory code="TH" /></Applicability><Strategy><Fixed month="April" day="13" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Coronation Day — 4 May, marking the 2019 coronation of King Vajiralongkorn (Rama X). Strategy: Fixed day-of-month. -->
+    <NotableDate id="coronation-day-th" displayName="Coronation Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability fromYear="2019"><Territory code="TH" /></Applicability><Strategy><Fixed month="May" day="4" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Queen Suthida's Birthday — 3 June. Strategy: Fixed day-of-month. -->
+    <NotableDate id="queen-suthida-birthday" displayName="Queen Suthida's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability fromYear="2019"><Territory code="TH" /></Applicability><Strategy><Fixed month="June" day="3" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- King Vajiralongkorn's Birthday — 28 July. Strategy: Fixed day-of-month. -->
+    <NotableDate id="king-vajiralongkorn-birthday" displayName="King Vajiralongkorn's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability fromYear="2017"><Territory code="TH" /></Applicability><Strategy><Fixed month="July" day="28" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- The Queen Mother's Birthday / Mother's Day — 12 August, the birthday of Queen Sirikit. Strategy: Fixed day-of-month. -->
+    <NotableDate id="queen-mother-birthday" displayName="The Queen Mother's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability><Territory code="TH" /></Applicability><Strategy><Fixed month="August" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- King Bhumibol Memorial Day — 13 October, marking the 2016 death of King Bhumibol (Rama IX). Strategy: Fixed day-of-month. -->
+    <NotableDate id="king-bhumibol-memorial-day" displayName="King Bhumibol Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability fromYear="2017"><Territory code="TH" /></Applicability><Strategy><Fixed month="October" day="13" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Chulalongkorn Day — 23 October, honoring King Chulalongkorn (Rama V). Strategy: Fixed day-of-month. -->
+    <NotableDate id="chulalongkorn-day" displayName="Chulalongkorn Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability><Territory code="TH" /></Applicability><Strategy><Fixed month="October" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- King Bhumibol's Birthday / National Day / Father's Day — 5 December. Strategy: Fixed day-of-month. -->
+    <NotableDate id="king-bhumibol-birthday" displayName="King Bhumibol's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability><Territory code="TH" /></Applicability><Strategy><Fixed month="December" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Constitution Day — 10 December, marking the 1932 constitution. Strategy: Fixed day-of-month. -->
+    <NotableDate id="constitution-day-th" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="th"><Applicability><Territory code="TH" /></Applicability><Strategy><Fixed month="December" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
