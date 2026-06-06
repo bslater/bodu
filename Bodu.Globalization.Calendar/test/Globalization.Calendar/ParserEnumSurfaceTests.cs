@@ -406,7 +406,8 @@ public sealed class ParserEnumSurfaceTests
 
         AdjustmentPolicy policy = NotableDateResourceLoader.Load(xml).AdjustmentPolicies.Single();
 
-        Assert.IsNull(policy.ActionWeekday, "actionWeekday unset");
-        Assert.IsNull(policy.TriggerWeekOrdinal, "triggerWeekOrdinal unset");
+        Assert.AreEqual(
+            ((DayOfWeek?)null, (WeekOrdinal?)null),
+            (policy.ActionWeekday, policy.TriggerWeekOrdinal));
     }
 }
