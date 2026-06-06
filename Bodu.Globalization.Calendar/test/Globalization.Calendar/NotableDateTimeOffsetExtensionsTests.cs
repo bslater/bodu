@@ -43,8 +43,7 @@ public sealed class NotableDateTimeOffsetExtensionsTests
 
         DateTimeOffset next = start.NextWorkingDay(Service, "XX");
 
-        Assert.AreEqual(new DateOnly(2026, 1, 2), DateOnly.FromDateTime(next.DateTime));
-        Assert.AreEqual(new TimeSpan(14, 30, 0), next.TimeOfDay);
+        Assert.AreEqual(new DateTimeOffset(2026, 1, 2, 14, 30, 0, TimeSpan.FromHours(5)), next);
         Assert.AreEqual(TimeSpan.FromHours(5), next.Offset);
     }
 
