@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Ethiopia (ET) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "ET".
+
+  Ethiopia keeps the Ethiopic (Ge'ez) calendar, which the engine does not implement, and its Christian feasts follow
+  the Orthodox (Julian) paschal cycle. This pack therefore:
+
+    * Imports the Orthodox Easter anchor and Orthodox Good Friday, and the Islamic Eids and Mawlid, from the
+      africa-common hub (the Islamic dates use tabular Hijri, so they may differ by a day or two from the gazette).
+    * Declares the Ethiopic-calendar fixed feasts and civil days inline as their MODERN-ERA Gregorian dates
+      (Ethiopian Christmas / Genna 7 January, Timkat 19 January, Enkutatash / New Year 11 September, Meskel 27
+      September). These Gregorian projections are stable across the modern era but shift by one day in the years
+      around an Ethiopic leap year; that shift is not modeled.
+    * Declares the purely civil commemorations (Adwa, Patriots' Victory, Downfall of the Derg) as exact Gregorian
+      fixed dates.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.et">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="africa-common">
+      <Use notableDateRef="workers-day" territory="ET" />
+      <Use notableDateRef="orthodox-easter-sunday" territory="ET" />
+      <Use notableDateRef="orthodox-good-friday" territory="ET" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-fitr" territory="ET" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="ET" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="ET" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Ethiopian Christmas (Genna) — 7 January (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
+    <NotableDate id="ethiopian-christmas" displayName="Ethiopian Christmas (Genna)" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Epiphany (Timkat) — 19 January (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
+    <NotableDate id="timkat" displayName="Epiphany (Timkat)" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="January" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Adwa Victory Day — 2 March, marking the 1896 victory over Italy. Strategy: Fixed day-of-month. -->
+    <NotableDate id="adwa-victory-day" displayName="Adwa Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="March" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Patriots' Victory Day — 5 May, marking the 1941 liberation. Strategy: Fixed day-of-month. -->
+    <NotableDate id="patriots-victory-day" displayName="Patriots' Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="May" day="5" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Downfall of the Derg — 28 May, marking the 1991 end of the Derg regime. Strategy: Fixed day-of-month. -->
+    <NotableDate id="derg-downfall-day" displayName="Downfall of the Derg" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability fromYear="1992"><Territory code="ET" /></Applicability><Strategy><Fixed month="May" day="28" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ethiopian New Year (Enkutatash) — 11 September (Gregorian projection of the Ethiopic new year). Strategy: Fixed day-of-month. -->
+    <NotableDate id="ethiopian-new-year" displayName="Ethiopian New Year (Enkutatash)" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="September" day="11" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Finding of the True Cross (Meskel) — 27 September (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
+    <NotableDate id="meskel" displayName="Finding of the True Cross (Meskel)" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="September" day="27" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

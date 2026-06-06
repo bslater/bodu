@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hong Kong (HK) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "HK". The
+  civil and Western Christian days (New Year, Good Friday and the day after, Easter Monday, Labour Day, Christmas,
+  the first weekday after Christmas) are imported from the global-core and christian-western catalogues; the Chinese
+  traditional festivals are lunisolar dates declared inline, and Ching Ming (Tomb-Sweeping) uses the astronomical
+  Qingming solar-term algorithm. Buddha's Birthday is the eighth day of the fourth lunar month, and the Mid-Autumn
+  holiday falls on the day following the festival itself.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.hk">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="global-core">
+      <Use notableDateRef="new-years-day" territory="HK" />
+      <Use notableDateRef="workers-day" territory="HK" />
+    </Import>
+    <Import resource="christian-western">
+      <Use notableDateRef="easter-sunday" territory="HK" />
+      <Use notableDateRef="good-friday" territory="HK" />
+      <Use notableDateRef="holy-saturday" territory="HK" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="easter-monday" territory="HK" />
+      <Use notableDateRef="christmas-day" territory="HK" />
+      <Use notableDateRef="boxing-day" territory="HK" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Lunar New Year — first day of the Chinese lunisolar year; a three-day public holiday. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="lunar-new-year" displayName="Lunar New Year" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk" durationDays="3"><Applicability calendar="ChineseLunisolar"><Territory code="HK" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Ching Ming Festival (Tomb-Sweeping Day) — the Qingming solar term, around 4-5 April. Strategy: Algorithm (computed solar term). -->
+    <NotableDate id="ching-ming-festival" displayName="Ching Ming Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability><Territory code="HK" /></Applicability><Strategy><Algorithm key="qingming" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Buddha's Birthday — the eighth day of the fourth lunar month. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="buddhas-birthday" displayName="The Birthday of the Buddha" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability calendar="ChineseLunisolar"><Territory code="HK" /></Applicability><Strategy><Fixed month="4" day="8" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Tuen Ng (Dragon Boat) Festival — the fifth day of the fifth lunar month. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="tuen-ng-festival" displayName="Tuen Ng Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability calendar="ChineseLunisolar"><Territory code="HK" /></Applicability><Strategy><Fixed month="5" day="5" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- HKSAR Establishment Day — 1 July, marking the 1997 handover. Strategy: Fixed day-of-month. -->
+    <NotableDate id="hksar-establishment-day" displayName="HKSAR Establishment Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability fromYear="1997"><Territory code="HK" /></Applicability><Strategy><Fixed month="July" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- The day following the Mid-Autumn Festival — the 16th day of the eighth lunar month (the festival itself is the 15th). Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="day-after-mid-autumn-festival" displayName="The Day Following the Mid-Autumn Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability calendar="ChineseLunisolar"><Territory code="HK" /></Applicability><Strategy><Fixed month="8" day="16" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day — 1 October, the founding of the People's Republic of China. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day-hk" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability fromYear="1997"><Territory code="HK" /></Applicability><Strategy><Fixed month="October" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Chung Yeung Festival — the ninth day of the ninth lunar month. Strategy: Fixed lunisolar month/day. -->
+    <NotableDate id="chung-yeung-festival" displayName="Chung Yeung Festival" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="hk"><Applicability calendar="ChineseLunisolar"><Territory code="HK" /></Applicability><Strategy><Fixed month="9" day="9" skipLeapMonth="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

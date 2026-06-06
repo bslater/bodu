@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  Colombia (CO) — notable-date resource pack
+  ================================================================================================================
+
+  National rules are scoped to territory "CO". Colombia's public holidays are national, so there are no
+  subdivision-scoped rules.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian concepts (New Year's Day, Holy Week, Workers' Day, the Immaculate
+      Conception, Christmas, and the family observances) are IMPORTED from the americas-common hub and given a CO
+      territory scope; the holidays subject to the Emiliani law carry the move-to-Monday adjustment.
+
+    * Colombia-specific concepts (Saint Joseph, Saints Peter and Paul, the three Easter-derived Monday holidays,
+      Independence Day, the Battle of Boyacá, the Day of the Races, and the Independence of Cartagena) are declared
+      INLINE.
+
+  Ley Emiliani (Ley 51 de 1983): a number of holidays are observed on the FOLLOWING Monday whenever their calendar
+  date is not already a Monday. This is expressed with one adjustment policy applied to those holidays. The
+  Easter-derived Monday holidays (Ascension, Corpus Christi, Sacred Heart) are observed on the Monday a fixed number
+  of days after Easter, so they are computed directly with that offset rather than via the adjustment. New Year's
+  Day, Maundy Thursday, Good Friday, Workers' Day, Independence Day, the Battle of Boyacá, the Immaculate
+  Conception, and Christmas are not moved.
+
+  Anchor note: the Easter-derived holidays resolve against the Easter Sunday anchor re-exported by the hub.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.co">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <!--
+      Ley Emiliani: a holiday whose calendar date is not a Monday is observed on the following Monday. The trigger
+      fires on every weekday except Monday, so a date already on a Monday is left unchanged.
+    -->
+    <AdjustmentPolicy id="emiliani-next-monday" priority="100">
+      <Trigger type="IfDayOfWeek">
+        <Weekday value="Tuesday" /><Weekday value="Wednesday" /><Weekday value="Thursday" />
+        <Weekday value="Friday" /><Weekday value="Saturday" /><Weekday value="Sunday" />
+      </Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" reason="Ley Emiliani (lunes siguiente)" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <Imports>
+    <Import resource="americas-common">
+      <Use notableDateRef="new-years-day" territory="CO" />
+      <Use notableDateRef="epiphany" territory="CO" category="PublicHoliday" nonWorking="true">
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments>
+      </Use>
+      <Use notableDateRef="maundy-thursday" territory="CO" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="good-friday" territory="CO" />
+      <Use notableDateRef="easter-sunday" territory="CO" />
+      <Use notableDateRef="workers-day" territory="CO" />
+      <Use notableDateRef="assumption-of-mary" territory="CO" category="PublicHoliday" nonWorking="true">
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments>
+      </Use>
+      <Use notableDateRef="all-saints-day" territory="CO" category="PublicHoliday" nonWorking="true">
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments>
+      </Use>
+      <Use notableDateRef="immaculate-conception" territory="CO" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mothers-day" territory="CO" />
+      <Use notableDateRef="fathers-day" territory="CO" />
+      <Use notableDateRef="christmas-day" territory="CO" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Saint Joseph's Day (Día de San José) — 19 March, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <NotableDate id="saint-joseph" displayName="Saint Joseph's Day" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><Fixed month="March" day="19" /></Strategy>
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Ascension of the Lord (Ascensión del Señor) — observed on the Monday 43 days after Easter Sunday (the Monday
+      following the canonical Ascension Thursday). Strategy: OffsetFromRule from the imported Easter Sunday anchor.
+    -->
+    <NotableDate id="ascension-day-co" displayName="Ascension of the Lord" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="43" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Corpus Christi — observed on the Monday 64 days after Easter Sunday. Strategy: OffsetFromRule from the Easter Sunday anchor. -->
+    <NotableDate id="corpus-christi-co" displayName="Corpus Christi" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="64" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Sacred Heart (Sagrado Corazón) — observed on the Monday 71 days after Easter Sunday. Strategy: OffsetFromRule from the Easter Sunday anchor. -->
+    <NotableDate id="sacred-heart-co" displayName="Sacred Heart" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="71" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saints Peter and Paul (San Pedro y San Pablo) — 29 June, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <NotableDate id="saints-peter-and-paul" displayName="Saints Peter and Paul" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><Fixed month="June" day="29" /></Strategy>
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Día de la Independencia) — 20 July, marking the 1810 declaration. Not moved. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-co" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><Fixed month="July" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Battle of Boyacá (Batalla de Boyacá) — 7 August, marking the 1819 victory that secured independence. Not moved. Strategy: Fixed day-of-month. -->
+    <NotableDate id="battle-of-boyaca" displayName="Battle of Boyacá" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><Fixed month="August" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Day of the Races / Columbus Day (Día de la Raza) — 12 October, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <NotableDate id="dia-de-la-raza-co" displayName="Day of the Races" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><Fixed month="October" day="12" /></Strategy>
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence of Cartagena (Independencia de Cartagena) — 11 November, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <NotableDate id="cartagena-independence" displayName="Independence of Cartagena" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
+        <Strategy><Fixed month="November" day="11" /></Strategy>
+        <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

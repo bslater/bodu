@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Saudi Arabia (SA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "SA".
+  Saudi Arabia observes no Gregorian-Christian or fixed civil New Year holidays; its two religious holidays are the
+  Eids, imported here from the Umm al-Qura Islamic catalogue (the kingdom's official calendar) rather than the
+  tabular Hijri hub, each carrying a multi-day span. The two national days are Gregorian fixed dates. Saudi Arabia
+  keeps a Friday/Saturday weekend, declared via the working-week pattern (Sunday-to-Thursday working).
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.sa">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" workingDays="1111100" />
+
+  <Imports>
+    <Import resource="global-islamic-umm-al-qura">
+      <Use notableDateRef="eid-al-fitr" territory="SA" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="SA" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Founding Day (Yawm al-Ta'sis) — 22 February, marking the 1727 establishment of the first Saudi state; observed since 2022. Strategy: Fixed day-of-month. -->
+    <NotableDate id="founding-day-sa" displayName="Founding Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sa"><Applicability fromYear="2022"><Territory code="SA" /></Applicability><Strategy><Fixed month="February" day="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day (Al-Yawm al-Watani) — 23 September, marking the 1932 unification of the kingdom. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day-sa" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sa"><Applicability><Territory code="SA" /></Applicability><Strategy><Fixed month="September" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

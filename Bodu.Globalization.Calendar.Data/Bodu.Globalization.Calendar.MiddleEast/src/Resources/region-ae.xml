@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  United Arab Emirates (AE) notable-date resource on the v2 cookbook schema. National rules are scoped to territory
+  "AE". The civil New Year and the Islamic festivals are imported from the middleeast-common hub (tabular Hijri, so
+  the festival dates may differ by a day or two from the locally proclaimed moon-sighting); the national days are
+  declared inline. The United Arab Emirates moved to a Saturday/Sunday weekend in 2022, so the default
+  Monday-to-Friday working week applies and no working-week override is declared.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ae">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="middleeast-common">
+      <Use notableDateRef="new-years-day" territory="AE" />
+      <Use notableDateRef="eid-al-fitr" territory="AE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="AE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="islamic-new-year" territory="AE" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="mawlid-al-nabi" territory="AE" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- Commemoration Day (Martyrs' Day) — 1 December, honoring Emirati fallen. Strategy: Fixed day-of-month. -->
+    <NotableDate id="commemoration-day" displayName="Commemoration Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ae"><Applicability fromYear="2015"><Territory code="AE" /></Applicability><Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- National Day — 2 December, marking the 1971 union; a two-day public holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-day-ae" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ae" durationDays="2"><Applicability><Territory code="AE" /></Applicability><Strategy><Fixed month="December" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

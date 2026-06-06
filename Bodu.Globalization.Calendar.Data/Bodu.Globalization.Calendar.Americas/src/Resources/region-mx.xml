@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  Mexico (MX) — notable-date resource pack
+  ================================================================================================================
+
+  National rules are scoped to territory "MX". Mexico's statutory holidays (días de descanso obligatorio, Ley
+  Federal del Trabajo art. 74) are uniform across the country, so there are no subdivision-scoped rules; a
+  subdivision query (for example MX-JAL) inherits every national rule.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian concepts (New Year's Day, International Workers' Day, Holy Week, the Easter
+      anchor, Christmas, the Epiphany and All Saints' feasts) are IMPORTED from the americas-common hub and given an
+      MX territory scope.
+
+    * Mexico-specific civic and cultural concepts (the three reform-era Monday holidays, Flag Day, Mother's Day on
+      its fixed Mexican date, Independence Day, the Day of the Dead, Revolution Day, the Virgin of Guadalupe) are
+      declared INLINE.
+
+  No weekend substitution: Mexican statutory holidays are not observed in lieu when they land on a weekend. The
+  three reform holidays (Constitution Day, Benito Juárez's Birthday, Revolution Day) are fixed to a Monday by the
+  2006 calendar reform; the remaining national holidays stay on their calendar date. The pack therefore declares
+  no adjustment policies.
+
+  Anchor note: the Easter-derived observances (Maundy Thursday, Good Friday) resolve against the Easter Sunday
+  anchor re-exported by the hub.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.mx">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <!--
+      Shared observances imported from the americas-common hub and scoped to Mexico. New Year's Day, Workers' Day,
+      and Christmas Day are obligatory rest days; Holy Thursday and Good Friday are the widely observed Holy Week
+      days. Epiphany (Día de Reyes), the Easter anchor, and All Saints' Day are working religious observances.
+    -->
+    <Import resource="americas-common">
+      <Use notableDateRef="new-years-day" territory="MX" />
+      <Use notableDateRef="epiphany" territory="MX" />
+      <Use notableDateRef="valentines-day" territory="MX" />
+      <Use notableDateRef="maundy-thursday" territory="MX" />
+      <Use notableDateRef="good-friday" territory="MX" category="Religious" nonWorking="false" />
+      <Use notableDateRef="easter-sunday" territory="MX" />
+      <Use notableDateRef="workers-day" territory="MX" />
+      <Use notableDateRef="cinco-de-mayo" territory="MX" />
+      <Use notableDateRef="fathers-day" territory="MX" />
+      <Use notableDateRef="all-saints-day" territory="MX" />
+      <Use notableDateRef="christmas-eve" territory="MX" />
+      <Use notableDateRef="christmas-day" territory="MX" />
+      <Use notableDateRef="new-years-eve" territory="MX" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      Constitution Day (Día de la Constitución) — commemorates the 1917 constitution promulgated on 5 February;
+      observed on the FIRST Monday of February since the 2006 calendar reform. Obligatory rest day. Strategy:
+      DayOfWeekInMonth (first Monday).
+    -->
+    <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mx"><Applicability fromYear="2006"><Territory code="MX" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Flag Day (Día de la Bandera) — 24 February; a civic observance, not a rest day. Strategy: Fixed day-of-month. -->
+    <NotableDate id="flag-day-mx" displayName="Flag Day" category="Civic" defaultNonWorkingDay="false">
+      <Rules><Rule id="mx"><Applicability fromYear="1940"><Territory code="MX" /></Applicability>
+        <Strategy><Fixed month="February" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Benito Juárez's Birthday (Natalicio de Benito Juárez) — commemorates his birth on 21 March 1806; observed on
+      the THIRD Monday of March since the 2006 calendar reform. Obligatory rest day. Strategy: DayOfWeekInMonth
+      (third Monday).
+    -->
+    <NotableDate id="benito-juarez-day" displayName="Benito Juárez's Birthday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mx"><Applicability fromYear="2006"><Territory code="MX" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Mother's Day (Día de las Madres) — 10 May, a fixed date in Mexico (not the second Sunday observed elsewhere in
+      the Americas). A widely observed cultural day, not a rest day. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="mx"><Applicability><Territory code="MX" /></Applicability>
+        <Strategy><Fixed month="May" day="10" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Independence Day (Día de la Independencia) — 16 September, commemorating the 1810 Grito de Dolores. Obligatory
+      rest day. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="independence-day-mx" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mx"><Applicability><Territory code="MX" /></Applicability>
+        <Strategy><Fixed month="September" day="16" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day of the Dead (Día de Muertos) — 2 November; a major cultural and religious observance honoring the deceased,
+      paired with the imported All Saints' Day on 1 November. Not a rest day. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="day-of-the-dead" displayName="Day of the Dead" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="mx"><Applicability><Territory code="MX" /></Applicability>
+        <Strategy><Fixed month="November" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Revolution Day (Día de la Revolución) — commemorates the 20 November 1910 start of the Mexican Revolution;
+      observed on the THIRD Monday of November since the 2006 calendar reform. Obligatory rest day. Strategy:
+      DayOfWeekInMonth (third Monday).
+    -->
+    <NotableDate id="revolution-day" displayName="Revolution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="mx"><Applicability fromYear="2006"><Territory code="MX" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="November" dayOfWeek="Monday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day of the Virgin of Guadalupe (Día de la Virgen de Guadalupe) — 12 December; a major national religious
+      observance. Not a rest day. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="guadalupe-day" displayName="Day of the Virgin of Guadalupe" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="mx"><Applicability><Territory code="MX" /></Applicability>
+        <Strategy><Fixed month="December" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

@@ -93,6 +93,27 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("IN", 2024, "makar-sankranti", "2024-01-14", false)]
     [DataRow("IN", 2024, "good-friday", "2024-03-29", false)]
     [DataRow("IN", 2024, "gandhi-jayanti", "2024-10-02", false)]
+
+    // Indonesia, Thailand, Philippines: fixed national days, Songkran, and the Catholic Holy Week / nth-weekday days.
+    [DataRow("ID", 2024, "independence-day-id", "2024-08-17", false)]
+    [DataRow("ID", 2024, "pancasila-day", "2024-06-01", false)]
+    [DataRow("TH", 2024, "chakri-day", "2024-04-06", false)]
+    [DataRow("TH", 2024, "songkran", "2024-04-13", false)]
+    [DataRow("TH", 2024, "chulalongkorn-day", "2024-10-23", false)]
+    [DataRow("PH", 2024, "independence-day-ph", "2024-06-12", false)]
+    [DataRow("PH", 2024, "good-friday", "2024-03-29", false)]
+    [DataRow("PH", 2024, "national-heroes-day", "2024-08-26", false)]
+    [DataRow("PH", 2024, "rizal-day", "2024-12-30", false)]
+
+    // Vietnam, Hong Kong, Taiwan: fixed national days, Easter offsets, and the Qingming solar term (Apr 4 in 2024).
+    [DataRow("VN", 2024, "reunification-day", "2024-04-30", false)]
+    [DataRow("VN", 2024, "national-day-vn", "2024-09-02", false)]
+    [DataRow("HK", 2024, "good-friday", "2024-03-29", false)]
+    [DataRow("HK", 2024, "ching-ming-festival", "2024-04-04", false)]
+    [DataRow("HK", 2024, "national-day-hk", "2024-10-01", false)]
+    [DataRow("TW", 2024, "peace-memorial-day", "2024-02-28", false)]
+    [DataRow("TW", 2024, "tomb-sweeping-day", "2024-04-04", false)]
+    [DataRow("TW", 2024, "national-day-tw", "2024-10-10", false)]
     public void Resolve_AsiaPacificHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
         var matches = AsiaPacificCalendarData.CreateService(territory)
@@ -196,6 +217,29 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("IN", 2024, "ganesh-chaturthi", "2024-09-07")]
     [DataRow("IN", 2024, "dussehra", "2024-10-12")]
     [DataRow("IN", 2024, "karva-chauth", "2024-10-20")]
+
+    // Indonesia and Thailand: tabular-Hijri Eids and the computed Buddhist festivals.
+    [DataRow("ID", 2024, "eid-al-fitr", "2024-04-10")]
+    [DataRow("ID", 2024, "eid-al-adha", "2024-06-17")]
+    [DataRow("ID", 2024, "vesak", "2024-05-23")]
+    [DataRow("TH", 2024, "vesak", "2024-05-22")]
+
+    // Philippines: Chinese New Year and the tabular-Hijri Eid.
+    [DataRow("PH", 2024, "chinese-new-year", "2024-02-10")]
+    [DataRow("PH", 2024, "eid-al-fitr", "2024-04-10")]
+
+    // Vietnam, Hong Kong, Taiwan: Chinese-lunisolar festivals (Tết / Lunar New Year, Dragon Boat / Tuen Ng,
+    // Mid-Autumn, Buddha's Birthday, Chung Yeung, Hùng Kings).
+    [DataRow("VN", 2024, "lunar-new-year", "2024-02-10")]
+    [DataRow("VN", 2024, "hung-kings-festival", "2024-04-18")]
+    [DataRow("VN", 2024, "mid-autumn-festival", "2024-09-17")]
+    [DataRow("HK", 2024, "lunar-new-year", "2024-02-10")]
+    [DataRow("HK", 2024, "buddhas-birthday", "2024-05-15")]
+    [DataRow("HK", 2024, "tuen-ng-festival", "2024-06-10")]
+    [DataRow("HK", 2024, "chung-yeung-festival", "2024-10-11")]
+    [DataRow("TW", 2024, "lunar-new-year", "2024-02-10")]
+    [DataRow("TW", 2024, "dragon-boat-festival", "2024-06-10")]
+    [DataRow("TW", 2024, "mid-autumn-festival", "2024-09-17")]
     public void Resolve_LunarOrIslamicFestival_IsWithinToleranceOfKnownDate(string territory, int year, string notableDateId, string expected)
     {
         var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
@@ -228,5 +272,22 @@ public sealed class AsiaPacificCalendarDataTests
         Assert.AreEqual(new DateOnly(2024, 2, 10), matches[0].Date, "span start");
         Assert.AreEqual(7, matches[0].DurationDays, "duration");
         Assert.AreEqual(new DateOnly(2024, 2, 16), matches[0].EndDate, "span end");
+    }
+
+    /// <summary>
+    /// Verifies that every supported country loads and validates (the loader throws on a validation error) and
+    /// resolves a non-empty set of holidays for a representative year.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
+    {
+        foreach (var country in AsiaPacificCalendarData.SupportedCountries)
+        {
+            IReadOnlyList<NotableDate> holidays = AsiaPacificCalendarData.CreateService(country)
+                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
+
+            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
+        }
     }
 }

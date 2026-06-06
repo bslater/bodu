@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  Argentina (AR) — notable-date resource pack
+  ================================================================================================================
+
+  National rules are scoped to territory "AR". Argentina's public holidays are national, so there are no
+  subdivision-scoped rules.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian concepts (New Year's Day, Good Friday and the Easter anchor, Workers' Day,
+      the Immaculate Conception, Christmas) are IMPORTED from the americas-common hub and given an AR territory
+      scope, with the Immaculate Conception re-scoped to a non-working national holiday.
+
+    * Argentina-specific concepts (the Carnival days, the patriotic commemorations, Mother's Day on its Argentine
+      date, and the movable holidays) are declared INLINE.
+
+  Movable holidays (feriados trasladables): under Ley 27.399 a trasladable holiday falling on a Tuesday or
+  Wednesday is observed on the preceding Monday, and one falling on a Thursday or Friday on the following Monday;
+  Monday and weekend dates are unchanged. This is expressed with two adjustment policies applied to the trasladable
+  holidays (Güemes, San Martín, Cultural Diversity, National Sovereignty). The inamovible holidays carry no
+  adjustment and always fall on their calendar date.
+
+  Anchor note: the Easter-derived observances (Carnival Monday/Tuesday, Good Friday) resolve against the Easter
+  Sunday anchor re-exported by the hub.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.ar">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <AdjustmentPolicies>
+    <!-- Trasladable holiday on a Tuesday or Wednesday is observed on the preceding Monday (Ley 27.399). -->
+    <AdjustmentPolicy id="traslado-to-previous-monday" priority="100">
+      <Trigger type="IfDayOfWeek"><Weekday value="Tuesday" /><Weekday value="Wednesday" /></Trigger>
+      <Action type="MoveToPreviousWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" reason="Feriado trasladable" />
+    </AdjustmentPolicy>
+    <!-- Trasladable holiday on a Thursday or Friday is observed on the following Monday (Ley 27.399). -->
+    <AdjustmentPolicy id="traslado-to-next-monday" priority="100">
+      <Trigger type="IfDayOfWeek"><Weekday value="Thursday" /><Weekday value="Friday" /></Trigger>
+      <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+      <Emission mode="ObservedOnly" reason="Feriado trasladable" />
+    </AdjustmentPolicy>
+  </AdjustmentPolicies>
+
+  <Imports>
+    <Import resource="americas-common">
+      <Use notableDateRef="new-years-day" territory="AR" />
+      <Use notableDateRef="good-friday" territory="AR" />
+      <Use notableDateRef="easter-sunday" territory="AR" />
+      <Use notableDateRef="workers-day" territory="AR" />
+      <Use notableDateRef="immaculate-conception" territory="AR" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-eve" territory="AR" />
+      <Use notableDateRef="christmas-day" territory="AR" />
+      <Use notableDateRef="new-years-eve" territory="AR" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      Carnival Monday and Tuesday (Carnaval) — 48 and 47 days before Easter Sunday; restored as national holidays in
+      2011. Non-working. Strategy: OffsetFromRule from the imported Easter Sunday anchor.
+    -->
+    <NotableDate id="carnival-monday" displayName="Carnival Monday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability fromYear="2011"><Territory code="AR" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-48" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="carnival-tuesday" displayName="Carnival Tuesday" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability fromYear="2011"><Territory code="AR" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-47" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day of Remembrance for Truth and Justice (Día Nacional de la Memoria por la Verdad y la Justicia) — 24 March,
+      a national holiday since 2006 marking the 1976 coup. Inamovible. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="memorial-day-ar" displayName="Day of Remembrance for Truth and Justice" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability fromYear="2006"><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="March" day="24" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Malvinas Day (Día del Veterano y de los Caídos en la Guerra de Malvinas) — 2 April, honoring the veterans and
+      fallen of the 1982 war. Inamovible. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="malvinas-day" displayName="Malvinas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability fromYear="2001"><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="April" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- May Revolution Day (Día de la Revolución de Mayo) — 25 May, marking the 1810 revolution. Inamovible. Strategy: Fixed day-of-month. -->
+    <NotableDate id="may-revolution-day" displayName="May Revolution Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="May" day="25" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Anniversary of the Death of General Güemes (Paso a la Inmortalidad del General Martín Miguel de Güemes) —
+      17 June. A trasladable national holiday. Strategy: Fixed day-of-month with the trasladable adjustment.
+    -->
+    <NotableDate id="guemes-day" displayName="Anniversary of the Death of General Güemes" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability fromYear="2016"><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="June" day="17" /></Strategy>
+        <Adjustments><Adjustment policyRef="traslado-to-previous-monday" /><Adjustment policyRef="traslado-to-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Flag Day (Día de la Bandera / Paso a la Inmortalidad del General Manuel Belgrano) — 20 June, marking
+      Belgrano's death. Inamovible. Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="flag-day-ar" displayName="Flag Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="June" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Día de la Independencia) — 9 July, marking the 1816 declaration. Inamovible. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-ar" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="July" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Anniversary of the Death of General San Martín (Paso a la Inmortalidad del General José de San Martín) —
+      17 August. A trasladable national holiday. Strategy: Fixed day-of-month with the trasladable adjustment.
+    -->
+    <NotableDate id="san-martin-day" displayName="Anniversary of the Death of General San Martín" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="August" day="17" /></Strategy>
+        <Adjustments><Adjustment policyRef="traslado-to-previous-monday" /><Adjustment policyRef="traslado-to-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day of Respect for Cultural Diversity (Día del Respeto a la Diversidad Cultural) — 12 October. A trasladable
+      national holiday (formerly Columbus Day). Strategy: Fixed day-of-month with the trasladable adjustment.
+    -->
+    <NotableDate id="diversity-day-ar" displayName="Day of Respect for Cultural Diversity" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="October" day="12" /></Strategy>
+        <Adjustments><Adjustment policyRef="traslado-to-previous-monday" /><Adjustment policyRef="traslado-to-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Day of National Sovereignty (Día de la Soberanía Nacional) — 20 November, marking the 1845 Battle of Vuelta de
+      Obligado. A trasladable national holiday. Strategy: Fixed day-of-month with the trasladable adjustment.
+    -->
+    <NotableDate id="sovereignty-day-ar" displayName="Day of National Sovereignty" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ar"><Applicability fromYear="2010"><Territory code="AR" /></Applicability>
+        <Strategy><Fixed month="November" day="20" /></Strategy>
+        <Adjustments><Adjustment policyRef="traslado-to-previous-monday" /><Adjustment policyRef="traslado-to-next-monday" /></Adjustments></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mother's Day (Día de la Madre) — the third Sunday of October in Argentina. Cultural observance. Strategy: DayOfWeekInMonth (third Sunday). -->
+    <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="October" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Father's Day (Día del Padre) — the third Sunday of June. Cultural observance. Strategy: DayOfWeekInMonth (third Sunday). -->
+    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="ar"><Applicability><Territory code="AR" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

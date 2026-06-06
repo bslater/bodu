@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Turkey (TR) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "TR". The civil
+  New Year and Labour Day, and the two religious festivals (Ramazan Bayramı = Eid al-Fitr, Kurban Bayramı = Eid
+  al-Adha), are imported from the middleeast-common hub (tabular Hijri, so the festival dates may differ by a day or
+  two from the official almanac); the secular national days are declared inline. Turkey keeps a Saturday/Sunday
+  weekend, so the default Monday-to-Friday working week applies.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.tr">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="middleeast-common">
+      <Use notableDateRef="new-years-day" territory="TR" />
+      <Use notableDateRef="workers-day" territory="TR" />
+      <Use notableDateRef="eid-al-fitr" territory="TR" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="eid-al-adha" territory="TR" category="PublicHoliday" nonWorking="true" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!-- National Sovereignty and Children's Day — 23 April, marking the 1920 first Grand National Assembly. Strategy: Fixed day-of-month. -->
+    <NotableDate id="national-sovereignty-day" displayName="National Sovereignty and Children's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tr"><Applicability><Territory code="TR" /></Applicability><Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Commemoration of Atatürk, Youth and Sports Day — 19 May. Strategy: Fixed day-of-month. -->
+    <NotableDate id="ataturk-youth-sports-day" displayName="Commemoration of Atatürk, Youth and Sports Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tr"><Applicability><Territory code="TR" /></Applicability><Strategy><Fixed month="May" day="19" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Democracy and National Unity Day — 15 July, marking the defeat of the 2016 coup attempt. Strategy: Fixed day-of-month. -->
+    <NotableDate id="democracy-day-tr" displayName="Democracy and National Unity Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tr"><Applicability fromYear="2017"><Territory code="TR" /></Applicability><Strategy><Fixed month="July" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Victory Day (Zafer Bayramı) — 30 August, marking the 1922 victory at Dumlupınar. Strategy: Fixed day-of-month. -->
+    <NotableDate id="victory-day-tr" displayName="Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tr"><Applicability><Territory code="TR" /></Applicability><Strategy><Fixed month="August" day="30" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Republic Day (Cumhuriyet Bayramı) — 29 October, marking the 1923 proclamation of the republic. Strategy: Fixed day-of-month. -->
+    <NotableDate id="republic-day-tr" displayName="Republic Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="tr"><Applicability><Territory code="TR" /></Applicability><Strategy><Fixed month="October" day="29" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

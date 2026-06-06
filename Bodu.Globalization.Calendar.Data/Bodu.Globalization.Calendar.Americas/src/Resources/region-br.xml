@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ================================================================================================================
+  Brazil (BR) — notable-date resource pack
+  ================================================================================================================
+
+  National rules are scoped to territory "BR"; state rules use their ISO 3166-2 subdivision codes (BR-SP, BR-RJ,
+  BR-BA, …). Because a subdivision query inherits every rule scoped to "BR", all states receive the national
+  holidays automatically; the subdivision-scoped rules add the state holidays.
+
+  How this resource is built:
+
+    * Shared civil and Western Christian concepts (New Year's Day, Good Friday and the Easter anchor, Workers' Day,
+      Corpus Christi, All Souls' Day / Finados, Mother's Day, Christmas) are IMPORTED from the americas-common hub
+      and given a BR territory scope, with Finados re-scoped to a non-working national holiday.
+
+    * Brazil-specific concepts (Tiradentes, Independence, Our Lady Aparecida, Proclamation of the Republic, Black
+      Awareness Day, the Carnival days, the Brazilian Valentine's and Father's Day, and the São Paulo / Rio de
+      Janeiro / Bahia state holidays) are declared INLINE.
+
+  No weekend substitution: Brazilian holidays are not observed in lieu when they land on a weekend, so the pack
+  declares no adjustment policies.
+
+  Anchor note: the Easter-derived observances (Carnival Monday/Tuesday, Good Friday, Corpus Christi) resolve
+  against the Easter Sunday anchor re-exported by the hub.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.br">
+
+  <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
+
+  <Imports>
+    <Import resource="americas-common">
+      <Use notableDateRef="new-years-day" territory="BR" />
+      <Use notableDateRef="good-friday" territory="BR" />
+      <Use notableDateRef="easter-sunday" territory="BR" />
+      <Use notableDateRef="workers-day" territory="BR" />
+      <Use notableDateRef="corpus-christi" territory="BR" />
+      <Use notableDateRef="mothers-day" territory="BR" />
+      <Use notableDateRef="all-souls-day" territory="BR" category="PublicHoliday" nonWorking="true" />
+      <Use notableDateRef="christmas-eve" territory="BR" />
+      <Use notableDateRef="christmas-day" territory="BR" />
+      <Use notableDateRef="new-years-eve" territory="BR" />
+    </Import>
+  </Imports>
+
+  <NotableDates>
+
+    <!--
+      Carnival Monday and Tuesday (Carnaval) — the Monday and Tuesday before Ash Wednesday, 48 and 47 days before
+      Easter Sunday. Not statutory national holidays (federally an optional point), but universally observed.
+      Strategy: OffsetFromRule from the imported Easter Sunday anchor.
+    -->
+    <NotableDate id="carnival-monday" displayName="Carnival Monday" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="br"><Applicability fromYear="1583"><Territory code="BR" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-48" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <NotableDate id="carnival-tuesday" displayName="Carnival Tuesday" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="br"><Applicability fromYear="1583"><Territory code="BR" /></Applicability>
+        <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-47" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Tiradentes — 21 April, commemorating the 1792 execution of the independence martyr. National holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="tiradentes" displayName="Tiradentes" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="April" day="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Dia dos Namorados (Valentine's Day) — 12 June; the Brazilian sweethearts' day. Cultural observance. Strategy: Fixed day-of-month. -->
+    <NotableDate id="dia-dos-namorados" displayName="Dia dos Namorados" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="June" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Father's Day (Dia dos Pais) — the second Sunday of August in Brazil. Cultural observance. Strategy: DayOfWeekInMonth (second Sunday). -->
+    <NotableDate id="fathers-day" displayName="Father's Day" category="Observance" defaultNonWorkingDay="false">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><DayOfWeekInMonth month="August" dayOfWeek="Sunday" weekOrdinal="Second" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Independence Day (Dia da Independência) — 7 September, commemorating the 1822 declaration. National holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="independence-day-br" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="September" day="7" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Our Lady of Aparecida (Nossa Senhora Aparecida) — 12 October; the feast of Brazil's patroness, a national holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="nossa-senhora-aparecida" displayName="Our Lady of Aparecida" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="October" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Children's Day (Dia das Crianças) — 12 October, observed alongside Aparecida (both resolve under KeepAll). Cultural observance. Strategy: Fixed day-of-month. -->
+    <NotableDate id="dia-das-criancas" displayName="Children's Day" category="Cultural" defaultNonWorkingDay="false">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="October" day="12" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Proclamation of the Republic (Proclamação da República) — 15 November, marking the 1889 founding of the republic. National holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="proclamation-of-the-republic" displayName="Proclamation of the Republic" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="br"><Applicability><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="November" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Black Awareness Day (Dia da Consciência Negra) — 20 November, commemorating Zumbi dos Palmares. A national
+      holiday since the 2023 law (Lei 14.759/2023) took effect in 2024; the fromYear bound excludes earlier years.
+      Strategy: Fixed day-of-month.
+    -->
+    <NotableDate id="black-awareness-day" displayName="Black Awareness Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="br"><Applicability fromYear="2024"><Territory code="BR" /></Applicability>
+        <Strategy><Fixed month="November" day="20" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      ============================================================================================================
+      State statutory holidays (scoped to BR-XX subdivisions)
+      ============================================================================================================
+    -->
+
+    <!-- Constitutionalist Revolution (Revolução Constitucionalista de 1932) — 9 July; a São Paulo state holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="constitutionalist-revolution" displayName="Constitutionalist Revolution" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="sp"><Applicability fromYear="1997"><Territory code="BR-SP" /></Applicability>
+        <Strategy><Fixed month="July" day="9" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Saint George's Day (Dia de São Jorge) — 23 April; a Rio de Janeiro state holiday. Strategy: Fixed day-of-month. -->
+    <NotableDate id="sao-jorge-day" displayName="Saint George's Day" category="Religious" defaultNonWorkingDay="true">
+      <Rules><Rule id="rj"><Applicability fromYear="2008"><Territory code="BR-RJ" /></Applicability>
+        <Strategy><Fixed month="April" day="23" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Bahia Independence Day (Independência da Bahia) — 2 July; a Bahia state holiday marking the 1823 expulsion of Portuguese troops. Strategy: Fixed day-of-month. -->
+    <NotableDate id="bahia-independence-day" displayName="Bahia Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules><Rule id="ba"><Applicability><Territory code="BR-BA" /></Applicability>
+        <Strategy><Fixed month="July" day="2" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>
