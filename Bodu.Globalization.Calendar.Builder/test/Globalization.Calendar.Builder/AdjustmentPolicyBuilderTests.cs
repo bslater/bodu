@@ -47,7 +47,8 @@ public class AdjustmentPolicyBuilderTests
         // 25 April 2027 is a Sunday; the policy observes it on Monday 26 April.
         NotableDate anzac = new NotableDateService(resource).Resolve(2027, "AU").Single();
 
-        Assert.IsTrue(anzac.IsObserved);
-        Assert.AreEqual(new DateOnly(2027, 4, 26), anzac.Date);
+        Assert.AreEqual(
+            (new DateOnly(2027, 4, 26), true),
+            (anzac.Date, anzac.IsObserved));
     }
 }
