@@ -45,19 +45,14 @@ public sealed class UmmAlQuraCalendarKnownAnswerTests
     [TestCategory("Regression")]
     public void Resolve_WhenLoadingUmmAlQura_ResolvesAllSixObservances()
     {
-        NotableDateService service = CreateService();
-
-        var ids = service
+        var ids = CreateService()
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.Contains("ramadan", ids);
-        Assert.Contains("eid-al-fitr", ids);
-        Assert.Contains("eid-al-adha", ids);
-        Assert.Contains("islamic-new-year", ids);
-        Assert.Contains("day-of-ashura", ids);
-        Assert.Contains("mawlid-al-nabi", ids);
+        CollectionAssert.IsSubsetOf(
+            new[] { "ramadan", "eid-al-fitr", "eid-al-adha", "islamic-new-year", "day-of-ashura", "mawlid-al-nabi" },
+            ids.ToArray());
     }
 
     /// <summary>
