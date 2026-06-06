@@ -56,7 +56,7 @@ public sealed class UnitedStatesKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {year}");
         Assert.AreEqual(expectedDate, matches[0].Date, "emitted date");
         Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
     }

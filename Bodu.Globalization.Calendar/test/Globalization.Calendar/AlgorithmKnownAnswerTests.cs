@@ -51,7 +51,7 @@ public sealed class AlgorithmKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {year}");
         Assert.AreEqual(expectedDate, matches[0].Date, $"{notableDateId} {year}");
     }
 
@@ -77,10 +77,10 @@ public sealed class AlgorithmKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {year}");
 
         var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
-        Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
+        Assert.IsLessThanOrEqualTo(2, deltaDays, $"{notableDateId} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public sealed class AlgorithmKnownAnswerTests
     public void Resolve_EveryHinduFestival_IsWithinToleranceAcrossYears()
     {
         (int Year, string Id, string Expected)[] knownAnswers =
-        {
+        [
             (2024, "ram-navami", "2024-04-17"), (2024, "vasant-panchami", "2024-02-14"),
             (2024, "maha-shivaratri", "2024-03-08"), (2024, "holi", "2024-03-25"),
             (2024, "raksha-bandhan", "2024-08-19"), (2024, "janmashtami", "2024-08-26"),
@@ -107,7 +107,7 @@ public sealed class AlgorithmKnownAnswerTests
             (2023, "holi", "2023-03-08"), (2023, "raksha-bandhan", "2023-08-31"),
             (2023, "janmashtami", "2023-09-07"), (2023, "dussehra", "2023-10-24"),
             (2023, "diwali", "2023-11-12"),
-        };
+        ];
 
         NotableDateService service = CreateService();
         List<string> failures = new();
@@ -131,6 +131,6 @@ public sealed class AlgorithmKnownAnswerTests
                 failures.Add($"{id} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate} (off by {deltaDays})");
         }
 
-        Assert.AreEqual(0, failures.Count, string.Join("; ", failures));
+        Assert.IsEmpty(failures, string.Join("; ", failures));
     }
 }

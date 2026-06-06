@@ -49,7 +49,7 @@ public sealed class StrategyResolutionHebrewAliasTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.IsTrue(matches.Count >= 1, $"expected the '{notableDateId}' alias to resolve to a Gregorian date in 2026");
+        Assert.IsGreaterThanOrEqualTo(1, matches.Count, $"expected the '{notableDateId}' alias to resolve to a Gregorian date in 2026");
         Assert.IsTrue(matches.All(m => m.Date.Year == 2026), $"every '{notableDateId}' occurrence falls inside 2026");
     }
 
@@ -68,8 +68,8 @@ public sealed class StrategyResolutionHebrewAliasTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             "expected at least one error diagnostic for the unrecognised Hebrew month token");
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDefinition.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Globalization.Calendar;
 /// merely share a display name — coexist as distinct, independently addressable rules rather than collapsing.
 /// </para>
 /// </remarks>
-/// <seealso cref="NotableDateRule" />
-/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
+/// <seealso cref="NotableDateRule" /> <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and
+/// adjustment-policy reference (guide)</seealso>
 public sealed class NotableDateDefinition
 {
     /// <summary>
@@ -48,13 +48,13 @@ public sealed class NotableDateDefinition
         ThrowHelper.ThrowIfNull(tags);
         ThrowHelper.ThrowIfNull(rules);
 
-        this.Id = id;
-        this.DisplayName = displayName;
-        this.Category = category;
-        this.DefaultNonWorkingDay = defaultNonWorkingDay;
-        this.DefaultDurationDays = defaultDurationDays;
-        this.Tags = tags.ToArray();
-        this.Rules = rules.ToArray();
+        Id = id;
+        DisplayName = displayName;
+        Category = category;
+        DefaultNonWorkingDay = defaultNonWorkingDay;
+        DefaultDurationDays = defaultDurationDays;
+        Tags = tags.ToArray();
+        Rules = rules.ToArray();
     }
 
     /// <summary>
@@ -112,12 +112,12 @@ public sealed class NotableDateDefinition
         ThrowHelper.ThrowIfNull(rules);
 
         return new NotableDateDefinition(
-            this.Id,
-            this.DisplayName,
-            this.Category,
-            this.DefaultNonWorkingDay,
-            this.DefaultDurationDays,
-            this.Tags,
+            Id,
+            DisplayName,
+            Category,
+            DefaultNonWorkingDay,
+            DefaultDurationDays,
+            Tags,
             rules);
     }
 }

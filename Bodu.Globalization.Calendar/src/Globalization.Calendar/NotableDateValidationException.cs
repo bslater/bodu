@@ -32,8 +32,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateValidationDiagnostic" />
-/// <seealso cref="NotableDateResourceLoader" />
+/// <seealso cref="NotableDateValidationDiagnostic" /> <seealso cref="NotableDateResourceLoader" />
 /// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
 public sealed class NotableDateValidationException : Exception
 {
@@ -63,7 +62,7 @@ public sealed class NotableDateValidationException : Exception
     public NotableDateValidationException(string message, Exception innerException)
         : base(message, innerException)
     {
-        this.Diagnostics = [];
+        Diagnostics = [];
     }
 
     /// <summary>
@@ -78,7 +77,7 @@ public sealed class NotableDateValidationException : Exception
     {
         ThrowHelper.ThrowIfNull(diagnostics);
 
-        this.Diagnostics = diagnostics;
+        Diagnostics = diagnostics;
     }
 
     /// <summary>

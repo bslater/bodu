@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentScopeBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Provides a fluent surface for narrowing the scope of an adjustment policy by territory, calendar, category,
-/// concept, rule, and year, restricting the occurrences the policy may transform.
+/// Provides a fluent surface for narrowing the scope of an adjustment policy by territory, calendar, category, concept,
+/// rule, and year, restricting the occurrences the policy may transform.
 /// </summary>
 public sealed class AdjustmentScopeBuilder
 {
@@ -48,16 +48,6 @@ public sealed class AdjustmentScopeBuilder
     private readonly List<int> _exceptYears = new();
 
     /// <summary>
-    /// The inclusive lower year bound, or <see langword="null" /> when unbounded.
-    /// </summary>
-    private int? _fromYear;
-
-    /// <summary>
-    /// The inclusive upper year bound, or <see langword="null" /> when unbounded.
-    /// </summary>
-    private int? _toYear;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="AdjustmentScopeBuilder" /> class with an empty scope.
     /// </summary>
     internal AdjustmentScopeBuilder()
@@ -69,63 +59,61 @@ public sealed class AdjustmentScopeBuilder
     /// </summary>
     /// <returns>The territory codes; empty when no territory restriction applies.</returns>
     internal IReadOnlyList<string> Territories =>
-        this._territories;
+        _territories;
 
     /// <summary>
     /// Gets the calendar systems in scope.
     /// </summary>
     /// <returns>The calendar systems; empty when no calendar restriction applies.</returns>
     internal IReadOnlyList<CalendarSystem> Calendars =>
-        this._calendars;
+        _calendars;
 
     /// <summary>
     /// Gets the categories in scope.
     /// </summary>
     /// <returns>The categories; empty when no category restriction applies.</returns>
     internal IReadOnlyList<NotableDateCategory> Categories =>
-        this._categories;
+        _categories;
 
     /// <summary>
     /// Gets the concept identifiers in scope.
     /// </summary>
     /// <returns>The concept identifiers; empty when no concept restriction applies.</returns>
     internal IReadOnlyList<string> NotableDateRefs =>
-        this._notableDateRefs;
+        _notableDateRefs;
 
     /// <summary>
     /// Gets the concept-and-rule pairs in scope.
     /// </summary>
     /// <returns>The rule references; empty when no rule restriction applies.</returns>
     internal IReadOnlyList<(string NotableDateRef, string RuleRef)> RuleRefs =>
-        this._ruleRefs;
+        _ruleRefs;
 
     /// <summary>
     /// Gets the explicit included years.
     /// </summary>
     /// <returns>The included years; empty when no inclusion list applies.</returns>
     internal IReadOnlyList<int> OnlyYears =>
-        this._onlyYears;
+        _onlyYears;
 
     /// <summary>
     /// Gets the explicit excluded years.
     /// </summary>
     /// <returns>The excluded years; empty when no exclusion list applies.</returns>
     internal IReadOnlyList<int> ExceptYears =>
-        this._exceptYears;
+        _exceptYears;
 
     /// <summary>
     /// Gets the inclusive lower year bound.
     /// </summary>
     /// <returns>The lower bound, or <see langword="null" /> when unbounded.</returns>
-    internal int? FromYearValue =>
-        this._fromYear;
+    internal int? FromYearValue { get; private set; }
 
     /// <summary>
     /// Gets the inclusive upper year bound.
     /// </summary>
     /// <returns>The upper bound, or <see langword="null" /> when unbounded.</returns>
-    internal int? ToYearValue =>
-        this._toYear;
+    internal int? ToYearValue { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the scope declares any restriction.
@@ -134,15 +122,15 @@ public sealed class AdjustmentScopeBuilder
     /// <see langword="true" /> when at least one scope element or bound is set; otherwise, <see langword="false" />.
     /// </returns>
     internal bool HasAnyValue =>
-        this._territories.Count > 0
-        || this._calendars.Count > 0
-        || this._categories.Count > 0
-        || this._notableDateRefs.Count > 0
-        || this._ruleRefs.Count > 0
-        || this._onlyYears.Count > 0
-        || this._exceptYears.Count > 0
-        || this._fromYear is not null
-        || this._toYear is not null;
+        _territories.Count > 0
+        || _calendars.Count > 0
+        || _categories.Count > 0
+        || _notableDateRefs.Count > 0
+        || _ruleRefs.Count > 0
+        || _onlyYears.Count > 0
+        || _exceptYears.Count > 0
+        || FromYearValue is not null
+        || ToYearValue is not null;
 
     /// <summary>
     /// Adds a territory code to the scope.
@@ -156,7 +144,7 @@ public sealed class AdjustmentScopeBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(code);
 
-        this._territories.Add(code);
+        _territories.Add(code);
         return this;
     }
 
@@ -167,7 +155,7 @@ public sealed class AdjustmentScopeBuilder
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentScopeBuilder ForCalendar(CalendarSystem calendar)
     {
-        this._calendars.Add(calendar);
+        _calendars.Add(calendar);
         return this;
     }
 
@@ -178,7 +166,7 @@ public sealed class AdjustmentScopeBuilder
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentScopeBuilder ForCategory(NotableDateCategory category)
     {
-        this._categories.Add(category);
+        _categories.Add(category);
         return this;
     }
 
@@ -194,7 +182,7 @@ public sealed class AdjustmentScopeBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
-        this._notableDateRefs.Add(notableDateRef);
+        _notableDateRefs.Add(notableDateRef);
         return this;
     }
 
@@ -205,14 +193,15 @@ public sealed class AdjustmentScopeBuilder
     /// <param name="ruleRef">The identifier of the rule within the concept.</param>
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="notableDateRef" /> or <paramref name="ruleRef" /> is <see langword="null" />, empty, or white-space.
+    /// <paramref name="notableDateRef" /> or <paramref name="ruleRef" /> is <see langword="null" />, empty, or
+    /// white-space.
     /// </exception>
     public AdjustmentScopeBuilder ForRule(string notableDateRef, string ruleRef)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
         ThrowHelper.ThrowIfNullOrWhiteSpace(ruleRef);
 
-        this._ruleRefs.Add((notableDateRef, ruleRef));
+        _ruleRefs.Add((notableDateRef, ruleRef));
         return this;
     }
 
@@ -223,7 +212,7 @@ public sealed class AdjustmentScopeBuilder
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentScopeBuilder FromYear(int year)
     {
-        this._fromYear = year;
+        FromYearValue = year;
         return this;
     }
 
@@ -234,7 +223,7 @@ public sealed class AdjustmentScopeBuilder
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentScopeBuilder ToYear(int year)
     {
-        this._toYear = year;
+        ToYearValue = year;
         return this;
     }
 
@@ -245,7 +234,7 @@ public sealed class AdjustmentScopeBuilder
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentScopeBuilder OnlyYear(int year)
     {
-        this._onlyYears.Add(year);
+        _onlyYears.Add(year);
         return this;
     }
 
@@ -256,7 +245,7 @@ public sealed class AdjustmentScopeBuilder
     /// <returns>The same <see cref="AdjustmentScopeBuilder" /> instance, enabling chained calls.</returns>
     public AdjustmentScopeBuilder ExceptYear(int year)
     {
-        this._exceptYears.Add(year);
+        _exceptYears.Add(year);
         return this;
     }
 
@@ -283,22 +272,22 @@ public sealed class AdjustmentScopeBuilder
         int? fromYear,
         int? toYear)
     {
-        this._territories.Clear();
-        this._territories.AddRange(territories);
-        this._calendars.Clear();
-        this._calendars.AddRange(calendars);
-        this._categories.Clear();
-        this._categories.AddRange(categories);
-        this._notableDateRefs.Clear();
-        this._notableDateRefs.AddRange(notableDateRefs);
-        this._ruleRefs.Clear();
-        this._ruleRefs.AddRange(ruleRefs);
-        this._onlyYears.Clear();
-        this._onlyYears.AddRange(onlyYears);
-        this._exceptYears.Clear();
-        this._exceptYears.AddRange(exceptYears);
-        this._fromYear = fromYear;
-        this._toYear = toYear;
+        _territories.Clear();
+        _territories.AddRange(territories);
+        _calendars.Clear();
+        _calendars.AddRange(calendars);
+        _categories.Clear();
+        _categories.AddRange(categories);
+        _notableDateRefs.Clear();
+        _notableDateRefs.AddRange(notableDateRefs);
+        _ruleRefs.Clear();
+        _ruleRefs.AddRange(ruleRefs);
+        _onlyYears.Clear();
+        _onlyYears.AddRange(onlyYears);
+        _exceptYears.Clear();
+        _exceptYears.AddRange(exceptYears);
+        FromYearValue = fromYear;
+        ToYearValue = toYear;
     }
 
     /// <summary>
@@ -309,15 +298,15 @@ public sealed class AdjustmentScopeBuilder
     {
         AdjustmentScopeBuilder clone = new();
         clone.SetParsedValues(
-            this._territories,
-            this._calendars,
-            this._categories,
-            this._notableDateRefs,
-            this._ruleRefs,
-            this._onlyYears,
-            this._exceptYears,
-            this._fromYear,
-            this._toYear);
+            _territories,
+            _calendars,
+            _categories,
+            _notableDateRefs,
+            _ruleRefs,
+            _onlyYears,
+            _exceptYears,
+            FromYearValue,
+            ToYearValue);
         return clone;
     }
 }

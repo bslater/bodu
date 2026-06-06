@@ -60,7 +60,7 @@ public sealed class IntermittentZeroReadStream
         Memory<byte> buffer,
         CancellationToken cancellationToken = default)
     {
-        if (++this.callCount % this.stallEveryN == 0)
+        if (++callCount % stallEveryN == 0)
             await Task.Yield(); // simulate momentary stall without falsely signalling EOF
 
         return await base.ReadAsync(

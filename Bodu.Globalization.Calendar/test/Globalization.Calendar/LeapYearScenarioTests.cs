@@ -61,7 +61,7 @@ public sealed class LeapYearScenarioTests
         }
         else
         {
-            Assert.IsFalse(results.Any(n => n.NotableDateId == "leap-day"), $"Leap Day should not emit in non-leap year {year}.");
+            Assert.DoesNotContain(n => n.NotableDateId == "leap-day", results, $"Leap Day should not emit in non-leap year {year}.");
         }
     }
 
@@ -105,7 +105,7 @@ public sealed class LeapYearScenarioTests
         }
         else
         {
-            Assert.IsFalse(results.Any(n => n.NotableDateId == "day-after-leap-day"));
+            Assert.DoesNotContain(n => n.NotableDateId == "day-after-leap-day", results);
         }
     }
 
@@ -415,7 +415,7 @@ public sealed class LeapYearScenarioTests
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
         var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }
 }

@@ -20,10 +20,10 @@ internal static class NotableDateJsonDocumentParser
     /// The full English month names, indexed so that January is at index zero.
     /// </summary>
     private static readonly string[] s_monthNames =
-    {
+    [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December",
-    };
+    ];
 
     /// <summary>
     /// Parses a notable-date document from its JSON content.

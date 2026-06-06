@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCategory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,8 @@ namespace Bodu.Globalization.Calendar;
 /// notable dates may share a category freely. A rule may override the category inherited from its parent notable date.
 /// </para>
 /// </remarks>
-/// <seealso cref="NotableDateFilter" />
-/// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
+/// <seealso cref="NotableDateFilter" /> <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService
+/// (guide)</seealso>
 public enum NotableDateCategory
 {
     /// <summary>

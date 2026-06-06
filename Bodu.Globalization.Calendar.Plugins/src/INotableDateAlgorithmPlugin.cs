@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateAlgorithmPlugin.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Plugins;
 
@@ -39,8 +37,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDatePluginAttribute" />
-/// <seealso cref="NotableDatePluginLoader" />
+/// <seealso cref="NotableDatePluginAttribute" /> <seealso cref="NotableDatePluginLoader" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public interface INotableDateAlgorithmPlugin : INotableDatePlugin
 {

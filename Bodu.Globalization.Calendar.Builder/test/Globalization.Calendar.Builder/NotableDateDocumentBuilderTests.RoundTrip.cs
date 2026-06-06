@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -29,9 +26,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void RoundTrip_WhenParsedFromXmlAndReserialized_ShouldReproduceXml()
     {
-        string xml = SampleDocument().ToXml();
+        var xml = SampleDocument().ToXml();
 
-        string reserialized = NotableDateDocumentBuilder.FromXml(xml).ToXml();
+        var reserialized = NotableDateDocumentBuilder.FromXml(xml).ToXml();
 
         Assert.AreEqual(xml, reserialized);
     }
@@ -44,7 +41,7 @@ public partial class NotableDateDocumentBuilderTests
     {
         NotableDateDocumentBuilder original = SampleDocument();
 
-        NotableDateDocumentBuilder reparsed = NotableDateDocumentBuilder.FromXml(original.ToXml());
+        var reparsed = NotableDateDocumentBuilder.FromXml(original.ToXml());
 
         CollectionAssert.AreEqual(ResolvedSample(original.Build()), ResolvedSample(reparsed.Build()));
     }
@@ -55,9 +52,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void RoundTrip_WhenParsedFromJsonAndReserialized_ShouldReproduceJson()
     {
-        string json = SampleDocument().ToJson();
+        var json = SampleDocument().ToJson();
 
-        string reserialized = NotableDateDocumentBuilder.FromJson(json).ToJson();
+        var reserialized = NotableDateDocumentBuilder.FromJson(json).ToJson();
 
         Assert.AreEqual(json, reserialized);
     }
@@ -70,7 +67,7 @@ public partial class NotableDateDocumentBuilderTests
     {
         NotableDateDocumentBuilder original = SampleDocument();
 
-        NotableDateDocumentBuilder reparsed = NotableDateDocumentBuilder.FromJson(original.ToJson());
+        var reparsed = NotableDateDocumentBuilder.FromJson(original.ToJson());
 
         CollectionAssert.AreEqual(ResolvedSample(original.Build()), ResolvedSample(reparsed.Build()));
     }

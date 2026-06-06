@@ -25,7 +25,7 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(expectedSet.Count, set.Count, "Count disagreed with the expected element count.");
 
         foreach (TItem item in actual)
-            Assert.IsTrue(expectedSet.Contains(item), $"Set contained an unexpected element: {item}.");
+            Assert.Contains(item, expectedSet, $"Set contained an unexpected element: {item}.");
 
         foreach (TItem item in expectedSet)
             Assert.IsTrue(set.Contains(item), $"Set was missing an expected element: {item}.");

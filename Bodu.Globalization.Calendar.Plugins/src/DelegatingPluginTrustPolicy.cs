@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelegatingPluginTrustPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed class DelegatingPluginTrustPolicy : IPluginTrustPolicy
     {
         ThrowHelper.ThrowIfNull(decide);
 
-        this._decide = decide;
+        _decide = decide;
     }
 
     /// <inheritdoc />
@@ -35,6 +35,6 @@ public sealed class DelegatingPluginTrustPolicy : IPluginTrustPolicy
     {
         ThrowHelper.ThrowIfNull(context);
 
-        return this._decide(context);
+        return _decide(context);
     }
 }

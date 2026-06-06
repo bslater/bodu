@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AddRuleOverride.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ internal sealed class AddRuleOverride : NotableDateRuleOverride
     {
         ThrowHelper.ThrowIfNull(rule);
 
-        this.Rule = rule;
+        Rule = rule;
     }
 
     /// <summary>

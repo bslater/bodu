@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,10 +34,10 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateDefinitionBuilder" />
-/// <seealso cref="AdjustmentPolicyBuilder" />
+/// <seealso cref="NotableDateDefinitionBuilder" /> <seealso cref="AdjustmentPolicyBuilder" />
 /// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
-/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</seealso>
+/// <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)
+/// </seealso>
 public sealed class NotableDateRuleBuilder
 {
     /// <summary>
@@ -131,7 +131,7 @@ public sealed class NotableDateRuleBuilder
     /// <param name="id">The stable identifier of the rule within its concept.</param>
     internal NotableDateRuleBuilder(string id)
     {
-        this._id = id;
+        _id = id;
     }
 
     /// <summary>
@@ -139,119 +139,119 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <returns>The rule identifier.</returns>
     internal string Id =>
-        this._id;
+        _id;
 
     /// <summary>
     /// Gets the configured selection priority.
     /// </summary>
     /// <returns>The priority, or <see langword="null" /> when unset.</returns>
     internal int? Priority =>
-        this._priority;
+        _priority;
 
     /// <summary>
     /// Gets the configured category override.
     /// </summary>
     /// <returns>The category, or <see langword="null" /> when inherited.</returns>
     internal NotableDateCategory? Category =>
-        this._category;
+        _category;
 
     /// <summary>
     /// Gets the configured non-working override.
     /// </summary>
     /// <returns>The flag, or <see langword="null" /> when inherited.</returns>
     internal bool? NonWorking =>
-        this._nonWorking;
+        _nonWorking;
 
     /// <summary>
     /// Gets the configured duration override.
     /// </summary>
     /// <returns>The duration in days, or <see langword="null" /> when inherited.</returns>
     internal int? DurationDays =>
-        this._durationDays;
+        _durationDays;
 
     /// <summary>
     /// Gets the configured authoring comment.
     /// </summary>
     /// <returns>The comment, or <see langword="null" /> when unset.</returns>
     internal string? Comment =>
-        this._comment;
+        _comment;
 
     /// <summary>
     /// Gets the configured applicability calendar system.
     /// </summary>
     /// <returns>The calendar system, or <see langword="null" /> when the Gregorian default applies.</returns>
     internal CalendarSystem? Calendar =>
-        this._calendar;
+        _calendar;
 
     /// <summary>
     /// Gets the inclusive lower year bound.
     /// </summary>
     /// <returns>The lower bound, or <see langword="null" /> when unbounded.</returns>
     internal int? FromYearValue =>
-        this._fromYear;
+        _fromYear;
 
     /// <summary>
     /// Gets the inclusive upper year bound.
     /// </summary>
     /// <returns>The upper bound, or <see langword="null" /> when unbounded.</returns>
     internal int? ToYearValue =>
-        this._toYear;
+        _toYear;
 
     /// <summary>
     /// Gets the recurrence interval in years.
     /// </summary>
     /// <returns>The interval, or <see langword="null" /> when the rule applies every year.</returns>
     internal int? EveryYearsValue =>
-        this._everyYears;
+        _everyYears;
 
     /// <summary>
     /// Gets the anchor year for interval recurrence.
     /// </summary>
     /// <returns>The anchor year, or <see langword="null" /> when unset.</returns>
     internal int? AnchorYearValue =>
-        this._anchorYear;
+        _anchorYear;
 
     /// <summary>
     /// Gets the territory codes scoping the rule.
     /// </summary>
     /// <returns>The territory codes; empty when the rule applies to all territories.</returns>
     internal IReadOnlyList<string> Territories =>
-        this._territories;
+        _territories;
 
     /// <summary>
     /// Gets the exclusive list of years for which the rule applies.
     /// </summary>
     /// <returns>The years; empty when no exclusive list is set.</returns>
     internal IReadOnlyList<int> OnlyYearsValues =>
-        this._onlyYears;
+        _onlyYears;
 
     /// <summary>
     /// Gets the years for which the rule is suppressed.
     /// </summary>
     /// <returns>The years; empty when no exception list is set.</returns>
     internal IReadOnlyList<int> ExceptYearsValues =>
-        this._exceptYears;
+        _exceptYears;
 
     /// <summary>
     /// Gets the rule-specific tags.
     /// </summary>
     /// <returns>The tags; empty when none are configured.</returns>
     internal IReadOnlyList<string> Tags =>
-        this._tags;
+        _tags;
 
     /// <summary>
     /// Gets the adjustment policy identifiers applied to the rule.
     /// </summary>
     /// <returns>The policy identifiers; empty when none are configured.</returns>
     internal IReadOnlyList<string> Adjustments =>
-        this._adjustments;
+        _adjustments;
 
     /// <summary>
     /// Gets the single strategy element in the document namespace.
     /// </summary>
     /// <returns>The strategy element, or <see langword="null" /> when no strategy is set.</returns>
     internal XElement? Strategy =>
-        this._strategy;
+        _strategy;
 
     /// <summary>
     /// Gets a value indicating whether the applicability scope declares any values.
@@ -260,14 +260,14 @@ public sealed class NotableDateRuleBuilder
     /// <see langword="true" /> when at least one applicability value is set; otherwise, <see langword="false" />.
     /// </returns>
     internal bool HasApplicability =>
-        this._calendar is not null
-        || this._fromYear is not null
-        || this._toYear is not null
-        || this._everyYears is not null
-        || this._anchorYear is not null
-        || this._territories.Count > 0
-        || this._onlyYears.Count > 0
-        || this._exceptYears.Count > 0;
+        _calendar is not null
+        || _fromYear is not null
+        || _toYear is not null
+        || _everyYears is not null
+        || _anchorYear is not null
+        || _territories.Count > 0
+        || _onlyYears.Count > 0
+        || _exceptYears.Count > 0;
 
     /// <summary>
     /// Sets the selection priority of the rule.
@@ -276,7 +276,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder WithPriority(int priority)
     {
-        this._priority = priority;
+        _priority = priority;
         return this;
     }
 
@@ -287,7 +287,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder WithCategory(NotableDateCategory category)
     {
-        this._category = category;
+        _category = category;
         return this;
     }
 
@@ -298,7 +298,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder AsNonWorking(bool value = true)
     {
-        this._nonWorking = value;
+        _nonWorking = value;
         return this;
     }
 
@@ -312,7 +312,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfLessThan(durationDays, 1);
 
-        this._durationDays = durationDays;
+        _durationDays = durationDays;
         return this;
     }
 
@@ -326,7 +326,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(comment);
 
-        this._comment = comment;
+        _comment = comment;
         return this;
     }
 
@@ -342,7 +342,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
 
-        this._tags.Add(tag);
+        _tags.Add(tag);
         return this;
     }
 
@@ -356,8 +356,8 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(tags);
 
-        this._tags.Clear();
-        this._tags.AddRange(tags);
+        _tags.Clear();
+        _tags.AddRange(tags);
         return this;
     }
 
@@ -368,7 +368,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder ForCalendar(CalendarSystem calendar)
     {
-        this._calendar = calendar;
+        _calendar = calendar;
         return this;
     }
 
@@ -384,7 +384,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(code);
 
-        this._territories.Add(code);
+        _territories.Add(code);
         return this;
     }
 
@@ -398,8 +398,8 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(codes);
 
-        this._territories.Clear();
-        this._territories.AddRange(codes);
+        _territories.Clear();
+        _territories.AddRange(codes);
         return this;
     }
 
@@ -410,7 +410,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder FromYear(int year)
     {
-        this._fromYear = year;
+        _fromYear = year;
         return this;
     }
 
@@ -421,7 +421,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder ToYear(int year)
     {
-        this._toYear = year;
+        _toYear = year;
         return this;
     }
 
@@ -435,7 +435,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfLessThan(years, 1);
 
-        this._everyYears = years;
+        _everyYears = years;
         return this;
     }
 
@@ -446,7 +446,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     public NotableDateRuleBuilder AnchorYear(int year)
     {
-        this._anchorYear = year;
+        _anchorYear = year;
         return this;
     }
 
@@ -460,8 +460,8 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(years);
 
-        this._onlyYears.Clear();
-        this._onlyYears.AddRange(years);
+        _onlyYears.Clear();
+        _onlyYears.AddRange(years);
         return this;
     }
 
@@ -475,8 +475,8 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(years);
 
-        this._exceptYears.Clear();
-        this._exceptYears.AddRange(years);
+        _exceptYears.Clear();
+        _exceptYears.AddRange(years);
         return this;
     }
 
@@ -501,7 +501,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
-        return this.Fixed(BuilderXml.GetMonthName(month), day, skipLeapMonth, sweepCalendarYears);
+        return Fixed(BuilderXml.GetMonthName(month), day, skipLeapMonth, sweepCalendarYears);
     }
 
     /// <summary>
@@ -529,7 +529,7 @@ public sealed class NotableDateRuleBuilder
         if (skipLeapMonth) element.SetAttributeValue("skipLeapMonth", BuilderXml.Bool(true));
         if (sweepCalendarYears) element.SetAttributeValue("sweepCalendarYears", BuilderXml.Bool(true));
 
-        return this.SetStrategy(element);
+        return SetStrategy(element);
     }
 
     /// <summary>
@@ -552,7 +552,7 @@ public sealed class NotableDateRuleBuilder
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("weekOrdinal", weekOrdinal.ToString()));
 
-        return this.SetStrategy(element);
+        return SetStrategy(element);
     }
 
     /// <summary>
@@ -581,7 +581,7 @@ public sealed class NotableDateRuleBuilder
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("direction", direction.ToString()));
 
-        return this.SetStrategy(element);
+        return SetStrategy(element);
     }
 
     /// <summary>
@@ -608,7 +608,7 @@ public sealed class NotableDateRuleBuilder
             new XAttribute("relativeDayOfWeek", relativeDayOfWeek.ToString()),
             new XAttribute("direction", direction.ToString()));
 
-        return this.SetStrategy(element);
+        return SetStrategy(element);
     }
 
     /// <summary>
@@ -634,7 +634,7 @@ public sealed class NotableDateRuleBuilder
             new XAttribute("offsetDays", BuilderXml.Int(offsetDays)));
         if (!string.IsNullOrEmpty(ruleRef)) element.SetAttributeValue("ruleRef", ruleRef);
 
-        return this.SetStrategy(element);
+        return SetStrategy(element);
     }
 
     /// <summary>
@@ -652,7 +652,7 @@ public sealed class NotableDateRuleBuilder
 
         XElement element = new(BuilderXml.Namespace + "Algorithm", new XAttribute("key", key));
 
-        return this.SetStrategy(element);
+        return SetStrategy(element);
     }
 
     /// <summary>
@@ -667,7 +667,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(policyRef);
 
-        this._adjustments.Add(policyRef);
+        _adjustments.Add(policyRef);
         return this;
     }
 
@@ -681,8 +681,8 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(policyRefs);
 
-        this._adjustments.Clear();
-        this._adjustments.AddRange(policyRefs);
+        _adjustments.Clear();
+        _adjustments.AddRange(policyRefs);
         return this;
     }
 
@@ -691,7 +691,7 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="strategy">The strategy element in the document namespace, or <see langword="null" />.</param>
     internal void SetParsedStrategy(XElement? strategy) =>
-        this._strategy = strategy;
+        _strategy = strategy;
 
     /// <summary>
     /// Sets the applicability and scalar state directly when reconstructing a builder from a parsed document.
@@ -718,16 +718,16 @@ public sealed class NotableDateRuleBuilder
         int? everyYears,
         int? anchorYear)
     {
-        this._priority = priority;
-        this._category = category;
-        this._nonWorking = nonWorking;
-        this._durationDays = durationDays;
-        this._comment = comment;
-        this._calendar = calendar;
-        this._fromYear = fromYear;
-        this._toYear = toYear;
-        this._everyYears = everyYears;
-        this._anchorYear = anchorYear;
+        _priority = priority;
+        _category = category;
+        _nonWorking = nonWorking;
+        _durationDays = durationDays;
+        _comment = comment;
+        _calendar = calendar;
+        _fromYear = fromYear;
+        _toYear = toYear;
+        _everyYears = everyYears;
+        _anchorYear = anchorYear;
     }
 
     /// <summary>
@@ -745,16 +745,16 @@ public sealed class NotableDateRuleBuilder
         IEnumerable<string> tags,
         IEnumerable<string> adjustments)
     {
-        this._territories.Clear();
-        this._territories.AddRange(territories);
-        this._onlyYears.Clear();
-        this._onlyYears.AddRange(onlyYears);
-        this._exceptYears.Clear();
-        this._exceptYears.AddRange(exceptYears);
-        this._tags.Clear();
-        this._tags.AddRange(tags);
-        this._adjustments.Clear();
-        this._adjustments.AddRange(adjustments);
+        _territories.Clear();
+        _territories.AddRange(territories);
+        _onlyYears.Clear();
+        _onlyYears.AddRange(onlyYears);
+        _exceptYears.Clear();
+        _exceptYears.AddRange(exceptYears);
+        _tags.Clear();
+        _tags.AddRange(tags);
+        _adjustments.Clear();
+        _adjustments.AddRange(adjustments);
     }
 
     /// <summary>
@@ -763,20 +763,20 @@ public sealed class NotableDateRuleBuilder
     /// <returns>A new <see cref="NotableDateRuleBuilder" /> carrying the same configured state.</returns>
     internal NotableDateRuleBuilder Clone()
     {
-        NotableDateRuleBuilder clone = new(this._id);
+        NotableDateRuleBuilder clone = new(_id);
         clone.SetParsedScalars(
-            this._priority,
-            this._category,
-            this._nonWorking,
-            this._durationDays,
-            this._comment,
-            this._calendar,
-            this._fromYear,
-            this._toYear,
-            this._everyYears,
-            this._anchorYear);
-        clone.SetParsedCollections(this._territories, this._onlyYears, this._exceptYears, this._tags, this._adjustments);
-        clone._strategy = this._strategy is null ? null : new XElement(this._strategy);
+            _priority,
+            _category,
+            _nonWorking,
+            _durationDays,
+            _comment,
+            _calendar,
+            _fromYear,
+            _toYear,
+            _everyYears,
+            _anchorYear);
+        clone.SetParsedCollections(_territories, _onlyYears, _exceptYears, _tags, _adjustments);
+        clone._strategy = _strategy is null ? null : new XElement(_strategy);
         return clone;
     }
 
@@ -788,10 +788,10 @@ public sealed class NotableDateRuleBuilder
     /// <exception cref="InvalidOperationException">A strategy has already been configured on this rule.</exception>
     private NotableDateRuleBuilder SetStrategy(XElement element)
     {
-        if (this._strategy is not null)
+        if (_strategy is not null)
             throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleStrategyAlreadySet);
 
-        this._strategy = element;
+        _strategy = element;
         return this;
     }
 }

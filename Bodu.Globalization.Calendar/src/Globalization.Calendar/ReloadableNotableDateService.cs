@@ -30,8 +30,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="MutableNotableDateResourceProvider" />
-/// <seealso cref="NotableDateService" />
+/// <seealso cref="MutableNotableDateResourceProvider" /> <seealso cref="NotableDateService" />
 /// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public sealed class ReloadableNotableDateService : INotableDateService
 {
@@ -132,39 +131,39 @@ public sealed class ReloadableNotableDateService : INotableDateService
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        this._provider = provider;
-        this._algorithms = algorithms;
-        this._collisionResolver = collisionResolver;
-        this._handlers = handlers;
-        this._triggerHandlers = triggerHandlers;
+        _provider = provider;
+        _algorithms = algorithms;
+        _collisionResolver = collisionResolver;
+        _handlers = handlers;
+        _triggerHandlers = triggerHandlers;
 
-        this._builtFrom = provider.Current;
-        this._inner = new NotableDateService(this._builtFrom, algorithms, collisionResolver, handlers, triggerHandlers);
+        _builtFrom = provider.Current;
+        _inner = new NotableDateService(_builtFrom, algorithms, collisionResolver, handlers, triggerHandlers);
     }
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory) =>
-        this.Current().Resolve(date, territory);
+        Current().Resolve(date, territory);
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory) =>
-        this.Current().Resolve(range, territory);
+        Current().Resolve(range, territory);
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory, NotableDateFilter filter) =>
-        this.Current().Resolve(date, territory, filter);
+        Current().Resolve(date, territory, filter);
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter) =>
-        this.Current().Resolve(range, territory, filter);
+        Current().Resolve(range, territory, filter);
 
     /// <inheritdoc />
     public IReadOnlyList<string> GetSupportedTerritories() =>
-        this.Current().GetSupportedTerritories();
+        Current().GetSupportedTerritories();
 
     /// <inheritdoc />
     public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
-        this.Current().GetSupportedCalendars();
+        Current().GetSupportedCalendars();
 
     /// <summary>
     /// Returns the inner service for the resource currently in effect, rebuilding it when the provider has reloaded.
@@ -172,17 +171,17 @@ public sealed class ReloadableNotableDateService : INotableDateService
     /// <returns>The current inner <see cref="NotableDateService" />.</returns>
     private NotableDateService Current()
     {
-        NotableDateResource current = this._provider.Current;
+        NotableDateResource current = _provider.Current;
 
-        lock (this._gate)
+        lock (_gate)
         {
-            if (!ReferenceEquals(current, this._builtFrom))
+            if (!ReferenceEquals(current, _builtFrom))
             {
-                this._inner = new NotableDateService(current, this._algorithms, this._collisionResolver, this._handlers, this._triggerHandlers);
-                this._builtFrom = current;
+                _inner = new NotableDateService(current, _algorithms, _collisionResolver, _handlers, _triggerHandlers);
+                _builtFrom = current;
             }
 
-            return this._inner;
+            return _inner;
         }
     }
 }

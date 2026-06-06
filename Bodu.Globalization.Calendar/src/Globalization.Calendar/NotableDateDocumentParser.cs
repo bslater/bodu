@@ -31,10 +31,10 @@ internal static class NotableDateDocumentParser
     /// The full English month names, indexed so that January is at index zero.
     /// </summary>
     private static readonly string[] s_monthNames =
-    {
+    [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December",
-    };
+    ];
 
     /// <summary>
     /// Parses and schema-validates a notable-date document XML document.
@@ -397,16 +397,16 @@ internal static class NotableDateDocumentParser
         switch (child.Name.LocalName)
         {
             case "Fixed":
-            {
-                (var month, var monthAlias) = ParseFixedMonth(child.Attribute("month")?.Value, calendar, notableDateId, ruleId, diagnostics);
-                return new FixedDateStrategy(
-                    month,
-                    Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31),
-                    calendar,
-                    ParseBool(child.Attribute("sweepCalendarYears")?.Value, false),
-                    ParseBool(child.Attribute("skipLeapMonth")?.Value, false),
-                    monthAlias);
-            }
+                {
+                    (var month, var monthAlias) = ParseFixedMonth(child.Attribute("month")?.Value, calendar, notableDateId, ruleId, diagnostics);
+                    return new FixedDateStrategy(
+                        month,
+                        Math.Clamp(ParseInt(child.Attribute("day")?.Value, 1), 1, 31),
+                        calendar,
+                        ParseBool(child.Attribute("sweepCalendarYears")?.Value, false),
+                        ParseBool(child.Attribute("skipLeapMonth")?.Value, false),
+                        monthAlias);
+                }
 
             case "DayOfWeekInMonth":
                 return new DayOfWeekInMonthStrategy(

@@ -122,6 +122,6 @@ public sealed class AdjustmentPolicyYearScopeTests
             _ = Build("""<Scope fromYear="2030" toYear="2020" />""");
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-YEARS"));
+        Assert.Contains(d => d.Code == "BODU-CAL-YEARS", ex.Diagnostics);
     }
 }

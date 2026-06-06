@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDateService" />.
 /// </para>
 /// <para>
-/// <strong>Territory.</strong> The <c>territory</c> argument is a country code (<c>US</c>) or a subdivision
-/// (<c>CA-ON</c>, <c>AU-NSW</c>). A subdivision sees both its own rules and the broader rules of its parent country,
+/// <strong>Territory.</strong> The <c>territory</c> argument is a country code (<c>US</c>) or a subdivision (
+/// <c>CA-ON</c>, <c>AU-NSW</c>). A subdivision sees both its own rules and the broader rules of its parent country,
 /// with the most specific rule winning for a shared concept.
 /// </para>
 /// <para>
@@ -29,9 +29,9 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Resolve a service from a data pack (for example the <c>AmericasCalendarData</c>
-/// bundle) or from a document loaded with
-/// <see cref="NotableDateResourceLoader" />, then query it directly; or call the working-day extension methods in
-/// <c>Bodu.Extensions</c> (such as <c>IsWorkingDay</c> / <c>NextWorkingDay</c>), which delegate to this surface.
+/// bundle) or from a document loaded with <see cref="NotableDateResourceLoader" />, then query it directly; or call the
+/// working-day extension methods in <c>Bodu.Extensions</c> (such as <c>IsWorkingDay</c> / <c>NextWorkingDay</c>), which
+/// delegate to this surface.
 /// </para>
 /// </remarks>
 /// <example>
@@ -53,12 +53,10 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDate" />
-/// <seealso cref="NotableDateFilter" />
-/// <seealso cref="NotableDateResourceLoader" />
-/// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
-/// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
+/// <seealso cref="NotableDateService" /> <seealso cref="NotableDate" /> <seealso cref="NotableDateFilter" />
+/// <seealso cref="NotableDateResourceLoader" /> <seealso href="../guides/calendar/notable-dates.html">Using
+/// NotableDateService (guide)</seealso> <seealso href="../guides/calendar/building-the-service.html">Building and
+/// extending the service (guide)</seealso>
 public interface INotableDateService
 {
     /// <summary>

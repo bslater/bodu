@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReloadableNotableDateServiceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -124,12 +124,12 @@ public sealed class ReloadableNotableDateServiceTests
         MutableNotableDateResourceProvider provider = new(NotableDateResourceLoader.Load(TwoConceptXml));
         ReloadableNotableDateService service = new(provider);
 
-        Assert.AreEqual(2, service.Resolve(Year2025, "XX").Count);
+        Assert.HasCount(2, service.Resolve(Year2025, "XX"));
 
         provider.Reload(NotableDateResourceLoader.Load(TwoConceptDroppedXml));
 
         IReadOnlyList<NotableDate> after = service.Resolve(Year2025, "XX");
-        Assert.AreEqual(1, after.Count);
+        Assert.HasCount(1, after);
         Assert.AreEqual("keep", after[0].NotableDateId);
     }
 

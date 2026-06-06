@@ -16,8 +16,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Populate a registry with custom <see cref="INotableDateAlgorithm" /> implementations,
-/// then pass it to <see cref="NotableDateResourceLoader" /> (so a document may reference the keys during validation) and
-/// to the <see cref="NotableDateService" /> (so they resolve at query time).
+/// then pass it to <see cref="NotableDateResourceLoader" /> (so a document may reference the keys during validation)
+/// and to the <see cref="NotableDateService" /> (so they resolve at query time).
 /// </para>
 /// </remarks>
 /// <example>
@@ -32,8 +32,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateAlgorithm" />
-/// <seealso cref="NotableDateService" />
+/// <seealso cref="INotableDateAlgorithm" /> <seealso cref="NotableDateService" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
 {
@@ -56,7 +55,7 @@ public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(algorithm);
 
-        this._algorithms[key] = algorithm;
+        _algorithms[key] = algorithm;
         return this;
     }
 
@@ -66,7 +65,7 @@ public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
     {
         ThrowHelper.ThrowIfNull(key);
 
-        return this._algorithms.ContainsKey(key);
+        return _algorithms.ContainsKey(key);
     }
 
     /// <inheritdoc />
@@ -75,7 +74,7 @@ public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var found = this._algorithms.TryGetValue(key, out INotableDateAlgorithm? value);
+        var found = _algorithms.TryGetValue(key, out INotableDateAlgorithm? value);
         algorithm = value;
         return found;
     }

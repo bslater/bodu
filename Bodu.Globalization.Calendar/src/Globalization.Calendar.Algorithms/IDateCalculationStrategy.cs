@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDateCalculationStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,9 +20,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <see cref="INotableDateAlgorithm" /> rather than by implementing this interface directly.
 /// </para>
 /// </remarks>
-/// <seealso cref="INotableDateAlgorithm" />
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
-/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
+/// <seealso cref="INotableDateAlgorithm" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
+/// date rules (guide)</seealso> <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)
+/// </seealso>
 public interface IDateCalculationStrategy
 {
     /// <summary>

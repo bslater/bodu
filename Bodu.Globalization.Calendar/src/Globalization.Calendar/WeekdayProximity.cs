@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekdayProximity.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Identifies the direction and inclusivity used when seeking a weekday relative to an anchor date.
 /// </summary>
-/// <seealso cref="WeekOrdinal" />
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="WeekOrdinal" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules
+/// (guide)</seealso>
 public enum WeekdayProximity
 {
     /// <summary>

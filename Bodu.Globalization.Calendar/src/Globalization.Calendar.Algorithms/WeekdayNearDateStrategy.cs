@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekdayNearDateStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Calculates a notable date that falls on a weekday on, before, after, or nearest to a fixed month and day, such as
 /// the Monday on or after 24 May.
 /// </summary>
-/// <seealso cref="IDateCalculationStrategy" />
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
+/// date rules (guide)</seealso>
 public sealed class WeekdayNearDateStrategy : IDateCalculationStrategy
 {
     /// <summary>
@@ -29,10 +29,10 @@ public sealed class WeekdayNearDateStrategy : IDateCalculationStrategy
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
 
-        this.Month = month;
-        this.Day = day;
-        this.DayOfWeek = dayOfWeek;
-        this.Direction = direction;
+        Month = month;
+        Day = day;
+        DayOfWeek = dayOfWeek;
+        Direction = direction;
     }
 
     /// <summary>
@@ -62,9 +62,9 @@ public sealed class WeekdayNearDateStrategy : IDateCalculationStrategy
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
-        if (year < 1 || year > 9999 || this.Day > DateTime.DaysInMonth(year, this.Month))
+        if (year < 1 || year > 9999 || Day > DateTime.DaysInMonth(year, Month))
             return null;
 
-        return WeekdayMath.SeekOrNull(new DateOnly(year, this.Month, this.Day), this.DayOfWeek, this.Direction);
+        return WeekdayMath.SeekOrNull(new DateOnly(year, Month, Day), DayOfWeek, Direction);
     }
 }

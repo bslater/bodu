@@ -39,10 +39,10 @@ public sealed class AdjustmentTriggerContext
         ThrowHelper.ThrowIfNull(policy);
         ThrowHelper.ThrowIfNull(resolutionContext);
 
-        this.BaseDate = baseDate;
-        this.Territory = territory;
-        this.Policy = policy;
-        this.ResolutionContext = resolutionContext;
+        BaseDate = baseDate;
+        Territory = territory;
+        Policy = policy;
+        ResolutionContext = resolutionContext;
     }
 
     /// <summary>
@@ -74,5 +74,5 @@ public sealed class AdjustmentTriggerContext
     /// </summary>
     /// <returns>The policy's <see cref="AdjustmentPolicy.HandlerParameters" />; empty when none are declared.</returns>
     public IReadOnlyDictionary<string, string> Parameters =>
-        this.Policy.HandlerParameters;
+        Policy.HandlerParameters;
 }

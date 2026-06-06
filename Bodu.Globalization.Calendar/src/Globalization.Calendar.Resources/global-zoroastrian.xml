@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Zoroastrian notable-date catalogue
+  ================================================================================================================
+
+  A common-library catalogue of high-reuse Zoroastrian notable dates. The schema does not currently expose the Fasli,
+  Shahenshahi, or Kadmi Zoroastrian calendars, so this catalogue uses the Persian (Solar Hijri) calendar for the
+  equinox-aligned Fasli / Iranian-style dates that can be represented deterministically by the existing engine. Parsi
+  Shahenshahi and Kadmi observances often fall on different Gregorian dates and should be supplied by territory or
+  community packs using overrides or future calendar-specific algorithms.
+
+  Convention (matching the other common catalogues): each concept carries the bare calculation strategy under the
+  stable rule id "default" with no territory scope. A territory pack imports the concept it observes through an
+  <Import><Use> directive and supplies its own territory scope, category, non-working flag, and any weekend adjustment
+  there. The catalogue default category is Religious; a pack that observes one as a cultural or public holiday overrides
+  category/nonWorking on its own <Use>.
+-->
+<NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-zoroastrian">
+
+  <NotableDates>
+
+    <!--
+      ============================================================================================================
+      Persian-calendar / Fasli-style Zoroastrian observances
+      ============================================================================================================
+      Each entry fixes a month/day in the Persian calendar and projects it onto the Gregorian year via the BCL
+      PersianCalendar. sweepCalendarYears="true" emits each landing occurrence within the requested Gregorian year,
+      since the Persian and Gregorian year boundaries do not coincide.
+    -->
+
+    <!-- Nowruz / Jamshedi Navroz — 1 Farvardin, Zoroastrian and Persian New Year. Strategy: Fixed Persian month/day. -->
+    <NotableDate id="zoroastrian-nowruz" displayName="Zoroastrian Nowruz" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="1" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Khordad Sal — 6 Farvardin, birth anniversary of Zarathushtra in the Fasli/Iranian convention. Strategy: Fixed Persian month/day. -->
+    <NotableDate id="khordad-sal" displayName="Khordad Sal" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="1" day="6" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Tirgan — 13 Tir, Zoroastrian water festival. Strategy: Fixed Persian month/day. -->
+    <NotableDate id="tirgan" displayName="Tirgan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="4" day="13" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Mehregan — 16 Mehr, Zoroastrian festival of Mithra. Strategy: Fixed Persian month/day. -->
+    <NotableDate id="mehregan" displayName="Mehregan" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="7" day="16" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Zartosht No-Diso — 11 Dey, death anniversary of Zarathushtra in the Fasli/Iranian convention. Strategy: Fixed Persian month/day. -->
+    <NotableDate id="zartosht-no-diso" displayName="Zartosht No-Diso" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="10" day="11" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Sadeh — 10 Bahman, mid-winter fire festival. Strategy: Fixed Persian month/day. -->
+    <NotableDate id="sadeh" displayName="Sadeh" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Persian" />
+        <Strategy><Fixed month="11" day="10" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+  </NotableDates>
+</NotableDateResource>

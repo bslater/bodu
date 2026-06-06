@@ -62,13 +62,13 @@ public sealed class JewishCalendarKnownAnswerTests
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.IsTrue(ids.Contains("rosh-hashanah"));
-        Assert.IsTrue(ids.Contains("yom-kippur"));
-        Assert.IsTrue(ids.Contains("sukkot"));
-        Assert.IsTrue(ids.Contains("hanukkah"));
-        Assert.IsTrue(ids.Contains("purim"));
-        Assert.IsTrue(ids.Contains("passover"));
-        Assert.IsTrue(ids.Contains("shavuot"));
+        Assert.Contains("rosh-hashanah", ids);
+        Assert.Contains("yom-kippur", ids);
+        Assert.Contains("sukkot", ids);
+        Assert.Contains("hanukkah", ids);
+        Assert.Contains("purim", ids);
+        Assert.Contains("passover", ids);
+        Assert.Contains("shavuot", ids);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public sealed class JewishCalendarKnownAnswerTests
     {
         List<NotableDate> matches = ResolveForYear(CreateService(), notableDateId, year);
 
-        Assert.IsTrue(matches.Count >= 1, $"{notableDateId} unresolved for Gregorian year {year}");
+        Assert.IsGreaterThanOrEqualTo(1, matches.Count, $"{notableDateId} unresolved for Gregorian year {year}");
         Assert.AreEqual(new DateOnly(year, expectedMonth, expectedDay), matches[0].Date, $"{notableDateId} {year}");
     }
 
@@ -163,7 +163,7 @@ public sealed class JewishCalendarKnownAnswerTests
     {
         List<NotableDate> matches = ResolveForYear(CreateService(), notableDateId, 2024);
 
-        Assert.IsTrue(matches.Count >= 1, $"{notableDateId} unresolved for Gregorian year 2024");
+        Assert.IsGreaterThanOrEqualTo(1, matches.Count, $"{notableDateId} unresolved for Gregorian year 2024");
         Assert.AreEqual(expectedDuration, matches[0].DurationDays, notableDateId);
     }
 }

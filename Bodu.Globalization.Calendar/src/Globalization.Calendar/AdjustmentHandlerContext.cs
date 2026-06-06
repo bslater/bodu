@@ -42,11 +42,11 @@ public sealed class AdjustmentHandlerContext
         ThrowHelper.ThrowIfNull(isOccupied);
         ThrowHelper.ThrowIfNull(resolutionContext);
 
-        this.BaseDate = baseDate;
-        this.Territory = territory;
-        this.Policy = policy;
-        this._isOccupied = isOccupied;
-        this.ResolutionContext = resolutionContext;
+        BaseDate = baseDate;
+        Territory = territory;
+        Policy = policy;
+        _isOccupied = isOccupied;
+        ResolutionContext = resolutionContext;
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public sealed class AdjustmentHandlerContext
     /// </summary>
     /// <returns>The policy's <see cref="AdjustmentPolicy.HandlerParameters" />; empty when none are declared.</returns>
     public IReadOnlyDictionary<string, string> Parameters =>
-        this.Policy.HandlerParameters;
+        Policy.HandlerParameters;
 
     /// <summary>
     /// Determines whether a candidate day is already claimed by another non-working occurrence.
@@ -86,5 +86,5 @@ public sealed class AdjustmentHandlerContext
     /// <param name="date">The candidate day to test.</param>
     /// <returns><see langword="true" /> when the day is already claimed; otherwise <see langword="false" />.</returns>
     public bool IsOccupied(DateOnly date) =>
-        this._isOccupied(date);
+        _isOccupied(date);
 }

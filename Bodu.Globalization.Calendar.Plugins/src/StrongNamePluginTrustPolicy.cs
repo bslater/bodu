@@ -35,19 +35,22 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
     /// Initializes a new instance of the <see cref="StrongNamePluginTrustPolicy" /> class.
     /// </summary>
     /// <param name="allowedPublicKeyTokens">The public-key tokens to admit, as hexadecimal strings.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="allowedPublicKeyTokens" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="allowedPublicKeyTokens" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
-    /// Tokens are normalized to trimmed lowercase. Blank entries are ignored; an empty allowlist rejects every assembly.
+    /// Tokens are normalized to trimmed lowercase. Blank entries are ignored; an empty allowlist rejects every
+    /// assembly.
     /// </remarks>
     public StrongNamePluginTrustPolicy(IEnumerable<string> allowedPublicKeyTokens)
     {
         ThrowHelper.ThrowIfNull(allowedPublicKeyTokens);
 
-        this._allowedTokens = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        _allowedTokens = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var token in allowedPublicKeyTokens)
         {
             if (!string.IsNullOrWhiteSpace(token))
-                this._allowedTokens.Add(token.Trim().ToLowerInvariant());
+                _allowedTokens.Add(token.Trim().ToLowerInvariant());
         }
     }
 
@@ -60,7 +63,7 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
         if (string.IsNullOrEmpty(context.PublicKeyToken))
             return PluginTrustResult.Rejected(PluginsResourceStrings.Op_NotTrusted_PluginNotStrongNamed);
 
-        return this._allowedTokens.Contains(context.PublicKeyToken)
+        return _allowedTokens.Contains(context.PublicKeyToken)
             ? PluginTrustResult.Trusted()
             : PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginTokenNotAllowed, context.PublicKeyToken));
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WorkingWeekResolutionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,10 +58,10 @@ public sealed class WorkingWeekResolutionTests
     {
         INotableDateService service = Build("workingDays=\"1111100\"");
 
-        Assert.AreEqual(0, service.Resolve(new DateOnly(2026, 1, 2), Territory).Count, "Friday actual suppressed");
+        Assert.IsEmpty(service.Resolve(new DateOnly(2026, 1, 2), Territory), "Friday actual suppressed");
 
         IReadOnlyList<NotableDate> observed = service.Resolve(new DateOnly(2026, 1, 4), Territory);
-        Assert.AreEqual(1, observed.Count);
+        Assert.HasCount(1, observed);
         Assert.IsTrue(observed[0].IsObserved);
         Assert.AreEqual(new DateOnly(2026, 1, 2), observed[0].ActualDate);
         Assert.AreEqual(new DateOnly(2026, 1, 4), observed[0].Date);
@@ -77,11 +77,11 @@ public sealed class WorkingWeekResolutionTests
         INotableDateService service = Build(string.Empty);
 
         IReadOnlyList<NotableDate> actual = service.Resolve(new DateOnly(2026, 1, 2), Territory);
-        Assert.AreEqual(1, actual.Count);
+        Assert.HasCount(1, actual);
         Assert.IsFalse(actual[0].IsObserved);
         Assert.AreEqual(new DateOnly(2026, 1, 2), actual[0].Date);
 
-        Assert.AreEqual(0, service.Resolve(new DateOnly(2026, 1, 4), Territory).Count, "no observed occurrence emitted");
+        Assert.IsEmpty(service.Resolve(new DateOnly(2026, 1, 4), Territory), "no observed occurrence emitted");
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public sealed class WorkingWeekResolutionTests
         """));
 
         IReadOnlyList<NotableDate> observed = service.Resolve(new DateOnly(2026, 1, 5), Territory);
-        Assert.AreEqual(1, observed.Count);
+        Assert.HasCount(1, observed);
         Assert.IsTrue(observed[0].IsObserved);
         Assert.AreEqual(new DateOnly(2026, 1, 3), observed[0].ActualDate);
         Assert.AreEqual(new DateOnly(2026, 1, 5), observed[0].Date);

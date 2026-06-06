@@ -17,8 +17,8 @@ namespace Bodu.Globalization.Calendar;
 /// satisfy every populated dimension.
 /// </para>
 /// </remarks>
-/// <seealso cref="AdjustmentPolicy" />
-/// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
+/// <seealso cref="AdjustmentPolicy" /> <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment
+/// rules (guide)</seealso>
 public sealed class AdjustmentScope
 {
     /// <summary>
@@ -54,15 +54,15 @@ public sealed class AdjustmentScope
         ThrowHelper.ThrowIfNull(notableDateRefs);
         ThrowHelper.ThrowIfNull(ruleRefs);
 
-        this.Territories = territories.ToArray();
-        this.Calendars = calendars.ToArray();
-        this.Categories = categories.ToArray();
-        this.NotableDateRefs = notableDateRefs.ToArray();
-        this.RuleRefs = ruleRefs.ToArray();
-        this.FromYear = fromYear;
-        this.ToYear = toYear;
-        this.OnlyYears = onlyYears?.ToArray() ?? [];
-        this.ExceptYears = exceptYears?.ToArray() ?? [];
+        Territories = territories.ToArray();
+        Calendars = calendars.ToArray();
+        Categories = categories.ToArray();
+        NotableDateRefs = notableDateRefs.ToArray();
+        RuleRefs = ruleRefs.ToArray();
+        FromYear = fromYear;
+        ToYear = toYear;
+        OnlyYears = onlyYears?.ToArray() ?? [];
+        ExceptYears = exceptYears?.ToArray() ?? [];
     }
 
     /// <summary>
@@ -155,31 +155,31 @@ public sealed class AdjustmentScope
         string ruleId,
         int year)
     {
-        if (this.FromYear.HasValue && year < this.FromYear.Value)
+        if (FromYear.HasValue && year < FromYear.Value)
             return false;
 
-        if (this.ToYear.HasValue && year > this.ToYear.Value)
+        if (ToYear.HasValue && year > ToYear.Value)
             return false;
 
-        if (this.OnlyYears.Count > 0 && !this.OnlyYears.Contains(year))
+        if (OnlyYears.Count > 0 && !OnlyYears.Contains(year))
             return false;
 
-        if (this.ExceptYears.Contains(year))
+        if (ExceptYears.Contains(year))
             return false;
 
-        if (this.Territories.Count > 0 && !this.Territories.Any(t => MatchesTerritory(t, territory)))
+        if (Territories.Count > 0 && !Territories.Any(t => MatchesTerritory(t, territory)))
             return false;
 
-        if (this.Calendars.Count > 0 && !this.Calendars.Contains(calendar))
+        if (Calendars.Count > 0 && !Calendars.Contains(calendar))
             return false;
 
-        if (this.Categories.Count > 0 && !this.Categories.Contains(category))
+        if (Categories.Count > 0 && !Categories.Contains(category))
             return false;
 
-        if (this.NotableDateRefs.Count > 0 && !this.NotableDateRefs.Contains(notableDateId, StringComparer.OrdinalIgnoreCase))
+        if (NotableDateRefs.Count > 0 && !NotableDateRefs.Contains(notableDateId, StringComparer.OrdinalIgnoreCase))
             return false;
 
-        if (this.RuleRefs.Count > 0 && !this.RuleRefs.Contains(ruleId, StringComparer.OrdinalIgnoreCase))
+        if (RuleRefs.Count > 0 && !RuleRefs.Contains(ruleId, StringComparer.OrdinalIgnoreCase))
             return false;
 
         return true;

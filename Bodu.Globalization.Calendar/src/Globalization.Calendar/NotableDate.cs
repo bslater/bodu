@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,8 +27,7 @@ namespace Bodu.Globalization.Calendar;
 /// The identifier of the adjustment policy that produced the observed date, if any.
 /// </param>
 /// <param name="AdjustmentReason">The reason recorded by the adjustment policy, if any.</param>
-/// <seealso cref="INotableDateService" />
-/// <seealso cref="NotableDateRuleIdentity" />
+/// <seealso cref="INotableDateService" /> <seealso cref="NotableDateRuleIdentity" />
 /// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public sealed record NotableDate(
     DateOnly Date,
@@ -50,14 +49,14 @@ public sealed record NotableDate(
     /// </summary>
     /// <returns>The notable-date id from <see cref="Identity" />.</returns>
     public string NotableDateId =>
-        this.Identity.NotableDateId;
+        Identity.NotableDateId;
 
     /// <summary>
     /// Gets the identifier of the rule that produced the occurrence.
     /// </summary>
     /// <returns>The rule id from <see cref="Identity" />.</returns>
     public string RuleId =>
-        this.Identity.RuleId;
+        Identity.RuleId;
 
     /// <summary>
     /// Gets the last day the occurrence spans.
@@ -67,5 +66,5 @@ public sealed record NotableDate(
     /// <c><see cref="Date" /> + <see cref="DurationDays" /> - 1</c> for a multi-day span.
     /// </returns>
     public DateOnly EndDate =>
-        this.Date.AddDays(Math.Max(1, this.DurationDays) - 1);
+        Date.AddDays(Math.Max(1, DurationDays) - 1);
 }

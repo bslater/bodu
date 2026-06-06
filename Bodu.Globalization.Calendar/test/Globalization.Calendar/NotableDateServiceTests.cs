@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 1, 1), "AU");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 1, 1),
@@ -53,7 +53,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2022, 1, 3), "AU");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2022, 1, 3),
@@ -75,7 +75,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2022, 1, 1), "AU");
 
-        Assert.AreEqual(0, results.Count);
+        Assert.IsEmpty(results);
     }
 
     /// <summary>
@@ -87,14 +87,14 @@ public sealed class NotableDateServiceTests
     {
         NotableDateService resolver = CreateResolver();
 
-        Assert.AreEqual(0, resolver.Resolve(new DateOnly(2022, 1, 1), "AU").Count, "actual-day query");
+        Assert.IsEmpty(resolver.Resolve(new DateOnly(2022, 1, 1), "AU"), "actual-day query");
 
         IReadOnlyList<NotableDate> observedDay = resolver.Resolve(new DateOnly(2022, 1, 3), "AU");
-        Assert.AreEqual(1, observedDay.Count, "observed-day query");
+        Assert.HasCount(1, observedDay, "observed-day query");
         Assert.AreEqual(new DateOnly(2022, 1, 3), observedDay[0].Date);
 
         IReadOnlyList<NotableDate> range = resolver.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 3)), "AU");
-        Assert.AreEqual(1, range.Count, "range query");
+        Assert.HasCount(1, range, "range query");
         NotableDateAssert.AssertEqual(
             range[0],
             date: new DateOnly(2022, 1, 3),
@@ -116,7 +116,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "AU");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 4, 25),
@@ -138,7 +138,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "NZ");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 4, 25),
@@ -160,7 +160,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 4, 25), "US");
 
-        Assert.AreEqual(0, results.Count);
+        Assert.IsEmpty(results);
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 9, 17), "US");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 9, 17),
@@ -193,7 +193,7 @@ public sealed class NotableDateServiceTests
     {
         IReadOnlyList<NotableDate> results = CreateResolver().Resolve(new DateOnly(2026, 7, 25), "PR");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         NotableDateAssert.AssertEqual(
             results[0],
             date: new DateOnly(2026, 7, 25),
@@ -217,9 +217,9 @@ public sealed class NotableDateServiceTests
         IReadOnlyList<NotableDate> results = CreateResolver()
             .Resolve(new DateRange(new DateOnly(2026, 7, 1), new DateOnly(2026, 9, 30)), "PR");
 
-        Assert.AreEqual(1, results.Count);
+        Assert.HasCount(1, results);
         Assert.AreEqual(new DateOnly(2026, 7, 25), results[0].Date);
         Assert.AreEqual("pr-fixed-jul-25", results[0].RuleId);
-        Assert.IsFalse(results.Any(r => r.RuleId == "us-fixed-sep-17"), "US rule must not leak into a PR query");
+        Assert.DoesNotContain(r => r.RuleId == "us-fixed-sep-17", results, "US rule must not leak into a PR query");
     }
 }

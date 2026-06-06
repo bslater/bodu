@@ -12,8 +12,8 @@ namespace Bodu.Test.IO;
 public class FixedLengthIncrementingStream
     : System.IO.Stream
 {
-    private readonly int size;
-    private int written;
+    private readonly int _size;
+    private int _written;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FixedLengthIncrementingStream" /> class.
@@ -24,7 +24,7 @@ public class FixedLengthIncrementingStream
         if (size <= 0)
             throw new ArgumentOutOfRangeException(nameof(size), "Size must be greater than zero.");
 
-        this.size = size;
+        _size = size;
     }
 
     /// <inheritdoc />
@@ -42,26 +42,26 @@ public class FixedLengthIncrementingStream
     /// <inheritdoc />
     public override long Position
     {
-        get => written;
+        get => _written;
         set => throw new NotSupportedException();
     }
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        if (written < 0)
+        if (_written < 0)
             throw new ObjectDisposedException(nameof(FixedLengthIncrementingStream));
 
-        if (written == size)
+        if (_written == _size)
             return 0;
 
-        var remaining = size - written;
+        var remaining = _size - _written;
         var localLimit = Math.Min(count, Math.Max(1, remaining / 2));
 
         for (var i = 0; i < localLimit; i++)
         {
-            buffer[offset + i] = (byte)written;
-            unchecked { written++; }
+            buffer[offset + i] = (byte)_written;
+            unchecked { _written++; }
         }
 
         return localLimit;
@@ -83,7 +83,7 @@ public class FixedLengthIncrementingStream
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        written = -1;
+        _written = -1;
         base.Dispose(disposing);
     }
 }

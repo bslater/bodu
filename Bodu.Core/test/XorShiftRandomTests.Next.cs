@@ -269,7 +269,7 @@ public partial class XorShiftRandomTests
 
         var actual = XorShiftRandom.BoundedNextUInt32(3u, () => queue.Dequeue());
 
-        Assert.AreEqual(0, queue.Count, "Expected the biased first value to be rejected and the second value consumed.");
+        Assert.IsEmpty(queue, "Expected the biased first value to be rejected and the second value consumed.");
         Assert.AreEqual(1u, actual);
     }
 
@@ -314,7 +314,7 @@ public partial class XorShiftRandomTests
             for (var i = 0; i < 4; i++) queue.Enqueue(0x55555556u); // fallback values for redraws
 
             var actual = XorShiftRandom.BoundedNextUInt32(maxExclusive, () => queue.Dequeue());
-            Assert.IsTrue(actual < maxExclusive, $"sample={sample:X}, maxExclusive={maxExclusive}, actual={actual}.");
+            Assert.IsLessThan(maxExclusive, actual, $"sample={sample:X}, maxExclusive={maxExclusive}, actual={actual}.");
         }
     }
 

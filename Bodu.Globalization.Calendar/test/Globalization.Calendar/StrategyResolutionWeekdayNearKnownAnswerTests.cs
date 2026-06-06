@@ -85,7 +85,7 @@ public sealed class StrategyResolutionWeekdayNearKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' on {date:yyyy-MM-dd} (reference year {referenceYear})");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' on {date:yyyy-MM-dd} (reference year {referenceYear})");
         Assert.AreEqual(date, matches[0].Date, $"{notableDateId} reference year {referenceYear}");
     }
 

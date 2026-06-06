@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDatePluginException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,6 +27,14 @@ public class NotableDatePluginException : Exception
     /// <param name="innerException">The underlying cause.</param>
     public NotableDatePluginException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class.
+    /// </summary>
+    public NotableDatePluginException()
+        : base()
     {
     }
 }

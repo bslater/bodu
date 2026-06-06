@@ -67,7 +67,7 @@ public abstract class SetContractTests<TSet, TItem>
         var added = set.Add(item);
 
         Assert.IsFalse(added);
-        Assert.AreEqual(countBefore, set.Count);
+        Assert.HasCount(countBefore, set);
     }
 
     /// <summary>
@@ -84,9 +84,9 @@ public abstract class SetContractTests<TSet, TItem>
 
         set.UnionWith([b, c]);
 
-        Assert.IsTrue(set.Contains(a));
-        Assert.IsTrue(set.Contains(b));
-        Assert.IsTrue(set.Contains(c));
+        Assert.Contains(a, set);
+        Assert.Contains(b, set);
+        Assert.Contains(c, set);
     }
 
     /// <summary>
@@ -103,9 +103,9 @@ public abstract class SetContractTests<TSet, TItem>
 
         set.IntersectWith([b, c]);
 
-        Assert.IsFalse(set.Contains(a));
-        Assert.IsTrue(set.Contains(b));
-        Assert.IsTrue(set.Contains(c));
+        Assert.DoesNotContain(a, set);
+        Assert.Contains(b, set);
+        Assert.Contains(c, set);
     }
 
     /// <summary>
@@ -122,9 +122,9 @@ public abstract class SetContractTests<TSet, TItem>
 
         set.ExceptWith([b, c]);
 
-        Assert.IsTrue(set.Contains(a));
-        Assert.IsFalse(set.Contains(b));
-        Assert.IsFalse(set.Contains(c));
+        Assert.Contains(a, set);
+        Assert.DoesNotContain(b, set);
+        Assert.DoesNotContain(c, set);
     }
 
     /// <summary>
@@ -141,9 +141,9 @@ public abstract class SetContractTests<TSet, TItem>
 
         set.SymmetricExceptWith([b, c]);
 
-        Assert.IsTrue(set.Contains(a));
-        Assert.IsFalse(set.Contains(b));
-        Assert.IsTrue(set.Contains(c));
+        Assert.Contains(a, set);
+        Assert.DoesNotContain(b, set);
+        Assert.Contains(c, set);
     }
 
     /// <summary>

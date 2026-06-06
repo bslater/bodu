@@ -105,7 +105,7 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
     {
         List<NotableDate> matches = ResolveInYear("tisha-bav", 2026);
 
-        Assert.AreEqual(1, matches.Count, "expected exactly one Tisha B'Av in 2026");
+        Assert.HasCount(1, matches, "expected exactly one Tisha B'Av in 2026");
         Assert.AreEqual(2026, matches[0].Date.Year, "Tisha B'Av falls inside the requested year");
     }
 
@@ -127,7 +127,7 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
     {
         List<NotableDate> matches = ResolveInYear("purim-adar-ii", 2027);
 
-        Assert.AreEqual(1, matches.Count, "expected exactly one Adar II Purim in 2027");
+        Assert.HasCount(1, matches, "expected exactly one Adar II Purim in 2027");
 
         HebrewCalendar hebrew = new();
         var resolved = matches[0].Date.ToDateTime(TimeOnly.MinValue);
@@ -149,7 +149,7 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
     {
         List<NotableDate> matches = ResolveInYear("eid-al-adha", year);
 
-        Assert.IsTrue(matches.Count >= 1, $"expected Eid al-Adha to occur in {year}");
+        Assert.IsGreaterThanOrEqualTo(1, matches.Count, $"expected Eid al-Adha to occur in {year}");
         Assert.IsTrue(matches.All(m => m.Date.Year == year), $"every Eid al-Adha occurrence falls inside {year}");
     }
 
@@ -189,7 +189,7 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
     {
         List<NotableDate> matches = ResolveInYear(notableDateId, year);
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {year}");
         Assert.AreEqual(expected, matches[0].Date, $"{notableDateId} {year}");
     }
 
@@ -199,5 +199,5 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
     /// <param name="notableDateId">The concept id to resolve.</param>
     /// <param name="year">The Gregorian year to scan.</param>
     private static void AssertNoOccurrenceInYear(string notableDateId, int year) =>
-        Assert.AreEqual(0, ResolveInYear(notableDateId, year).Count, $"expected no '{notableDateId}' in {year}");
+        Assert.IsEmpty(ResolveInYear(notableDateId, year), $"expected no '{notableDateId}' in {year}");
 }

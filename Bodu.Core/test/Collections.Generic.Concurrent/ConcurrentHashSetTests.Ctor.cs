@@ -249,9 +249,9 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>();
 
-        Assert.IsTrue(set.LockCount >= 1, $"Expected at least one lock, got {set.LockCount}.");
-        Assert.IsTrue(
-            set.LockCount <= ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel,
+        Assert.IsGreaterThanOrEqualTo(1, set.LockCount, $"Expected at least one lock, got {set.LockCount}.");
+        Assert.IsLessThanOrEqualTo(
+            ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel, set.LockCount,
             $"Expected default lock count <= {ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel}, got {set.LockCount}.");
     }
 

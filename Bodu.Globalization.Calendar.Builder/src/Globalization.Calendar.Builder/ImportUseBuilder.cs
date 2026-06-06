@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ImportUseBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public sealed class ImportUseBuilder
     /// <param name="notableDateRef">The identifier of the imported concept.</param>
     internal ImportUseBuilder(string notableDateRef)
     {
-        this._notableDateRef = notableDateRef;
+        _notableDateRef = notableDateRef;
     }
 
     /// <summary>
@@ -56,42 +56,42 @@ public sealed class ImportUseBuilder
     /// </summary>
     /// <returns>The imported concept identifier.</returns>
     internal string NotableDateRef =>
-        this._notableDateRef;
+        _notableDateRef;
 
     /// <summary>
     /// Gets the local alias.
     /// </summary>
     /// <returns>The alias, or <see langword="null" /> when the imported identifier is retained.</returns>
     internal string? Alias =>
-        this._alias;
+        _alias;
 
     /// <summary>
     /// Gets the territory scope.
     /// </summary>
     /// <returns>The territory code, or <see langword="null" /> when unset.</returns>
     internal string? Territory =>
-        this._territory;
+        _territory;
 
     /// <summary>
     /// Gets the category override.
     /// </summary>
     /// <returns>The category, or <see langword="null" /> when the imported category is retained.</returns>
     internal NotableDateCategory? Category =>
-        this._category;
+        _category;
 
     /// <summary>
     /// Gets the non-working override.
     /// </summary>
     /// <returns>The flag, or <see langword="null" /> when unset.</returns>
     internal bool? NonWorking =>
-        this._nonWorking;
+        _nonWorking;
 
     /// <summary>
     /// Gets the adjustment policy identifiers applied to the imported concept.
     /// </summary>
     /// <returns>The policy identifiers; empty when none are configured.</returns>
     internal IReadOnlyList<string> Adjustments =>
-        this._adjustments;
+        _adjustments;
 
     /// <summary>
     /// Sets the local alias of the imported concept.
@@ -105,7 +105,7 @@ public sealed class ImportUseBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(alias);
 
-        this._alias = alias;
+        _alias = alias;
         return this;
     }
 
@@ -121,7 +121,7 @@ public sealed class ImportUseBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(code);
 
-        this._territory = code;
+        _territory = code;
         return this;
     }
 
@@ -132,7 +132,7 @@ public sealed class ImportUseBuilder
     /// <returns>The same <see cref="ImportUseBuilder" /> instance, enabling chained calls.</returns>
     public ImportUseBuilder WithCategory(NotableDateCategory category)
     {
-        this._category = category;
+        _category = category;
         return this;
     }
 
@@ -143,7 +143,7 @@ public sealed class ImportUseBuilder
     /// <returns>The same <see cref="ImportUseBuilder" /> instance, enabling chained calls.</returns>
     public ImportUseBuilder AsNonWorking(bool value = true)
     {
-        this._nonWorking = value;
+        _nonWorking = value;
         return this;
     }
 
@@ -159,7 +159,7 @@ public sealed class ImportUseBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(policyRef);
 
-        this._adjustments.Add(policyRef);
+        _adjustments.Add(policyRef);
         return this;
     }
 
@@ -173,12 +173,12 @@ public sealed class ImportUseBuilder
     /// <param name="adjustments">The adjustment policy references.</param>
     internal void SetParsedValues(string? alias, string? territory, NotableDateCategory? category, bool? nonWorking, IEnumerable<string> adjustments)
     {
-        this._alias = alias;
-        this._territory = territory;
-        this._category = category;
-        this._nonWorking = nonWorking;
-        this._adjustments.Clear();
-        this._adjustments.AddRange(adjustments);
+        _alias = alias;
+        _territory = territory;
+        _category = category;
+        _nonWorking = nonWorking;
+        _adjustments.Clear();
+        _adjustments.AddRange(adjustments);
     }
 
     /// <summary>
@@ -187,8 +187,8 @@ public sealed class ImportUseBuilder
     /// <returns>A new <see cref="ImportUseBuilder" /> carrying the same configured state.</returns>
     internal ImportUseBuilder Clone()
     {
-        ImportUseBuilder clone = new(this._notableDateRef);
-        clone.SetParsedValues(this._alias, this._territory, this._category, this._nonWorking, this._adjustments);
+        ImportUseBuilder clone = new(_notableDateRef);
+        clone.SetParsedValues(_alias, _territory, _category, _nonWorking, _adjustments);
         return clone;
     }
 }

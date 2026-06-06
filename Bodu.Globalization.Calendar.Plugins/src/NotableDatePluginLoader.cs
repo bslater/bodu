@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Security.Cryptography;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Plugins;
 
@@ -46,10 +45,9 @@ namespace Bodu.Globalization.Calendar.Plugins;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="IPluginTrustPolicy" />
-/// <seealso cref="INotableDateAlgorithmPlugin" />
-/// <seealso cref="NotableDateAlgorithmRegistry" />
-/// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
+/// <seealso cref="IPluginTrustPolicy" /> <seealso cref="INotableDateAlgorithmPlugin" />
+/// <seealso cref="NotableDateAlgorithmRegistry" /> <seealso href="../guides/calendar/algorithms.html">Date calculation
+/// algorithms (guide)</seealso>
 public static class NotableDatePluginLoader
 {
     /// <summary>
@@ -63,7 +61,9 @@ public static class NotableDatePluginLoader
     /// </exception>
     /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
     /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
-    /// <exception cref="PluginActivationException">The plugin type could not be activated or is not a plugin.</exception>
+    /// <exception cref="PluginActivationException">
+    /// The plugin type could not be activated or is not a plugin.
+    /// </exception>
     public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy)
     {
         ThrowHelper.ThrowIfNull(assembly);
@@ -84,13 +84,9 @@ public static class NotableDatePluginLoader
                 trust.Reason);
         }
 
-        NotableDatePluginAttribute? attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>();
-        if (attribute is null)
-        {
-            throw new PluginMissingAttributeException(
+        NotableDatePluginAttribute? attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>() ?? throw new PluginMissingAttributeException(
                 string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_Missing_PluginAttribute, name),
                 name);
-        }
 
         return Activate(attribute.PluginType);
     }
@@ -106,7 +102,9 @@ public static class NotableDatePluginLoader
     /// </exception>
     /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
     /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
-    /// <exception cref="PluginActivationException">The plugin type could not be activated or is not a plugin.</exception>
+    /// <exception cref="PluginActivationException">
+    /// The plugin type could not be activated or is not a plugin.
+    /// </exception>
     public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy)
     {
         ThrowHelper.ThrowIfNull(assemblyPath);

@@ -244,8 +244,8 @@ public sealed class ParserMonthTokenTests
             _ = NotableDateResourceLoader.Load(GregorianFixedXml("13"));
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Code == "BODU-CAL-MONTH" && d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Code == "BODU-CAL-MONTH" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             $"Expected BODU-CAL-MONTH. Actual: {string.Join("; ", ex.Diagnostics.Select(d => d.Code))}");
     }
 
@@ -265,8 +265,8 @@ public sealed class ParserMonthTokenTests
             _ = NotableDateResourceLoader.Load(GregorianFixedXml(month));
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Code == "BODU-CAL-MONTH" && d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Code == "BODU-CAL-MONTH" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             $"Expected BODU-CAL-MONTH. Actual: {string.Join("; ", ex.Diagnostics.Select(d => d.Code))}");
     }
 
@@ -292,8 +292,8 @@ public sealed class ParserMonthTokenTests
                 """);
         });
 
-        Assert.IsTrue(xmlEx.Diagnostics.Any(d => d.Code == "BODU-CAL-MONTH"), "XML BODU-CAL-MONTH");
-        Assert.IsTrue(jsonEx.Diagnostics.Any(d => d.Code == "BODU-CAL-MONTH"), "JSON BODU-CAL-MONTH");
+        Assert.Contains(d => d.Code == "BODU-CAL-MONTH", xmlEx.Diagnostics, "XML BODU-CAL-MONTH");
+        Assert.Contains(d => d.Code == "BODU-CAL-MONTH", jsonEx.Diagnostics, "JSON BODU-CAL-MONTH");
     }
 
     /// <summary>
@@ -309,8 +309,8 @@ public sealed class ParserMonthTokenTests
             _ = NotableDateResourceLoader.Load(HebrewFixedXml("Smarchadar"));
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Code == "BODU-CAL-MONTH" && d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Code == "BODU-CAL-MONTH" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             $"Expected BODU-CAL-MONTH. Actual: {string.Join("; ", ex.Diagnostics.Select(d => d.Code))}");
     }
 
@@ -340,8 +340,8 @@ public sealed class ParserMonthTokenTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Code == "BODU-CAL-SCHEMA" && d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Code == "BODU-CAL-SCHEMA" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             $"Expected BODU-CAL-SCHEMA. Actual: {string.Join("; ", ex.Diagnostics.Select(d => d.Code))}");
     }
 

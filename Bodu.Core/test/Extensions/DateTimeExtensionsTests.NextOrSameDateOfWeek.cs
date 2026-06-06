@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
@@ -103,6 +101,6 @@ public partial class DateTimeExtensionsTests
     {
         DateTime actual = DateTime.MinValue.NextOrSameDateOfWeek(DayOfWeek.Friday);
 
-        Assert.IsTrue(actual >= DateTime.MinValue);
+        Assert.IsGreaterThanOrEqualTo(DateTime.MinValue, actual);
     }
 }

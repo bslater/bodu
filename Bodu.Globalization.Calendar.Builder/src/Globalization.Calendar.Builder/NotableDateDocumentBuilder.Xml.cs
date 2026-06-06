@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilder.Xml.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,29 +23,29 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
     public XDocument ToXDocument()
     {
-        string resourceId = this.RequireResourceId();
+        var resourceId = RequireResourceId();
 
         XElement root = new(
             BuilderXml.Namespace + "NotableDateResource",
-            new XAttribute("schemaVersion", this._schemaVersion),
+            new XAttribute("schemaVersion", _schemaVersion),
             new XAttribute("resourceId", resourceId));
 
-        XElement? metadata = this.BuildMetadataElement();
+        XElement? metadata = BuildMetadataElement();
         if (metadata is not null) root.Add(metadata);
 
-        XElement? resolutionPolicy = this.BuildResolutionPolicyElement();
+        XElement? resolutionPolicy = BuildResolutionPolicyElement();
         if (resolutionPolicy is not null) root.Add(resolutionPolicy);
 
-        XElement? adjustmentPolicies = this.BuildAdjustmentPoliciesElement();
+        XElement? adjustmentPolicies = BuildAdjustmentPoliciesElement();
         if (adjustmentPolicies is not null) root.Add(adjustmentPolicies);
 
-        XElement? imports = this.BuildImportsElement();
+        XElement? imports = BuildImportsElement();
         if (imports is not null) root.Add(imports);
 
-        XElement? notableDates = this.BuildNotableDatesElement();
+        XElement? notableDates = BuildNotableDatesElement();
         if (notableDates is not null) root.Add(notableDates);
 
-        XElement? overrides = this.BuildOverridesElement();
+        XElement? overrides = BuildOverridesElement();
         if (overrides is not null) root.Add(overrides);
 
         return new XDocument(new XDeclaration("1.0", "utf-8", null), root);
@@ -58,7 +58,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
     public string ToXml()
     {
-        XDocument document = this.ToXDocument();
+        var document = ToXDocument();
         XmlWriterSettings settings = new()
         {
             Indent = true,
@@ -66,8 +66,8 @@ public sealed partial class NotableDateDocumentBuilder
             OmitXmlDeclaration = false,
         };
 
-        using StringWriter stringWriter = new System.IO.StringWriter(CultureInfo.InvariantCulture);
-        using (XmlWriter writer = XmlWriter.Create(stringWriter, settings))
+        using var stringWriter = new System.IO.StringWriter(CultureInfo.InvariantCulture);
+        using (var writer = XmlWriter.Create(stringWriter, settings))
             document.Save(writer);
 
         return stringWriter.ToString();
@@ -138,13 +138,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The metadata element, or <see langword="null" /> when no metadata is configured.</returns>
     private XElement? BuildMetadataElement()
     {
-        if (this._metadataName is null && this._metadataDescription is null && this._sources.Count == 0)
+        if (_metadataName is null && _metadataDescription is null && _sources.Count == 0)
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Metadata");
-        if (this._metadataName is not null) element.Add(new XElement(BuilderXml.Namespace + "Name", this._metadataName));
-        if (this._metadataDescription is not null) element.Add(new XElement(BuilderXml.Namespace + "Description", this._metadataDescription));
-        foreach (string source in this._sources)
+        if (_metadataName is not null) element.Add(new XElement(BuilderXml.Namespace + "Name", _metadataName));
+        if (_metadataDescription is not null) element.Add(new XElement(BuilderXml.Namespace + "Description", _metadataDescription));
+        foreach (var source in _sources)
             element.Add(new XElement(BuilderXml.Namespace + "Source", source));
 
         return element;
@@ -156,10 +156,10 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The resolution-policy element, or <see langword="null" /> when no policy is configured.</returns>
     private XElement? BuildResolutionPolicyElement()
     {
-        if (this._resolutionPolicy is null || !this._resolutionPolicy.HasAnyValue())
+        if (_resolutionPolicy?.HasAnyValue() != true)
             return null;
 
-        ResolutionPolicyBuilder policy = this._resolutionPolicy;
+        ResolutionPolicyBuilder policy = _resolutionPolicy;
         XElement element = new(BuilderXml.Namespace + "ResolutionPolicy");
         if (policy.DuplicatePolicy is DuplicatePolicy duplicatePolicy) element.SetAttributeValue("duplicatePolicy", duplicatePolicy.ToString());
         if (policy.SameDayCollisionPolicy is CollisionPolicy sameDay) element.SetAttributeValue("sameDayCollisionPolicy", sameDay.ToString());
@@ -180,11 +180,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     private XElement? BuildAdjustmentPoliciesElement()
     {
-        if (this._adjustmentPolicies.Count == 0)
+        if (_adjustmentPolicies.Count == 0)
             return null;
 
         XElement element = new(BuilderXml.Namespace + "AdjustmentPolicies");
-        foreach (AdjustmentPolicyBuilder policy in this._adjustmentPolicies)
+        foreach (AdjustmentPolicyBuilder policy in _adjustmentPolicies)
             element.Add(BuildAdjustmentPolicyElement(policy));
 
         return element;
@@ -256,19 +256,19 @@ public sealed partial class NotableDateDocumentBuilder
         if (scope.FromYearValue is int fromYear) element.SetAttributeValue("fromYear", BuilderXml.Int(fromYear));
         if (scope.ToYearValue is int toYear) element.SetAttributeValue("toYear", BuilderXml.Int(toYear));
 
-        foreach (string territory in scope.Territories)
+        foreach (var territory in scope.Territories)
             element.Add(new XElement(BuilderXml.Namespace + "Territory", new XAttribute("code", territory)));
         foreach (CalendarSystem calendar in scope.Calendars)
             element.Add(new XElement(BuilderXml.Namespace + "Calendar", new XAttribute("name", calendar.ToString())));
         foreach (NotableDateCategory category in scope.Categories)
             element.Add(new XElement(BuilderXml.Namespace + "Category", new XAttribute("value", category.ToString())));
-        foreach (string notableDateRef in scope.NotableDateRefs)
+        foreach (var notableDateRef in scope.NotableDateRefs)
             element.Add(new XElement(BuilderXml.Namespace + "NotableDate", new XAttribute("ref", notableDateRef)));
-        foreach ((string notableDateRef, string ruleRef) in scope.RuleRefs)
+        foreach ((var notableDateRef, var ruleRef) in scope.RuleRefs)
             element.Add(new XElement(BuilderXml.Namespace + "Rule", new XAttribute("notableDateRef", notableDateRef), new XAttribute("ruleRef", ruleRef)));
-        foreach (int year in scope.OnlyYears)
+        foreach (var year in scope.OnlyYears)
             element.Add(new XElement(BuilderXml.Namespace + "OnlyYear", new XAttribute("value", BuilderXml.Int(year))));
-        foreach (int year in scope.ExceptYears)
+        foreach (var year in scope.ExceptYears)
             element.Add(new XElement(BuilderXml.Namespace + "ExceptYear", new XAttribute("value", BuilderXml.Int(year))));
 
         return element;
@@ -280,11 +280,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The imports element, or <see langword="null" /> when no imports are configured.</returns>
     private XElement? BuildImportsElement()
     {
-        if (this._imports.Count == 0)
+        if (_imports.Count == 0)
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Imports");
-        foreach (ImportBuilder import in this._imports)
+        foreach (ImportBuilder import in _imports)
         {
             XElement importElement = new(BuilderXml.Namespace + "Import", new XAttribute("resource", import.Resource));
             foreach (ImportUseBuilder use in import.Uses)
@@ -312,7 +312,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (use.Adjustments.Count > 0)
         {
             XElement adjustments = new(BuilderXml.Namespace + "Adjustments");
-            foreach (string policyRef in use.Adjustments)
+            foreach (var policyRef in use.Adjustments)
                 adjustments.Add(new XElement(BuilderXml.Namespace + "Adjustment", new XAttribute("policyRef", policyRef)));
 
             element.Add(adjustments);
@@ -328,11 +328,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">A concept has no rules or a rule has no strategy.</exception>
     private XElement? BuildNotableDatesElement()
     {
-        if (this._definitions.Count == 0)
+        if (_definitions.Count == 0)
             return null;
 
         XElement element = new(BuilderXml.Namespace + "NotableDates");
-        foreach (NotableDateDefinitionBuilder definition in this._definitions)
+        foreach (NotableDateDefinitionBuilder definition in _definitions)
             element.Add(BuildNotableDateElement(definition));
 
         return element;
@@ -369,7 +369,8 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Builds a single <c>Rule</c> element, emitting its applicability, strategy, tags, and adjustments in schema order.
+    /// Builds a single <c>Rule</c> element, emitting its applicability, strategy, tags, and adjustments in schema
+    /// order.
     /// </summary>
     /// <param name="rule">The rule to serialize.</param>
     /// <param name="requireStrategy">A value indicating whether the rule must declare a strategy.</param>
@@ -428,11 +429,11 @@ public sealed partial class NotableDateDocumentBuilder
         if (rule.EveryYearsValue is int everyYears) element.SetAttributeValue("everyYears", BuilderXml.Int(everyYears));
         if (rule.AnchorYearValue is int anchorYear) element.SetAttributeValue("anchorYear", BuilderXml.Int(anchorYear));
 
-        foreach (string territory in rule.Territories)
+        foreach (var territory in rule.Territories)
             element.Add(new XElement(BuilderXml.Namespace + "Territory", new XAttribute("code", territory)));
-        foreach (int year in rule.OnlyYearsValues)
+        foreach (var year in rule.OnlyYearsValues)
             element.Add(new XElement(BuilderXml.Namespace + "OnlyYear", new XAttribute("value", BuilderXml.Int(year))));
-        foreach (int year in rule.ExceptYearsValues)
+        foreach (var year in rule.ExceptYearsValues)
             element.Add(new XElement(BuilderXml.Namespace + "ExceptYear", new XAttribute("value", BuilderXml.Int(year))));
 
         return element;
@@ -449,7 +450,7 @@ public sealed partial class NotableDateDocumentBuilder
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Tags");
-        foreach (string tag in tags)
+        foreach (var tag in tags)
             element.Add(new XElement(BuilderXml.Namespace + "Tag", new XAttribute("value", tag)));
 
         return element;
@@ -466,7 +467,7 @@ public sealed partial class NotableDateDocumentBuilder
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Adjustments");
-        foreach (string policyRef in adjustments)
+        foreach (var policyRef in adjustments)
             element.Add(new XElement(BuilderXml.Namespace + "Adjustment", new XAttribute("policyRef", policyRef)));
 
         return element;
@@ -479,11 +480,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">An added override rule has no strategy.</exception>
     private XElement? BuildOverridesElement()
     {
-        if (this._overrides is null || this._overrides.Entries.Count == 0)
+        if (_overrides is null || _overrides.Entries.Count == 0)
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Overrides");
-        foreach (OverrideEntry entry in this._overrides.Entries)
+        foreach (OverrideEntry entry in _overrides.Entries)
             element.Add(BuildOverrideEntryElement(entry));
 
         return element;
@@ -495,26 +496,19 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="entry">The override operation to serialize.</param>
     /// <returns>The serialized override element.</returns>
     /// <exception cref="InvalidOperationException">An added override rule has no strategy.</exception>
-    private static XElement BuildOverrideEntryElement(OverrideEntry entry)
-    {
-        switch (entry.Operation)
+    private static XElement BuildOverrideEntryElement(OverrideEntry entry) =>
+        entry.Operation switch
         {
-            case OverrideOperation.AddRule:
-                return new XElement(
-                    BuilderXml.Namespace + "AddRule",
-                    new XAttribute("notableDateRef", entry.NotableDateRef),
-                    BuildRuleElement(entry.Rule!, requireStrategy: true));
-
-            case OverrideOperation.RemoveRule:
-                return new XElement(
-                    BuilderXml.Namespace + "RemoveRule",
-                    new XAttribute("notableDateRef", entry.NotableDateRef),
-                    new XAttribute("ruleRef", entry.RuleRef!));
-
-            default:
-                return BuildPatchRuleElement(entry);
-        }
-    }
+            OverrideOperation.AddRule => new XElement(
+                                BuilderXml.Namespace + "AddRule",
+                                new XAttribute("notableDateRef", entry.NotableDateRef),
+                                BuildRuleElement(entry.Rule!, requireStrategy: true)),
+            OverrideOperation.RemoveRule => new XElement(
+                                BuilderXml.Namespace + "RemoveRule",
+                                new XAttribute("notableDateRef", entry.NotableDateRef),
+                                new XAttribute("ruleRef", entry.RuleRef!)),
+            _ => BuildPatchRuleElement(entry),
+        };
 
     /// <summary>
     /// Builds a <c>PatchRule</c> element, emitting only the scalar attributes and rule sections that were configured.

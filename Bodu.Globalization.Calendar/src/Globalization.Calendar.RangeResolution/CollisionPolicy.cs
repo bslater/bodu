@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CollisionPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <see cref="INotableDateCollisionResolver" /> when set to <see cref="Custom" />.
 /// </para>
 /// </remarks>
-/// <seealso cref="INotableDateCollisionResolver" />
-/// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution (guide)</seealso>
+/// <seealso cref="INotableDateCollisionResolver" /> <seealso href="../guides/calendar/identity-and-resolution.html">
+/// Rule identity, priority, and observed-date resolution (guide)</seealso>
 public enum CollisionPolicy
 {
     /// <summary>

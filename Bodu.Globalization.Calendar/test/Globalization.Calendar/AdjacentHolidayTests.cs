@@ -76,8 +76,8 @@ public sealed class AdjacentHolidayTests
         Assert.AreEqual("christmas-day", Single(service.Resolve(new DateOnly(2021, 12, 27), "AU"), "christmas-day").NotableDateId);
         Assert.AreEqual("boxing-day", Single(service.Resolve(new DateOnly(2021, 12, 28), "AU"), "boxing-day").NotableDateId);
 
-        Assert.AreEqual(0, service.Resolve(new DateOnly(2021, 12, 25), "AU").Count, "Christmas Saturday actual suppressed");
-        Assert.AreEqual(0, service.Resolve(new DateOnly(2021, 12, 26), "AU").Count, "Boxing Day Sunday actual suppressed");
+        Assert.IsEmpty(service.Resolve(new DateOnly(2021, 12, 25), "AU"), "Christmas Saturday actual suppressed");
+        Assert.IsEmpty(service.Resolve(new DateOnly(2021, 12, 26), "AU"), "Boxing Day Sunday actual suppressed");
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public sealed class AdjacentHolidayTests
     private static NotableDate Single(IReadOnlyList<NotableDate> results, string notableDateId)
     {
         var matches = results.Where(r => r.NotableDateId == notableDateId).ToList();
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}'");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}'");
         return matches[0];
     }
 }

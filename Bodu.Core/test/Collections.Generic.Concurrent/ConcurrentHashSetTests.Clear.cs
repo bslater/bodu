@@ -79,8 +79,8 @@ public partial class ConcurrentHashSetTests
 
         set.Clear();
 
-        Assert.IsTrue(
-            set.BucketCount >= set.LockCount,
+        Assert.IsGreaterThanOrEqualTo(
+            set.LockCount, set.BucketCount,
             $"Clear left {set.BucketCount} buckets for {set.LockCount} lock stripes.");
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DayOfWeekInMonthStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Calculates a notable date that falls on the nth (or last) occurrence of a weekday within a month, such as the fourth
 /// Thursday of November or the last Monday of May.
 /// </summary>
-/// <seealso cref="IDateCalculationStrategy" />
-/// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
+/// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
+/// date rules (guide)</seealso>
 public sealed class DayOfWeekInMonthStrategy : IDateCalculationStrategy
 {
     /// <summary>
@@ -25,9 +25,9 @@ public sealed class DayOfWeekInMonthStrategy : IDateCalculationStrategy
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
 
-        this.Month = month;
-        this.DayOfWeek = dayOfWeek;
-        this.WeekOrdinal = weekOrdinal;
+        Month = month;
+        DayOfWeek = dayOfWeek;
+        WeekOrdinal = weekOrdinal;
     }
 
     /// <summary>
@@ -50,5 +50,5 @@ public sealed class DayOfWeekInMonthStrategy : IDateCalculationStrategy
 
     /// <inheritdoc />
     public DateOnly? Calculate(int year, StrategyResolutionContext context) =>
-        WeekdayMath.NthWeekdayInMonth(year, this.Month, this.DayOfWeek, this.WeekOrdinal);
+        WeekdayMath.NthWeekdayInMonth(year, Month, DayOfWeek, WeekOrdinal);
 }

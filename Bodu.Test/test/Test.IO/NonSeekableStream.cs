@@ -37,7 +37,7 @@ public sealed class NonSeekableStream
     /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>
     public NonSeekableStream(byte[] data)
     {
-        this.inner = new MemoryStream(
+        inner = new MemoryStream(
             data ?? throw new ArgumentNullException(nameof(data)),
             writable: false);
     }
@@ -65,11 +65,11 @@ public sealed class NonSeekableStream
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
-        => this.inner.Read(buffer, offset, count);
+        => inner.Read(buffer, offset, count);
 
     /// <inheritdoc />
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-        => this.inner.ReadAsync(buffer, cancellationToken);
+        => inner.ReadAsync(buffer, cancellationToken);
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">Always thrown — the stream is not seekable.</exception>
@@ -93,7 +93,7 @@ public sealed class NonSeekableStream
     protected override void Dispose(bool disposing)
     {
         if (disposing)
-            this.inner.Dispose();
+            inner.Dispose();
 
         base.Dispose(disposing);
     }

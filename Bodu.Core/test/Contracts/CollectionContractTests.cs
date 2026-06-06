@@ -55,7 +55,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
     {
         TCollection collection = CreateEmpty();
 
-        Assert.AreEqual(0, collection.Count);
+        Assert.IsEmpty(collection);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         TItem[] items = [CreateItem(0), CreateItem(1), CreateItem(2)];
         TCollection collection = Create(items);
 
-        Assert.AreEqual(items.Length, collection.Count);
+        Assert.HasCount(items.Length, collection);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
 
         collection.Add(CreateItem(0));
 
-        Assert.AreEqual(1, collection.Count);
+        Assert.HasCount(1, collection);
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         TItem item = CreateItem(0);
         TCollection collection = Create(item);
 
-        Assert.IsTrue(collection.Contains(item));
+        Assert.Contains(item, collection);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         TItem absent = CreateItem(1);
         TCollection collection = Create(present);
 
-        Assert.IsFalse(collection.Contains(absent));
+        Assert.DoesNotContain(absent, collection);
     }
 
     /// <summary>
@@ -123,8 +123,8 @@ public abstract class CollectionContractTests<TCollection, TItem>
         var removed = collection.Remove(item);
 
         Assert.IsTrue(removed);
-        Assert.AreEqual(0, collection.Count);
-        Assert.IsFalse(collection.Contains(item));
+        Assert.IsEmpty(collection);
+        Assert.DoesNotContain(item, collection);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         var removed = collection.Remove(absent);
 
         Assert.IsFalse(removed);
-        Assert.AreEqual(1, collection.Count);
+        Assert.HasCount(1, collection);
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
 
         collection.Clear();
 
-        Assert.AreEqual(0, collection.Count);
+        Assert.IsEmpty(collection);
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
 
         for (var i = 0; i < source.Length; i++)
         {
-            Assert.IsTrue(collection.Contains(destination[i + 1]));
+            Assert.Contains(destination[i + 1], collection);
         }
     }
 
@@ -190,7 +190,7 @@ public abstract class CollectionContractTests<TCollection, TItem>
         var observed = 0;
         foreach (TItem item in collection)
         {
-            Assert.IsTrue(collection.Contains(item));
+            Assert.Contains(item, collection);
             observed++;
         }
 

@@ -21,8 +21,8 @@ public sealed class SchemaValidationTests
     {
         NotableDateResource resource = NotableDateFixtures.Load("strategies.xml");
 
-        Assert.AreEqual(12, resource.NotableDates.Count, "notable-date count");
-        Assert.AreEqual(0, resource.AdjustmentPolicies.Count, "adjustment-policy count");
+        Assert.HasCount(12, resource.NotableDates, "notable-date count");
+        Assert.IsEmpty(resource.AdjustmentPolicies, "adjustment-policy count");
     }
 
     /// <summary>
@@ -33,8 +33,8 @@ public sealed class SchemaValidationTests
     {
         NotableDateResource resource = NotableDateFixtures.Load("adjustments.xml");
 
-        Assert.AreEqual(10, resource.NotableDates.Count, "notable-date count");
-        Assert.AreEqual(10, resource.AdjustmentPolicies.Count, "adjustment-policy count");
+        Assert.HasCount(10, resource.NotableDates, "notable-date count");
+        Assert.HasCount(10, resource.AdjustmentPolicies, "adjustment-policy count");
     }
 
     /// <summary>
@@ -89,8 +89,8 @@ public sealed class SchemaValidationTests
             _ = NotableDateResourceLoader.Load(xml);
         });
 
-        Assert.IsTrue(
-            ex.Diagnostics.Any(d => d.Code == expectedCode && d.Severity == NotableDateValidationSeverity.Error),
+        Assert.Contains(
+            d => d.Code == expectedCode && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics,
             $"Expected diagnostic '{expectedCode}'. Actual: {string.Join("; ", ex.Diagnostics.Select(d => d.Code))}");
     }
 }

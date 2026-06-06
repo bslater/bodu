@@ -51,7 +51,7 @@ public sealed class CalendarSystemKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {year}");
         Assert.AreEqual(expectedDate, matches[0].Date, $"{notableDateId} {year}");
     }
 
@@ -69,7 +69,7 @@ public sealed class CalendarSystemKnownAnswerTests
             .Where(r => r.NotableDateId == "golden-week")
             .ToList();
 
-        Assert.AreEqual(1, inside.Count, "a day inside the span returns the occurrence");
+        Assert.HasCount(1, inside, "a day inside the span returns the occurrence");
         Assert.AreEqual(new DateOnly(2024, 4, 29), inside[0].Date, "span start");
         Assert.AreEqual(7, inside[0].DurationDays, "duration");
         Assert.AreEqual(new DateOnly(2024, 5, 5), inside[0].EndDate, "span end");
@@ -100,12 +100,12 @@ public sealed class CalendarSystemKnownAnswerTests
             .Where(g => g.Count() == 2)
             .ToList();
 
-        Assert.IsTrue(doubledYears.Count > 0, "expected at least one Gregorian year with two Islamic New Year occurrences");
+        Assert.IsNotEmpty(doubledYears, "expected at least one Gregorian year with two Islamic New Year occurrences");
 
         IGrouping<int, NotableDate> doubled = doubledYears[0];
         var dates = doubled.Select(r => r.Date).OrderBy(d => d).ToList();
         Assert.AreEqual(doubled.Key, dates[0].Year, "first occurrence is in the Gregorian year");
         Assert.AreEqual(doubled.Key, dates[1].Year, "second occurrence is in the same Gregorian year");
-        Assert.IsTrue(dates[1].DayNumber - dates[0].DayNumber > 300, "the two occurrences are about a lunar year apart");
+        Assert.IsGreaterThan(300, dates[1].DayNumber - dates[0].DayNumber, "the two occurrences are about a lunar year apart");
     }
 }

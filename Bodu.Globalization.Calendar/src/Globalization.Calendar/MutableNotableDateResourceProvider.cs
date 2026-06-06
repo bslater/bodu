@@ -30,8 +30,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="ReloadableNotableDateService" />
-/// <seealso cref="INotableDateResourceProvider" />
+/// <seealso cref="ReloadableNotableDateService" /> <seealso cref="INotableDateResourceProvider" />
 /// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public sealed class MutableNotableDateResourceProvider : INotableDateResourceProvider
 {
@@ -49,12 +48,12 @@ public sealed class MutableNotableDateResourceProvider : INotableDateResourcePro
     {
         ThrowHelper.ThrowIfNull(resource);
 
-        this._current = resource;
+        _current = resource;
     }
 
     /// <inheritdoc />
     public NotableDateResource Current =>
-        this._current;
+        _current;
 
     /// <summary>
     /// Replaces the resource currently in effect.
@@ -65,6 +64,6 @@ public sealed class MutableNotableDateResourceProvider : INotableDateResourcePro
     {
         ThrowHelper.ThrowIfNull(resource);
 
-        this._current = resource;
+        _current = resource;
     }
 }

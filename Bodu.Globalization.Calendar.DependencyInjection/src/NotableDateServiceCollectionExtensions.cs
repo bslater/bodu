@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,8 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateService" />
-/// <seealso cref="NotableDateResource" />
+/// <seealso cref="INotableDateService" /> <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public static class NotableDateServiceCollectionExtensions
 {
@@ -81,8 +80,8 @@ public static class NotableDateServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers a reloadable <see cref="INotableDateService" /> over a <see cref="MutableNotableDateResourceProvider" />
-    /// so the resolved data can be swapped at runtime.
+    /// Registers a reloadable <see cref="INotableDateService" /> over a
+    /// <see cref="MutableNotableDateResourceProvider" /> so the resolved data can be swapped at runtime.
     /// </summary>
     /// <param name="services">The service collection to add the registration to.</param>
     /// <param name="initialResource">The resource the service resolves against until it is reloaded.</param>

@@ -46,11 +46,9 @@ namespace Bodu.Extensions;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateService" />
-/// <seealso cref="NotableDate" />
-/// <seealso cref="NotableDateFilter" />
-/// <seealso cref="WeekPattern" />
-/// <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)</seealso>
+/// <seealso cref="INotableDateService" /> <seealso cref="NotableDate" /> <seealso cref="NotableDateFilter" />
+/// <seealso cref="WeekPattern" /> <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)
+/// </seealso>
 public static class NotableDateOnlyExtensions
 {
     /// <summary>

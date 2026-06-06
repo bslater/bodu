@@ -143,7 +143,7 @@ public sealed class AustraliaKnownAnswerTests
             .OrderBy(r => r.Date)
             .ToList();
 
-        Assert.AreEqual(2, trial.Count, "2026 emits Anzac Day plus an additional Monday");
+        Assert.HasCount(2, trial, "2026 emits Anzac Day plus an additional Monday");
         Assert.AreEqual(new DateOnly(2026, 4, 25), trial[0].Date, "Anzac Day stays on Saturday 25 April");
         Assert.IsFalse(trial[0].IsObserved, "the 25 April occurrence is the actual date");
         Assert.AreEqual(new DateOnly(2026, 4, 27), trial[1].Date, "additional Monday public holiday");
@@ -171,7 +171,7 @@ public sealed class AustraliaKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
         return matches[0];
     }
 }

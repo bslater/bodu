@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ImportBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public sealed class ImportBuilder
     /// <param name="resource">The name of the imported resource.</param>
     internal ImportBuilder(string resource)
     {
-        this._resource = resource;
+        _resource = resource;
     }
 
     /// <summary>
@@ -42,14 +42,14 @@ public sealed class ImportBuilder
     /// </summary>
     /// <returns>The resource name.</returns>
     internal string Resource =>
-        this._resource;
+        _resource;
 
     /// <summary>
     /// Gets the selective <c>Use</c> directives.
     /// </summary>
     /// <returns>The directives; empty when the import imports every concept.</returns>
     internal IReadOnlyList<ImportUseBuilder> Uses =>
-        this._uses;
+        _uses;
 
     /// <summary>
     /// Selects and re-scopes a single imported concept through the supplied delegate.
@@ -66,7 +66,7 @@ public sealed class ImportBuilder
 
         ImportUseBuilder use = new(notableDateRef);
         configure?.Invoke(use);
-        this._uses.Add(use);
+        _uses.Add(use);
         return this;
     }
 
@@ -75,7 +75,7 @@ public sealed class ImportBuilder
     /// </summary>
     /// <param name="use">The import-use builder to add.</param>
     internal void AddUse(ImportUseBuilder use) =>
-        this._uses.Add(use);
+        _uses.Add(use);
 
     /// <summary>
     /// Creates a deep copy of this import builder.
@@ -83,8 +83,8 @@ public sealed class ImportBuilder
     /// <returns>A new <see cref="ImportBuilder" /> carrying the same configured state.</returns>
     internal ImportBuilder Clone()
     {
-        ImportBuilder clone = new(this._resource);
-        foreach (ImportUseBuilder use in this._uses)
+        ImportBuilder clone = new(_resource);
+        foreach (ImportUseBuilder use in _uses)
             clone._uses.Add(use.Clone());
 
         return clone;

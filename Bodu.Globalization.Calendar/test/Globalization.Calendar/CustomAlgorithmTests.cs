@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CustomAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,6 +66,6 @@ public sealed class CustomAlgorithmTests
             _ = NotableDateResourceLoader.Load(Xml);
         });
 
-        Assert.IsTrue(ex.Diagnostics.Any(d => d.Code == "BODU-CAL-ALGORITHM"));
+        Assert.Contains(d => d.Code == "BODU-CAL-ALGORITHM", ex.Diagnostics);
     }
 }

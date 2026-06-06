@@ -24,12 +24,16 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Globalization.Calendar.Resources\catholic.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\christian-anglican.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\christian-oriental-orthodox.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\christian-orthodox.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\christian-protestant.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\christian-western.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\default-minimal.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-all.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-anchors.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-animals.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-bahai.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-buddhist.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-core.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-cultural.xml" />
@@ -42,14 +46,17 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-hindu.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic-umm-al-qura.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-jain.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-multiday-normalization.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-persian.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-remembrance.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-sikh.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-social.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-un.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-zoroastrian.xml" />
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <LogicalName>Bodu.Globalization.Calendar.NotableDates.v2.xsd</LogicalName>
       <SubType>Designer</SubType>
@@ -65,12 +72,16 @@
 
   <ItemGroup>
     <None Remove="Globalization.Calendar.Resources\catholic.xml" />
+    <None Remove="Globalization.Calendar.Resources\christian-anglican.xml" />
+    <None Remove="Globalization.Calendar.Resources\christian-oriental-orthodox.xml" />
     <None Remove="Globalization.Calendar.Resources\christian-orthodox.xml" />
+    <None Remove="Globalization.Calendar.Resources\christian-protestant.xml" />
     <None Remove="Globalization.Calendar.Resources\christian-western.xml" />
     <None Remove="Globalization.Calendar.Resources\default-minimal.xml" />
     <None Remove="Globalization.Calendar.Resources\global-all.xml" />
     <None Remove="Globalization.Calendar.Resources\global-anchors.xml" />
     <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-bahai.xml" />
     <None Remove="Globalization.Calendar.Resources\global-buddhist.xml" />
     <None Remove="Globalization.Calendar.Resources\global-core.xml" />
     <None Remove="Globalization.Calendar.Resources\global-cultural.xml" />
@@ -83,14 +94,17 @@
     <None Remove="Globalization.Calendar.Resources\global-hindu.xml" />
     <None Remove="Globalization.Calendar.Resources\global-islamic-umm-al-qura.xml" />
     <None Remove="Globalization.Calendar.Resources\global-islamic.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-jain.xml" />
     <None Remove="Globalization.Calendar.Resources\global-jewish.xml" />
     <None Remove="Globalization.Calendar.Resources\global-lunar.xml" />
     <None Remove="Globalization.Calendar.Resources\global-multiday-normalization.xml" />
     <None Remove="Globalization.Calendar.Resources\global-persian.xml" />
     <None Remove="Globalization.Calendar.Resources\global-remembrance.xml" />
     <None Remove="Globalization.Calendar.Resources\global-science.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-sikh.xml" />
     <None Remove="Globalization.Calendar.Resources\global-social.xml" />
     <None Remove="Globalization.Calendar.Resources\global-un.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-zoroastrian.xml" />
   </ItemGroup>
 
   <ItemGroup>

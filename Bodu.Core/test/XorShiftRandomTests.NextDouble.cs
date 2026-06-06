@@ -47,8 +47,8 @@ public partial class XorShiftRandomTests
     public void ScaleToUnitInterval_WhenValueIsUIntMaxValue_ShouldReturnLessThanOne()
     {
         var actual = XorShiftRandom.ScaleToUnitInterval(uint.MaxValue);
-        Assert.IsTrue(actual < 1.0, $"Expected value strictly less than 1.0 but got {actual}.");
-        Assert.IsTrue(actual >= 0.0, $"Expected non-negative value but got {actual}.");
+        Assert.IsLessThan(1.0, actual, $"Expected value strictly less than 1.0 but got {actual}.");
+        Assert.IsGreaterThanOrEqualTo(0.0, actual, $"Expected non-negative value but got {actual}.");
     }
 
     /// <summary>

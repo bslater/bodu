@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceCollectionExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Globalization.Calendar.DependencyInjection;
@@ -43,7 +42,7 @@ public sealed class NotableDateServiceCollectionExtensionsTests
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
         IReadOnlyList<NotableDate> holidays = service.Resolve(new DateOnly(2026, 1, 1), "XX");
 
-        Assert.AreEqual(1, holidays.Count);
+        Assert.HasCount(1, holidays);
         Assert.AreEqual("new-years-day", holidays[0].NotableDateId);
     }
 
@@ -59,7 +58,7 @@ public sealed class NotableDateServiceCollectionExtensionsTests
 
         INotableDateService service = provider.GetRequiredService<INotableDateService>();
 
-        Assert.AreEqual(1, service.Resolve(new DateOnly(2026, 1, 1), "XX").Count);
+        Assert.HasCount(1, service.Resolve(new DateOnly(2026, 1, 1), "XX"));
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilder.Json.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,42 +61,42 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     public JsonObject ToJsonObject()
     {
-        string resourceId = this.RequireResourceId();
+        var resourceId = RequireResourceId();
 
-        if (this._imports.Count > 0)
+        if (_imports.Count > 0)
             throw UnsupportedJsonFeature("imports");
 
         JsonObject root = new()
         {
-            ["schemaVersion"] = this._schemaVersion,
+            ["schemaVersion"] = _schemaVersion,
             ["resourceId"] = resourceId,
         };
 
-        JsonObject? metadata = this.BuildMetadataJson();
+        JsonObject? metadata = BuildMetadataJson();
         if (metadata is not null) root["metadata"] = metadata;
 
-        JsonObject? resolutionPolicy = this.BuildResolutionPolicyJson();
+        JsonObject? resolutionPolicy = BuildResolutionPolicyJson();
         if (resolutionPolicy is not null) root["resolutionPolicy"] = resolutionPolicy;
 
-        if (this._adjustmentPolicies.Count > 0)
+        if (_adjustmentPolicies.Count > 0)
         {
             JsonArray policies = new();
-            foreach (AdjustmentPolicyBuilder policy in this._adjustmentPolicies)
+            foreach (AdjustmentPolicyBuilder policy in _adjustmentPolicies)
                 policies.Add(BuildAdjustmentPolicyJson(policy));
 
             root["adjustmentPolicies"] = policies;
         }
 
         JsonArray notableDates = new();
-        foreach (NotableDateDefinitionBuilder definition in this._definitions)
+        foreach (NotableDateDefinitionBuilder definition in _definitions)
             notableDates.Add(BuildNotableDateJson(definition));
 
         root["notableDates"] = notableDates;
 
-        if (this._overrides is not null && this._overrides.Entries.Count > 0)
+        if (_overrides is not null && _overrides.Entries.Count > 0)
         {
             JsonArray overrides = new();
-            foreach (OverrideEntry entry in this._overrides.Entries)
+            foreach (OverrideEntry entry in _overrides.Entries)
                 overrides.Add(BuildOverrideJson(entry));
 
             root["overrides"] = overrides;
@@ -115,7 +115,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     public string ToJson()
     {
-        JsonObject root = this.ToJsonObject();
+        var root = ToJsonObject();
         using MemoryStream stream = new();
         using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Indented = true }))
             root.WriteTo(writer);
@@ -193,16 +193,16 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The metadata object, or <see langword="null" /> when none is configured.</returns>
     private JsonObject? BuildMetadataJson()
     {
-        if (this._metadataName is null && this._metadataDescription is null && this._sources.Count == 0)
+        if (_metadataName is null && _metadataDescription is null && _sources.Count == 0)
             return null;
 
         JsonObject metadata = new();
-        if (this._metadataName is not null) metadata["name"] = this._metadataName;
-        if (this._metadataDescription is not null) metadata["description"] = this._metadataDescription;
-        if (this._sources.Count > 0)
+        if (_metadataName is not null) metadata["name"] = _metadataName;
+        if (_metadataDescription is not null) metadata["description"] = _metadataDescription;
+        if (_sources.Count > 0)
         {
             JsonArray sources = new();
-            foreach (string source in this._sources)
+            foreach (var source in _sources)
                 sources.Add(source);
 
             metadata["sources"] = sources;
@@ -217,10 +217,10 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The resolution-policy object, or <see langword="null" /> when none is configured.</returns>
     private JsonObject? BuildResolutionPolicyJson()
     {
-        if (this._resolutionPolicy is null || !this._resolutionPolicy.HasAnyValue())
+        if (_resolutionPolicy is null || !_resolutionPolicy.HasAnyValue())
             return null;
 
-        ResolutionPolicyBuilder policy = this._resolutionPolicy;
+        ResolutionPolicyBuilder policy = _resolutionPolicy;
         JsonObject result = new();
         if (policy.DuplicatePolicy is DuplicatePolicy duplicatePolicy) result["duplicatePolicy"] = duplicatePolicy.ToString();
         if (policy.SameDayCollisionPolicy is CollisionPolicy sameDay) result["sameDayCollisionPolicy"] = sameDay.ToString();
@@ -311,7 +311,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (scope.Territories.Count > 0)
         {
             JsonArray territories = new();
-            foreach (string territory in scope.Territories)
+            foreach (var territory in scope.Territories)
                 territories.Add(territory);
 
             result["territories"] = territories;
@@ -444,7 +444,7 @@ public sealed partial class NotableDateDocumentBuilder
             };
         }
 
-        string key = strategy.Name.LocalName switch
+        var key = strategy.Name.LocalName switch
         {
             "Fixed" => "fixed",
             "DayOfWeekInMonth" => "dayOfWeekInMonth",
@@ -523,7 +523,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static JsonArray BuildStringArray(IReadOnlyList<string> values)
     {
         JsonArray array = new();
-        foreach (string value in values)
+        foreach (var value in values)
             array.Add(value);
 
         return array;
@@ -537,7 +537,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static JsonArray BuildIntArray(IReadOnlyList<int> values)
     {
         JsonArray array = new();
-        foreach (int value in values)
+        foreach (var value in values)
             array.Add(value);
 
         return array;

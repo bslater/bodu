@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrategyBoundaryGuardTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public sealed class StrategyBoundaryGuardTests
         IReadOnlyList<NotableDate> results = Build(OffsetForwardXml)
             .Resolve(new DateRange(new DateOnly(9999, 12, 31), new DateOnly(9999, 12, 31)), Territory);
 
-        Assert.AreEqual(1, results.Count(r => r.NotableDateId == "anchor"), "anchor still resolves");
+        Assert.ContainsSingle(r => r.NotableDateId == "anchor", results, "anchor still resolves");
         Assert.AreEqual(0, results.Count(r => r.NotableDateId == "dependent"), "overflowing dependent is skipped");
     }
 
@@ -81,7 +81,7 @@ public sealed class StrategyBoundaryGuardTests
         IReadOnlyList<NotableDate> results = Build(xml)
             .Resolve(new DateRange(new DateOnly(1, 1, 1), new DateOnly(1, 1, 1)), Territory);
 
-        Assert.AreEqual(1, results.Count(r => r.NotableDateId == "anchor"));
+        Assert.ContainsSingle(r => r.NotableDateId == "anchor", results);
         Assert.AreEqual(0, results.Count(r => r.NotableDateId == "dependent"));
     }
 

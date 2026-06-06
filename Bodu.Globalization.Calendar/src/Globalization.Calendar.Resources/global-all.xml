@@ -24,6 +24,10 @@
     <!-- Christian feast catalogues (Easter computus anchors plus their offset-derived movable feasts). -->
     <Import resource="christian-western" />              <!-- Gregorian-computus Easter cluster and the fixed Christmas feasts. -->
     <Import resource="christian-orthodox" />             <!-- Julian-paschalion Pascha cluster and the Old-Calendar fixed feasts. -->
+    <Import resource="catholic" />                       <!-- Catholic solemnities, Marian feasts, and patronal/cultural feast days. -->
+    <Import resource="christian-protestant" />           <!-- Protestant-specific observances such as Reformation Day/Sunday. -->
+    <Import resource="christian-anglican" />             <!-- Anglican apostles, evangelists, and fixed calendar feasts. -->
+    <Import resource="christian-oriental-orthodox" />    <!-- Oriental Orthodox Pascha cluster and Coptic/Armenian/Ethiopian fixed feasts. -->
 
     <!-- Secular themed observance catalogues (mostly fixed-date awareness and cultural days). -->
     <Import resource="global-cultural" />                <!-- Valentine's Day, April Fools' Day, Halloween, etc. -->
@@ -52,7 +56,11 @@
     <Import resource="global-jewish" />                  <!-- Hebrew-calendar festivals (Rosh Hashanah, Yom Kippur, Passover, etc.). -->
     <Import resource="global-hindu" />                   <!-- Hindu lunar festivals (Diwali, Holi, etc.). -->
     <Import resource="global-buddhist" />                <!-- Buddhist observances (Vesak, Asalha Puja, etc.). -->
+    <Import resource="global-sikh" />                    <!-- Sikh observances (Vaisakhi, Gurpurabs, Bandi Chhor Divas, etc.). -->
+    <Import resource="global-jain" />                    <!-- Jain observances (Mahavir Jayanti, Paryushana, Jain Diwali, etc.). -->
+    <Import resource="global-bahai" />                   <!-- Baha'i holy days representable with the current equinox/offset strategies. -->
     <Import resource="global-persian" />                 <!-- Persian-calendar observances (Nowruz, etc.). -->
+    <Import resource="global-zoroastrian" />             <!-- Zoroastrian Fasli/Iranian-style observances using Persian-calendar dates. -->
 
     <!-- Minimal fallback; New Year's Day here is a duplicate already supplied by global-core. -->
     <Import resource="default-minimal" />                <!-- Country-neutral New Year's Day (deduplicated against global-core). -->

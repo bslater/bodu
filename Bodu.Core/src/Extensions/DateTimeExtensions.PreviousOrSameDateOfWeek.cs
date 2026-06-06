@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.PreviousOrSameDateOfWeek.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The starting date and time value from which to search backward.</param>
     /// <param name="dayOfWeek">
-    /// The <see cref="DayOfWeek" /> to locate. For example, <see cref="DayOfWeek.Monday" /> returns the previous
-    /// Monday on or before <paramref name="dateTime" />.
+    /// The <see cref="DayOfWeek" /> to locate. For example, <see cref="DayOfWeek.Monday" /> returns the previous Monday
+    /// on or before <paramref name="dateTime" />.
     /// </param>
     /// <returns>
     /// An object whose value is set to the previous occurrence of <paramref name="dayOfWeek" /> at or before

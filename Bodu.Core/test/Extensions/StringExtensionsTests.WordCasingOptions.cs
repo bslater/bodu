@@ -22,8 +22,8 @@ public partial class StringExtensionsTests
         Assert.IsTrue(options.PreserveAcronyms);
         Assert.IsTrue(options.PreserveMixedCaseWords);
         Assert.IsFalse(options.LowerCaseMinorWords);
-        Assert.IsTrue(options.Acronyms.Count > 0);
-        Assert.IsTrue(options.MinorWords.Count > 0);
+        Assert.IsNotEmpty(options.Acronyms);
+        Assert.IsNotEmpty(options.MinorWords);
     }
 
     /// <summary>

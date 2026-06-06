@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateAssert.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides field-by-field assertions over a <see cref="NotableDate" /> so that test failures pinpoint the
-/// differing field.
+/// Provides field-by-field assertions over a <see cref="NotableDate" /> so that test failures pinpoint the differing
+/// field.
 /// </summary>
 internal static class NotableDateAssert
 {

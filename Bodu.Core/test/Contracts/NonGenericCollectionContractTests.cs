@@ -50,7 +50,7 @@ public abstract class NonGenericCollectionContractTests<TCollection>
     {
         TCollection collection = CreateEmpty();
 
-        Assert.AreEqual(0, collection.Count);
+        Assert.IsEmpty(collection);
     }
 
     /// <summary>

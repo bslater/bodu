@@ -30,8 +30,7 @@ namespace Bodu.Extensions;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateOnlyExtensions" />
-/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateOnlyExtensions" /> <seealso cref="INotableDateService" />
 /// <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)</seealso>
 public static class NotableDateTimeOffsetExtensions
 {

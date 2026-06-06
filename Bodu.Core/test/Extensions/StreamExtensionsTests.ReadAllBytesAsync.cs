@@ -47,7 +47,7 @@ public partial class StreamExtensionsTests
 
         var result = await stream.ReadAllBytesAsync();
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>

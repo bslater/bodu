@@ -111,7 +111,7 @@ public sealed class WorkingDayExtensionMatrixTests
     /// <param name="expected">The expected working-day classification.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(WorkingDayClassificationRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WorkingDayClassificationRows))]
     public void IsWorkingDay_WhenScannedAcrossWeek_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
         Assert.AreEqual(expected, new DateOnly(year, month, day).IsWorkingDay(Service, "XX"));
@@ -127,7 +127,7 @@ public sealed class WorkingDayExtensionMatrixTests
     /// <param name="expectedWorking">The expected working-day classification whose inverse is asserted.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(WorkingDayClassificationRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WorkingDayClassificationRows))]
     public void IsNonWorkingDay_WhenScannedAcrossWeek_ShouldReturnInverseOfWorkingClassification(int year, int month, int day, bool expectedWorking)
     {
         Assert.AreEqual(!expectedWorking, new DateOnly(year, month, day).IsNonWorkingDay(Service, "XX"));
@@ -284,7 +284,7 @@ public sealed class WorkingDayExtensionMatrixTests
     /// <param name="expectedDay">The expected result day.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(AddWorkingDaysSignedRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(AddWorkingDaysSignedRows))]
     public void AddWorkingDays_WhenSignedDaysSupplied_ShouldReturnExpectedWorkingDay(int year, int month, int day, int days, int expectedYear, int expectedMonth, int expectedDay)
     {
         DateOnly actual = new DateOnly(year, month, day).AddWorkingDays(days, Service, "XX");
@@ -328,7 +328,7 @@ public sealed class WorkingDayExtensionMatrixTests
     /// <param name="expected">The expected inclusive working-day count.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(WorkingDaysBetweenRows), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WorkingDaysBetweenRows))]
     public void WorkingDaysBetween_WhenScannedAcrossRanges_ShouldReturnExpectedCount(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay, int expected)
     {
         var actual = new DateOnly(startYear, startMonth, startDay)

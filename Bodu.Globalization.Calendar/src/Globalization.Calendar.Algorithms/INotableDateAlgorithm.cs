@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,8 +37,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateAlgorithmRegistry" />
-/// <seealso cref="AlgorithmDateStrategy" />
+/// <seealso cref="INotableDateAlgorithmRegistry" /> <seealso cref="AlgorithmDateStrategy" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>
 public interface INotableDateAlgorithm
 {

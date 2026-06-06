@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
-using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Plugins;
 
 [assembly: NotableDatePlugin(typeof(Bodu.Globalization.Calendar.Plugins.TestPlugin))]
@@ -35,7 +34,7 @@ public sealed class TestPlugin : INotableDateAlgorithmPlugin
 
     /// <inheritdoc />
     public IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms() =>
-        new[] { new KeyValuePair<string, INotableDateAlgorithm>("test-day", new TestDayAlgorithm()) };
+        [new KeyValuePair<string, INotableDateAlgorithm>("test-day", new TestDayAlgorithm())];
 }
 
 /// <summary>

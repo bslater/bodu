@@ -109,7 +109,7 @@ public sealed class StrategyResolutionRelativeWeekdayKnownAnswerTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' on {date:yyyy-MM-dd} (anchor year {anchorYear})");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' on {date:yyyy-MM-dd} (anchor year {anchorYear})");
         Assert.AreEqual(date, matches[0].Date, $"{notableDateId} anchor year {anchorYear}");
     }
 

@@ -74,7 +74,7 @@ public partial class OrderedSetStorageTests
         /// <param name="label">A label used for diagnostics; not part of equality.</param>
         public HashCollider(string label)
         {
-            this.Label = label;
+            Label = label;
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ public partial class OrderedSetStorageTests
         public override int GetHashCode() => 0;
 
         /// <inheritdoc />
-        public override string ToString() => this.Label;
+        public override string ToString() => Label;
 
     }
 

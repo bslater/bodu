@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -122,7 +121,7 @@ public sealed class AsiaPacificCalendarDataTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
         Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
     }
@@ -161,7 +160,7 @@ public sealed class AsiaPacificCalendarDataTests
             .OrderBy(r => r.Date)
             .ToList();
 
-        Assert.AreEqual(2, anzac.Count, "trial year emits Anzac Day plus an additional Monday");
+        Assert.HasCount(2, anzac, "trial year emits Anzac Day plus an additional Monday");
 
         Assert.AreEqual(new DateOnly(year, 4, 25), anzac[0].Date, "Anzac Day stays on 25 April");
         Assert.IsFalse(anzac[0].IsObserved, "the 25 April occurrence is the actual date");
@@ -187,7 +186,7 @@ public sealed class AsiaPacificCalendarDataTests
             .Where(r => r.NotableDateId == "anzac-day")
             .ToList();
 
-        Assert.AreEqual(1, anzac.Count, "outside the trial NSW has a single Anzac Day");
+        Assert.HasCount(1, anzac, "outside the trial NSW has a single Anzac Day");
         Assert.AreEqual(new DateOnly(year, 4, 25), anzac[0].Date, "the national rule keeps 25 April");
         Assert.IsFalse(anzac[0].IsObserved, "the national rule has no substitute");
         Assert.AreEqual("au", anzac[0].RuleId, "AU-NSW falls back to the national rule");
@@ -250,10 +249,10 @@ public sealed class AsiaPacificCalendarDataTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
 
         var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
-        Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
+        Assert.IsLessThanOrEqualTo(2, deltaDays, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
     }
 
     /// <summary>
@@ -269,7 +268,7 @@ public sealed class AsiaPacificCalendarDataTests
             .Where(r => r.NotableDateId == "lunar-new-year")
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, "a day inside the span returns the occurrence");
+        Assert.HasCount(1, matches, "a day inside the span returns the occurrence");
         Assert.AreEqual(new DateOnly(2024, 2, 10), matches[0].Date, "span start");
         Assert.AreEqual(7, matches[0].DurationDays, "duration");
         Assert.AreEqual(new DateOnly(2024, 2, 16), matches[0].EndDate, "span end");

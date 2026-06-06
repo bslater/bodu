@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SupportedDiscoveryTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -88,6 +88,6 @@ public sealed class SupportedDiscoveryTests
         </NotableDateResource>
         """;
 
-        Assert.AreEqual(0, Build(xml).GetSupportedTerritories().Count);
+        Assert.IsEmpty(Build(xml).GetSupportedTerritories());
     }
 }

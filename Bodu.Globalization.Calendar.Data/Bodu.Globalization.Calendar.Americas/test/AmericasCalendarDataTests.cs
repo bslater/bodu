@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -196,12 +195,12 @@ public sealed class AmericasCalendarDataTests
     [TestMethod]
     public void Resolve_NorthwestTerritoriesIndigenousPeoplesDay_IsStatutoryHoliday()
     {
-        List<NotableDate> matches = AmericasCalendarData.CreateService("CA-NT")
+        var matches = AmericasCalendarData.CreateService("CA-NT")
             .Resolve(new DateRange(new DateOnly(2024, 6, 21), new DateOnly(2024, 6, 21)), "CA-NT")
             .Where(r => r.NotableDateId == "national-indigenous-peoples-day")
             .ToList();
 
-        Assert.IsTrue(matches.Any(r => r.RuleId == "nt-yt" && r.IsNonWorkingDay), "expected a non-working territorial rule");
+        Assert.Contains(r => r.RuleId == "nt-yt" && r.IsNonWorkingDay, matches, "expected a non-working territorial rule");
     }
 
     /// <summary>
@@ -211,12 +210,12 @@ public sealed class AmericasCalendarDataTests
     [TestMethod]
     public void Resolve_StateGoodFriday_IsStatutoryHoliday()
     {
-        List<NotableDate> matches = AmericasCalendarData.CreateService("US-LA")
+        var matches = AmericasCalendarData.CreateService("US-LA")
             .Resolve(new DateRange(new DateOnly(2024, 3, 29), new DateOnly(2024, 3, 29)), "US-LA")
             .Where(r => r.NotableDateId == "good-friday")
             .ToList();
 
-        Assert.IsTrue(matches.Any(r => r.RuleId == "state-statutory" && r.IsNonWorkingDay), "expected a non-working state rule");
+        Assert.Contains(r => r.RuleId == "state-statutory" && r.IsNonWorkingDay, matches, "expected a non-working state rule");
     }
 
     /// <summary>
@@ -456,7 +455,7 @@ public sealed class AmericasCalendarDataTests
             .Where(r => r.NotableDateId == notableDateId)
             .ToList();
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
+        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
         return matches[0];
     }
 }

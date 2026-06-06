@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarSystem.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="System.Globalization.Calendar" /> provided by the base class library.
 /// </para>
 /// </remarks>
-/// <seealso cref="FixedDateStrategy" />
-/// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)</seealso>
+/// <seealso cref="FixedDateStrategy" /> <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with
+/// non-Gregorian calendars (guide)</seealso>
 public enum CalendarSystem
 {
     /// <summary>

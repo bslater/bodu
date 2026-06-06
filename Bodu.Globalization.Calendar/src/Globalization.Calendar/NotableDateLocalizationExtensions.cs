@@ -30,8 +30,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="INotableDateNameLocalizer" />
-/// <seealso cref="NotableDate" />
+/// <seealso cref="INotableDateNameLocalizer" /> <seealso cref="NotableDate" />
 public static class NotableDateLocalizationExtensions
 {
     /// <summary>

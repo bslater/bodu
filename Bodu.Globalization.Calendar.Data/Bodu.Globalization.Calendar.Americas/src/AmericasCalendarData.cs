@@ -38,8 +38,7 @@ namespace Bodu.Globalization.Calendar;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="NotableDateService" />
-/// <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateService" /> <seealso cref="NotableDateResource" />
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AmericasCalendarData
 {

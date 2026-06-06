@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Jewish (Hebrew) notable-date catalogue, migrated from the v1 global-jewish.xml to the v2 cookbook schema. Four
-  observances anchor the catalogue as fixed dates in the Hebrew lunisolar calendar (System.Globalization.HebrewCalendar)
-  swept onto the requested Gregorian year: Rosh Hashanah, Passover, Purim (the LastAdar alias resolves to Adar II in leap
-  years and Adar I otherwise), and Hanukkah. Three further observances are exact, invariant Hebrew-calendar offsets and
-  are authored as OffsetFromRule rules from those anchors so the dependent date cannot drift. The durationDays values
-  follow the traditional diaspora observance; a territory pack may override them. This catalogue is self-contained.
+  Jewish (Hebrew) notable-date catalogue, migrated from the v1 global-jewish.xml to the v2 cookbook schema and extended
+  with the common Hebrew-calendar observances that were absent from the first migration pass. The catalogue is anchored
+  by fixed dates in the Hebrew lunisolar calendar (System.Globalization.HebrewCalendar) swept onto the requested
+  Gregorian year: Rosh Hashanah, Passover, Purim, Tu BiShvat, Tisha B'Av, and Hanukkah. Further observances that are
+  invariant Hebrew-calendar offsets are authored as OffsetFromRule rules from those anchors so the dependent date cannot
+  drift. The durationDays values follow common diaspora observance where a single neutral default is needed; a territory
+  pack may override them. This catalogue is self-contained.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="common.global-jewish">
 
@@ -19,6 +20,12 @@
       the BCL HebrewCalendar. sweepCalendarYears="true" handles the lunisolar drift between the Hebrew and
       Gregorian year boundaries, emitting each occurrence that lands in the requested Gregorian year.
     -->
+
+    <!-- Tu BiShvat — 15 Shevat, the New Year of the Trees. Strategy: Fixed Hebrew month/day, swept onto the Gregorian year. -->
+    <NotableDate id="tu-bishvat" displayName="Tu BiShvat" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Hebrew" />
+        <Strategy><Fixed month="Shevat" day="15" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
 
     <!--
       Purim — 14 Adar. The LastAdar month alias is the leap-month handling: in a Hebrew leap year (which inserts a
@@ -34,6 +41,12 @@
     <NotableDate id="passover" displayName="Passover" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7"><Applicability calendar="Hebrew" />
         <Strategy><Fixed month="Nisan" day="15" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Tisha B'Av — 9 Av, the principal fast commemorating the destruction of the Temples. Strategy: Fixed Hebrew month/day. -->
+    <NotableDate id="tisha-bav" displayName="Tisha B'Av" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Applicability calendar="Hebrew" />
+        <Strategy><Fixed month="Av" day="9" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!-- Rosh Hashanah — 1 Tishri: the Jewish New Year; a 2-day span. -->
@@ -56,6 +69,12 @@
       date tracks the anchor's swept Gregorian occurrence exactly and cannot drift.
     -->
 
+    <!-- Lag BaOmer — 18 Iyar, the thirty-third day of the Omer. Strategy: OffsetFromRule, 33 days after Passover begins. -->
+    <NotableDate id="lag-baomer" displayName="Lag BaOmer" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="passover" ruleRef="default" offsetDays="33" /></Strategy></Rule></Rules>
+    </NotableDate>
+
     <!-- Shavuot — 6 Sivan, 50 days after the first day of Passover (the conclusion of the Counting of the Omer). -->
     <NotableDate id="shavuot" displayName="Shavuot" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
@@ -72,6 +91,27 @@
     <NotableDate id="sukkot" displayName="Sukkot" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="7">
         <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="14" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Shemini Atzeret — 22 Tishri, the assembly after Sukkot. Strategy: OffsetFromRule, 21 days after Rosh Hashanah. -->
+    <NotableDate id="shemini-atzeret" displayName="Shemini Atzeret" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="21" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!--
+      Simchat Torah (diaspora) — 23 Tishri, the rejoicing of the Torah. In Israel it is usually combined with
+      Shemini Atzeret on 22 Tishri; the separate diaspora concept lets territory packs choose explicitly.
+    -->
+    <NotableDate id="simchat-torah-diaspora" displayName="Simchat Torah (diaspora)" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="22" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Simchat Torah (Israel) — 22 Tishri, coinciding with Shemini Atzeret in Israel. Strategy: OffsetFromRule, 21 days after Rosh Hashanah. -->
+    <NotableDate id="simchat-torah-israel" displayName="Simchat Torah (Israel)" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default">
+        <Strategy><OffsetFromRule notableDateRef="rosh-hashanah" ruleRef="default" offsetDays="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>

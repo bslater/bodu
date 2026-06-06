@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonWorkingDayTriggerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -100,8 +100,8 @@ public sealed class NonWorkingDayTriggerTests
 
         // Collide A keeps the contested Thursday; Collide B does not appear on it.
         IReadOnlyList<NotableDate> thursday = service.Resolve(new DateOnly(2026, 1, 1), Territory);
-        Assert.IsTrue(thursday.Any(n => n.NotableDateId == "collide-a" && !n.IsObserved), "Collide A on its actual day");
-        Assert.IsFalse(thursday.Any(n => n.NotableDateId == "collide-b"), "Collide B moved off the contested day");
+        Assert.Contains(n => n.NotableDateId == "collide-a" && !n.IsObserved, thursday, "Collide A on its actual day");
+        Assert.DoesNotContain(n => n.NotableDateId == "collide-b", thursday, "Collide B moved off the contested day");
 
         // Collide B is observed on the next working day (Friday 2 January).
         IReadOnlyList<NotableDate> friday = service.Resolve(new DateOnly(2026, 1, 2), Territory);
@@ -119,8 +119,8 @@ public sealed class NonWorkingDayTriggerTests
     {
         INotableDateService service = Build();
 
-        Assert.IsFalse(
-            service.Resolve(new DateOnly(2026, 1, 3), Territory).Any(n => n.NotableDateId == "weekend-holiday"),
+        Assert.DoesNotContain(
+            n => n.NotableDateId == "weekend-holiday", service.Resolve(new DateOnly(2026, 1, 3), Territory),
             "Saturday actual suppressed");
 
         NotableDate observed = service.Resolve(new DateOnly(2026, 1, 5), Territory).Single(n => n.NotableDateId == "weekend-holiday");
@@ -150,8 +150,8 @@ public sealed class NonWorkingDayTriggerTests
     {
         INotableDateService service = Build();
 
-        Assert.IsFalse(
-            service.Resolve(new DateOnly(2026, 1, 15), Territory).Any(n => n.NotableDateId == "working-shift"),
+        Assert.DoesNotContain(
+            n => n.NotableDateId == "working-shift", service.Resolve(new DateOnly(2026, 1, 15), Territory),
             "actual Thursday suppressed by observed-only");
 
         NotableDate observed = service.Resolve(new DateOnly(2026, 1, 17), Territory).Single(n => n.NotableDateId == "working-shift");

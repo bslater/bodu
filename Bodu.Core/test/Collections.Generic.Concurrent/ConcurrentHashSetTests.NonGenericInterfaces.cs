@@ -18,7 +18,7 @@ public partial class ConcurrentHashSetTests
     {
         ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        Assert.AreEqual(3, collection.Count);
+        Assert.HasCount(3, collection);
     }
 
     /// <summary>

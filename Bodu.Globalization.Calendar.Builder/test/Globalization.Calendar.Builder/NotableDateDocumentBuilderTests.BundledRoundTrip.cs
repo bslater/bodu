@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.BundledRoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -19,7 +16,7 @@ public partial class NotableDateDocumentBuilderTests
     public static IEnumerable<object[]> BundledCatalogues()
     {
         string[] names =
-        {
+        [
             "default-minimal", "global-core", "global-all", "global-anchors",
             "christian-western", "christian-orthodox",
             "global-islamic", "global-islamic-umm-al-qura", "global-hindu", "global-jewish",
@@ -28,7 +25,7 @@ public partial class NotableDateDocumentBuilderTests
             "global-remembrance", "global-un", "global-health", "global-science",
             "global-education", "global-environment", "global-food", "global-animals",
             "global-multiday-normalization",
-        };
+        ];
         return names.Select(n => new object[] { n });
     }
 
@@ -40,12 +37,12 @@ public partial class NotableDateDocumentBuilderTests
     /// <returns>An ordered list of <c>(territory, id, date, observed)</c> tuples.</returns>
     private static List<(string Territory, string Id, DateOnly Date, bool Observed)> Fingerprint(NotableDateResource resource)
     {
-        string[] territories = { "US", "CA-ON", "AU-NSW", "GB-ENG", "FR", "DE", "IN", "IL", "SA", "JP", "CN", "NZ" };
+        string[] territories = ["US", "CA-ON", "AU-NSW", "GB-ENG", "FR", "DE", "IN", "IL", "SA", "JP", "CN", "NZ"];
         NotableDateService service = new(resource);
         var rows = new List<(string, string, DateOnly, bool)>();
-        foreach (string territory in territories)
+        foreach (var territory in territories)
         {
-            for (int year = 2024; year <= 2026; year++)
+            for (var year = 2024; year <= 2026; year++)
             {
                 foreach (NotableDate n in service.Resolve(year, territory))
                     rows.Add((territory, n.NotableDateId, n.Date, n.IsObserved));
@@ -62,19 +59,19 @@ public partial class NotableDateDocumentBuilderTests
     /// </summary>
     /// <param name="catalogue">The bundled catalogue name under test.</param>
     [TestMethod]
-    [DynamicData(nameof(BundledCatalogues), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BundledCatalogues))]
     public void FromXml_WhenBundledCatalogue_ShouldRoundTripToEquivalentResource(string catalogue)
     {
-        string xml = CommonNotableDateResources.Resolve(catalogue)
+        var xml = CommonNotableDateResources.Resolve(catalogue)
             ?? throw new InvalidOperationException($"Bundled catalogue '{catalogue}' was not found.");
 
         NotableDateResource direct = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
         NotableDateResource viaBuilder = NotableDateDocumentBuilder.FromXml(xml).Build(CommonNotableDateResources.Resolver);
 
         Assert.AreEqual(direct.ResourceId, viaBuilder.ResourceId, $"{catalogue}: resourceId");
-        Assert.AreEqual(direct.NotableDates.Count, viaBuilder.NotableDates.Count, $"{catalogue}: definition count");
+        Assert.HasCount(direct.NotableDates.Count, viaBuilder.NotableDates, $"{catalogue}: definition count");
         Assert.AreEqual(direct.RuleCount, viaBuilder.RuleCount, $"{catalogue}: rule count");
-        Assert.AreEqual(direct.AdjustmentPolicies.Count, viaBuilder.AdjustmentPolicies.Count, $"{catalogue}: adjustment-policy count");
+        Assert.HasCount(direct.AdjustmentPolicies.Count, viaBuilder.AdjustmentPolicies, $"{catalogue}: adjustment-policy count");
 
         CollectionAssert.AreEqual(Fingerprint(direct), Fingerprint(viaBuilder), $"{catalogue}: resolved occurrences differ");
     }
