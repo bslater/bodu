@@ -119,20 +119,22 @@ public sealed class AustraliaKnownAnswerTests
     public void Resolve_WhenSubdivisionRuleExists_ShadowsNationalRuleForThatTerritory()
     {
         NotableDate westernAustralia = SingleForYear("AU-WA", 2026, "anzac-day");
-        Assert.AreEqual(new DateOnly(2026, 4, 27), westernAustralia.Date, "WA substitute date");
-        Assert.IsTrue(westernAustralia.IsObserved, "WA substitute is observed");
-        Assert.AreEqual("wa", westernAustralia.RuleId, "WA rule shadows the national rule");
+        Assert.AreEqual(
+            (new DateOnly(2026, 4, 27), true, "wa"),
+            (westernAustralia.Date, westernAustralia.IsObserved, westernAustralia.RuleId),
+            "WA substitute date, observed, shadows the national rule");
 
         NotableDate victoria = SingleForYear("AU-VIC", 2026, "anzac-day");
-        Assert.AreEqual(new DateOnly(2026, 4, 25), victoria.Date, "VIC falls back to the national rule");
-        Assert.IsFalse(victoria.IsObserved, "national rule has no substitute");
-        Assert.AreEqual("au", victoria.RuleId, "VIC inherits the national rule");
+        Assert.AreEqual(
+            (new DateOnly(2026, 4, 25), false, "au"),
+            (victoria.Date, victoria.IsObserved, victoria.RuleId),
+            "VIC falls back to the national rule with no substitute");
     }
 
     /// <summary>
     /// Verifies the New South Wales Anzac Day trial (2026-2027 only): when 25 April falls on a weekend the NSW rule
-    /// emits both the actual 25 April Anzac Day and an additional observed Monday public holiday. Outside the trial
-    /// window AU-NSW falls back to the national single-occurrence rule.
+    /// emits both the actual 25 April Anzac Day and an additional observed Monday public holiday, both from the trial
+    /// rule.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenAnzacDayInNewSouthWalesTrialYear_EmitsActualAndAdditionalMonday()
@@ -143,17 +145,28 @@ public sealed class AustraliaKnownAnswerTests
             .OrderBy(r => r.Date)
             .ToList();
 
-        Assert.HasCount(2, trial, "2026 emits Anzac Day plus an additional Monday");
-        Assert.AreEqual(new DateOnly(2026, 4, 25), trial[0].Date, "Anzac Day stays on Saturday 25 April");
-        Assert.IsFalse(trial[0].IsObserved, "the 25 April occurrence is the actual date");
-        Assert.AreEqual(new DateOnly(2026, 4, 27), trial[1].Date, "additional Monday public holiday");
-        Assert.IsTrue(trial[1].IsObserved, "the additional Monday is observed");
-        Assert.AreEqual("nsw", trial[1].RuleId, "the NSW trial rule shadows the national rule");
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                (new DateOnly(2026, 4, 25), false, "nsw"),  // actual 25 April retained
+                (new DateOnly(2026, 4, 27), true, "nsw"),   // additional observed Monday
+            },
+            trial.Select(r => (r.Date, r.IsObserved, r.RuleId)).ToArray());
+    }
 
+    /// <summary>
+    /// Verifies that outside the New South Wales Anzac Day trial window AU-NSW falls back to the national
+    /// single-occurrence rule, keeping plain 25 April with no substitute. 25 April 2028 is a Tuesday.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenAnzacDayAfterNewSouthWalesTrial_FallsBackToNationalRule()
+    {
         NotableDate afterTrial = SingleForYear("AU-NSW", 2028, "anzac-day");
-        Assert.AreEqual(new DateOnly(2028, 4, 25), afterTrial.Date, "after the trial NSW keeps plain 25 April");
-        Assert.IsFalse(afterTrial.IsObserved, "no substitute after the trial");
-        Assert.AreEqual("au", afterTrial.RuleId, "AU-NSW falls back to the national rule after the trial");
+
+        Assert.AreEqual(
+            (new DateOnly(2028, 4, 25), false, "au"),
+            (afterTrial.Date, afterTrial.IsObserved, afterTrial.RuleId),
+            "AU-NSW falls back to the national rule after the trial");
     }
 
     /// <summary>
