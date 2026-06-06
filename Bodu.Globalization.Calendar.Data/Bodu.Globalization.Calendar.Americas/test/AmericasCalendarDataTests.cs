@@ -244,6 +244,76 @@ public sealed class AmericasCalendarDataTests
     }
 
     /// <summary>
+    /// Verifies that Mexican holidays whose date floats from year to year resolve to independently-known published
+    /// dates — the three 2006-reform Monday holidays and the Holy Week feasts — so the moving holidays are pinned to
+    /// confirmed calendar dates rather than merely structurally validated.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+
+    // 2006-reform Monday holidays (DayOfWeekInMonth), confirmed against the published official calendar.
+    [DataRow(2024, "constitution-day", "2024-02-05")]
+    [DataRow(2025, "constitution-day", "2025-02-03")]
+    [DataRow(2024, "benito-juarez-day", "2024-03-18")]
+    [DataRow(2025, "benito-juarez-day", "2025-03-17")]
+    [DataRow(2024, "revolution-day", "2024-11-18")]
+    [DataRow(2025, "revolution-day", "2025-11-17")]
+
+    // Holy Week and Father's Day (Easter offset / nth-weekday), confirmed dates.
+    [DataRow(2024, "maundy-thursday", "2024-03-28")]
+    [DataRow(2024, "good-friday", "2024-03-29")]
+    [DataRow(2025, "good-friday", "2025-04-18")]
+    [DataRow(2024, "fathers-day", "2024-06-16")]
+    public void Resolve_MexicanFloatingHoliday_MatchesKnownAnswer(int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single("MX", year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that each fixed-date Mexican national holiday resolves for a representative year to its known date.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="expected">The expected emitted date in ISO format.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(2024, "new-years-day", "2024-01-01")]
+    [DataRow(2024, "workers-day", "2024-05-01")]
+    [DataRow(2024, "mothers-day", "2024-05-10")]
+    [DataRow(2024, "independence-day-mx", "2024-09-16")]
+    [DataRow(2024, "day-of-the-dead", "2024-11-02")]
+    [DataRow(2024, "guadalupe-day", "2024-12-12")]
+    [DataRow(2024, "christmas-day", "2024-12-25")]
+    public void Resolve_MexicanFixedHoliday_MatchesKnownAnswer(int year, string notableDateId, string expected)
+    {
+        NotableDate match = Single("MX", year, notableDateId);
+
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+    }
+
+    /// <summary>
+    /// Verifies that every supported country loads and validates (the loader throws on a validation error) and
+    /// resolves a non-empty set of holidays for a representative year.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
+    {
+        foreach (var country in AmericasCalendarData.SupportedCountries)
+        {
+            IReadOnlyList<NotableDate> holidays = AmericasCalendarData.CreateService(country)
+                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
+
+            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
+        }
+    }
+
+    /// <summary>
     /// Resolves a single year window for the requested territory and returns the one occurrence with the supplied id.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>

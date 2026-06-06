@@ -34,22 +34,32 @@
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.americas-common">
 
   <Imports>
-    <!-- Civil core. New Year's Day and New Year's Eve, re-exported under their global canonical names. -->
+    <!-- Civil core. New Year's Day, New Year's Eve, and International Workers' Day (1 May), re-exported under their global canonical names. -->
     <Import resource="global-core">
       <Use notableDateRef="new-years-day" />
       <Use notableDateRef="new-years-eve" />
+      <Use notableDateRef="workers-day" />
     </Import>
     <!--
       Western Christian feasts and the Easter anchor. Re-exported with their catalogue defaults: the public holidays
       (Good Friday, Easter Monday, Christmas Day, Boxing Day) carry nonWorking="true"; the rest are working
-      observances. Shrove Tuesday (Mardi Gras) and Ash Wednesday support the Gulf-coast carnival observances.
+      observances. Shrove Tuesday (Mardi Gras) and Ash Wednesday support the Gulf-coast carnival observances. The
+      Holy Week, Easter-cycle, and Catholic calendar feasts (Maundy Thursday, Palm Sunday, Ascension, Corpus
+      Christi, Epiphany, All Saints' / All Souls') back the heavily Catholic Latin American region packs.
     -->
     <Import resource="christian-western">
-      <Use notableDateRef="easter-sunday" />
-      <Use notableDateRef="good-friday" />
-      <Use notableDateRef="easter-monday" />
+      <Use notableDateRef="epiphany" />
       <Use notableDateRef="shrove-tuesday" />
       <Use notableDateRef="ash-wednesday" />
+      <Use notableDateRef="palm-sunday" />
+      <Use notableDateRef="maundy-thursday" />
+      <Use notableDateRef="good-friday" />
+      <Use notableDateRef="easter-sunday" />
+      <Use notableDateRef="easter-monday" />
+      <Use notableDateRef="ascension-day" />
+      <Use notableDateRef="corpus-christi" />
+      <Use notableDateRef="all-saints-day" />
+      <Use notableDateRef="all-souls-day" />
       <Use notableDateRef="christmas-eve" />
       <Use notableDateRef="christmas-day" />
       <Use notableDateRef="boxing-day" />
@@ -104,6 +114,22 @@
         <Rule id="us"><Applicability><Territory code="US" /></Applicability><Strategy><DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" /></Strategy></Rule>
         <Rule id="ca"><Applicability><Territory code="CA" /></Applicability><Strategy><DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" /></Strategy></Rule>
       </Rules>
+    </NotableDate>
+
+    <!--
+      Marian feasts observed across Catholic Latin America but not present in the shared common library, defined here
+      once as the single regional source of truth (mirroring europe-common). They carry working-observance defaults;
+      a region pack re-scopes them to a non-working public holiday where its civil law makes them statutory.
+    -->
+
+    <!-- Assumption of Mary (Asunción de María) — 15 August. Strategy: Fixed day-of-month. -->
+    <NotableDate id="assumption-of-mary" displayName="Assumption of Mary" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="August" day="15" /></Strategy></Rule></Rules>
+    </NotableDate>
+
+    <!-- Immaculate Conception (Inmaculada Concepción) — 8 December. Strategy: Fixed day-of-month. -->
+    <NotableDate id="immaculate-conception" displayName="Immaculate Conception" category="Religious" defaultNonWorkingDay="false">
+      <Rules><Rule id="default"><Strategy><Fixed month="December" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
   </NotableDates>
