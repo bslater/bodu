@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Numerics;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -100,8 +101,7 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public Fraction(T numerator, T denominator)
     {
-        if (T.IsZero(denominator))
-            throw new DivideByZeroException("The denominator of a fraction must not be zero.");
+        NumericsThrowHelper.ThrowIfDenominatorZero(denominator);
 
         var n = BigInteger.CreateChecked(numerator);
         var d = BigInteger.CreateChecked(denominator);
@@ -177,7 +177,8 @@ public readonly partial struct Fraction<T>
     public static Fraction<T> MinValue =>
         s_isBounded
             ? new Fraction<T>(s_minBacking, T.One, canonical: true)
-            : throw new NotSupportedException($"The backing type '{typeof(T)}' is unbounded and has no minimum value.");
+            : throw new NotSupportedException(
+                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Op_NotSupported_UnboundedMinValue, typeof(T)));
 
     /// <summary>
     /// Gets the largest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
@@ -193,7 +194,8 @@ public readonly partial struct Fraction<T>
     public static Fraction<T> MaxValue =>
         s_isBounded
             ? new Fraction<T>(s_maxBacking, T.One, canonical: true)
-            : throw new NotSupportedException($"The backing type '{typeof(T)}' is unbounded and has no maximum value.");
+            : throw new NotSupportedException(
+                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Op_NotSupported_UnboundedMaxValue, typeof(T)));
 
     /// <summary>
     /// Gets the numerator of the rational value in canonical form.
@@ -322,8 +324,7 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public static Fraction<T> FromBigInteger(BigInteger numerator, BigInteger denominator)
     {
-        if (denominator.IsZero)
-            throw new DivideByZeroException("The denominator of a fraction must not be zero.");
+        NumericsThrowHelper.ThrowIfDenominatorZero(denominator);
 
         if (denominator.Sign < 0)
         {

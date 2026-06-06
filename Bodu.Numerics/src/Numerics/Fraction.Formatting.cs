@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Numerics;
 using System.Text;
 
@@ -155,7 +156,8 @@ public readonly partial struct Fraction<T> :
             'M' => FormatMixed(provider),
             'U' => FormatUnicode(provider),
             'P' => FormatPercent(provider),
-            _ => throw new FormatException($"The format string '{format}' is not supported."),
+            _ => throw new FormatException(
+                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Format_Invalid_FractionFormat, format.ToString())),
         };
     }
 
