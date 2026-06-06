@@ -30,7 +30,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 - <xref:Bodu.Extensions.CalendarQuarterDefinition> — `Fiscal`, `Calendar`.
 - <xref:Bodu.Extensions.DateTimeResolution> — truncation resolution.
 - <xref:Bodu.Extensions.FiscalWeekPattern> — fiscal-week enumeration.
-- <xref:Bodu.Extensions.WeekOfMonthOrdinal> — `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`.
+- <xref:Bodu.Extensions.WeekOrdinal> — `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`.
 
 **Numeric**
 

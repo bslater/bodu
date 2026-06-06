@@ -21,7 +21,7 @@ Every <xref:Bodu.Globalization.Calendar.NotableDateRule> carries exactly one <xr
 
 - <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> — `DateOnly? Calculate(int year, StrategyResolutionContext context)`. Implemented by every strategy below.
 - <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> — a fixed month / day, optionally expressed in a non-Gregorian <xref:Bodu.Globalization.Calendar.CalendarSystem> (a short Hijri month can recur twice in a Gregorian year, so it also exposes `CalculateAll`).
-- <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy> — the *n*th or last weekday in a month (e.g. fourth Thursday in November), driven by <xref:Bodu.Globalization.Calendar.WeekOrdinal>.
+- <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy> — the *n*th or last weekday in a month (e.g. fourth Thursday in November), driven by <xref:Bodu.Extensions.WeekOrdinal>.
 - <xref:Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy> — a weekday relative to a weekday-in-month anchor (e.g. the Tuesday after the first Monday).
 - <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy> — a weekday on / before / after / nearest a fixed date (e.g. the Monday nearest 24 May), driven by <xref:Bodu.Globalization.Calendar.WeekdayProximity>.
 - <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> — a fixed day offset from another rule's occurrence (e.g. Good Friday = Easter Sunday − 2).

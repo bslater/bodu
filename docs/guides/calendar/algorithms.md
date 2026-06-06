@@ -43,7 +43,7 @@ The most common strategy: the same calendar position every year. `month` is a nu
 
 ### `<DayOfWeekInMonth>` — the *n*th weekday in a month
 
-Driven by <xref:Bodu.Globalization.Calendar.WeekOrdinal> (`First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`). `Fifth` yields no occurrence in months that lack a fifth instance; `Last` always selects the final occurrence.
+Driven by <xref:Bodu.Extensions.WeekOrdinal> (`First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`). `Fifth` yields no occurrence in months that lack a fifth instance; `Last` always selects the final occurrence.
 
 ```xml
 <!-- US Thanksgiving — the fourth Thursday in November. -->

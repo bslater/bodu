@@ -122,7 +122,7 @@ An impossible date (e.g. 29 February in a non-leap year) yields no occurrence fo
 |---|---|---|---|
 | `month` | Yes | string | Month number or English month name. |
 | `dayOfWeek` | Yes | day of week | The target weekday. |
-| `weekOrdinal` | Yes | ordinal | <xref:Bodu.Globalization.Calendar.WeekOrdinal>: `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`. |
+| `weekOrdinal` | Yes | ordinal | <xref:Bodu.Extensions.WeekOrdinal>: `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`. |
 
 ```xml
 <!-- US Thanksgiving — the fourth Thursday in November. -->
