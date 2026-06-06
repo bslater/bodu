@@ -20,9 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c>:
 /// <c>CryptographyThrowHelper.cs</c> holds the root declaration, while
-/// <c>CryptographyThrowHelper.CallerExpression.cs</c> and <c>CryptographyThrowHelper.NetStandard.cs</c> hold the
-/// framework-conditional implementations. The wildcard <c>&lt;Compile Remove&gt;</c> entries in the project file select
-/// the correct partial for the current target.
+/// <c>CryptographyThrowHelper.CallerExpression.cs</c> holds the guard implementations.
 /// </para>
 /// </remarks>
 [SuppressMessage(

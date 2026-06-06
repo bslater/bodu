@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.Checksums;
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Provides shared streaming and one-shot math for the weighted modulus-10 check-digit family used by ISBN-13, GTIN

@@ -336,9 +336,6 @@ public sealed class Poly1305
         // guard is unconditional across all target frameworks because Poly1305's one-time-key contract is
         // not defended by HashAlgorithm.State alone (Initialize resets State to 0 after every ComputeHash).
         _finalized = true;
-#if !NET6_0_OR_GREATER
-        State = 2;
-#endif
 
         // Key material is no longer needed — zero it immediately to enforce Poly1305's one-time-use
         // guarantee and limit key exposure in memory. The buffer is retained (not nullified) so the

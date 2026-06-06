@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.Checksums;
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check character of a 10-character International Standard Book Number using the ISBN-10 weighted

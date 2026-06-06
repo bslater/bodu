@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.Checksums;
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the two-digit check sequence of a Legal Entity Identifier (LEI) as specified by ISO 17442. This class

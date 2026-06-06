@@ -6,7 +6,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Bodu.IO.Hashing.Checksums;
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Provides shared helpers for expanding and validating the ASCII uppercase alphanumeric alphabet used by ISO 7064 MOD

@@ -671,5 +671,131 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_Poly1305Padding", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} requires a cipher with a {1}-byte block size..
+        /// </summary>
+        internal static string Arg_Invalid_CipherBlockSizeRequired {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CipherBlockSizeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The GCM nonce must be exactly {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_GcmNonceLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_GcmNonceLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The initial counter block must be exactly {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_InitialCounterBlockLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_InitialCounterBlockLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The initial counter block must not end in 0xFFFFFFFF; inc32(J0) would collide with J0 itself..
+        /// </summary>
+        internal static string Arg_Invalid_InitialCounterBlockReserved {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_InitialCounterBlockReserved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The initialization vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes)..
+        /// </summary>
+        internal static string Arg_Invalid_IvLengthForMode {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IvLengthForMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag size ({0} bits) must be a positive multiple of 8 between 8 and the cipher block size ({1} bits)..
+        /// </summary>
+        internal static string Arg_Invalid_OcbTagSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_OcbTagSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits)..
+        /// </summary>
+        internal static string Arg_Invalid_XtsCipherBlockSizeMismatch {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_XtsCipherBlockSizeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tweak length ({0} bytes) must equal the cipher block size ({1} bytes)..
+        /// </summary>
+        internal static string Arg_Invalid_XtsTweakLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_XtsTweakLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCM associated-data length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair..
+        /// </summary>
+        internal static string Crypt_Invalid_GcmAadLengthExceeded {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_GcmAadLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCM 32-bit counter would wrap past 0xFFFFFFFF; the message length exceeds the maximum allowed per (key, nonce) pair..
+        /// </summary>
+        internal static string Crypt_Invalid_GcmCounterWrap {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_GcmCounterWrap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCM plaintext length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair..
+        /// </summary>
+        internal static string Crypt_Invalid_GcmPlaintextLengthExceeded {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_GcmPlaintextLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BLAKE3 CV stack exceeded its {0}-level maximum tree depth..
+        /// </summary>
+        internal static string Op_Invalid_Blake3CvStackDepth {
+            get {
+                return ResourceManager.GetString("Op_Invalid_Blake3CvStackDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This GCM transform has already completed and cannot be reused. Create a new instance per message..
+        /// </summary>
+        internal static string Op_Invalid_GcmTransformCompleted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_GcmTransformCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write to level-{0} channel failed. The channel was completed before all nodes were submitted..
+        /// </summary>
+        internal static string Op_Invalid_MerkleChannelCompleted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleChannelCompleted", resourceCulture);
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0_OR_GREATER
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -534,6 +534,29 @@ internal static partial class CryptographyThrowHelper
 
         return false;
     }
-}
 
-#endif
+    /// <summary>
+    /// Throws an <see cref="ArgumentException" /> when an <see cref="IBlockCipher" /> does not have the block size
+    /// required by a cipher mode.
+    /// </summary>
+    /// <param name="cipher">The block cipher supplied to the mode.</param>
+    /// <param name="requiredBlockSizeBits">The block size, in bits, the mode requires.</param>
+    /// <param name="role">A short label identifying the mode and cipher role for the exception message.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="cipher" /> does not report <paramref name="requiredBlockSizeBits" />.
+    /// </exception>
+    public static void ThrowIfBlockSizeNotEqualTo(
+        IBlockCipher cipher, int requiredBlockSizeBits, string role,
+        [CallerArgumentExpression(nameof(cipher))] string? paramName = null)
+    {
+        if (cipher.BlockSize != requiredBlockSizeBits)
+            throw new ArgumentException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    CryptoResourceStrings.Arg_Invalid_CipherBlockSizeRequired,
+                    role,
+                    requiredBlockSizeBits / 8),
+                paramName);
+    }
+}

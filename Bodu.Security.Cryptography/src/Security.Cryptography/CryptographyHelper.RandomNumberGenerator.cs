@@ -60,41 +60,6 @@ internal static partial class CryptographyHelper
     {
         const int maxRedrawsPerByte = 8;
 
-#if NETSTANDARD2_0
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            byte[] temp = new byte[buffer.Length];
-            try
-            {
-                rng.GetBytes(temp);
-
-                // Per-byte rejection: only redraw the positions that came up zero.
-                byte[] single = new byte[1];
-                for (int i = 0; i < temp.Length; i++)
-                {
-                    int redraws = 0;
-                    while (temp[i] == 0)
-                    {
-                        if (redraws == maxRedrawsPerByte)
-                            return false;
-
-                        rng.GetBytes(single);
-                        temp[i] = single[0];
-                        redraws++;
-                    }
-                }
-
-                single[0] = 0;
-                temp.CopyTo(buffer);
-                return true;
-            }
-            finally
-            {
-                // Wipe temp so any random bytes drawn (success or failure path) do not linger on the managed heap.
-                Array.Clear(temp, 0, temp.Length);
-            }
-        }
-#else
         RandomNumberGenerator.Fill(buffer);
 
         // Per-byte rejection: only redraw the positions that came up zero.
@@ -114,7 +79,6 @@ internal static partial class CryptographyHelper
         }
 
         return true;
-#endif
     }
 
     /// <summary>
@@ -145,23 +109,7 @@ internal static partial class CryptographyHelper
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomBytes(Span<byte> buffer) =>
-#if NETSTANDARD2_0
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            byte[] temp = new byte[buffer.Length];
-            try
-            {
-                rng.GetBytes(temp);
-                temp.CopyTo(buffer);
-            }
-            finally
-            {
-                Array.Clear(temp, 0, temp.Length);
-            }
-        }
-#else
         RandomNumberGenerator.Fill(buffer);
-#endif
 
 
     /// <summary>
@@ -193,35 +141,6 @@ internal static partial class CryptographyHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomBytesExcluding(byte forbidden, Span<byte> buffer)
     {
-#if NETSTANDARD2_0
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            byte[] temp = new byte[buffer.Length];
-            try
-            {
-                rng.GetBytes(temp);
-
-                // Targeted per-byte replacement: only re-draw for the bytes that
-                // matched the forbidden value, rather than re-filling the whole buffer.
-                byte[] single = new byte[1];
-                for (int i = 0; i < temp.Length; i++)
-                {
-                    while (temp[i] == forbidden)
-                    {
-                        rng.GetBytes(single);
-                        temp[i] = single[0];
-                    }
-                }
-
-                single[0] = 0;
-                temp.CopyTo(buffer);
-            }
-            finally
-            {
-                Array.Clear(temp, 0, temp.Length);
-            }
-        }
-#else
         RandomNumberGenerator.Fill(buffer);
 
         // Targeted per-byte replacement: only re-draw for the bytes that
@@ -235,7 +154,6 @@ internal static partial class CryptographyHelper
                 buffer[i] = single[0];
             }
         }
-#endif
     }
 
     /// <summary>

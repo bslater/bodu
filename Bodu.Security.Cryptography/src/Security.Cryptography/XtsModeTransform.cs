@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -103,14 +105,14 @@ public sealed class XtsModeTransform
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
         {
             throw new ArgumentException(
-                $"tweakCipher block size ({tweakCipher.BlockSize} bits) must equal dataCipher block size ({dataCipher.BlockSize} bits).",
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_XtsCipherBlockSizeMismatch, tweakCipher.BlockSize, dataCipher.BlockSize),
                 nameof(tweakCipher));
         }
 
         if (tweak.Length != dataCipher.BlockSize / 8)
         {
             throw new ArgumentException(
-                $"Tweak length ({tweak.Length} bytes) must equal the cipher block size ({dataCipher.BlockSize / 8} bytes).",
+                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_XtsTweakLength, tweak.Length, dataCipher.BlockSize / 8),
                 nameof(tweak));
         }
 

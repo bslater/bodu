@@ -11,25 +11,8 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <Description>Non-cryptographic hashing and integrity primitives for .NET: Fletcher-16/32/64, the full RevEng CRC catalogue, and check-digit algorithms (Luhn, Damm, Verhoeff, EAN/UPC/GTIN, ISBN, IBAN, ISIN, LEI, ISO 7064, ...). These are for data integrity and validation, NOT security — do not use them where a cryptographic hash or MAC is required.</Description>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
-  <!--
-    HashingThrowHelper is split into a CallerArgumentExpression variant and a NetStandard variant:
-      - HashingThrowHelper.*NetStandard.cs       : compiled for netstandard2.0 / netstandard2.1,
-                                                   where CallerArgumentExpressionAttribute is unavailable.
-      - HashingThrowHelper.*CallerExpression.cs  : compiled for all other targets (net5.0+),
-                                                   where CallerArgumentExpressionAttribute is supported.
-  -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <Compile Remove="HashingThrowHelper.*CallerExpression.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-    <Compile Remove="HashingThrowHelper.*NetStandard.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

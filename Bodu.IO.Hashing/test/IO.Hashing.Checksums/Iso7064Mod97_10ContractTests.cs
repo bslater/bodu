@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Hashing.CheckDigits;
 using Bodu.IO.Hashing.Contracts;
 
 namespace Bodu.IO.Hashing.Checksums.Contracts;

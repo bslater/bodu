@@ -159,14 +159,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// </summary>
     private bool _disposed;
 
-#if !NET6_0_OR_GREATER
-
-    /// <summary>
-    /// Indicates whether the hash computation has been finalized. Used in .NET Standard environments to enforce the
-    /// "no input after finalization" contract that .NET 6+ enforces in the framework itself.
-    /// </summary>
-    protected bool _finalized;
-#endif
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BufferedBlockHashAlgorithm{T}" /> class with the specified input
@@ -305,10 +297,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
 
-#if !NET6_0_OR_GREATER
-        if (_finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
-#endif
 
         HashCore(array.AsSpan(ibStart, cbSize));
     }
@@ -334,12 +322,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
-#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-        if (_disposed)
-            throw new ObjectDisposedException(GetType().Name);
-#endif
 
     /// <summary>
     /// Throws if the algorithm has begun processing and can no longer be reconfigured.
