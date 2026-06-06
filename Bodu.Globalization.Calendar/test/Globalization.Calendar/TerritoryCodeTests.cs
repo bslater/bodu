@@ -21,10 +21,9 @@ public sealed class TerritoryCodeTests
     {
         var code = TerritoryCode.Parse("AU");
 
-        Assert.AreEqual("AU", code.Country);
-        Assert.IsNull(code.Subdivision);
-        Assert.IsFalse(code.IsSubdivision);
-        Assert.IsFalse(code.IsEmpty);
+        Assert.AreEqual(
+            ("AU", (string?)null, false, false),
+            (code.Country, code.Subdivision, code.IsSubdivision, code.IsEmpty));
     }
 
     /// <summary>
@@ -35,10 +34,9 @@ public sealed class TerritoryCodeTests
     {
         var code = TerritoryCode.Parse("AU-NSW");
 
-        Assert.AreEqual("AU", code.Country);
-        Assert.AreEqual("NSW", code.Subdivision);
-        Assert.IsTrue(code.IsSubdivision);
-        Assert.AreEqual("AU", code.Parent.ToString());
+        Assert.AreEqual(
+            ("AU", (string?)"NSW", true, "AU"),
+            (code.Country, code.Subdivision, code.IsSubdivision, code.Parent.ToString()));
     }
 
     /// <summary>
@@ -93,45 +91,51 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void TryParse_WhenInvalid_ShouldReturnFalseAndDefault()
     {
-        Assert.IsFalse(TerritoryCode.TryParse("nope!", out TerritoryCode result));
-        Assert.IsTrue(result.IsEmpty);
+        bool parsed = TerritoryCode.TryParse("nope!", out TerritoryCode result);
+
+        Assert.AreEqual((false, true), (parsed, result.IsEmpty));
     }
 
     /// <summary>
     /// Verifies that <see cref="TerritoryCode.TryParse" /> reports failure for <see langword="null" /> and empty input.
     /// </summary>
+    /// <param name="value">The null or empty input under test.</param>
     [TestMethod]
-    public void TryParse_WhenNullOrEmpty_ShouldReturnFalse()
+    [DataRow(null)]
+    [DataRow("")]
+    public void TryParse_WhenNullOrEmpty_ShouldReturnFalse(string? value)
     {
-        Assert.IsFalse(TerritoryCode.TryParse(null, out _));
-        Assert.IsFalse(TerritoryCode.TryParse(string.Empty, out _));
+        Assert.IsFalse(TerritoryCode.TryParse(value, out _));
     }
 
     /// <summary>
     /// Verifies that a country contains itself and its subdivisions, but a subdivision contains neither its parent nor a
-    /// sibling, and unrelated countries never contain each other.
+    /// sibling, unrelated countries never contain each other, and the empty code neither contains nor is contained by any
+    /// code. A <see langword="null" /> argument denotes the empty (default) <see cref="TerritoryCode" />.
     /// </summary>
+    /// <param name="container">The containing code, or <see langword="null" /> for the default code.</param>
+    /// <param name="contained">The candidate contained code, or <see langword="null" /> for the default code.</param>
+    /// <param name="expected">The expected containment result.</param>
     [TestMethod]
-    public void Contains_ShouldFollowParentChildSemantics()
+    [DataRow("AU", "AU", true)]           // a country contains itself
+    [DataRow("AU", "AU-NSW", true)]       // a country contains its subdivision
+    [DataRow("AU-NSW", "AU-NSW", true)]   // a subdivision contains itself
+    [DataRow("AU-NSW", "AU", false)]      // a subdivision does not contain its parent
+    [DataRow("AU-NSW", "AU-VIC", false)]  // siblings do not contain each other
+    [DataRow("AU", "US", false)]          // unrelated countries
+    [DataRow(null, "AU", false)]          // the default code contains nothing
+    [DataRow("AU", null, false)]          // nothing contains the default code
+    public void Contains_WhenCheckedAgainstParentChild_ShouldFollowSemantics(string? container, string? contained, bool expected)
     {
-        var au = TerritoryCode.Parse("AU");
-        var nsw = TerritoryCode.Parse("AU-NSW");
-        var vic = TerritoryCode.Parse("AU-VIC");
-        var us = TerritoryCode.Parse("US");
+        TerritoryCode containerCode = container is null ? default : TerritoryCode.Parse(container);
+        TerritoryCode containedCode = contained is null ? default : TerritoryCode.Parse(contained);
 
-        Assert.IsTrue(au.Contains(au));
-        Assert.IsTrue(au.Contains(nsw));
-        Assert.IsTrue(nsw.Contains(nsw));
-
-        Assert.IsFalse(nsw.Contains(au));
-        Assert.IsFalse(nsw.Contains(vic));
-        Assert.IsFalse(au.Contains(us));
-        Assert.IsFalse(default(TerritoryCode).Contains(au));
-        Assert.IsFalse(au.Contains(default));
+        Assert.AreEqual(expected, containerCode.Contains(containedCode));
     }
 
     /// <summary>
-    /// Verifies that equality is case-insensitive after normalization and that equal codes share a hash code.
+    /// Verifies that two codes differing only in case are equal after normalization, are not unequal, and share a hash
+    /// code.
     /// </summary>
     [TestMethod]
     public void Equals_WhenSameCodeDifferentCase_ShouldBeEqual()
@@ -139,10 +143,18 @@ public sealed class TerritoryCodeTests
         var a = TerritoryCode.Parse("au-nsw");
         var b = TerritoryCode.Parse("AU-NSW");
 
-        Assert.IsTrue(a == b);
-        Assert.IsFalse(a != b);
-        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
-        Assert.AreNotEqual(a, TerritoryCode.Parse("AU-VIC"));
+        Assert.AreEqual(
+            (true, false, true),
+            (a == b, a != b, a.GetHashCode() == b.GetHashCode()));
+    }
+
+    /// <summary>
+    /// Verifies that two codes differing in subdivision are not equal.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenDifferentSubdivision_ShouldNotBeEqual()
+    {
+        Assert.AreNotEqual(TerritoryCode.Parse("AU-NSW"), TerritoryCode.Parse("AU-VIC"));
     }
 
     /// <summary>
@@ -153,8 +165,7 @@ public sealed class TerritoryCodeTests
     {
         TerritoryCode code = default;
 
-        Assert.AreEqual(string.Empty, code.ToString());
-        Assert.IsTrue(code.IsEmpty);
+        Assert.AreEqual((string.Empty, true), (code.ToString(), code.IsEmpty));
     }
 
     /// <summary>
@@ -171,10 +182,14 @@ public sealed class TerritoryCodeTests
 
     /// <summary>
     /// Verifies that a <see cref="TerritoryCode" /> flows into the string-based resolution surface via its implicit
-    /// conversion and resolves a subdivision-scoped occurrence.
+    /// conversion, resolving a subdivision-scoped occurrence for the matching subdivision and nothing for a sibling.
     /// </summary>
+    /// <param name="territory">The subdivision code passed to the resolver.</param>
+    /// <param name="expectedCount">The expected number of resolved occurrences.</param>
     [TestMethod]
-    public void Resolve_WhenPassedTerritoryCode_ShouldResolveThroughStringSurface()
+    [DataRow("AU-NSW", 1)]  // the scoped subdivision resolves the occurrence
+    [DataRow("AU-VIC", 0)]  // a sibling subdivision resolves nothing
+    public void Resolve_WhenPassedTerritoryCode_ShouldResolveThroughStringSurface(string territory, int expectedCount)
     {
         const string xml = """
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.territory-interop">
@@ -189,8 +204,7 @@ public sealed class TerritoryCodeTests
 
         NotableDateService service = new(NotableDateResourceLoader.Load(xml));
 
-        Assert.HasCount(1, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-NSW")));
-        Assert.IsEmpty(service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse("AU-VIC")));
+        Assert.HasCount(expectedCount, service.Resolve(new DateOnly(2025, 1, 26), TerritoryCode.Parse(territory)));
     }
 
     /// <summary>
