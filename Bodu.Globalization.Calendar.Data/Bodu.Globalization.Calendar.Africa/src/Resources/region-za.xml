@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  South Africa (ZA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "ZA". The
+  South Africa (ZA) notable-date resource on the notable-date schema. National rules are scoped to territory "ZA". The
   civil and Western Christian days (New Year, Good Friday, the Easter anchor, Christmas, Day of Goodwill) are imported
   from the africa-common hub; the post-apartheid public holidays and the South African "Family Day" (Easter Monday)
   are declared inline. Under the Public Holidays Act, a holiday that falls on a Sunday is observed on the following

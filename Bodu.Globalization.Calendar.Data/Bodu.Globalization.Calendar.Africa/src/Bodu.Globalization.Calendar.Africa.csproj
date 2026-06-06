@@ -15,7 +15,7 @@
   <PropertyGroup>
     <Version>1.0.0</Version>
     <Title>Bodu Calendar Data — Africa</Title>
-    <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering Africa (South Africa, Nigeria, Kenya, Ghana, Ethiopia, Egypt, Morocco), built on the v2 cookbook schema. Exercises the Western and Orthodox Christian, tabular Hijri, weekend-substitution, and Friday/Saturday working-week conventions through the AfricaCalendarData factory.</Description>
+    <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering Africa (South Africa, Nigeria, Kenya, Ghana, Ethiopia, Egypt, Morocco), built on the notable-date schema. Exercises the Western and Orthodox Christian, tabular Hijri, weekend-substitution, and Friday/Saturday working-week conventions through the AfricaCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;africa;za;ng;ke;eg</PackageTags>
   </PropertyGroup>
 

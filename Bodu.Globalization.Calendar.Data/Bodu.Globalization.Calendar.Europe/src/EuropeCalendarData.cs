@@ -10,8 +10,8 @@ using System.Text;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides access to the embedded Europe notable-date resource pack (United Kingdom, France, Germany), migrated to the
-/// v2 cookbook schema.
+/// Provides access to the embedded Europe notable-date resource pack (United Kingdom, France, Germany), built on the
+/// notable-date schema.
 /// </summary>
 /// <remarks>
 /// <para>

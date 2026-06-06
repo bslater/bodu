@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Jewish (Hebrew) notable-date catalogue, migrated from the v1 global-jewish.xml to the v2 cookbook schema and extended
-  with the common Hebrew-calendar observances that were absent from the first migration pass. The catalogue is anchored
+  Jewish (Hebrew) notable-date catalogue on the notable-date schema, extended with the common Hebrew-calendar observances. The catalogue is anchored
   by fixed dates in the Hebrew lunisolar calendar (System.Globalization.HebrewCalendar) swept onto the requested
   Gregorian year: Rosh Hashanah, Passover, Purim, Tu BiShvat, Tisha B'Av, and Hanukkah. Further observances that are
   invariant Hebrew-calendar offsets are authored as OffsetFromRule rules from those anchors so the dependent date cannot

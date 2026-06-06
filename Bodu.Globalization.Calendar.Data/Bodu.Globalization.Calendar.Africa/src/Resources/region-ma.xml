@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Morocco (MA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "MA". The civil
+  Morocco (MA) notable-date resource on the notable-date schema. National rules are scoped to territory "MA". The civil
   days and the Islamic festivals (tabular Hijri, so they may differ by a day or two from the gazette) are imported
   from the africa-common hub; the national and royal commemorations are declared inline. Morocco keeps a
   Saturday/Sunday weekend, so the default Monday-to-Friday working week applies.

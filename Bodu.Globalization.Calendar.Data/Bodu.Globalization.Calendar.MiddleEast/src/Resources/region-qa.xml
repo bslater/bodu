@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Qatar (QA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "QA". The two
+  Qatar (QA) notable-date resource on the notable-date schema. National rules are scoped to territory "QA". The two
   Eids are imported from the middleeast-common hub (tabular Hijri, so they may differ by a day or two from the
   locally proclaimed moon-sighting); the National Sports Day and National Day are declared inline. Qatar keeps a
   Friday/Saturday weekend, declared via the working-week pattern (Sunday-to-Thursday working).

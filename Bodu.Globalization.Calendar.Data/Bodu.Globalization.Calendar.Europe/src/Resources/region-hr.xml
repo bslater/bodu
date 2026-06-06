@@ -2,7 +2,7 @@
 <!--
   Croatia (HR) — notable-date resource pack.
 
-  Migrated from the v1 region-hr.xml to the v2 cookbook schema. All rules are scoped to territory "HR"; Croatia has
+  Authored on the notable-date schema. All rules are scoped to territory "HR"; Croatia has
   no subdivision-specific public holidays.
 
   How this resource is built:

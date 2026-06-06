@@ -14,7 +14,7 @@ If you are new to the library, start with the [introduction](../../docs/calendar
 
 ![NotableDateService resolution pipeline](../../images/diagrams/calendar-resolution-pipeline.svg)
 
-A **rule document** is authored on the cookbook schema and loaded into an immutable **`NotableDateResource`**. A **`NotableDateService`** is built over that resource; for each requested date, range, or year it resolves every applicable rule via the rule's **strategy**, runs the referenced **adjustment policies**, settles same-day **collisions**, and returns the resolved **`NotableDate`** set.
+A **rule document** is authored on the notable-date schema and loaded into an immutable **`NotableDateResource`**. A **`NotableDateService`** is built over that resource; for each requested date, range, or year it resolves every applicable rule via the rule's **strategy**, runs the referenced **adjustment policies**, settles same-day **collisions**, and returns the resolved **`NotableDate`** set.
 
 ## Namespace map
 

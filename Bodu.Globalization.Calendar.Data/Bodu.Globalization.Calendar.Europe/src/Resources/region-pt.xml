@@ -4,7 +4,7 @@
   Portugal (PT) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-pt.xml to the v2 cookbook schema. All rules are scoped to territory "PT"; the
+  Authored on the notable-date schema. All rules are scoped to territory "PT"; the
   municipal holidays and the Azores/Madeira regional days are not modelled — only the mainland national set.
 
   How this resource is built:

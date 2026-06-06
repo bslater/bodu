@@ -10,7 +10,7 @@ using Bodu.Globalization.Calendar;
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Provides <see cref="IServiceCollection" /> extension methods for registering the Bodu v2 notable-date service.
+/// Provides <see cref="IServiceCollection" /> extension methods for registering the Bodu notable-date service.
 /// </summary>
 /// <remarks>
 /// <para>

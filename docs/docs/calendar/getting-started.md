@@ -34,7 +34,7 @@ Targets `net8.0`. The base package contains the resolution engine, the built-in 
 
 ### Load a document and resolve
 
-A rule document is XML (or JSON) on the cookbook schema. Load it into an immutable resource, build a service, and resolve:
+A rule document is XML (or JSON) on the notable-date schema. Load it into an immutable resource, build a service, and resolve:
 
 ```csharp
 using Bodu.Globalization.Calendar;

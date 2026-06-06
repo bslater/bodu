@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Indonesia (ID) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "ID".
+  Indonesia (ID) notable-date resource on the notable-date schema. National rules are scoped to territory "ID".
   Indonesia's public holidays span its major faiths: the civil and Western Christian days are imported from the
   global-core and christian-western catalogues; the Islamic festivals from the global Islamic catalogue (tabular
   Hijri, so they may differ by a day or two from the moon-sighting gazette); Vesak (Waisak) from the global Buddhist

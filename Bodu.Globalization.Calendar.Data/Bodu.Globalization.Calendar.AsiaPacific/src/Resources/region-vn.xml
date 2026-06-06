@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Vietnam (VN) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "VN". The
+  Vietnam (VN) notable-date resource on the notable-date schema. National rules are scoped to territory "VN". The
   civil days (New Year, Labour Day) are imported from the global-core catalogue; the traditional festivals are
   Chinese-lunisolar dates declared inline. Vietnam keeps its own lunar calendar (UTC+7), which usually but not
   always coincides with the Chinese lunisolar calendar used here, so the lunar festivals may differ by a day in the

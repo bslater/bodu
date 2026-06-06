@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Generates the v2 notable-date catalogue documentation pages under docs/guides/calendar/catalogue/.
+    Generates the notable-date catalogue documentation pages under docs/guides/calendar/catalogue/.
 
 .DESCRIPTION
-    Parses every v2 notable-date XML resource (the common catalogues in Bodu.Globalization.Calendar plus the
+    Parses every notable-date XML resource (the common catalogues in Bodu.Globalization.Calendar plus the
     three Calendar.Data.* region packs and the europe-common hub), resolves the import graph the same way the
     runtime loader does (NotableDateResourceLoader.ResolveImports / SelectImportedConcepts / ApplyUse), and
     renders a small set of crisp DocFX markdown pages. The pages catalogue WHAT notable dates exist (by theme
@@ -15,7 +15,7 @@
     existing docfx workflow. It mirrors the tools/Generate-CrcDocs.ps1 pattern.
 
 .PARAMETER CommonResourcesPath
-    Path to the v2 common-catalogue Resources directory.
+    Path to the common-catalogue Resources directory.
 
 .PARAMETER AmericasPath
     Path to the Americas data-pack Resources directory.
@@ -36,7 +36,7 @@
     Path to NotableDates.xsd, used only when -ValidateXsd is supplied.
 
 .PARAMETER ValidateXsd
-    When set, validates every resource against the v2 schema and reports violations (off by default).
+    When set, validates every resource against the schema and reports violations (off by default).
 
 .PARAMETER AwarenessSampleCap
     Maximum number of sample observances listed per awareness catalogue before collapsing to "+N more".
@@ -116,7 +116,7 @@ $HijriMonths = @{ '1' = 'Muharram'; '2' = 'Safar'; '3' = 'Rabi I'; '4' = 'Rabi I
 $AnchorShort = @{ 'easter-sunday' = 'Easter'; 'orthodox-easter-sunday' = 'Orthodox Easter'; 'lunar-new-year' = 'Lunar New Year'; 'ramadan' = 'Ramadan' }
 
 # ---------------------------------------------------------------------------------------------------------------
-# Section A — resource index (filename stem -> full path), across all four v2 resource directories.
+# Section A — resource index (filename stem -> full path), across all four resource directories.
 # ---------------------------------------------------------------------------------------------------------------
 
 $script:Warnings = [System.Collections.Generic.List[string]]::new()
@@ -130,7 +130,7 @@ $ResourceDirs = [ordered]@{
 }
 foreach ($kv in $ResourceDirs.GetEnumerator()) {
     if (-not (Test-Path -LiteralPath $kv.Value)) {
-        throw "Resource directory '$($kv.Key)' not found at '$($kv.Value)'. Point the script at the v2 (Calendar) resources."
+        throw "Resource directory '$($kv.Key)' not found at '$($kv.Value)'. Point the script at the Calendar resources."
     }
 }
 
@@ -413,7 +413,7 @@ function New-Header([string]$title) {
 function New-Footer {
     $l = [System.Collections.Generic.List[string]]::new()
     [void]$l.Add('---'); [void]$l.Add('')
-    [void]$l.Add('*Generated from the v2 notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. ' +
+    [void]$l.Add('*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. ' +
         "Regenerated (UTC): $RegeneratedUtc.* " +
         'For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), ' +
         '[Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); ' +
@@ -499,7 +499,7 @@ function Render-ThemePage($page, $observedByMap) {
     $l = New-Header $page.Title
     [void]$l.Add("# $($page.Title)")
     [void]$l.Add('')
-    [void]$l.Add('Concepts defined by the shared v2 catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status — see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.')
+    [void]$l.Add('Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status — see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.')
     [void]$l.Add('')
     foreach ($stem in $page.Catalogues) {
         if (-not $script:Index.ContainsKey($stem)) { Add-Warn "Theme '$($page.Title)' lists missing catalogue '$stem'."; continue }
@@ -518,7 +518,7 @@ function Render-RegionPage($page, $models) {
     $l = New-Header $page.Title
     [void]$l.Add("# $($page.Title)")
     [void]$l.Add('')
-    [void]$l.Add("Notable dates observed by each country in the **$($page.Bundle)** v2 data pack, grouped by category. **Territory scope** shows national vs subdivision scoping; **Source** is the direct origin (``inline`` or the imported catalogue/hub). See the [comparison matrix](comparison-matrix.md) for a cross-region overview.")
+    [void]$l.Add("Notable dates observed by each country in the **$($page.Bundle)** data pack, grouped by category. **Territory scope** shows national vs subdivision scoping; **Source** is the direct origin (``inline`` or the imported catalogue/hub). See the [comparison matrix](comparison-matrix.md) for a cross-region overview.")
     [void]$l.Add('')
     foreach ($m in $models) {
         [void]$l.Add("## $($m.Country)")
@@ -619,7 +619,7 @@ function Render-MatrixPage($tally, [int]$topN) {
     $l = New-Header 'Cross-region comparison matrix'
     [void]$l.Add('# Cross-region comparison matrix')
     [void]$l.Add('')
-    [void]$l.Add("The most widely-shared notable dates across the v2 region packs, by bundle. Cells: **N** non-working public holiday · **O** observed (working) · **S** subdivision-only · **—** not in the pack. The top $topN concepts by country count are shown; per-country detail is on the [region pages](index.md#by-region), concept definitions on the [theme pages](index.md#by-theme).")
+    [void]$l.Add("The most widely-shared notable dates across the region packs, by bundle. Cells: **N** non-working public holiday · **O** observed (working) · **S** subdivision-only · **—** not in the pack. The top $topN concepts by country count are shown; per-country detail is on the [region pages](index.md#by-region), concept definitions on the [theme pages](index.md#by-theme).")
     [void]$l.Add('')
     $top = @($tally.GetEnumerator() | Sort-Object @{ E = { -$_.Value.Count } }, @{ E = { $_.Value.Display } } | Select-Object -First $topN)
     foreach ($rp in $RegionPages) {
@@ -646,7 +646,7 @@ function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount,
     $l = New-Header 'Notable-date catalogue'
     [void]$l.Add('# Notable-date catalogue')
     [void]$l.Add('')
-    [void]$l.Add('What notable dates the **v2** calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).')
+    [void]$l.Add('What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).')
     [void]$l.Add('')
     [void]$l.Add('Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. European packs import through the `europe-common` hub, which itself re-exports from the catalogues. The pages below present the same data along two axes.')
     [void]$l.Add('')

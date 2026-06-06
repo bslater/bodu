@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Eastern Orthodox Christian notable-date catalogue, migrated from the v1 christian-orthodox.xml to the v2 cookbook
-  schema. Orthodox Easter Sunday is the computed anchor (algorithm key "orthodox-easter", the Julian paschalion returned
+  Eastern Orthodox Christian notable-date catalogue on the notable-date schema. Orthodox Easter Sunday is the computed anchor (algorithm key "orthodox-easter", the Julian paschalion returned
   on the civil Gregorian calendar, valid from the 1583 Gregorian reform); the movable feasts are offsets from it, and the
   fixed-date observances of the Orthodox Christmas and Theophany cycle are plain Gregorian dates. This catalogue is
   self-contained: the offset rules reference the local orthodox-easter-sunday anchor with rule id "default". A territory

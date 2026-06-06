@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Global family observances notable-date catalogue (Western / Gregorian calendar), migrated from the v1
-  global-family.xml to the v2 cookbook schema. These are the most widely observed forms of Mother's Day (second Sunday
+  Global family observances notable-date catalogue (Western / Gregorian calendar) on the notable-date schema. These are the most widely observed forms of Mother's Day (second Sunday
   in May) and Father's Day (third Sunday in June); regional variants are handled in the corresponding territory packs.
   A territory pack imports only the concepts it observes and supplies its own territory scope, category, non-working
   flag, and weekend adjustment through the import <Use> directive; the shared concepts therefore carry the bare

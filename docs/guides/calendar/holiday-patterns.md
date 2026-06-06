@@ -4,7 +4,7 @@ title: Holiday patterns and examples
 
 # Holiday patterns and examples
 
-This page collects end-to-end worked patterns for common real-world holiday shapes. Each section pairs a short rule-document snippet on the cookbook schema with a one-to-three-line snippet that loads it and resolves the result. Every sample compiles against the v2 API: territories are plain strings, by-year resolution is the `service.Resolve(year, territory)` extension, and `NotableDate.DisplayName` carries the name.
+This page collects end-to-end worked patterns for common real-world holiday shapes. Each section pairs a short rule-document snippet on the notable-date schema with a one-to-three-line snippet that loads it and resolves the result. Every sample compiles against the API: territories are plain strings, by-year resolution is the `service.Resolve(year, territory)` extension, and `NotableDate.DisplayName` carries the name.
 
 For the element-by-element field reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md). For the adjustment trigger / action / emission catalogues, see [Observance adjustment rules](adjustment-rules.md). For how documents are assembled and loaded, see [Authoring notable date rules](rule-authoring.md).
 

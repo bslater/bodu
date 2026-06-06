@@ -4,7 +4,7 @@
   United Kingdom (GB) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-gb.xml to the v2 cookbook schema. National rules are scoped to territory "GB";
+  Authored on the notable-date schema. National rules are scoped to territory "GB";
   subdivision rules use their ISO 3166-2 codes (GB-ENG England, GB-WLS Wales, GB-SCT Scotland, GB-NIR Northern
   Ireland).
 

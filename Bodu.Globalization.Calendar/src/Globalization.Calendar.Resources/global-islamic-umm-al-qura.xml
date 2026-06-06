@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Islamic (Hijri) notable-date catalogue, Umm al-Qura variant, migrated from the v1 global-islamic-umm-al-qura.xml to the
-  v2 cookbook schema and extended with the same common Hajj/Ramadan observances as global-islamic. It declares the same
+  Islamic (Hijri) notable-date catalogue, Umm al-Qura variant on the notable-date schema and extended with the same common Hajj/Ramadan observances as global-islamic. It declares the same
   observances as the tabular Hijri catalogue but resolves them against the Saudi Arabian Umm al-Qura calendar
   (System.Globalization.UmAlQuraCalendar), the calendar of record for the Arabian Peninsula. Each observance is a fixed
   date swept onto the requested Gregorian year. Consumers wanting tabular/portable Hijri dates use global-islamic;

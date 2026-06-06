@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Hindu notable-date catalogue, migrated from the v1 global-hindu.xml to the v2 cookbook schema. The solar harvest
+  Hindu notable-date catalogue on the notable-date schema. The solar harvest
   festivals Makar Sankranti and Pongal are fixed on 14 January by modern civil-calendar convention; the lunisolar
   festivals are computed by the engine's solar-anchored Hindu lunar algorithm (accurate to within a day or two, with
   intercalary years handled), reusing the algorithm keys proven by the shipping India region pack. Saraswati Puja is

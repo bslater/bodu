@@ -4,7 +4,7 @@ title: Americas region packs
 
 # Americas region packs
 
-Notable dates observed by each country in the **Americas** v2 data pack, grouped by category. **Territory scope** shows national vs subdivision scoping; **Source** is the direct origin (`inline` or the imported catalogue/hub). See the [comparison matrix](comparison-matrix.md) for a cross-region overview.
+Notable dates observed by each country in the **Americas** data pack, grouped by category. **Territory scope** shows national vs subdivision scoping; **Source** is the direct origin (`inline` or the imported catalogue/hub). See the [comparison matrix](comparison-matrix.md) for a cross-region overview.
 
 ## CA
 
@@ -125,5 +125,5 @@ Notable dates observed by each country in the **Americas** v2 data pack, grouped
 
 ---
 
-*Generated from the v2 notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 

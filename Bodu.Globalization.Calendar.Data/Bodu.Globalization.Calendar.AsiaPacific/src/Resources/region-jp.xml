@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Japanese notable-date resource, migrated from the v1 region-jp.xml to the v2 cookbook schema. The shared New Year's Day
+  Japanese notable-date resource on the notable-date schema. The shared New Year's Day
   is imported from the common global-core catalogue; Bodhi Day and the remaining national holidays are defined inline.
   The Vernal and Autumnal Equinox Days are computed astronomically in Japan Standard Time. The multi-day "Golden Week"
   and "Obon" period markers are modelled with durationDays spans; their constituent public holidays remain individually
@@ -26,7 +26,7 @@
       Several of these national holidays carry a fromYear bound marking the year the current rule took effect (for
       example the Happy Monday Act moves, the 2007 renaming of the late-April/early-May holidays, or the 2020
       transfer of the Emperor's Birthday). A query before that year resolves no occurrence under the current rule,
-      matching the v1 data.
+      matching the source data.
     -->
 
     <!--

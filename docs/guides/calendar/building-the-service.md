@@ -19,7 +19,7 @@ NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotable
 NotableDateService  service  = new NotableDateService(resource);
 ```
 
-Behaviour that used to live in a service-options object is carried by the resource itself — its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). The constructor overloads add optional collaborators, in this fixed order:
+There is no options object: resolution behaviour is carried by the resource itself — its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). The constructor overloads add optional collaborators, in this fixed order:
 
 | Parameter | Type | Purpose |
 |---|---|---|

@@ -4,7 +4,7 @@
   Spain (ES) — notable-date resource pack
   ================================================================================================================
 
-  Migrated from the v1 region-es.xml to the v2 cookbook schema. All rules are scoped to territory "ES"; the
+  Authored on the notable-date schema. All rules are scoped to territory "ES"; the
   holidays that vary by autonomous community (comunidad autónoma) are not modelled — only the nationwide set.
 
   How this resource is built:

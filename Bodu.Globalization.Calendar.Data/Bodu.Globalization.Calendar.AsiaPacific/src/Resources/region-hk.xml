@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Hong Kong (HK) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "HK". The
+  Hong Kong (HK) notable-date resource on the notable-date schema. National rules are scoped to territory "HK". The
   civil and Western Christian days (New Year, Good Friday and the day after, Easter Monday, Labour Day, Christmas,
   the first weekday after Christmas) are imported from the global-core and christian-western catalogues; the Chinese
   traditional festivals are lunisolar dates declared inline, and Ching Ming (Tomb-Sweeping) uses the astronomical

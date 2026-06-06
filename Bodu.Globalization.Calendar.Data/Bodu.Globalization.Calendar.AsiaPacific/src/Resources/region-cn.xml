@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Chinese notable-date resource, migrated from the v1 region-cn.xml to the v2 cookbook schema. The shared New Year's Day
+  Chinese notable-date resource on the notable-date schema. The shared New Year's Day
   is imported from the common global-core catalogue; the lunar festivals are expressed as fixed dates in the Chinese
   lunisolar calendar (conventional month indices skip the intercalary leap month); Qingming uses the astronomical
   solar-term algorithm; the Winter Solstice festival is approximated by its fixed Gregorian date. Lunar New Year and

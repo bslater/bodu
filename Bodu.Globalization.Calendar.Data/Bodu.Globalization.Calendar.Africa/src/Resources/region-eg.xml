@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Egypt (EG) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "EG". The civil
+  Egypt (EG) notable-date resource on the notable-date schema. National rules are scoped to territory "EG". The civil
   days, the Orthodox Easter anchor, and the Islamic festivals (tabular Hijri, so they may differ by a day or two from
   the gazette) are imported from the africa-common hub; the Coptic Christmas, the Easter-anchored Sham Ennessim, and
   the civil/national commemorations are declared inline. Coptic Christmas is the modern-era Gregorian projection of

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Saudi Arabia (SA) notable-date resource on the v2 cookbook schema. National rules are scoped to territory "SA".
+  Saudi Arabia (SA) notable-date resource on the notable-date schema. National rules are scoped to territory "SA".
   Saudi Arabia observes no Gregorian-Christian or fixed civil New Year holidays; its two religious holidays are the
   Eids, imported here from the Umm al-Qura Islamic catalogue (the kingdom's official calendar) rather than the
   tabular Hijri hub, each carrying a multi-day span. The two national days are Gregorian fixed dates. Saudi Arabia

@@ -8,7 +8,7 @@ uid: Bodu.Globalization.Calendar
 
 **Bodu.Globalization.Calendar** resolves culturally and algorithmically significant dates — public holidays, observances, religious festivals, and recurring notable dates — from an authored *rule document* into concrete occurrences for a requested year, date, or range and territory.
 
-A rule describes the *what* and *how* of a notable date — a fixed calendar date, an *n*th-weekday-of-month recurrence, a weekday near a fixed date, a fixed offset from another rule, or a named algorithm (Gregorian / Orthodox Easter, solar equinoxes, lunar phases, lunisolar festivals). Rules are authored on the **v2 cookbook schema** (`urn:bodu:globalization:calendar`) as XML or JSON, loaded eagerly into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource>, and resolved through <xref:Bodu.Globalization.Calendar.NotableDateService>.
+A rule describes the *what* and *how* of a notable date — a fixed calendar date, an *n*th-weekday-of-month recurrence, a weekday near a fixed date, a fixed offset from another rule, or a named algorithm (Gregorian / Orthodox Easter, solar equinoxes, lunar phases, lunisolar festivals). Rules are authored on the **notable-date schema** (`urn:bodu:globalization:calendar`) as XML or JSON, loaded eagerly into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource>, and resolved through <xref:Bodu.Globalization.Calendar.NotableDateService>.
 
 Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you need Easter Sunday in year *N*, when a fixed holiday that lands on a weekend rolls to a substitute weekday, or when you need a culture-aware set of notable dates for a territory and year — optionally extended by external plugin assemblies under a deny-by-default trust policy.
 
@@ -20,7 +20,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 ## Companion packages
 
-- [`Bodu.Globalization.Calendar.Builder`](Bodu.Globalization.Calendar.Builder.md) — a fluent C# API for authoring notable-date documents on the v2 cookbook schema, with XML / JSON serialization and load/save.
+- [`Bodu.Globalization.Calendar.Builder`](Bodu.Globalization.Calendar.Builder.md) — a fluent C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save.
 - [`Bodu.Globalization.Calendar.DependencyInjection`](Bodu.Globalization.Calendar.DependencyInjection.md) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` register `INotableDateService` as a singleton over a loaded `NotableDateResource`.
 - [`Bodu.Globalization.Calendar.Plugins`](Bodu.Globalization.Calendar.Plugins.md) — trust-gated loading of external assemblies that contribute custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations.
 - [`Bodu.Globalization.Calendar.Data.*`](~/guides/calendar/data-packs.md) — curated public-holiday resources for the Americas, Asia-Pacific, and Europe territory bundles.
