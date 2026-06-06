@@ -34,17 +34,20 @@ public sealed class NotableDateOnlyExtensionsTests
         new NotableDateService(NotableDateResourceLoader.Load(Xml));
 
     /// <summary>
-    /// Verifies that a weekend day, a holiday, and an ordinary weekday are classified correctly. In 2025, 1 January is a
-    /// Wednesday (a non-working holiday), 4 January is a Saturday, and 2 January is an ordinary working day.
+    /// Verifies that a non-working holiday, a weekend day, and an ordinary weekday are each classified correctly. In
+    /// 2025, 1 January is a Wednesday holiday, 4 January is a Saturday, and 2 January is an ordinary working day.
     /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expected">The expected working-day classification.</param>
     [TestMethod]
-    public void IsWorkingDay_ClassifiesWeekendHolidayAndWeekday()
+    [DataRow(2025, 1, 1, false)]  // Wednesday holiday
+    [DataRow(2025, 1, 4, false)]  // Saturday
+    [DataRow(2025, 1, 2, true)]   // ordinary weekday
+    public void IsWorkingDay_WhenDayIsHolidayWeekendOrWeekday_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
-        INotableDateService service = Service;
-
-        Assert.IsFalse(new DateOnly(2025, 1, 1).IsWorkingDay(service, "XX"), "1 January holiday");
-        Assert.IsFalse(new DateOnly(2025, 1, 4).IsWorkingDay(service, "XX"), "Saturday");
-        Assert.IsTrue(new DateOnly(2025, 1, 2).IsWorkingDay(service, "XX"), "ordinary weekday");
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWorkingDay(Service, "XX"));
     }
 
     /// <summary>
@@ -68,27 +71,43 @@ public sealed class NotableDateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that adding working days skips the holiday and weekends.
+    /// Verifies that adding working days forward skips the holiday and weekends. From Tuesday 31 December 2024, three
+    /// working days forward are 2 January (Thursday), 3 January (Friday) and 6 January (Monday).
     /// </summary>
     [TestMethod]
-    public void AddWorkingDays_SkipsNonWorkingDays()
+    public void AddWorkingDays_WhenAddingForward_ShouldSkipNonWorkingDays()
     {
-        // From Tuesday 31 December 2024, three working days: 2 Jan (Thu), 3 Jan (Fri), 6 Jan (Mon).
         Assert.AreEqual(new DateOnly(2025, 1, 6), new DateOnly(2024, 12, 31).AddWorkingDays(3, Service, "XX"));
+    }
+
+    /// <summary>
+    /// Verifies that subtracting working days skips the holiday and weekends. From Monday 6 January 2025, three working
+    /// days back are 3 January (Friday), 2 January (Thursday) and 31 December 2024 (Tuesday).
+    /// </summary>
+    [TestMethod]
+    public void AddWorkingDays_WhenSubtractingBackward_ShouldSkipNonWorkingDays()
+    {
         Assert.AreEqual(new DateOnly(2024, 12, 31), new DateOnly(2025, 1, 6).AddWorkingDays(-3, Service, "XX"));
     }
 
     /// <summary>
-    /// Verifies that the snap helpers move a holiday to the surrounding working days.
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToWorkingDay" /> moves the 1 January 2025 holiday forward
+    /// to the following working day, Thursday 2 January.
     /// </summary>
     [TestMethod]
-    public void Snap_MovesHolidayToWorkingDay()
+    public void SnapToWorkingDay_WhenHoliday_ShouldReturnFollowingWorkingDay()
     {
-        DateOnly holiday = new(2025, 1, 1);
-        INotableDateService service = Service;
+        Assert.AreEqual(new DateOnly(2025, 1, 2), new DateOnly(2025, 1, 1).SnapToWorkingDay(Service, "XX"));
+    }
 
-        Assert.AreEqual(new DateOnly(2025, 1, 2), holiday.SnapToWorkingDay(service, "XX"));
-        Assert.AreEqual(new DateOnly(2024, 12, 31), holiday.SnapToWorkingDayBackward(service, "XX"));
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOnlyExtensions.SnapToWorkingDayBackward" /> moves the 1 January 2025 holiday
+    /// backward to the prior working day, Tuesday 31 December 2024.
+    /// </summary>
+    [TestMethod]
+    public void SnapToWorkingDayBackward_WhenHoliday_ShouldReturnPriorWorkingDay()
+    {
+        Assert.AreEqual(new DateOnly(2024, 12, 31), new DateOnly(2025, 1, 1).SnapToWorkingDayBackward(Service, "XX"));
     }
 
     /// <summary>
@@ -105,16 +124,28 @@ public sealed class NotableDateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the date-level notable-date helpers report the holiday.
+    /// Verifies that <see cref="NotableDateOnlyExtensions.IsNotableDate" /> reports the holiday on its day and not on an
+    /// ordinary day. In 2025, 1 January is the holiday and 2 January is an ordinary working day.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expected">The expected notable-date classification.</param>
+    [TestMethod]
+    [DataRow(2025, 1, 1, true)]    // holiday
+    [DataRow(2025, 1, 2, false)]   // ordinary day
+    public void IsNotableDate_WhenDayIsHolidayOrOrdinary_ShouldReturnExpected(int year, int month, int day, bool expected)
+    {
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsNotableDate(Service, "XX"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateOnlyExtensions.GetNotableDates" /> returns the holiday occurrence on its day.
     /// </summary>
     [TestMethod]
-    public void GetNotableDates_ReturnsHolidayOnTheDay()
+    public void GetNotableDates_WhenHolidayOnTheDay_ShouldReturnHoliday()
     {
-        INotableDateService service = Service;
-
-        Assert.IsTrue(new DateOnly(2025, 1, 1).IsNotableDate(service, "XX"));
-        Assert.AreEqual("new-years-day", new DateOnly(2025, 1, 1).GetNotableDates(service, "XX").Single().NotableDateId);
-        Assert.IsFalse(new DateOnly(2025, 1, 2).IsNotableDate(service, "XX"));
+        Assert.AreEqual("new-years-day", new DateOnly(2025, 1, 1).GetNotableDates(Service, "XX").Single().NotableDateId);
     }
 
     /// <summary>
