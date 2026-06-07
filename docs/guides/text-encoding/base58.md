@@ -144,14 +144,40 @@ ReadOnlySpan<byte> hash160 = payload.AsSpan(1, 20);
 ReadOnlySpan<byte> checksum = payload.AsSpan(21, 4);
 ```
 
-(Verifying the checksum requires double-SHA256 on the version byte plus HASH160 — see the
-`Bodu.Security.Cryptography` package for the hashing primitives.)
+(The example above decodes the raw payload and leaves checksum verification to the caller. For checksum-protected
+payloads, prefer <xref:Bodu.Text.Encoding.Base58Check> below, which appends and verifies the 4-byte double-hash
+checksum for you.)
 
 ### Round-trip short ID
 
 ```csharp
 byte[] randomBytes = RandomNumberGenerator.GetBytes(8);
 string shortId = Base58.Encode(randomBytes);  // ≈ 11 characters, no ambiguity
+```
+
+## Base58Check — checksum-protected payloads
+
+<xref:Bodu.Text.Encoding.Base58Check> wraps Base58 with the Bitcoin-style 4-byte checksum: `Encode` appends a
+truncated double-hash of the payload, and `Decode` verifies it (throwing on a corrupted string) before returning the
+original bytes. This is the right entry point for address- and key-style payloads where a single mistyped character
+must be rejected rather than silently decoded.
+
+```csharp
+using Bodu.Text.Encoding;
+
+string encoded = Base58Check.Encode(payload);                 // payload + checksum, Base58
+byte[] decoded = Base58Check.Decode(encoded);                 // verifies, then strips the checksum
+
+bool valid = Base58Check.IsValid(encoded);                    // non-throwing validity probe
+```
+
+Like the core type, it offers a span path and explicit sizing, and accepts a `Base58Variant`
+(default `BitcoinFlickr`):
+
+```csharp
+Span<byte> destination = stackalloc byte[Base58Check.GetMaxDecodedLength(encoded.Length)];
+if (Base58Check.TryDecode(encoded, destination, out int written))
+    Use(destination[..written]);
 ```
 
 ## Where to go next

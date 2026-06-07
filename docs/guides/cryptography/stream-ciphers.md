@@ -115,6 +115,55 @@ Rabbit and HC-128 have no seekable counter — their keystream comes from an evo
 
 HC-128 has a comparatively expensive setup: it warms up two 512-word tables before releasing any keystream. Rabbit's key/IV setup is lighter but still non-trivial. As with Blowfish's key schedule, **do not** build a fresh instance per message under the same key — cache the instance and call `CreateEncryptor()` / `CreateDecryptor()` per message instead.
 
+## Authenticated stream ciphers — Poly1305 AEAD
+
+A raw stream cipher gives you confidentiality but **not** integrity. For authenticated encryption, the library pairs the extended-nonce stream ciphers with Poly1305 in three ready-made constructions. All three derive from the abstract <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> base, take a 256-bit (32-byte) key and a 192-bit (24-byte) extended nonce, produce a 128-bit (16-byte) tag, and emit the wire format `ciphertext ‖ tag`.
+
+| Construction | Stream cipher | Associated data? | Wire / framing |
+|---|---|---|---|
+| <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> | XChaCha20 | Yes | `ciphertext ‖ tag` (RFC 8439-style framing) |
+| <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> | XSalsa20 | Yes | `ciphertext ‖ tag` (RFC 8439-style framing) |
+| <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> | XSalsa20 | **No** (NaCl `secretbox`) | `ciphertext ‖ tag`; libsodium layout via converters |
+
+Each instance is **single-use**: create a fresh instance for every message, because reusing a nonce under the same key destroys both confidentiality and authenticity.
+
+### XChaCha20-Poly1305 with associated data
+
+The span-based `Encrypt` / `Decrypt` on the base return the number of bytes written; the convenience `byte[]` overloads (from `Bodu.Security.Cryptography.Extensions`) allocate the result for you:
+
+```csharp
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var enc = new XChaCha20Poly1305(key, nonce);
+byte[] sealedMsg = enc.Encrypt(plaintext, associatedData: header);   // ciphertext || tag
+
+using var dec = new XChaCha20Poly1305(key, nonce);
+byte[] plain = dec.Decrypt(sealedMsg, associatedData: header);       // throws on tamper
+```
+
+Decryption verifies the tag (and the associated data) before returning; a modified ciphertext, tag, or header fails authentication and throws rather than returning altered plaintext.
+
+### NaCl `secretbox` — XSalsa20-Poly1305
+
+<xref:Bodu.Security.Cryptography.XSalsa20Poly1305> is the classic NaCl/libsodium `secretbox` construction. It does **not** accept associated data — passing any throws <xref:System.ArgumentException>. When you need associated data with XSalsa20, use `XSalsa20Poly1305Aead` instead:
+
+```csharp
+using var box = new XSalsa20Poly1305(key, nonce);
+byte[] sealedMsg = box.Encrypt(plaintext);   // ciphertext || tag, no associated data
+```
+
+This library emits `ciphertext ‖ tag`, whereas libsodium's combined `secretbox` places the tag first (`tag ‖ ciphertext`). Convert between the two layouts with the static helpers when interoperating:
+
+```csharp
+XSalsa20Poly1305.ToLibsodiumCombined(ciphertextThenTag, tagThenCiphertext);
+XSalsa20Poly1305.FromLibsodiumCombined(tagThenCiphertext, ciphertextThenTag);
+```
+
+### In-place operation
+
+The Poly1305 AEAD transforms support exact in-place use — the output span may begin at the same location as the input. Any other partial overlap is rejected with <xref:System.ArgumentException>.
+
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — the Key/IV lifecycle shared with the block ciphers.

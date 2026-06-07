@@ -270,6 +270,8 @@
       items:
         - name: The IBinaryEncoding interface
           href: text-encoding/binary-encodings-interface.md
+        - name: Encoding helpers and BOM detection
+          href: text-encoding/encoding-helpers.md
 - name: Bodu.Text.Formats
   items:
     - name: Overview

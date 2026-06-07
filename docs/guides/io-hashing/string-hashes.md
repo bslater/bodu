@@ -19,8 +19,9 @@ A collection of the classic "one-liner" hash functions that appear in textbooks,
 | <xref:Bodu.IO.Hashing.Elf64> | 64 bits | `Seed` (default `0`) | The ELF symbol-table hash, widened to 64 bits. |
 | <xref:Bodu.IO.Hashing.ApHash> | 32 bits | None (seed `0xAAAAAAAA`) | Arash Partow's hash. |
 | <xref:Bodu.IO.Hashing.Pjw32> | 32 bits | None | Peter Weinberger's PJW hash (AT&T compiler). |
+| <xref:Bodu.IO.Hashing.SuperFastHash> | 32 bits | None | Paul Hsieh's SuperFastHash; tuned for short keys. |
 
-All seven derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>.
+All eight derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>.
 
 ## Pattern 1 — a default-configured hash
 
@@ -109,6 +110,7 @@ hash.Reset();                              // back to the configured seed / init
 
 - **Hashing identifiers inside a compiler or symbol table?** `Pjw32` or `Elf64` — these are the functions you'll meet in the original source.
 - **Quick hash-table function in throwaway code?** `Bernstein` with `UseModifiedAlgorithm = true` is simple, well-known, and distributes reasonably.
+- **Hashing many short keys?** `SuperFastHash` is tuned for short inputs — but it buffers its input, so avoid it for very large streams (use a block-based fingerprint instead).
 - **Hashing user-controlled input?** None of these — reach for <xref:Bodu.Security.Cryptography.SipHash64>.
 - **Reproducing a known published digest from another tool?** Match on algorithm, width, seed, and (for Bernstein) the add-vs-XOR variant.
 
