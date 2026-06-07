@@ -15,6 +15,7 @@ uid: Bodu.Security.Cryptography.Extensions
 - <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions> — convenience methods on <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> — Threefish — including tweak-passing one-shot APIs.
 - <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> — convenience methods on `System.Security.Cryptography.HashAlgorithm` for one-shot hashing over spans and string / encoding pairs.
 - <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> — convenience methods on `System.Security.Cryptography.ICryptoTransform` for one-shot transform-block / transform-final-block use without managing intermediate buffers.
+- <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions> — `byte[]`-returning `Encrypt` / `Decrypt` overloads over the stream-cipher AEAD transforms (<xref:Bodu.Security.Cryptography.Poly1305AeadTransform> and friends), so callers can seal / open a message without sizing the output span by hand.
 
 ## Example
 

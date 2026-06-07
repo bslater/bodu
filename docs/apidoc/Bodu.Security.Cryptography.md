@@ -42,11 +42,21 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.XSalsa20> — 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).
 - <xref:Bodu.Security.Cryptography.Rabbit> — 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.
 - <xref:Bodu.Security.Cryptography.Hc128> — 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.
+- <xref:Bodu.Security.Cryptography.IStreamCipher>, <xref:Bodu.Security.Cryptography.TransformMode> — the keystream-cipher contract and the encrypt/decrypt direction selector shared by the stream ciphers above.
+
+**Authenticated stream ciphers** (Poly1305 AEAD over the extended-nonce stream ciphers)
+
+- <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> — abstract base for the stream-cipher AEAD constructions; provides span and `byte[]` `Encrypt` / `Decrypt` with associated data and in-place support.
+- <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> — XChaCha20-Poly1305 AEAD with associated data (wire `ciphertext ‖ tag`).
+- <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> — XSalsa20-Poly1305 AEAD (RFC 8439 framing) with associated data.
+- <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> — the NaCl / libsodium `secretbox` construction (no associated data), with `ToLibsodiumCombined` / `FromLibsodiumCombined` layout converters.
+- <xref:Bodu.Security.Cryptography.IAeadTransform>, <xref:Bodu.Security.Cryptography.IStreamAeadTransform> — the AEAD and stream-AEAD transform contracts these constructions implement.
 
 **Cipher composition** — block-cipher contracts, mode transforms, padding strategies
 
 - <xref:Bodu.Security.Cryptography.IBlockCipher> — block-cipher contract; implemented by every cipher and by `AesBlockCipher`.
 - <xref:Bodu.Security.Cryptography.AesBlockCipher> — an `IBlockCipher` adapter over the BCL `Aes` engine — the bridge between AES and the AEAD mode transforms.
+- <xref:Bodu.Security.Cryptography.SerpentBlockCipher>, <xref:Bodu.Security.Cryptography.ThreefishBlockCipher> — the raw `IBlockCipher` engines (and the <xref:Bodu.Security.Cryptography.SerpentBlockCipherBase> base) that back the Serpent and Threefish `SymmetricAlgorithm` wrappers; use them directly to drive a mode transform without the full algorithm lifecycle.
 - <xref:Bodu.Security.Cryptography.BlockCipherTransform>, <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> — compose any `IBlockCipher` with a mode (<xref:Bodu.Security.Cryptography.CipherModeKind> selects from `ECB`, `CBC`, `CFB`, `OFB`, `CTR`, `CTS`, `XTS`) and a padding strategy.
 - <xref:Bodu.Security.Cryptography.CipherModeKind>, <xref:Bodu.Security.Cryptography.PaddingModeKind> — the library's extended block-mode and padding enums (the latter mirrors `System.Security.Cryptography.PaddingMode` and adds `ISO7816_4`).
 - <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>, <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> — per-block / per-stripe transform contracts; the latter adds AEAD nonce / tag / associated-data semantics.
@@ -73,7 +83,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 
 **ASCON family — NIST SP 800-232**
 
-- <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> — 256-bit sponge digests (12- and 8-round variants).
+- <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> — 256-bit sponge digests (12- and 8-round variants), over the shared <xref:Bodu.Security.Cryptography.AsconHash`1> base.
 - <xref:Bodu.Security.Cryptography.AsconXof128>, <xref:Bodu.Security.Cryptography.AsconCxof128> — variable-length / customizable XOF.
 - <xref:Bodu.Security.Cryptography.AsconAead128> — sponge-based authenticated encryption (no separate block cipher required).
 
@@ -82,6 +92,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions>, <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> — ergonomic one-shot, async, and verify helpers.
 - Secure-zeroization, padding, and cryptographically secure random key/IV/tweak generation helpers ship as internal infrastructure; consumers reach them indirectly through the extension surfaces above (for example `SymmetricAlgorithmExtensions.GenerateNonce`, `HashAlgorithmExtensions.VerifyHash`).
 - <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>, <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> — helper utilities for `HashAlgorithm` consumers and factory abstractions used by the keyed / Merkle constructions.
+- <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm`1> — abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).
 
 ## Example
 

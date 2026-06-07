@@ -29,7 +29,19 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 - <xref:Bodu.Financial.ICurrency> — static-abstract interface with required `IsoCode` and `MinorUnits` plus optional `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode`.
 - <xref:Bodu.Financial.CurrencyInfo> — runtime metadata record carrying the same fields.
 - <xref:Bodu.Financial.CurrencyRegistry> — static, thread-safe registry over the shipped catalogue plus caller-registered custom currencies.
+- <xref:Bodu.Financial.CurrencyLookupService> — the `ICurrencyLookup` implementation that resolves ISO codes to metadata (the service registered by `AddBoduFinancial`).
+- <xref:Bodu.Financial.CurrencyDisplay> — currency symbol / display-name formatting for presenting an amount's currency.
+- <xref:Bodu.Financial.UnknownCurrencyPolicy>, <xref:Bodu.Financial.CurrencyRegistrationConflictPolicy> — policy enums controlling how unknown ISO codes and duplicate registrations are handled.
 - The shipped tag types live in <xref:Bodu.Financial.Currencies> (one sealed class per ISO code).
+
+**Rounding, allocation, formatting, and parsing**
+
+- <xref:Bodu.Financial.IRoundingStrategy>, <xref:Bodu.Financial.MidpointRoundingStrategy> — the rounding-strategy contract and the midpoint (banker's / away-from-zero) implementation applied when an amount is reduced to a currency's minor units.
+- <xref:Bodu.Financial.ScalePolicy>, <xref:Bodu.Financial.CashRoundingPolicy>, <xref:Bodu.Financial.ConversionRoundingPolicy>, <xref:Bodu.Financial.AllocationPolicy> — policy enums that select scale, cash-rounding increment, conversion-rounding, and allocation-remainder behaviour.
+- <xref:Bodu.Financial.MoneyFormatter>, <xref:Bodu.Financial.MoneyFormatterBuilder>, <xref:Bodu.Financial.MoneyFormatOptions>, <xref:Bodu.Financial.MoneyCompactFormattingExtensions> — configurable formatting: a formatter, its fluent builder, the options record, and compact (`1.2K`-style) formatting extensions.
+- <xref:Bodu.Financial.MoneyParseOptions>, <xref:Bodu.Financial.MoneyParseMode> — parse configuration and the strictness selector for reading money back from text.
+- <xref:Bodu.Financial.MoneyConversionResult>, <xref:Bodu.Financial.MoneyBagConversionAudit`1>, <xref:Bodu.Financial.MoneyBagConversionRoundingPolicy> — the runtime-tagged conversion result and the portfolio-conversion audit record plus its rounding policy.
+- <xref:Bodu.Financial.MoneyOfTCurrencyExchangeRateExtensions> — `Convert`/lookup extension methods on `Money<TCurrency>` over the exchange-rate providers.
 
 **Exchange rate stack**
 
