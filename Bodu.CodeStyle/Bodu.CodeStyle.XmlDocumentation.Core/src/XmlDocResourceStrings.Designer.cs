@@ -79,6 +79,15 @@ namespace Bodu.CodeStyle.XmlDocumentation {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Content budget must be positive..
+        /// </summary>
+        internal static string Arg_OutOfRange_ContentBudgetNotPositive {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ContentBudgetNotPositive", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Invalid JSON document for bodu.xmldocstyle.json..
         /// </summary>
         internal static string Json_Invalid_Document {

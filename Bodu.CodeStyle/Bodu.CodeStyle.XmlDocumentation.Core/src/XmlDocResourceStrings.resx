@@ -123,6 +123,9 @@
   <data name="Arg_Invalid_LineEndingEmpty" xml:space="preserve">
     <value>Line ending must not be empty.</value>
   </data>
+  <data name="Arg_OutOfRange_ContentBudgetNotPositive" xml:space="preserve">
+    <value>Content budget must be positive.</value>
+  </data>
   <data name="Json_Invalid_Document" xml:space="preserve">
     <value>Invalid JSON document for bodu.xmldocstyle.json.</value>
   </data>
