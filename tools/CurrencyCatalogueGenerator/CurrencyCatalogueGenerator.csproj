@@ -10,4 +10,16 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="CurrencyCatalogueGeneratorResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CurrencyCatalogueGeneratorResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="CurrencyCatalogueGeneratorResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CurrencyCatalogueGeneratorResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
