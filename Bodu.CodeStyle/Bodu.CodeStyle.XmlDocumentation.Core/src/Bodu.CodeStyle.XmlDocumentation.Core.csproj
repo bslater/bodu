@@ -16,6 +16,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="XmlDocResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>XmlDocResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="XmlDocResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>XmlDocResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.Core.Test" />
     <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.Analyzers" />
     <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.Analyzers.Test" />

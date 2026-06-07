@@ -24,7 +24,7 @@ public sealed class XmlDocFormatResult
     public XmlDocFormatResult(bool changed, string formattedText, ImmutableArray<XmlDocFormattingChange> changes)
     {
         if (formattedText is null) throw new ArgumentNullException(nameof(formattedText));
-        if (changes.IsDefault) throw new ArgumentException("Changes array must be initialised.", nameof(changes));
+        if (changes.IsDefault) throw new ArgumentException(XmlDocResourceStrings.Arg_Invalid_ChangesNotInitialised, nameof(changes));
 
         this.Changed = changed;
         this.FormattedText = formattedText;

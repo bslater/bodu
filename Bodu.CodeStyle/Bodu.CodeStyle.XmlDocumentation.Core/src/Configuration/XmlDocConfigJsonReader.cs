@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Text.Json;
 
 namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
@@ -56,7 +57,7 @@ public static class XmlDocConfigJsonReader
         }
         catch (JsonException ex)
         {
-            throw new XmlDocConfigException("Invalid JSON document for bodu.xmldocstyle.json.", ex);
+            throw new XmlDocConfigException(XmlDocResourceStrings.Json_Invalid_Document, ex);
         }
 
         using (document)
@@ -64,7 +65,7 @@ public static class XmlDocConfigJsonReader
             JsonElement root = document.RootElement;
             if (root.ValueKind != JsonValueKind.Object)
             {
-                throw new XmlDocConfigException("Top-level JSON value must be an object.");
+                throw new XmlDocConfigException(XmlDocResourceStrings.Json_Invalid_TopLevelNotObject);
             }
 
             foreach (JsonProperty property in root.EnumerateObject())
@@ -151,7 +152,7 @@ public static class XmlDocConfigJsonReader
     {
         if (property.Value.ValueKind != JsonValueKind.Number || !property.Value.TryGetInt32(out var value))
         {
-            throw new XmlDocConfigException($"Property '{property.Name}' must be an integer.");
+            throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_PropertyInteger, property.Name));
         }
 
         return value;
@@ -161,7 +162,7 @@ public static class XmlDocConfigJsonReader
     {
         if (property.Value.ValueKind != JsonValueKind.String)
         {
-            throw new XmlDocConfigException($"Property '{property.Name}' must be a string.");
+            throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_PropertyString, property.Name));
         }
 
         return property.Value.GetString() ?? string.Empty;
@@ -171,7 +172,7 @@ public static class XmlDocConfigJsonReader
     {
         if (property.Value.ValueKind != JsonValueKind.True && property.Value.ValueKind != JsonValueKind.False)
         {
-            throw new XmlDocConfigException($"Property '{property.Name}' must be a boolean.");
+            throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_PropertyBoolean, property.Name));
         }
 
         return property.Value.GetBoolean();
@@ -181,7 +182,7 @@ public static class XmlDocConfigJsonReader
     {
         if (property.Value.ValueKind != JsonValueKind.Array)
         {
-            throw new XmlDocConfigException($"Property '{property.Name}' must be an array of strings.");
+            throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_PropertyArrayOfStrings, property.Name));
         }
 
         ImmutableHashSet<string>.Builder builder = ImmutableHashSet.CreateBuilder(StringComparer.Ordinal);
@@ -189,7 +190,7 @@ public static class XmlDocConfigJsonReader
         {
             if (element.ValueKind != JsonValueKind.String)
             {
-                throw new XmlDocConfigException($"Property '{property.Name}' must be an array of strings.");
+                throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_PropertyArrayOfStrings, property.Name));
             }
 
             var value = element.GetString();
@@ -206,7 +207,7 @@ public static class XmlDocConfigJsonReader
     {
         if (property.Value.ValueKind != JsonValueKind.Object)
         {
-            throw new XmlDocConfigException($"Property '{property.Name}' must be an object.");
+            throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_PropertyObject, property.Name));
         }
 
         var builder = defaults.ToBuilder();
@@ -223,7 +224,7 @@ public static class XmlDocConfigJsonReader
     {
         if (property.Value.ValueKind != JsonValueKind.Object)
         {
-            throw new XmlDocConfigException($"Tag policy '{property.Name}' must be an object.");
+            throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_TagPolicyObject, property.Name));
         }
 
         XmlDocTagLayout layout = XmlDocTagLayout.Auto;
@@ -270,7 +271,7 @@ public static class XmlDocConfigJsonReader
             case "inlineAtomic":
                 return XmlDocTagLayout.InlineAtomic;
             default:
-                throw new XmlDocConfigException($"Unknown tag layout '{raw}'.");
+                throw new XmlDocConfigException(string.Format(CultureInfo.InvariantCulture, XmlDocResourceStrings.Json_Invalid_UnknownTagLayout, raw));
         }
     }
 }
