@@ -82,7 +82,7 @@ public sealed class MoneyOfTCurrencyJsonConverterFactory
         Type converterType = typeof(MoneyOfTCurrencyJsonConverter<>).MakeGenericType(currencyType);
         var converter = Activator.CreateInstance(converterType, _policy)
             ?? throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
 
         return (JsonConverter)converter;
     }

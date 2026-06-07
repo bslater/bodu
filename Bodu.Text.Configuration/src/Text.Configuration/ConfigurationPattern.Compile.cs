@@ -294,7 +294,7 @@ public sealed partial class ConfigurationPattern
                         ConfigurationDiagnosticSeverity.Error,
                         ConfigurationDiagnosticCode.BraceNestingTooDeep,
                         string.Format(
-                            CultureInfo.InvariantCulture,
+                            CultureInfo.CurrentCulture,
                             ConfigurationResourceStrings.Format_Invalid_BraceNestingTooDeep,
                             depth,
                             MaxBraceNestingDepth),
@@ -383,7 +383,7 @@ public sealed partial class ConfigurationPattern
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.NumericRangeTooLarge,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     ConfigurationResourceStrings.Format_Invalid_NumericRangeTooLarge,
                     leftText,
                     rightText,

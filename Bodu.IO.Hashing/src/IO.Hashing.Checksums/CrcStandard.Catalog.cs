@@ -234,7 +234,7 @@ public sealed partial class CrcStandard
         if (!map.TryGetValue(name, out CrcStandards standard))
             throw new KeyNotFoundException(
                 string.Format(
-                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.CultureInfo.CurrentCulture,
                     HashingResourceStrings.Op_Invalid_CrcStandardNotFound,
                     name));
         return Get(standard);

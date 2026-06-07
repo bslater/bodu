@@ -408,7 +408,7 @@ public static partial class Bencode
                     return ParseString();
                 default:
                     throw new BencodeFormatException(
-                        string.Format(CultureInfo.InvariantCulture, s_unexpectedToken, (char)_source[Position], Position));
+                        string.Format(CultureInfo.CurrentCulture, s_unexpectedToken, (char)_source[Position], Position));
             }
         }
 
@@ -418,7 +418,7 @@ public static partial class Bencode
 
             if (_depth > _maxDepth)
                 throw new BencodeFormatException(
-                    string.Format(CultureInfo.InvariantCulture, s_nestingTooDeep, _maxDepth));
+                    string.Format(CultureInfo.CurrentCulture, s_nestingTooDeep, _maxDepth));
         }
 
         private BencodedDictionary ParseDictionary()

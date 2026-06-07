@@ -134,7 +134,7 @@ public sealed record MonetaryContext
                 throw new ArgumentOutOfRangeException(
                     nameof(CustomScale),
                     CustomScale.Value,
-                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CustomScale, CustomScale.Value));
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CustomScale, CustomScale.Value));
             }
         }
     }

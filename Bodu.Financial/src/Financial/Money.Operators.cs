@@ -296,7 +296,7 @@ public readonly partial struct Money
         {
             throw new InvalidOperationException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_MoneySameCurrencyRequired,
                     left.IsoCode,
                     right.IsoCode));

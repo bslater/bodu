@@ -98,7 +98,7 @@ public sealed record CurrencyInfo(
                 nameof(code),
                 code,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Arg_Invalid_CurrencyCodeNotMapped,
                     code,
                     (int)code));
@@ -138,7 +138,7 @@ public sealed record CurrencyInfo(
         {
             throw new InvalidOperationException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_NoCurrencyCodeForIsoCode,
                     IsoCode));
         }

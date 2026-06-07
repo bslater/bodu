@@ -77,7 +77,7 @@ internal static class BuilderXml
                 return i;
         }
 
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Format_Invalid_XmlNotWellFormed, value));
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Format_Invalid_XmlNotWellFormed, value));
     }
 
     /// <summary>

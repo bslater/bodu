@@ -252,20 +252,20 @@ internal static class Program
     private static void ValidateEntry(CurrencyEntry currency)
     {
         if (currency.Iso is null || currency.Iso.Length != 3)
-            throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_IsoCodeLength, currency.Iso));
+            throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_IsoCodeLength, currency.Iso));
 
         for (int i = 0; i < 3; i++)
         {
             char c = currency.Iso[i];
             if (c < 'A' || c > 'Z')
-                throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_IsoCodeNotUpper, currency.Iso));
+                throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_IsoCodeNotUpper, currency.Iso));
         }
 
         if (currency.Numeric < 0 || currency.Numeric > 999)
-            throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_NumericCodeRange, currency.Numeric, currency.Iso));
+            throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_NumericCodeRange, currency.Numeric, currency.Iso));
 
         if (currency.MinorUnits < 0 || currency.MinorUnits > 4)
-            throw new InvalidDataException(string.Format(CultureInfo.InvariantCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_MinorUnitsRange, currency.MinorUnits, currency.Iso));
+            throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_MinorUnitsRange, currency.MinorUnits, currency.Iso));
     }
 
     private static string BuildSource(CurrencyEntry currency)

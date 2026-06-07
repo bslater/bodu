@@ -36,7 +36,7 @@ internal static class NotableDateRuleOverrideApplier
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-OVERRIDE-ND",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OverrideNotableDateNotFound, operation.NotableDateRef)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OverrideNotableDateNotFound, operation.NotableDateRef)));
                 continue;
             }
 
@@ -127,5 +127,5 @@ internal static class NotableDateRuleOverrideApplier
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
             "BODU-CAL-OVERRIDE-RULE",
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OverrideRuleNotFound, ruleRef, notableDateId)));
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OverrideRuleNotFound, ruleRef, notableDateId)));
 }

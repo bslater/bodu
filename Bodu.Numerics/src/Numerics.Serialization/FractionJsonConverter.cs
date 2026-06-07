@@ -120,7 +120,7 @@ public sealed class FractionJsonConverter<T>
         {
             throw new JsonException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     NumericsResourceStrings.Json_Invalid_ExpectedCompactString_Fraction,
                     typeof(T).Name));
         }
@@ -129,7 +129,7 @@ public sealed class FractionJsonConverter<T>
         return !Fraction<T>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Fraction<T> result)
             ? throw new JsonException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     NumericsResourceStrings.Json_Invalid_CompactFractionForm,
                     text,
                     typeof(T).Name))

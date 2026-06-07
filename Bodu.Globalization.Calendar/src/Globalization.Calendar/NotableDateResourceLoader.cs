@@ -250,7 +250,7 @@ public static class NotableDateResourceLoader
         if (errorCount > 0)
         {
             throw new NotableDateValidationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_DocumentValidationFailed, errorCount),
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Op_Invalid_DocumentValidationFailed, errorCount),
                 diagnostics);
         }
 

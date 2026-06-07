@@ -145,7 +145,7 @@ public sealed partial class NotableDateDocumentBuilder
         }
         catch (JsonException ex)
         {
-            throw new FormatException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Format_Invalid_JsonNotWellFormed, ex.Message), ex);
+            throw new FormatException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Format_Invalid_JsonNotWellFormed, ex.Message), ex);
         }
 
         if (node is not JsonObject root)
@@ -185,7 +185,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="feature">The human-readable name of the unsupported feature.</param>
     /// <returns>The exception to throw.</returns>
     private static NotSupportedException UnsupportedJsonFeature(string feature) =>
-        new(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Op_NotSupported_JsonFeature, feature));
+        new(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_NotSupported_JsonFeature, feature));
 
     /// <summary>
     /// Builds the JSON <c>metadata</c> object when any metadata value is configured.
@@ -357,7 +357,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static JsonObject BuildNotableDateJson(NotableDateDefinitionBuilder definition)
     {
         if (definition.Rules.Count == 0)
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_DefinitionHasNoRules, definition.Id));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_DefinitionHasNoRules, definition.Id));
 
         JsonObject result = new()
         {
@@ -391,7 +391,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static JsonObject BuildRuleJson(NotableDateRuleBuilder rule, bool requireStrategy)
     {
         if (requireStrategy && rule.Strategy is null)
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyNotSet, rule.Id));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyNotSet, rule.Id));
 
         if (rule.Calendar is CalendarSystem calendar && calendar != CalendarSystem.Gregorian)
             throw UnsupportedJsonFeature(string.Format(CultureInfo.InvariantCulture, "calendar '{0}'", calendar));

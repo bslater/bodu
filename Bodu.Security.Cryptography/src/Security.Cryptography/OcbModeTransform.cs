@@ -130,7 +130,7 @@ public sealed class OcbModeTransform
         if (tagSize < 8 || tagSize > cipher.BlockSize || tagSize % 8 != 0)
         {
             throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_OcbTagSize, tagSize, cipher.BlockSize),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_OcbTagSize, tagSize, cipher.BlockSize),
                 nameof(tagSize));
         }
 

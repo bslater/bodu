@@ -73,7 +73,7 @@ internal static class NotableDateDocumentParseHelpers
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
             "BODU-CAL-MONTH",
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
 
         return 1;
     }
@@ -130,7 +130,7 @@ internal static class NotableDateDocumentParseHelpers
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
             "BODU-CAL-MONTH",
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
 
         return (1, null);
     }

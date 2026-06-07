@@ -123,7 +123,7 @@ public readonly partial struct CalculatedMoney
         if (!string.Equals(left.IsoCode, right.IsoCode, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_MoneySameCurrencyRequired, left.IsoCode, right.IsoCode));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Op_Invalid_MoneySameCurrencyRequired, left.IsoCode, right.IsoCode));
         }
     }
 }

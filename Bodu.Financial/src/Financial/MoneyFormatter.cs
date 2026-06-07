@@ -75,7 +75,7 @@ public sealed class MoneyFormatter
             _ => throw new ArgumentOutOfRangeException(
                 nameof(options),
                 options.CurrencyDisplay,
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyDisplayUndefined, options.CurrencyDisplay)),
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyDisplayUndefined, options.CurrencyDisplay)),
         };
 
         // The "~" elide prefix and the numeric precision suffix apply only to designator-bearing specifiers.

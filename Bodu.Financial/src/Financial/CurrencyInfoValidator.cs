@@ -50,7 +50,7 @@ internal static class CurrencyInfoValidator
             throw new ArgumentOutOfRangeException(
                 paramName,
                 info.MinorUnits,
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyInfoMinorUnits, info.IsoCode, info.MinorUnits));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyInfoMinorUnits, info.IsoCode, info.MinorUnits));
         }
 
         if (info.CashRoundingIncrement < 0m)
@@ -58,7 +58,7 @@ internal static class CurrencyInfoValidator
             throw new ArgumentOutOfRangeException(
                 paramName,
                 info.CashRoundingIncrement,
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyInfoCashRoundingNegative, info.IsoCode, info.CashRoundingIncrement));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyInfoCashRoundingNegative, info.IsoCode, info.CashRoundingIncrement));
         }
 
         if (info.CashRoundingIncrement != 0m)
@@ -67,7 +67,7 @@ internal static class CurrencyInfoValidator
             if (scaled != decimal.Truncate(scaled))
             {
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Invalid_CurrencyInfoCashRoundingTooFine, info.IsoCode, info.CashRoundingIncrement, info.MinorUnits),
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_CurrencyInfoCashRoundingTooFine, info.IsoCode, info.CashRoundingIncrement, info.MinorUnits),
                     paramName);
             }
         }
@@ -77,7 +77,7 @@ internal static class CurrencyInfoValidator
             throw new ArgumentOutOfRangeException(
                 paramName,
                 info.NumericCode,
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyInfoNumericCode, info.IsoCode, info.NumericCode));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CurrencyInfoNumericCode, info.IsoCode, info.NumericCode));
         }
 
         if (info.SuccessorIsoCode is not null)
@@ -88,7 +88,7 @@ internal static class CurrencyInfoValidator
         if (!info.IsHistoric && (info.DemonetizedOn is not null || info.SuccessorIsoCode is not null))
         {
             throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Invalid_CurrencyInfoHistoricInconsistent, info.IsoCode),
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_CurrencyInfoHistoricInconsistent, info.IsoCode),
                 paramName);
         }
     }

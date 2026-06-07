@@ -248,7 +248,7 @@ public static class TextConfigurationExtensions
                     source.ReloadOnChange = reloadOnChange;
                 })
                 : throw new FileNotFoundException(
-                    string.Format(CultureInfo.InvariantCulture, ConfigurationTextResourceStrings.IO_FileNotFound_DefaultConfigFiles, DefaultDotFileName, DefaultPlainFileName));
+                    string.Format(CultureInfo.CurrentCulture, ConfigurationTextResourceStrings.IO_FileNotFound_DefaultConfigFiles, DefaultDotFileName, DefaultPlainFileName));
     }
 
     /// <summary>

@@ -105,14 +105,14 @@ public sealed class XtsModeTransform
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
         {
             throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_XtsCipherBlockSizeMismatch, tweakCipher.BlockSize, dataCipher.BlockSize),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_XtsCipherBlockSizeMismatch, tweakCipher.BlockSize, dataCipher.BlockSize),
                 nameof(tweakCipher));
         }
 
         if (tweak.Length != dataCipher.BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_XtsTweakLength, tweak.Length, dataCipher.BlockSize / 8),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_XtsTweakLength, tweak.Length, dataCipher.BlockSize / 8),
                 nameof(tweak));
         }
 

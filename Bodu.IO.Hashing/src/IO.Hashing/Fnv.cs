@@ -147,7 +147,7 @@ public abstract class Fnv<TSelf>
         {
             throw new ArgumentException(
                 string.Format(
-                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_OutOfRange_HashSize,
                     hashSize,
                     string.Join(", ", s_validHashSizes)),

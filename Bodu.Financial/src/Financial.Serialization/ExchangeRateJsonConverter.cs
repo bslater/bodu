@@ -221,7 +221,7 @@ public sealed class ExchangeRateJsonConverter
         var slashIndex = text.IndexOf('/');
         return slashIndex <= 0 || slashIndex >= text.Length - 1 || text.LastIndexOf('/') != slashIndex
             ? throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text))
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text))
             : ((string From, string To))(text[..slashIndex], text[(slashIndex + 1)..]);
     }
 
@@ -236,7 +236,7 @@ public sealed class ExchangeRateJsonConverter
         return reader.TokenType == JsonTokenType.String
             ? reader.GetString()!
             : throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName));
     }
 
     /// <summary>
@@ -259,7 +259,7 @@ public sealed class ExchangeRateJsonConverter
         }
 
         throw new JsonException(
-            string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeNumber, propertyName));
+            string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeNumber, propertyName));
     }
 
     /// <summary>
@@ -272,14 +272,14 @@ public sealed class ExchangeRateJsonConverter
     {
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
 
         var text = reader.GetString();
         return text is not null
             && DateOnly.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly parsed)
             ? parsed
             : throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
     }
 
     /// <summary>
@@ -293,7 +293,7 @@ public sealed class ExchangeRateJsonConverter
         return reader.TokenType is JsonTokenType.True or JsonTokenType.False
             ? reader.GetBoolean()
             : throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeBoolean, propertyName));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeBoolean, propertyName));
     }
 
     /// <summary>
@@ -302,7 +302,7 @@ public sealed class ExchangeRateJsonConverter
     /// <param name="propertyName">The duplicated property name.</param>
     /// <returns>The exception to throw.</returns>
     private static JsonException DuplicateProperty(string propertyName) =>
-        new(string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_DuplicateProperty, propertyName));
+        new(string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_DuplicateProperty, propertyName));
 
     /// <summary>
     /// Builds a <see cref="JsonException" /> for a missing required property.
@@ -310,5 +310,5 @@ public sealed class ExchangeRateJsonConverter
     /// <param name="propertyName">The missing property name.</param>
     /// <returns>The exception to throw.</returns>
     private static JsonException MissingRequiredProperty(string propertyName) =>
-        new(string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_MissingRequiredProperty, propertyName));
+        new(string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_MissingRequiredProperty, propertyName));
 }

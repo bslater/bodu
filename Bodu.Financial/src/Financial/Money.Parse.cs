@@ -37,7 +37,7 @@ public readonly partial struct Money :
     {
         return !TryParse(s, provider, out Money result)
             ? throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_MoneyString, s.ToString()))
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_MoneyString, s.ToString()))
             : result;
     }
 

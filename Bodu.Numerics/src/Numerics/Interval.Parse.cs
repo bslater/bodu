@@ -42,7 +42,7 @@ public readonly partial struct Interval<T> :
     public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
         return !TryParse(s, provider, out Interval<T> value)
-            ? throw new FormatException(string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Format_Invalid_IntervalString, s.ToString(), nameof(Interval<T>), typeof(T).Name))
+            ? throw new FormatException(string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Format_Invalid_IntervalString, s.ToString(), nameof(Interval<T>), typeof(T).Name))
             : value;
     }
 

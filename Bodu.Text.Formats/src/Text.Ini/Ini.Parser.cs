@@ -33,7 +33,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_iniDuplicateKey, key, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_iniDuplicateKey, key, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a duplicate section name.
@@ -41,7 +41,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowDuplicateSection(string name, int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_iniDuplicateSection, name, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_iniDuplicateSection, name, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> when a key appears before the first section header and global
@@ -50,7 +50,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowGlobalKeyDisallowed(int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a malformed section header.
@@ -58,7 +58,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowMalformedSectionHeader(int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a property line with an empty key.
@@ -66,7 +66,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowMissingKey(int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_iniMissingKey, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_iniMissingKey, lineNumber), lineNumber);
 
     /// <summary>
     /// Provides line-by-line INI parsing over a <see cref="ReadOnlySpan{T}" /> of characters.

@@ -75,7 +75,7 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
         if (selectionPolicy != ExchangeRateProviderSelectionPolicy.ProviderPriorityFirst)
             throw new NotSupportedException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_NotSupported_SelectionPolicy,
                     selectionPolicy));
 
@@ -89,7 +89,7 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
             if (snapshot[i] is null)
                 throw new ArgumentNullException(
                     nameof(providers),
-                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Arg_Null_ProviderAtIndex, i));
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Null_ProviderAtIndex, i));
         }
 
         _providers = snapshot;
@@ -113,7 +113,7 @@ public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvi
             ? result
             : throw new KeyNotFoundException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.IO_KeyNotFound_CompositeExchangeRate,
                     fromIsoCode,
                     toIsoCode,

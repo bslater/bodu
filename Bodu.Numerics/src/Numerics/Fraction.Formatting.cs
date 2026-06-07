@@ -156,7 +156,7 @@ public readonly partial struct Fraction<T> :
             'M' => FormatMixed(provider),
             'U' => FormatUnicode(provider),
             'P' => FormatPercent(provider),
-            _ => throw new FormatException(string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Format_Invalid_FractionFormatSpecifier, format.ToString())),
+            _ => throw new FormatException(string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Format_Invalid_FractionFormatSpecifier, format.ToString())),
         };
     }
 

@@ -166,7 +166,7 @@ public static partial class Base85
 
             if (c >= lookup.Length || lookup[c] < 0)
             {
-                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base85CharacterNotInAlphabet, c);
+                error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base85CharacterNotInAlphabet, c);
                 written = 0;
                 return false;
             }

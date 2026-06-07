@@ -447,6 +447,6 @@ public sealed partial class NotableDateDocumentBuilder
         if (string.Equals(extension, ".json", StringComparison.OrdinalIgnoreCase))
             return NotableDateDocumentFormat.Json;
 
-        throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Arg_Invalid_UnknownFileExtension, path), nameof(path));
+        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Arg_Invalid_UnknownFileExtension, path), nameof(path));
     }
 }

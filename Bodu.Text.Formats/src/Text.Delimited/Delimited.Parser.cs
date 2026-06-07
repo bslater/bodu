@@ -31,7 +31,7 @@ public static partial class Delimited
     [DoesNotReturn]
     internal static void ThrowUnterminatedQuotedField(int lineNumber) =>
         throw new DelimitedFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_unterminatedQuotedField, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_unterminatedQuotedField, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DelimitedFormatException" /> for a duplicated header name.
@@ -41,7 +41,7 @@ public static partial class Delimited
     [DoesNotReturn]
     internal static void ThrowDuplicateHeader(string headerName, int lineNumber) =>
         throw new DelimitedFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_duplicateHeader, headerName, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_duplicateHeader, headerName, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DelimitedFormatException" /> for a character that appears after the closing quote of a
@@ -52,7 +52,7 @@ public static partial class Delimited
     [DoesNotReturn]
     internal static void ThrowMalformedRecord(char unexpected, int lineNumber) =>
         throw new DelimitedFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_malformedRecord, unexpected, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, s_malformedRecord, unexpected, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DelimitedFormatException" /> when a data row's field count does not match the header.
@@ -63,7 +63,7 @@ public static partial class Delimited
     [DoesNotReturn]
     internal static void ThrowFieldCountMismatch(int rowLineNumber, int rowFieldCount, int headerFieldCount) =>
         throw new DelimitedFormatException(
-            string.Format(CultureInfo.InvariantCulture, s_fieldCountMismatch, rowLineNumber, rowFieldCount, headerFieldCount),
+            string.Format(CultureInfo.CurrentCulture, s_fieldCountMismatch, rowLineNumber, rowFieldCount, headerFieldCount),
             rowLineNumber);
 
     /// <summary>

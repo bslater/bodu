@@ -57,7 +57,7 @@ public sealed class ExchangeRateBook
             {
                 throw new ArgumentException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
+                        CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_ExchangeRateBookDuplicateKey,
                         entry.Pair.FromIsoCode,
                         entry.Pair.ToIsoCode,

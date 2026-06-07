@@ -81,7 +81,7 @@ public sealed class IntervalJsonConverterFactory
         Type converterType = typeof(IntervalJsonConverter<>).MakeGenericType(componentType);
         var converter = Activator.CreateInstance(converterType, _policy)
             ?? throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
+                string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
 
         return (JsonConverter)converter;
     }

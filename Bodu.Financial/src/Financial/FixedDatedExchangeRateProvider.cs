@@ -132,7 +132,7 @@ public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
             ? result
             : throw new KeyNotFoundException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.IO_KeyNotFound_DatedExchangeRate,
                     fromIsoCode,
                     toIsoCode,
@@ -206,7 +206,7 @@ public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
             {
                 throw new ArgumentException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
+                        CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_RateSeriesProviderConflict,
                         pair.FromIsoCode,
                         pair.ToIsoCode,
@@ -248,7 +248,7 @@ public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
             {
                 throw new ArgumentException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
+                        CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_RateSeriesProviderConflict,
                         key.Pair.FromIsoCode,
                         key.Pair.ToIsoCode,

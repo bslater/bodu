@@ -599,7 +599,7 @@ public sealed partial class Blake3
 
         if (_cvStackDepth >= MaxCvStackDepth)
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Op_Invalid_Blake3CvStackDepth, MaxCvStackDepth));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_Invalid_Blake3CvStackDepth, MaxCvStackDepth));
 
         working.CopyTo(_cvStack.AsSpan(_cvStackDepth * 8, 8));
         _cvStackDepth++;

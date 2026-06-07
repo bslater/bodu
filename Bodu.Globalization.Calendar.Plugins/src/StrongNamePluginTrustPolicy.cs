@@ -66,6 +66,6 @@ public sealed class StrongNamePluginTrustPolicy
 
         return _allowedTokens.Contains(context.PublicKeyToken)
             ? PluginTrustResult.Trusted()
-            : PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginTokenNotAllowed, context.PublicKeyToken));
+            : PluginTrustResult.Rejected(string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_PluginTokenNotAllowed, context.PublicKeyToken));
     }
 }

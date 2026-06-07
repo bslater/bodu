@@ -44,7 +44,7 @@ internal static class NotableDateDocumentParser
         catch (XmlException ex)
         {
             throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_XmlNotWellFormed, ex.Message),
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_XmlNotWellFormed, ex.Message),
                 ex);
         }
 
@@ -79,7 +79,7 @@ internal static class NotableDateDocumentParser
             diagnostics.Add(new NotableDateValidationDiagnostic(
                 severity,
                 "BODU-CAL-SCHEMA",
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_XmlSchema, e.Message)));
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_XmlSchema, e.Message)));
         });
     }
 }

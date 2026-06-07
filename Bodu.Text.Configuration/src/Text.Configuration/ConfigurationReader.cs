@@ -88,7 +88,7 @@ internal sealed partial class ConfigurationReader
             EmitDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.LineTooLong,
-                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_LineTooLong, _options.MaxLineLength),
+                string.Format(CultureInfo.CurrentCulture, ConfigurationResourceStrings.Format_Invalid_LineTooLong, _options.MaxLineLength),
                 new ConfigurationSourceLocation(lineNumber, 1, line.Length, path));
 
             return currentSection;
@@ -237,7 +237,7 @@ internal sealed partial class ConfigurationReader
                     EmitDiagnostic(
                         ConfigurationDiagnosticSeverity.Error,
                         ConfigurationDiagnosticCode.DuplicateSection,
-                        string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateSection, name),
+                        string.Format(CultureInfo.CurrentCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateSection, name),
                         headerLoc);
                     return disallowedExisting;
                 }
@@ -329,7 +329,7 @@ internal sealed partial class ConfigurationReader
             EmitDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.KeyTooLong,
-                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_KeyTooLong, _options.MaxKeyLength),
+                string.Format(CultureInfo.CurrentCulture, ConfigurationResourceStrings.Format_Invalid_KeyTooLong, _options.MaxKeyLength),
                 new ConfigurationSourceLocation(lineNumber, firstNonWs + 1, keyText.Length, path));
 
             return currentSection;
@@ -396,7 +396,7 @@ internal sealed partial class ConfigurationReader
                     EmitDiagnostic(
                         ConfigurationDiagnosticSeverity.Error,
                         ConfigurationDiagnosticCode.DuplicateKey,
-                        string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateKey, rawKey),
+                        string.Format(CultureInfo.CurrentCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateKey, rawKey),
                         loc);
                     return;
 

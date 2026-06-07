@@ -201,7 +201,7 @@ public static class MoneyCompactFormattingExtensions
         if (cursor < span.Length && char.ToUpperInvariant(span[cursor]) == 'R')
         {
             throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format));
         }
     }
 }

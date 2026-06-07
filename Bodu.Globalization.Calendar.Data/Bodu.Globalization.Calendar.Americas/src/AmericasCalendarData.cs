@@ -72,7 +72,7 @@ public static class AmericasCalendarData
 
         using Stream stream = typeof(AmericasCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, AmericasCalendarDataResourceStrings.Arg_Invalid_NoResourceForTerritory, territory),
+                string.Format(CultureInfo.CurrentCulture, AmericasCalendarDataResourceStrings.Arg_Invalid_NoResourceForTerritory, territory),
                 nameof(territory));
 
         return NotableDateResourceLoader.Load(stream, ResolveResource);

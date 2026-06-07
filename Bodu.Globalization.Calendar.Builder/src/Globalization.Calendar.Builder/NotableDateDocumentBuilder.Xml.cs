@@ -95,7 +95,7 @@ public sealed partial class NotableDateDocumentBuilder
         }
         catch (XmlException ex)
         {
-            throw new FormatException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Format_Invalid_XmlNotWellFormed, ex.Message), ex);
+            throw new FormatException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Format_Invalid_XmlNotWellFormed, ex.Message), ex);
         }
 
         return FromXDocument(document);
@@ -114,7 +114,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         XElement? root = document.Root;
         if (root is null || root.Name != BuilderXml.Namespace + "NotableDateResource")
-            throw new FormatException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Format_Invalid_RootElement, root?.Name.LocalName ?? string.Empty));
+            throw new FormatException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Format_Invalid_RootElement, root?.Name.LocalName ?? string.Empty));
 
         NotableDateDocumentBuilder builder = new()
         {
@@ -356,7 +356,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static XElement BuildNotableDateElement(NotableDateDefinitionBuilder definition)
     {
         if (definition.Rules.Count == 0)
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_DefinitionHasNoRules, definition.Id));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_DefinitionHasNoRules, definition.Id));
 
         XElement element = new(
             BuilderXml.Namespace + "NotableDate",
@@ -390,7 +390,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static XElement BuildRuleElement(NotableDateRuleBuilder rule, bool requireStrategy)
     {
         if (requireStrategy && rule.Strategy is null)
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyNotSet, rule.Id));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyNotSet, rule.Id));
 
         XElement element = new(BuilderXml.Namespace + "Rule", new XAttribute("id", rule.Id));
         WriteRuleScalars(element, rule);

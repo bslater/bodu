@@ -79,13 +79,13 @@ public static class NotableDatePluginLoader
         if (!trust.IsTrusted)
         {
             throw new PluginNotTrustedException(
-                string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_Plugin, name, trust.Reason ?? string.Empty),
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_Plugin, name, trust.Reason ?? string.Empty),
                 name,
                 trust.Reason);
         }
 
         NotableDatePluginAttribute? attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>() ?? throw new PluginMissingAttributeException(
-                string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_Missing_PluginAttribute, name),
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Missing_PluginAttribute, name),
                 name);
 
         return Activate(attribute.PluginType);
@@ -160,7 +160,7 @@ public static class NotableDatePluginLoader
         catch (Exception ex) when (ex is MissingMethodException or TargetInvocationException or MemberAccessException)
         {
             throw new PluginActivationException(
-                string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, pluginType.FullName ?? pluginType.Name),
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, pluginType.FullName ?? pluginType.Name),
                 pluginType,
                 ex);
         }
@@ -168,7 +168,7 @@ public static class NotableDatePluginLoader
         if (instance is not INotableDatePlugin plugin)
         {
             throw new PluginActivationException(
-                string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_Invalid_PluginType, pluginType.FullName ?? pluginType.Name),
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginType, pluginType.FullName ?? pluginType.Name),
                 pluginType);
         }
 

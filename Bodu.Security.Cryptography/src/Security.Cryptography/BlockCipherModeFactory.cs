@@ -126,7 +126,7 @@ public static class BlockCipherModeFactory
         if (iv.Length != requiredSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_IvLengthForMode, requiredSize, requiredSize / 8, iv.Length * 8, iv.Length),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_IvLengthForMode, requiredSize, requiredSize / 8, iv.Length * 8, iv.Length),
                 name);
         }
     }

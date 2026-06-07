@@ -35,7 +35,7 @@ internal static partial class HashingThrowHelper
                 paramName,
                 value,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_OutOfRange_ValueExceedsBitWidth,
                     size,
                     widthMask));
@@ -61,7 +61,7 @@ internal static partial class HashingThrowHelper
                 paramName,
                 hashSize,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_OutOfRange_HashSize,
                     hashSize,
                     string.Join(", ", validHashSizes)));
@@ -85,7 +85,7 @@ internal static partial class HashingThrowHelper
         if (actualLength < requiredLength)
             throw new ArgumentException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_Invalid_DestinationSpanTooShortChars,
                     requiredLength),
                 paramName);

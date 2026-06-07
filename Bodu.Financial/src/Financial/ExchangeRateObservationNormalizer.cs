@@ -125,7 +125,7 @@ internal static class ExchangeRateObservationNormalizer
             {
                 throw new ArgumentException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
+                        CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
                         DateOnly.FromDayNumber(buffer[i].DayNumber)),
                     paramName);

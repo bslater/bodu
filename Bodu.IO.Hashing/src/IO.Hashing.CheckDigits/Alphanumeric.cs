@@ -151,7 +151,7 @@ internal static class Alphanumeric
         string validCharacterDescription)
     {
         return string.Format(
-            CultureInfo.InvariantCulture,
+            CultureInfo.CurrentCulture,
             HashingResourceStrings.Arg_OutOfRange_InvalidCharacterForCharacterSet,
             ch,
             (int)ch,
