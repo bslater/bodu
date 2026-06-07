@@ -691,6 +691,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to determine the fiscal year for date &apos;{0:yyyy-MM-dd}&apos;..
+        /// </summary>
+        internal static string Arg_OutOfRange_FiscalYearUndeterminable {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_FiscalYearUndeterminable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The index must be non-negative and less than the size of {0}..
         /// </summary>
         internal static string Arg_OutOfRange_IndexValidRange {
@@ -1380,6 +1389,15 @@ namespace Bodu {
         internal static string Op_NotSupported_DictionaryValuesMutation {
             get {
                 return ResourceManager.GetString("Op_NotSupported_DictionaryValuesMutation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A fiscal year must be provided. Use {0}..
+        /// </summary>
+        internal static string Op_NotSupported_FiscalYearRequired {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_FiscalYearRequired", resourceCulture);
             }
         }
         

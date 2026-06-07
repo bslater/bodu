@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 /// <summary>
@@ -187,7 +189,7 @@ public sealed class FiscalWeekQuarterProvider
     [Obsolete("Use GetQuarterEnd(int quarter, int fiscalYear).")]
     public DateTime GetQuarterEnd(int quarter) =>
         throw new NotSupportedException(
-            "A fiscal year must be provided. Use GetQuarterEnd(int quarter, int fiscalYear).");
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterEnd(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateTime GetQuarterEnd(int quarter, int fiscalYear)
@@ -211,7 +213,7 @@ public sealed class FiscalWeekQuarterProvider
     [Obsolete("Use GetQuarterEndDate(int quarter, int fiscalYear).")]
     public DateOnly GetQuarterEndDate(int quarter) =>
         throw new NotSupportedException(
-            "A fiscal year must be provided. Use GetQuarterEndDate(int quarter, int fiscalYear).");
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterEndDate(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) =>
@@ -225,7 +227,7 @@ public sealed class FiscalWeekQuarterProvider
     [Obsolete("Use GetQuarterStart(int quarter, int fiscalYear).")]
     public DateTime GetQuarterStart(int quarter) =>
         throw new NotSupportedException(
-            "A fiscal year must be provided. Use GetQuarterStart(int quarter, int fiscalYear).");
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterStart(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateTime GetQuarterStart(int quarter, int fiscalYear)
@@ -246,7 +248,7 @@ public sealed class FiscalWeekQuarterProvider
     [Obsolete("Use GetQuarterStartDate(int quarter, int fiscalYear).")]
     public DateOnly GetQuarterStartDate(int quarter) =>
         throw new NotSupportedException(
-            "A fiscal year must be provided. Use GetQuarterStartDate(int quarter, int fiscalYear).");
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterStartDate(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) =>
@@ -365,6 +367,6 @@ public sealed class FiscalWeekQuarterProvider
 
         throw new ArgumentOutOfRangeException(
             nameof(dateTime),
-            $"Unable to determine the fiscal year for date '{dateTime:yyyy-MM-dd}'.");
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_FiscalYearUndeterminable, dateTime));
     }
 }

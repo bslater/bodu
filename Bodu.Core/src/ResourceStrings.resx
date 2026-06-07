@@ -327,6 +327,9 @@
   <data name="Arg_OutOfRange_EnumValue" xml:space="preserve">
     <value>The value '{1}' is not a defined member of the {0} enumeration.</value>
   </data>
+  <data name="Arg_OutOfRange_FiscalYearUndeterminable" xml:space="preserve">
+    <value>Unable to determine the fiscal year for date '{0:yyyy-MM-dd}'.</value>
+  </data>
   <data name="Arg_OutOfRange_IndexValidRange" xml:space="preserve">
     <value>The index must be non-negative and less than the size of {0}.</value>
   </data>
@@ -557,6 +560,9 @@
   </data>
   <data name="Op_NotSupported_DictionaryValuesMutation" xml:space="preserve">
     <value>Mutating the dictionary through the Values collection is not supported.</value>
+  </data>
+  <data name="Op_NotSupported_FiscalYearRequired" xml:space="preserve">
+    <value>A fiscal year must be provided. Use {0}.</value>
   </data>
   <data name="Overflow_Invalid_NegatingTwosComplement" xml:space="preserve">
     <value>Negating the minimum value of a twos complement number is invalid.</value>

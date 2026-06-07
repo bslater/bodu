@@ -5,12 +5,29 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Numerics;
 
 internal static partial class NumericsThrowHelper
 {
+    /// <summary>
+    /// Throws a <see cref="DivideByZeroException" /> when <paramref name="denominator" /> is zero.
+    /// </summary>
+    /// <typeparam name="TValue">The numeric type of the denominator being validated.</typeparam>
+    /// <param name="denominator">The denominator value to validate.</param>
+    /// <exception cref="DivideByZeroException">
+    /// Thrown when <paramref name="denominator" /> is equal to zero.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfDenominatorZero<TValue>(TValue denominator)
+        where TValue : INumberBase<TValue>
+    {
+        if (TValue.IsZero(denominator))
+            throw new DivideByZeroException(NumericsResourceStrings.Math_DivideByZero_FractionDenominator);
+    }
+
     /// <summary>
     /// Throws when <paramref name="policy" /> is not a defined <see cref="Serialization.NumericsJsonPolicy" /> member.
     /// </summary>

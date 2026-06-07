@@ -88,7 +88,7 @@ public readonly partial struct Fraction<T>
             ? FromBigInteger(
                 left.BigNumerator * right.BigDenominator,
                 left.BigDenominator * right.BigNumerator)
-            : throw new DivideByZeroException("Cannot divide a fraction by zero.");
+            : throw new DivideByZeroException(NumericsResourceStrings.Math_DivideByZero_FractionDivision);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public readonly partial struct Fraction<T>
     public static Fraction<T> operator %(Fraction<T> left, Fraction<T> right)
     {
         if (right.IsZero)
-            throw new DivideByZeroException("Cannot take the remainder of a fraction divided by zero.");
+            throw new DivideByZeroException(NumericsResourceStrings.Math_DivideByZero_FractionRemainder);
 
         BigInteger ln = left.BigNumerator;
         BigInteger ld = left.BigDenominator;

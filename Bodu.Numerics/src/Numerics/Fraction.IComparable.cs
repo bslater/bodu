@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Numerics;
 
 public readonly partial struct Fraction<T> :
@@ -38,7 +40,7 @@ public readonly partial struct Fraction<T> :
             ? 1
             : obj is Fraction<T> other
                 ? Compare(this, other)
-                : throw new ArgumentException($"Object must be of type {typeof(Fraction<T>)}.", nameof(obj));
+                : throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Arg_Invalid_FractionComparableType, typeof(Fraction<T>)), nameof(obj));
     }
 
     /// <summary>
@@ -89,6 +91,6 @@ public readonly partial struct Fraction<T> :
                 : Compare(value, max) > 0
                     ? max
                     : value
-            : throw new ArgumentException("The minimum bound must not exceed the maximum bound.", nameof(min));
+            : throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_FractionMinExceedsMax, nameof(min));
     }
 }

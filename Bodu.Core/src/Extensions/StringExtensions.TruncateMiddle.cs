@@ -43,7 +43,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(separator);
-        if (maxLength < separator.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, "maxLength must be at least separator.Length.");
+        if (maxLength < separator.Length) throw new ArgumentOutOfRangeException(nameof(maxLength), maxLength, ResourceStrings.Arg_OutOfRange_MaxLengthLessThanMarker);
 
         if (value.Length <= maxLength) return value;
 

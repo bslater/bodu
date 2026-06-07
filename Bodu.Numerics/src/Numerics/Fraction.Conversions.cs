@@ -279,7 +279,7 @@ public readonly partial struct Fraction<T>
     private static (BigInteger Numerator, BigInteger Denominator) DoubleToRational(double value)
     {
         if (!double.IsFinite(value))
-            throw new ArgumentException("Only finite values can be converted to a fraction.", nameof(value));
+            throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_FractionNonFiniteValue, nameof(value));
 
         var bits = BitConverter.DoubleToInt64Bits(value);
         var negative = bits < 0;
