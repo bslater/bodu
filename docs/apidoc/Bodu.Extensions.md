@@ -23,6 +23,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 - <xref:Bodu.Extensions.DateOnlyExtensions> — `DateOnly`-specific equivalents plus `Age` calculation.
 - <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> — culture-aware day-of-week and month-name helpers.
 - <xref:Bodu.Extensions.IQuarterDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions> — pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.
+- <xref:Bodu.Extensions.FiscalWeekQuarterProvider> — a built-in `IQuarterDefinitionProvider` that derives quarters from a fiscal-week pattern (<xref:Bodu.Extensions.FiscalWeekPattern>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.
 - <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>, <xref:Bodu.WorkingDaysOfWeek> — working-day bitmask helpers.
 
 **Calendar-shape enums**

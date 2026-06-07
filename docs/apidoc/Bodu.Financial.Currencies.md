@@ -89,4 +89,5 @@ CurrencyRegistry.Register(
 - **Sealed + private constructor.** Every tag type seals itself and hides its constructor, so the tag can only ever exist statically. `Money<USD>` is the only way to materialise a value tagged as USD.
 - **Static-abstract metadata.** All members are static via the `ICurrency` static-abstract pattern; consumers read them as `TCurrency.IsoCode` in generic code.
 - **Optional members default sensibly.** `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode` have sensible defaults via `static virtual` so most currencies declare only `IsoCode` and `MinorUnits`.
+- **ISO numeric codes.** <xref:Bodu.Financial.Currencies.CurrencyCode> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; historic codes are intentionally excluded so the enum stays stable when a code is retired.
 - **See also:** the [`Bodu.Financial` reference](xref:Bodu.Financial), the [`Money<TCurrency>` guide](~/guides/financial/money.md), [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry).

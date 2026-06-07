@@ -30,6 +30,7 @@ For binary-to-text encodings (Base16 / Base32 / Base64 / Base58 / Base85) that o
 - <xref:Bodu.Text.Bencode.BencodedDictionary> — byte-string-keyed mapping. Keys are stored sorted by raw byte ordinal using <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>; the constructor rejects `null` keys / values and duplicates. Indexer and `TryGetValue(BencodedString)` / `TryGetValue(string)` (UTF-8) look up by byte order.
 - <xref:Bodu.Text.Bencode.BencodedStringComparer> — singleton `Ordinal` comparer; implements both `IComparer<BencodedString>` and `IEqualityComparer<BencodedString>`.
 - <xref:Bodu.Text.Bencode.BencodeFormatException> — derives from <xref:System.FormatException>; thrown on any BEP 3 violation. The message identifies the exact failure mode.
+- <xref:Bodu.Text.Bencode.BencodeExtensions> — fluent extension methods that mirror the static codec on the value/byte types: `ParseBencode` / `TryParseBencode` (on `byte[]` / `ReadOnlySpan<byte>`) and `FormatBencode` / `TryFormatBencode` / `GetBencodedLength` (on <xref:Bodu.Text.Bencode.BencodedValue>).
 
 ## Example
 
