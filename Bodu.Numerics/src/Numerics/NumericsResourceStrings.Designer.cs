@@ -61,6 +61,24 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The denominator limit must be at least one..
+        /// </summary>
+        internal static string Arg_OutOfRange_ContinuedFractionLimit {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ContinuedFractionLimit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Coefficients after the first must be strictly positive..
+        /// </summary>
+        internal static string Arg_OutOfRange_ContinuedFractionTerm {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ContinuedFractionTerm", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact Fraction&lt;{1}&gt; form..
         /// </summary>
         internal static string Json_Invalid_CompactFractionForm {

@@ -89,6 +89,6 @@ public static class PaddingFactory
         PaddingModeKind.ISO10126 => new Iso10126Padding(),
         PaddingModeKind.ISO7816_4 => new Iso7816_4Padding(),
         _ => throw new CryptographicException(
-            string.Format(System.Globalization.CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode))
+            string.Format(System.Globalization.CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode))
     };
 }

@@ -185,7 +185,7 @@ public static partial class Base32
 
             if ((uint)c >= (uint)lookup.Length)
             {
-                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base32CharacterNotInAlphabet, c);
+                error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base32CharacterNotInAlphabet, c);
                 bytesWritten = 0;
                 return false;
             }
@@ -193,7 +193,7 @@ public static partial class Base32
             int value = lookup[c];
             if (value < 0)
             {
-                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base32CharacterNotInAlphabet, c);
+                error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base32CharacterNotInAlphabet, c);
                 bytesWritten = 0;
                 return false;
             }
@@ -228,7 +228,7 @@ public static partial class Base32
             var expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
             if (paddingSeen != expectedPadding)
             {
-                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base32PaddingCount, expectedPadding, paddingSeen);
+                error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base32PaddingCount, expectedPadding, paddingSeen);
                 bytesWritten = 0;
                 return false;
             }

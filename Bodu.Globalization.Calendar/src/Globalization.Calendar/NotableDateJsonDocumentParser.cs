@@ -49,7 +49,7 @@ internal static class NotableDateJsonDocumentParser
         catch (JsonException ex)
         {
             throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_JsonNotWellFormed, ex.Message),
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_JsonNotWellFormed, ex.Message),
                 ex);
         }
     }

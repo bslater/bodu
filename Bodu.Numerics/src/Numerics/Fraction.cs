@@ -193,7 +193,7 @@ public readonly partial struct Fraction<T>
         s_isBounded
             ? new Fraction<T>(s_minBacking, T.One, canonical: true)
             : throw new NotSupportedException(
-                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Op_NotSupported_UnboundedMinValue, typeof(T)));
+                string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Op_NotSupported_UnboundedMinValue, typeof(T)));
 
     /// <summary>
     /// Gets the largest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
@@ -210,7 +210,7 @@ public readonly partial struct Fraction<T>
         s_isBounded
             ? new Fraction<T>(s_maxBacking, T.One, canonical: true)
             : throw new NotSupportedException(
-                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Op_NotSupported_UnboundedMaxValue, typeof(T)));
+                string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Op_NotSupported_UnboundedMaxValue, typeof(T)));
 
     /// <summary>
     /// Gets the numerator of the rational value in canonical form.

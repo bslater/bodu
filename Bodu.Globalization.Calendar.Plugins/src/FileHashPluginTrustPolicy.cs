@@ -65,13 +65,13 @@ public sealed class FileHashPluginTrustPolicy
             return PluginTrustResult.Rejected(PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNameMissing);
 
         if (context.FileHash is null)
-            return PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashUnavailable, context.AssemblyName));
+            return PluginTrustResult.Rejected(string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashUnavailable, context.AssemblyName));
 
         if (!_allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out var expected))
-            return PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNotAllowed, context.AssemblyName));
+            return PluginTrustResult.Rejected(string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNotAllowed, context.AssemblyName));
 
         return CryptographicOperations.FixedTimeEquals(expected, context.FileHash)
             ? PluginTrustResult.Trusted()
-            : PluginTrustResult.Rejected(string.Format(CultureInfo.InvariantCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashMismatch, context.AssemblyName));
+            : PluginTrustResult.Rejected(string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashMismatch, context.AssemblyName));
     }
 }

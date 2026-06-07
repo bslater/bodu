@@ -57,7 +57,7 @@ public class ConfigurationParseExceptionTests
     [TestMethod]
     public void Ctor_WhenDiagnosticsIsEmpty_ShouldExposeEmptyDiagnostics()
     {
-        ConfigurationParseException ex = new([]);
+        ConfigurationParseException ex = new(System.Array.Empty<ConfigurationDiagnostic>());
 
         Assert.IsEmpty(ex.Diagnostics);
         Assert.IsNull(ex.Diagnostic);

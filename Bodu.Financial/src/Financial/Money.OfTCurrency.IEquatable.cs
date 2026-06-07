@@ -77,7 +77,7 @@ public readonly partial struct Money<TCurrency> :
             ? CompareTo(other)
             : throw new ArgumentException(
             string.Format(
-                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
                 FinancialResourceStrings.Arg_Invalid_MoneyOfTCurrencyObject,
                 typeof(TCurrency).Name),
             nameof(obj));

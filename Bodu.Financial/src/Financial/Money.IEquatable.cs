@@ -49,7 +49,7 @@ public readonly partial struct Money :
         return !string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal)
             ? throw new InvalidOperationException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_MoneyCompareSameCurrencyRequired,
                     IsoCode,
                     other.IsoCode))

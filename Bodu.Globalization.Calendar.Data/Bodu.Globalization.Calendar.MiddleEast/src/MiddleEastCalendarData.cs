@@ -66,7 +66,7 @@ public static class MiddleEastCalendarData
 
         using Stream stream = typeof(MiddleEastCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, "No Middle East calendar resource for territory '{0}'.", territory),
+                string.Format(CultureInfo.CurrentCulture, MiddleEastCalendarDataResourceStrings.Arg_Invalid_NoResourceForTerritory, territory),
                 nameof(territory));
 
         return NotableDateResourceLoader.Load(stream, ResolveResource);

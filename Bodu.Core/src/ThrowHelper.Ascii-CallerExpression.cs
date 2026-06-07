@@ -8,6 +8,7 @@
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu;
@@ -36,7 +37,7 @@ public static partial class ThrowHelper
             throw new ArgumentOutOfRangeException(
                 paramName,
                 value,
-                $"Character '{value}' (U+{(int)value:X4}) is not an ASCII decimal digit ('0' to '9').");
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_NotAsciiDecimalDigit, value, (int)value));
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ public static partial class ThrowHelper
             throw new ArgumentOutOfRangeException(
                 paramName,
                 value,
-                $"Character '{value}' (U+{(int)value:X4}) is not an ASCII uppercase alphanumeric character ('0' to '9' or 'A' to 'Z').");
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_NotAsciiAlphanumericUppercase, value, (int)value));
     }
 
     /// <summary>
@@ -93,7 +94,7 @@ public static partial class ThrowHelper
             throw new ArgumentOutOfRangeException(
                 paramName,
                 value,
-                $"Character '{value}' (U+{(int)value:X4}) is not a hex digit ('0'–'9', 'A'–'F', or 'a'–'f').");
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_NotAsciiHexDigit, value, (int)value));
     }
 }
 

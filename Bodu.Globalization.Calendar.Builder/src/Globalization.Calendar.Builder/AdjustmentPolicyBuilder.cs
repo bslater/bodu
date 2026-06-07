@@ -487,7 +487,7 @@ public sealed class AdjustmentPolicyBuilder
     internal void EnsureComplete()
     {
         if (TriggerType is null || ActionType is null || EmissionModeValue is null)
-            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_AdjustmentPolicyIncomplete, Id));
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_AdjustmentPolicyIncomplete, Id));
     }
 
     /// <summary>

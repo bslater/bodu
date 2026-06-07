@@ -87,7 +87,7 @@ public sealed class MoneyJsonConverter
         return !Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
             ? throw new JsonException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Json_Invalid_CompactMoneyForm,
                     text))
             : result;

@@ -233,5 +233,5 @@ public sealed class DelimitedRow
     [DoesNotReturn]
     private static void ThrowHeaderNotFound(string header) =>
         throw new KeyNotFoundException(
-            string.Format(CultureInfo.InvariantCulture, s_headerNotFound, header));
+            string.Format(CultureInfo.CurrentCulture, s_headerNotFound, header));
 }

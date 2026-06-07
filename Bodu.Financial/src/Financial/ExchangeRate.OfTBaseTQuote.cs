@@ -180,7 +180,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
         {
             throw new InvalidOperationException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_ExchangeRateRuntimeMismatch,
                     rate.FromIsoCode,
                     rate.ToIsoCode,

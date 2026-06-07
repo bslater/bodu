@@ -24,6 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="MiddleEastCalendarDataResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MiddleEastCalendarDataResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="MiddleEastCalendarDataResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MiddleEastCalendarDataResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\*.xml" />
     <!-- Region packs and the shared middleeast-common hub they import from. -->
     <EmbeddedResource Include="Resources\*.xml">

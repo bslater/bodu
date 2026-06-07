@@ -150,7 +150,7 @@ public sealed class BKDR
         {
             throw new ArgumentException(
                 string.Format(
-                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_Invalid_BkdrSeedUnsupported,
                     value),
                 nameof(value));

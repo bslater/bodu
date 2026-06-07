@@ -225,7 +225,7 @@ public sealed class Crockford32
                 paramName,
                 ch,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_OutOfRange_InvalidCharacterForCharacterSet,
                     ch,
                     (int)ch,

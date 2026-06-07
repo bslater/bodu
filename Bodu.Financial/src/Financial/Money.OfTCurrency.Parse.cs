@@ -44,7 +44,7 @@ public readonly partial struct Money<TCurrency> :
         return !TryParse(s, provider, out Money<TCurrency> result)
             ? throw new FormatException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Format_Invalid_MoneyOfTCurrencyString,
                     s.ToString(),
                     typeof(TCurrency).Name))

@@ -187,6 +187,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Buffer size must be greater than zero..
+        /// </summary>
+        internal static string Arg_OutOfRange_BufferSizeNotPositive {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BufferSizeNotPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fan-out must be at least 2..
         /// </summary>
         internal static string Arg_OutOfRange_FanOutMinimum {

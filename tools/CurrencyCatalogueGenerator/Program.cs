@@ -244,7 +244,7 @@ internal static class Program
 
         Catalogue? catalogue = JsonSerializer.Deserialize<Catalogue>(json, options);
         if (catalogue is null || catalogue.Currencies is null)
-            throw new InvalidDataException("currencies.json could not be deserialized.");
+            throw new InvalidDataException(CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_CatalogueDeserialize);
 
         return catalogue;
     }
@@ -252,20 +252,20 @@ internal static class Program
     private static void ValidateEntry(CurrencyEntry currency)
     {
         if (currency.Iso is null || currency.Iso.Length != 3)
-            throw new InvalidDataException($"Invalid ISO code: '{currency.Iso}'.");
+            throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_IsoCodeLength, currency.Iso));
 
         for (int i = 0; i < 3; i++)
         {
             char c = currency.Iso[i];
             if (c < 'A' || c > 'Z')
-                throw new InvalidDataException($"ISO code '{currency.Iso}' must be three uppercase ASCII letters.");
+                throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_IsoCodeNotUpper, currency.Iso));
         }
 
         if (currency.Numeric < 0 || currency.Numeric > 999)
-            throw new InvalidDataException($"ISO numeric code {currency.Numeric} for {currency.Iso} is out of range.");
+            throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_NumericCodeRange, currency.Numeric, currency.Iso));
 
         if (currency.MinorUnits < 0 || currency.MinorUnits > 4)
-            throw new InvalidDataException($"MinorUnits {currency.MinorUnits} for {currency.Iso} is out of supported range [0, 4].");
+            throw new InvalidDataException(string.Format(CultureInfo.CurrentCulture, CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_MinorUnitsRange, currency.MinorUnits, currency.Iso));
     }
 
     private static string BuildSource(CurrencyEntry currency)
@@ -410,7 +410,7 @@ internal static class Program
             dir = dir.Parent;
         }
 
-        throw new InvalidOperationException("Unable to locate repository root (bodu.slnx not found in any ancestor).");
+        throw new InvalidOperationException(CurrencyCatalogueGeneratorResourceStrings.Op_Invalid_RepositoryRootNotFound);
     }
 
     private sealed record Catalogue

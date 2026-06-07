@@ -70,7 +70,7 @@ public static class EuropeCalendarData
 
         using Stream stream = typeof(EuropeCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, "No Europe calendar resource for territory '{0}'.", territory),
+                string.Format(CultureInfo.CurrentCulture, EuropeCalendarDataResourceStrings.Arg_Invalid_NoResourceForTerritory, territory),
                 nameof(territory));
 
         return NotableDateResourceLoader.Load(stream, ResolveResource);

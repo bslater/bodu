@@ -185,7 +185,7 @@ public sealed class ExchangeRatePairJsonConverter
     {
         return reader.TokenType != JsonTokenType.String
             ? throw new JsonException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName))
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeString, propertyName))
             : reader.GetString()!;
     }
 
@@ -195,7 +195,7 @@ public sealed class ExchangeRatePairJsonConverter
     /// <param name="propertyName">The duplicated property name.</param>
     /// <returns>The exception to throw.</returns>
     private static JsonException DuplicateProperty(string propertyName) =>
-        new(string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_DuplicateProperty, propertyName));
+        new(string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_DuplicateProperty, propertyName));
 
     /// <summary>
     /// Builds a <see cref="JsonException" /> for a missing required property.
@@ -203,7 +203,7 @@ public sealed class ExchangeRatePairJsonConverter
     /// <param name="propertyName">The missing property name.</param>
     /// <returns>The exception to throw.</returns>
     private static JsonException MissingRequiredProperty(string propertyName) =>
-        new(string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_MissingRequiredProperty, propertyName));
+        new(string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_MissingRequiredProperty, propertyName));
 
     /// <summary>
     /// Builds a <see cref="JsonException" /> describing an invalid compact pair string.
@@ -211,5 +211,5 @@ public sealed class ExchangeRatePairJsonConverter
     /// <param name="text">The offending input.</param>
     /// <returns>The exception to throw.</returns>
     private static JsonException CompactPairFormatException(string text) =>
-        new(string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text));
+        new(string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text));
 }

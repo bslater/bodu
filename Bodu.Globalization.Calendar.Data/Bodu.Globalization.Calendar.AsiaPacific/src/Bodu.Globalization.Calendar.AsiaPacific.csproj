@@ -24,6 +24,18 @@
     </ItemGroup>
 
     <ItemGroup>
+    <EmbeddedResource Include="AsiaPacificCalendarDataResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AsiaPacificCalendarDataResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="AsiaPacificCalendarDataResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AsiaPacificCalendarDataResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\*.xml" />
     <!-- Region packs; the shared catalogues they import are resolved from the engine assembly. -->
     <EmbeddedResource Include="Resources\*.xml">

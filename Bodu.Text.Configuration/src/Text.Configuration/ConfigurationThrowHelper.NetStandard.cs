@@ -61,7 +61,7 @@ internal static partial class ConfigurationThrowHelper
             if (char.IsControl(rawKey[i]))
                 throw new ArgumentException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
+                        CultureInfo.CurrentCulture,
                         ConfigurationResourceStrings.Arg_Invalid_ConfigKeyControlChar,
                         i),
                     paramName);

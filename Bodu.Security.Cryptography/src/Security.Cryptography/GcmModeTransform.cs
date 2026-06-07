@@ -210,7 +210,7 @@ public sealed class GcmModeTransform
             if (nonceOrJ0.Length != BlockSize / 8)
             {
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_InitialCounterBlockLength, BlockSize / 8),
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_InitialCounterBlockLength, BlockSize / 8),
                     parameterName);
             }
         }
@@ -219,7 +219,7 @@ public sealed class GcmModeTransform
             if (nonceOrJ0.Length != NonceSize / 8)
             {
                 throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Arg_Invalid_GcmNonceLength, NonceSize / 8),
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_GcmNonceLength, NonceSize / 8),
                     parameterName);
             }
         }
@@ -273,7 +273,7 @@ public sealed class GcmModeTransform
         if (length > MaxPlaintextBytes)
         {
             throw new CryptographicException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_GcmPlaintextLengthExceeded, length, MaxPlaintextBytes));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_GcmPlaintextLengthExceeded, length, MaxPlaintextBytes));
         }
     }
 
@@ -291,7 +291,7 @@ public sealed class GcmModeTransform
         if (length > MaxAadBytes)
         {
             throw new CryptographicException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Crypt_Invalid_GcmAadLengthExceeded, length, MaxAadBytes));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_GcmAadLengthExceeded, length, MaxAadBytes));
         }
     }
 

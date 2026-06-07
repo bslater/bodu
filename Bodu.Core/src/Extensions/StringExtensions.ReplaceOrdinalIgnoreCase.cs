@@ -25,7 +25,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(oldValue);
         return oldValue.Length == 0
-            ? throw new ArgumentException("oldValue must not be empty.", nameof(oldValue))
+            ? throw new ArgumentException(ResourceStrings.Arg_Invalid_StringIsEmpty, nameof(oldValue))
             : value.Replace(oldValue, newValue, StringComparison.OrdinalIgnoreCase);
     }
 }

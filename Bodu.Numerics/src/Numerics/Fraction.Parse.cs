@@ -75,7 +75,7 @@ public readonly partial struct Fraction<T> :
         return TryParseCore(s, provider, out Fraction<T> result)
             ? result
             : throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Format_Invalid_FractionText, s.ToString()));
+                string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Format_Invalid_FractionText, s.ToString()));
     }
 
     /// <summary>

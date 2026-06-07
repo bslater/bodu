@@ -112,7 +112,7 @@ internal sealed class ExchangeRateSeriesBuffer
         {
             throw new ArgumentException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Arg_Invalid_RateSeriesDuplicateDate,
                     DateOnly.FromDayNumber(dayNumber)),
                 dateParamName);
@@ -172,7 +172,7 @@ internal sealed class ExchangeRateSeriesBuffer
         {
             throw new KeyNotFoundException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.IO_KeyNotFound_RateObservationDate,
                     DateOnly.FromDayNumber(dayNumber)));
         }
@@ -418,7 +418,7 @@ internal sealed class ExchangeRateSeriesBuffer
                 {
                     throw new ArgumentException(
                         string.Format(
-                            CultureInfo.InvariantCulture,
+                            CultureInfo.CurrentCulture,
                             FinancialResourceStrings.Arg_Invalid_RateSeriesAddRangeConflict,
                             DateOnly.FromDayNumber(incomingDay)),
                         observationsParamName);

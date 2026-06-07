@@ -147,10 +147,37 @@
   <data name="Arg_OutOfRange_InvalidSedolCharacter" xml:space="preserve">
     <value>Character '{0}' (U+{1:X4}) is not a valid SEDOL character ('0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted).</value>
   </data>
+  <data name="Arg_OutOfRange_ValueExceedsBitWidth" xml:space="preserve">
+    <value>Value must fit in {0} bits (≤ 0x{1:X}).</value>
+  </data>
+  <data name="CharacterSet_AsciiAlphanumeric" xml:space="preserve">
+    <value>ASCII uppercase alphanumeric</value>
+  </data>
+  <data name="CharacterSet_AsciiAlphanumericValidChars" xml:space="preserve">
+    <value>'0' to '9' or 'A' to 'Z'</value>
+  </data>
+  <data name="CharacterSet_Cusip" xml:space="preserve">
+    <value>CUSIP</value>
+  </data>
+  <data name="CharacterSet_CusipValidChars" xml:space="preserve">
+    <value>'0'-'9', 'A'-'Z', '*', '@', or '#'</value>
+  </data>
+  <data name="CharacterSet_Sedol" xml:space="preserve">
+    <value>SEDOL</value>
+  </data>
+  <data name="CharacterSet_SedolValidChars" xml:space="preserve">
+    <value>'0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted</value>
+  </data>
   <data name="Op_Invalid_AlgorithmAlreadyStarted" xml:space="preserve">
     <value>The algorithm is already in use and cannot be reconfigured after computation has started.</value>
   </data>
   <data name="Op_Invalid_CrcStandardNotFound" xml:space="preserve">
     <value>No CRC standard with the name '{0}' exists in the catalogue.</value>
+  </data>
+  <data name="Op_Invalid_PadBlockMisaligned" xml:space="preserve">
+    <value>{0} returned {1} bytes, which is not a multiple of {2} ({3}). Override {4} to permit a non-aligned final block.</value>
+  </data>
+  <data name="Op_Invalid_TotalLengthOverflow" xml:space="preserve">
+    <value>Cumulative input length would exceed the {0}-byte limit tracked by {1}.</value>
   </data>
 </root>

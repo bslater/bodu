@@ -184,7 +184,7 @@ public sealed class Code39Mod43
                 paramName,
                 ch,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_OutOfRange_InvalidCharacterForCharacterSet,
                     ch,
                     (int)ch,

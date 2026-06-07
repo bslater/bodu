@@ -191,7 +191,7 @@ public sealed class IniSection
         ThrowHelper.ThrowIfNull(key);
 
         return !_lookup.TryGetValue(key, out IniEntry? entry)
-            ? throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, s_keyNotFound, key))
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, s_keyNotFound, key))
             : entry.GetValue<T>();
     }
 

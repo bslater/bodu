@@ -115,7 +115,7 @@ public abstract class SymmetricStreamAlgorithm
             if (!IsLegalKeySize(value, _legalKeySizes))
                 throw new CryptographicException(
                     string.Format(
-                        CultureInfo.InvariantCulture,
+                        CultureInfo.CurrentCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value,
                         CryptographyHelper.FormatLegalSizes(_legalKeySizes)));

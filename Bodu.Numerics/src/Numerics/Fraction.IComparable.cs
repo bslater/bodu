@@ -41,7 +41,7 @@ public readonly partial struct Fraction<T> :
             : obj is Fraction<T> other
                 ? Compare(this, other)
                 : throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Arg_Invalid_ComparandType, typeof(Fraction<T>)),
+                    string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Arg_Invalid_ComparandType, typeof(Fraction<T>)),
                     nameof(obj));
     }
 

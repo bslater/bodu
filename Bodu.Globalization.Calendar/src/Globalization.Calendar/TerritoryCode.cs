@@ -155,7 +155,7 @@ public readonly struct TerritoryCode
         ThrowHelper.ThrowIfNull(value);
 
         if (!TryParse(value, out TerritoryCode result))
-            throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_TerritoryCode, value));
+            throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_TerritoryCode, value));
 
         return result;
     }

@@ -448,7 +448,7 @@ Every project that throws exceptions, prints diagnostics, or otherwise exposes u
 | `IO_KeyNotFound_*` / `IO_FileNotFound_*` | I/O failures | `IO_KeyNotFound_Currency` |
 | `Json_Invalid_*` | `JsonException` | `Json_Invalid_DuplicateAmount` |
 
-Use `{0}`, `{1}`, … for format placeholders and combine via `string.Format(CultureInfo.InvariantCulture, …)` at the throw site. Diagnostics live in code, not in the resource string — keep messages short and free of conditional grammar; let the caller insert the dynamic context.
+Use `{0}`, `{1}`, … for format placeholders and combine via `string.Format(CultureInfo.CurrentCulture, …)` at the throw site. All user-facing resource text — exception messages, validation diagnostics, and similar display strings — is formatted with `CultureInfo.CurrentCulture`; reserve `CultureInfo.InvariantCulture` for wire/serialization, code generation, and round-trippable parsing where the format must not vary by culture. Diagnostics live in code, not in the resource string — keep messages short and free of conditional grammar; let the caller insert the dynamic context.
 
 **Cross-file ThrowHelper convention:**
 
@@ -481,7 +481,7 @@ Mirror the partial-file pattern used by `FinancialThrowHelper`:
 
 1. Add a resx entry with a precise key per the naming convention above. Use a comment in the resx if context is helpful.
 2. Regenerate (or hand-edit, mirroring the existing pattern) the Designer accessor.
-3. Replace the literal string at the throw site with `string.Format(CultureInfo.InvariantCulture, <Domain>ResourceStrings.<Key>, …args)` (omit `string.Format` for messages with no placeholders).
+3. Replace the literal string at the throw site with `string.Format(CultureInfo.CurrentCulture, <Domain>ResourceStrings.<Key>, …args)` (omit `string.Format` for messages with no placeholders).
 4. If the rule now appears in two or more files, promote the entire `if (…) throw …` block to a `ThrowIf*` member on the domain helper and replace the call sites with the helper call.
 5. Tests that assert exception message content via `Contains` must continue to find their expected substrings — preserve the `{0}` placeholder arguments that carry the dynamic context (e.g. type name, ISO code, value).
 

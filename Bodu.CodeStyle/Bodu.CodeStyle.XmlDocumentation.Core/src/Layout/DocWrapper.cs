@@ -44,7 +44,7 @@ internal static class DocWrapper
     public static IEnumerable<string> Wrap(IReadOnlyList<string> atoms, int contentBudget)
     {
         if (atoms is null) throw new ArgumentNullException(nameof(atoms));
-        if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), "Content budget must be positive.");
+        if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), XmlDocResourceStrings.Arg_OutOfRange_ContentBudgetNotPositive);
 
         var lineAtoms = new List<LineAtom>();
         var lineLength = 0;

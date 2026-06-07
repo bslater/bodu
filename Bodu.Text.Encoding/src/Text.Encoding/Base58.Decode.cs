@@ -141,14 +141,14 @@ public static partial class Base58
 
             if (c >= lookup.Length)
             {
-                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base58CharacterNotInAlphabet, c);
+                error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base58CharacterNotInAlphabet, c);
                 return false;
             }
 
             int symbolValue = lookup[c];
             if (symbolValue < 0)
             {
-                error = string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Format_Invalid_Base58CharacterNotInAlphabet, c);
+                error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base58CharacterNotInAlphabet, c);
                 return false;
             }
 

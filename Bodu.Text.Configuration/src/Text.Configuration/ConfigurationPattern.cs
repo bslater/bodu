@@ -150,7 +150,7 @@ public sealed partial class ConfigurationPattern
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.PatternTooLong,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     ConfigurationResourceStrings.Format_Invalid_PatternTooLong,
                     pattern.Length,
                     MaxPatternLength),

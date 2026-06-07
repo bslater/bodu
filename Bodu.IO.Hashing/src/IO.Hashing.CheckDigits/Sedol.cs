@@ -147,7 +147,7 @@ public sealed class Sedol
                     nameof(body),
                     ch,
                     string.Format(
-                        System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.CultureInfo.CurrentCulture,
                         HashingResourceStrings.Arg_OutOfRange_InvalidSedolCharacter,
                         ch,
                         (int)ch));

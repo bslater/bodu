@@ -158,7 +158,7 @@ public sealed partial class MoneyBag
         return rate <= 0m
             ? throw new InvalidOperationException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_RateNotStrictlyPositive,
                     from,
                     to,

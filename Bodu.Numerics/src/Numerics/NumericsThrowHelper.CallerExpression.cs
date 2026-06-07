@@ -48,7 +48,7 @@ internal static partial class NumericsThrowHelper
                 paramName,
                 policy,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     NumericsResourceStrings.Op_Invalid_NumericsJsonPolicyUndefined,
                     policy));
         }

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.IO.Hashing.CheckDigits;
@@ -40,7 +41,7 @@ internal static class Alphanumeric
                         ? 37
                         : ch == '#'
                             ? 38
-                            : throw new ArgumentOutOfRangeException(nameof(ch), ch, FormatInvalidCharacterMessage(ch, "CUSIP", "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
+                            : throw new ArgumentOutOfRangeException(nameof(ch), ch, FormatInvalidCharacterMessage(ch, HashingResourceStrings.CharacterSet_Cusip, HashingResourceStrings.CharacterSet_CusipValidChars));
 
     /// <summary>
     /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9 and
@@ -85,7 +86,7 @@ internal static class Alphanumeric
         for (var i = 0; i < value.Length; i++)
         {
             var ch = value[i];
-            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) throw new ArgumentOutOfRangeException(paramName, ch, FormatInvalidCharacterMessage(ch, "ASCII uppercase alphanumeric", "'0' to '9' or 'A' to 'Z'"));
+            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) throw new ArgumentOutOfRangeException(paramName, ch, FormatInvalidCharacterMessage(ch, HashingResourceStrings.CharacterSet_AsciiAlphanumeric, HashingResourceStrings.CharacterSet_AsciiAlphanumericValidChars));
         }
     }
 
@@ -111,8 +112,8 @@ internal static class Alphanumeric
                 ch,
                 FormatInvalidCharacterMessage(
                     ch,
-                    "CUSIP",
-                    "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
+                    HashingResourceStrings.CharacterSet_Cusip,
+                    HashingResourceStrings.CharacterSet_CusipValidChars));
         }
     }
 
@@ -139,8 +140,8 @@ internal static class Alphanumeric
                 ch,
                 FormatInvalidCharacterMessage(
                     ch,
-                    "SEDOL",
-                    "'0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted"));
+                    HashingResourceStrings.CharacterSet_Sedol,
+                    HashingResourceStrings.CharacterSet_SedolValidChars));
         }
     }
 
@@ -150,6 +151,7 @@ internal static class Alphanumeric
         string validCharacterDescription)
     {
         return string.Format(
+            CultureInfo.CurrentCulture,
             HashingResourceStrings.Arg_OutOfRange_InvalidCharacterForCharacterSet,
             ch,
             (int)ch,

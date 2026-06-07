@@ -197,7 +197,7 @@ public readonly partial struct Money<TCurrency> :
         {
             if (elideIfMatched || hasPrecisionSuffix)
                 throw new FormatException(
-                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
 
             return string.Concat(
                 metadata.IsoCode,
@@ -241,7 +241,7 @@ public readonly partial struct Money<TCurrency> :
 
             default:
                 throw new FormatException(
-                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
         }
     }
 
@@ -304,7 +304,7 @@ public readonly partial struct Money<TCurrency> :
             || decimals < 0 || decimals > MaxDisplayPrecision)
         {
             throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
         }
 
         hasPrecisionSuffix = true;

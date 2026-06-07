@@ -50,7 +50,7 @@ internal static class NotableDateRuleValidator
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-YEARS",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_AdjustmentScopeFromYearAfterToYear, policy.Id, from, to)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_AdjustmentScopeFromYearAfterToYear, policy.Id, from, to)));
             }
         }
     }
@@ -71,7 +71,7 @@ internal static class NotableDateRuleValidator
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-DUP-POLICY",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateAdjustmentPolicyId, policy.Id)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DuplicateAdjustmentPolicyId, policy.Id)));
             }
         }
     }
@@ -96,7 +96,7 @@ internal static class NotableDateRuleValidator
                     diagnostics.Add(new NotableDateValidationDiagnostic(
                         NotableDateValidationSeverity.Error,
                         "BODU-CAL-HANDLER-MISSING",
-                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_CustomHandlerKeyMissing, policy.Id)));
+                        string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_CustomHandlerKeyMissing, policy.Id)));
                     break;
 
                 default:
@@ -120,7 +120,7 @@ internal static class NotableDateRuleValidator
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-TRIGGER-HANDLER-MISSING",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_CustomTriggerHandlerKeyMissing, policy.Id)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_CustomTriggerHandlerKeyMissing, policy.Id)));
             }
         }
     }
@@ -140,7 +140,7 @@ internal static class NotableDateRuleValidator
             diagnostics.Add(new NotableDateValidationDiagnostic(
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-REPLACE-MISSING",
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_ReplaceReferenceMissing, policy.Id)));
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_ReplaceReferenceMissing, policy.Id)));
             return;
         }
 
@@ -154,14 +154,14 @@ internal static class NotableDateRuleValidator
             diagnostics.Add(new NotableDateValidationDiagnostic(
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-REPLACE-MISSING",
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_ReplaceReferenceNotFound, policy.Id, reference)));
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_ReplaceReferenceNotFound, policy.Id, reference)));
         }
         else if (matches > 1)
         {
             diagnostics.Add(new NotableDateValidationDiagnostic(
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-REPLACE-AMBIGUOUS",
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_ReplaceReferenceAmbiguous, policy.Id, reference)));
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_ReplaceReferenceAmbiguous, policy.Id, reference)));
         }
     }
 
@@ -185,7 +185,7 @@ internal static class NotableDateRuleValidator
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-DUP-ND",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateNotableDateId, definition.Id)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DuplicateNotableDateId, definition.Id)));
             }
 
             ValidateRules(resource, definition, knownPolicies, diagnostics, algorithms);
@@ -219,7 +219,7 @@ internal static class NotableDateRuleValidator
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-DUP-RULE",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_DuplicateRuleId, rule.Id, definition.Id)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DuplicateRuleId, rule.Id, definition.Id)));
             }
 
             foreach (var policyRef in rule.AdjustmentPolicyRefs)
@@ -229,7 +229,7 @@ internal static class NotableDateRuleValidator
                     diagnostics.Add(new NotableDateValidationDiagnostic(
                         NotableDateValidationSeverity.Error,
                         "BODU-CAL-ADJREF",
-                        string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_UnresolvedAdjustmentPolicy, rule.Id, policyRef)));
+                        string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_UnresolvedAdjustmentPolicy, rule.Id, policyRef)));
                 }
             }
 
@@ -270,14 +270,14 @@ internal static class NotableDateRuleValidator
                         diagnostics.Add(new NotableDateValidationDiagnostic(
                             NotableDateValidationSeverity.Error,
                             "BODU-CAL-OFFSET-MISSING",
-                            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
+                            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
                     }
                     else if (matches > 1)
                     {
                         diagnostics.Add(new NotableDateValidationDiagnostic(
                             NotableDateValidationSeverity.Error,
                             "BODU-CAL-OFFSET-AMBIGUOUS",
-                            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
+                            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
                     }
 
                     break;
@@ -287,7 +287,7 @@ internal static class NotableDateRuleValidator
                 diagnostics.Add(new NotableDateValidationDiagnostic(
                     NotableDateValidationSeverity.Error,
                     "BODU-CAL-ALGORITHM",
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_UnknownAlgorithm, definition.Id, rule.Id, algorithm.Key)));
+                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_UnknownAlgorithm, definition.Id, rule.Id, algorithm.Key)));
                 break;
 
             default:
@@ -339,7 +339,7 @@ internal static class NotableDateRuleValidator
             diagnostics.Add(new NotableDateValidationDiagnostic(
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-YEARS",
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Validation_FromYearAfterToYear, definition.Id, rule.Id, from, to)));
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_FromYearAfterToYear, definition.Id, rule.Id, from, to)));
         }
     }
 
@@ -371,7 +371,7 @@ internal static class NotableDateRuleValidator
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-DAY",
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     CalendarResourceStrings.Validation_InvalidDayValue,
                     definition.Id,
                     rule.Id,

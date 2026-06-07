@@ -63,6 +63,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Arg_OutOfRange_ContinuedFractionLimit" xml:space="preserve">
+    <value>The denominator limit must be at least one.</value>
+  </data>
+  <data name="Arg_OutOfRange_ContinuedFractionTerm" xml:space="preserve">
+    <value>Coefficients after the first must be strictly positive.</value>
+  </data>
   <data name="Json_Invalid_CompactFractionForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact Fraction&lt;{1}&gt; form.</value>
   </data>

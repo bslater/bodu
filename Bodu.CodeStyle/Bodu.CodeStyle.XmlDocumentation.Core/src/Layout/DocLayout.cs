@@ -36,7 +36,7 @@ internal static class DocLayout
     {
         if (tokens is null) throw new ArgumentNullException(nameof(tokens));
         if (options is null) throw new ArgumentNullException(nameof(options));
-        if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), "Content budget must be positive.");
+        if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), XmlDocResourceStrings.Arg_OutOfRange_ContentBudgetNotPositive);
 
         var output = new List<string>();
         ComposeRange(tokens, 0, tokens.Count, options, contentBudget, output);

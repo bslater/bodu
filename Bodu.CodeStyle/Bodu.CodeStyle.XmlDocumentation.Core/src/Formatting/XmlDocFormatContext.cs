@@ -27,7 +27,7 @@ public sealed class XmlDocFormatContext
     {
         if (baseIndent is null) throw new ArgumentNullException(nameof(baseIndent));
         if (lineEnding is null) throw new ArgumentNullException(nameof(lineEnding));
-        if (lineEnding.Length == 0) throw new ArgumentException("Line ending must not be empty.", nameof(lineEnding));
+        if (lineEnding.Length == 0) throw new ArgumentException(XmlDocResourceStrings.Arg_Invalid_LineEndingEmpty, nameof(lineEnding));
 
         this.BaseIndent = baseIndent;
         this.LineEnding = lineEnding;

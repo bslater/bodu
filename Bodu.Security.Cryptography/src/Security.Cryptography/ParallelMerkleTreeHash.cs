@@ -442,7 +442,7 @@ public sealed class ParallelMerkleTreeHash
         if (!_levelChannels[level].Writer.TryWrite(hash))
         {
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CryptoResourceStrings.Op_Invalid_MerkleChannelCompleted, level));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_Invalid_MerkleChannelCompleted, level));
         }
     }
 

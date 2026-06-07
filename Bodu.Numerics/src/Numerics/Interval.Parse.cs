@@ -43,7 +43,7 @@ public readonly partial struct Interval<T> :
     {
         return !TryParse(s, provider, out Interval<T> value)
             ? throw new FormatException(
-                string.Format(CultureInfo.InvariantCulture, NumericsResourceStrings.Format_Invalid_IntervalText, s.ToString(), typeof(T).Name))
+                string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Format_Invalid_IntervalText, s.ToString(), typeof(T).Name))
             : value;
     }
 

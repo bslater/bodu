@@ -163,7 +163,7 @@ public static partial class Base85
             var required = emitDelimiters ? written + Ascii85DelimiterLength : written;
             if (destination.Length < required)
                 throw new ArgumentException(
-                    string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Arg_Invalid_Base85DestinationSize, required),
+                    string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base85DestinationSize, required),
                     nameof(destination));
 
             var pos = 0;

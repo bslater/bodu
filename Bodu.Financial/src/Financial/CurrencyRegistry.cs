@@ -108,7 +108,7 @@ public static class CurrencyRegistry
         return TryGet(isoCode, out CurrencyInfo? info)
             ? info!
             : throw new KeyNotFoundException(
-                string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.IO_KeyNotFound_Currency, isoCode));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.IO_KeyNotFound_Currency, isoCode));
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ public static class CurrencyRegistry
 
             default:
                 throw new InvalidOperationException(
-                    string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.Op_Invalid_DuplicateCustomCurrency, info.IsoCode));
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Op_Invalid_DuplicateCustomCurrency, info.IsoCode));
         }
     }
 

@@ -82,6 +82,6 @@ public sealed class FixedExchangeRateTable : IExchangeRateProvider
             return 1m / inverseRate;
 
         throw new KeyNotFoundException(
-            string.Format(CultureInfo.InvariantCulture, FinancialResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode));
+            string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode));
     }
 }

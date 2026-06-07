@@ -134,7 +134,7 @@ public sealed class IntervalJsonConverter<T>
         {
             throw new JsonException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     NumericsResourceStrings.Json_Invalid_ExpectedCompactString_Interval,
                     typeof(T).Name));
         }
@@ -143,7 +143,7 @@ public sealed class IntervalJsonConverter<T>
         return !Interval<T>.TryParse(text, CultureInfo.InvariantCulture, out Interval<T> result)
             ? throw new JsonException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     NumericsResourceStrings.Json_Invalid_CompactIntervalForm,
                     text,
                     typeof(T).Name))
@@ -338,7 +338,7 @@ public sealed class IntervalJsonConverter<T>
             ? false
             : throw new JsonException(
             string.Format(
-                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
                 NumericsResourceStrings.Json_Invalid_PropertyMustBeBoolean,
                 propertyName));
     }

@@ -13,6 +13,35 @@ namespace Bodu.IO.Hashing;
 internal static partial class HashingThrowHelper
 {
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> when <paramref name="value" /> does not fit within
+    /// <paramref name="size" /> bits.
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="size">The permitted width, in bits.</param>
+    /// <param name="widthMask">The mask representing the largest value permitted for <paramref name="size" /> bits.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value" /> is greater than <paramref name="widthMask" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfExceedsBitWidth(
+        ulong value,
+        int size,
+        ulong widthMask,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (value > widthMask)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                value,
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    HashingResourceStrings.Arg_OutOfRange_ValueExceedsBitWidth,
+                    size,
+                    widthMask));
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> when <paramref name="hashSize" /> is not present in
     /// <paramref name="validHashSizes" />.
     /// </summary>
@@ -32,7 +61,7 @@ internal static partial class HashingThrowHelper
                 paramName,
                 hashSize,
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_OutOfRange_HashSize,
                     hashSize,
                     string.Join(", ", validHashSizes)));
@@ -56,7 +85,7 @@ internal static partial class HashingThrowHelper
         if (actualLength < requiredLength)
             throw new ArgumentException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     HashingResourceStrings.Arg_Invalid_DestinationSpanTooShortChars,
                     requiredLength),
                 paramName);

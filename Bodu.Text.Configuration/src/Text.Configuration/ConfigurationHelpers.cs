@@ -38,7 +38,7 @@ internal static class ConfigurationHelpers
     internal static void ThrowConfigKeyNotPresent(string key) =>
         throw new KeyNotFoundException(
             string.Format(
-                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
                 ConfigurationResourceStrings.Op_Invalid_ConfigKeyNotPresent,
                 key));
 
@@ -57,7 +57,7 @@ internal static class ConfigurationHelpers
     internal static void ThrowValueNotConvertible(string key, string? rawValue, string targetTypeName) =>
         throw new FormatException(
             string.Format(
-                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
                 ConfigurationResourceStrings.Format_Invalid_ValueNotConvertible,
                 key,
                 rawValue,

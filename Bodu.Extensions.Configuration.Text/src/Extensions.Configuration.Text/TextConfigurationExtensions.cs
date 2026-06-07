@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Text.Configuration;
 using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;
@@ -247,7 +248,7 @@ public static class TextConfigurationExtensions
                     source.ReloadOnChange = reloadOnChange;
                 })
                 : throw new FileNotFoundException(
-                    $"Neither '{DefaultDotFileName}' nor '{DefaultPlainFileName}' was found in the configured file provider.");
+                    string.Format(CultureInfo.CurrentCulture, ConfigurationTextResourceStrings.IO_FileNotFound_DefaultConfigFiles, DefaultDotFileName, DefaultPlainFileName));
     }
 
     /// <summary>

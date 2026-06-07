@@ -553,7 +553,7 @@ internal static partial class CryptographyThrowHelper
         if (cipher.BlockSize != requiredBlockSizeBits)
             throw new ArgumentException(
                 string.Format(
-                    CultureInfo.InvariantCulture,
+                    CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Arg_Invalid_CipherBlockSizeRequired,
                     role,
                     requiredBlockSizeBits / 8),
