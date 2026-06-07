@@ -84,6 +84,19 @@ byte[] headerBytes = Base64.Decode(
     BaseFormatStyles.AllowMissingPadding);
 ```
 
+### The dedicated `Base64Url` helper
+
+When URL-safe is *all* you need, <xref:Bodu.Text.Encoding.Base64Url> is a focused static class — RFC 4648 §5, unpadded — that skips the variant argument entirely. It offers `string`, span, and UTF-8 surfaces with `Encode` / `Decode` / `EncodeToUtf8` and `GetEncodedLength`:
+
+```csharp
+string token = Base64Url.Encode(payload);              // unpadded URL-safe
+byte[] back  = Base64Url.Decode(token);                // string or ReadOnlySpan<char>
+byte[] utf8  = Base64Url.EncodeToUtf8(payload);        // straight to UTF-8 bytes
+int   length = Base64Url.GetEncodedLength(payload.Length);
+```
+
+Reach for `Base64.Encode(..., Base64Variant.UrlSafe, ...)` when you need the full formatting-options surface (padding control, lenient styles); reach for `Base64Url` when you just want canonical unpadded URL-safe Base64.
+
 ## MIME line wrapping
 
 MIME mandates `\r\n` every 76 characters. The encoder honours this automatically when the variant is `Mime`:

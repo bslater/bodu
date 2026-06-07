@@ -37,6 +37,9 @@ that ship in .NET 8+.
   specifiers; what the parser accepts; culture and span surfaces.
 - [Working with `Interval<T>`](interval.md) — endpoint inclusivity,
   set operations, parsing and formatting.
+- [JSON serialization](json-serialization.md) — round-tripping
+  `Fraction<T>` and `Interval<T>` through `System.Text.Json` under the
+  strict, lenient, and compact policies.
 
 ## See also
 

@@ -63,6 +63,9 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   one fixed dataset run through every `ExchangeRateDateResolution`
   policy, tolerance window, and the inverse / identity switches, with a
   results matrix showing exactly how each option changes the answer.
+- [Dependency injection](dependency-injection.md) — register the
+  financial stack with `AddBoduFinancial(...)`: currency lookups,
+  monetary contexts, FX providers, JSON converters, and options binding.
 
 ## See also
 

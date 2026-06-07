@@ -66,3 +66,4 @@ guides drill into the variant-specific options:
 - **[Base58 guide](base58.md)** — leading zeros, big-integer encoding; Bitcoin/IPFS.
 - **[Base85 guide](base85.md)** — Ascii85 vs Z85; the `z` shortcut; partial-group rules.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding pattern.
+- **[Encoding helpers and BOM detection](encoding-helpers.md)** — `System.Text.Encoding` helpers: `string`↔`byte[]` conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.

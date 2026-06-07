@@ -17,8 +17,8 @@ uid: Bodu.IO.Hashing.CheckDigits
 **Financial / banking identifiers:**
 
 - <xref:Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber> — ABA routing number (US).
-- <xref:Bodu.IO.Hashing.Checksums.Iban> — IBAN MOD-97.
-- <xref:Bodu.IO.Hashing.Checksums.Lei> — Legal Entity Identifier (ISO 17442).
+- <xref:Bodu.IO.Hashing.CheckDigits.Iban> — IBAN MOD-97.
+- <xref:Bodu.IO.Hashing.CheckDigits.Lei> — Legal Entity Identifier (ISO 17442).
 
 **Retail / GS1:**
 
@@ -26,11 +26,11 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 **Securities:**
 
-- <xref:Bodu.IO.Hashing.Checksums.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Isin>, <xref:Bodu.IO.Hashing.Checksums.Sedol>
+- <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Isin>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>
 
 **Publishing:**
 
-- <xref:Bodu.IO.Hashing.Checksums.Isbn10>, <xref:Bodu.IO.Hashing.Checksums.Isbn13>
+- <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>
 
 **Encoded identifiers:**
 
@@ -38,7 +38,7 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 **ISO 7064:**
 
-- <xref:Bodu.IO.Hashing.Checksums.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.Checksums.Iso7064Mod97_10>
+- <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10>
 
 ## Example
 

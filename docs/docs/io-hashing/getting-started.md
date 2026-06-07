@@ -80,7 +80,7 @@ bool valid = Luhn.IsValid("4539 1488 0343 6467".Replace(" ", ""));
 char digit  = Luhn.ComputeCheckDigit("453914880343646");
 ```
 
-Other check-digit types follow the same `IsValid` / `ComputeCheckDigit` contract. For multi-character checksums, see <xref:Bodu.IO.Hashing.Checksums.Iban>, <xref:Bodu.IO.Hashing.Checksums.Isbn13>, <xref:Bodu.IO.Hashing.Checksums.Cusip>, and <xref:Bodu.IO.Hashing.Checksums.Lei>.
+Other check-digit types follow the same `IsValid` / `ComputeCheckDigit` contract. For multi-character checksums, see <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, and <xref:Bodu.IO.Hashing.CheckDigits.Lei>.
 
 ### Check digit — IBAN (multi-character)
 

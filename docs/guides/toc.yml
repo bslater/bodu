@@ -16,6 +16,14 @@
           href: core/evicting-dictionary.md
         - name: Indexed priority queue
           href: core/indexed-priority-queue.md
+        - name: Indexed and ordered sets
+          href: core/ordered-sets.md
+        - name: Multiset
+          href: core/multiset.md
+        - name: Multi-value dictionary
+          href: core/multi-value-dictionary.md
+        - name: Segmented buffer
+          href: core/segmented-buffer.md
         - name: Range-keyed lookups
           href: core/range-dictionary.md
     - name: Bodu.Collections.Generic.Concurrent
@@ -48,6 +56,8 @@
       href: financial/exchange-types.md
     - name: Exchange-rate lookups (worked dataset)
       href: financial/exchange-rate-lookups.md
+    - name: Dependency injection
+      href: financial/dependency-injection.md
 - name: Bodu.Globalization.Calendar
   items:
     - name: Overview
@@ -154,6 +164,8 @@
       href: numerics/formatting-and-parsing.md
     - name: Working with Interval<T>
       href: numerics/interval.md
+    - name: JSON serialization
+      href: numerics/json-serialization.md
 - name: Bodu.Security.Cryptography
   items:
     - name: Overview
@@ -258,6 +270,8 @@
       items:
         - name: The IBinaryEncoding interface
           href: text-encoding/binary-encodings-interface.md
+        - name: Encoding helpers and BOM detection
+          href: text-encoding/encoding-helpers.md
 - name: Bodu.Text.Formats
   items:
     - name: Overview

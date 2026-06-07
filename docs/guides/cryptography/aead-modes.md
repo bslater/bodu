@@ -251,4 +251,6 @@ On the wire, a failed tag check is indistinguishable from an attack; treat every
 
 - [Encryption basics](encryption-basics.md) — the Key / IV / Tweak / Padding lifecycle for the non-AEAD ciphers.
 - [Cipher block modes](cipher-modes.md) — the five classic non-authenticated modes (ECB / CBC / CFB / OFB / CTR).
+- [Stream ciphers § authenticated stream ciphers](stream-ciphers.md#authenticated-stream-ciphers--poly1305-aead) — the ready-made `XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, and NaCl `secretbox` (`XSalsa20Poly1305`) constructions when you want AEAD over a stream cipher rather than AES.
+- [ASCON AEAD](ascon-aead.md) — lightweight authenticated encryption.
 - API reference: [<xref:Bodu.Security.Cryptography.AesBlockCipher>] · [<xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform>] · [<xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions>].

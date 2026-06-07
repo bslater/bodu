@@ -12,7 +12,7 @@ If you have not yet installed the package or want the high-level shape of the li
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Collections.Generic` | Bounded ring-backed collections — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `RingBackedCollection<T>` base. | [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) |
+| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) |
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`. | (covered in [Circular buffer](circular-buffer.md#pattern-5--concurrent-access-with-concurrentcircularbuffer)) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | (no dedicated guide yet — see API reference) |
@@ -38,6 +38,36 @@ If you have not yet installed the package or want the high-level shape of the li
 <div class="bodu-card">
   <h3><a href="evicting-dictionary.md">Evicting dictionary</a></h3>
   <p>Capacity-bounded key-value store with FIFO, LRU, and LFU eviction policies.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="indexed-priority-queue.md">Indexed priority queue</a></h3>
+  <p>Min-heap priority queue with O(1) lookup-by-element and in-place priority updates — for Dijkstra, Prim, and A*.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="ordered-sets.md">Indexed and ordered sets</a></h3>
+  <p>Insertion-ordered unique collections — <code>IndexedSet&lt;T&gt;</code> (unique <code>IList&lt;T&gt;</code>) and <code>OrderedSet&lt;T&gt;</code> (ordered set algebra).</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="multiset.md">Multiset</a></h3>
+  <p>A bag that retains duplicates as multiplicity — frequency counting and multiset algebra (sum, union, intersect, except).</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="multi-value-dictionary.md">Multi-value dictionary</a></h3>
+  <p>One key to many values without the <code>Dictionary&lt;TKey, List&lt;TValue&gt;&gt;</code> boilerplate; the indexer never returns <code>null</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="range-dictionary.md">Range-keyed lookups</a></h3>
+  <p>Half-open interval keys — <code>Range&lt;T&gt;</code>, <code>RangeDictionary&lt;TKey,TValue&gt;</code>, and <code>RangeSet&lt;T&gt;</code> with union / intersect / except.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="segmented-buffer.md">Segmented buffer</a></h3>
+  <p>Append-only buffer that grows in fixed-size segments — avoids the array-doubling copy for streams of unknown length.</p>
 </div>
 
 </div>
