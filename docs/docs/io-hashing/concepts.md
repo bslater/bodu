@@ -131,13 +131,13 @@ A few high-stakes identifiers use **multi-character** checks — two or more cha
 
 | Identifier | Check length | Alphabet | Algorithm |
 |---|---|---|---|
-| IBAN | 2 digits | Alphanumeric (uppercase) payload, decimal check | <xref:Bodu.IO.Hashing.Checksums.Iban> (ISO 7064 Mod-97-10) |
-| LEI | 2 digits | Alphanumeric (uppercase) payload, decimal check | <xref:Bodu.IO.Hashing.Checksums.Lei> (ISO 7064 Mod-97-10) |
-| ISBN-13 | 1 digit | Decimal | <xref:Bodu.IO.Hashing.Checksums.Isbn13> |
-| ISBN-10 | 1 character (`0`–`9` or `X`) | Decimal payload, `X` permitted as check | <xref:Bodu.IO.Hashing.Checksums.Isbn10> |
-| CUSIP / SEDOL | 1 digit | Alphanumeric | <xref:Bodu.IO.Hashing.Checksums.Cusip>, <xref:Bodu.IO.Hashing.Checksums.Sedol> |
+| IBAN | 2 digits | Alphanumeric (uppercase) payload, decimal check | <xref:Bodu.IO.Hashing.CheckDigits.Iban> (ISO 7064 Mod-97-10) |
+| LEI | 2 digits | Alphanumeric (uppercase) payload, decimal check | <xref:Bodu.IO.Hashing.CheckDigits.Lei> (ISO 7064 Mod-97-10) |
+| ISBN-13 | 1 digit | Decimal | <xref:Bodu.IO.Hashing.CheckDigits.Isbn13> |
+| ISBN-10 | 1 character (`0`–`9` or `X`) | Decimal payload, `X` permitted as check | <xref:Bodu.IO.Hashing.CheckDigits.Isbn10> |
+| CUSIP / SEDOL | 1 digit | Alphanumeric | <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol> |
 
-Multi-character check algorithms live in `Bodu.IO.Hashing.Checksums` alongside the generic ISO 7064 building blocks (<xref:Bodu.IO.Hashing.Checksums.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.Checksums.Iso7064Mod97_10>) and share the <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> abstract base.
+Multi-character check algorithms live in `Bodu.IO.Hashing.Checksums` alongside the generic ISO 7064 building blocks (<xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10>) and share the <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> abstract base.
 
 ## Validate vs. compute
 

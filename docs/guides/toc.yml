@@ -16,6 +16,14 @@
           href: core/evicting-dictionary.md
         - name: Indexed priority queue
           href: core/indexed-priority-queue.md
+        - name: Indexed and ordered sets
+          href: core/ordered-sets.md
+        - name: Multiset
+          href: core/multiset.md
+        - name: Multi-value dictionary
+          href: core/multi-value-dictionary.md
+        - name: Segmented buffer
+          href: core/segmented-buffer.md
         - name: Range-keyed lookups
           href: core/range-dictionary.md
     - name: Bodu.Collections.Generic.Concurrent

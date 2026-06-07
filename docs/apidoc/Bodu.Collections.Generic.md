@@ -14,7 +14,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 - **[Bodu.Core introduction](~/docs/core/index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.Core getting started](~/docs/core/getting-started.md)** — install and minimal samples for the headline types.
-- **[Bodu.Core guides](~/guides/core/index.md)** — recipe-style walk-throughs: [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [`WeekPattern`](~/guides/core/week-pattern.md).
+- **[Bodu.Core guides](~/guides/core/index.md)** — recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`WeekPattern`](~/guides/core/week-pattern.md).
 
 ## Key types
 
