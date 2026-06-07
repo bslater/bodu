@@ -151,6 +151,69 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Value must fit in {0} bits (≤ 0x{1:X})..
+        /// </summary>
+        internal static string Arg_OutOfRange_ValueExceedsBitWidth {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ValueExceedsBitWidth", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ASCII uppercase alphanumeric.
+        /// </summary>
+        internal static string CharacterSet_AsciiAlphanumeric {
+            get {
+                return ResourceManager.GetString("CharacterSet_AsciiAlphanumeric", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;0&apos; to &apos;9&apos; or &apos;A&apos; to &apos;Z&apos;.
+        /// </summary>
+        internal static string CharacterSet_AsciiAlphanumericValidChars {
+            get {
+                return ResourceManager.GetString("CharacterSet_AsciiAlphanumericValidChars", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CUSIP.
+        /// </summary>
+        internal static string CharacterSet_Cusip {
+            get {
+                return ResourceManager.GetString("CharacterSet_Cusip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;0&apos;-&apos;9&apos;, &apos;A&apos;-&apos;Z&apos;, &apos;*&apos;, &apos;@&apos;, or &apos;#&apos;.
+        /// </summary>
+        internal static string CharacterSet_CusipValidChars {
+            get {
+                return ResourceManager.GetString("CharacterSet_CusipValidChars", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SEDOL.
+        /// </summary>
+        internal static string CharacterSet_Sedol {
+            get {
+                return ResourceManager.GetString("CharacterSet_Sedol", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;0&apos;-&apos;9&apos; or uppercase consonant; vowels A/E/I/O/U are not permitted.
+        /// </summary>
+        internal static string CharacterSet_SedolValidChars {
+            get {
+                return ResourceManager.GetString("CharacterSet_SedolValidChars", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The algorithm is already in use and cannot be reconfigured after computation has started..
         /// </summary>
         internal static string Op_Invalid_AlgorithmAlreadyStarted {
@@ -165,6 +228,24 @@ namespace Bodu {
         internal static string Op_Invalid_CrcStandardNotFound {
             get {
                 return ResourceManager.GetString("Op_Invalid_CrcStandardNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} returned {1} bytes, which is not a multiple of {2} ({3}). Override {4} to permit a non-aligned final block..
+        /// </summary>
+        internal static string Op_Invalid_PadBlockMisaligned {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PadBlockMisaligned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cumulative input length would exceed the {0}-byte limit tracked by {1}..
+        /// </summary>
+        internal static string Op_Invalid_TotalLengthOverflow {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TotalLengthOverflow", resourceCulture);
             }
         }
     }

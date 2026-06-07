@@ -142,9 +142,9 @@ public sealed partial class CrcStandard
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
         var widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
-        if (polynomial > widthMask) throw new ArgumentOutOfRangeException(nameof(polynomial), polynomial, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
-        if (initialValue > widthMask) throw new ArgumentOutOfRangeException(nameof(initialValue), initialValue, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
-        if (xOrOut > widthMask) throw new ArgumentOutOfRangeException(nameof(xOrOut), xOrOut, $"Value must fit in {size} bits (≤ 0x{widthMask:X}).");
+        HashingThrowHelper.ThrowIfExceedsBitWidth(polynomial, size, widthMask);
+        HashingThrowHelper.ThrowIfExceedsBitWidth(initialValue, size, widthMask);
+        HashingThrowHelper.ThrowIfExceedsBitWidth(xOrOut, size, widthMask);
 
         Name = name;
         Size = size;

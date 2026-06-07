@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.IO.Hashing;
 
 namespace Bodu.IO.Hashing;
@@ -245,7 +246,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             {
                 if (finalBlock.Length % snapshot.BlockSizeBytes != 0)
                     throw new InvalidOperationException(
-                        $"{nameof(PadBlock)} returned {finalBlock.Length} bytes, which is not a multiple of {nameof(BlockSizeBytes)} ({snapshot.BlockSizeBytes}). Override {nameof(AllowUnalignedFinalBlock)} to permit a non-aligned final block.");
+                        string.Format(CultureInfo.InvariantCulture, HashingResourceStrings.Op_Invalid_PadBlockMisaligned, nameof(PadBlock), finalBlock.Length, nameof(BlockSizeBytes), snapshot.BlockSizeBytes, nameof(AllowUnalignedFinalBlock)));
 
                 for (var i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
                     snapshot.ProcessBlock(finalBlock.AsSpan(i, snapshot.BlockSizeBytes));
@@ -332,7 +333,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
         var bufferLength = (ulong)buffer.Length;
         if (bufferLength > ulong.MaxValue - TotalLength)
             throw new InvalidOperationException(
-                $"Cumulative input length would exceed the {ulong.MaxValue}-byte limit tracked by {nameof(TotalLength)}.");
+                string.Format(CultureInfo.InvariantCulture, HashingResourceStrings.Op_Invalid_TotalLengthOverflow, ulong.MaxValue, nameof(TotalLength)));
 
         TotalLength += bufferLength;
 
