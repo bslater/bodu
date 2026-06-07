@@ -75,7 +75,7 @@ public static partial class HashAlgorithmExtensions
             throw new ArgumentOutOfRangeException(
                 nameof(bufferSize),
                 bufferSize,
-                "Buffer size must be greater than zero.");
+                CryptoResourceStrings.Arg_OutOfRange_BufferSizeNotPositive);
         }
 
         cancellationToken.ThrowIfCancellationRequested();

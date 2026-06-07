@@ -68,7 +68,7 @@ public static class AsiaPacificCalendarData
 
         using Stream stream = typeof(AsiaPacificCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, "No Asia-Pacific calendar resource for territory '{0}'.", territory),
+                string.Format(CultureInfo.InvariantCulture, AsiaPacificCalendarDataResourceStrings.Arg_Invalid_NoResourceForTerritory, territory),
                 nameof(territory));
 
         return NotableDateResourceLoader.Load(stream, CommonNotableDateResources.Resolver);

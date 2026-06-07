@@ -24,6 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="AfricaCalendarDataResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AfricaCalendarDataResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="AfricaCalendarDataResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AfricaCalendarDataResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\*.xml" />
     <!-- Region packs and the shared africa-common hub they import from. -->
     <EmbeddedResource Include="Resources\*.xml">

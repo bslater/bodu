@@ -67,7 +67,7 @@ public static class AfricaCalendarData
 
         using Stream stream = typeof(AfricaCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
-                string.Format(CultureInfo.InvariantCulture, "No Africa calendar resource for territory '{0}'.", territory),
+                string.Format(CultureInfo.InvariantCulture, AfricaCalendarDataResourceStrings.Arg_Invalid_NoResourceForTerritory, territory),
                 nameof(territory));
 
         return NotableDateResourceLoader.Load(stream, ResolveResource);

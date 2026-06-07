@@ -345,6 +345,15 @@
   <data name="Arg_OutOfRange_MinCannotExceedMax" xml:space="preserve">
     <value>The value cannot be greater than the value of '{0}'.</value>
   </data>
+  <data name="Arg_OutOfRange_NotAsciiAlphanumericUppercase" xml:space="preserve">
+    <value>Character '{0}' (U+{1:X4}) is not an ASCII uppercase alphanumeric character ('0' to '9' or 'A' to 'Z').</value>
+  </data>
+  <data name="Arg_OutOfRange_NotAsciiDecimalDigit" xml:space="preserve">
+    <value>Character '{0}' (U+{1:X4}) is not an ASCII decimal digit ('0' to '9').</value>
+  </data>
+  <data name="Arg_OutOfRange_NotAsciiHexDigit" xml:space="preserve">
+    <value>Character '{0}' (U+{1:X4}) is not a hex digit ('0'–'9', 'A'–'F', or 'a'–'f').</value>
+  </data>
   <data name="Arg_OutOfRange_NotFinite" xml:space="preserve">
     <value>Value must be a finite number (not NaN or infinity).</value>
   </data>
@@ -398,6 +407,15 @@
   </data>
   <data name="Arg_OutOfRange_WorkingWeekEmpty" xml:space="preserve">
     <value>The working week must select at least one day.</value>
+  </data>
+  <data name="Arg_OutOfRange_WorkingWeekPatternUnsupported" xml:space="preserve">
+    <value>Unsupported {0} pattern: {1}.</value>
+  </data>
+  <data name="BufferKind_Array" xml:space="preserve">
+    <value>array</value>
+  </data>
+  <data name="BufferKind_Span" xml:space="preserve">
+    <value>span</value>
   </data>
   <data name="Format_Invalid_7BitInt32" xml:space="preserve">
     <value>Too many bytes in what should have been a 7 bit encoded Int32.</value>

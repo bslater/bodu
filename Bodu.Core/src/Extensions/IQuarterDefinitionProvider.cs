@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 /// <summary>
@@ -279,7 +281,7 @@ public interface IQuarterDefinitionProvider
 
         throw new ArgumentOutOfRangeException(
             nameof(dateTime),
-            $"Unable to determine the fiscal year for date '{dateTime:yyyy-MM-dd}'.");
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_FiscalYearUndeterminable, dateTime));
     }
 
     /// <summary>

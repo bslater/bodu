@@ -43,7 +43,7 @@ public static partial class ThrowHelper
 
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, "array", destination.Length),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, ResourceStrings.BufferKind_Array, destination.Length),
                 nameof(destination));
     }
 
@@ -158,7 +158,7 @@ public static partial class ThrowHelper
     {
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, "span", destination.Length),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, ResourceStrings.BufferKind_Span, destination.Length),
                 nameof(destination));
     }
 

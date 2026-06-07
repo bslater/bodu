@@ -762,7 +762,7 @@ public static partial class DateTimeExtensions
         WorkingDaysOfWeek.AllDays => DayOfWeek.Monday,
         _ => throw new ArgumentOutOfRangeException(
             nameof(workingWeek),
-            $"Unsupported {nameof(WorkingDaysOfWeek)} pattern: {workingWeek}")
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_WorkingWeekPatternUnsupported, nameof(WorkingDaysOfWeek), workingWeek))
     };
 
     /// <summary>

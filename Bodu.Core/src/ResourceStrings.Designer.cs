@@ -745,6 +745,33 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Character &apos;{0}&apos; (U+{1:X4}) is not an ASCII uppercase alphanumeric character (&apos;0&apos; to &apos;9&apos; or &apos;A&apos; to &apos;Z&apos;)..
+        /// </summary>
+        internal static string Arg_OutOfRange_NotAsciiAlphanumericUppercase {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_NotAsciiAlphanumericUppercase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character &apos;{0}&apos; (U+{1:X4}) is not an ASCII decimal digit (&apos;0&apos; to &apos;9&apos;)..
+        /// </summary>
+        internal static string Arg_OutOfRange_NotAsciiDecimalDigit {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_NotAsciiDecimalDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character &apos;{0}&apos; (U+{1:X4}) is not a hex digit (&apos;0&apos;–&apos;9&apos;, &apos;A&apos;–&apos;F&apos;, or &apos;a&apos;–&apos;f&apos;)..
+        /// </summary>
+        internal static string Arg_OutOfRange_NotAsciiHexDigit {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_NotAsciiHexDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value must be a finite number (not NaN or infinity)..
         /// </summary>
         internal static string Arg_OutOfRange_NotFinite {
@@ -903,6 +930,33 @@ namespace Bodu {
         internal static string Arg_OutOfRange_WorkingWeekEmpty {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_WorkingWeekEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported {0} pattern: {1}..
+        /// </summary>
+        internal static string Arg_OutOfRange_WorkingWeekPatternUnsupported {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_WorkingWeekPatternUnsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to array.
+        /// </summary>
+        internal static string BufferKind_Array {
+            get {
+                return ResourceManager.GetString("BufferKind_Array", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to span.
+        /// </summary>
+        internal static string BufferKind_Span {
+            get {
+                return ResourceManager.GetString("BufferKind_Span", resourceCulture);
             }
         }
         
