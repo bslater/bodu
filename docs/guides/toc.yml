@@ -56,6 +56,8 @@
       href: financial/exchange-types.md
     - name: Exchange-rate lookups (worked dataset)
       href: financial/exchange-rate-lookups.md
+    - name: Dependency injection
+      href: financial/dependency-injection.md
 - name: Bodu.Globalization.Calendar
   items:
     - name: Overview
@@ -162,6 +164,8 @@
       href: numerics/formatting-and-parsing.md
     - name: Working with Interval<T>
       href: numerics/interval.md
+    - name: JSON serialization
+      href: numerics/json-serialization.md
 - name: Bodu.Security.Cryptography
   items:
     - name: Overview
