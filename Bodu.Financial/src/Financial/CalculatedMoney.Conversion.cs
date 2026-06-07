@@ -36,7 +36,7 @@ public readonly partial struct CalculatedMoney
         MonetaryContext effective = context ?? MonetaryContext.Default;
         effective.Validate();
 
-        var registered = CurrencyRegistry.TryGet(IsoCode, out CurrencyInfo? info) && info is not null;
+        var registered = CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) && info is not null;
         var currencyMinorUnits = registered ? info!.MinorUnits : 0;
 
         var scale = effective.ResolveScale(currencyMinorUnits);

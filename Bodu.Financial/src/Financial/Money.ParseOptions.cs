@@ -174,7 +174,7 @@ public readonly partial struct Money
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, provider, out var amount))
             return false;
 
-        if (CurrencyRegistry.Contains(iso))
+        if (CurrencyResolution.Contains(iso))
         {
             result = new Money(amount, iso);
             return true;

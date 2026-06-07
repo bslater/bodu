@@ -57,12 +57,12 @@ public readonly partial struct Fraction<T>
     {
         ThrowHelper.ThrowIfNull(coefficients);
         if (coefficients.Length == 0)
-            throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_ContinuedFractionCoefficientsRequired, nameof(coefficients));
+            throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_ContinuedFractionEmpty, nameof(coefficients));
 
         for (var i = 1; i < coefficients.Length; i++)
         {
             if (T.IsZero(coefficients[i]) || T.IsNegative(coefficients[i]))
-                throw new ArgumentOutOfRangeException(nameof(coefficients), NumericsResourceStrings.Arg_OutOfRange_ContinuedFractionCoefficientPositive);
+                throw new ArgumentOutOfRangeException(nameof(coefficients), NumericsResourceStrings.Arg_OutOfRange_ContinuedFractionTerm);
         }
 
         var result = new Fraction<T>(coefficients[^1]);
@@ -93,7 +93,7 @@ public readonly partial struct Fraction<T>
     public Fraction<T> LimitDenominator(T maxDenominator)
     {
         if (T.IsZero(maxDenominator) || T.IsNegative(maxDenominator))
-            throw new ArgumentOutOfRangeException(nameof(maxDenominator), NumericsResourceStrings.Arg_OutOfRange_ContinuedFractionDenominatorLimit);
+            throw new ArgumentOutOfRangeException(nameof(maxDenominator), NumericsResourceStrings.Arg_OutOfRange_ContinuedFractionLimit);
 
         var limit = BigInteger.CreateChecked(maxDenominator);
         if (BigDenominator <= limit)

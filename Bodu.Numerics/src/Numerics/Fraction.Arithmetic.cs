@@ -91,7 +91,7 @@ public readonly partial struct Fraction<T>
     {
         return !IsZero
             ? FromBigInteger(BigDenominator, BigNumerator)
-            : throw new DivideByZeroException(NumericsResourceStrings.Math_DivideByZero_FractionReciprocal);
+            : throw new DivideByZeroException(NumericsResourceStrings.DivideByZero_Reciprocal);
     }
 
     /// <summary>
@@ -116,14 +116,14 @@ public readonly partial struct Fraction<T>
         if (exponent < 0)
         {
             if (IsZero)
-                throw new DivideByZeroException(NumericsResourceStrings.Math_DivideByZero_FractionZeroNegativePower);
+                throw new DivideByZeroException(NumericsResourceStrings.DivideByZero_ZeroToNegativePower);
 
             var magnitude = -(long)exponent;
             return magnitude <= int.MaxValue
                 ? FromBigInteger(
                     BigInteger.Pow(BigDenominator, (int)magnitude),
                     BigInteger.Pow(BigNumerator, (int)magnitude))
-                : throw new OverflowException(NumericsResourceStrings.Math_Overflow_FractionExponentTooLarge);
+                : throw new OverflowException(NumericsResourceStrings.Overflow_ExponentMagnitude);
         }
 
         return FromBigInteger(

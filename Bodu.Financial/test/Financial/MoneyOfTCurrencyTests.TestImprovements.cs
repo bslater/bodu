@@ -168,18 +168,19 @@ public partial class MoneyOfTCurrencyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that allocating an amount whose scaled minor-unit count would exceed <see cref="long" /> throws
-    /// <see cref="OverflowException" /> — the documented allocation range limit.
+    /// Verifies that allocating an amount whose scaled minor-unit count would exceed <see cref="long" /> allocates
+    /// exactly via <see cref="System.Numerics.BigInteger" /> scaling, with the shares summing to the original.
     /// </summary>
     [TestMethod]
-    public void Allocate_WhenScaledMinorUnitsOverflowLong_ShouldThrowOverflowException()
+    public void Allocate_WhenScaledMinorUnitsExceedLong_ShouldAllocateExactlyAndSumToOriginal()
     {
         var huge = new Money<USD>(decimal.MaxValue / 2m);
 
-        Assert.ThrowsExactly<OverflowException>(() =>
-        {
-            _ = huge.Allocate(2);
-        });
+        Money<USD>[] shares = huge.Allocate(2);
+
+        Assert.AreEqual(2, shares.Length);
+        Assert.AreEqual(shares[0], shares[1]);
+        Assert.AreEqual(huge, shares[0] + shares[1]);
     }
 
     /// <summary>

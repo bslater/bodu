@@ -63,32 +63,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Arg_Invalid_ContinuedFractionCoefficientsRequired" xml:space="preserve">
-    <value>At least one coefficient is required.</value>
-  </data>
-  <data name="Arg_Invalid_FractionComparableType" xml:space="preserve">
-    <value>Object must be of type {0}.</value>
-  </data>
-  <data name="Arg_Invalid_FractionMinExceedsMax" xml:space="preserve">
-    <value>The minimum bound must not exceed the maximum bound.</value>
-  </data>
-  <data name="Arg_Invalid_FractionNonFiniteValue" xml:space="preserve">
-    <value>Only finite values can be converted to a fraction.</value>
-  </data>
-  <data name="Arg_OutOfRange_ContinuedFractionCoefficientPositive" xml:space="preserve">
-    <value>Coefficients after the first must be strictly positive.</value>
-  </data>
-  <data name="Arg_OutOfRange_ContinuedFractionDenominatorLimit" xml:space="preserve">
+  <data name="Arg_OutOfRange_ContinuedFractionLimit" xml:space="preserve">
     <value>The denominator limit must be at least one.</value>
   </data>
-  <data name="Format_Invalid_FractionFormatSpecifier" xml:space="preserve">
-    <value>The format string '{0}' is not supported.</value>
-  </data>
-  <data name="Format_Invalid_FractionString" xml:space="preserve">
-    <value>The input string '{0}' was not in a correct fraction format.</value>
-  </data>
-  <data name="Format_Invalid_IntervalString" xml:space="preserve">
-    <value>The value '{0}' is not a valid {1}&lt;{2}&gt; representation.</value>
+  <data name="Arg_OutOfRange_ContinuedFractionTerm" xml:space="preserve">
+    <value>Coefficients after the first must be strictly positive.</value>
   </data>
   <data name="Json_Invalid_CompactFractionForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact Fraction&lt;{1}&gt; form.</value>
@@ -174,34 +153,55 @@
   <data name="Json_Invalid_UpperMustBeNumber" xml:space="preserve">
     <value>The 'upper' property must be a number or a numeric string.</value>
   </data>
-  <data name="Math_DivideByZero_FractionDenominator" xml:space="preserve">
-    <value>The denominator of a fraction must not be zero.</value>
-  </data>
-  <data name="Math_DivideByZero_FractionDivision" xml:space="preserve">
-    <value>Cannot divide a fraction by zero.</value>
-  </data>
-  <data name="Math_DivideByZero_FractionReciprocal" xml:space="preserve">
-    <value>Cannot compute the reciprocal of zero.</value>
-  </data>
-  <data name="Math_DivideByZero_FractionRemainder" xml:space="preserve">
-    <value>Cannot take the remainder of a fraction divided by zero.</value>
-  </data>
-  <data name="Math_DivideByZero_FractionZeroNegativePower" xml:space="preserve">
-    <value>Cannot raise zero to a negative power.</value>
-  </data>
-  <data name="Math_Overflow_FractionExponentTooLarge" xml:space="preserve">
-    <value>The magnitude of the exponent is too large to evaluate.</value>
-  </data>
   <data name="Op_Invalid_NumericsJsonPolicyUndefined" xml:space="preserve">
     <value>Unsupported NumericsJsonPolicy value '{0}'.</value>
   </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
   </data>
-  <data name="Op_NotSupported_FractionTypeUnboundedMax" xml:space="preserve">
+  <data name="DivideByZero_DenominatorZero" xml:space="preserve">
+    <value>The denominator of a fraction must not be zero.</value>
+  </data>
+  <data name="DivideByZero_Division" xml:space="preserve">
+    <value>Cannot divide a fraction by zero.</value>
+  </data>
+  <data name="DivideByZero_Remainder" xml:space="preserve">
+    <value>Cannot take the remainder of a fraction divided by zero.</value>
+  </data>
+  <data name="DivideByZero_Reciprocal" xml:space="preserve">
+    <value>Cannot compute the reciprocal of zero.</value>
+  </data>
+  <data name="DivideByZero_ZeroToNegativePower" xml:space="preserve">
+    <value>Cannot raise zero to a negative power.</value>
+  </data>
+  <data name="Overflow_ExponentMagnitude" xml:space="preserve">
+    <value>The magnitude of the exponent is too large to evaluate.</value>
+  </data>
+  <data name="Op_NotSupported_UnboundedMinValue" xml:space="preserve">
+    <value>The backing type '{0}' is unbounded and has no minimum value.</value>
+  </data>
+  <data name="Op_NotSupported_UnboundedMaxValue" xml:space="preserve">
     <value>The backing type '{0}' is unbounded and has no maximum value.</value>
   </data>
-  <data name="Op_NotSupported_FractionTypeUnboundedMin" xml:space="preserve">
-    <value>The backing type '{0}' is unbounded and has no minimum value.</value>
+  <data name="Arg_Invalid_ComparandType" xml:space="preserve">
+    <value>Object must be of type {0}.</value>
+  </data>
+  <data name="Arg_Invalid_ClampBounds" xml:space="preserve">
+    <value>The minimum bound must not exceed the maximum bound.</value>
+  </data>
+  <data name="Arg_Invalid_NonFiniteToFraction" xml:space="preserve">
+    <value>Only finite values can be converted to a fraction.</value>
+  </data>
+  <data name="Arg_Invalid_ContinuedFractionEmpty" xml:space="preserve">
+    <value>At least one coefficient is required.</value>
+  </data>
+  <data name="Format_Invalid_FractionFormat" xml:space="preserve">
+    <value>The format string '{0}' is not supported.</value>
+  </data>
+  <data name="Format_Invalid_IntervalText" xml:space="preserve">
+    <value>The value '{0}' is not a valid Interval&lt;{1}&gt; representation.</value>
+  </data>
+  <data name="Format_Invalid_FractionText" xml:space="preserve">
+    <value>The input string '{0}' was not in a correct fraction format.</value>
   </data>
 </root>

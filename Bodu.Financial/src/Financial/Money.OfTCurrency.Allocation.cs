@@ -21,9 +21,6 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="parts" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     /// <remarks>
     /// For example, <c>new Money&lt;USD&gt;(0.10m).Allocate(3)</c> returns <c>[0.04, 0.03, 0.03]</c>, and
     /// <c>new Money&lt;USD&gt;(-10m).Allocate(3)</c> returns <c>[-3.34, -3.33, -3.33]</c>. When the amount has fewer
@@ -34,19 +31,13 @@ public readonly partial struct Money<TCurrency>
     {
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);
 
-        var minorTotal = ToMinorUnits(_amount);
-        var basePer = minorTotal / parts;
-        var residual = minorTotal - (basePer * parts);
-        long sign = residual >= 0 ? 1 : -1;
-        var residualMagnitude = Math.Abs(residual);
+        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
+        Span<decimal> shares = parts <= MoneyMath.StackAllocShareThreshold ? stackalloc decimal[parts] : new decimal[parts];
+        MoneyMath.AllocateEvenly(_amount, minorUnits, shares);
 
-        var factor = MinorUnitFactor();
         var result = new Money<TCurrency>[parts];
         for (var i = 0; i < parts; i++)
-        {
-            var share = basePer + (i < residualMagnitude ? sign : 0);
-            result[i] = Money<TCurrency>.FromNormalizedAmount(share / factor);
-        }
+            result[i] = Money<TCurrency>.FromNormalizedAmount(shares[i]);
 
         return result;
     }
@@ -68,86 +59,17 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="ratios" /> is empty, contains a negative element, or sums to zero.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
     public Money<TCurrency>[] Allocate(ReadOnlySpan<decimal> ratios)
     {
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
-        var totalWeight = 0m;
-        for (var i = 0; i < ratios.Length; i++)
-            totalWeight += ratios[i];
+        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
+        decimal[] shares = MoneyMath.AllocateByRatios(_amount, minorUnits, ratios);
 
-        var minorTotalSigned = ToMinorUnits(_amount);
-        long sign = minorTotalSigned >= 0 ? 1 : -1;
-        var minorTotal = Math.Abs(minorTotalSigned);
-        var factor = MinorUnitFactor();
-
-        // Compute floored shares over absolute minor units; track each slot's fractional remainder so the
-        // residual can go to the slot with the largest remainder (Hamilton method).
-        var shares = new long[ratios.Length];
-        var remainders = new decimal[ratios.Length];
-        long allocated = 0;
-        for (var i = 0; i < ratios.Length; i++)
-        {
-            var exact = minorTotal * ratios[i] / totalWeight;
-            var floored = decimal.Truncate(exact);
-            shares[i] = (long)floored;
-            remainders[i] = exact - floored;
-            allocated += shares[i];
-        }
-
-        var residual = minorTotal - allocated;
-        if (residual > 0)
-        {
-            // Sort indices by (descending remainder, ascending index) so ties fall back to stable input order.
-            var order = new int[ratios.Length];
-            for (var i = 0; i < ratios.Length; i++)
-                order[i] = i;
-
-            // Local capture to allow Array.Sort with span.
-            var remaindersLocal = remainders;
-            Array.Sort(order, (a, b) =>
-            {
-                var cmp = remaindersLocal[b].CompareTo(remaindersLocal[a]);
-                return cmp != 0 ? cmp : a.CompareTo(b);
-            });
-
-            long distributed = 0;
-            for (var k = 0; k < order.Length && distributed < residual; k++)
-            {
-                var idx = order[k];
-                if (ratios[idx] <= 0m)
-                    continue;     // never give residual to a zero-ratio slot
-                shares[idx]++;
-                distributed++;
-            }
-        }
-
-        var result = new Money<TCurrency>[ratios.Length];
-        for (var i = 0; i < ratios.Length; i++)
-            result[i] = Money<TCurrency>.FromNormalizedAmount(sign * shares[i] / factor);
+        var result = new Money<TCurrency>[shares.Length];
+        for (var i = 0; i < shares.Length; i++)
+            result[i] = Money<TCurrency>.FromNormalizedAmount(shares[i]);
 
         return result;
     }
-
-    /// <summary>
-    /// Converts the rounded major-unit amount to an exact minor-unit count.
-    /// </summary>
-    /// <param name="amount">The amount, already rounded to <c>TCurrency.MinorUnits</c>.</param>
-    /// <returns>The amount expressed as an integer count of minor units.</returns>
-    /// <exception cref="OverflowException">
-    /// Thrown when the scaled minor-unit count exceeds the range of a 64-bit signed integer.
-    /// </exception>
-    private static long ToMinorUnits(decimal amount) =>
-        decimal.ToInt64(amount * CurrencyMetadata<TCurrency>.Value.MinorUnitFactor);
-
-    /// <summary>
-    /// Returns the scale factor that converts between the major unit and the minor unit of
-    /// <typeparamref name="TCurrency" />, as cached by the validated metadata descriptor.
-    /// </summary>
-    /// <returns><c>10^MinorUnits</c> as a <see cref="decimal" />.</returns>
-    private static decimal MinorUnitFactor() =>
-        CurrencyMetadata<TCurrency>.Value.MinorUnitFactor;
 }

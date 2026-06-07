@@ -63,8 +63,8 @@ public readonly partial struct Money
         FinancialThrowHelper.ThrowIfUnknownCurrencyPolicyUndefined(policy);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(isoCode);
 
-        if (CurrencyRegistry.TryGet(isoCode, out CurrencyInfo? info) && info is not null)
-            return new Money(decimal.Round(amount, info.MinorUnits, rounding), isoCode, (byte)0);
+        if (CurrencyResolution.TryGet(isoCode, out CurrencyInfo? info) && info is not null)
+            return new Money(MoneyMath.Round(amount, info.MinorUnits, rounding), isoCode, (byte)0);
 
         return policy switch
         {
@@ -109,7 +109,7 @@ public readonly partial struct Money
         FinancialThrowHelper.ThrowIfNotValidIsoCode(isoCode);
         FinancialThrowHelper.ThrowIfMinorUnitsOutOfRange(minorUnits, isoCode);
 
-        return new Money(decimal.Round(amount, minorUnits, rounding), isoCode, (byte)(minorUnits + 1));
+        return new Money(MoneyMath.Round(amount, minorUnits, rounding), isoCode, (byte)(minorUnits + 1));
     }
 
     /// <summary>

@@ -137,7 +137,7 @@ public readonly partial struct Money :
     {
         var isoCode = IsoCode;
         var minorUnits = MinorUnits;
-        var englishName = CurrencyRegistry.TryGet(isoCode, out CurrencyInfo? info) && info is not null
+        var englishName = CurrencyResolution.TryGet(isoCode, out CurrencyInfo? info) && info is not null
             ? info.EnglishName
             : string.Empty;
         ParseSpecifier(format, minorUnits, out var specifier, out var decimals, out var elideIfMatched, out var hasPrecisionSuffix);

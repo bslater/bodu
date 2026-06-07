@@ -40,7 +40,9 @@ public readonly partial struct Fraction<T> :
             ? 1
             : obj is Fraction<T> other
                 ? Compare(this, other)
-                : throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Arg_Invalid_FractionComparableType, typeof(Fraction<T>)), nameof(obj));
+                : throw new ArgumentException(
+                    string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Arg_Invalid_ComparandType, typeof(Fraction<T>)),
+                    nameof(obj));
     }
 
     /// <summary>
@@ -91,6 +93,6 @@ public readonly partial struct Fraction<T> :
                 : Compare(value, max) > 0
                     ? max
                     : value
-            : throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_FractionMinExceedsMax, nameof(min));
+            : throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_ClampBounds, nameof(min));
     }
 }
