@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.ComponentModel;
+
 namespace Bodu.Financial;
 
 /// <summary>
@@ -27,13 +29,15 @@ public enum ExchangeRateProviderSelectionPolicy
 
     /// <summary>
     /// Reserved: prefer any provider's exact-date hit over any provider's fallback-date hit, and only then apply the
-    /// priority list to break ties. Not yet implemented.
+    /// priority list to break ties. Not yet implemented; supplying it throws <see cref="NotSupportedException" />.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     ExactDateBeforeProviderFallback = 1,
 
     /// <summary>
     /// Reserved: pick the provider whose resolved date is closest to the requested date (using absolute offset),
-    /// breaking ties by the priority list. Not yet implemented.
+    /// breaking ties by the priority list. Not yet implemented; supplying it throws <see cref="NotSupportedException" />.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     SmallestDateOffsetThenProviderPriority = 2,
 }

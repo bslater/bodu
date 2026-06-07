@@ -28,6 +28,13 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     where TQuote : ICurrency
 {
     /// <summary>
+    /// The underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted rate;
+    /// for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying by
+    /// a pre-rounded reciprocal.
+    /// </summary>
+    private readonly decimal _observedRate;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> struct.
     /// </summary>
     /// <param name="rate">
@@ -42,15 +49,42 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <exception cref="ArgumentException"><paramref name="provider" /> is empty or white-space.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="rate" /> is zero or negative.</exception>
     public ExchangeRate(decimal rate, DateOnly date, string provider, bool isInverted = false)
+        : this(rate, isInverted ? 1m / rate : rate, date, provider, isInverted)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> struct from fully resolved field
+    /// values, including the underlying observed rate.
+    /// </summary>
+    /// <param name="rate">The multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.</param>
+    /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
+    /// <param name="date">The calendar date on which the rate was observed.</param>
+    /// <param name="provider">The non-empty identifier of the publishing source.</param>
+    /// <param name="isInverted"><see langword="true" /> when derived from the reverse pair.</param>
+    private ExchangeRate(decimal rate, decimal observedRate, DateOnly date, string provider, bool isInverted)
     {
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfZeroOrNegative(rate);
 
         Rate = rate;
+        _observedRate = observedRate;
         Date = date;
         Provider = provider;
         IsInverted = isInverted;
     }
+
+    /// <summary>
+    /// Creates a rate from fully resolved components, preserving the underlying observed rate for precise conversion.
+    /// </summary>
+    /// <param name="rate">The <typeparamref name="TBase" />-to-<typeparamref name="TQuote" /> multiplier.</param>
+    /// <param name="observedRate">The underlying observed rate.</param>
+    /// <param name="date">The observation date.</param>
+    /// <param name="provider">The source identifier.</param>
+    /// <param name="isInverted"><see langword="true" /> when derived from the reverse pair.</param>
+    /// <returns>The constructed rate.</returns>
+    internal static ExchangeRate<TBase, TQuote> FromComponents(decimal rate, decimal observedRate, DateOnly date, string provider, bool isInverted) =>
+        new(rate, observedRate, date, provider, isInverted);
 
     /// <summary>
     /// Gets the multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.
@@ -110,8 +144,12 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <returns>
     /// An <see cref="ExchangeRate{TQuote, TBase}" /> whose <see cref="Rate" /> is <c>1 / this.Rate</c>.
     /// </returns>
-    public ExchangeRate<TQuote, TBase> Inverse() =>
-        new(1m / Rate, Date, Provider, !IsInverted);
+    public ExchangeRate<TQuote, TBase> Inverse()
+    {
+        var inverted = !IsInverted;
+        var rate = inverted ? 1m / _observedRate : _observedRate;
+        return ExchangeRate<TQuote, TBase>.FromComponents(rate, _observedRate, Date, Provider, inverted);
+    }
 
     /// <summary>
     /// Bridges this typed rate to the runtime-tagged <see cref="ExchangeRate" /> record.
@@ -120,7 +158,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// An <see cref="ExchangeRate" /> carrying the same fields with the ISO codes inlined as strings.
     /// </returns>
     public ExchangeRate ToRuntime() =>
-        new(FromIsoCode, ToIsoCode, Date, Rate, Provider, IsInverted);
+        ExchangeRate.FromObservedRate(FromIsoCode, ToIsoCode, Date, _observedRate, Provider, IsInverted);
 
     /// <summary>
     /// Adopts a runtime-tagged <see cref="ExchangeRate" /> as the typed form when the runtime ISO codes match
@@ -150,7 +188,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
                     quoteIso));
         }
 
-        return new ExchangeRate<TBase, TQuote>(rate.Rate, rate.Date, rate.Provider, rate.IsInverted);
+        return FromComponents(rate.Rate, rate.ObservedRate, rate.Date, rate.Provider, rate.IsInverted);
     }
 
     /// <summary>
@@ -161,5 +199,25 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <param name="rounding">The midpoint-rounding rule applied at the destination precision.</param>
     /// <returns>The converted amount in <typeparamref name="TQuote" />.</returns>
     public Money<TQuote> Convert(Money<TBase> amount, MidpointRounding rounding = MidpointRounding.ToEven) =>
-        new(amount.Amount * Rate, rounding);
+        new(IsInverted ? amount.Amount / _observedRate : amount.Amount * _observedRate, rounding);
+
+    /// <summary>
+    /// Determines whether this rate equals <paramref name="other" /> by its public fields. The internal observed rate
+    /// is excluded so two rates that report the same multiplier, date, provider, and inversion compare equal regardless
+    /// of how each was constructed.
+    /// </summary>
+    /// <param name="other">The rate to compare with.</param>
+    /// <returns><see langword="true" /> when the public fields match; otherwise <see langword="false" />.</returns>
+    public bool Equals(ExchangeRate<TBase, TQuote> other) =>
+        Rate == other.Rate
+        && Date == other.Date
+        && Provider == other.Provider
+        && IsInverted == other.IsInverted;
+
+    /// <summary>
+    /// Returns a hash code over the public fields, consistent with <see cref="Equals(ExchangeRate{TBase, TQuote})" />.
+    /// </summary>
+    /// <returns>The hash code.</returns>
+    public override int GetHashCode() =>
+        HashCode.Combine(Rate, Date, Provider, IsInverted);
 }

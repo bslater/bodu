@@ -26,12 +26,12 @@ public readonly partial struct Money<TCurrency>
         Money.FromNormalized(_amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
 
     /// <summary>
-    /// Returns a high-precision <see cref="CalculatedMoney{TCurrency}" /> carrying this value's amount, suitable for
-    /// deferred-rounding calculation chains.
+    /// Returns a high-precision runtime-tagged <see cref="CalculatedMoney" /> carrying this value's amount and the ISO
+    /// code derived from <typeparamref name="TCurrency" />, suitable for deferred-rounding calculation chains.
     /// </summary>
-    /// <returns>A <see cref="CalculatedMoney{TCurrency}" /> with this value's amount.</returns>
-    public CalculatedMoney<TCurrency> ToCalculated() =>
-        new(_amount);
+    /// <returns>A <see cref="CalculatedMoney" /> with this value's amount.</returns>
+    public CalculatedMoney ToCalculated() =>
+        new(_amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
 
     /// <summary>
     /// Implicitly converts a <see cref="Money{TCurrency}" /> to a runtime-tagged <see cref="Money" />.

@@ -178,6 +178,42 @@ The common case — multiply once by a fraction — has a shortcut:
 Money<USD> result = principal.MultiplyExact(growth);
 ```
 
+## Deferred rounding with `CalculatedMoney`
+
+`Fraction<BigInteger>` is mathematically exact but heavyweight. When
+you only need to defer rounding across a chain of `decimal` steps —
+not full rational exactness — `CalculatedMoney` is the lighter middle
+tier. It is a runtime-tagged, high-precision amount that carries the
+full `decimal` precision through arithmetic and rounds **once**, at the
+settlement boundary:
+
+```csharp
+CalculatedMoney running = new Money<USD>(100m).ToCalculated();
+running = running * 1.05m / 3m;                  // no rounding yet
+Money settled = running.RoundToMoney();          // single rounding event → Money
+Money<USD> usd = settled.As<USD>();
+```
+
+`ToCalculated()` is available on both `Money<TCurrency>` and the
+runtime `Money`, and always returns the runtime `CalculatedMoney` —
+there is no generic `CalculatedMoney<TCurrency>`. Arithmetic (`+`, `-`,
+`*`, `/`, and the named `Multiply` / `Divide`) preserves precision, and
+mixing two different currencies throws `InvalidOperationException` at
+runtime. `RoundToMoney` accepts an optional `MonetaryContext` to
+control the rounding strategy, scale, and cash rounding, or a bare
+`MidpointRounding`:
+
+```csharp
+Money rounded = running.RoundToMoney(MidpointRounding.AwayFromZero);
+```
+
+Pick the tier that fits the calculation: `Money<TCurrency>` rounds at
+every step (settlement-grade), `CalculatedMoney` defers rounding at
+full `decimal` precision (28–29 significant digits), and
+`Fraction<BigInteger>` is exact. Reach for `CalculatedMoney` in tax
+apportionment and unit-rate products where `decimal` precision is
+sufficient, and for `Fraction` only when the chain must be exact.
+
 ## Formatting
 
 `ToString()` returns the ISO code followed by the amount at minor-unit
@@ -487,6 +523,50 @@ Money runtime = JsonSerializer.Deserialize<Money>(
     """{ "amount": 0.12345678, "currency": "DOGE" }""");
 ```
 
+## Swapping the currency catalogue: `CurrencyResolution`
+
+Runtime `Money` resolves an ISO code to its minor-unit precision
+through an *ambient* `ICurrencyLookup`, exposed as
+`CurrencyResolution.Current`. By default this is a registry-backed
+lookup, so `CurrencyRegistry.Register` and ordinary construction behave
+exactly as described above — you only need this seam when you want to
+substitute the catalogue (a custom data source, or a fixed set for a
+test).
+
+Replace the process-wide default once at start-up:
+
+```csharp
+CurrencyResolution.SetDefault(myCurrencyLookup);
+```
+
+Or install a temporary, flow-scoped override — ideal for tests, since
+it is restored on dispose and isolated per async control flow:
+
+```csharp
+using (CurrencyResolution.PushScoped(myCurrencyLookup))
+{
+    // Money construction, parsing, and formatting in this scope
+    // resolve currencies through myCurrencyLookup.
+    var m = new Money(1.239m, "ZZZ");   // resolves via the scoped catalogue
+}   // previous lookup restored here
+```
+
+`Money<TCurrency>` is unaffected — its precision comes from the
+`TCurrency` tag, not the ambient lookup. Only the runtime `Money`
+resolution paths (construction, `MinorUnits`, `From`, parsing, and
+formatting) consult `CurrencyResolution.Current`.
+
+When you compose the library through dependency injection, register an
+`ICurrencyLookup` and promote it to the ambient default after building
+the provider:
+
+```csharp
+services.AddBoduFinancial(b => b.AddCurrencyLookup<MyCurrencyLookup>());
+// ...
+IServiceProvider provider = services.BuildServiceProvider();
+provider.UseBoduFinancialCurrencyResolution();   // ambient default = the DI lookup
+```
+
 ## JSON wire shape
 
 `Money<TCurrency>` and `Money` both serialise as:
@@ -535,7 +615,9 @@ arbitrary-precision number support.
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
 - [`Money` API reference](xref:Bodu.Financial.Money)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
+- [`CalculatedMoney` API reference](xref:Bodu.Financial.CalculatedMoney) — the deferred-rounding tier.
 - [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)
+- [`CurrencyResolution`](xref:Bodu.Financial.CurrencyResolution) — the ambient currency-lookup seam.
 - [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)
 - [`Money` static factory helpers](xref:Bodu.Financial.Money)
 - [`ICurrency` interface](xref:Bodu.Financial.ICurrency)

@@ -57,7 +57,7 @@ public readonly partial struct Fraction<T>
     {
         ThrowHelper.ThrowIfNull(coefficients);
         if (coefficients.Length == 0)
-            throw new ArgumentException("At least one coefficient is required.", nameof(coefficients));
+            throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_ContinuedFractionEmpty, nameof(coefficients));
 
         for (var i = 1; i < coefficients.Length; i++)
         {

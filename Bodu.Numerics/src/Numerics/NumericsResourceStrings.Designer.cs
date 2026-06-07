@@ -329,5 +329,140 @@ namespace Bodu.Numerics {
                 return ResourceManager.GetString("Op_Invalid_UnableToCreateConverter", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The denominator of a fraction must not be zero..
+        /// </summary>
+        internal static string DivideByZero_DenominatorZero {
+            get {
+                return ResourceManager.GetString("DivideByZero_DenominatorZero", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot divide a fraction by zero..
+        /// </summary>
+        internal static string DivideByZero_Division {
+            get {
+                return ResourceManager.GetString("DivideByZero_Division", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot take the remainder of a fraction divided by zero..
+        /// </summary>
+        internal static string DivideByZero_Remainder {
+            get {
+                return ResourceManager.GetString("DivideByZero_Remainder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot compute the reciprocal of zero..
+        /// </summary>
+        internal static string DivideByZero_Reciprocal {
+            get {
+                return ResourceManager.GetString("DivideByZero_Reciprocal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot raise zero to a negative power..
+        /// </summary>
+        internal static string DivideByZero_ZeroToNegativePower {
+            get {
+                return ResourceManager.GetString("DivideByZero_ZeroToNegativePower", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The magnitude of the exponent is too large to evaluate..
+        /// </summary>
+        internal static string Overflow_ExponentMagnitude {
+            get {
+                return ResourceManager.GetString("Overflow_ExponentMagnitude", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The backing type &apos;{0}&apos; is unbounded and has no minimum value..
+        /// </summary>
+        internal static string Op_NotSupported_UnboundedMinValue {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_UnboundedMinValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The backing type &apos;{0}&apos; is unbounded and has no maximum value..
+        /// </summary>
+        internal static string Op_NotSupported_UnboundedMaxValue {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_UnboundedMaxValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Object must be of type {0}..
+        /// </summary>
+        internal static string Arg_Invalid_ComparandType {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ComparandType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The minimum bound must not exceed the maximum bound..
+        /// </summary>
+        internal static string Arg_Invalid_ClampBounds {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ClampBounds", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Only finite values can be converted to a fraction..
+        /// </summary>
+        internal static string Arg_Invalid_NonFiniteToFraction {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NonFiniteToFraction", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to At least one coefficient is required..
+        /// </summary>
+        internal static string Arg_Invalid_ContinuedFractionEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ContinuedFractionEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The format string &apos;{0}&apos; is not supported..
+        /// </summary>
+        internal static string Format_Invalid_FractionFormat {
+            get {
+                return ResourceManager.GetString("Format_Invalid_FractionFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid Interval&lt;{1}&gt; representation..
+        /// </summary>
+        internal static string Format_Invalid_IntervalText {
+            get {
+                return ResourceManager.GetString("Format_Invalid_IntervalText", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The input string &apos;{0}&apos; was not in a correct fraction format..
+        /// </summary>
+        internal static string Format_Invalid_FractionText {
+            get {
+                return ResourceManager.GetString("Format_Invalid_FractionText", resourceCulture);
+            }
+        }
     }
 }

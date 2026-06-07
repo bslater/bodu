@@ -89,8 +89,11 @@ public class ExchangeRateJsonConverterPolicyTests
     {
         var json = JsonSerializer.Serialize(SampleRate(isInverted: true), Options(FinancialJsonPolicy.Compact));
 
+        // An inverted rate also carries the originally observed rate so the precise divisor survives a round-trip;
+        // its serialized form matches how the writer renders the decimal.
+        var observedRate = JsonSerializer.Serialize(1m / 156.42m);
         Assert.AreEqual(
-            "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":true}",
+            "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":true,\"observedRate\":" + observedRate + "}",
             json);
     }
 
