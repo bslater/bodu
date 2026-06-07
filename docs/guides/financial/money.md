@@ -152,6 +152,12 @@ Allocation throws `ArgumentException` for empty, negative, or
 all-zero ratios; `Allocate(int)` throws
 `ArgumentOutOfRangeException` for zero or negative parts.
 
+The residual-distribution rule above is the
+<xref:Bodu.Financial.AllocationPolicy> `LargestRemainder` strategy:
+each leftover minor unit is handed to the share with the largest
+fractional remainder (here, one per share from the start), so the parts
+always sum back to the original amount with no penny lost or invented.
+
 ## Exact arithmetic for long chains
 
 Every operation that needs to round (`*`, `/`, `Convert`) rounds at
@@ -314,6 +320,53 @@ culture never match, so `~` is safe to apply unconditionally — when
 the formatter has no region context, the ISO code stays in the
 output.
 
+### Reusable formatting with `MoneyFormatter`
+
+The format strings above are convenient for one-offs, but when you
+need to apply the *same* formatting decisions repeatedly — across a
+report, an export, or a UI surface — build a reusable
+<xref:Bodu.Financial.MoneyFormatter> once with
+<xref:Bodu.Financial.MoneyFormatterBuilder> and call it per value. The
+formatter operates on the runtime-tagged <xref:Bodu.Financial.Money>,
+so it can format any currency through a single instance:
+
+```csharp
+MoneyFormatter formatter = new MoneyFormatterBuilder()
+    .WithSymbol()                       // CurrencyDisplay.Symbol
+    .WithCulture(new CultureInfo("en-US"))
+    .WithGrouping(includeGrouping: true)
+    .ElideWhenCultureMatches()          // the "~" behaviour, baked in
+    .Build();
+
+string a = formatter.Format(new Money<USD>(1234.56m).ToMoney());  // "1,234.56"
+string b = formatter.Format(new Money<JPY>(1234m).ToMoney());     // "JPY 1,234"
+```
+
+The builder mirrors the format-string options as fluent calls —
+`WithIsoCode()` / `WithSymbol()` / `WithEnglishName()` /
+`WithNumericOnly()` select the <xref:Bodu.Financial.CurrencyDisplay>
+mode (`IsoCode`, `Symbol`, `EnglishName`, `None`); `WithCulture`,
+`WithGrouping`, `WithMinorUnits`, and `ElideWhenCultureMatches` set the
+remaining knobs. For ad-hoc construction, set the same fields directly
+on a <xref:Bodu.Financial.MoneyFormatOptions> and pass it to the
+`MoneyFormatter` constructor; `MoneyFormatOptions.Default` is the
+process-wide fallback.
+
+### Compact formatting
+
+For dashboards and summaries,
+<xref:Bodu.Financial.MoneyCompactFormattingExtensions> renders large
+amounts in abbreviated form (`1.2K`, `3.4M`, `5.6B`) directly on both
+`Money<TCurrency>` and `Money`:
+
+```csharp
+new Money<USD>(1_234_567m).ToCompactString();   // "USD 1.2M" (default "C" specifier)
+```
+
+The optional `format`, `provider`, and `precision` arguments mirror the
+`Money` format specifiers, so `ToCompactString("~C", culture)` elides a
+redundant currency designator exactly as the full formatter does.
+
 ## Parsing
 
 Parsing is strict: a bare decimal, or `"<ISO> <decimal>"` /
@@ -330,6 +383,27 @@ Money<USD>.Parse("$19.99", CultureInfo.InvariantCulture);      // FormatExceptio
 
 `IParsable<Money<TCurrency>>` and `ISpanParsable<Money<TCurrency>>`
 are implemented for the generic-math interface set.
+
+### Tuning parse behaviour with `MoneyParseOptions`
+
+The strictness above is the default. To relax or retarget it — for
+example when importing a spreadsheet column or round-tripping a value
+your own formatter produced — pass a
+<xref:Bodu.Financial.MoneyParseOptions> whose
+<xref:Bodu.Financial.MoneyParseMode> selects the policy:
+
+| `MoneyParseMode` | Accepts |
+|---|---|
+| `StrictIso` | A bare decimal or `"<ISO> <decimal>"` / `"<decimal> <ISO>"` only. The default. |
+| `CultureAware` | Adds the active culture's number formatting (grouping, decimal separator). |
+| `LenientImport` | Tolerant of spreadsheet / external-feed quirks; for ingest, not canonical storage. |
+| `RoundTripOnly` | Accepts exactly the shape this library emits, for loss-free round trips. |
+
+`MoneyParseOptions` also carries the `FormatProvider`, an
+`UnknownCurrencyPolicy` (how an unrecognised ISO code is handled), and
+an optional `ICurrencyLookup`. The runtime-tagged
+<xref:Bodu.Financial.Money> uses the same options object when parsing a
+value whose currency is not known until run time.
 
 ## JSON
 
