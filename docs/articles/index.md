@@ -20,8 +20,11 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Globalization.Calendar — notable-date resolution](xref:Bodu.Globalization.Calendar)**
   Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources, an observance-adjustment pipeline, and a trust-policy-driven plugin host.
 
-- **[Bodu.Text.Formats — self-framing binary serialization formats](../docs/formats/index.md)**
-  Strongly-typed value model and a span- and stream-friendly codec for self-framing binary formats. Ships **Bencode** (the BitTorrent BEP 3 grammar) as the first format — `Bencode.Format` / `Parse` / `TryFormat` / `TryParse` / `GetFormattedLength` over `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, an immutable `BencodedValue` tree (`Integer`, `String`, `List`, `Dictionary`), and full canonicality enforcement on both sides of the pipeline.
+- **[Bodu.Text.Formats — self-framing text and binary document formats](../docs/formats/index.md)**
+  Strongly-typed value models and span- and stream-friendly codecs for self-framing document formats. Ships **Bencode** (BitTorrent BEP 3), **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), and **INI** (round-trippable, section- and comment-preserving) — each exposing the same modern shape: `Encode` / `Decode` / `Try*` / `GetEncodedLength` (or `Parse` / `Format`) over `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, an immutable value tree, and explicit canonicality enforcement on both sides of the pipeline.
+
+- **[Bodu.Text — encoding detection and text/byte conversion helpers](xref:Bodu.Text)**
+  BOM-based `EncodingDetection` plus `EncodingExtensions` and `StringEncodingExtensions` — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of `System.Text.Encoding`. For binary-to-text codecs (Base16/32/58/64/85), see `Bodu.Text.Encoding`.
 
 - **[Bodu.Numerics — exact rational arithmetic and bounded intervals](xref:Bodu.Numerics)**
   `Fraction<T>` for canonical rational arithmetic over any `IBinaryInteger<T>` backing type, with `BigInteger`-promoted intermediates, the full `INumber<T>` / `ISignedNumber<T>` surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation. `Interval<T>` for closed / open / half-open intervals with intersection, union, and adjacency.
@@ -35,7 +38,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in date-calculation algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), working-day arithmetic, and [data packs](../guides/calendar/data-packs.md).
-- **[Bodu.Text.Formats guides](../guides/formats/index.md)** — using the `Bencode` codec, the `BencodedValue` tree model, and stream support.
+- **[Bodu.Text.Formats guides](../guides/formats/index.md)** — the [Bencode](../guides/formats/bencode.md), [Delimited](../guides/formats/delimited.md) (CSV / TSV), [DotEnv](../guides/formats/dotenv.md), and [INI](../guides/formats/ini.md) codecs, the shared [value model](../guides/formats/value-model.md), and [streaming](../guides/formats/streaming.md) support.
 - **[Bodu.Numerics guides](../guides/numerics/index.md)** — [`Fraction<T>`](../guides/numerics/fraction.md), [`Interval<T>`](../guides/numerics/interval.md).
 - **[Bodu.Financial guides](../guides/financial/index.md)** — [`Money<TCurrency>`](../guides/financial/money.md).
 
@@ -43,4 +46,4 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 
 - [Introduction](../docs/introduction.md) — project overview, design principles, and the per-library map.
 - [Getting started](../docs/getting-started.md) — prerequisites, install commands, and one-minute samples per library.
-- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md) · [Bodu.Numerics](../docs/numerics/index.md) · [Bodu.Financial](../docs/financial/index.md).
+- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md) · [Bodu.Text](../docs/text/index.md) · [Bodu.Numerics](../docs/numerics/index.md) · [Bodu.Financial](../docs/financial/index.md).

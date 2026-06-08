@@ -63,6 +63,10 @@
       href: cryptography/concepts.md
     - name: Getting started
       href: cryptography/getting-started.md
+- name: Bodu.Text
+  items:
+    - name: Introduction
+      href: text/index.md
 - name: Bodu.Text.Configuration
   items:
     - name: Introduction
