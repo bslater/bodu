@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), the highest-leverage net-new engineering items are now a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
+*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), and `Bodu.Text.Formats` having grown forward-only `*Reader` / `*Writer` pairs with `ValueTask` async streaming across all four text formats, the highest-leverage net-new engineering items are now a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
 
 ## How to read this
 
@@ -125,9 +125,11 @@ With that pass closed, the active focus shifts to:
 
 1. Cut the `[Unreleased]` packages above (reconciling the CHANGELOG
    country sets to the expanded data packs first).
-2. **Argon2 and scrypt** are the highest-leverage net-new engineering
-   item now that the calendar territorial expansion has largely shipped
-   — see `Bodu.Security.Cryptography` below.
+2. **Argon2 and scrypt have shipped** (RFC 9106 / RFC 7914), closing the
+   last real BCL crypto gap — see `Bodu.Security.Cryptography` below. With
+   that done, a **TOML reader/writer** in `Bodu.Text.Formats` and the
+   **Base45 / Bech32** encodings in `Bodu.Text.Encoding` are now the
+   highest-leverage net-new engineering items.
 3. Begin the remaining per-project items below in roadmap order. The raw
    ChaCha20 / XChaCha20 family in crypto — the highest-leverage
    opening move — **has landed**: it closes the visible stream-cipher
@@ -272,15 +274,21 @@ Base64, Base64Url, Base85 with RFC 4648 / Bitcoin / Crockford / Ascii85
 
 ### `Bodu.Text.Formats`
 
-Current state: mature; 49 src / 95 test files. Bencode, Delimited
-(RFC 4180), DotEnv, INI.
+Current state: mature; 56 src / 108 test files. Bencode, Delimited
+(RFC 4180), DotEnv, INI. Each text format now exposes a forward-only
+`*Reader` / `*Writer` pair alongside the document-level API.
 
 - **Add a TOML reader and writer.** Conspicuously absent next to
   Ini/DotEnv/Bencode/Delimited, and the most-requested missing format
-  for `.NET` configuration scenarios.
-- **Add streaming async readers.** Current `*.Parser.cs` surfaces are
-  synchronous; add `IAsyncEnumerable<T>` and `ValueTask`-returning
-  read APIs for large inputs.
+  for `.NET` configuration scenarios. This is now the highest-leverage
+  open item in the project.
+- **Streaming async readers have landed.** ✅ **Shipped.** The
+  forward-only readers expose `ValueTask<bool> ReadAsync` — `IniReader`,
+  `DelimitedReader`, and `DotEnvReader` — and Bencode adds streaming
+  `ParseAsync` / `FormatAsync`, with matching `WriteAsync` paths on the
+  writers, for large inputs that should not be buffered whole. A
+  remaining nicety is an `IAsyncEnumerable<T>` projection layered over
+  the `ReadAsync` loop.
 - **Add a source generator that binds `[DelimitedRecord]` and
   `[IniSection]` POCOs** so consumers can avoid reflection at runtime.
   This is a clear win for AOT readiness too.
