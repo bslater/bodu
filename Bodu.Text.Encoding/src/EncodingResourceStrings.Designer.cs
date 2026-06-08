@@ -120,6 +120,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Bech32 data values must be 5-bit integers in the range 0 to 31..
+        /// </summary>
+        internal static string Arg_Invalid_Bech32DataValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Bech32DataValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bech32 human-readable part must be non-empty and contain only US-ASCII characters in the range 33 to 126..
+        /// </summary>
+        internal static string Arg_Invalid_Bech32Hrp {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Bech32Hrp", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Destination is too small to receive the encoded characters..
         /// </summary>
         internal static string Arg_Invalid_DestinationTooSmallForEncoded {
@@ -396,6 +414,78 @@ namespace Bodu {
         internal static string Format_Invalid_Base85SingleTrailingCharacter {
             get {
                 return ResourceManager.GetString("Format_Invalid_Base85SingleTrailingCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bech32 checksum verification failed..
+        /// </summary>
+        internal static string Format_Invalid_Bech32Checksum {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32Checksum", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input contains a character outside the Bech32 data alphabet: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_Bech32DataCharacter {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32DataCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bech32 human-readable part is empty..
+        /// </summary>
+        internal static string Format_Invalid_Bech32EmptyHrp {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32EmptyHrp", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bech32 human-readable part contains a character outside the US-ASCII range 33 to 126..
+        /// </summary>
+        internal static string Format_Invalid_Bech32HrpCharacter {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32HrpCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bech32 input must not mix upper-case and lower-case characters..
+        /// </summary>
+        internal static string Format_Invalid_Bech32MixedCase {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32MixedCase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bech32 input does not contain the &apos;1&apos; separator character..
+        /// </summary>
+        internal static string Format_Invalid_Bech32NoSeparator {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32NoSeparator", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bech32 input exceeds the maximum length of {0} characters..
+        /// </summary>
+        internal static string Format_Invalid_Bech32TooLong {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32TooLong", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bech32 input is too short to contain the six-character checksum..
+        /// </summary>
+        internal static string Format_Invalid_Bech32TooShort {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Bech32TooShort", resourceCulture);
             }
         }
 
