@@ -15,7 +15,7 @@ namespace Bodu.Text.Bencode;
 /// <para>
 /// <see cref="Kind" /> identifies the concrete subclass without forcing a cast, so callers can switch on the kind
 /// before narrowing to a specific type. The conventional consumer pattern is to call
-/// <see cref="Bencode.Decode(ReadOnlySpan{byte})" />, inspect <see cref="Kind" /> (or pattern-match against one of the
+/// <see cref="Bencode.Parse(ReadOnlySpan{byte})" />, inspect <see cref="Kind" /> (or pattern-match against one of the
 /// concrete subclasses), and recurse into nested lists and dictionaries from there.
 /// </para>
 /// <para>
@@ -26,7 +26,7 @@ namespace Bodu.Text.Bencode;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// BencodedValue root = Bencode.Decode(payload);
+/// BencodedValue root = Bencode.Parse(payload);
 ///
 /// switch (root)
 /// {

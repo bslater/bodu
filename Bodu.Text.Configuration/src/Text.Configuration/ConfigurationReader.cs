@@ -389,10 +389,10 @@ internal sealed partial class ConfigurationReader
         {
             switch (_options.DuplicateKeyMode)
             {
-                case IniDuplicateKeyBehavior.FirstWins:
+                case DuplicateKeyPolicy.FirstWins:
                     return;
 
-                case IniDuplicateKeyBehavior.Disallowed:
+                case DuplicateKeyPolicy.Disallowed:
                     EmitDiagnostic(
                         ConfigurationDiagnosticSeverity.Error,
                         ConfigurationDiagnosticCode.DuplicateKey,
@@ -400,7 +400,7 @@ internal sealed partial class ConfigurationReader
                         loc);
                     return;
 
-                case IniDuplicateKeyBehavior.LastWins:
+                case DuplicateKeyPolicy.LastWins:
                 default:
                     // Replace via AddEntry which preserves the existing position and refreshes the lookup.
                     IniEntry replacement = new(rawKey, value, lineNumber);

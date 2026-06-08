@@ -26,7 +26,7 @@ For EditorConfig-style configuration layering over <xref:Bodu.Text.Ini.IniDocume
 - <xref:Bodu.Text.Ini.IniComment> — a preserved comment line, with prefix character (`;` or `#`) and trimmed text.
 - <xref:Bodu.Text.Ini.Ini> — static codec for INI files: `Parse(text, options?)`, `Load(path | Stream)`, `Save(document, path | Stream | TextWriter, options?)`.
 - <xref:Bodu.Text.Ini.IniParseOptions> — duplicate-key, duplicate-section, comment-preservation, case-sensitivity options for the INI parser.
-- <xref:Bodu.Text.Ini.IniDuplicateKeyBehavior> — `LastWins`, `FirstWins`, `Disallowed`, `Merge`.
+- <xref:Bodu.Text.DuplicateKeyPolicy> — `LastWins`, `FirstWins`, `Disallowed`, `Merge`.
 - <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior> — `Preserve`, `Merge`, `Disallowed`.
 - <xref:Bodu.Text.Ini.IniFormatException> — derives from <xref:System.FormatException>; thrown when the parser cannot reconcile a structural invariant.
 
@@ -52,6 +52,6 @@ Ini.Save(iniDoc, sw);   // re-emits the canonical form
 
 - **Comment preservation.** Leading and trailing comments are stored on the section or entry they precede or follow, so `Parse` followed by `Save` round-trips an unchanged document byte-for-byte under default options.
 - **Case sensitivity.** Default key comparison is ordinal-ignore-case to match common INI dialects; set <xref:Bodu.Text.Ini.IniParseOptions> to opt into case-sensitive comparison.
-- **Duplicate handling.** Both keys within a section and sections within a document have configurable duplicate behaviour via <xref:Bodu.Text.Ini.IniDuplicateKeyBehavior> and <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior>.
+- **Duplicate handling.** Both keys within a section and sections within a document have configurable duplicate behaviour via <xref:Bodu.Text.DuplicateKeyPolicy> and <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior>.
 - **No dotted-key splitting.** Unlike configuration overlays, the INI primitive does not split `a.b.c = value` into segments. Use <xref:Bodu.Text.Configuration> when colon- or dot-delimited hierarchical keys are required.
 - **See also:** [Bodu.Text.Configuration](~/docs/text-configuration/index.md) for the EditorConfig-style layering on top of `IniDocument`.

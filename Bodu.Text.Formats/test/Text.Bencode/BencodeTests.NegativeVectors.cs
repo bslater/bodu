@@ -12,7 +12,7 @@ public sealed partial class BencodeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> throws the expected exception type for
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> throws the expected exception type for
     /// every malformed-input vector and, where the vector identifies a resource key, that the exception message
     /// matches the canonical resx text.
     /// </summary>
@@ -25,7 +25,7 @@ public sealed partial class BencodeTests
     {
         Exception ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            _ = Bencode.Decode(vector.EncodedBytes);
+            _ = Bencode.Parse(vector.EncodedBytes);
         });
 
         if (vector.ExpectedResourceKey is not null)
@@ -49,7 +49,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> returns
+    /// Verifies that <see cref="Bencode.TryParse(ReadOnlySpan{byte}, out BencodedValue, out int)" /> returns
     /// <see langword="false" /> for every malformed-input vector and produces default outputs.
     /// </summary>
     /// <param name="vector">A negative KAT vector sourced from
@@ -59,12 +59,12 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3NegativeVectors), typeof(BencodeKnownAnswerVectors))]
     public void TryDecode_ForNegativeVector_ShouldReturnFalseWithDefaults(BencodeNegativeDecodeVector vector)
     {
-        // Skip the trailing-data vector — TryDecode consumes only the value prefix and reports success, while
-        // Decode (the strict variant) rejects trailing bytes. The negative vector set is shared across both.
+        // Skip the trailing-data vector — TryParse consumes only the value prefix and reports success, while
+        // Parse (the strict variant) rejects trailing bytes. The negative vector set is shared across both.
         if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.Format_Invalid_BencodeTrailingData))
             return;
 
-        var result = Bencode.TryDecode(vector.EncodedBytes, out BencodedValue? value, out var consumed);
+        var result = Bencode.TryParse(vector.EncodedBytes, out BencodedValue? value, out var consumed);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);

@@ -12,13 +12,13 @@ public sealed partial class IniTests
     // ---------------------------------------- DuplicateKeyBehavior ----------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="IniDuplicateKeyBehavior.LastWins" /> causes the last value to win when the same
+    /// Verifies that <see cref="DuplicateKeyPolicy.LastWins" /> causes the last value to win when the same
     /// key appears more than once in a section.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyLastWins_ShouldReturnLastValue()
     {
-        IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.LastWins };
+        IniParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.LastWins };
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\nkey=second", options);
 
@@ -26,13 +26,13 @@ public sealed partial class IniTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IniDuplicateKeyBehavior.LastWins" /> produces exactly one entry for a duplicated
+    /// Verifies that <see cref="DuplicateKeyPolicy.LastWins" /> produces exactly one entry for a duplicated
     /// key.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyLastWins_ShouldProduceSingleEntry()
     {
-        IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.LastWins };
+        IniParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.LastWins };
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\nkey=second", options);
 
@@ -40,13 +40,13 @@ public sealed partial class IniTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IniDuplicateKeyBehavior.FirstWins" /> causes the first value to be retained when
+    /// Verifies that <see cref="DuplicateKeyPolicy.FirstWins" /> causes the first value to be retained when
     /// the same key appears more than once in a section.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyFirstWins_ShouldReturnFirstValue()
     {
-        IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins };
+        IniParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.FirstWins };
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\nkey=second", options);
 
@@ -54,13 +54,13 @@ public sealed partial class IniTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IniDuplicateKeyBehavior.FirstWins" /> produces exactly one entry for a duplicated
+    /// Verifies that <see cref="DuplicateKeyPolicy.FirstWins" /> produces exactly one entry for a duplicated
     /// key.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyFirstWins_ShouldProduceSingleEntry()
     {
-        IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins };
+        IniParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.FirstWins };
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\nkey=second", options);
 
@@ -97,13 +97,13 @@ public sealed partial class IniTests
     }
 
     /// <summary>
-    /// Verifies that when duplicate sections are merged, the active <see cref="IniDuplicateKeyBehavior" />
+    /// Verifies that when duplicate sections are merged, the active <see cref="DuplicateKeyPolicy" />
     /// governs key conflicts introduced by the merge.
     /// </summary>
     [TestMethod]
     public void Parse_WhenMergeSectionWithDuplicateKeyLastWins_ShouldReturnLastValue()
     {
-        IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.LastWins };
+        IniParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.LastWins };
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\n[s]\nkey=second", options);
 
@@ -122,7 +122,7 @@ public sealed partial class IniTests
         IniParseOptions options = new()
         {
             CaseSensitiveKeys = false,
-            DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins,
+            DuplicateKeyBehavior = DuplicateKeyPolicy.FirstWins,
         };
 
         IniDocument doc = Ini.Parse("[s]\nKey=first\nKEY=second", options);

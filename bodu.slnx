@@ -74,6 +74,10 @@
     <Project Path="Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
     <Project Path="Bodu.Text.Encoding\test\Bodu.Text.Encoding.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text/">
+    <Project Path="Bodu.Text\src\Bodu.Text.csproj" />
+    <Project Path="Bodu.Text\test\Bodu.Text.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Text.Configuration/">
     <Project Path="Bodu.Text.Configuration/bench/Bodu.Text.Configuration.Benchmarks.csproj">
       <Build Solution="Debug|*" Project="false" />

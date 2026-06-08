@@ -23,7 +23,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
     /// <param name="payload">The raw byte payload.</param>
     /// <param name="options">The parser options, or <see langword="default" /> to use the format's default options.</param>
     /// <returns>The decoded document.</returns>
-    protected abstract TDocument Decode(byte[] payload, TOptions options = default!);
+    protected abstract TDocument Parse(byte[] payload, TOptions options = default!);
 
     /// <summary>
     /// Encodes <paramref name="document" /> back to its canonical byte representation under the supplied
@@ -32,7 +32,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
     /// <param name="document">The document to serialise.</param>
     /// <param name="options">The formatter options, or <see langword="default" /> to use the format's default options.</param>
     /// <returns>The canonical byte representation.</returns>
-    protected abstract byte[] Encode(TDocument document, TOptions options = default!);
+    protected abstract byte[] Format(TDocument document, TOptions options = default!);
 
     /// <summary>
     /// Returns the positive known-answer vectors for the format under test.
@@ -59,7 +59,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
     {
         foreach (BinaryDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
-            TDocument actual = Decode(kat.Payload, kat.Options!);
+            TDocument actual = Parse(kat.Payload, kat.Options!);
 
             Assert.IsTrue(
                 DocumentComparer.Equals(kat.ExpectedDocument, actual),
@@ -79,7 +79,7 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
             Exception? captured = null;
             try
             {
-                _ = Decode(kat.Payload, kat.Options!);
+                _ = Parse(kat.Payload, kat.Options!);
             }
             catch (Exception ex)
             {
@@ -100,9 +100,9 @@ public abstract class BinaryDocumentFormatContractTests<TDocument, TOptions>
     {
         foreach (BinaryDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
-            TDocument first = Decode(kat.Payload, kat.Options!);
-            var reEncoded = Encode(first, kat.Options!);
-            TDocument again = Decode(reEncoded, kat.Options!);
+            TDocument first = Parse(kat.Payload, kat.Options!);
+            var reEncoded = Format(first, kat.Options!);
+            TDocument again = Parse(reEncoded, kat.Options!);
 
             Assert.IsTrue(
                 DocumentComparer.Equals(first, again),

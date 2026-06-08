@@ -27,7 +27,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> throws
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> throws
     /// <see cref="BencodeFormatException" /> rather than allowing a <see cref="StackOverflowException" /> when the
     /// nesting depth exceeds the configured maximum. The fixed test depth (1024) is well above the default
     /// maximum (512) but well below the platform recursion budget so the test is deterministic.
@@ -39,12 +39,12 @@ public sealed partial class BencodeTests
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            _ = Bencode.Decode(payload);
+            _ = Bencode.Parse(payload);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte}, BencodeParseOptions)" /> honours an explicit
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte}, BencodeParseOptions)" /> honours an explicit
     /// <see cref="BencodeParseOptions.MaxDepth" /> setting and throws a controlled exception once the limit is exceeded.
     /// </summary>
     [TestMethod]
@@ -55,7 +55,7 @@ public sealed partial class BencodeTests
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            _ = Bencode.Decode(payload, options);
+            _ = Bencode.Parse(payload, options);
         });
     }
 
@@ -68,13 +68,13 @@ public sealed partial class BencodeTests
         BencodeParseOptions options = new() { MaxDepth = 4 };
         var payload = BuildNestedLists(4);
 
-        BencodedValue value = Bencode.Decode(payload, options);
+        BencodedValue value = Bencode.Parse(payload, options);
 
         Assert.IsInstanceOfType<BencodedList>(value);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue?, out int)" /> returns
+    /// Verifies that <see cref="Bencode.TryParse(ReadOnlySpan{byte}, out BencodedValue?, out int)" /> returns
     /// <see langword="false" /> rather than propagating the depth-limit exception, consistent with its lenient
     /// failure contract.
     /// </summary>
@@ -83,7 +83,7 @@ public sealed partial class BencodeTests
     {
         var payload = BuildNestedLists(1024);
 
-        var success = Bencode.TryDecode(payload, out BencodedValue? value, out var bytesConsumed);
+        var success = Bencode.TryParse(payload, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsFalse(success);
         Assert.IsNull(value);

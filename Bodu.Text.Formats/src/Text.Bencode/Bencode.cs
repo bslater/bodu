@@ -43,16 +43,16 @@ namespace Bodu.Text.Bencode;
 /// </item>
 /// </list>
 /// <para>
-/// <see cref="Decode(ReadOnlySpan{byte})" /> consumes a complete document and rejects trailing bytes.
-/// <see cref="Encode(BencodedValue)" /> produces a fresh byte array; <see cref="GetEncodedLength(BencodedValue)" />
+/// <see cref="Parse(ReadOnlySpan{byte})" /> consumes a complete document and rejects trailing bytes.
+/// <see cref="Format(BencodedValue)" /> produces a fresh byte array; <see cref="GetFormattedLength(BencodedValue)" />
 /// reports the exact size in advance so callers can pool destination buffers.
 /// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Decode a BitTorrent-style dictionary and inspect a known field.
+/// Parse a BitTorrent-style dictionary and inspect a known field.
 /// byte[] payload = File.ReadAllBytes("example.torrent");
-/// BencodedValue root = Bencode.Decode(payload);
+/// BencodedValue root = Bencode.Parse(payload);
 ///
 /// if (root is BencodedDictionary dict
 ///     && dict.TryGetValue("announce", out BencodedValue? announce)
@@ -62,8 +62,8 @@ namespace Bodu.Text.Bencode;
 /// }
 ///
 /// Round-trip: encode the value back to bytes.
-/// int length = Bencode.GetEncodedLength(root);
-/// byte[] reencoded = Bencode.Encode(root);
+/// int length = Bencode.GetFormattedLength(root);
+/// byte[] reencoded = Bencode.Format(root);
 ///]]>
 /// </example>
 public static partial class Bencode
@@ -90,8 +90,8 @@ public static partial class Bencode
     /// Thrown when <paramref name="source" /> is malformed, contains trailing bytes, or nests more deeply than
     /// <see cref="BencodeParseOptions.DefaultMaxDepth" />.
     /// </exception>
-    public static BencodedValue Decode(ReadOnlySpan<byte> source) =>
-        Decode(source, BencodeParseOptions.Default);
+    public static BencodedValue Parse(ReadOnlySpan<byte> source) =>
+        Parse(source, BencodeParseOptions.Default);
 
     /// <summary>
     /// Decodes a complete bencoded document using the supplied parsing options.
@@ -105,7 +105,7 @@ public static partial class Bencode
     /// Thrown when <paramref name="source" /> is malformed, contains trailing bytes, or nests more deeply than
     /// <see cref="BencodeParseOptions.MaxDepth" />.
     /// </exception>
-    public static BencodedValue Decode(ReadOnlySpan<byte> source, BencodeParseOptions options)
+    public static BencodedValue Parse(ReadOnlySpan<byte> source, BencodeParseOptions options)
     {
         Parser parser = new(source, options.MaxDepth);
         BencodedValue value = parser.ParseValue();
@@ -127,11 +127,11 @@ public static partial class Bencode
     /// <exception cref="OverflowException">
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
-    public static byte[] Encode(BencodedValue value)
+    public static byte[] Format(BencodedValue value)
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var destination = new byte[GetEncodedLength(value)];
+        var destination = new byte[GetFormattedLength(value)];
         WriteValue(value, destination);
         return destination;
     }
@@ -147,7 +147,7 @@ public static partial class Bencode
     /// <exception cref="OverflowException">
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
-    public static int GetEncodedLength(BencodedValue value)
+    public static int GetFormattedLength(BencodedValue value)
     {
         ThrowHelper.ThrowIfNull(value);
 
@@ -161,11 +161,11 @@ public static partial class Bencode
     /// <param name="value">When this method returns, contains the decoded value, when successful.</param>
     /// <param name="bytesConsumed">When this method returns, contains the number of bytes consumed.</param>
     /// <returns><see langword="true" /> when a value was decoded; otherwise, <see langword="false" />.</returns>
-    public static bool TryDecode(
+    public static bool TryParse(
         ReadOnlySpan<byte> source,
         [NotNullWhen(true)] out BencodedValue? value,
         out int bytesConsumed) =>
-        TryDecode(source, BencodeParseOptions.Default, out value, out bytesConsumed);
+        TryParse(source, BencodeParseOptions.Default, out value, out bytesConsumed);
 
     /// <summary>
     /// Attempts to decode a single bencoded value under the supplied parsing options.
@@ -175,7 +175,7 @@ public static partial class Bencode
     /// <param name="value">When this method returns, contains the decoded value, when successful.</param>
     /// <param name="bytesConsumed">When this method returns, contains the number of bytes consumed.</param>
     /// <returns><see langword="true" /> when a value was decoded; otherwise, <see langword="false" />.</returns>
-    public static bool TryDecode(
+    public static bool TryParse(
         ReadOnlySpan<byte> source,
         BencodeParseOptions options,
         [NotNullWhen(true)] out BencodedValue? value,
@@ -220,14 +220,14 @@ public static partial class Bencode
     /// <exception cref="OverflowException">
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
-    public static bool TryEncode(
+    public static bool TryFormat(
         BencodedValue value,
         Span<byte> destination,
         out int bytesWritten)
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var length = GetEncodedLength(value);
+        var length = GetFormattedLength(value);
 
         if (destination.Length < length)
         {

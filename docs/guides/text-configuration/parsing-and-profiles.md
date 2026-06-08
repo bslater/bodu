@@ -139,7 +139,7 @@ Construct a custom option set when none of the four profiles fits. Every field i
 
 ### Duplicate handling
 
-- `DuplicateKeyMode` (`IniDuplicateKeyBehavior`, default per profile) — `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-5--duplicate-section-policies).
+- `DuplicateKeyMode` (`DuplicateKeyPolicy`, default per profile) — `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-5--duplicate-section-policies).
 - `DuplicateSectionMode` (`IniDuplicateSectionBehavior`, default per profile) — `Preserve`, `Merge`, `MergeAdjacent`, or `Disallowed`.
 
 ### Diagnostic handling

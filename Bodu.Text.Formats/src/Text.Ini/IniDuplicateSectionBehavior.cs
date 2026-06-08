@@ -19,7 +19,7 @@ public enum IniDuplicateSectionBehavior
 {
     /// <summary>
     /// Entries from later occurrences of a section are merged into the first occurrence. The active
-    /// <see cref="IniDuplicateKeyBehavior" /> governs any key conflicts introduced by the merge.
+    /// <see cref="DuplicateKeyPolicy" /> governs any key conflicts introduced by the merge.
     /// </summary>
     Merge = 0,
 

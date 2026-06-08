@@ -76,4 +76,48 @@ public static partial class Base16
         writer.Advance(required);
         return required;
     }
+
+    /// <summary>
+    /// Encodes <paramref name="source" /> as hexadecimal characters into <paramref name="writer" /> using the supplied
+    /// variant.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="writer">The buffer writer that receives the encoded characters.</param>
+    /// <param name="variant">The Base16 alphabet case.</param>
+    /// <param name="options">
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload;
+    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// </param>
+    /// <returns>The number of characters written to <paramref name="writer" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
+    /// </exception>
+    public static int Encode(ReadOnlySpan<byte> source, IBufferWriter<char> writer, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None) =>
+        Encode(source, writer, ApplyVariant(variant, options));
+
+    /// <summary>
+    /// Encodes <paramref name="source" /> as UTF-8 hexadecimal bytes into <paramref name="writer" /> using the supplied
+    /// variant.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="writer">The buffer writer that receives the UTF-8 hexadecimal bytes.</param>
+    /// <param name="variant">The Base16 alphabet case.</param>
+    /// <param name="options">
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload;
+    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// </param>
+    /// <returns>The number of UTF-8 bytes written to <paramref name="writer" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
+    /// </exception>
+    public static int EncodeToUtf8(ReadOnlySpan<byte> source, IBufferWriter<byte> writer, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None) =>
+        EncodeToUtf8(source, writer, ApplyVariant(variant, options));
 }

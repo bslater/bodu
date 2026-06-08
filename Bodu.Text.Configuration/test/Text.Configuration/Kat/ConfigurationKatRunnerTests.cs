@@ -32,15 +32,15 @@ public partial class ConfigurationKatRunnerTests
         };
 
     /// <summary>
-    /// Translates the KAT duplicate-key-mode string into a <see cref="IniDuplicateKeyBehavior" />.
+    /// Translates the KAT duplicate-key-mode string into a <see cref="DuplicateKeyPolicy" />.
     /// </summary>
-    private static IniDuplicateKeyBehavior MapDuplicateKeyMode(string? mode) =>
+    private static DuplicateKeyPolicy MapDuplicateKeyMode(string? mode) =>
         mode switch
         {
-            null => IniDuplicateKeyBehavior.LastWins,
-            "LastWins" => IniDuplicateKeyBehavior.LastWins,
-            "FirstWins" => IniDuplicateKeyBehavior.FirstWins,
-            "Disallowed" => IniDuplicateKeyBehavior.Disallowed,
+            null => DuplicateKeyPolicy.LastWins,
+            "LastWins" => DuplicateKeyPolicy.LastWins,
+            "FirstWins" => DuplicateKeyPolicy.FirstWins,
+            "Disallowed" => DuplicateKeyPolicy.Disallowed,
             _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "Unknown KAT duplicate-key mode."),
         };
 

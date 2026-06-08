@@ -9,7 +9,7 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeTests
 {
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> in its
+    /// Verifies that <see cref="Bencode.TryParse(ReadOnlySpan{byte}, out BencodedValue, out int)" /> in its
     /// lenient (default) shape returns <see langword="true" /> when the prefix of the source decodes successfully
     /// even though trailing bytes follow.
     /// </summary>
@@ -18,7 +18,7 @@ public sealed partial class BencodeTests
     {
         var payload = Bytes("i1eXYZ");
 
-        var success = Bencode.TryDecode(payload, out BencodedValue? value, out var bytesConsumed);
+        var success = Bencode.TryParse(payload, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(value);
@@ -26,7 +26,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue, out int)" />
+    /// Verifies that <see cref="Bencode.TryParse(ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue, out int)" />
     /// with <see cref="BencodeParseOptions.RequireCompleteDocument" /> set to <see langword="true" /> rejects an
     /// input whose prefix decodes but is followed by trailing bytes.
     /// </summary>
@@ -36,7 +36,7 @@ public sealed partial class BencodeTests
         BencodeParseOptions options = new() { RequireCompleteDocument = true };
         var payload = Bytes("i1eXYZ");
 
-        var success = Bencode.TryDecode(payload, options, out BencodedValue? value, out var bytesConsumed);
+        var success = Bencode.TryParse(payload, options, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsFalse(success);
         Assert.IsNull(value);
@@ -44,7 +44,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue, out int)" />
+    /// Verifies that <see cref="Bencode.TryParse(ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue, out int)" />
     /// with <see cref="BencodeParseOptions.RequireCompleteDocument" /> succeeds and reports the full source length
     /// when the entire input is consumed.
     /// </summary>
@@ -54,7 +54,7 @@ public sealed partial class BencodeTests
         BencodeParseOptions options = new() { RequireCompleteDocument = true };
         var payload = Bytes("i1e");
 
-        var success = Bencode.TryDecode(payload, options, out BencodedValue? value, out var bytesConsumed);
+        var success = Bencode.TryParse(payload, options, out BencodedValue? value, out var bytesConsumed);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(value);
@@ -63,7 +63,7 @@ public sealed partial class BencodeTests
 
     /// <summary>
     /// Verifies that <see cref="BencodeParseOptions.RequireCompleteDocument" /> defaults to <see langword="false" />
-    /// so the documented lenient TryDecode contract is preserved.
+    /// so the documented lenient TryParse contract is preserved.
     /// </summary>
     [TestMethod]
     public void RequireCompleteDocument_WhenOptionsAreDefault_ShouldBeFalse()

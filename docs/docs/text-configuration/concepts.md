@@ -54,7 +54,7 @@ Each option type controls one stage of the pipeline.
 |---|---|
 | `Profile` | The profile this bag represents. |
 | `InlineCommentMode` | Disabled / WhitespaceIntroduced (default) / Always. |
-| `DuplicateKeyMode` | LastWins (default) / Disallowed / FirstWins (from `IniDuplicateKeyBehavior`). |
+| `DuplicateKeyMode` | LastWins (default) / Disallowed / FirstWins (from `DuplicateKeyPolicy`). |
 | `DuplicateSectionMode` | Preserve / Disallowed / Merge (from `IniDuplicateSectionBehavior`). |
 | `DiagnosticMode` | Throw (default) / Collect / Ignore. |
 | `MaxLineLength` / `MaxKeyLength` | DoS-resistant caps; defaults 8192 / 1024. |

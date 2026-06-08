@@ -22,8 +22,8 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.AllPositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void DecodeThenEncode_ForPositiveVector_ShouldReproduceCanonicalBytes(BencodeKnownAnswerVector vector)
     {
-        BencodedValue decoded = Bencode.Decode(vector.EncodedBytes);
-        var reencoded = Bencode.Encode(decoded);
+        BencodedValue decoded = Bencode.Parse(vector.EncodedBytes);
+        var reencoded = Bencode.Format(decoded);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, reencoded);
     }
@@ -50,8 +50,8 @@ public sealed partial class BencodeTests
         rng.NextBytes(payload);
 
         BencodedString original = new(payload);
-        var encoded = Bencode.Encode(original);
-        var decoded = (BencodedString)Bencode.Decode(encoded);
+        var encoded = Bencode.Format(original);
+        var decoded = (BencodedString)Bencode.Parse(encoded);
 
         CollectionAssert.AreEqual(payload, decoded.Bytes.ToArray());
     }
@@ -83,14 +83,14 @@ public sealed partial class BencodeTests
         }
 
         BencodedDictionary original = new(pairs);
-        var encoded = Bencode.Encode(original);
-        var decoded = (BencodedDictionary)Bencode.Decode(encoded);
+        var encoded = Bencode.Format(original);
+        var decoded = (BencodedDictionary)Bencode.Parse(encoded);
 
         Assert.AreEqual(original.Count, decoded.Count);
         foreach (KeyValuePair<BencodedString, BencodedValue> pair in original.GetOrderedItems())
         {
             Assert.IsTrue(decoded.TryGetValue(pair.Key, out BencodedValue decodedValue));
-            CollectionAssert.AreEqual(Bencode.Encode(pair.Value), Bencode.Encode(decodedValue));
+            CollectionAssert.AreEqual(Bencode.Format(pair.Value), Bencode.Format(decodedValue));
         }
     }
 

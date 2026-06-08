@@ -9,19 +9,21 @@ namespace Bodu.Text.Ini;
 public sealed partial class IniTests
 {
     /// <summary>
-    /// Verifies that <see cref="IniEntry.Value" /> is mutable, allowing in-place edits between parse and
-    /// format.
+    /// Verifies that updating a parsed entry's value via <see cref="IniSection.SetEntry(string, string)" />
+    /// round-trips the new value and preserves the entry's leading-comment trivia, since the entry value is
+    /// immutable and the section replaces the entry in place.
     /// </summary>
     [TestMethod]
-    public void Mutate_WhenEntryValueIsAssigned_ShouldRoundTripUpdatedValue()
+    public void Mutate_WhenSetEntryReplacesParsedEntry_ShouldRoundTripValueAndPreserveComments()
     {
-        IniDocument doc = Ini.Parse("[s]\nkey = old\n");
+        IniDocument doc = Ini.Parse("[s]\n# note\nkey = old\n");
 
-        doc.Sections[0].Entries[0].Value = "new";
+        doc.Sections[0].SetEntry("key", "new");
         var text = Ini.Format(doc);
 
         StringAssert.Contains(text, "key = new");
         Assert.IsFalse(text.Contains("key = old"));
+        StringAssert.Contains(text, "# note");
     }
 
     /// <summary>

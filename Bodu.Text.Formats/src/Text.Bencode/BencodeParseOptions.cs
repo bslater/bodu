@@ -7,13 +7,13 @@
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Controls parser policy for <see cref="Bencode.Decode(System.ReadOnlySpan{byte}, BencodeParseOptions)" /> and related
+/// Controls parser policy for <see cref="Bencode.Parse(System.ReadOnlySpan{byte}, BencodeParseOptions)" /> and related
 /// decoding entry points.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The defaults match the strict, BEP 3-aligned behaviour applied when the parameterless
-/// <see cref="Bencode.Decode(System.ReadOnlySpan{byte})" /> overload is used: complete-document consumption, dictionary
+/// <see cref="Bencode.Parse(System.ReadOnlySpan{byte})" /> overload is used: complete-document consumption, dictionary
 /// keys in strictly ascending bytewise order, and a recursion-depth ceiling that defends against pathologically nested
 /// input.
 /// </para>
@@ -73,20 +73,20 @@ public readonly struct BencodeParseOptions
 
     /// <summary>
     /// Gets a value indicating whether
-    /// <see cref="Bencode.TryDecode(System.ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue?, out int)" />
+    /// <see cref="Bencode.TryParse(System.ReadOnlySpan{byte}, BencodeParseOptions, out BencodedValue?, out int)" />
     /// must consume the entire input.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The default is <see langword="false" />, which preserves the lenient TryDecode contract: a prefix that
+    /// The default is <see langword="false" />, which preserves the lenient TryParse contract: a prefix that
     /// successfully decodes returns <see langword="true" /> with <c>bytesConsumed</c> set to the prefix length, and
     /// trailing bytes are silently ignored. Set to <see langword="true" /> to require that the entire source is
     /// consumed by a single value, mirroring the strict behaviour of
-    /// <see cref="Bencode.Decode(System.ReadOnlySpan{byte})" />.
+    /// <see cref="Bencode.Parse(System.ReadOnlySpan{byte})" />.
     /// </para>
     /// </remarks>
     /// <returns>
-    /// <see langword="true" /> if TryDecode must consume the full input; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if TryParse must consume the full input; otherwise, <see langword="false" />.
     /// </returns>
     public bool RequireCompleteDocument { get; init; }
 }

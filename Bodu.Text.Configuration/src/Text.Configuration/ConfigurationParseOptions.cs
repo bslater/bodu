@@ -54,8 +54,8 @@ public sealed partial class ConfigurationParseOptions
     /// Gets the duplicate key handling mode used by the reader.
     /// </summary>
     /// <returns>The selected duplicate key mode.</returns>
-    public IniDuplicateKeyBehavior DuplicateKeyMode { get; init; } =
-        IniDuplicateKeyBehavior.LastWins;
+    public DuplicateKeyPolicy DuplicateKeyMode { get; init; } =
+        DuplicateKeyPolicy.LastWins;
 
     /// <summary>
     /// Gets the duplicate section handling mode used by the reader.

@@ -21,8 +21,8 @@ public sealed class SmokeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> and
-    /// <see cref="Bencode.Encode(BencodedValue)" /> round-trip the canonical BEP 3 string example.
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> and
+    /// <see cref="Bencode.Format(BencodedValue)" /> round-trip the canonical BEP 3 string example.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
@@ -30,8 +30,8 @@ public sealed class SmokeTests
     {
         var encoded = System.Text.Encoding.ASCII.GetBytes("4:spam");
 
-        BencodedValue decoded = Bencode.Decode(encoded);
-        var reencoded = Bencode.Encode(decoded);
+        BencodedValue decoded = Bencode.Parse(encoded);
+        var reencoded = Bencode.Format(decoded);
 
         Assert.AreEqual("spam", ((BencodedString)decoded).GetUtf8String());
         CollectionAssert.AreEqual(encoded, reencoded);

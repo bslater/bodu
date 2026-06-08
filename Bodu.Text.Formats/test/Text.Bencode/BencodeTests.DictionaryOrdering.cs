@@ -10,7 +10,7 @@ public sealed partial class BencodeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> rejects a dictionary that lists the same
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> rejects a dictionary that lists the same
     /// key twice.
     /// </summary>
     [TestMethod]
@@ -18,7 +18,7 @@ public sealed partial class BencodeTests
     {
         BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            _ = Bencode.Decode(Bytes("d1:a0:1:a0:e"));
+            _ = Bencode.Parse(Bytes("d1:a0:1:a0:e"));
         });
 
         // The encoded duplicate-key case fails the "strictly greater than previous" sort-order check, so the
@@ -26,7 +26,7 @@ public sealed partial class BencodeTests
         Assert.AreEqual(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, ex.Message);
     }
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> rejects a dictionary whose encoded keys
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> rejects a dictionary whose encoded keys
     /// are not sorted in raw byte order. The input here lists <c>b</c> before <c>a</c>.
     /// </summary>
     [TestMethod]
@@ -34,14 +34,14 @@ public sealed partial class BencodeTests
     {
         BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            _ = Bencode.Decode(Bytes("d1:b0:1:a0:e"));
+            _ = Bencode.Parse(Bytes("d1:b0:1:a0:e"));
         });
 
         Assert.AreEqual(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, ex.Message);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> emits dictionary entries in raw-byte-string
+    /// Verifies that <see cref="Bencode.Format(BencodedValue)" /> emits dictionary entries in raw-byte-string
     /// key order regardless of the order in which keys were supplied to the <see cref="BencodedDictionary" />
     /// constructor.
     /// </summary>
@@ -55,7 +55,7 @@ public sealed partial class BencodeTests
             new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("mango"), new BencodedInteger(3)),
         ]);
 
-        var encoded = Bencode.Encode(dict);
+        var encoded = Bencode.Format(dict);
 
         CollectionAssert.AreEqual(Bytes("d5:alphai2e5:mangoi3e5:zebrai1ee"), encoded);
     }

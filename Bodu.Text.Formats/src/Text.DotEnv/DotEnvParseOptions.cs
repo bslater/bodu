@@ -28,7 +28,7 @@ namespace Bodu.Text.DotEnv;
 /// Strict ingest: reject duplicate keys and disallow inline comments.
 /// var options = new DotEnvParseOptions
 /// {
-///     DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed,
+///     DuplicateKeyBehavior = DuplicateKeyPolicy.Disallowed,
 ///     AllowExportPrefix    = false,
 ///     AllowInlineComments  = false,
 /// };
@@ -55,10 +55,10 @@ public readonly struct DotEnvParseOptions
     /// Gets a value indicating how the parser behaves when the same key appears more than once in the source.
     /// </summary>
     /// <returns>
-    /// A <see cref="DotEnvDuplicateKeyBehavior" /> value. The default is
-    /// <see cref="DotEnvDuplicateKeyBehavior.LastWins" />.
+    /// A <see cref="DuplicateKeyPolicy" /> value. The default is
+    /// <see cref="DuplicateKeyPolicy.LastWins" />.
     /// </returns>
-    public DotEnvDuplicateKeyBehavior DuplicateKeyBehavior { get; init; } = DotEnvDuplicateKeyBehavior.LastWins;
+    public DuplicateKeyPolicy DuplicateKeyBehavior { get; init; } = DuplicateKeyPolicy.LastWins;
 
     /// <summary>
     /// Gets a value indicating whether lines that begin with the <c>export </c> prefix are accepted. When

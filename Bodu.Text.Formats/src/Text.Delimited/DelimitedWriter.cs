@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -116,6 +118,50 @@ public sealed class DelimitedWriter : IDisposable
     }
 
     /// <summary>
+    /// Asynchronously writes a header row to the output. Should be called at most once and before any
+    /// <see cref="WriteRowAsync" /> calls.
+    /// </summary>
+    /// <param name="headers">The column names to write as the header row.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the write operation.</param>
+    /// <returns>A task that completes when the header has been written.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="headers" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="headers" /> contains a <see langword="null" /> element.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
+    public async Task WriteHeaderAsync(IEnumerable<string> headers, CancellationToken cancellationToken = default)
+    {
+        ThrowHelper.ThrowIfNull(headers);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        await _writer.WriteAsync(BuildRow(headers, nameof(headers)).AsMemory(), cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Asynchronously writes a data row to the output, quoting fields as required.
+    /// </summary>
+    /// <param name="fields">The field values to write as a single row.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the write operation.</param>
+    /// <returns>A task that completes when the row has been written.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="fields" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="fields" /> contains a <see langword="null" /> element.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
+    public async Task WriteRowAsync(IEnumerable<string> fields, CancellationToken cancellationToken = default)
+    {
+        ThrowHelper.ThrowIfNull(fields);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        await _writer.WriteAsync(BuildRow(fields, nameof(fields)).AsMemory(), cancellationToken).ConfigureAwait(false);
+        _rowsWritten++;
+    }
+
+    /// <summary>
     /// Releases the underlying <see cref="TextWriter" />, flushing any buffered output first.
     /// </summary>
     public void Dispose()
@@ -193,5 +239,73 @@ public sealed class DelimitedWriter : IDisposable
         }
 
         _writer.Write(quote);
+    }
+
+    /// <summary>
+    /// Builds one row line (delimiter-separated, quoted as required, terminated by a line feed) as a string for the
+    /// asynchronous write paths, applying the same quoting rules as the synchronous writer.
+    /// </summary>
+    /// <param name="fields">The field values to write.</param>
+    /// <param name="paramName">The name of the public parameter that supplied <paramref name="fields" />.</param>
+    /// <returns>The fully formatted row line.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="fields" /> contains a <see langword="null" /> element.
+    /// </exception>
+    private string BuildRow(IEnumerable<string> fields, string paramName)
+    {
+        var delimiter = _options.Delimiter;
+        StringBuilder sb = new();
+        var first = true;
+
+        foreach (var field in fields)
+        {
+            if (field is null)
+                throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_NullListElement, paramName);
+
+            if (!first)
+                sb.Append(delimiter);
+
+            AppendField(sb, field);
+            first = false;
+        }
+
+        sb.Append('\n');
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Appends a single field value to <paramref name="sb" />, applying the same quoting and doubled-quote escaping as
+    /// the synchronous <see cref="WriteField" />.
+    /// </summary>
+    /// <param name="sb">The destination builder.</param>
+    /// <param name="field">The field value to append.</param>
+    private void AppendField(StringBuilder sb, string field)
+    {
+        var delimiter = _options.Delimiter;
+        var quote = _options.Quote;
+
+        var needsQuoting = field.Length == 0 ||
+                           field.IndexOf(delimiter) >= 0 ||
+                           field.IndexOf(quote) >= 0 ||
+                           field.IndexOf('\n') >= 0 ||
+                           field.IndexOf('\r') >= 0;
+
+        if (!needsQuoting)
+        {
+            sb.Append(field);
+            return;
+        }
+
+        sb.Append(quote);
+
+        foreach (var c in field)
+        {
+            if (c == quote)
+                sb.Append(quote);
+
+            sb.Append(c);
+        }
+
+        sb.Append(quote);
     }
 }

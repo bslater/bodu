@@ -14,7 +14,7 @@ For the vocabulary used below (value vs. document, canonical encoding, framing t
 using Bodu.Text.Formats;
 
 byte[] payload = File.ReadAllBytes("torrent.torrent");
-BencodedValue root = Bencode.Decode(payload);
+BencodedValue root = Bencode.Parse(payload);
 ```
 
 `Decode(byte[])` is a `null`-guarded shim over the span overload `Decode(ReadOnlySpan<byte>)`. Both parse exactly one complete value and reject any trailing bytes — a payload that holds two concatenated values throws `BencodeFormatException` with the message *The bencoded value contains trailing data*.
@@ -26,7 +26,7 @@ If you genuinely need to read one value out of a larger buffer (for example a Ma
 ```csharp
 using Bodu.Text.Formats;
 
-if (Bencode.TryDecode(buffer, out BencodedValue? value, out int consumed))
+if (Bencode.TryParse(buffer, out BencodedValue? value, out int consumed))
 {
     Process(value);
     buffer = buffer[consumed..];   // continue reading what follows
@@ -44,10 +44,10 @@ else
 ```csharp
 using Bodu.Text.Formats;
 
-int size = Bencode.GetEncodedLength(value);
+int size = Bencode.GetFormattedLength(value);
 Span<byte> destination = size <= 256 ? stackalloc byte[size] : new byte[size];
 
-if (!Bencode.TryEncode(value, destination, out int written))
+if (!Bencode.TryFormat(value, destination, out int written))
     throw new InvalidOperationException("Buffer too small.");
 
 return destination[..written];
@@ -63,14 +63,14 @@ For values that may exceed `int.MaxValue` bytes, `GetEncodedLength` throws `Over
 using Bodu.Text.Formats;
 
 using FileStream fs = File.Create("doc.bencode");
-Bencode.Encode(value, fs);
+Bencode.Format(value, fs);
 ```
 
 The synchronous `Encode(value, Stream)` stages to an `ArrayPool<byte>` buffer sized exactly to `GetEncodedLength`, writes it in a single `Write` call, returns the buffer to the pool, and leaves the stream open. The async variant follows the same pattern using `WriteAsync`:
 
 ```csharp
 await using FileStream fs = File.Create("doc.bencode");
-await Bencode.EncodeAsync(value, fs, cancellationToken);
+await Bencode.FormatAsync(value, fs, cancellationToken);
 ```
 
 Both stream overloads validate that the stream supports writing before allocating the buffer and throw `ArgumentException` with the offending parameter name if not. See [Streams and async I/O](streaming.md) for the buffer-lifecycle details.
@@ -81,10 +81,10 @@ Both stream overloads validate that the stream supports writing before allocatin
 using Bodu.Text.Formats;
 
 await using FileStream fs = File.OpenRead("doc.bencode");
-BencodedValue root = await Bencode.DecodeAsync(fs, cancellationToken);
+BencodedValue root = await Bencode.ParseAsync(fs, cancellationToken);
 ```
 
-`Decode(Stream)` and `DecodeAsync(Stream)` copy the entire stream into a pooled `MemoryStream`, then dispatch to the existing span parser. Bencode is **not** a streaming format — a value's framing tokens can be arbitrarily far apart, and dictionary key ordering can only be validated once all keys have been seen, so the parser must have the complete buffer in front of it.
+`Decode(Stream)` and `ParseAsync(Stream)` copy the entire stream into a pooled `MemoryStream`, then dispatch to the existing span parser. Bencode is **not** a streaming format — a value's framing tokens can be arbitrarily far apart, and dictionary key ordering can only be validated once all keys have been seen, so the parser must have the complete buffer in front of it.
 
 For seekable streams of known length, the cost is one extra copy versus reading into a span yourself. For network streams you usually want the async overload because of the cancellation support.
 
@@ -95,8 +95,8 @@ using Bodu.Text.Formats;
 
 byte[] originalEncoded = File.ReadAllBytes("input.torrent");
 
-BencodedValue decoded = Bencode.Decode(originalEncoded);
-byte[] reEncoded = Bencode.Encode(decoded);
+BencodedValue decoded = Bencode.Parse(originalEncoded);
+byte[] reEncoded = Bencode.Format(decoded);
 
 Debug.Assert(originalEncoded.SequenceEqual(reEncoded));
 ```
@@ -111,7 +111,7 @@ If the round-trip assertion ever fires, you have either accepted non-canonical i
 using Bodu.Text.Formats;
 
 public static bool IsWellFormedBencode(ReadOnlySpan<byte> source) =>
-    Bencode.TryDecode(source, out _, out int consumed) && consumed == source.Length;
+    Bencode.TryParse(source, out _, out int consumed) && consumed == source.Length;
 ```
 
 `TryDecode` exits early on the first structural error; the resulting `BencodedValue` is immediately discarded by `_`. This is useful for input filters at the edge of an application — accept only payloads that parse cleanly, log the rest, drop the rest before any other code touches them.
@@ -133,7 +133,7 @@ if (payload.Length > maxBytes)
     return;
 }
 
-BencodedValue root = Bencode.Decode(payload);
+BencodedValue root = Bencode.Parse(payload);
 ```
 
 The parser already rejects unbounded length prefixes — `BencodeFormatException_StringLengthTooLarge` fires when a single string declares a length larger than `int.MaxValue`. The outer cap above adds protection against an attacker who sends a series of valid-but-massive nested structures.
@@ -147,7 +147,7 @@ byte[] invalid = "d3:cow"u8.ToArray();    // dictionary missing value and 'e'
 
 try
 {
-    BencodedValue root = Bencode.Decode(invalid);
+    BencodedValue root = Bencode.Parse(invalid);
 }
 catch (BencodeFormatException ex)
 {
@@ -161,16 +161,16 @@ See [Core concepts — Format exception](../../docs/formats/concepts.md#format-e
 
 | Source | Recommended overload | Notes |
 |---|---|---|
-| `byte[]` from disk / memory | `Bencode.Decode(byte[])` | Null-guarded; throws on malformed input. |
-| `ReadOnlySpan<byte>` from a larger buffer | `Bencode.Decode(span)` or `Bencode.TryDecode(span, …)` | Choose based on whether trailing data is an error or expected. |
-| File / network `Stream` | `Bencode.Decode(stream)` / `DecodeAsync(stream)` | Buffers to end before parsing. |
-| Speculative parse (might fail) | `Bencode.TryDecode(...)` | Returns `false` instead of throwing. |
+| `byte[]` from disk / memory | `Bencode.Parse(byte[])` | Null-guarded; throws on malformed input. |
+| `ReadOnlySpan<byte>` from a larger buffer | `Bencode.Parse(span)` or `Bencode.TryParse(span, …)` | Choose based on whether trailing data is an error or expected. |
+| File / network `Stream` | `Bencode.Parse(stream)` / `ParseAsync(stream)` | Buffers to end before parsing. |
+| Speculative parse (might fail) | `Bencode.TryParse(...)` | Returns `false` instead of throwing. |
 
 | Destination | Recommended overload | Notes |
 |---|---|---|
-| Fresh `byte[]` | `Bencode.Encode(value)` | Allocates `GetEncodedLength(value)` bytes. |
-| Caller-owned `Span<byte>` | `Bencode.TryEncode(value, dest, out written)` | `false` if `dest` is shorter than the encoded length. |
-| File / network `Stream` | `Bencode.Encode(value, stream)` / `EncodeAsync(value, stream, ct)` | Pooled buffer, single `Write`. |
+| Fresh `byte[]` | `Bencode.Format(value)` | Allocates `GetEncodedLength(value)` bytes. |
+| Caller-owned `Span<byte>` | `Bencode.TryFormat(value, dest, out written)` | `false` if `dest` is shorter than the encoded length. |
+| File / network `Stream` | `Bencode.Format(value, stream)` / `FormatAsync(value, stream, ct)` | Pooled buffer, single `Write`. |
 
 ## Where to go next
 

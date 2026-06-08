@@ -111,33 +111,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Destination must be exactly the size required for the decoded characters..
-        /// </summary>
-        internal static string Arg_Invalid_DestinationNotExactSizeForDecoded {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DestinationNotExactSizeForDecoded", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Destination must be exactly the size required for the encoded bytes..
-        /// </summary>
-        internal static string Arg_Invalid_DestinationNotExactSizeForEncoded {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DestinationNotExactSizeForEncoded", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Destination is too small to receive the decoded characters..
-        /// </summary>
-        internal static string Arg_Invalid_DestinationTooSmallForDecoded {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DestinationTooSmallForDecoded", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Destination is too small to receive the encoded characters..
         /// </summary>
         internal static string Arg_Invalid_DestinationTooSmallForEncoded {
@@ -164,14 +137,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The replacement string &apos;{0}&apos; cannot be encoded by the specified encoding..
-        /// </summary>
-        internal static string Arg_Invalid_ReplacementNotEncodable {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_ReplacementNotEncodable", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Unknown encoding name: '{0}'..

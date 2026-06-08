@@ -39,7 +39,7 @@ using Bodu.Text.Bencode;
 
 byte[] payload = File.ReadAllBytes("ubuntu.iso.torrent");
 
-BencodedValue root = Bencode.Decode(payload);
+BencodedValue root = Bencode.Parse(payload);
 BencodedDictionary doc = (BencodedDictionary)root;
 
 string tracker = ((BencodedString)doc["announce"]).GetUtf8String();
@@ -48,9 +48,9 @@ string name = ((BencodedString)info["name"]).GetUtf8String();
 long pieceLength = ((BencodedInteger)info["piece length"]).Value;
 
 // Pre-size and re-emit canonically.
-int size = Bencode.GetEncodedLength(doc);
+int size = Bencode.GetFormattedLength(doc);
 byte[] reEncoded = new byte[size];
-Bencode.TryEncode(doc, reEncoded, out int written);
+Bencode.TryFormat(doc, reEncoded, out int written);
 Debug.Assert(written == size);
 ```
 
@@ -59,7 +59,7 @@ Debug.Assert(written == size);
 - **Canonical encoding.** Bencode has exactly one canonical encoding for any value — integers use the shortest decimal representation with no padding and no `+` sign; byte-string lengths use the shortest decimal representation; dictionary keys are sorted by raw byte order; no whitespace is permitted anywhere. The encoder always produces canonical output; the parser rejects every non-canonical input. This rejection is intentional — equivalence between two encodings would break content-addressed identifiers (the SHA-1 of a torrent's `info` dictionary, the *infohash*).
 - **BEP 3 strictness.** Leading zeros, negative zero, unsorted or duplicate dictionary keys, missing terminators, and trailing data all surface as <xref:Bodu.Text.Bencode.BencodeFormatException>. The exception message identifies the exact failure mode (e.g. *Bencoded dictionary keys must be unique and sorted by raw byte order*). `TryDecode` and `TryEncode` swap these exceptions for `bool` results.
 - **Byte string vs text.** Bencoded strings are raw bytes, not characters. Treating them as text is a per-field decision driven by the consuming format — `info.name` in a torrent is UTF-8, `info.pieces` is a concatenation of 20-byte SHA-1 hashes. <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> projects when the field is known to be text; <xref:Bodu.Text.Bencode.BencodedString.FromUtf8(System.String)> goes the other way.
-- **Stream buffering.** `Bencode.Decode(Stream)` and `DecodeAsync(Stream)` buffer the entire stream into a pooled `MemoryStream` before parsing — Bencode is not a streaming format because framing tokens can be arbitrarily far apart and the parser must consume them in order. The pooled buffer is sized to the stream length where available and released back to <xref:System.Buffers.ArrayPool`1> before the parser runs. Stream encoding writes in a single `Write` / `WriteAsync` call sized to `GetEncodedLength`.
+- **Stream buffering.** `Bencode.Parse(Stream)` and `ParseAsync(Stream)` buffer the entire stream into a pooled `MemoryStream` before parsing — Bencode is not a streaming format because framing tokens can be arbitrarily far apart and the parser must consume them in order. The pooled buffer is sized to the stream length where available and released back to <xref:System.Buffers.ArrayPool`1> before the parser runs. Stream encoding writes in a single `Write` / `WriteAsync` call sized to `GetFormattedLength`.
 - **Immutable value tree.** Every <xref:Bodu.Text.Bencode.BencodedValue> subclass is immutable from the consumer's perspective — `BencodedDictionary` keys arrive sorted, `BencodedList` items are stored in their construction order, `BencodedString.Bytes` is exposed as a read-only span. Deep equality between two trees is something the consumer composes — `BencodedString.Equals` and `BencodedInteger.Equals` give per-leaf equality, the container types do not.
 - **Ordering and equality.** Dictionary keys are ordered and compared by raw byte ordinal — never by Unicode collation, locale, or codepoint. <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal> is the singleton comparer used internally; surface it directly when building your own `SortedDictionary` keyed by bencoded values.
 - **Determinism.** All encode and decode operations produce identical output across platforms and architectures for the same input. There is no random seed, no thread-local state, and no culture-sensitive code path.

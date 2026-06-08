@@ -4,13 +4,13 @@ title: Encoding helpers and BOM detection
 
 # Encoding helpers and BOM detection
 
-Alongside the binary encodings (Base16–Base85), `Bodu.Text.Encoding` ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
+Separate from the binary radix encodings (Base16–Base85, in `Bodu.Text.Encoding`), the **`Bodu.Text`** library ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
 
 Three types make up the surface:
 
-- <xref:Bodu.Text.Encoding.StringEncodingExtensions> — extension methods on `string`.
-- <xref:Bodu.Text.Encoding.EncodingExtensions> — extension methods on `System.Text.Encoding`.
-- <xref:Bodu.Text.Encoding.EncodingDetection> — static BOM-sniffing.
+- <xref:Bodu.Text.StringEncodingExtensions> — extension methods on `string`.
+- <xref:Bodu.Text.EncodingExtensions> — extension methods on `System.Text.Encoding`.
+- <xref:Bodu.Text.EncodingDetection> — static BOM-sniffing.
 
 ## Converting strings to bytes
 
@@ -52,7 +52,7 @@ ReadOnlySpan<byte> body = enc.StripPreamble(bytes);          // bytes minus any 
 string text   = enc.GetStringSkippingPreamble(bytes);        // decode, ignoring a leading BOM
 ```
 
-To detect the encoding *from* the bytes, use <xref:Bodu.Text.Encoding.EncodingDetection>:
+To detect the encoding *from* the bytes, use <xref:Bodu.Text.EncodingDetection>:
 
 ```csharp
 System.Text.Encoding chosen =
@@ -99,9 +99,9 @@ OperationStatus status = enc.EncodeChunk(charSpan, byteDestination, isFinal: tru
 
 | Type | Highlights |
 |---|---|
-| <xref:Bodu.Text.Encoding.StringEncodingExtensions> | `ToUtf8Bytes` / `ToBytes` / `ToBytesWithPreamble`, `EncodeUtf8To` / `TryEncodeUtf8To`, `WriteUtf8To`, `GetUtf8ByteCount`, pooled variants. |
-| <xref:Bodu.Text.Encoding.EncodingExtensions> | `HasPreamble` / `StripPreamble` / `StartsWithPreamble` / `GetStringSkippingPreamble`, `IsUtf8` / `IsAscii` / `IsAnyUtf` / endianness checks, `WithExceptionFallbacks` / `WithReplacementFallbacks`, owned / pooled buffers, `EncodeChunk` / `DecodeChunk`. |
-| <xref:Bodu.Text.Encoding.EncodingDetection> | `TryDetectByPreamble` — identify an encoding from a leading BOM. |
+| <xref:Bodu.Text.StringEncodingExtensions> | `ToUtf8Bytes` / `ToBytes` / `ToBytesWithPreamble`, `EncodeUtf8To` / `TryEncodeUtf8To`, `WriteUtf8To`, `GetUtf8ByteCount`, pooled variants. |
+| <xref:Bodu.Text.EncodingExtensions> | `HasPreamble` / `StripPreamble` / `StartsWithPreamble` / `GetStringSkippingPreamble`, `IsUtf8` / `IsAscii` / `IsAnyUtf` / endianness checks, `WithExceptionFallbacks` / `WithReplacementFallbacks`, owned / pooled buffers, `EncodeChunk` / `DecodeChunk`. |
+| <xref:Bodu.Text.EncodingDetection> | `TryDetectByPreamble` — identify an encoding from a leading BOM. |
 
 ## Where to go next
 

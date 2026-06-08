@@ -8,6 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.DotEnv;
 
 public static partial class DotEnv
@@ -39,7 +41,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowInvalidKey(string key, int lineNumber) =>
+    internal static void ThrowInvalidKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_invalidKey, key, lineNumber), lineNumber);
 
@@ -47,7 +49,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowMalformedEntry(int lineNumber) =>
+    internal static void ThrowMalformedEntry(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_malformedEntry, lineNumber), lineNumber);
 
@@ -55,7 +57,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
+    internal static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_unterminatedDoubleQuote, lineNumber), lineNumber);
 
@@ -63,7 +65,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowUnterminatedSingleQuote(int lineNumber) =>
+    internal static void ThrowUnterminatedSingleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_unterminatedSingleQuote, lineNumber), lineNumber);
 
@@ -190,14 +192,14 @@ public static partial class DotEnv
                 {
                     switch (_options.DuplicateKeyBehavior)
                     {
-                        case DotEnvDuplicateKeyBehavior.Disallowed:
+                        case DuplicateKeyPolicy.Disallowed:
                             DotEnv.ThrowDuplicateKey(key, entryLineNumber);
                             return default!;
 
-                        case DotEnvDuplicateKeyBehavior.FirstWins:
+                        case DuplicateKeyPolicy.FirstWins:
                             break;
 
-                        case DotEnvDuplicateKeyBehavior.LastWins:
+                        case DuplicateKeyPolicy.LastWins:
                             DotEnvEntry replacement = new(key, value, leadingComments);
                             var idx = entries.IndexOf(existing);
                             entries[idx] = replacement;
@@ -361,16 +363,7 @@ public static partial class DotEnv
         /// <summary>
         /// Consumes one character, incrementing <see cref="_lineNumber" /> when the consumed character is <c>'\n'</c>.
         /// </summary>
-        private void Advance()
-        {
-            if (!_remaining.IsEmpty)
-            {
-                if (_remaining[0] == '\n')
-                    _lineNumber++;
-
-                _remaining = _remaining[1..];
-            }
-        }
+        private void Advance() => LineScanner.Advance(ref _remaining, ref _lineNumber);
 
         /// <summary>
         /// Advances past any space or tab characters on the current line without consuming newline characters.
@@ -384,36 +377,12 @@ public static partial class DotEnv
         /// <summary>
         /// Advances to the end of the current line without consuming the line terminator.
         /// </summary>
-        private void SkipToEndOfLine()
-        {
-            while (!_remaining.IsEmpty && _remaining[0] != '\n' && _remaining[0] != '\r')
-                _remaining = _remaining[1..];
-        }
+        private void SkipToEndOfLine() => LineScanner.SkipToEndOfLine(ref _remaining);
 
         /// <summary>
         /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_lineNumber" />
         /// accordingly.
         /// </summary>
-        private void SkipLineEnding()
-        {
-            if (_remaining.IsEmpty)
-                return;
-
-            if (_remaining[0] == '\r')
-            {
-                _remaining = _remaining[1..];
-
-                if (!_remaining.IsEmpty && _remaining[0] == '\n')
-                {
-                    _lineNumber++;
-                    _remaining = _remaining[1..];
-                }
-            }
-            else if (_remaining[0] == '\n')
-            {
-                _lineNumber++;
-                _remaining = _remaining[1..];
-            }
-        }
+        private void SkipLineEnding() => LineScanner.SkipLineEnding(ref _remaining, ref _lineNumber);
     }
 }

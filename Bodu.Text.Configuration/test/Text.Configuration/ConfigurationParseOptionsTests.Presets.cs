@@ -30,7 +30,7 @@ public partial class ConfigurationParseOptionsTests
     {
         ConfigurationParseOptions options = ConfigurationParseOptions.Strict;
 
-        Assert.AreEqual(IniDuplicateKeyBehavior.Disallowed, options.DuplicateKeyMode);
+        Assert.AreEqual(DuplicateKeyPolicy.Disallowed, options.DuplicateKeyMode);
         Assert.AreEqual(IniDuplicateSectionBehavior.Disallowed, options.DuplicateSectionMode);
     }
 

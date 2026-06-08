@@ -181,7 +181,7 @@ public static partial class DotEnv
     /// </summary>
     /// <param name="sb">The <see cref="StringBuilder" /> to append to.</param>
     /// <param name="value">The value string to format.</param>
-    private static void AppendFormattedValue(StringBuilder sb, string value)
+    internal static void AppendFormattedValue(StringBuilder sb, string value)
     {
         if (value.Length == 0)
             return;

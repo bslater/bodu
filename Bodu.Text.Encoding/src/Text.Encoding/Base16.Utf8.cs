@@ -143,6 +143,49 @@ public static partial class Base16
     }
 
     /// <summary>
+    /// Encodes <paramref name="source" /> into a UTF-8 hexadecimal byte array using the supplied variant.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="variant">The Base16 alphabet case.</param>
+    /// <returns>A UTF-8 encoded hexadecimal byte array. Each input byte produces two output bytes.</returns>
+    /// <remarks>
+    /// This is the variant-based form of <see cref="EncodeToUtf8(ReadOnlySpan{byte})" />. Hexadecimal characters are
+    /// ASCII, so each UTF-8 byte equals the ASCII code of its corresponding character.
+    /// </remarks>
+    public static byte[] EncodeToUtf8(ReadOnlySpan<byte> source, Base16Variant variant)
+    {
+        if (source.IsEmpty)
+            return [];
+
+        var result = new byte[source.Length * 2];
+        EncodeToUtf8Core(source, result, upperCase: variant == Base16Variant.Upper);
+        return result;
+    }
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> as UTF-8 hexadecimal bytes
+    /// using the supplied variant.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination UTF-8 byte span.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
+    /// <param name="variant">The Base16 alphabet case.</param>
+    /// <param name="options">
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured;
+    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="destination" /> is large enough; otherwise <see langword="false" />
+    /// .
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
+    /// </exception>
+    public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base16Variant variant, BaseFormattingOptions options = BaseFormattingOptions.None) =>
+        TryEncodeToUtf8(source, destination, out bytesWritten, ApplyVariant(variant, options));
+
+    /// <summary>
     /// Decodes consecutive pairs of UTF-8 hex bytes into the destination span. Used by the strict-mode
     /// <c>FromHexString(ReadOnlySpan{byte})</c> overload.
     /// </summary>

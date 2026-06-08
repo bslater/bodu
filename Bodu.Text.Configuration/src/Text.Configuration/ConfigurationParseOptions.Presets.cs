@@ -13,7 +13,7 @@ public sealed partial class ConfigurationParseOptions
     /// <summary>
     /// Gets the canonical option set for the default Bodu profile:
     /// <see cref="ConfigurationInlineCommentMode.WhitespaceIntroduced" /> inline comments,
-    /// <see cref="IniDuplicateKeyBehavior.LastWins" /> duplicates, <see cref="IniDuplicateSectionBehavior.Preserve" />
+    /// <see cref="DuplicateKeyPolicy.LastWins" /> duplicates, <see cref="IniDuplicateSectionBehavior.Preserve" />
     /// sections, and throw-on-error diagnostics.
     /// </summary>
     /// <returns>A cached default options instance.</returns>
@@ -57,7 +57,7 @@ public sealed partial class ConfigurationParseOptions
             {
                 Profile = ConfigurationProfile.Bodu,
                 InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
-                DuplicateKeyMode = IniDuplicateKeyBehavior.LastWins,
+                DuplicateKeyMode = DuplicateKeyPolicy.LastWins,
                 DuplicateSectionMode = IniDuplicateSectionBehavior.Preserve,
                 SectionHeaderMode = ConfigurationSectionHeaderMode.Lenient,
                 DiagnosticMode = ConfigurationDiagnosticMode.Throw,
@@ -68,7 +68,7 @@ public sealed partial class ConfigurationParseOptions
             {
                 Profile = ConfigurationProfile.EditorConfigCompatible,
                 InlineCommentMode = ConfigurationInlineCommentMode.Disabled,
-                DuplicateKeyMode = IniDuplicateKeyBehavior.LastWins,
+                DuplicateKeyMode = DuplicateKeyPolicy.LastWins,
                 DuplicateSectionMode = IniDuplicateSectionBehavior.Preserve,
                 SectionHeaderMode = ConfigurationSectionHeaderMode.Strict,
                 DiagnosticMode = ConfigurationDiagnosticMode.Throw,
@@ -79,7 +79,7 @@ public sealed partial class ConfigurationParseOptions
             {
                 Profile = ConfigurationProfile.Strict,
                 InlineCommentMode = ConfigurationInlineCommentMode.Disabled,
-                DuplicateKeyMode = IniDuplicateKeyBehavior.Disallowed,
+                DuplicateKeyMode = DuplicateKeyPolicy.Disallowed,
                 DuplicateSectionMode = IniDuplicateSectionBehavior.Disallowed,
                 SectionHeaderMode = ConfigurationSectionHeaderMode.Strict,
                 DiagnosticMode = ConfigurationDiagnosticMode.Throw,
@@ -90,7 +90,7 @@ public sealed partial class ConfigurationParseOptions
             {
                 Profile = ConfigurationProfile.Relaxed,
                 InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
-                DuplicateKeyMode = IniDuplicateKeyBehavior.LastWins,
+                DuplicateKeyMode = DuplicateKeyPolicy.LastWins,
                 DuplicateSectionMode = IniDuplicateSectionBehavior.Preserve,
                 SectionHeaderMode = ConfigurationSectionHeaderMode.Lenient,
                 DiagnosticMode = ConfigurationDiagnosticMode.Collect,

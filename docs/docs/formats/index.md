@@ -52,9 +52,9 @@ A bencoded value has exactly one canonical encoding: `i42e`, not `i+42e` or `i04
 A single document traces the pipeline end-to-end:
 
 1. Author a value: `new BencodedDictionary([new("length"_utf8, new BencodedInteger(1024))])`.
-2. `Bencode.GetEncodedLength(root)` walks the tree once and returns the exact destination size — `d6:lengthi1024ee` is 16 bytes.
-3. `Bencode.Encode(root)` rents a buffer of that exact size, recursively emits framing tokens and payload bytes, and returns the byte array.
-4. The same bytes round-trip back through `Bencode.Decode(bytes)`. The parser reads `d`, expects key/value pairs, parses `6:length` as the key, parses `i1024e` as the value, reads the trailing `e`, then checks that no input remains.
+2. `Bencode.GetFormattedLength(root)` walks the tree once and returns the exact destination size — `d6:lengthi1024ee` is 16 bytes.
+3. `Bencode.Format(root)` rents a buffer of that exact size, recursively emits framing tokens and payload bytes, and returns the byte array.
+4. The same bytes round-trip back through `Bencode.Parse(bytes)`. The parser reads `d`, expects key/value pairs, parses `6:length` as the key, parses `i1024e` as the value, reads the trailing `e`, then checks that no input remains.
 5. If the source bytes were `d6:lengthi1024e` — missing the trailing `e` — the parser throws `BencodeFormatException` with the message *Unterminated bencoded dictionary*.
 
 Encoding is allocation-conscious: stream variants stage to a pooled buffer of the exact size, the span path writes straight into the caller's destination, and `TryEncode` reports overflow with `false` instead of an exception.
@@ -63,14 +63,14 @@ Encoding is allocation-conscious: stream variants stage to a pooled buffer of th
 
 | Scenario | Reach for |
 |---|---|
-| Decode a torrent file from disk | `Bencode.Decode(File.ReadAllBytes(path))` |
-| Decode a bencoded payload from a network stream | `await Bencode.DecodeAsync(stream, cancellationToken)` |
+| Decode a torrent file from disk | `Bencode.Parse(File.ReadAllBytes(path))` |
+| Decode a bencoded payload from a network stream | `await Bencode.ParseAsync(stream, cancellationToken)` |
 | Walk the value tree by kind | `value.Kind` + a switch over `BencodedValueKind` |
 | Look up a UTF-8 key in a dictionary | `dict.TryGetValue("announce", out var v)` |
-| Re-encode a tree canonically | `Bencode.Encode(tree)` |
-| Pre-size a destination span | `int size = Bencode.GetEncodedLength(tree);` |
-| Parse without throwing on malformed input | `Bencode.TryDecode(source, out var value, out var consumed)` |
-| Write canonically to a `Stream` | `Bencode.Encode(tree, stream)` / `EncodeAsync(tree, stream)` |
+| Re-encode a tree canonically | `Bencode.Format(tree)` |
+| Pre-size a destination span | `int size = Bencode.GetFormattedLength(tree);` |
+| Parse without throwing on malformed input | `Bencode.TryParse(source, out var value, out var consumed)` |
+| Write canonically to a `Stream` | `Bencode.Format(tree, stream)` / `FormatAsync(tree, stream)` |
 | Compare byte-string keys ordinally | <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal> |
 | Treat a key payload as text | <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> |
 

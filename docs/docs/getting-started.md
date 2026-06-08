@@ -152,7 +152,7 @@ using Bodu.Text.Bencode;
 
 byte[] payload = File.ReadAllBytes("ubuntu.iso.torrent");
 
-BencodedValue root = Bencode.Decode(payload);
+BencodedValue root = Bencode.Parse(payload);
 BencodedDictionary doc = (BencodedDictionary)root;
 
 string tracker = ((BencodedString)doc["announce"]).GetUtf8String();
@@ -161,7 +161,7 @@ string name = ((BencodedString)info["name"]).GetUtf8String();
 long pieceLength = ((BencodedInteger)info["piece length"]).Value;
 ```
 
-The parser enforces every BEP 3 invariant — no leading zeros, no negative zero, dictionary keys sorted by raw byte order, no trailing bytes — so a successful decode round-trips bit-exactly through `Bencode.Encode`. The Delimited, Ini, and DotEnv namespaces follow the same shape.
+The parser enforces every BEP 3 invariant — no leading zeros, no negative zero, dictionary keys sorted by raw byte order, no trailing bytes — so a successful decode round-trips bit-exactly through `Bencode.Format`. The Delimited, Ini, and DotEnv namespaces follow the same shape.
 
 → **[Introduction](formats/index.md)** · **[Getting started](formats/getting-started.md)** · **[Guides](../guides/formats/index.md)**
 

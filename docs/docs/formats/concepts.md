@@ -18,7 +18,7 @@ A **codec** is the static façade that exposes encode and decode operations for 
 
 A **value** is one node in the decoded tree — a `BencodedInteger`, `BencodedString`, `BencodedList`, or `BencodedDictionary`. Every value derives from <xref:Bodu.Text.Bencode.BencodedValue> and exposes a `Kind` property that returns the matching <xref:Bodu.Text.Bencode.BencodedValueKind> member.
 
-A **document** is exactly one top-level value (in practice, almost always a `BencodedDictionary`). `Bencode.Decode(source)` returns that root value; the parser also checks that the entire input was consumed, so a payload with trailing bytes after a complete value is rejected.
+A **document** is exactly one top-level value (in practice, almost always a `BencodedDictionary`). `Bencode.Parse(source)` returns that root value; the parser also checks that the entire input was consumed, so a payload with trailing bytes after a complete value is rejected.
 
 ## Value kinds
 
@@ -94,7 +94,7 @@ A bencoded value has exactly one **canonical encoding**:
 
 The encoder always produces canonical output. The parser rejects every form of non-canonical input — leading zeros, negative zero, unsorted keys, trailing bytes, and so on. This rejection is intentional: any equivalence between two encodings would break content-addressed identifiers (the SHA-1 of a torrent's `info` dictionary, in the BitTorrent case).
 
-`Bencode.GetEncodedLength(value)` walks the tree once and returns the exact canonical-encoded size in bytes, suitable for sizing the destination span or buffer before encoding.
+`Bencode.GetFormattedLength(value)` walks the tree once and returns the exact canonical-encoded size in bytes, suitable for sizing the destination span or buffer before encoding.
 
 ## Encode and decode
 
@@ -102,22 +102,22 @@ The encoder always produces canonical output. The parser rejects every form of n
 
 | API | Result |
 |---|---|
-| `byte[] Bencode.Encode(BencodedValue)` | Allocate a `byte[]` sized to `GetEncodedLength` and write into it. |
-| `bool Bencode.TryEncode(value, Span<byte>, out int written)` | Write into a caller-provided span; `false` if the span is too small. |
-| `void Bencode.Encode(value, Stream)` | Stage to a pooled buffer of exact size and `Write` it in one call. |
-| `ValueTask Bencode.EncodeAsync(value, Stream, CancellationToken)` | Async variant using `WriteAsync`. |
+| `byte[] Bencode.Format(BencodedValue)` | Allocate a `byte[]` sized to `GetEncodedLength` and write into it. |
+| `bool Bencode.TryFormat(value, Span<byte>, out int written)` | Write into a caller-provided span; `false` if the span is too small. |
+| `void Bencode.Format(value, Stream)` | Stage to a pooled buffer of exact size and `Write` it in one call. |
+| `ValueTask Bencode.FormatAsync(value, Stream, CancellationToken)` | Async variant using `WriteAsync`. |
 
 **Decode** takes bytes and produces a `BencodedValue`:
 
 | API | Result |
 |---|---|
-| `BencodedValue Bencode.Decode(ReadOnlySpan<byte>)` | Parse a complete document; reject trailing bytes. |
-| `BencodedValue Bencode.Decode(byte[])` | Same, with a `null` guard. |
-| `bool Bencode.TryDecode(span, out value, out consumed)` | Parse a single value; `false` on `BencodeFormatException`. |
-| `BencodedValue Bencode.Decode(Stream)` | Read the stream to its end into a pooled buffer, then parse. |
-| `ValueTask<BencodedValue> Bencode.DecodeAsync(Stream, CancellationToken)` | Async variant of the above. |
+| `BencodedValue Bencode.Parse(ReadOnlySpan<byte>)` | Parse a complete document; reject trailing bytes. |
+| `BencodedValue Bencode.Parse(byte[])` | Same, with a `null` guard. |
+| `bool Bencode.TryParse(span, out value, out consumed)` | Parse a single value; `false` on `BencodeFormatException`. |
+| `BencodedValue Bencode.Parse(Stream)` | Read the stream to its end into a pooled buffer, then parse. |
+| `ValueTask<BencodedValue> Bencode.ParseAsync(Stream, CancellationToken)` | Async variant of the above. |
 
-The synchronous `Decode(Stream)` and asynchronous `DecodeAsync(Stream)` overloads buffer the entire stream before parsing — bencode is not a streaming format because a value's framing tokens can be arbitrarily far apart and the parser must consume them in order. The pooled `MemoryStream` is disposed before the parser runs.
+The synchronous `Decode(Stream)` and asynchronous `ParseAsync(Stream)` overloads buffer the entire stream before parsing — bencode is not a streaming format because a value's framing tokens can be arbitrarily far apart and the parser must consume them in order. The pooled `MemoryStream` is disposed before the parser runs.
 
 ## Format exception
 

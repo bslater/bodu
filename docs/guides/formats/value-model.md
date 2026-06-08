@@ -204,10 +204,10 @@ var doc = new BencodedDictionary([
     Entry("info",     info),
 ]);
 
-byte[] encoded = Bencode.Encode(doc);
+byte[] encoded = Bencode.Format(doc);
 ```
 
-The order in which entries are passed to the constructor does not matter — the dictionary sorts them by raw key bytes on construction, so `Bencode.Encode` always emits the canonical key order.
+The order in which entries are passed to the constructor does not matter — the dictionary sorts them by raw key bytes on construction, so `Bencode.Format` always emits the canonical key order.
 
 ## Where to go next
 

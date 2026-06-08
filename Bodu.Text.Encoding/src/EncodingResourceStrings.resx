@@ -76,15 +76,6 @@
   <data name="Arg_Invalid_Base85DestinationSize" xml:space="preserve">
     <value>Destination must be at least {0} characters to encode the provided bytes.</value>
   </data>
-  <data name="Arg_Invalid_DestinationNotExactSizeForDecoded" xml:space="preserve">
-    <value>Destination must be exactly the size required for the decoded characters.</value>
-  </data>
-  <data name="Arg_Invalid_DestinationNotExactSizeForEncoded" xml:space="preserve">
-    <value>Destination must be exactly the size required for the encoded bytes.</value>
-  </data>
-  <data name="Arg_Invalid_DestinationTooSmallForDecoded" xml:space="preserve">
-    <value>Destination is too small to receive the decoded characters.</value>
-  </data>
   <data name="Arg_Invalid_DestinationTooSmallForEncoded" xml:space="preserve">
     <value>Destination is too small to receive the encoded characters.</value>
   </data>
@@ -93,9 +84,6 @@
   </data>
   <data name="Arg_Invalid_DestinationTooSmallForTranscoded" xml:space="preserve">
     <value>Destination is too small to receive the transcoded bytes.</value>
-  </data>
-  <data name="Arg_Invalid_ReplacementNotEncodable" xml:space="preserve">
-    <value>The replacement string '{0}' cannot be encoded by the specified encoding.</value>
   </data>
   <data name="Arg_Invalid_UnknownEncodingName" xml:space="preserve">
     <value>Unknown encoding name: '{0}'.</value>

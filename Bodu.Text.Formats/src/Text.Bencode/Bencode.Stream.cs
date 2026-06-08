@@ -6,6 +6,8 @@
 
 using System.Buffers;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Bencode;
 
 public static partial class Bencode
@@ -21,11 +23,11 @@ public static partial class Bencode
     /// <exception cref="BencodeFormatException">
     /// Thrown when <paramref name="source" /> is malformed or contains trailing bytes.
     /// </exception>
-    public static BencodedValue Decode(byte[] source)
+    public static BencodedValue Parse(byte[] source)
     {
         ThrowHelper.ThrowIfNull(source);
 
-        return Decode((ReadOnlySpan<byte>)source);
+        return Parse((ReadOnlySpan<byte>)source);
     }
 
     /// <summary>
@@ -44,7 +46,7 @@ public static partial class Bencode
     /// The stream is read to its end into a pooled buffer; the existing span-based parser then decodes the buffered
     /// content. The stream is not closed.
     /// </remarks>
-    public static BencodedValue Decode(Stream source)
+    public static BencodedValue Parse(Stream source)
     {
         ThrowHelper.ThrowIfNull(source);
 
@@ -53,7 +55,7 @@ public static partial class Bencode
         using MemoryStream buffer = new();
         source.CopyTo(buffer);
 
-        return Decode(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
+        return Parse(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
     }
 
     /// <summary>
@@ -76,7 +78,7 @@ public static partial class Bencode
     /// The stream is read to its end into a pooled buffer; the existing span-based parser then decodes the buffered
     /// content. The stream is not closed.
     /// </remarks>
-    public static async ValueTask<BencodedValue> DecodeAsync(Stream source, CancellationToken cancellationToken = default)
+    public static async ValueTask<BencodedValue> ParseAsync(Stream source, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
 
@@ -85,7 +87,7 @@ public static partial class Bencode
         await using MemoryStream buffer = new();
         await source.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
 
-        return Decode(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
+        return Parse(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
     }
 
     /// <summary>
@@ -103,17 +105,17 @@ public static partial class Bencode
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
     /// <remarks>
-    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetEncodedLength(BencodedValue)" />
+    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetFormattedLength(BencodedValue)" />
     /// and then written to <paramref name="destination" /> in a single call. The stream is not closed.
     /// </remarks>
-    public static void Encode(BencodedValue value, Stream destination)
+    public static void Format(BencodedValue value, Stream destination)
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(destination);
 
         TextThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        var length = GetEncodedLength(value);
+        var length = GetFormattedLength(value);
         var rented = ArrayPool<byte>.Shared.Rent(length);
 
         try
@@ -147,18 +149,18 @@ public static partial class Bencode
     /// Thrown when <paramref name="cancellationToken" /> is signalled before the write completes.
     /// </exception>
     /// <remarks>
-    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetEncodedLength(BencodedValue)" />
+    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetFormattedLength(BencodedValue)" />
     /// and then written to <paramref name="destination" /> in a single
     /// <see cref="Stream.WriteAsync(ReadOnlyMemory{byte}, CancellationToken)" /> call. The stream is not closed.
     /// </remarks>
-    public static async ValueTask EncodeAsync(BencodedValue value, Stream destination, CancellationToken cancellationToken = default)
+    public static async ValueTask FormatAsync(BencodedValue value, Stream destination, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(destination);
 
         TextThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        var length = GetEncodedLength(value);
+        var length = GetFormattedLength(value);
         var rented = ArrayPool<byte>.Shared.Rent(length);
 
         try

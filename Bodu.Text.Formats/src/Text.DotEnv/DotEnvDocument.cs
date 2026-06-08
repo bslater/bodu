@@ -66,7 +66,7 @@ public sealed class DotEnvDocument
     /// </summary>
     /// <returns>
     /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved according to
-    /// the <see cref="DotEnvDuplicateKeyBehavior" /> that was active during parsing.
+    /// the <see cref="DuplicateKeyPolicy" /> that was active during parsing.
     /// </returns>
     public IReadOnlyList<DotEnvEntry> Entries { get; }
 

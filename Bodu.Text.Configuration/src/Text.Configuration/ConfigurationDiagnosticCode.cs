@@ -30,7 +30,7 @@ public enum ConfigurationDiagnosticCode
     EmptyKey = 2,
 
     /// <summary>
-    /// A duplicate key was encountered when <see cref="IniDuplicateKeyBehavior.Disallowed" /> was active.
+    /// A duplicate key was encountered when <see cref="DuplicateKeyPolicy.Disallowed" /> was active.
     /// </summary>
     DuplicateKey = 3,
 
