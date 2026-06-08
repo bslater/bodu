@@ -42,7 +42,7 @@
       <polygon points="120,18 112,14 112,22" fill="#60A5FA" stroke="none"/>
     </g>
     <text x="60" y="10" fill="#60A5FA" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">Build()</text>
-    <text x="60" y="38" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9" text-anchor="middle">AddConfiguration</text>
+    <text x="60" y="38" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9" text-anchor="middle">AddBoduConfiguration*</text>
   </g>
 
   <!-- Right column: IConfiguration / IOptions -->
@@ -65,6 +65,6 @@
 
   <!-- bottom note -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
-    <text x="240" y="206" text-anchor="middle">AddConfiguration · layered source · IOptions</text>
+    <text x="240" y="206" text-anchor="middle">AddBoduConfiguration* · layered source · IOptions</text>
   </g>
 </svg>

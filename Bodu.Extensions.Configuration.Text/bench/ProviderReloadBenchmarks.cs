@@ -48,7 +48,7 @@ public class ProviderReloadBenchmarks
         File.WriteAllText(_filePath, sb.ToString());
 
         _root = new ConfigurationBuilder()
-            .AddConfiguration(_filePath, targetPath: "src/section-0/Source.cs", optional: false, reloadOnChange: true)
+            .AddBoduConfigurationFile(_filePath, targetPath: "src/section-0/Source.cs", optional: false, reloadOnChange: true)
             .Build();
     }
 

@@ -4,7 +4,7 @@ title: Views and resolution
 
 # Views and resolution
 
-A parsed `IniDocument` is the codec's faithful representation — sections, entries, comments, line numbers. The *view* layer takes that document and projects it into the shape application code wants to consume: dotted-or-colon-delimited paths flattened across sections, EditorConfig glob sections resolved against a target path, typed value getters, and missing-key fallbacks.
+A parsed `ConfigurationDocument` is the codec's faithful representation — sections, entries, comments, line numbers. The *view* layer takes that document and projects it into the shape application code wants to consume: dotted-or-colon-delimited paths flattened across sections, EditorConfig glob sections resolved against a target path, typed value getters, and missing-key fallbacks.
 
 This guide covers `ConfigurationView`, `ConfigurationResolveOptions`, `ConfigurationKey`, `ConfigurationKeyOptions`, and `ConfigurationPattern`. For the parse side — `ConfigurationDocument.Parse`, profiles, parse options — see [Parsing and profiles](parsing-and-profiles.md). For the diagnostic catalogue — every `ConfigurationDiagnosticCode` value — see [Diagnostics](diagnostics.md).
 
@@ -22,7 +22,7 @@ level = Information
 verbose = true
 """;
 
-IniDocument document = ConfigurationDocument.Parse(source);
+ConfigurationDocument document = ConfigurationDocument.Parse(source);
 
 ConfigurationView view = document.Resolve();
 
@@ -31,7 +31,7 @@ string? lvl  = view["logging:console:level"];         // "Information"
 string? lvl2 = view["logging.console.level"];         // "Information" — dot form accepted too
 ```
 
-`Resolve(targetPath?)` is an extension method on `IniDocument` from `ConfigurationExtensions`. It walks the document, projects every entry into a colon-delimited path (`section:key`), applies the `KeyMapping` (dotted-to-colon by default), and produces a `ConfigurationView` that consumers query with either dotted or colon-delimited keys.
+`Resolve(targetPath?)` is an extension method on `IniDocumentBase` (so it works on both `ConfigurationDocument` and `IniDocument`) from `ConfigurationExtensions`. It walks the document, projects every entry into a colon-delimited path (`section:key`), applies the `KeyMapping` (dotted-to-colon by default), and produces a `ConfigurationView` that consumers query with either dotted or colon-delimited keys.
 
 ## Pattern 2 — anchored EditorConfig globs
 
@@ -53,7 +53,7 @@ indent_size = 4
 indent_size = 2
 """;
 
-IniDocument doc = ConfigurationDocument.Parse(editorConfig);
+ConfigurationDocument doc = ConfigurationDocument.Parse(editorConfig);
 
 ConfigurationView csharp = doc.Resolve("src/Foo.cs");
 csharp["indent_size"];   // "4"   — from [*.cs]

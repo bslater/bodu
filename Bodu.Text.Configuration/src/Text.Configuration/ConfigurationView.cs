@@ -14,7 +14,7 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use <see cref="ConfigurationExtensions.Resolve(Bodu.Text.Ini.IniDocument, string?, ConfigurationResolveOptions?)" />
+/// Use <see cref="ConfigurationExtensions.Resolve(Bodu.Text.Ini.IniDocumentBase, string?, ConfigurationResolveOptions?)" />
 /// to obtain a view for a target path. The view is a one-shot snapshot — subsequent mutation of the originating
 /// document does not retroactively update the view.
 /// </para>
@@ -47,18 +47,11 @@ namespace Bodu.Text.Configuration;
 ///     Console.WriteLine($"{kv.Key} = {kv.Value}");
 ///]]>
 /// </example>
-public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string, string?>>
+public sealed partial class ConfigurationView
+    : IEnumerable<KeyValuePair<string, string?>>, IReadOnlyDictionary<string, string?>
 {
-    private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry>? _entries;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values.
-    /// </summary>
-    /// <param name="values">The resolved configuration values, keyed by canonical configuration key.</param>
-    internal ConfigurationView(IReadOnlyDictionary<string, string?> values)
-    {
-        Values = values;
-    }
+    private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry> _entries;
+    private readonly ConfigurationKeyOptions _keyOptions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values
@@ -66,12 +59,17 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     /// </summary>
     /// <param name="values">The resolved configuration values, keyed by canonical configuration key.</param>
     /// <param name="entries">The resolved-entry metadata for each key in <paramref name="values" />.</param>
+    /// <param name="keyOptions">
+    /// The key options used to canonicalize lookup keys so they match the canonical keys the resolver stored.
+    /// </param>
     internal ConfigurationView(
         IReadOnlyDictionary<string, string?> values,
-        IReadOnlyDictionary<string, ConfigurationResolvedEntry> entries)
+        IReadOnlyDictionary<string, ConfigurationResolvedEntry> entries,
+        ConfigurationKeyOptions keyOptions)
     {
         Values = values;
         _entries = entries;
+        _keyOptions = keyOptions;
     }
 
     /// <summary>
@@ -83,6 +81,12 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     /// <c>logging.level.default</c>). Both produce the same lookup.
     /// </param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
+    /// <remarks>
+    /// This indexer deliberately returns <see langword="null" /> for an absent key rather than throwing
+    /// <see cref="KeyNotFoundException" /> as <see cref="IReadOnlyDictionary{TKey, TValue}.this" /> normally would,
+    /// matching <c>Microsoft.Extensions.Configuration</c>'s null-on-absent convention. Use <see cref="ContainsKey" />
+    /// to distinguish an absent key from one whose value is <see langword="null" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public string? this[string key]
     {
@@ -90,26 +94,45 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
         {
             ThrowHelper.ThrowIfNull(key);
 
-            return LookupValue(Values, key);
+            return LookupValue(key);
         }
     }
 
     /// <summary>
-    /// Looks up a value by canonical colon-delimited key or by the equivalent dotted form. Dotted lookups are
-    /// normalized to colon-delimited keys before consulting the backing dictionary.
+    /// Looks up a value by its stored key or by an equivalent key in any accepted notation. The lookup key is
+    /// canonicalized through <see cref="ConfigurationKey" /> using the same options that produced the stored keys, so
+    /// dotted, colon-delimited, and mixed forms all resolve to the same value under every key mapping.
     /// </summary>
-    /// <param name="values">The dictionary of resolved values.</param>
-    /// <param name="key">The lookup key in either dotted or colon form.</param>
+    /// <param name="key">The lookup key in any accepted separator notation.</param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
-    internal static string? LookupValue(IReadOnlyDictionary<string, string?> values, string key)
+    internal string? LookupValue(string key)
     {
-        if (values.TryGetValue(key, out var value)) return value;
+        if (Values.TryGetValue(key, out var value))
+            return value;
 
-        if (key.IndexOf('.') < 0) return null;
+        return TryCanonicalize(key, out var canonical) && Values.TryGetValue(canonical, out value)
+            ? value
+            : null;
+    }
 
-        var normalized = key.Replace('.', ':');
+    /// <summary>
+    /// Canonicalizes <paramref name="key" /> to the colon-or-mapping-joined form used for the stored keys, using this
+    /// view's <see cref="ConfigurationKeyOptions" />. Returns <see langword="false" /> without throwing when the key
+    /// cannot be parsed, so an absent or malformed lookup key resolves to "not found" rather than an exception.
+    /// </summary>
+    /// <param name="key">The raw lookup key.</param>
+    /// <param name="canonical">When this method returns <see langword="true" />, the canonical key path.</param>
+    /// <returns><see langword="true" /> when <paramref name="key" /> was canonicalized; otherwise, <see langword="false" />.</returns>
+    private bool TryCanonicalize(string key, out string canonical)
+    {
+        if (ConfigurationKey.TryParse(key, _keyOptions, out ConfigurationKey parsed))
+        {
+            canonical = parsed.Path;
+            return true;
+        }
 
-        return values.TryGetValue(normalized, out value) ? value : null;
+        canonical = key;
+        return false;
     }
 
     /// <summary>
@@ -138,16 +161,15 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
-    /// Gets the resolved-entry origin metadata for every key in the view. Returns an empty enumeration when the view
-    /// was constructed without origin tracking (older overload, primarily for test fixtures).
+    /// Gets the resolved-entry origin metadata for every key in the view.
     /// </summary>
     /// <returns>Origin metadata per resolved key.</returns>
     public IEnumerable<ConfigurationResolvedEntry> Entries =>
-        _entries is null ? [] : _entries.Values;
+        _entries.Values;
 
     /// <summary>
     /// Gets the origin metadata for <paramref name="key" />, or <see langword="null" /> when the key is absent from the
-    /// resolved view or the view was constructed without origin tracking.
+    /// resolved view.
     /// </summary>
     /// <param name="key">The configuration key in either dotted or colon-delimited form.</param>
     /// <returns>The resolved entry, or <see langword="null" /> when absent.</returns>
@@ -156,16 +178,58 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     {
         ThrowHelper.ThrowIfNull(key);
 
-        if (_entries is null)
-            return null;
-
         if (_entries.TryGetValue(key, out ConfigurationResolvedEntry? entry))
             return entry;
 
-        if (key.IndexOf('.') < 0)
-            return null;
+        return TryCanonicalize(key, out var canonical) && _entries.TryGetValue(canonical, out entry)
+            ? entry
+            : null;
+    }
 
-        var normalized = key.Replace('.', ':');
-        return _entries.TryGetValue(normalized, out entry) ? entry : null;
+    /// <summary>
+    /// Determines whether the resolved view contains <paramref name="key" />, accepting the key in any equivalent
+    /// separator notation.
+    /// </summary>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool ContainsKey(string key)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        if (Values.ContainsKey(key))
+            return true;
+
+        return TryCanonicalize(key, out var canonical) && Values.ContainsKey(canonical);
+    }
+
+    /// <summary>
+    /// Gets the values present in the resolved view. Satisfies
+    /// <see cref="IReadOnlyDictionary{TKey, TValue}.Values" />.
+    /// </summary>
+    /// <returns>An enumerable of the resolved values.</returns>
+    IEnumerable<string?> IReadOnlyDictionary<string, string?>.Values =>
+        Values.Values;
+
+    /// <summary>
+    /// Attempts to get the value for <paramref name="key" /> without throwing, accepting either the colon-delimited or
+    /// the equivalent dotted form. Satisfies <see cref="IReadOnlyDictionary{TKey, TValue}.TryGetValue" />.
+    /// </summary>
+    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="value">When this method returns <see langword="true" />, contains the resolved value.</param>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    bool IReadOnlyDictionary<string, string?>.TryGetValue(string key, out string? value)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        if (Values.TryGetValue(key, out value))
+            return true;
+
+        if (TryCanonicalize(key, out var canonical) && Values.TryGetValue(canonical, out value))
+            return true;
+
+        value = null;
+        return false;
     }
 }

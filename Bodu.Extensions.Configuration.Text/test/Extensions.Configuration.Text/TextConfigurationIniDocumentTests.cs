@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies that the in-memory <see cref="IniDocument" /> overload of <c>AddConfiguration</c> resolves a
+/// Verifies that the in-memory <see cref="IniDocument" /> overload of <c>AddBoduConfigurationDocument</c> resolves a
 /// pre-parsed document and flattens it into the configuration view via <c>AddInMemoryCollection</c>.
 /// </summary>
 [TestClass]
@@ -33,10 +33,10 @@ logging.level.default = Warning
     public void AddConfiguration_WithIniDocument_ShouldFlattenIntoConfiguration()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
-        IniDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration(document)
+            .AddBoduConfigurationDocument(document)
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -49,10 +49,10 @@ logging.level.default = Warning
     public void AddConfiguration_WithIniDocument_WhenTargetPathProvided_ShouldApplyMatchingSection()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
-        IniDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration(document, targetPath: "src/Foo.cs")
+            .AddBoduConfigurationDocument(document, targetPath: "src/Foo.cs")
             .Build();
 
         Assert.AreEqual("Warning", configuration["logging:level:default"]);
@@ -68,7 +68,7 @@ logging.level.default = Warning
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ConfigurationBuilder().AddConfiguration(document);
+            _ = new ConfigurationBuilder().AddBoduConfigurationDocument(document);
         });
     }
 
@@ -80,11 +80,11 @@ logging.level.default = Warning
     {
         IConfigurationBuilder builder = null!;
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
-        IniDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddConfiguration(document);
+            _ = builder.AddBoduConfigurationDocument(document);
         });
     }
 }

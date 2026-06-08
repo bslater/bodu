@@ -22,8 +22,8 @@ of the originating document does not retroactively update the view. Take a fresh
 the target path changes.
 
 ```
-source text ──► ConfigurationDocument.Parse ──► IniDocument
-IniDocument ──► .Resolve(targetPath) ───────────► ConfigurationView
+source text ──► ConfigurationDocument.Parse ──► ConfigurationDocument
+ConfigurationDocument ──► .Resolve(targetPath) ──► ConfigurationView
 ConfigurationView ──► .GetXxx(key) ──────────► typed value
 ```
 
@@ -137,8 +137,7 @@ exposed for callers who want to test pattern matching directly without instantia
 ## Preamble
 
 The **preamble** is the EditorConfig name for the file's global section — properties that appear before any `[...]`
-section header. Bodu exposes it as <xref:Bodu.Text.Ini.IniDocument.GlobalSection> and the
-<xref:Bodu.Text.Configuration.ConfigurationExtensions.Preamble(Bodu.Text.Ini.IniDocument)> alias.
+section header. Bodu exposes it as <xref:Bodu.Text.Ini.IniDocumentBase.GlobalSection>.
 
 Under the default `Bodu` profile, the resolver layers the preamble first and then each matching section in source
 order, so preamble properties act as defaults that any matching section can override. Under
@@ -216,7 +215,7 @@ records, anything with a span-parseable surface. All parsing is done with
 
 ## Saving (round-trip)
 
-<xref:Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Ini.IniDocument,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)>
+<xref:Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Ini.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)>
 emits the document back to text. The writer preserves comment lines, section ordering, and the original property
 ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
 The write options control encoding (default UTF-8 without BOM), newline style (default `\n`), and blank-line policy

@@ -45,7 +45,7 @@ public class TextConfigurationBridgeKatRunnerTests
         {
             // Optional missing file scenario — no file is created, but the builder is configured to expect one.
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddConfiguration(source =>
+                .AddBoduConfigurationFile(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetTempPath());
                     source.Path = "this-file-does-not-exist.boduconfig";
@@ -64,7 +64,7 @@ public class TextConfigurationBridgeKatRunnerTests
             File.WriteAllText(path, kat.Source);
 
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddConfiguration(source =>
+                .AddBoduConfigurationFile(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetDirectoryName(path)!);
                     source.Path = Path.GetFileName(path);
@@ -90,7 +90,7 @@ public class TextConfigurationBridgeKatRunnerTests
         try
         {
             _ = new ConfigurationBuilder()
-                .AddConfiguration(source =>
+                .AddBoduConfigurationFile(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetTempPath());
                     source.Path = "this-file-does-not-exist.boduconfig";

@@ -10,7 +10,7 @@ namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Controls how a configuration document is emitted by
-/// <see cref="ConfigurationDocument.Save(Bodu.Text.Ini.IniDocument, string, ConfigurationWriteOptions?)" /> and related
+/// <see cref="ConfigurationDocument.Save(Bodu.Text.Ini.IniDocumentBase, string, ConfigurationWriteOptions?)" /> and related
 /// methods.
 /// </summary>
 /// <remarks>

@@ -23,7 +23,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// <para>
 /// Most callers do not construct this type directly; reach for the
-/// <see cref="TextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+/// <see cref="TextConfigurationExtensions.AddBoduConfigurationFile(IConfigurationBuilder, string, string?, bool, bool)" />
 /// extensions instead. Direct construction is appropriate when a host already has the source instance in hand — for
 /// example, when wiring a custom <see cref="IConfigurationBuilder" /> programmatically.
 /// </para>
@@ -31,7 +31,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <example>
 ///<![CDATA[
 /// Typical lambda registration via the IConfigurationBuilder extension.
-/// builder.Configuration.AddConfiguration(source =>
+/// builder.Configuration.AddBoduConfigurationFile(source =>
 /// {
 ///     source.Path           = "app.boduconfig";
 ///     source.TargetPath     = "src/Web/Startup.cs"; // anchors glob sections like [src/**/*.cs]

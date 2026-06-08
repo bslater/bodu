@@ -105,7 +105,7 @@ public sealed class ConfigurationDocumentKatTests
     {
         foreach (ConfigurationDocumentKat kat in DocumentKats)
         {
-            IniDocument doc = ConfigurationDocument.Parse(kat.Text);
+            ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Text);
             ConfigurationView view = doc.Resolve("any.cs");
 
             Assert.AreEqual(kat.ExpectedValue, view[kat.Key], $"KAT '{kat.Name}': parsed view returned unexpected value.");
@@ -121,7 +121,7 @@ public sealed class ConfigurationDocumentKatTests
     {
         foreach (ConfigurationResolverKat kat in ResolverKats)
         {
-            IniDocument doc = ConfigurationDocument.Parse(kat.Text);
+            ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Text);
             ConfigurationView view = doc.Resolve(kat.ResolvePath);
 
             Assert.AreEqual(kat.ExpectedValue, view[kat.Key], $"Resolver KAT '{kat.Name}': resolved view returned unexpected value.");
@@ -137,7 +137,7 @@ public sealed class ConfigurationDocumentKatTests
     {
         foreach (ConfigurationViewGetterKat<bool> kat in BooleanGetterKats)
         {
-            IniDocument doc = ConfigurationDocument.Parse(kat.Text);
+            ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Text);
             ConfigurationView view = doc.Resolve("any.cs");
 
             Assert.AreEqual(kat.ExpectedValue, view.GetBoolean(kat.Key), $"Boolean getter KAT '{kat.Name}': unexpected value.");
@@ -153,7 +153,7 @@ public sealed class ConfigurationDocumentKatTests
     {
         foreach (ConfigurationViewGetterKat<int> kat in Int32GetterKats)
         {
-            IniDocument doc = ConfigurationDocument.Parse(kat.Text);
+            ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Text);
             ConfigurationView view = doc.Resolve("any.cs");
 
             Assert.AreEqual(kat.ExpectedValue, view.GetInt32(kat.Key), $"Int32 getter KAT '{kat.Name}': unexpected value.");

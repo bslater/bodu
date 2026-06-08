@@ -26,7 +26,7 @@ public partial class ConfigurationResolverTests
 [*.CS]
 format.indent.size = 2
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new() { PathComparison = StringComparison.Ordinal };
         ConfigurationView view = doc.Resolve("foo.cs", options);
@@ -45,7 +45,7 @@ format.indent.size = 2
 [*.CS]
 format.indent.size = 2
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new() { PathComparison = StringComparison.OrdinalIgnoreCase };
         ConfigurationView view = doc.Resolve("foo.cs", options);
@@ -64,7 +64,7 @@ format.indent.size = 2
 [*.cs]
 format.indent.size = 2
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new() { PathComparison = StringComparison.OrdinalIgnoreCase };
         ConfigurationView view = doc.Resolve("FOO.CS", options);
@@ -82,7 +82,7 @@ format.indent.size = 2
 [file-[A-Z].txt]
 hit = yes
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new() { PathComparison = StringComparison.OrdinalIgnoreCase };
         ConfigurationView view = doc.Resolve("file-a.txt", options);

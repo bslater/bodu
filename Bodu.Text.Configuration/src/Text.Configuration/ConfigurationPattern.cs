@@ -163,11 +163,15 @@ public sealed partial class ConfigurationPattern
 
         // Build outside the cache so that a throwing TranslateToRegex (e.g. UnbalancedBrace) does not poison
         // the dictionary with a faulted Lazy entry.
+        // A bounded MatchTimeout caps the evaluation time of any single match, eliminating the ReDoS surface for
+        // untrusted section-name globs. RegexOptions.NonBacktracking is intentionally not used: its automata-size
+        // limit (1000 nodes) is far below what a pattern at MaxPatternLength (4096 characters) produces, so it would
+        // reject legitimate long patterns; the timeout is the practical, cap-compatible guarantee.
         RegexOptions options = RegexOptions.CultureInvariant;
         if (IsCaseInsensitive(comparison))
             options |= RegexOptions.IgnoreCase;
 
-        Regex regex = new(TranslateToRegex(pattern), options);
+        Regex regex = new(TranslateToRegex(pattern), options, MatchTimeout);
         ConfigurationPattern compiled = new(pattern, regex);
 
         if (CompileCache.Count > CompileCacheCapacity)

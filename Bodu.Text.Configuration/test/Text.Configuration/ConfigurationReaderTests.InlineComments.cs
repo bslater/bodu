@@ -29,7 +29,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.Disabled,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nkey = value # not-a-comment\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nkey = value # not-a-comment\n", options);
 
         Assert.AreEqual("value # not-a-comment", doc.Sections[0].Entries[0].Value);
     }
@@ -46,7 +46,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.Disabled,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nkey = value ; not-a-comment\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nkey = value ; not-a-comment\n", options);
 
         Assert.AreEqual("value ; not-a-comment", doc.Sections[0].Entries[0].Value);
     }
@@ -63,7 +63,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nkey = value # comment\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nkey = value # comment\n", options);
 
         Assert.AreEqual("value", doc.Sections[0].Entries[0].Value);
     }
@@ -80,7 +80,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nkey = value#literal\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nkey = value#literal\n", options);
 
         Assert.AreEqual("value#literal", doc.Sections[0].Entries[0].Value);
     }
@@ -98,7 +98,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\npath = C:\\Temp;StillValue\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\npath = C:\\Temp;StillValue\n", options);
 
         Assert.AreEqual(@"C:\Temp;StillValue", doc.Sections[0].Entries[0].Value);
     }
@@ -115,7 +115,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.Always,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nkey = value#comment\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nkey = value#comment\n", options);
 
         Assert.AreEqual("value", doc.Sections[0].Entries[0].Value);
     }
@@ -132,7 +132,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.Always,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse(@"[*]" + "\nkey = value\\# literal\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(@"[*]" + "\nkey = value\\# literal\n", options);
 
         // The backslash escapes the '#', so it is not a comment introducer; the literal '#' stays.
         // The actual escape byte sequence preservation depends on the parser, but the '#' must not split.
@@ -151,7 +151,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.Disabled,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\n# leading\nkey = value\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\n# leading\nkey = value\n", options);
 
         IniEntry entry = doc.Sections[0].Entries[0];
         Assert.AreEqual("value", entry.Value);
@@ -170,7 +170,7 @@ public class ConfigurationReaderInlineCommentTests
             InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
         };
 
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nkey = value ; comment\n", options);
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nkey = value ; comment\n", options);
 
         IniEntry entry = doc.Sections[0].Entries[0];
         Assert.IsNotNull(entry.InlineComment);

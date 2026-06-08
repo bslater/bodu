@@ -9,9 +9,9 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Emits an <see cref="IniDocument" /> to a <see cref="TextWriter" /> according to a
+/// Emits an <see cref="IniDocumentBase" /> to a <see cref="TextWriter" /> according to a
 /// <see cref="ConfigurationWriteOptions" />. Used by
-/// <see cref="ConfigurationDocument.Save(IniDocument, string, ConfigurationWriteOptions?)" /> and its stream/reader
+/// <see cref="ConfigurationDocument.Save(IniDocumentBase, string, ConfigurationWriteOptions?)" /> and its stream/reader
 /// overloads.
 /// </summary>
 /// <remarks>
@@ -30,7 +30,7 @@ internal static class ConfigurationDocumentWriter
     /// <paramref name="document" />, <paramref name="writer" />, or <paramref name="options" /> is
     /// <see langword="null" />.
     /// </exception>
-    internal static void Write(IniDocument document, TextWriter writer, ConfigurationWriteOptions options)
+    internal static void Write(IniDocumentBase document, TextWriter writer, ConfigurationWriteOptions options)
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(writer);

@@ -34,7 +34,7 @@ service.port = 8080
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration(stream)
+            .AddBoduConfigurationStream(stream)
             .Build();
 
         ServiceCollection services = new();
@@ -58,7 +58,7 @@ service.port = 8080
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration(stream)
+            .AddBoduConfigurationStream(stream)
             .Build();
 
         ServiceCollection services = new();

@@ -18,7 +18,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyExistsForIntegerType_ShouldReturnParsedValue()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(42, view.GetValue<int>("size"));
@@ -46,7 +46,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetValue<int>("size"));
@@ -59,7 +59,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetValueGeneric_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetValue("missing", out int _));
@@ -73,10 +73,25 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyUsesDottedForm_ShouldResolveToSameValue()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nlogging.level.default = 7\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nlogging.level.default = 7\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(7, view.GetValue<int>("logging.level.default"));
         Assert.AreEqual(7, view.GetValue<int>("logging:level:default"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationView.GetValue{T}(string, T)" /> returns the fallback only when the key is
+    /// absent; a malformed present value still throws.
+    /// </summary>
+    [TestMethod]
+    public void GetValueGeneric_WhenKeyMissingAndFallbackProvided_ShouldReturnFallback()
+    {
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
+        ConfigurationView view = doc.Resolve("any.cs");
+
+        Assert.AreEqual(99, view.GetValue("missing", 99));
+        Assert.AreEqual(42, view.GetValue("size", 99));
+        Assert.ThrowsExactly<FormatException>(() => _ = view.GetValue("bad", 0));
     }
 }

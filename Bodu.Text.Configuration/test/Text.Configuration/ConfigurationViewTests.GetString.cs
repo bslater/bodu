@@ -17,7 +17,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetString_WhenKeyExists_ShouldReturnValue()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\na = hello\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\na = hello\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual("hello", view.GetString("a"));

@@ -22,15 +22,15 @@ Level.Default = Information
 Level.Microsoft = Warning
 """;
 
-IniDocument document = ConfigurationDocument.Parse(source);
+ConfigurationDocument document = ConfigurationDocument.Parse(source);
 ```
 
-`Parse(string)` returns the underlying `IniDocument` from `Bodu.Text.Formats.Ini` — the codec's faithful document model. Use the document directly when you only need codec-level access; use [`Resolve`](views-and-resolution.md) when you want path projection and typed lookup.
+`Parse(string)` returns a `ConfigurationDocument` — a first-class type that inherits the read-only `IniDocumentBase` document model from `Bodu.Text.Formats.Ini`. Use the document directly when you only need read access to sections and entries; use [`Resolve`](views-and-resolution.md) when you want path projection and typed lookup.
 
 The default profile is `Bodu` — inline comments only after whitespace, lenient section headers, last-wins on duplicates, throw on the first error. Override the profile per call via `ConfigurationParseOptions`:
 
 ```csharp
-IniDocument doc = ConfigurationDocument.Parse(
+ConfigurationDocument doc = ConfigurationDocument.Parse(
     source,
     ConfigurationParseOptions.EditorConfigCompatible);
 ```
@@ -40,9 +40,9 @@ IniDocument doc = ConfigurationDocument.Parse(
 ```csharp
 using Bodu.Text.Configuration;
 
-IniDocument fromFile   = ConfigurationDocument.Load("appsettings.ini");
-IniDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen: true);
-IniDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
+ConfigurationDocument fromFile   = ConfigurationDocument.Load("appsettings.ini");
+ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen: true);
+ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 ```
 
 `Load(string)` reads UTF-8 by default — pass an `Encoding` explicitly when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime.
@@ -52,7 +52,7 @@ IniDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 ```csharp
 using Bodu.Text.Configuration;
 
-if (ConfigurationDocument.TryParse(source, out IniDocument? document))
+if (ConfigurationDocument.TryParse(source, out ConfigurationDocument? document))
 {
     Configure(document);
 }
@@ -77,7 +77,7 @@ foreach (ConfigurationDiagnostic d in result.Diagnostics)
     log.Warn("{Severity} {Code} at {Location}: {Message}",
              d.Severity, d.Code, d.Location, d.Message);
 
-IniDocument document = result.Document;
+ConfigurationDocument document = result.Document;
 ```
 
 `ParseWithDiagnostics` always returns a `ConfigurationParseResult` carrying the document and the diagnostic list. With the `Relaxed` profile (which sets `DiagnosticMode = Collect`), the parser keeps going past recoverable errors and reports them all at once — useful for IDE-style validation. With other profiles, the diagnostic list is populated alongside the throw if you catch `ConfigurationParseException`.
@@ -191,7 +191,7 @@ end_of_line = crlf
 indent_size = 2
 """;
 
-IniDocument document = ConfigurationDocument.Parse(
+ConfigurationDocument document = ConfigurationDocument.Parse(
     editorConfig,
     ConfigurationParseOptions.EditorConfigCompatible);
 
@@ -202,7 +202,7 @@ Console.WriteLine(document.Sections[1]["indent_size"]);  // "2"
 
 The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, and otherwise behaves identically to the EditorConfig 0.17.2 specification.
 
-To go from the parsed `IniDocument` to a resolved typed view — including the EditorConfig glob behaviour where `[*.cs]` matches every `.cs` file — see [Views and resolution](views-and-resolution.md).
+To go from the parsed `ConfigurationDocument` to a resolved typed view — including the EditorConfig glob behaviour where `[*.cs]` matches every `.cs` file — see [Views and resolution](views-and-resolution.md).
 
 ## Exceptions
 

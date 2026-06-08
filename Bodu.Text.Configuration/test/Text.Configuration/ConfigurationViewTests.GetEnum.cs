@@ -23,7 +23,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueMatchesEnumMember_ShouldReturnParsedValue()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = warning\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = warning\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(Severity.Warning, view.GetEnum<Severity>("severity"));
@@ -49,9 +49,51 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueDoesNotMatchEnumMember_ShouldThrowExactly()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum<Severity>("severity"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationView.GetEnum{TEnum}(string, TEnum)" /> returns the fallback only when the
+    /// key is absent.
+    /// </summary>
+    [TestMethod]
+    public void GetEnum_WhenKeyMissingAndFallbackProvided_ShouldReturnFallback()
+    {
+        IniDocument doc = new();
+        ConfigurationView view = doc.Resolve();
+
+        Assert.AreEqual(Severity.Error, view.GetEnum("missing", Severity.Error));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationView.GetEnum{TEnum}(string, TEnum)" /> still throws
+    /// <see cref="FormatException" /> when the key is present but does not match any enum member, even with a fallback.
+    /// </summary>
+    [TestMethod]
+    public void GetEnum_WhenPresentButMalformedAndFallbackProvided_ShouldThrowExactly()
+    {
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
+        ConfigurationView view = doc.Resolve("any.cs");
+
+        Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum("severity", Severity.Info));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationView.TryGetEnum{TEnum}(string, out TEnum)" /> reports failure for missing
+    /// or undefined values without throwing, and success for a defined member.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEnum_WhenMissingOrUndefined_ShouldReturnFalseOtherwiseTrue()
+    {
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = warning\nbad = catastrophic\n");
+        ConfigurationView view = doc.Resolve("any.cs");
+
+        Assert.IsTrue(view.TryGetEnum<Severity>("severity", out Severity parsed));
+        Assert.AreEqual(Severity.Warning, parsed);
+        Assert.IsFalse(view.TryGetEnum<Severity>("missing", out _));
+        Assert.IsFalse(view.TryGetEnum<Severity>("bad", out _));
     }
 }

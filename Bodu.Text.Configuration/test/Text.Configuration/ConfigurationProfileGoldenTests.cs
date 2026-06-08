@@ -35,7 +35,7 @@ format.indent.size = unset
     [TestMethod]
     public void Bodu_WhenResolveWithGeneratedTarget_ShouldExposeUnsetLiteralAndPreamble()
     {
-        IniDocument doc = ConfigurationDocument.Parse(PreambleAndSectionFixture, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(PreambleAndSectionFixture, ConfigurationParseOptions.Bodu);
         ConfigurationView view = doc.Resolve("generated/Foo.cs", ConfigurationResolveOptions.Bodu);
 
         Assert.AreEqual("Bodu", view.GetString("service:name"));
@@ -52,7 +52,7 @@ format.indent.size = unset
     [TestMethod]
     public void EditorConfigCompatible_WhenResolveWithGeneratedTarget_ShouldHonourUnsetAndDropPreamble()
     {
-        IniDocument doc = ConfigurationDocument.Parse(PreambleAndSectionFixture, ConfigurationParseOptions.EditorConfigCompatible);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(PreambleAndSectionFixture, ConfigurationParseOptions.EditorConfigCompatible);
         ConfigurationView view = doc.Resolve("generated/Foo.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 
         // EditorConfigCompatible disables preamble layering for resolution.
@@ -137,7 +137,7 @@ good = value
 [*]
 key = value # not-a-comment
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.EditorConfigCompatible);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.EditorConfigCompatible);
 
         Assert.AreEqual("value # not-a-comment", doc.Sections[0].Entries[0].Value);
     }
@@ -152,7 +152,7 @@ key = value # not-a-comment
 [*]
 key = value # comment
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.Bodu);
 
         Assert.AreEqual("value", doc.Sections[0].Entries[0].Value);
     }
@@ -169,7 +169,7 @@ key = value # comment
 [*.cs] trailing
 key = value
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.Bodu);
 
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("value", doc.Sections[0].Entries[0].Value);
@@ -203,8 +203,8 @@ key = value
     {
         const string fixture = "service.name = Bodu\n";
 
-        IniDocument bodu = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.Bodu);
-        IniDocument editorConfig = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.EditorConfigCompatible);
+        ConfigurationDocument bodu = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.Bodu);
+        ConfigurationDocument editorConfig = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.EditorConfigCompatible);
 
         ConfigurationView boduView = bodu.Resolve("README.md", ConfigurationResolveOptions.Bodu);
         ConfigurationView editorConfigView = editorConfig.Resolve("README.md", ConfigurationResolveOptions.EditorConfigCompatible);

@@ -1,20 +1,20 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Bodu.Text.Ini;
 
 /// <summary>
-/// Represents a parsed INI document, providing access to the global section and all named sections.
+/// Represents a parsed INI document, providing access to the global section and all named sections, together with a
+/// mutation surface for authoring documents programmatically.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Obtain an instance by calling <see cref="Ini.Parse(ReadOnlySpan{char})" /> or
-/// <see cref="Ini.TryParse(ReadOnlySpan{char}, out IniDocument)" />.
+/// <see cref="Ini.TryParse(ReadOnlySpan{char}, out IniDocument)" />, or build one from scratch using the constructors
+/// and the <see cref="AddSection(IniSection)" />/<see cref="GetOrAddSection(string)" /> members.
 /// </para>
 /// <para>
 /// Section lookup uses the comparer configured via <see cref="IniParseOptions.CaseSensitiveSections" /> at parse time.
@@ -36,12 +36,8 @@ namespace Bodu.Text.Ini;
 ///     Console.WriteLine(db!["host"]);
 ///]]>
 /// </example>
-public sealed class IniDocument
+public sealed class IniDocument : IniDocumentBase
 {
-    private readonly List<IniSection> _sections;
-    private readonly Dictionary<string, IniSection> _lookup;
-    private readonly bool _caseSensitiveSections;
-
     /// <summary>
     /// Initializes a new <see cref="IniDocument" /> with an empty global section and no named sections.
     /// </summary>
@@ -50,12 +46,8 @@ public sealed class IniDocument
     /// <see langword="false" /> (the INI default).
     /// </param>
     public IniDocument(bool caseSensitiveSections = false)
+        : base(caseSensitiveSections)
     {
-        GlobalSection = new IniSection(string.Empty, Array.Empty<IniEntry>());
-        _sections = new List<IniSection>();
-        _lookup = new Dictionary<string, IniSection>(caseSensitiveSections ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
-        _caseSensitiveSections = caseSensitiveSections;
-        Sections = _sections.AsReadOnly();
     }
 
     /// <summary>
@@ -68,12 +60,8 @@ public sealed class IniDocument
         IniSection globalSection,
         List<IniSection> sections,
         Dictionary<string, IniSection> lookup)
+        : base(globalSection, sections, lookup)
     {
-        GlobalSection = globalSection;
-        _sections = sections;
-        _lookup = lookup;
-        _caseSensitiveSections = lookup.Comparer == StringComparer.Ordinal;
-        Sections = _sections.AsReadOnly();
     }
 
     /// <summary>
@@ -97,82 +85,8 @@ public sealed class IniDocument
     /// <paramref name="sections" /> contains a <see langword="null" /> entry.
     /// </exception>
     public IniDocument(IniSection globalSection, IEnumerable<IniSection> sections, bool caseSensitiveSections = false)
+        : base(globalSection, sections, caseSensitiveSections)
     {
-        ThrowHelper.ThrowIfNull(globalSection);
-        ThrowHelper.ThrowIfNull(sections);
-
-        if (globalSection.Name.Length != 0)
-            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniGlobalSectionNotEmpty, nameof(globalSection));
-
-        GlobalSection = globalSection;
-        _sections = new List<IniSection>();
-        _lookup = new Dictionary<string, IniSection>(caseSensitiveSections ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
-        _caseSensitiveSections = caseSensitiveSections;
-
-        foreach (IniSection section in sections)
-        {
-            if (section is null)
-                throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniSectionsContainsNull, nameof(sections));
-
-            _sections.Add(section);
-            if (!_lookup.ContainsKey(section.Name))
-                _lookup[section.Name] = section;
-        }
-
-        Sections = _sections.AsReadOnly();
-    }
-
-    /// <summary>
-    /// Gets the global section, which contains any key/value entries that appeared before the first named section
-    /// header.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="IniSection" /> whose <see cref="IniSection.Name" /> is the empty string. Never
-    /// <see langword="null" />; its <see cref="IniSection.Entries" /> list is empty when the source contained no
-    /// pre-section keys.
-    /// </returns>
-    public IniSection GlobalSection { get; }
-
-    /// <summary>
-    /// Gets the named sections in the order they first appeared in the source.
-    /// </summary>
-    /// <returns>
-    /// A read-only list of <see cref="IniSection" /> instances. Does not include <see cref="GlobalSection" />.
-    /// </returns>
-    public IReadOnlyList<IniSection> Sections { get; }
-
-    /// <summary>
-    /// Gets the named section with the specified name, or <see langword="null" /> if it is absent.
-    /// </summary>
-    /// <param name="name">The section name to look up.</param>
-    /// <returns>The matching <see cref="IniSection" />, or <see langword="null" /> when not found.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="name" /> is <see langword="null" />.
-    /// </exception>
-    public IniSection? GetSection(string name)
-    {
-        ThrowHelper.ThrowIfNull(name);
-
-        return _lookup.TryGetValue(name, out IniSection? section) ? section : null;
-    }
-
-    /// <summary>
-    /// Gets the named section with the specified name.
-    /// </summary>
-    /// <param name="name">The section name to look up.</param>
-    /// <param name="section">
-    /// When this method returns <see langword="true" />, contains the matching section; otherwise,
-    /// <see langword="null" />.
-    /// </param>
-    /// <returns><see langword="true" /> when the section is present; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="name" /> is <see langword="null" />.
-    /// </exception>
-    public bool TryGetSection(string name, [NotNullWhen(true)] out IniSection? section)
-    {
-        ThrowHelper.ThrowIfNull(name);
-
-        return _lookup.TryGetValue(name, out section);
     }
 
     /// <summary>
@@ -183,16 +97,8 @@ public sealed class IniDocument
     /// <exception cref="ArgumentException">
     /// <paramref name="section" /> has an empty <see cref="IniSection.Name" /> (i.e. it is the global section).
     /// </exception>
-    public void AddSection(IniSection section)
-    {
-        ThrowHelper.ThrowIfNull(section);
-        if (section.Name.Length == 0)
-            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniSectionCannotAddGlobal, nameof(section));
-
-        _sections.Add(section);
-        if (!_lookup.ContainsKey(section.Name))
-            _lookup[section.Name] = section;
-    }
+    public void AddSection(IniSection section) =>
+        AddSectionCore(section);
 
     /// <summary>
     /// Returns the first section with the supplied name, creating and appending one when no match exists.
@@ -201,20 +107,8 @@ public sealed class IniDocument
     /// <returns>The matching or newly created section.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="name" /> is empty.</exception>
-    public IniSection GetOrAddSection(string name)
-    {
-        ThrowHelper.ThrowIfNull(name);
-        if (name.Length == 0)
-            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniSectionNameEmpty, nameof(name));
-
-        if (_lookup.TryGetValue(name, out IniSection? existing))
-            return existing;
-
-        IniSection section = new(name, Array.Empty<IniEntry>(), _caseSensitiveSections);
-        _sections.Add(section);
-        _lookup[name] = section;
-        return section;
-    }
+    public IniSection GetOrAddSection(string name) =>
+        GetOrAddSectionCore(name);
 
     /// <summary>
     /// Removes the section with the supplied name. When multiple sections share the same name (under
@@ -226,22 +120,6 @@ public sealed class IniDocument
     /// <see langword="true" /> when at least one section was removed; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
-    public bool RemoveSection(string name)
-    {
-        ThrowHelper.ThrowIfNull(name);
-
-        IEqualityComparer<string> comparer = _lookup.Comparer;
-        var removed = false;
-        for (var i = _sections.Count - 1; i >= 0; i--)
-        {
-            if (comparer.Equals(_sections[i].Name, name))
-            {
-                _sections.RemoveAt(i);
-                removed = true;
-            }
-        }
-
-        _lookup.Remove(name);
-        return removed;
-    }
+    public bool RemoveSection(string name) =>
+        RemoveSectionCore(name);
 }

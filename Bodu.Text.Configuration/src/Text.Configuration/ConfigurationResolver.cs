@@ -4,16 +4,24 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text.RegularExpressions;
 using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Projects an <see cref="IniDocument" /> into a flattened <see cref="ConfigurationView" /> for a specific target path,
+/// Projects an <see cref="IniDocumentBase" /> into a flattened <see cref="ConfigurationView" /> for a specific target path,
 /// applying glob matching, preamble layering, and the EditorConfig <c>unset</c> sentinel.
 /// </summary>
 internal sealed class ConfigurationResolver
 {
+    /// <summary>
+    /// The EditorConfig sentinel value that removes a previously set key from the effective configuration. Compared
+    /// case-insensitively to match real-world EditorConfig tooling — a deliberate deviation from the strict
+    /// lower-case-only reading of the spec.
+    /// </summary>
+    private const string UnsetSentinel = "unset";
+
     private readonly ConfigurationResolveOptions _options;
 
     /// <summary>
@@ -37,7 +45,7 @@ internal sealed class ConfigurationResolver
     /// The configured options require a path root, the document was parsed without one, and no target path was
     /// supplied.
     /// </exception>
-    internal ConfigurationView Resolve(IniDocument document, string? targetPath)
+    internal ConfigurationView Resolve(IniDocumentBase document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
 
@@ -49,7 +57,7 @@ internal sealed class ConfigurationResolver
         Dictionary<string, string?> values = new(comparer);
         Dictionary<string, ConfigurationResolvedEntry> entries = new(comparer);
 
-        var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot);
+        var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot, _options.PathComparison);
 
         // Apply the global section (preamble) first when enabled. Preamble entries are signalled by passing
         // a null section pattern through to ApplySection.
@@ -64,11 +72,23 @@ internal sealed class ConfigurationResolver
             if (string.IsNullOrEmpty(normalizedTarget))
                 continue;
 
-            if (ConfigurationPattern.Compile(section.Name, _options.PathComparison).IsMatch(normalizedTarget))
+            bool matched;
+            try
+            {
+                matched = ConfigurationPattern.Compile(section.Name, _options.PathComparison).IsMatch(normalizedTarget);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                // With NonBacktracking this is effectively unreachable; treat a timeout as a non-match so a
+                // pathological section name cannot abort resolution.
+                matched = false;
+            }
+
+            if (matched)
                 ApplySection(section, values, entries, sectionPattern: section.Name);
         }
 
-        return new ConfigurationView(values, entries);
+        return new ConfigurationView(values, entries, _options.KeyOptions);
     }
 
     /// <summary>
@@ -93,7 +113,7 @@ internal sealed class ConfigurationResolver
 
             // EditorConfig "unset" sentinel handling.
             if (_options.UnsetValueMode == ConfigurationUnsetValueMode.RemoveEffectiveValue
-                && string.Equals(entry.Value, "unset", StringComparison.OrdinalIgnoreCase))
+                && string.Equals(entry.Value, UnsetSentinel, StringComparison.OrdinalIgnoreCase))
             {
                 values.Remove(key);
                 entries.Remove(key);
@@ -115,17 +135,20 @@ internal sealed class ConfigurationResolver
     /// </summary>
     /// <param name="targetPath">The target path to normalize.</param>
     /// <param name="pathRoot">The path root the result is made relative to, or <see langword="null" />.</param>
+    /// <param name="comparison">
+    /// The comparison used to match the path root, kept consistent with the comparison used for glob matching.
+    /// </param>
     /// <returns>The normalized, root-relative path.</returns>
-    private static string NormalizePath(string targetPath, string? pathRoot)
+    private static string NormalizePath(string targetPath, string? pathRoot, StringComparison comparison)
     {
         var normalizedTarget = targetPath.Replace('\\', '/');
         if (string.IsNullOrEmpty(pathRoot))
             return normalizedTarget;
 
         var normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
-        return normalizedTarget.StartsWith(normalizedRoot + "/", StringComparison.OrdinalIgnoreCase)
+        return normalizedTarget.StartsWith(normalizedRoot + "/", comparison)
             ? normalizedTarget[(normalizedRoot.Length + 1)..]
-            : string.Equals(normalizedTarget, normalizedRoot, StringComparison.OrdinalIgnoreCase)
+            : string.Equals(normalizedTarget, normalizedRoot, comparison)
                 ? Path.GetFileName(normalizedTarget)
                 : normalizedTarget;
     }

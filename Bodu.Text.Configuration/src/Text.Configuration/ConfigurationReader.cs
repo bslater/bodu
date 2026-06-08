@@ -10,14 +10,14 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Reads a configuration document line by line, producing a populated <see cref="IniDocument" /> together with any
+/// Reads a configuration document line by line, producing a populated <see cref="ConfigurationDocument" /> together with any
 /// diagnostics gathered under the rules of <see cref="ConfigurationParseOptions" />.
 /// </summary>
 /// <remarks>
 /// This reader honors the Configuration-specific features that the underlying <c>Ini.Parser</c> does not: inline
 /// comment modes (<see cref="ConfigurationInlineCommentMode" />), diagnostic mode routing (
-/// <see cref="ConfigurationDiagnosticMode" />), and source location tracking. The resulting document is a plain
-/// <see cref="IniDocument" /> so it composes naturally with everything else in <c>Bodu.Text.Ini.Ini</c>.
+/// <see cref="ConfigurationDiagnosticMode" />), and source location tracking. The resulting document inherits the read surface of
+/// <see cref="IniDocumentBase" /> so it composes naturally with everything else in <c>Bodu.Text.Ini</c>.
 /// </remarks>
 internal sealed partial class ConfigurationReader
 {
@@ -40,7 +40,7 @@ internal sealed partial class ConfigurationReader
     /// <param name="reader">The source of configuration text.</param>
     /// <param name="path">The optional file path used when emitting source locations.</param>
     /// <returns>
-    /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="IniDocument" /> and any diagnostics
+    /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="ConfigurationDocument" /> and any diagnostics
     /// collected.
     /// </returns>
     internal ConfigurationParseResult Read(TextReader reader, string? path)
@@ -48,7 +48,7 @@ internal sealed partial class ConfigurationReader
         ThrowHelper.ThrowIfNull(reader);
 
         var caseSensitiveSections = _options.KeyOptions.CaseSensitive;
-        IniDocument document = new(caseSensitiveSections);
+        ConfigurationDocument document = new(caseSensitiveSections);
         IniSection currentSection = document.GlobalSection;
 
         var lineNumber = 0;
@@ -77,7 +77,7 @@ internal sealed partial class ConfigurationReader
     /// <param name="path">The optional source file path used when emitting source locations.</param>
     /// <returns>The section current after the line has been processed.</returns>
     private IniSection ProcessLine(
-        IniDocument document,
+        ConfigurationDocument document,
         IniSection currentSection,
         string line,
         int lineNumber,
@@ -106,7 +106,6 @@ internal sealed partial class ConfigurationReader
         if (first is '#' or ';')
         {
             var commentText = line[(firstNonWs + 1)..];
-            _ = path;
             _pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
@@ -126,7 +125,7 @@ internal sealed partial class ConfigurationReader
     /// <param name="path">The optional source file path used when emitting source locations.</param>
     /// <returns>The section that subsequent properties are added to.</returns>
     private IniSection ProcessSectionHeader(
-        IniDocument document,
+        ConfigurationDocument document,
         string line,
         int firstNonWs,
         int lineNumber,
@@ -221,13 +220,13 @@ internal sealed partial class ConfigurationReader
     /// <param name="headerLoc">The source location of the header, used when emitting diagnostics.</param>
     /// <returns>The existing or newly created section that subsequent properties are added to.</returns>
     /// <remarks>
-    /// Uses <see cref="IniDocument.TryGetSection(string, out IniSection?)" /> for O(1) duplicate detection in
+    /// Uses <see cref="IniDocumentBase.TryGetSection(string, out IniSection?)" /> for O(1) duplicate detection in
     /// <see cref="IniDuplicateSectionBehavior.Disallowed" /> and <see cref="IniDuplicateSectionBehavior.MergeAll" />.
     /// <see cref="IniDuplicateSectionBehavior.MergeAdjacent" /> checks only the last section in the document, which is
     /// also O(1). <see cref="IniDuplicateSectionBehavior.Preserve" /> always creates a new section and pays no lookup
     /// cost.
     /// </remarks>
-    private IniSection ResolveSectionTarget(IniDocument document, string name, ConfigurationSourceLocation headerLoc)
+    private IniSection ResolveSectionTarget(ConfigurationDocument document, string name, ConfigurationSourceLocation headerLoc)
     {
         switch (_options.DuplicateSectionMode)
         {

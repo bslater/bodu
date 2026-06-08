@@ -21,9 +21,9 @@ Reach for this library when you need EditorConfig-style file-targeted configurat
 
 **Document and view**
 
-- <xref:Bodu.Text.Configuration.ConfigurationDocument> — static façade for parsing and saving. `Parse`, `ParseWithDiagnostics`, `Load(path | Stream | TextReader)`, `Save(document, path | Stream | TextWriter, options?)`. Backed by <xref:Bodu.Text.Ini.IniDocument>.
+- <xref:Bodu.Text.Configuration.ConfigurationDocument> — first-class document type for parsing and saving. `Parse`, `ParseWithDiagnostics`, `Load(path | Stream | TextReader)`, `Save(document, path | Stream | TextWriter, options?)`. Inherits the read-only <xref:Bodu.Text.Ini.IniDocumentBase> model.
 - <xref:Bodu.Text.Configuration.ConfigurationView> — read-only, one-shot resolved snapshot for a target path; implements `IEnumerable<KeyValuePair<string, string?>>`; exposes `Values`, `Keys`, `Count`, indexer, and the `GetXxx` / `TryGetXxx` / `GetValue<T>` / `TryGetValue<T>` family.
-- <xref:Bodu.Text.Configuration.ConfigurationExtensions> — extension methods over the underlying INI primitives: `Resolve(targetPath)` on `IniDocument`, `IsMatch(relativePath)` on `IniSection`, `ConfigurationPath()` on `IniEntry`, `Preamble()` on `IniDocument`.
+- <xref:Bodu.Text.Configuration.ConfigurationExtensions> — extension methods over the underlying INI primitives: `Resolve(targetPath)` on `IniDocumentBase`, `ConfigurationPath()` on `IniEntry`.
 - <xref:Bodu.Text.Configuration.ConfigurationParseResult> — output of `ParseWithDiagnostics`: the document and an `ImmutableArray<ConfigurationDiagnostic>` of recoverable issues collected during the parse.
 - <xref:Bodu.Text.Configuration.ConfigurationParseException> — thrown by the throwing parse / load overloads under `ConfigurationDiagnosticMode.Throw`.
 
@@ -80,7 +80,7 @@ logging.level.default = Warning
 
 // Parse, optionally collect diagnostics, then resolve for a target path.
 ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(source);
-IniDocument doc = result.Document;
+ConfigurationDocument doc = result.Document;
 
 ConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
 
@@ -90,7 +90,7 @@ string logLevel    = view.GetString("logging:level:default");    // "Warning"
 double threshold   = view.GetValue<double>("limits:cpu:threshold", fallback: 0.8);
 
 // Profile presets — swap the parser into EditorConfig-strict mode.
-IniDocument editorConfig = ConfigurationDocument.Parse(
+ConfigurationDocument editorConfig = ConfigurationDocument.Parse(
     source,
     ConfigurationParseOptions.EditorConfigCompatible);
 
@@ -102,7 +102,7 @@ string canonicalText = sw.ToString();
 
 ## Notes
 
-- **Immutable views.** <xref:Bodu.Text.Configuration.ConfigurationView> is a one-shot snapshot. The underlying dictionary is exposed read-only through `Values`; subsequent mutations of the originating `IniDocument` do not propagate. Take a fresh view after every meaningful document edit.
+- **Immutable views.** <xref:Bodu.Text.Configuration.ConfigurationView> is a one-shot snapshot. The underlying dictionary is exposed read-only through `Values`; subsequent mutations of the originating document do not propagate. Take a fresh view after every meaningful document edit.
 - **Thread safety.** The view is safe to read from any number of threads concurrently. The parser, resolver, and save APIs are short-lived and stateless across calls; the document model itself is not thread-safe for concurrent mutation but is safe for concurrent read.
 - **Determinism.** All parsing, resolving, and typed conversion uses <xref:System.Globalization.CultureInfo.InvariantCulture>. Output bytes from `Save` are byte-stable for documents the library produced; documents authored by hand may be reformatted to the canonical layout on first save.
 - **Last-wins precedence.** The resolver walks the document once in source order; for any configuration key, the value from the later matching section wins. There is no override / inherit hierarchy beyond "later in the file wins" — this matches EditorConfig and is intentional.

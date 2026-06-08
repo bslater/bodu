@@ -38,9 +38,9 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Configuration.ConfigurationDocument> | Static façade — `Parse`, `ParseWithDiagnostics`, `Load`, `Save` over strings, streams, paths, and text readers. Backed by <xref:Bodu.Text.Ini.IniDocument>. |
+| <xref:Bodu.Text.Configuration.ConfigurationDocument> | First-class document type returned by `Parse`, `ParseWithDiagnostics`, `Load`; also hosts `Save` over strings, streams, paths, and text readers. Inherits the read-only <xref:Bodu.Text.Ini.IniDocumentBase> model. |
 | <xref:Bodu.Text.Configuration.ConfigurationView> | Resolved, flattened snapshot for one target path; implements `IEnumerable<KeyValuePair<string, string?>>`. |
-| <xref:Bodu.Text.Configuration.ConfigurationExtensions> | Extension methods on `IniDocument`, `IniSection`, `IniEntry` — including the `Resolve(targetPath)` projection. |
+| <xref:Bodu.Text.Configuration.ConfigurationExtensions> | Extension methods on `IniDocumentBase` and `IniEntry` — including the `Resolve(targetPath)` projection. |
 | <xref:Bodu.Text.Configuration.ConfigurationParseResult> | The output of `ParseWithDiagnostics` — carries both the document and any diagnostics collected during the parse. |
 | <xref:Bodu.Text.Configuration.ConfigurationParseException> | Thrown by the throwing parse / load overloads when `DiagnosticMode` is `Throw`. |
 
@@ -143,4 +143,4 @@ The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
 - **[Getting started](getting-started.md)** — install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration, options binding, file probing.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
-- **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocument` model that `ConfigurationDocument.Parse` returns.
+- **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocumentBase` model that `ConfigurationDocument` inherits.

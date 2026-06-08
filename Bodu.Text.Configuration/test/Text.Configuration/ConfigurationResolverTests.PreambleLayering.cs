@@ -22,7 +22,7 @@ format.indent.size = 4
 [*.cs]
 format.indent.size = 2
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationView view = doc.Resolve("Foo.cs");
         Assert.AreEqual(2, view.GetInt32("format:indent:size"));
@@ -41,7 +41,7 @@ application.name = Bodu
 [*.cs]
 format.indent.size = 4
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new() { ApplyPreambleProperties = false };
         ConfigurationView view = doc.Resolve("Foo.cs", options);
@@ -62,7 +62,7 @@ application.name = Bodu
 [*.cs]
 format.indent.size = 4
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationView view = doc.Resolve("Foo.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 

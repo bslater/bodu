@@ -25,7 +25,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             ConfigurationHelpers.ThrowConfigKeyNotPresent(key);
 
@@ -47,12 +47,33 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && T.TryParse(raw.AsSpan(), CultureInfo.InvariantCulture, out value))
             return true;
 
         value = default;
         return false;
+    }
+
+    /// <summary>
+    /// Gets the value for <paramref name="key" /> parsed as <typeparamref name="T" />, returning
+    /// <paramref name="fallback" /> when the key is absent. Present-but-malformed values still throw.
+    /// </summary>
+    /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
+    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="fallback">The value to return when the key is absent.</param>
+    /// <returns>The parsed value, or <paramref name="fallback" /> when the key is absent.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">The value is present but cannot be parsed as <typeparamref name="T" />.</exception>
+    public T GetValue<T>(string key, T fallback)
+        where T : ISpanParsable<T>
+    {
+        ThrowHelper.ThrowIfNull(key);
+        var raw = LookupValue(key);
+        if (raw is null)
+            return fallback;
+
+        return T.Parse(raw.AsSpan(), CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -65,7 +86,7 @@ public sealed partial class ConfigurationView
     public string GetString(string key)
     {
         ThrowHelper.ThrowIfNull(key);
-        var value = LookupValue(Values, key);
+        var value = LookupValue(key);
         if (value is not null)
             return value;
 
@@ -83,7 +104,7 @@ public sealed partial class ConfigurationView
     public string? GetString(string key, string? fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var value = LookupValue(Values, key);
+        var value = LookupValue(key);
         return value ?? fallback;
     }
 
@@ -98,7 +119,7 @@ public sealed partial class ConfigurationView
     public bool TryGetString(string key, out string? value)
     {
         ThrowHelper.ThrowIfNull(key);
-        value = LookupValue(Values, key);
+        value = LookupValue(key);
         return value is not null;
     }
 
@@ -129,7 +150,7 @@ public sealed partial class ConfigurationView
     public int GetInt32(string key, int fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -151,7 +172,7 @@ public sealed partial class ConfigurationView
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -174,6 +195,48 @@ public sealed partial class ConfigurationView
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int64));
         return 0L;
+    }
+
+    /// <summary>
+    /// Gets the 64-bit integer value for <paramref name="key" />, returning <paramref name="fallback" /> on missing
+    /// keys. Present-but-malformed values still throw <see cref="FormatException" />.
+    /// </summary>
+    /// <param name="key">The configuration key.</param>
+    /// <param name="fallback">The value to return when the key is absent.</param>
+    /// <returns>The parsed value or <paramref name="fallback" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public long GetInt64(string key, long fallback)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        var raw = LookupValue(key);
+        if (raw is null)
+            return fallback;
+
+        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+            return value;
+
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int64));
+        return 0L;
+    }
+
+    /// <summary>
+    /// Attempts to parse the value for <paramref name="key" /> as a 64-bit integer.
+    /// </summary>
+    /// <param name="key">The configuration key.</param>
+    /// <param name="value">When this method returns, contains the parsed value; otherwise, zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool TryGetInt64(string key, out long value)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        var raw = LookupValue(key);
+        if (raw is not null && long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
+            return true;
+
+        value = 0L;
+        return false;
     }
 
     /// <summary>
@@ -212,7 +275,7 @@ public sealed partial class ConfigurationView
     public bool GetBoolean(string key, bool fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -234,7 +297,7 @@ public sealed partial class ConfigurationView
     public bool TryGetBoolean(string key, out bool value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && bool.TryParse(raw, out value))
             return true;
 
@@ -271,5 +334,54 @@ public sealed partial class ConfigurationView
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, typeof(TEnum).Name);
         return default;
+    }
+
+    /// <summary>
+    /// Gets the value for <paramref name="key" /> as an enum of type <typeparamref name="TEnum" />, returning
+    /// <paramref name="fallback" /> when the key is absent. Present-but-malformed values still throw
+    /// <see cref="FormatException" />.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
+    /// <param name="key">The configuration key.</param>
+    /// <param name="fallback">The value to return when the key is absent.</param>
+    /// <returns>The parsed enum value, or <paramref name="fallback" /> when the key is absent.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">The value is present but cannot be parsed as <typeparamref name="TEnum" />.</exception>
+    public TEnum GetEnum<TEnum>(string key, TEnum fallback)
+        where TEnum : struct, Enum
+    {
+        ThrowHelper.ThrowIfNull(key);
+        var raw = LookupValue(key);
+        if (raw is null)
+            return fallback;
+
+        if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(typeof(TEnum), value))
+            return value;
+
+        ConfigurationHelpers.ThrowValueNotConvertible(key, raw, typeof(TEnum).Name);
+        return default;
+    }
+
+    /// <summary>
+    /// Attempts to parse the value for <paramref name="key" /> as an enum of type <typeparamref name="TEnum" />.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
+    /// <param name="key">The configuration key.</param>
+    /// <param name="value">When this method returns, contains the parsed value; otherwise, the default.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value was present and parsed to a declared member; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool TryGetEnum<TEnum>(string key, out TEnum value)
+        where TEnum : struct, Enum
+    {
+        ThrowHelper.ThrowIfNull(key);
+        var raw = LookupValue(key);
+        if (raw is not null && Enum.TryParse(raw, ignoreCase: true, out value) && Enum.IsDefined(typeof(TEnum), value))
+            return true;
+
+        value = default;
+        return false;
     }
 }
