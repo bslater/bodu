@@ -4,7 +4,7 @@ title: Encoding helpers and BOM detection
 
 # Encoding helpers and BOM detection
 
-Alongside the binary encodings (Base16–Base85), `Bodu.Text.Encoding` ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
+Separate from the binary radix encodings (Base16–Base85, in `Bodu.Text.Encoding`), the **`Bodu.Text`** library ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
 
 Three types make up the surface:
 
