@@ -141,6 +141,9 @@
   <data name="Arg_Invalid_IniSectionsContainsNull" xml:space="preserve">
     <value>Sections sequence contains a null section.</value>
   </data>
+  <data name="Arg_Invalid_TomlDuplicateKey" xml:space="preserve">
+    <value>The table already contains the key '{0}'.</value>
+  </data>
   <data name="Arg_Invalid_NullDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain null keys.</value>
   </data>

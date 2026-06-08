@@ -70,6 +70,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The table already contains the key '{0}'..
+        /// </summary>
+        internal static string Arg_Invalid_TomlDuplicateKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_TomlDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to DotEnv comment prefix must be '#'..
         /// </summary>
         internal static string Arg_Invalid_DotEnvCommentPrefix {
