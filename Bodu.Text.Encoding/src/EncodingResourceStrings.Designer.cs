@@ -86,6 +86,15 @@ namespace Bodu {
         /// <summary>
         ///   Looks up a localized string similar to Destination must be at least {0} characters to encode the provided bytes..
         /// </summary>
+        internal static string Arg_Invalid_Base45DestinationSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Base45DestinationSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Destination must be at least {0} characters to encode the provided bytes..
+        /// </summary>
         internal static string Arg_Invalid_Base58DestinationSize {
             get {
                 return ResourceManager.GetString("Arg_Invalid_Base58DestinationSize", resourceCulture);
@@ -261,6 +270,33 @@ namespace Bodu {
         internal static string Format_Invalid_Base32VariantAlphabet {
             get {
                 return ResourceManager.GetString("Format_Invalid_Base32VariantAlphabet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input contains a character outside the Base45 alphabet: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_Base45CharacterNotInAlphabet {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base45CharacterNotInAlphabet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A Base45 group decodes to a value outside the valid byte range..
+        /// </summary>
+        internal static string Format_Invalid_Base45GroupOverflow {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base45GroupOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Base45 input length is not valid; the encoded length modulo 3 must be 0 or 2..
+        /// </summary>
+        internal static string Format_Invalid_Base45InvalidLength {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base45InvalidLength", resourceCulture);
             }
         }
 

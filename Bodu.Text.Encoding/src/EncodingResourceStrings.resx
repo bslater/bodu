@@ -67,6 +67,9 @@
   <data name="Arg_Invalid_Base32UnsupportedEncodeOptions" xml:space="preserve">
     <value>Only OmitPadding is supported on the Base32 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.</value>
   </data>
+  <data name="Arg_Invalid_Base45DestinationSize" xml:space="preserve">
+    <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
   <data name="Arg_Invalid_Base58DestinationSize" xml:space="preserve">
     <value>Destination must be at least {0} characters to encode the provided bytes.</value>
   </data>
@@ -126,6 +129,15 @@
   </data>
   <data name="Format_Invalid_Base32VariantAlphabet" xml:space="preserve">
     <value>Input contains characters outside the Base32 variant alphabet.</value>
+  </data>
+  <data name="Format_Invalid_Base45CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the Base45 alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Base45GroupOverflow" xml:space="preserve">
+    <value>A Base45 group decodes to a value outside the valid byte range.</value>
+  </data>
+  <data name="Format_Invalid_Base45InvalidLength" xml:space="preserve">
+    <value>Base45 input length is not valid; the encoded length modulo 3 must be 0 or 2.</value>
   </data>
   <data name="Format_Invalid_Base58CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base58 variant alphabet: '{0}'.</value>

@@ -80,6 +80,12 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base32ZBase32 { get; } = new Base32VariantAdapter(Base32Variant.ZBase32, "z-base-32", "z-base-32 (human-oriented lowercase alphabet; no padding).");
 
     /// <summary>
+    /// Gets the RFC 9285 Base45 encoding — the compact alphanumeric encoding used to carry binary data inside a QR
+    /// code's Alphanumeric mode (no padding).
+    /// </summary>
+    public static IBinaryEncoding Base45 { get; } = new Base45Adapter();
+
+    /// <summary>
     /// Gets the Bitcoin/Flickr Base58 encoding — the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
     /// derivative protocols.
     /// </summary>
@@ -115,8 +121,8 @@ public static class BinaryEncodings
     /// Returns the encoding for the supplied case-insensitive name. The recognised names are the values returned by
     /// each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
     /// <c>"base16-upper"</c>, <c>"base32"</c>, <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>,
-    /// <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>, <c>"base58-ripple"</c>,
-    /// <c>"ascii85"</c>, <c>"z85"</c>.
+    /// <c>"base45"</c>, <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>,
+    /// <c>"base58-ripple"</c>, <c>"ascii85"</c>, <c>"z85"</c>.
     /// </summary>
     /// <param name="name">The encoding name.</param>
     /// <returns>The matching <see cref="IBinaryEncoding" /> instance.</returns>
@@ -136,6 +142,7 @@ public static class BinaryEncodings
             "base32hex" => Base32Hex,
             "base32-crockford" => Base32Crockford,
             "z-base-32" or "zbase32" => Base32ZBase32,
+            "base45" => Base45,
             "base64" => Base64,
             "base64-urlsafe" or "base64url" => Base64UrlSafe,
             "base64-mime" => Base64Mime,
@@ -191,6 +198,29 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
+    }
+
+    private sealed class Base45Adapter : IBinaryEncoding
+    {
+        public string Description => "RFC 9285 Base45 (QR-code Alphanumeric-mode alphabet; no padding).";
+
+        public string Name => "base45";
+
+        public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base45.Decode(chars);
+
+        public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base45.Encode(bytes);
+
+        public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base45.GetMaxDecodedLength(charCount);
+
+        public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base45.GetMaxEncodedLength(byteCount);
+
+        public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base45.IsValid(source);
+
+        public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
+            global::Bodu.Text.Encoding.Base45.TryDecode(source, destination, out bytesWritten);
+
+        public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+            global::Bodu.Text.Encoding.Base45.TryEncode(source, destination, out charsWritten);
     }
 
     private sealed class Base32VariantAdapter : IBinaryEncoding
