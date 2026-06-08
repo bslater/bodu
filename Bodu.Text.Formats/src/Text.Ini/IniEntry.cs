@@ -10,33 +10,33 @@ using System.Globalization;
 namespace Bodu.Text.Ini;
 
 /// <summary>
-/// Represents a single key/value entry within an <see cref="IniSection" />. Mutable so that callers can edit values,
-/// attach or strip comment trivia, and assemble documents programmatically before calling
-/// <see cref="Ini.Format(IniDocument)" />.
+/// Represents a single key/value entry within an <see cref="IniSection" />. The key and value are immutable data;
+/// callers assemble documents programmatically through the owning <see cref="IniSection" /> and may edit comment
+/// trivia before calling <see cref="Ini.Format(IniDocument)" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The <see cref="Key" /> is immutable once constructed because the owning section maintains a key-to-entry lookup that
-/// depends on it. To rename a key, remove the entry from its section and add a replacement.
+/// <see cref="Key" /> and <see cref="Value" /> are immutable once constructed: the owning section maintains a
+/// key-to-entry lookup that depends on the key, and the value forms the entry's data identity. To change a value,
+/// call <see cref="IniSection.SetEntry(string, string)" />, which replaces the entry while preserving its trivia.
 /// </para>
 /// <para>
-/// <see cref="Value" />, <see cref="InlineComment" />, and the <see cref="LeadingComments" /> list are all mutable. The
-/// <see cref="LineNumber" /> reflects parser-assigned trivia and is read-only.
+/// The comment trivia — <see cref="InlineComment" /> and the <see cref="LeadingComments" /> list — remains editable so
+/// that annotations can be attached when authoring a document. The <see cref="LineNumber" /> reflects parser-assigned
+/// trivia and is read-only.
 /// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[
 /// Build a section programmatically and format it back to text.
 /// var doc = new IniDocument();
-/// IniSection db = doc.AddSection("database");
-/// db.Add(new IniEntry("host", "localhost"));
-/// db.Add(new IniEntry("port", "5432")
-/// {
-///     InlineComment = new IniComment("default Postgres port"),
-/// });
+/// IniSection db = doc.GetOrAddSection("database");
+/// db.SetEntry("host", "localhost");
+/// IniEntry port = db.SetEntry("port", "5432");
+/// port.InlineComment = new IniComment('#', " default Postgres port");
 ///
-/// Mutate an existing entry — Key is immutable; Value is not.
-/// db["port"].Value = "5433";
+/// Key and Value are immutable; replace the value via SetEntry.
+/// db.SetEntry("port", "5433");
 ///
 /// string text = Ini.Format(doc);
 ///]]>
@@ -44,7 +44,6 @@ namespace Bodu.Text.Ini;
 public sealed class IniEntry
 {
     private readonly List<IniComment> _leadingComments;
-    private string _value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniEntry" /> class.
@@ -96,7 +95,7 @@ public sealed class IniEntry
         ThrowHelper.ThrowIfNull(value);
 
         Key = key;
-        _value = value;
+        Value = value;
         LineNumber = lineNumber;
         _leadingComments = leadingComments is null ? new List<IniComment>() : new List<IniComment>(leadingComments);
     }
@@ -108,19 +107,10 @@ public sealed class IniEntry
     public string Key { get; }
 
     /// <summary>
-    /// Gets or sets the raw string value of this entry.
+    /// Gets the raw string value of this entry.
     /// </summary>
-    /// <returns>The current value. Never <see langword="null" />.</returns>
-    /// <exception cref="ArgumentNullException">A <see langword="null" /> value is assigned.</exception>
-    public string Value
-    {
-        get => _value;
-        set
-        {
-            ThrowHelper.ThrowIfNull(value);
-            _value = value;
-        }
-    }
+    /// <returns>The entry value as supplied at construction. Never <see langword="null" />.</returns>
+    public string Value { get; }
 
     /// <summary>
     /// Gets the 1-based source line number at which this entry was authored, or <c>0</c> when the entry was constructed

@@ -295,8 +295,15 @@ public sealed class IniSection
 
         if (_lookup.TryGetValue(key, out IniEntry? existing))
         {
-            existing.Value = value;
-            return existing;
+            // Value is immutable; replace the entry in place, preserving its source line and comment trivia.
+            IniEntry replacement = new(key, value, existing.LineNumber, existing.LeadingComments)
+            {
+                InlineComment = existing.InlineComment,
+            };
+            var idx = _entries.IndexOf(existing);
+            _entries[idx] = replacement;
+            _lookup[key] = replacement;
+            return replacement;
         }
 
         IniEntry entry = new(key, value);
