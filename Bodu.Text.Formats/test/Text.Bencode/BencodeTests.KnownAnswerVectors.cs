@@ -12,7 +12,7 @@ public sealed partial class BencodeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> reproduces the canonical value for every
     /// BEP 3 Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.Bep3PositiveVectors" />.</param>
@@ -21,13 +21,13 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForBep3KnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
-        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
+        BencodedValue actual = Bencode.Parse(vector.EncodedBytes);
 
         AssertValuesEqual(vector.DecodedValue, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> reproduces the canonical value for every
     /// curated edge-case KAT vector (Int64 boundaries, nested containers, raw byte payloads).
     /// </summary>
     /// <param name="vector">A KAT vector sourced from
@@ -37,13 +37,13 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForEdgeCaseKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
-        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
+        BencodedValue actual = Bencode.Parse(vector.EncodedBytes);
 
         AssertValuesEqual(vector.DecodedValue, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
+    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> reproduces the canonical value for every
     /// Wikipedia Bencode KAT vector.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.WikipediaVectors" />.</param>
@@ -52,13 +52,13 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors))]
     public void Decode_ForWikipediaKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
-        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
+        BencodedValue actual = Bencode.Parse(vector.EncodedBytes);
 
         AssertValuesEqual(vector.DecodedValue, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> reproduces the canonical bytes for every BEP 3
+    /// Verifies that <see cref="Bencode.Format(BencodedValue)" /> reproduces the canonical bytes for every BEP 3
     /// Known Answer Test vector.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.Bep3PositiveVectors" />.</param>
@@ -67,13 +67,13 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Encode_ForBep3KnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        var actual = Bencode.Encode(vector.DecodedValue);
+        var actual = Bencode.Format(vector.DecodedValue);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> reproduces the canonical bytes for every curated
+    /// Verifies that <see cref="Bencode.Format(BencodedValue)" /> reproduces the canonical bytes for every curated
     /// edge-case KAT vector.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from
@@ -83,13 +83,13 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors))]
     public void Encode_ForEdgeCaseKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        var actual = Bencode.Encode(vector.DecodedValue);
+        var actual = Bencode.Format(vector.DecodedValue);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> reproduces the canonical bytes for every
+    /// Verifies that <see cref="Bencode.Format(BencodedValue)" /> reproduces the canonical bytes for every
     /// Wikipedia Bencode KAT vector.
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.WikipediaVectors" />.</param>
@@ -98,7 +98,7 @@ public sealed partial class BencodeTests
     [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors))]
     public void Encode_ForWikipediaKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        var actual = Bencode.Encode(vector.DecodedValue);
+        var actual = Bencode.Format(vector.DecodedValue);
 
         CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }

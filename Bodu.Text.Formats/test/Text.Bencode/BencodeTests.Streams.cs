@@ -12,7 +12,7 @@ public sealed partial class BencodeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> handles non-seekable streams by buffering reads
+    /// Verifies that <see cref="Bencode.Parse(Stream)" /> handles non-seekable streams by buffering reads
     /// through <see cref="Stream.CopyTo(Stream)" />. Uses <see cref="NonSeekableStream" /> to simulate a
     /// network-style source.
     /// </summary>
@@ -21,13 +21,13 @@ public sealed partial class BencodeTests
     {
         using NonSeekableStream stream = new(CanonicalSpamBytes);
 
-        BencodedValue value = Bencode.Decode(stream);
+        BencodedValue value = Bencode.Parse(stream);
 
         Assert.AreEqual("spam", ((BencodedString)value).GetUtf8String());
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> rejects a non-readable stream with
+    /// Verifies that <see cref="Bencode.Parse(Stream)" /> rejects a non-readable stream with
     /// <see cref="ArgumentException" /> using the resx-backed message.
     /// </summary>
     [TestMethod]
@@ -38,7 +38,7 @@ public sealed partial class BencodeTests
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = Bencode.Decode(stream);
+            _ = Bencode.Parse(stream);
         });
 
         Assert.AreEqual("source", ex.ParamName);
@@ -46,20 +46,20 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> rejects a <see langword="null" /> source.
+    /// Verifies that <see cref="Bencode.Parse(Stream)" /> rejects a <see langword="null" /> source.
     /// </summary>
     [TestMethod]
     public void DecodeStream_WhenNullSource_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Bencode.Decode((Stream)null!);
+            _ = Bencode.Parse((Stream)null!);
         });
 
         Assert.AreEqual("source", ex.ParamName);
     }
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> decodes a value from a seekable
+    /// Verifies that <see cref="Bencode.Parse(Stream)" /> decodes a value from a seekable
     /// <see cref="MemoryStream" />.
     /// </summary>
     [TestMethod]
@@ -67,13 +67,13 @@ public sealed partial class BencodeTests
     {
         using MemoryStream stream = new(CanonicalIntegerBytes);
 
-        BencodedValue value = Bencode.Decode(stream);
+        BencodedValue value = Bencode.Parse(stream);
 
         Assert.AreEqual(42, ((BencodedInteger)value).Value);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> handles a source that returns small fixed-size chunks
+    /// Verifies that <see cref="Bencode.Parse(Stream)" /> handles a source that returns small fixed-size chunks
     /// (e.g. a slow network read), using <see cref="FixedChunkStream" /> with a 2-byte chunk size.
     /// </summary>
     [TestMethod]
@@ -81,7 +81,7 @@ public sealed partial class BencodeTests
     {
         using FixedChunkStream stream = new(Bytes("l4:spami42ee"), chunkSize: 2);
 
-        BencodedValue value = Bencode.Decode(stream);
+        BencodedValue value = Bencode.Parse(stream);
 
         var list = (BencodedList)value;
         Assert.AreEqual(2, list.Count);
@@ -90,7 +90,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> rejects a non-writable stream.
+    /// Verifies that <see cref="Bencode.Format(BencodedValue, Stream)" /> rejects a non-writable stream.
     /// </summary>
     [TestMethod]
     public void EncodeStream_WhenNotWritable_ShouldThrowExactly()
@@ -100,7 +100,7 @@ public sealed partial class BencodeTests
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            Bencode.Encode(new BencodedInteger(42), stream);
+            Bencode.Format(new BencodedInteger(42), stream);
         });
 
         Assert.AreEqual("destination", ex.ParamName);
@@ -108,7 +108,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> rejects a <see langword="null" />
+    /// Verifies that <see cref="Bencode.Format(BencodedValue, Stream)" /> rejects a <see langword="null" />
     /// destination.
     /// </summary>
     [TestMethod]
@@ -116,14 +116,14 @@ public sealed partial class BencodeTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            Bencode.Encode(new BencodedInteger(42), (Stream)null!);
+            Bencode.Format(new BencodedInteger(42), (Stream)null!);
         });
 
         Assert.AreEqual("destination", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> rejects a <see langword="null" />
+    /// Verifies that <see cref="Bencode.Format(BencodedValue, Stream)" /> rejects a <see langword="null" />
     /// value.
     /// </summary>
     [TestMethod]
@@ -133,14 +133,14 @@ public sealed partial class BencodeTests
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            Bencode.Encode(null!, stream);
+            Bencode.Format(null!, stream);
         });
 
         Assert.AreEqual("value", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> writes the canonical bytes into a
+    /// Verifies that <see cref="Bencode.Format(BencodedValue, Stream)" /> writes the canonical bytes into a
     /// <see cref="MemoryStream" />.
     /// </summary>
     [TestMethod]
@@ -148,7 +148,7 @@ public sealed partial class BencodeTests
     {
         using MemoryStream stream = new();
 
-        Bencode.Encode(new BencodedInteger(42), stream);
+        Bencode.Format(new BencodedInteger(42), stream);
 
         CollectionAssert.AreEqual(CanonicalIntegerBytes, stream.ToArray());
     }

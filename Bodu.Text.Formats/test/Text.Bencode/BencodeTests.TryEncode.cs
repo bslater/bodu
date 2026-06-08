@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BencodeTests.TryEncode.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BencodeTests.TryFormat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ public sealed partial class BencodeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> writes only the required
+    /// Verifies that <see cref="Bencode.TryFormat(BencodedValue, Span{byte}, out int)" /> writes only the required
     /// number of bytes into an oversized destination buffer.
     /// </summary>
     [TestMethod]
@@ -18,7 +18,7 @@ public sealed partial class BencodeTests
     {
         var destination = new byte[CanonicalIntegerBytes.Length + 8];
 
-        var result = Bencode.TryEncode(new BencodedInteger(42), destination, out var bytesWritten);
+        var result = Bencode.TryFormat(new BencodedInteger(42), destination, out var bytesWritten);
 
         Assert.IsTrue(result);
         Assert.AreEqual(CanonicalIntegerBytes.Length, bytesWritten);
@@ -27,7 +27,7 @@ public sealed partial class BencodeTests
             Assert.AreEqual(CanonicalIntegerBytes[i], destination[i]);
     }
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> succeeds when the
+    /// Verifies that <see cref="Bencode.TryFormat(BencodedValue, Span{byte}, out int)" /> succeeds when the
     /// destination is sized exactly to the encoded length and reports the same length via <c>bytesWritten</c>.
     /// </summary>
     [TestMethod]
@@ -35,7 +35,7 @@ public sealed partial class BencodeTests
     {
         var destination = new byte[CanonicalIntegerBytes.Length];
 
-        var result = Bencode.TryEncode(new BencodedInteger(42), destination, out var bytesWritten);
+        var result = Bencode.TryFormat(new BencodedInteger(42), destination, out var bytesWritten);
 
         Assert.IsTrue(result);
         Assert.AreEqual(CanonicalIntegerBytes.Length, bytesWritten);
@@ -43,7 +43,7 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> returns
+    /// Verifies that <see cref="Bencode.TryFormat(BencodedValue, Span{byte}, out int)" /> returns
     /// <see langword="false" /> and sets <c>bytesWritten</c> to zero when the destination is too small.
     /// </summary>
     [TestMethod]
@@ -51,7 +51,7 @@ public sealed partial class BencodeTests
     {
         var destination = new byte[2];
 
-        var result = Bencode.TryEncode(new BencodedInteger(42), destination, out var bytesWritten);
+        var result = Bencode.TryFormat(new BencodedInteger(42), destination, out var bytesWritten);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, bytesWritten);

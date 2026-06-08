@@ -19,12 +19,12 @@ public sealed class BencodeContractTests
     : BinaryDocumentFormatContractTests<BencodedValue, BencodeParseOptions>
 {
     /// <inheritdoc />
-    protected override BencodedValue Decode(byte[] payload, BencodeParseOptions options = default!) =>
-        Bencode.Decode(payload.AsSpan(), options);
+    protected override BencodedValue Parse(byte[] payload, BencodeParseOptions options = default!) =>
+        Bencode.Parse(payload.AsSpan(), options);
 
     /// <inheritdoc />
-    protected override byte[] Encode(BencodedValue document, BencodeParseOptions options = default!) =>
-        Bencode.Encode(document);
+    protected override byte[] Format(BencodedValue document, BencodeParseOptions options = default!) =>
+        Bencode.Format(document);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryDocumentKat<BencodedValue, BencodeParseOptions>> ValidCases { get; } =

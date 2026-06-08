@@ -51,7 +51,7 @@ public sealed class TextFormatExceptionTests
 
         TextFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            _ = Bencode.Bencode.Decode(payload);
+            _ = Bencode.Bencode.Parse(payload);
         });
 
         Assert.IsNotNull(ex.Offset);

@@ -10,20 +10,20 @@ public sealed partial class BencodeTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(byte[])" /> rejects a <see langword="null" /> source array.
+    /// Verifies that <see cref="Bencode.Parse(byte[])" /> rejects a <see langword="null" /> source array.
     /// </summary>
     [TestMethod]
     public void Decode_WhenNullByteArraySource_ShouldThrowExactly()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Bencode.Decode((byte[])null!);
+            _ = Bencode.Parse((byte[])null!);
         });
 
         Assert.AreEqual("source", ex.ParamName);
     }
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> rejects a <see langword="null" /> value with
+    /// Verifies that <see cref="Bencode.Format(BencodedValue)" /> rejects a <see langword="null" /> value with
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -31,14 +31,14 @@ public sealed partial class BencodeTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Bencode.Encode((BencodedValue)null!);
+            _ = Bencode.Format((BencodedValue)null!);
         });
 
         Assert.AreEqual("value", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.GetEncodedLength(BencodedValue)" /> rejects a <see langword="null" />
+    /// Verifies that <see cref="Bencode.GetFormattedLength(BencodedValue)" /> rejects a <see langword="null" />
     /// value with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -46,14 +46,14 @@ public sealed partial class BencodeTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Bencode.GetEncodedLength(null!);
+            _ = Bencode.GetFormattedLength(null!);
         });
 
         Assert.AreEqual("value", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> rejects a
+    /// Verifies that <see cref="Bencode.TryFormat(BencodedValue, Span{byte}, out int)" /> rejects a
     /// <see langword="null" /> value with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -61,7 +61,7 @@ public sealed partial class BencodeTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Bencode.TryEncode(null!, new byte[16], out _);
+            _ = Bencode.TryFormat(null!, new byte[16], out _);
         });
 
         Assert.AreEqual("value", ex.ParamName);

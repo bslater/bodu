@@ -12,7 +12,7 @@ namespace Bodu.Text.Bencode.Contracts;
 /// <summary>
 /// Drives <see cref="StreamRoundTripContractTests{T}" /> against <see cref="Bencode" />'s synchronous
 /// and asynchronous <see cref="Stream" /> surface. Verifies that integer and byte-string values
-/// round-trip losslessly through both <c>Encode</c>/<c>Decode</c> and <c>EncodeAsync</c>/<c>DecodeAsync</c>.
+/// round-trip losslessly through both <c>Format</c>/<c>Parse</c> and <c>FormatAsync</c>/<c>ParseAsync</c>.
 /// Bespoke Bencode coverage (lists, dictionaries, malformed-input rejection, depth limits) lives in
 /// <c>BencodeTests.*</c>.
 /// </summary>
@@ -22,19 +22,19 @@ public sealed class BencodeStreamRoundTripContractTests
 {
     /// <inheritdoc />
     protected override void Write(Stream destination, BencodedValue value) =>
-        Bencode.Encode(value, destination);
+        Bencode.Format(value, destination);
 
     /// <inheritdoc />
     protected override BencodedValue Read(Stream source) =>
-        Bencode.Decode(source);
+        Bencode.Parse(source);
 
     /// <inheritdoc />
     protected override async Task WriteAsync(Stream destination, BencodedValue value, CancellationToken cancellationToken) =>
-        await Bencode.EncodeAsync(value, destination, cancellationToken).ConfigureAwait(false);
+        await Bencode.FormatAsync(value, destination, cancellationToken).ConfigureAwait(false);
 
     /// <inheritdoc />
     protected override async Task<BencodedValue> ReadAsync(Stream source, CancellationToken cancellationToken) =>
-        await Bencode.DecodeAsync(source, cancellationToken).ConfigureAwait(false);
+        await Bencode.ParseAsync(source, cancellationToken).ConfigureAwait(false);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryKat<BencodedValue, BencodedValue>> ValidCases { get; } =

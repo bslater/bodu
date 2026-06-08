@@ -39,7 +39,7 @@ public static class BencodeExtensions
     /// Thrown when <paramref name="source" /> is malformed or contains trailing bytes.
     /// </exception>
     public static BencodedValue ParseBencode(this ReadOnlySpan<byte> source) =>
-        Bencode.Decode(source);
+        Bencode.Parse(source);
 
     /// <summary>
     /// Decodes a complete bencoded document from the specified byte array.
@@ -53,7 +53,7 @@ public static class BencodeExtensions
     /// Thrown when <paramref name="source" /> is malformed or contains trailing bytes.
     /// </exception>
     public static BencodedValue ParseBencode(this byte[] source) =>
-        Bencode.Decode(source);
+        Bencode.Parse(source);
 
     /// <summary>
     /// Attempts to decode a single bencoded value from the specified byte span.
@@ -66,7 +66,7 @@ public static class BencodeExtensions
         this ReadOnlySpan<byte> source,
         [NotNullWhen(true)] out BencodedValue? value,
         out int bytesConsumed) =>
-        Bencode.TryDecode(source, out value, out bytesConsumed);
+        Bencode.TryParse(source, out value, out bytesConsumed);
 
     /// <summary>
     /// Encodes the specified bencoded value into a new byte array.
@@ -80,7 +80,7 @@ public static class BencodeExtensions
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
     public static byte[] FormatBencode(this BencodedValue value) =>
-        Bencode.Encode(value);
+        Bencode.Format(value);
 
     /// <summary>
     /// Attempts to encode the specified bencoded value into the supplied destination buffer.
@@ -102,7 +102,7 @@ public static class BencodeExtensions
         this BencodedValue value,
         Span<byte> destination,
         out int bytesWritten) =>
-        Bencode.TryEncode(value, destination, out bytesWritten);
+        Bencode.TryFormat(value, destination, out bytesWritten);
 
     /// <summary>
     /// Gets the exact number of bytes required to encode the specified value.
@@ -116,5 +116,5 @@ public static class BencodeExtensions
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
     public static int GetBencodedLength(this BencodedValue value) =>
-        Bencode.GetEncodedLength(value);
+        Bencode.GetFormattedLength(value);
 }
