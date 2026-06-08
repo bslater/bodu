@@ -806,5 +806,122 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_MerkleChannelCompleted", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 parallelism must be between 1 and {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2Parallelism {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2Parallelism", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 iterations must be at least 1..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2Iterations {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2Iterations", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 tag length must be at least {0} bytes..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2TagLength {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2TagLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 memory must be at least {0} kibibytes (8 * parallelism)..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2Memory {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2Memory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported Argon2 version: 0x{0}. Supported versions are 0x10 and 0x13..
+        /// </summary>
+        internal static string Arg_Invalid_Argon2Version {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Argon2Version", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The destination length must equal the configured tag length of {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_Argon2DestinationLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Argon2DestinationLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The salt must be at least {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_KdfSaltTooShort {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_KdfSaltTooShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The requested memory size is too large to allocate as a single array..
+        /// </summary>
+        internal static string Crypt_Invalid_KdfMemoryExceedsLimit {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_KdfMemoryExceedsLimit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The PHC encoded-hash string is not well formed..
+        /// </summary>
+        internal static string Format_Invalid_PhcString {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PhcString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt cost parameter N must be greater than 1 and a power of two..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptCostNotPowerOfTwo {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptCostNotPowerOfTwo", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt block size r must be at least 1..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptBlockSize {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptBlockSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt parallelization parameter p must be between 1 and {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptParallelization {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptParallelization", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt output length must be between 1 and {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptOutputLength {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptOutputLength", resourceCulture);
+            }
+        }
     }
 }

@@ -307,4 +307,43 @@
   <data name="Op_Invalid_MerkleChannelCompleted" xml:space="preserve">
     <value>Write to level-{0} channel failed. The channel was completed before all nodes were submitted.</value>
   </data>
+  <data name="Arg_OutOfRange_Argon2Parallelism" xml:space="preserve">
+    <value>Argon2 parallelism must be between 1 and {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_Argon2Iterations" xml:space="preserve">
+    <value>Argon2 iterations must be at least 1.</value>
+  </data>
+  <data name="Arg_OutOfRange_Argon2TagLength" xml:space="preserve">
+    <value>Argon2 tag length must be at least {0} bytes.</value>
+  </data>
+  <data name="Arg_OutOfRange_Argon2Memory" xml:space="preserve">
+    <value>Argon2 memory must be at least {0} kibibytes (8 * parallelism).</value>
+  </data>
+  <data name="Arg_Invalid_Argon2Version" xml:space="preserve">
+    <value>Unsupported Argon2 version: 0x{0}. Supported versions are 0x10 and 0x13.</value>
+  </data>
+  <data name="Arg_Invalid_Argon2DestinationLength" xml:space="preserve">
+    <value>The destination length must equal the configured tag length of {0} bytes.</value>
+  </data>
+  <data name="Arg_Invalid_KdfSaltTooShort" xml:space="preserve">
+    <value>The salt must be at least {0} bytes.</value>
+  </data>
+  <data name="Crypt_Invalid_KdfMemoryExceedsLimit" xml:space="preserve">
+    <value>The requested memory size is too large to allocate as a single array.</value>
+  </data>
+  <data name="Format_Invalid_PhcString" xml:space="preserve">
+    <value>The PHC encoded-hash string is not well formed.</value>
+  </data>
+  <data name="Arg_OutOfRange_ScryptCostNotPowerOfTwo" xml:space="preserve">
+    <value>The scrypt cost parameter N must be greater than 1 and a power of two.</value>
+  </data>
+  <data name="Arg_OutOfRange_ScryptBlockSize" xml:space="preserve">
+    <value>The scrypt block size r must be at least 1.</value>
+  </data>
+  <data name="Arg_OutOfRange_ScryptParallelization" xml:space="preserve">
+    <value>The scrypt parallelization parameter p must be between 1 and {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_ScryptOutputLength" xml:space="preserve">
+    <value>The scrypt output length must be between 1 and {0}.</value>
+  </data>
 </root>

@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done and the ChaCha/Salsa stream-cipher family and its AEAD layer complete, the highest-leverage net-new engineering item is the password-hashing KDFs Argon2 and scrypt — the remaining BCL gap (HKDF and PBKDF2 already ship in `System.Security.Cryptography`). The runner-up cross-project gaps are a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
+*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), the highest-leverage net-new engineering items are now a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
 
 ## How to read this
 
@@ -212,12 +212,17 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   Bodu-defined XSalsa20 hybrid (no published
   vector) is checked against a derived oracle built from the
   independently-tested public `XSalsa20` keystream and `Poly1305` MAC.
-- **Add password-hashing KDFs: Argon2 and scrypt.** No
-  password-hashing surface today. `HKDF` and `Pbkdf2` are already in
-  `System.Security.Cryptography` and are not in scope. Argon2 and
-  scrypt are the real gap — Microsoft has explicitly declined to ship
-  Argon2 because only OpenSSL implements it among the supported OS
-  crypto providers.
+- **Password-hashing KDFs Argon2 and scrypt have landed.** ✅
+  **Shipped.** `Argon2d` / `Argon2i` / `Argon2id` (RFC 9106) and
+  `Scrypt` (RFC 7914) close the remaining BCL gap (`HKDF` and `Pbkdf2`
+  already ship in `System.Security.Cryptography`; Microsoft declined
+  Argon2). Each offers an instance surface and static one-shot
+  `DeriveKey`, plus PHC encoded-hash `Hash` / constant-time `Verify`
+  for password storage. Argon2 bundles its own arbitrary-length
+  BLAKE2b for `H'`; scrypt composes the BCL `Pbkdf2` (HMAC-SHA256)
+  with a Salsa20/8 core. Locked against every RFC 9106 §5 and RFC 7914
+  §12 vector (the ~1 GiB scrypt vector runs in the Stress tier). The
+  next crypto step is the AVX-512 capability-detection contract below.
 - Finalise the AVX-512 fast paths shipped for BLAKE2/BLAKE3/Threefish
   behind a documented capability-detection contract, so consumers can
   reason about when SIMD paths engage and how to disable them in
