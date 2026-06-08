@@ -73,6 +73,9 @@
   <data name="Arg_Invalid_Base58DestinationSize" xml:space="preserve">
     <value>Destination must be at least {0} characters to encode the provided bytes.</value>
   </data>
+  <data name="Arg_Invalid_Base62DestinationSize" xml:space="preserve">
+    <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
   <data name="Arg_Invalid_Base64UnsupportedEncodeOptions" xml:space="preserve">
     <value>Only OmitPadding is supported on the Base64 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.</value>
   </data>
@@ -147,6 +150,9 @@
   </data>
   <data name="Format_Invalid_Base58CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base58 variant alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Base62CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the Base62 alphabet: '{0}'.</value>
   </data>
   <data name="Format_Invalid_Base58CheckChecksumFailed" xml:space="preserve">
     <value>Base58Check checksum verification failed.</value>

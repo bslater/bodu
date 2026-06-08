@@ -102,6 +102,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Destination must be at least {0} characters to encode the provided bytes..
+        /// </summary>
+        internal static string Arg_Invalid_Base62DestinationSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Base62DestinationSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Only OmitPadding is supported on the Base64 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags..
         /// </summary>
         internal static string Arg_Invalid_Base64UnsupportedEncodeOptions {
@@ -342,6 +351,15 @@ namespace Bodu {
         internal static string Format_Invalid_Base58CheckShorterThanChecksum {
             get {
                 return ResourceManager.GetString("Format_Invalid_Base58CheckShorterThanChecksum", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input contains a character outside the Base62 alphabet: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_Base62CharacterNotInAlphabet {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Base62CharacterNotInAlphabet", resourceCulture);
             }
         }
 

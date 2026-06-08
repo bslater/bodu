@@ -97,6 +97,12 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base58Ripple { get; } = new Base58VariantAdapter(Base58Variant.Ripple, "base58-ripple", "Ripple Base58 (XRP ledger permutation).");
 
     /// <summary>
+    /// Gets the GMP-style Base62 encoding (alphabet <c>0-9 A-Z a-z</c>; leading zero bytes preserved as leading
+    /// <c>0</c> characters).
+    /// </summary>
+    public static IBinaryEncoding Base62 { get; } = new Base62Adapter();
+
+    /// <summary>
     /// Gets the RFC 4648 §4 Standard Base64 encoding (alphabet <c>A-Z a-z 0-9 + /</c>, padded with <c>=</c>).
     /// </summary>
     public static IBinaryEncoding Base64 { get; } = new Base64VariantAdapter(Base64Variant.Standard, "base64", "RFC 4648 §4 Standard Base64 (A-Z, a-z, 0-9, +, /; padded).");
@@ -122,7 +128,7 @@ public static class BinaryEncodings
     /// each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
     /// <c>"base16-upper"</c>, <c>"base32"</c>, <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>,
     /// <c>"base45"</c>, <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>,
-    /// <c>"base58-ripple"</c>, <c>"ascii85"</c>, <c>"z85"</c>.
+    /// <c>"base58-ripple"</c>, <c>"base62"</c>, <c>"ascii85"</c>, <c>"z85"</c>.
     /// </summary>
     /// <param name="name">The encoding name.</param>
     /// <returns>The matching <see cref="IBinaryEncoding" /> instance.</returns>
@@ -148,6 +154,7 @@ public static class BinaryEncodings
             "base64-mime" => Base64Mime,
             "base58" or "base58-bitcoin" or "base58-flickr" => Base58,
             "base58-ripple" => Base58Ripple,
+            "base62" => Base62,
             "ascii85" or "base85" => Ascii85,
             "z85" => Z85,
             _ => throw new ArgumentException(string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_UnknownEncodingName, name), nameof(name)),
@@ -253,6 +260,29 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base32.TryEncode(source, destination, out charsWritten, _variant);
+    }
+
+    private sealed class Base62Adapter : IBinaryEncoding
+    {
+        public string Description => "GMP-style Base62 (0-9, A-Z, a-z; leading zero bytes preserved).";
+
+        public string Name => "base62";
+
+        public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base62.Decode(chars);
+
+        public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base62.Encode(bytes);
+
+        public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base62.GetMaxDecodedLength(charCount);
+
+        public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base62.GetMaxEncodedLength(byteCount);
+
+        public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base62.IsValid(source);
+
+        public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
+            global::Bodu.Text.Encoding.Base62.TryDecode(source, destination, out bytesWritten);
+
+        public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+            global::Bodu.Text.Encoding.Base62.TryEncode(source, destination, out charsWritten);
     }
 
     private sealed class Base58VariantAdapter : IBinaryEncoding
