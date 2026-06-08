@@ -361,16 +361,7 @@ public static partial class DotEnv
         /// <summary>
         /// Consumes one character, incrementing <see cref="_lineNumber" /> when the consumed character is <c>'\n'</c>.
         /// </summary>
-        private void Advance()
-        {
-            if (!_remaining.IsEmpty)
-            {
-                if (_remaining[0] == '\n')
-                    _lineNumber++;
-
-                _remaining = _remaining[1..];
-            }
-        }
+        private void Advance() => LineScanner.Advance(ref _remaining, ref _lineNumber);
 
         /// <summary>
         /// Advances past any space or tab characters on the current line without consuming newline characters.
@@ -384,36 +375,12 @@ public static partial class DotEnv
         /// <summary>
         /// Advances to the end of the current line without consuming the line terminator.
         /// </summary>
-        private void SkipToEndOfLine()
-        {
-            while (!_remaining.IsEmpty && _remaining[0] != '\n' && _remaining[0] != '\r')
-                _remaining = _remaining[1..];
-        }
+        private void SkipToEndOfLine() => LineScanner.SkipToEndOfLine(ref _remaining);
 
         /// <summary>
         /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_lineNumber" />
         /// accordingly.
         /// </summary>
-        private void SkipLineEnding()
-        {
-            if (_remaining.IsEmpty)
-                return;
-
-            if (_remaining[0] == '\r')
-            {
-                _remaining = _remaining[1..];
-
-                if (!_remaining.IsEmpty && _remaining[0] == '\n')
-                {
-                    _lineNumber++;
-                    _remaining = _remaining[1..];
-                }
-            }
-            else if (_remaining[0] == '\n')
-            {
-                _lineNumber++;
-                _remaining = _remaining[1..];
-            }
-        }
+        private void SkipLineEnding() => LineScanner.SkipLineEnding(ref _remaining, ref _lineNumber);
     }
 }
