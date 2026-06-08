@@ -93,6 +93,9 @@ below).
 | Bodu.Financial | ✓ | ✓ | ✓ | ✓ |
 | Bodu.Financial.DependencyInjection | ✓ | ✓ | ✓ (resx conversion) | ✓ |
 
+Note: `Bodu.Core`'s assembly/package name was aligned to `Bodu.Core` (see Remediation);
+it is now fully consistent on all four dimensions.
+
 ## Remediation performed on this branch
 
 | Commit | Change |
@@ -101,6 +104,7 @@ below).
 | DI resx conversion | `Bodu.Financial.DependencyInjection`'s `const`-string message holder replaced with a `DependencyInjectionResourceStrings.{resx,Designer.cs}` pair wired into the project; class/member names preserved so the throw site is unchanged. Verified the resource embeds and resolves at runtime; DI tests pass 15/15. |
 | Examples | Type-level `<example>` added to `Fraction<T>` and the `ConfigurationProfile` enum, in the established `<code language="csharp">` + CDATA house style. Both projects build clean under the doc-comment-as-error settings. |
 | CLAUDE.md | Added the previously-undocumented `Bodu.Text`, `Bodu.Financial`, and `Bodu.Financial.DependencyInjection` rows to the project table; corrected the Test Tiers commands to `bodu.slnx`; corrected the `ImplicitUsings` statement (enabled across all projects, including `Bodu.Core`). |
+| Core assembly name | `Bodu.Core` was the only library renaming its assembly (`Bodu.CoreLib`), which — with no `PackageId` in `bld/Bodu.props` — also made its NuGet id `Bodu.CoreLib`. Aligned it to the convention (`$(MSBuildProjectName)` → `Bodu.Core`), updating all four references: the src `AssemblyName`, the audit comment, the `InternalsVisibleTo` grant, and the test project's `AssemblyName` (now `$(MSBuildProjectName)` → `Bodu.Core.Test`, matching every sibling test project). Verified: Core emits `Bodu.Core.dll`, the full Core test suite passes (24,784/24,784) proving the `InternalsVisibleTo` grant still resolves, and downstream consumers (IO.Hashing, Calendar) build clean. |
 
 ## False positives corrected (no action needed)
 
@@ -115,19 +119,20 @@ below).
   disabled to match the doc."** False. Disabling it produces 1374 compile errors;
   the source relies on implicit usings. The documentation was corrected instead.
 
-## Open decision — `Bodu.Core` assembly/package name
+## Resolved — `Bodu.Core` assembly/package name
 
-`Bodu.Core/src/Bodu.Core.csproj` sets `<AssemblyName>Bodu.CoreLib</AssemblyName>`,
-the only library that renames its assembly; because `bld/Bodu.props` sets no
-`PackageId`, this also makes Core's NuGet package id `Bodu.CoreLib` while every peer
-is `Bodu.*`. The name is **self-consistent** across four sites — the assembly name,
-the `InternalsVisibleTo` self-grant, the audit comment, and the test project's
-`Bodu.CoreLib.Test` assembly name — so it reads as deliberate rather than drift.
-Renaming it to the default (`Bodu.Core`) is an **outward-facing, breaking
-package-identity change**, so it was deliberately left untouched. **Decision needed:**
-keep `Bodu.CoreLib` as intentional (and optionally note the rationale in the csproj),
-or align it to `Bodu.Core` and update the four references plus any downstream package
-consumers.
+`Bodu.Core` was the only library renaming its assembly to `Bodu.CoreLib`; because
+`bld/Bodu.props` sets no `PackageId`, this also made Core's NuGet package id
+`Bodu.CoreLib` while every peer is `Bodu.*`. The name was self-consistent across four
+sites (the src `AssemblyName`, the `InternalsVisibleTo` grant, the audit comment, and
+the test project's `Bodu.CoreLib.Test` assembly name), so it was carried to a decision
+rather than assumed. **Decision:** align it to the convention. The src `AssemblyName`
+and the test `AssemblyName` now use `$(MSBuildProjectName)` (yielding `Bodu.Core` and
+`Bodu.Core.Test`, matching every sibling), and the comment and `InternalsVisibleTo`
+grant were updated to `Bodu.Core.Test`. This is an outward-facing package-identity
+change: the published package/assembly id moves from `Bodu.CoreLib` to `Bodu.Core`, so
+any downstream reference to the old id must be updated. Verified the full Core test
+suite (24,784 tests) passes and downstream consumers build clean.
 
 ## Note — `var` versus explicit types
 
