@@ -25,7 +25,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             ConfigurationHelpers.ThrowConfigKeyNotPresent(key);
 
@@ -47,7 +47,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && T.TryParse(raw.AsSpan(), CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -69,7 +69,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -86,7 +86,7 @@ public sealed partial class ConfigurationView
     public string GetString(string key)
     {
         ThrowHelper.ThrowIfNull(key);
-        var value = LookupValue(Values, key);
+        var value = LookupValue(key);
         if (value is not null)
             return value;
 
@@ -104,7 +104,7 @@ public sealed partial class ConfigurationView
     public string? GetString(string key, string? fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var value = LookupValue(Values, key);
+        var value = LookupValue(key);
         return value ?? fallback;
     }
 
@@ -119,7 +119,7 @@ public sealed partial class ConfigurationView
     public bool TryGetString(string key, out string? value)
     {
         ThrowHelper.ThrowIfNull(key);
-        value = LookupValue(Values, key);
+        value = LookupValue(key);
         return value is not null;
     }
 
@@ -150,7 +150,7 @@ public sealed partial class ConfigurationView
     public int GetInt32(string key, int fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -172,7 +172,7 @@ public sealed partial class ConfigurationView
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -208,7 +208,7 @@ public sealed partial class ConfigurationView
     public long GetInt64(string key, long fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -231,7 +231,7 @@ public sealed partial class ConfigurationView
     public bool TryGetInt64(string key, out long value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -275,7 +275,7 @@ public sealed partial class ConfigurationView
     public bool GetBoolean(string key, bool fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -297,7 +297,7 @@ public sealed partial class ConfigurationView
     public bool TryGetBoolean(string key, out bool value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && bool.TryParse(raw, out value))
             return true;
 
@@ -351,7 +351,7 @@ public sealed partial class ConfigurationView
         where TEnum : struct, Enum
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -377,7 +377,7 @@ public sealed partial class ConfigurationView
         where TEnum : struct, Enum
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(Values, key);
+        var raw = LookupValue(key);
         if (raw is not null && Enum.TryParse(raw, ignoreCase: true, out value) && Enum.IsDefined(typeof(TEnum), value))
             return true;
 

@@ -57,7 +57,7 @@ internal sealed class ConfigurationResolver
         Dictionary<string, string?> values = new(comparer);
         Dictionary<string, ConfigurationResolvedEntry> entries = new(comparer);
 
-        var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot);
+        var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot, _options.PathComparison);
 
         // Apply the global section (preamble) first when enabled. Preamble entries are signalled by passing
         // a null section pattern through to ApplySection.
@@ -88,7 +88,7 @@ internal sealed class ConfigurationResolver
                 ApplySection(section, values, entries, sectionPattern: section.Name);
         }
 
-        return new ConfigurationView(values, entries);
+        return new ConfigurationView(values, entries, _options.KeyOptions);
     }
 
     /// <summary>
@@ -135,17 +135,20 @@ internal sealed class ConfigurationResolver
     /// </summary>
     /// <param name="targetPath">The target path to normalize.</param>
     /// <param name="pathRoot">The path root the result is made relative to, or <see langword="null" />.</param>
+    /// <param name="comparison">
+    /// The comparison used to match the path root, kept consistent with the comparison used for glob matching.
+    /// </param>
     /// <returns>The normalized, root-relative path.</returns>
-    private static string NormalizePath(string targetPath, string? pathRoot)
+    private static string NormalizePath(string targetPath, string? pathRoot, StringComparison comparison)
     {
         var normalizedTarget = targetPath.Replace('\\', '/');
         if (string.IsNullOrEmpty(pathRoot))
             return normalizedTarget;
 
         var normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
-        return normalizedTarget.StartsWith(normalizedRoot + "/", StringComparison.OrdinalIgnoreCase)
+        return normalizedTarget.StartsWith(normalizedRoot + "/", comparison)
             ? normalizedTarget[(normalizedRoot.Length + 1)..]
-            : string.Equals(normalizedTarget, normalizedRoot, StringComparison.OrdinalIgnoreCase)
+            : string.Equals(normalizedTarget, normalizedRoot, comparison)
                 ? Path.GetFileName(normalizedTarget)
                 : normalizedTarget;
     }

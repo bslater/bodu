@@ -51,6 +51,7 @@ public sealed partial class ConfigurationView
     : IEnumerable<KeyValuePair<string, string?>>, IReadOnlyDictionary<string, string?>
 {
     private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry> _entries;
+    private readonly ConfigurationKeyOptions _keyOptions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values
@@ -58,12 +59,17 @@ public sealed partial class ConfigurationView
     /// </summary>
     /// <param name="values">The resolved configuration values, keyed by canonical configuration key.</param>
     /// <param name="entries">The resolved-entry metadata for each key in <paramref name="values" />.</param>
+    /// <param name="keyOptions">
+    /// The key options used to canonicalize lookup keys so they match the canonical keys the resolver stored.
+    /// </param>
     internal ConfigurationView(
         IReadOnlyDictionary<string, string?> values,
-        IReadOnlyDictionary<string, ConfigurationResolvedEntry> entries)
+        IReadOnlyDictionary<string, ConfigurationResolvedEntry> entries,
+        ConfigurationKeyOptions keyOptions)
     {
         Values = values;
         _entries = entries;
+        _keyOptions = keyOptions;
     }
 
     /// <summary>
@@ -88,26 +94,45 @@ public sealed partial class ConfigurationView
         {
             ThrowHelper.ThrowIfNull(key);
 
-            return LookupValue(Values, key);
+            return LookupValue(key);
         }
     }
 
     /// <summary>
-    /// Looks up a value by canonical colon-delimited key or by the equivalent dotted form. Dotted lookups are
-    /// normalized to colon-delimited keys before consulting the backing dictionary.
+    /// Looks up a value by its stored key or by an equivalent key in any accepted notation. The lookup key is
+    /// canonicalized through <see cref="ConfigurationKey" /> using the same options that produced the stored keys, so
+    /// dotted, colon-delimited, and mixed forms all resolve to the same value under every key mapping.
     /// </summary>
-    /// <param name="values">The dictionary of resolved values.</param>
-    /// <param name="key">The lookup key in either dotted or colon form.</param>
+    /// <param name="key">The lookup key in any accepted separator notation.</param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
-    internal static string? LookupValue(IReadOnlyDictionary<string, string?> values, string key)
+    internal string? LookupValue(string key)
     {
-        if (values.TryGetValue(key, out var value)) return value;
+        if (Values.TryGetValue(key, out var value))
+            return value;
 
-        if (key.IndexOf('.') < 0) return null;
+        return TryCanonicalize(key, out var canonical) && Values.TryGetValue(canonical, out value)
+            ? value
+            : null;
+    }
 
-        var normalized = key.Replace('.', ':');
+    /// <summary>
+    /// Canonicalizes <paramref name="key" /> to the colon-or-mapping-joined form used for the stored keys, using this
+    /// view's <see cref="ConfigurationKeyOptions" />. Returns <see langword="false" /> without throwing when the key
+    /// cannot be parsed, so an absent or malformed lookup key resolves to "not found" rather than an exception.
+    /// </summary>
+    /// <param name="key">The raw lookup key.</param>
+    /// <param name="canonical">When this method returns <see langword="true" />, the canonical key path.</param>
+    /// <returns><see langword="true" /> when <paramref name="key" /> was canonicalized; otherwise, <see langword="false" />.</returns>
+    private bool TryCanonicalize(string key, out string canonical)
+    {
+        if (ConfigurationKey.TryParse(key, _keyOptions, out ConfigurationKey parsed))
+        {
+            canonical = parsed.Path;
+            return true;
+        }
 
-        return values.TryGetValue(normalized, out value) ? value : null;
+        canonical = key;
+        return false;
     }
 
     /// <summary>
@@ -156,18 +181,16 @@ public sealed partial class ConfigurationView
         if (_entries.TryGetValue(key, out ConfigurationResolvedEntry? entry))
             return entry;
 
-        if (key.IndexOf('.') < 0)
-            return null;
-
-        var normalized = key.Replace('.', ':');
-        return _entries.TryGetValue(normalized, out entry) ? entry : null;
+        return TryCanonicalize(key, out var canonical) && _entries.TryGetValue(canonical, out entry)
+            ? entry
+            : null;
     }
 
     /// <summary>
-    /// Determines whether the resolved view contains <paramref name="key" />, accepting either the colon-delimited or
-    /// the equivalent dotted form.
+    /// Determines whether the resolved view contains <paramref name="key" />, accepting the key in any equivalent
+    /// separator notation.
     /// </summary>
-    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool ContainsKey(string key)
@@ -177,7 +200,7 @@ public sealed partial class ConfigurationView
         if (Values.ContainsKey(key))
             return true;
 
-        return key.IndexOf('.') >= 0 && Values.ContainsKey(key.Replace('.', ':'));
+        return TryCanonicalize(key, out var canonical) && Values.ContainsKey(canonical);
     }
 
     /// <summary>
@@ -203,7 +226,7 @@ public sealed partial class ConfigurationView
         if (Values.TryGetValue(key, out value))
             return true;
 
-        if (key.IndexOf('.') >= 0 && Values.TryGetValue(key.Replace('.', ':'), out value))
+        if (TryCanonicalize(key, out var canonical) && Values.TryGetValue(canonical, out value))
             return true;
 
         value = null;
