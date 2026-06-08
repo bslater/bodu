@@ -67,7 +67,7 @@ public class ProviderLoadBenchmarks
     [Benchmark(Baseline = true)]
     public IConfigurationRoot Build_FromFile() =>
         new ConfigurationBuilder()
-            .AddConfiguration(_filePath, targetPath: "src/section-0/Source.cs")
+            .AddBoduConfigurationFile(_filePath, targetPath: "src/section-0/Source.cs")
             .Build();
 
     /// <summary>
@@ -80,7 +80,7 @@ public class ProviderLoadBenchmarks
     {
         using MemoryStream stream = new(_bytes);
         return new ConfigurationBuilder()
-            .AddConfiguration(stream, targetPath: "src/section-0/Source.cs")
+            .AddBoduConfigurationStream(stream, targetPath: "src/section-0/Source.cs")
             .Build();
     }
 
@@ -94,7 +94,7 @@ public class ProviderLoadBenchmarks
     {
         using MemoryStream stream = new(_bytes);
         return new ConfigurationBuilder()
-            .AddConfiguration(stream, targetPath: null)
+            .AddBoduConfigurationStream(stream, targetPath: null)
             .Build();
     }
 }

@@ -32,7 +32,7 @@ key = value
         try
         {
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddConfiguration(stream)
+                .AddBoduConfigurationStream(stream)
                 .Build();
 
             // Reading any property forces the lazy load. Then the stream must still be open.
@@ -57,7 +57,7 @@ key = value
         stream.Position = stream.Length;
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration(stream)
+            .AddBoduConfigurationStream(stream)
             .Build();
 
         Assert.IsNull(configuration["key"]);
@@ -74,7 +74,7 @@ key = value
         using NonSeekableStream stream = new(bytes);
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration(stream)
+            .AddBoduConfigurationStream(stream)
             .Build();
 
         Assert.AreEqual("value", configuration["key"]);

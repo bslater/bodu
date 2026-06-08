@@ -16,7 +16,7 @@ the vocabulary (source, provider, target path, parse / resolve option propagatio
 
 ![IConfigurationBuilder to IConfiguration to IOptions](../../images/diagrams/extensions-configuration-text-flow.svg)
 
-`AddConfiguration(...)` registers a <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> on the
+`AddBoduConfigurationFile(...)` registers a <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> on the
 builder. When the builder calls `Build`, the source instantiates a
 <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> that parses the file via
 <xref:Bodu.Text.Configuration.ConfigurationDocument>, resolves it for the source's `TargetPath`, and copies the

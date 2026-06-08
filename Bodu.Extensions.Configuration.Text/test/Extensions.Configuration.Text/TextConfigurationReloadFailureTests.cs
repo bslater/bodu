@@ -63,7 +63,7 @@ logging.level.default = Debug
             };
 
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddConfiguration(source =>
+                .AddBoduConfigurationFile(source =>
                 {
                     source.FileProvider = fileProvider;
                     source.Path = "reload.boduconfig";
@@ -111,7 +111,7 @@ logging.level.default = Debug
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Initial));
 
         IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddConfiguration(stream)
+            .AddBoduConfigurationStream(stream)
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);

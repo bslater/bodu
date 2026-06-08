@@ -18,7 +18,7 @@ namespace Bodu.Smoke;
 public class BridgeSmokeTests
 {
     /// <summary>
-    /// Verifies that <see cref="TextConfigurationExtensions.AddConfiguration(IConfigurationBuilder, string, string?, bool, bool)" />
+    /// Verifies that <see cref="TextConfigurationExtensions.AddBoduConfigurationFile(IConfigurationBuilder, string, string?, bool, bool)" />
     /// loads a configuration file and exposes its keys in colon-delimited form.
     /// </summary>
     [TestMethod]
@@ -37,7 +37,7 @@ logging.level.default = Warning
 """);
 
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddConfiguration(source =>
+                .AddBoduConfigurationFile(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetDirectoryName(path)!);
                     source.Path = Path.GetFileName(path);
@@ -60,7 +60,7 @@ logging.level.default = Warning
     public void AddConfiguration_WhenOptionalAndMissing_ShouldNotThrow()
     {
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddConfiguration("nonexistent.boduconfig", optional: true)
+            .AddBoduConfigurationFile("nonexistent.boduconfig", optional: true)
             .Build();
 
         Assert.IsNull(configuration["any:key"]);

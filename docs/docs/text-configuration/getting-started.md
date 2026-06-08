@@ -16,7 +16,7 @@ dotnet add package Bodu.Text.Configuration
 Targets `net8.0`. Depends on `Bodu.Core` (throw helpers) and `Bodu.Text.Formats` (the underlying `IniDocument`). No
 external NuGet references.
 
-For `Microsoft.Extensions.Configuration` integration — `AddConfiguration`, options binding, file-provider
+For `Microsoft.Extensions.Configuration` integration — `AddBoduConfiguration*`, options binding, file-provider
 support — install the sibling [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/getting-started.md)
 package on top.
 

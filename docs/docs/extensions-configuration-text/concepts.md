@@ -40,7 +40,7 @@ fixtures where the configuration data does not live on disk.
 matching for sections whose headers contain path separators.
 
 ```csharp
-builder.AddConfiguration(
+builder.AddBoduConfigurationFile(
     "team.boduconfig",
     targetPath: "src/MyApp/Program.cs");
 ```
@@ -74,7 +74,7 @@ Both default to `null`, in which case the library uses
 needs different semantics — for example, an EditorConfig-strict file alongside a Bodu-permissive one.
 
 ```csharp
-builder.AddConfiguration(src =>
+builder.AddBoduConfigurationFile(src =>
 {
     src.Path = ".editorconfig";
     src.ParseOptions   = ConfigurationParseOptions.EditorConfigCompatible;
@@ -85,11 +85,11 @@ builder.AddConfiguration(src =>
 
 ## Conventional file probe
 
-The no-argument overload of `AddConfiguration` is a convenience helper for the common "drop a file in the project
+The no-argument overload of `AddBoduConfiguration` is a convenience helper for the common "drop a file in the project
 root" pattern:
 
 ```csharp
-builder.AddConfiguration(optional: true, reloadOnChange: true);
+builder.AddBoduConfiguration(optional: true, reloadOnChange: true);
 ```
 
 The probe runs against the builder's default file provider and looks for two file names in order:
@@ -118,7 +118,7 @@ ends with that parse. If you need dynamic stream-backed inputs, rebuild the conf
 
 ## File provider precedence
 
-`AddConfiguration` resolves the `IFileProvider` in the standard MEC order:
+`AddBoduConfigurationFile` resolves the `IFileProvider` in the standard MEC order:
 
 1. If a provider is supplied directly to the overload, use it.
 2. Otherwise, if the source's `FileProvider` is set, use that.
@@ -139,7 +139,7 @@ services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
 services.Configure<ServiceOptions>(configuration.GetSection("service"));
 ```
 
-The wrapper exists for discoverability — call sites that reach for an `AddConfiguration*` API by IntelliSense
+The wrapper exists for discoverability — call sites that reach for an `AddBoduConfiguration*` API by IntelliSense
 find an options helper with the same prefix. The shape is identical to the MEC version; callers who already use
 `Configure<T>` are not penalised, and callers who switch to `AddConfigurationOptions` are not locked in.
 

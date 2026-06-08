@@ -6,7 +6,7 @@ title: Bodu.Extensions.Configuration.Text — Introduction
 
 **Bodu.Extensions.Configuration.Text** is the bridge between
 [`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`. It exposes a
-single conventional entry point — `IConfigurationBuilder.AddConfiguration(...)` — that adds a Bodu Text
+single conventional entry point — `IConfigurationBuilder.AddBoduConfigurationFile(...)` — that adds a Bodu Text
 Configuration file (or stream, or pre-parsed document) as a configuration source alongside JSON, INI, XML, and
 environment variables.
 
@@ -35,7 +35,7 @@ section to an `IOptions<T>` instance.
 
 ```
 IConfigurationBuilder
-  ▶ AddConfiguration(path | stream | document, …)
+  ▶ AddBoduConfiguration{File|Stream|Document}(path | stream | document, …)
   ▶ TextConfigurationSource ▶ Build()
   ▶ TextConfigurationProvider.Load()
   ▶ Parse + Resolve via Bodu.Text.Configuration
@@ -54,7 +54,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. Six `AddConfiguration` overloads: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocumentBase`. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. The `AddBoduConfiguration*` overload family: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocumentBase`. |
 
 ### Sources and providers
 
@@ -80,16 +80,16 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Scenario | Reach for |
 |---|---|
-| Add a `.boduconfig` file to the builder | `builder.AddConfiguration(".boduconfig")` |
-| Conventional probe — try `.boduconfig` then `bodu.config` | `builder.AddConfiguration()` (no-arg) |
-| Anchor glob resolution to a specific source path | `builder.AddConfiguration("appsettings.bodu", targetPath: "src/Foo.cs")` |
-| Optional file — do not throw if missing | `builder.AddConfiguration("appsettings.bodu", optional: true)` |
-| Reload-on-change | `builder.AddConfiguration("appsettings.bodu", reloadOnChange: true)` |
-| Use a specific `IFileProvider` | `builder.AddConfiguration(physicalFileProvider, "appsettings.bodu")` |
-| Read from a stream (test fixtures, embedded resources) | `builder.AddConfiguration(stream)` |
-| Wire up everything via a configure callback | `builder.AddConfiguration(src => { src.Path = …; src.TargetPath = …; src.ReloadOnChange = true; })` |
+| Add a `.boduconfig` file to the builder | `builder.AddBoduConfigurationFile(".boduconfig")` |
+| Conventional probe — try `.boduconfig` then `bodu.config` | `builder.AddBoduConfiguration()` (no-arg) |
+| Anchor glob resolution to a specific source path | `builder.AddBoduConfigurationFile("appsettings.bodu", targetPath: "src/Foo.cs")` |
+| Optional file — do not throw if missing | `builder.AddBoduConfigurationFile("appsettings.bodu", optional: true)` |
+| Reload-on-change | `builder.AddBoduConfigurationFile("appsettings.bodu", reloadOnChange: true)` |
+| Use a specific `IFileProvider` | `builder.AddBoduConfigurationFile(physicalFileProvider, "appsettings.bodu")` |
+| Read from a stream (test fixtures, embedded resources) | `builder.AddBoduConfigurationStream(stream)` |
+| Wire up everything via a configure callback | `builder.AddBoduConfigurationFile(src => { src.Path = …; src.TargetPath = …; src.ReloadOnChange = true; })` |
 | Bind a section to an options class | `services.AddConfigurationOptions<MyOptions>(configuration, "service")` |
-| Pre-parsed document (already loaded elsewhere) | `builder.AddConfiguration(document, targetPath: …)` |
+| Pre-parsed document (already loaded elsewhere) | `builder.AddBoduConfigurationDocument(document, targetPath: …)` |
 
 ## Conventional file probe
 

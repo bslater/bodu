@@ -10,7 +10,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddConfiguration</c>, mirroring
+/// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddBoduConfigurationFile</c>, mirroring
 /// <c>AddJsonFile(IConfigurationBuilder, IFileProvider, string, bool, bool)</c>.
 /// </summary>
 [TestClass]
@@ -34,7 +34,7 @@ logging.level.default = Information
             PhysicalFileProvider fileProvider = new(Path.GetDirectoryName(path)!);
 
             IConfiguration configuration = new ConfigurationBuilder()
-                .AddConfiguration(fileProvider, Path.GetFileName(path))
+                .AddBoduConfigurationFile(fileProvider, Path.GetFileName(path))
                 .Build();
 
             Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -62,7 +62,7 @@ logging.level.default = Information
             builder.SetBasePath(Path.GetDirectoryName(path)!);
 
             IConfiguration configuration = builder
-                .AddConfiguration(provider: null, path: Path.GetFileName(path))
+                .AddBoduConfigurationFile(provider: null, path: Path.GetFileName(path))
                 .Build();
 
             Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -84,7 +84,7 @@ logging.level.default = Information
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddConfiguration(provider: null, path: "some.boduconfig");
+            _ = builder.AddBoduConfigurationFile(provider: null, path: "some.boduconfig");
         });
     }
 
@@ -96,7 +96,7 @@ logging.level.default = Information
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new ConfigurationBuilder().AddConfiguration(provider: null, path: "   ");
+            _ = new ConfigurationBuilder().AddBoduConfigurationFile(provider: null, path: "   ");
         });
     }
 }
