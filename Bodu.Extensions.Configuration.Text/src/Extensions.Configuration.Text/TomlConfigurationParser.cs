@@ -79,7 +79,9 @@ internal static class TomlConfigurationParser
     /// <param name="value">The value.</param>
     /// <param name="data">The destination map.</param>
     /// <param name="key">The fully qualified key for the value.</param>
-    /// <exception cref="FormatException">Thrown when <paramref name="key" /> already exists in <paramref name="data" />.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="key" /> already exists in <paramref name="data" />.
+    /// </exception>
     private static void VisitValue(TomlValue value, IDictionary<string, string?> data, string key)
     {
         switch (value)

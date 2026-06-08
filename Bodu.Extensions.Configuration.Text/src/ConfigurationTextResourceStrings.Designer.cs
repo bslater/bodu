@@ -68,5 +68,32 @@ namespace Bodu {
                 return ResourceManager.GetString("IO_FileNotFound_DefaultConfigFiles", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The configuration key &apos;{0}&apos; is defined more than once after case-insensitive flattening..
+        /// </summary>
+        internal static string Format_Invalid_TomlDuplicateConfigurationKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlDuplicateConfigurationKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The required TOML configuration file &apos;{0}&apos; was not found..
+        /// </summary>
+        internal static string IO_FileNotFound_TomlFile {
+            get {
+                return ResourceManager.GetString("IO_FileNotFound_TomlFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The TOML configuration provider is read-only; values cannot be set..
+        /// </summary>
+        internal static string Op_NotSupported_TomlReadOnly {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_TomlReadOnly", resourceCulture);
+            }
+        }
     }
 }
