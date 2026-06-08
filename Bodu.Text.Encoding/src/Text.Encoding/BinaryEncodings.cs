@@ -80,6 +80,12 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base32ZBase32 { get; } = new Base32VariantAdapter(Base32Variant.ZBase32, "z-base-32", "z-base-32 (human-oriented lowercase alphabet; no padding).");
 
     /// <summary>
+    /// Gets the RFC 9285 Base45 encoding — the compact alphanumeric encoding used to carry binary data inside a QR
+    /// code's Alphanumeric mode (no padding).
+    /// </summary>
+    public static IBinaryEncoding Base45 { get; } = new Base45Adapter();
+
+    /// <summary>
     /// Gets the Bitcoin/Flickr Base58 encoding — the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
     /// derivative protocols.
     /// </summary>
@@ -89,6 +95,12 @@ public static class BinaryEncodings
     /// Gets the Ripple Base58 encoding (XRP ledger alphabet, a permutation of Bitcoin/Flickr).
     /// </summary>
     public static IBinaryEncoding Base58Ripple { get; } = new Base58VariantAdapter(Base58Variant.Ripple, "base58-ripple", "Ripple Base58 (XRP ledger permutation).");
+
+    /// <summary>
+    /// Gets the GMP-style Base62 encoding (alphabet <c>0-9 A-Z a-z</c>; leading zero bytes preserved as leading
+    /// <c>0</c> characters).
+    /// </summary>
+    public static IBinaryEncoding Base62 { get; } = new Base62Adapter();
 
     /// <summary>
     /// Gets the RFC 4648 §4 Standard Base64 encoding (alphabet <c>A-Z a-z 0-9 + /</c>, padded with <c>=</c>).
@@ -115,8 +127,8 @@ public static class BinaryEncodings
     /// Returns the encoding for the supplied case-insensitive name. The recognised names are the values returned by
     /// each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
     /// <c>"base16-upper"</c>, <c>"base32"</c>, <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>,
-    /// <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>, <c>"base58-ripple"</c>,
-    /// <c>"ascii85"</c>, <c>"z85"</c>.
+    /// <c>"base45"</c>, <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>,
+    /// <c>"base58-ripple"</c>, <c>"base62"</c>, <c>"ascii85"</c>, <c>"z85"</c>.
     /// </summary>
     /// <param name="name">The encoding name.</param>
     /// <returns>The matching <see cref="IBinaryEncoding" /> instance.</returns>
@@ -136,11 +148,13 @@ public static class BinaryEncodings
             "base32hex" => Base32Hex,
             "base32-crockford" => Base32Crockford,
             "z-base-32" or "zbase32" => Base32ZBase32,
+            "base45" => Base45,
             "base64" => Base64,
             "base64-urlsafe" or "base64url" => Base64UrlSafe,
             "base64-mime" => Base64Mime,
             "base58" or "base58-bitcoin" or "base58-flickr" => Base58,
             "base58-ripple" => Base58Ripple,
+            "base62" => Base62,
             "ascii85" or "base85" => Ascii85,
             "z85" => Z85,
             _ => throw new ArgumentException(string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_UnknownEncodingName, name), nameof(name)),
@@ -195,6 +209,30 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
     }
 
+    private sealed class Base45Adapter
+        : IBinaryEncoding
+    {
+        public string Description => "RFC 9285 Base45 (QR-code Alphanumeric-mode alphabet; no padding).";
+
+        public string Name => "base45";
+
+        public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base45.Decode(chars);
+
+        public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base45.Encode(bytes);
+
+        public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base45.GetMaxDecodedLength(charCount);
+
+        public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base45.GetMaxEncodedLength(byteCount);
+
+        public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base45.IsValid(source);
+
+        public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
+            global::Bodu.Text.Encoding.Base45.TryDecode(source, destination, out bytesWritten);
+
+        public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+            global::Bodu.Text.Encoding.Base45.TryEncode(source, destination, out charsWritten);
+    }
+
     private sealed class Base32VariantAdapter
         : IBinaryEncoding
     {
@@ -226,6 +264,30 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base32.TryEncode(source, destination, out charsWritten, _variant);
+    }
+
+    private sealed class Base62Adapter
+        : IBinaryEncoding
+    {
+        public string Description => "GMP-style Base62 (0-9, A-Z, a-z; leading zero bytes preserved).";
+
+        public string Name => "base62";
+
+        public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base62.Decode(chars);
+
+        public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base62.Encode(bytes);
+
+        public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base62.GetMaxDecodedLength(charCount);
+
+        public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base62.GetMaxEncodedLength(byteCount);
+
+        public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base62.IsValid(source);
+
+        public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
+            global::Bodu.Text.Encoding.Base62.TryDecode(source, destination, out bytesWritten);
+
+        public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+            global::Bodu.Text.Encoding.Base62.TryEncode(source, destination, out charsWritten);
     }
 
     private sealed class Base58VariantAdapter

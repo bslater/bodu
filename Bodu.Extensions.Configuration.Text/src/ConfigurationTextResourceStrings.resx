@@ -120,4 +120,13 @@
   <data name="IO_FileNotFound_DefaultConfigFiles" xml:space="preserve">
     <value>Neither '{0}' nor '{1}' was found in the configured file provider.</value>
   </data>
+  <data name="Format_Invalid_TomlDuplicateConfigurationKey" xml:space="preserve">
+    <value>The configuration key '{0}' is defined more than once after case-insensitive flattening.</value>
+  </data>
+  <data name="IO_FileNotFound_TomlFile" xml:space="preserve">
+    <value>The required TOML configuration file '{0}' was not found.</value>
+  </data>
+  <data name="Op_NotSupported_TomlReadOnly" xml:space="preserve">
+    <value>The TOML configuration provider is read-only; values cannot be set.</value>
+  </data>
 </root>

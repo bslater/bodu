@@ -67,7 +67,13 @@
   <data name="Arg_Invalid_Base32UnsupportedEncodeOptions" xml:space="preserve">
     <value>Only OmitPadding is supported on the Base32 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.</value>
   </data>
+  <data name="Arg_Invalid_Base45DestinationSize" xml:space="preserve">
+    <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
   <data name="Arg_Invalid_Base58DestinationSize" xml:space="preserve">
+    <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
+  <data name="Arg_Invalid_Base62DestinationSize" xml:space="preserve">
     <value>Destination must be at least {0} characters to encode the provided bytes.</value>
   </data>
   <data name="Arg_Invalid_Base64UnsupportedEncodeOptions" xml:space="preserve">
@@ -75,6 +81,12 @@
   </data>
   <data name="Arg_Invalid_Base85DestinationSize" xml:space="preserve">
     <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
+  <data name="Arg_Invalid_Bech32DataValue" xml:space="preserve">
+    <value>Bech32 data values must be 5-bit integers in the range 0 to 31.</value>
+  </data>
+  <data name="Arg_Invalid_Bech32Hrp" xml:space="preserve">
+    <value>The Bech32 human-readable part must be non-empty and contain only US-ASCII characters in the range 33 to 126.</value>
   </data>
   <data name="Arg_Invalid_DestinationTooSmallForEncoded" xml:space="preserve">
     <value>Destination is too small to receive the encoded characters.</value>
@@ -127,8 +139,20 @@
   <data name="Format_Invalid_Base32VariantAlphabet" xml:space="preserve">
     <value>Input contains characters outside the Base32 variant alphabet.</value>
   </data>
+  <data name="Format_Invalid_Base45CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the Base45 alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Base45GroupOverflow" xml:space="preserve">
+    <value>A Base45 group decodes to a value outside the valid byte range.</value>
+  </data>
+  <data name="Format_Invalid_Base45InvalidLength" xml:space="preserve">
+    <value>Base45 input length is not valid; the encoded length modulo 3 must be 0 or 2.</value>
+  </data>
   <data name="Format_Invalid_Base58CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base58 variant alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Base62CharacterNotInAlphabet" xml:space="preserve">
+    <value>Input contains a character outside the Base62 alphabet: '{0}'.</value>
   </data>
   <data name="Format_Invalid_Base58CheckChecksumFailed" xml:space="preserve">
     <value>Base58Check checksum verification failed.</value>
@@ -159,6 +183,30 @@
   </data>
   <data name="Format_Invalid_Base85SingleTrailingCharacter" xml:space="preserve">
     <value>A single trailing Base85 character cannot decode to a complete byte.</value>
+  </data>
+  <data name="Format_Invalid_Bech32Checksum" xml:space="preserve">
+    <value>Bech32 checksum verification failed.</value>
+  </data>
+  <data name="Format_Invalid_Bech32DataCharacter" xml:space="preserve">
+    <value>Input contains a character outside the Bech32 data alphabet: '{0}'.</value>
+  </data>
+  <data name="Format_Invalid_Bech32EmptyHrp" xml:space="preserve">
+    <value>The Bech32 human-readable part is empty.</value>
+  </data>
+  <data name="Format_Invalid_Bech32HrpCharacter" xml:space="preserve">
+    <value>The Bech32 human-readable part contains a character outside the US-ASCII range 33 to 126.</value>
+  </data>
+  <data name="Format_Invalid_Bech32MixedCase" xml:space="preserve">
+    <value>Bech32 input must not mix upper-case and lower-case characters.</value>
+  </data>
+  <data name="Format_Invalid_Bech32NoSeparator" xml:space="preserve">
+    <value>Bech32 input does not contain the '1' separator character.</value>
+  </data>
+  <data name="Format_Invalid_Bech32TooLong" xml:space="preserve">
+    <value>Bech32 input exceeds the maximum length of {0} characters.</value>
+  </data>
+  <data name="Format_Invalid_Bech32TooShort" xml:space="preserve">
+    <value>Bech32 input is too short to contain the six-character checksum.</value>
   </data>
   <data name="Format_Invalid_Base85TrailingGroupOverflow" xml:space="preserve">
     <value>Trailing Base85 group overflows the 32-bit accumulator after padding.</value>

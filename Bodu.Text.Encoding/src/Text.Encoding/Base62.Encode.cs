@@ -1,0 +1,178 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Base62.Encode.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Numerics;
+
+namespace Bodu.Text.Encoding;
+
+public static partial class Base62
+{
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> into a Base62 string.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <returns>A Base62 string.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
+    public static string Encode(byte[] bytes)
+    {
+        ThrowHelper.ThrowIfNull(bytes);
+        return Encode(bytes.AsSpan());
+    }
+
+    /// <summary>
+    /// Encodes a span of bytes into a Base62 string.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <returns>A Base62 string. Returns <see cref="string.Empty" /> for empty input.</returns>
+    public static string Encode(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.IsEmpty)
+            return string.Empty;
+
+        var upperBound = GetMaxEncodedLength(bytes.Length);
+        var buffer = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            var written = EncodeIntoBuffer(bytes, buffer, upperBound);
+            return new string(buffer, upperBound - written, written);
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(buffer);
+        }
+    }
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="bytes" /> into a Base62 string.
+    /// </summary>
+    /// <param name="bytes">The byte array to encode.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="count">The number of bytes to encode.</param>
+    /// <returns>A Base62 string.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="bytes" />.
+    /// </exception>
+    public static string Encode(byte[] bytes, int offset, int count)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
+        return Encode(bytes.AsSpan(offset, count));
+    }
+
+    /// <summary>
+    /// Encodes a span of bytes directly into a destination character span.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <param name="destination">The destination span. Must be at least the actual encoded length in size.</param>
+    /// <returns>The number of characters written.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is too small.</exception>
+    public static int Encode(ReadOnlySpan<byte> bytes, Span<char> destination)
+    {
+        if (bytes.IsEmpty)
+            return 0;
+
+        var upperBound = GetMaxEncodedLength(bytes.Length);
+        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            var written = EncodeIntoBuffer(bytes, scratch, upperBound);
+
+            // Compare against the ACTUAL encoded length, not the worst-case upper bound, so callers that pre-size
+            // destination for the actual output still succeed.
+            if (destination.Length < written)
+            {
+                throw new ArgumentException(
+                    string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base62DestinationSize, written),
+                    nameof(destination));
+            }
+
+            scratch.AsSpan(upperBound - written, written).CopyTo(destination);
+            return written;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
+    }
+
+    /// <summary>
+    /// Attempts to encode a span of bytes into a destination character span.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
+    public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten)
+    {
+        if (bytes.IsEmpty)
+        {
+            charsWritten = 0;
+            return true;
+        }
+
+        var upperBound = GetMaxEncodedLength(bytes.Length);
+        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            var written = EncodeIntoBuffer(bytes, scratch, upperBound);
+
+            if (destination.Length < written)
+            {
+                charsWritten = 0;
+                return false;
+            }
+
+            scratch.AsSpan(upperBound - written, written).CopyTo(destination);
+            charsWritten = written;
+            return true;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
+    }
+
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> into the trailing portion of <paramref name="buffer" /> and returns the
+    /// character count written.
+    /// </summary>
+    /// <param name="bytes">The input bytes.</param>
+    /// <param name="buffer">The scratch buffer; the encoder writes from the end towards the start.</param>
+    /// <param name="usableLength">The usable length of <paramref name="buffer" />.</param>
+    /// <returns>The number of characters written into the buffer.</returns>
+    private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, char[] buffer, int usableLength)
+    {
+        var leadingZeros = 0;
+        while (leadingZeros < bytes.Length && bytes[leadingZeros] == 0)
+            leadingZeros++;
+
+        BigInteger value = leadingZeros == bytes.Length
+            ? BigInteger.Zero
+            : new BigInteger(bytes[leadingZeros..], isUnsigned: true, isBigEndian: true);
+
+        var position = usableLength;
+        while (value > 0)
+        {
+            value = BigInteger.DivRem(value, Radix, out BigInteger remainder);
+            buffer[--position] = Alphabet[(int)remainder];
+        }
+
+        for (var i = 0; i < leadingZeros; i++)
+            buffer[--position] = Alphabet[0];
+
+        return usableLength - position;
+    }
+}

@@ -141,6 +141,9 @@
   <data name="Arg_Invalid_IniSectionsContainsNull" xml:space="preserve">
     <value>Sections sequence contains a null section.</value>
   </data>
+  <data name="Arg_Invalid_TomlDuplicateKey" xml:space="preserve">
+    <value>The table already contains the key '{0}'.</value>
+  </data>
   <data name="Arg_Invalid_NullDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain null keys.</value>
   </data>
@@ -254,6 +257,69 @@
   </data>
   <data name="Format_Invalid_IniMissingKey" xml:space="preserve">
     <value>Expected a key name on line {0}.</value>
+  </data>
+  <data name="Format_Invalid_TomlAppendToStaticArray" xml:space="preserve">
+    <value>Cannot append a table to a statically defined array.</value>
+  </data>
+  <data name="Format_Invalid_TomlArrayTableConflict" xml:space="preserve">
+    <value>The key conflicts with an existing array of tables.</value>
+  </data>
+  <data name="Format_Invalid_TomlControlCharacter" xml:space="preserve">
+    <value>A control character is not permitted in this context.</value>
+  </data>
+  <data name="Format_Invalid_TomlDuplicateKey" xml:space="preserve">
+    <value>The key is already defined.</value>
+  </data>
+  <data name="Format_Invalid_TomlDuplicateTable" xml:space="preserve">
+    <value>The table is already defined.</value>
+  </data>
+  <data name="Format_Invalid_TomlExpectedEquals" xml:space="preserve">
+    <value>Expected an equals sign after the key.</value>
+  </data>
+  <data name="Format_Invalid_TomlExpectedKey" xml:space="preserve">
+    <value>Expected a key.</value>
+  </data>
+  <data name="Format_Invalid_TomlExpectedNewline" xml:space="preserve">
+    <value>Expected a newline or end of file after the expression.</value>
+  </data>
+  <data name="Format_Invalid_TomlExpectedValue" xml:space="preserve">
+    <value>Expected a value.</value>
+  </data>
+  <data name="Format_Invalid_TomlExtendInlineTable" xml:space="preserve">
+    <value>Cannot extend an inline table after it has been defined.</value>
+  </data>
+  <data name="Format_Invalid_TomlIntegerOutOfRange" xml:space="preserve">
+    <value>The integer value is outside the range of a 64-bit signed integer.</value>
+  </data>
+  <data name="Format_Invalid_TomlInvalidArray" xml:space="preserve">
+    <value>Expected a comma or closing bracket in the array.</value>
+  </data>
+  <data name="Format_Invalid_TomlInvalidDateTime" xml:space="preserve">
+    <value>The date-time value is not valid.</value>
+  </data>
+  <data name="Format_Invalid_TomlInvalidEscape" xml:space="preserve">
+    <value>The escape sequence is not valid.</value>
+  </data>
+  <data name="Format_Invalid_TomlInvalidInlineTable" xml:space="preserve">
+    <value>Expected a comma or closing brace in the inline table.</value>
+  </data>
+  <data name="Format_Invalid_TomlInvalidNumber" xml:space="preserve">
+    <value>The numeric value is not valid.</value>
+  </data>
+  <data name="Format_Invalid_TomlKeyOnValue" xml:space="preserve">
+    <value>Cannot define a dotted key under a value that is not a table.</value>
+  </data>
+  <data name="Format_Invalid_TomlMultilineKey" xml:space="preserve">
+    <value>A multi-line string cannot be used as a key.</value>
+  </data>
+  <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve">
+    <value>The string is not terminated.</value>
+  </data>
+  <data name="Format_Invalid_TomlUnterminatedTable" xml:space="preserve">
+    <value>The table header is not terminated.</value>
+  </data>
+  <data name="Format_Invalid_TomlUnexpectedCharacter" xml:space="preserve">
+    <value>Unexpected character '{0}'.</value>
   </data>
   <data name="Op_Invalid_DelimitedHeaderNotFound" xml:space="preserve">
     <value>The column header '{0}' was not found.</value>

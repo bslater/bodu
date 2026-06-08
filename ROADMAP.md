@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), the highest-leverage net-new engineering items are now a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
+*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), and `Bodu.Text.Formats` having grown forward-only `*Reader` / `*Writer` pairs with `ValueTask` async streaming across all four text formats, the `Bodu.Text.Encoding` Base45 / Bech32 / Bech32m / Base62 additions shipped, and a full **TOML v1.1.0 implementation** now landed in `Bodu.Text.Formats` — structured `System.Xml`-style as three objects (`TomlValue` model, `TomlReader`, `TomlWriter`), with stream/async surfaces, contract-harness wiring, a read-only `Bodu.Extensions.Configuration.Text` TOML configuration source, and differential validation against the Tomlyn reference parser — the headline net-new format work is complete. Remaining items are smaller per-project polish (a Bencode configuration source, and the standing AOT/package-validation cross-cutting work).*
 
 ## How to read this
 
@@ -125,9 +125,11 @@ With that pass closed, the active focus shifts to:
 
 1. Cut the `[Unreleased]` packages above (reconciling the CHANGELOG
    country sets to the expanded data packs first).
-2. **Argon2 and scrypt** are the highest-leverage net-new engineering
-   item now that the calendar territorial expansion has largely shipped
-   — see `Bodu.Security.Cryptography` below.
+2. **Argon2 and scrypt have shipped** (RFC 9106 / RFC 7914), closing the
+   last real BCL crypto gap — see `Bodu.Security.Cryptography` below. With
+   that done, a **TOML reader/writer** in `Bodu.Text.Formats` and the
+   **Base45 / Bech32** encodings in `Bodu.Text.Encoding` are now the
+   highest-leverage net-new engineering items.
 3. Begin the remaining per-project items below in roadmap order. The raw
    ChaCha20 / XChaCha20 family in crypto — the highest-leverage
    opening move — **has landed**: it closes the visible stream-cipher
@@ -261,26 +263,52 @@ Current state: mature; 80 src / 137 test files. Base16, Base32, Base58,
 Base64, Base64Url, Base85 with RFC 4648 / Bitcoin / Crockford / Ascii85
 / Z85 variants.
 
-- **Ship Base45** (RFC 9285) and **Base62**. Base45 in particular is
-  the QR-code workhorse encoding and a frequent request.
-- **Ship Bech32 and Bech32m.** Base58Check is already present; Bech32
-  is the natural sibling and the address encoding used across newer
-  cryptocurrency protocols.
+- **Base45 (RFC 9285), Bech32 / Bech32m (BIP-173 / BIP-350), and Base62
+  have shipped.** ✅ Base45 is the QR-code workhorse encoding (registered
+  in `BinaryEncodings` as `base45`, strict decoder per RFC 9285 §6).
+  Base62 is the GMP-alphabet (`0-9 A-Z a-z`) bignum encoding, leading-zero
+  preserving like Base58 (`base62`). Bech32 / Bech32m carry an HRP plus a
+  six-symbol checksum, so — like `Base58Check` — they sit outside the
+  `IBinaryEncoding` family as a standalone `Bech32` type with a public
+  `ConvertBits` and byte-level convenience members, validated against the
+  canonical BIP-173 / BIP-350 vectors and the P2WPKH address example.
 - Audit that every `Base*.Utf8.cs` surface has full
   `IUtf8SpanFormattable`-style writer parity with the char paths.
   Several paths skew char-first.
 
 ### `Bodu.Text.Formats`
 
-Current state: mature; 49 src / 95 test files. Bencode, Delimited
-(RFC 4180), DotEnv, INI.
+Current state: mature; 56 src / 108 test files. Bencode, Delimited
+(RFC 4180), DotEnv, INI. Each text format now exposes a forward-only
+`*Reader` / `*Writer` pair alongside the document-level API.
 
-- **Add a TOML reader and writer.** Conspicuously absent next to
-  Ini/DotEnv/Bencode/Delimited, and the most-requested missing format
-  for `.NET` configuration scenarios.
-- **Add streaming async readers.** Current `*.Parser.cs` surfaces are
-  synchronous; add `IAsyncEnumerable<T>` and `ValueTask`-returning
-  read APIs for large inputs.
+- **A full TOML v1.1.0 implementation has landed.** ✅ The
+  `Bodu.Text.Toml` namespace is structured as three objects, mirroring
+  `System.Xml`: the `TomlValue` document model (typed scalars including
+  the four date-time types, mutable `TomlArray` / `TomlTable`), the
+  `TomlReader` deserializer (owns the recursive-descent parser engine;
+  `Read` from span/string/`Stream`/`TextReader` plus `ReadAsync` and
+  `TryRead`), and the `TomlWriter` serializer (`Write` to
+  string/`Stream`/`TextWriter` plus `WriteAsync`). The reader implements
+  the full ABNF — all key/string/number/date-time forms, the v1.1.0
+  `\e` / `\xHH` escapes and optional-seconds rule, multi-line inline
+  tables, and the table / array-of-tables state machine — and the writer
+  emits canonical block-style output. A thin static `Toml` facade
+  delegates to the pair for ergonomic one-liners. Validated against the
+  spec examples, the shared `TextDocumentFormatContractTests` harness,
+  **differentially against the Tomlyn reference parser** (model equality
+  on read and write, plus matched rejection of malformed input), and the
+  vendored **toml-test conformance corpus** (266 valid documents compared
+  to their tagged-JSON value trees plus 473 invalid documents that must be
+  rejected, run as a Regression-tier suite) — which surfaced and closed
+  three real parser bugs. The TOML implementation is now feature-complete.
+- **Streaming async readers have landed.** ✅ **Shipped.** The
+  forward-only readers expose `ValueTask<bool> ReadAsync` — `IniReader`,
+  `DelimitedReader`, and `DotEnvReader` — and Bencode adds streaming
+  `ParseAsync` / `FormatAsync`, with matching `WriteAsync` paths on the
+  writers, for large inputs that should not be buffered whole. A
+  remaining nicety is an `IAsyncEnumerable<T>` projection layered over
+  the `ReadAsync` loop.
 - **Add a source generator that binds `[DelimitedRecord]` and
   `[IniSection]` POCOs** so consumers can avoid reflection at runtime.
   This is a clear win for AOT readiness too.
@@ -303,7 +331,12 @@ resolver, view getters.
 Current state: bridge layer; 7 src / 19 test files. Connects
 `Microsoft.Extensions.Configuration` to `Bodu.Text.Configuration`.
 
-- **Add Bencode and TOML sources** once `Bodu.Text.Formats` ships them.
+- **The read-only TOML source has landed.** ✅ `AddTomlFile` /
+  `AddTomlStream` register a `TomlConfigurationProvider` that *inherits*
+  `TomlReader` (gaining read capability without a mutation surface) and
+  implements `IConfigurationProvider` with `Set` rejected, flattening the
+  `TomlTable` into the colon-delimited key model. A Bencode source is the
+  remaining format to bridge.
 - **Document precedence semantics** when combined with the `Json` and
   `EnvironmentVariables` providers — consumers stack providers and need
   ordering rules.
