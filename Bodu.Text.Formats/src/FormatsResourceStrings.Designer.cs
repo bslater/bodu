@@ -484,6 +484,195 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Cannot append a table to a statically defined array..
+        /// </summary>
+        internal static string Format_Invalid_TomlAppendToStaticArray {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlAppendToStaticArray", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key conflicts with an existing array of tables..
+        /// </summary>
+        internal static string Format_Invalid_TomlArrayTableConflict {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlArrayTableConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A control character is not permitted in this context..
+        /// </summary>
+        internal static string Format_Invalid_TomlControlCharacter {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlControlCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key is already defined..
+        /// </summary>
+        internal static string Format_Invalid_TomlDuplicateKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The table is already defined..
+        /// </summary>
+        internal static string Format_Invalid_TomlDuplicateTable {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlDuplicateTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an equals sign after the key..
+        /// </summary>
+        internal static string Format_Invalid_TomlExpectedEquals {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlExpectedEquals", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a key..
+        /// </summary>
+        internal static string Format_Invalid_TomlExpectedKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlExpectedKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a newline or end of file after the expression..
+        /// </summary>
+        internal static string Format_Invalid_TomlExpectedNewline {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlExpectedNewline", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a value..
+        /// </summary>
+        internal static string Format_Invalid_TomlExpectedValue {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlExpectedValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot extend an inline table after it has been defined..
+        /// </summary>
+        internal static string Format_Invalid_TomlExtendInlineTable {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlExtendInlineTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The integer value is outside the range of a 64-bit signed integer..
+        /// </summary>
+        internal static string Format_Invalid_TomlIntegerOutOfRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlIntegerOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a comma or closing bracket in the array..
+        /// </summary>
+        internal static string Format_Invalid_TomlInvalidArray {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInvalidArray", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The date-time value is not valid..
+        /// </summary>
+        internal static string Format_Invalid_TomlInvalidDateTime {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInvalidDateTime", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The escape sequence is not valid..
+        /// </summary>
+        internal static string Format_Invalid_TomlInvalidEscape {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInvalidEscape", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a comma or closing brace in the inline table..
+        /// </summary>
+        internal static string Format_Invalid_TomlInvalidInlineTable {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInvalidInlineTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The numeric value is not valid..
+        /// </summary>
+        internal static string Format_Invalid_TomlInvalidNumber {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInvalidNumber", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot define a dotted key under a value that is not a table..
+        /// </summary>
+        internal static string Format_Invalid_TomlKeyOnValue {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlKeyOnValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A multi-line string cannot be used as a key..
+        /// </summary>
+        internal static string Format_Invalid_TomlMultilineKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlMultilineKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The string is not terminated..
+        /// </summary>
+        internal static string Format_Invalid_TomlUnterminatedString {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlUnterminatedString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The table header is not terminated..
+        /// </summary>
+        internal static string Format_Invalid_TomlUnterminatedTable {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlUnterminatedTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected character &apos;{0}&apos;..
+        /// </summary>
+        internal static string Format_Invalid_TomlUnexpectedCharacter {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlUnexpectedCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The column header '{0}' was not found..
         /// </summary>
         internal static string Op_Invalid_DelimitedHeaderNotFound {
