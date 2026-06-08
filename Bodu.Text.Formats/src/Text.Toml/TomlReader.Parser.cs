@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Toml.Parser.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlReader.Parser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Bodu.Text.Toml;
 
-public static partial class Toml
+public partial class TomlReader
 {
     /// <summary>
     /// A single-pass recursive-descent parser that materializes TOML v1.1.0 source text into a <see cref="TomlTable" />

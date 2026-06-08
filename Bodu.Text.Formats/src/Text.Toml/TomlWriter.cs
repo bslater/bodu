@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Toml.Writer.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,37 +9,119 @@ using System.Text;
 
 namespace Bodu.Text.Toml;
 
-public static partial class Toml
+/// <summary>
+/// Serializes a <see cref="TomlTable" /> document model to canonical TOML v1.1.0 text. The writer is the serialization
+/// half of the read/write pair; <see cref="TomlReader" /> is its deserialization counterpart.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The writer emits a block-style document: scalar values and arrays that are not arrays of tables are written inline;
+/// sub-tables are written under <c>[header]</c> sections, and arrays of tables under <c>[[header]]</c> sections.
+/// Because the document model does not record whether a table was originally authored as an inline table or a standard
+/// table, the output is canonicalized to the standard form; reading the output back yields an equal model.
+/// </para>
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// var writer = new TomlWriter();
+/// string text = writer.Write(document);
+/// writer.Write(document, File.Create("out.toml"));
+///]]>
+/// </example>
+public sealed class TomlWriter
 {
     /// <summary>
     /// The number of 100-nanosecond ticks in one second.
     /// </summary>
-    private const long WriterTicksPerSecond = 10_000_000L;
+    private const long TicksPerSecond = 10_000_000L;
 
     /// <summary>
-    /// Renders a <see cref="TomlTable" /> document to canonical TOML text.
+    /// The UTF-8 encoding used when writing to a stream, configured to emit no byte-order mark.
     /// </summary>
-    /// <param name="document">The document to format.</param>
+    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: false);
+
+    /// <summary>
+    /// Serializes <paramref name="document" /> to canonical TOML text.
+    /// </summary>
+    /// <param name="document">The document to serialize.</param>
     /// <returns>The TOML representation of <paramref name="document" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="document" /> is <see langword="null" />.
     /// </exception>
-    /// <remarks>
-    /// <para>
-    /// The writer emits a block-style document: scalar values and arrays that are not arrays of tables are written
-    /// inline; sub-tables are written under <c>[header]</c> sections, and arrays of tables under <c>[[header]]</c>
-    /// sections. Because the document model does not record whether a table was originally authored as an inline table
-    /// or a standard table, the output is canonicalized to the standard form; re-parsing the output yields an equal
-    /// model.
-    /// </para>
-    /// </remarks>
-    public static string Format(TomlTable document)
+    public string Write(TomlTable document)
     {
         ThrowHelper.ThrowIfNull(document);
 
         var builder = new StringBuilder();
         WriteTableBody(builder, document, new List<string>());
         return builder.ToString();
+    }
+
+    /// <summary>
+    /// Serializes <paramref name="document" /> and writes it to <paramref name="writer" />.
+    /// </summary>
+    /// <param name="document">The document to serialize.</param>
+    /// <param name="writer">The destination text writer.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="document" /> or <paramref name="writer" /> is <see langword="null" />.
+    /// </exception>
+    public void Write(TomlTable document, TextWriter writer)
+    {
+        ThrowHelper.ThrowIfNull(writer);
+        writer.Write(Write(document));
+    }
+
+    /// <summary>
+    /// Serializes <paramref name="document" /> and writes it to <paramref name="destination" /> as UTF-8 text without a
+    /// byte-order mark.
+    /// </summary>
+    /// <param name="document">The document to serialize.</param>
+    /// <param name="destination">The writable stream that receives the UTF-8 bytes.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="document" /> or <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// </exception>
+    /// <remarks>
+    /// The stream is not closed.
+    /// </remarks>
+    public void Write(TomlTable document, Stream destination)
+    {
+        ThrowHelper.ThrowIfNull(destination);
+        Bodu.Text.Formats.TextThrowHelper.ThrowIfStreamNotWritable(destination);
+
+        var bytes = s_utf8.GetBytes(Write(document));
+        destination.Write(bytes, 0, bytes.Length);
+    }
+
+    /// <summary>
+    /// Asynchronously serializes <paramref name="document" /> and writes it to <paramref name="destination" /> as UTF-8
+    /// text without a byte-order mark.
+    /// </summary>
+    /// <param name="document">The document to serialize.</param>
+    /// <param name="destination">The writable stream that receives the UTF-8 bytes.</param>
+    /// <param name="cancellationToken">A token that can be used to request cancellation of the write.</param>
+    /// <returns>A task that completes once the encoded bytes have been written.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="document" /> or <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signalled before the write completes.
+    /// </exception>
+    /// <remarks>
+    /// The stream is not closed.
+    /// </remarks>
+    public ValueTask WriteAsync(TomlTable document, Stream destination, CancellationToken cancellationToken = default)
+    {
+        ThrowHelper.ThrowIfNull(destination);
+        Bodu.Text.Formats.TextThrowHelper.ThrowIfStreamNotWritable(destination);
+
+        var bytes = s_utf8.GetBytes(Write(document));
+        return destination.WriteAsync(bytes.AsMemory(), cancellationToken);
     }
 
     /// <summary>
@@ -338,7 +420,7 @@ public static partial class Toml
     /// <returns>The fractional string, including the leading dot, or an empty string.</returns>
     private static string FractionString(long ticks)
     {
-        var fraction = ticks % WriterTicksPerSecond;
+        var fraction = ticks % TicksPerSecond;
         if (fraction == 0)
             return string.Empty;
 
