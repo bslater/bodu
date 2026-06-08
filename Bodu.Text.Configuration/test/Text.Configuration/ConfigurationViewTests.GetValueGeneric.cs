@@ -79,4 +79,19 @@ public partial class ConfigurationViewTests
         Assert.AreEqual(7, view.GetValue<int>("logging.level.default"));
         Assert.AreEqual(7, view.GetValue<int>("logging:level:default"));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationView.GetValue{T}(string, T)" /> returns the fallback only when the key is
+    /// absent; a malformed present value still throws.
+    /// </summary>
+    [TestMethod]
+    public void GetValueGeneric_WhenKeyMissingAndFallbackProvided_ShouldReturnFallback()
+    {
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
+        ConfigurationView view = doc.Resolve("any.cs");
+
+        Assert.AreEqual(99, view.GetValue("missing", 99));
+        Assert.AreEqual(42, view.GetValue("size", 99));
+        Assert.ThrowsExactly<FormatException>(() => _ = view.GetValue("bad", 0));
+    }
 }

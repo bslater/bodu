@@ -47,18 +47,10 @@ namespace Bodu.Text.Configuration;
 ///     Console.WriteLine($"{kv.Key} = {kv.Value}");
 ///]]>
 /// </example>
-public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string, string?>>
+public sealed partial class ConfigurationView
+    : IEnumerable<KeyValuePair<string, string?>>, IReadOnlyDictionary<string, string?>
 {
-    private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry>? _entries;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values.
-    /// </summary>
-    /// <param name="values">The resolved configuration values, keyed by canonical configuration key.</param>
-    internal ConfigurationView(IReadOnlyDictionary<string, string?> values)
-    {
-        Values = values;
-    }
+    private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry> _entries;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationView" /> class over the supplied resolved values
@@ -83,6 +75,12 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     /// <c>logging.level.default</c>). Both produce the same lookup.
     /// </param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
+    /// <remarks>
+    /// This indexer deliberately returns <see langword="null" /> for an absent key rather than throwing
+    /// <see cref="KeyNotFoundException" /> as <see cref="IReadOnlyDictionary{TKey, TValue}.this" /> normally would,
+    /// matching <c>Microsoft.Extensions.Configuration</c>'s null-on-absent convention. Use <see cref="ContainsKey" />
+    /// to distinguish an absent key from one whose value is <see langword="null" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public string? this[string key]
     {
@@ -138,16 +136,15 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
-    /// Gets the resolved-entry origin metadata for every key in the view. Returns an empty enumeration when the view
-    /// was constructed without origin tracking (older overload, primarily for test fixtures).
+    /// Gets the resolved-entry origin metadata for every key in the view.
     /// </summary>
     /// <returns>Origin metadata per resolved key.</returns>
     public IEnumerable<ConfigurationResolvedEntry> Entries =>
-        _entries is null ? [] : _entries.Values;
+        _entries.Values;
 
     /// <summary>
     /// Gets the origin metadata for <paramref name="key" />, or <see langword="null" /> when the key is absent from the
-    /// resolved view or the view was constructed without origin tracking.
+    /// resolved view.
     /// </summary>
     /// <param name="key">The configuration key in either dotted or colon-delimited form.</param>
     /// <returns>The resolved entry, or <see langword="null" /> when absent.</returns>
@@ -155,9 +152,6 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
     public ConfigurationResolvedEntry? GetEntry(string key)
     {
         ThrowHelper.ThrowIfNull(key);
-
-        if (_entries is null)
-            return null;
 
         if (_entries.TryGetValue(key, out ConfigurationResolvedEntry? entry))
             return entry;
@@ -167,5 +161,52 @@ public sealed partial class ConfigurationView : IEnumerable<KeyValuePair<string,
 
         var normalized = key.Replace('.', ':');
         return _entries.TryGetValue(normalized, out entry) ? entry : null;
+    }
+
+    /// <summary>
+    /// Determines whether the resolved view contains <paramref name="key" />, accepting either the colon-delimited or
+    /// the equivalent dotted form.
+    /// </summary>
+    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool ContainsKey(string key)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        if (Values.ContainsKey(key))
+            return true;
+
+        return key.IndexOf('.') >= 0 && Values.ContainsKey(key.Replace('.', ':'));
+    }
+
+    /// <summary>
+    /// Gets the values present in the resolved view. Satisfies
+    /// <see cref="IReadOnlyDictionary{TKey, TValue}.Values" />.
+    /// </summary>
+    /// <returns>An enumerable of the resolved values.</returns>
+    IEnumerable<string?> IReadOnlyDictionary<string, string?>.Values =>
+        Values.Values;
+
+    /// <summary>
+    /// Attempts to get the value for <paramref name="key" /> without throwing, accepting either the colon-delimited or
+    /// the equivalent dotted form. Satisfies <see cref="IReadOnlyDictionary{TKey, TValue}.TryGetValue" />.
+    /// </summary>
+    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="value">When this method returns <see langword="true" />, contains the resolved value.</param>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    bool IReadOnlyDictionary<string, string?>.TryGetValue(string key, out string? value)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        if (Values.TryGetValue(key, out value))
+            return true;
+
+        if (key.IndexOf('.') >= 0 && Values.TryGetValue(key.Replace('.', ':'), out value))
+            return true;
+
+        value = null;
+        return false;
     }
 }

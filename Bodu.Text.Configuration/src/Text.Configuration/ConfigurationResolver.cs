@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text.RegularExpressions;
 using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
@@ -14,6 +15,13 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 internal sealed class ConfigurationResolver
 {
+    /// <summary>
+    /// The EditorConfig sentinel value that removes a previously set key from the effective configuration. Compared
+    /// case-insensitively to match real-world EditorConfig tooling — a deliberate deviation from the strict
+    /// lower-case-only reading of the spec.
+    /// </summary>
+    private const string UnsetSentinel = "unset";
+
     private readonly ConfigurationResolveOptions _options;
 
     /// <summary>
@@ -64,7 +72,19 @@ internal sealed class ConfigurationResolver
             if (string.IsNullOrEmpty(normalizedTarget))
                 continue;
 
-            if (ConfigurationPattern.Compile(section.Name, _options.PathComparison).IsMatch(normalizedTarget))
+            bool matched;
+            try
+            {
+                matched = ConfigurationPattern.Compile(section.Name, _options.PathComparison).IsMatch(normalizedTarget);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                // With NonBacktracking this is effectively unreachable; treat a timeout as a non-match so a
+                // pathological section name cannot abort resolution.
+                matched = false;
+            }
+
+            if (matched)
                 ApplySection(section, values, entries, sectionPattern: section.Name);
         }
 
@@ -93,7 +113,7 @@ internal sealed class ConfigurationResolver
 
             // EditorConfig "unset" sentinel handling.
             if (_options.UnsetValueMode == ConfigurationUnsetValueMode.RemoveEffectiveValue
-                && string.Equals(entry.Value, "unset", StringComparison.OrdinalIgnoreCase))
+                && string.Equals(entry.Value, UnsetSentinel, StringComparison.OrdinalIgnoreCase))
             {
                 values.Remove(key);
                 entries.Remove(key);
