@@ -24,7 +24,7 @@ public partial class ConfigurationParseOptionsTests
 
         Assert.AreEqual(ConfigurationProfile.Bodu, options.Profile);
         Assert.AreEqual(ConfigurationInlineCommentMode.WhitespaceIntroduced, options.InlineCommentMode);
-        Assert.AreEqual(IniDuplicateKeyBehavior.LastWins, options.DuplicateKeyMode);
+        Assert.AreEqual(DuplicateKeyPolicy.LastWins, options.DuplicateKeyMode);
         Assert.AreEqual(ConfigurationDiagnosticMode.Throw, options.DiagnosticMode);
         Assert.IsTrue(options.TrimKeysAndValues);
         Assert.IsFalse(options.AllowKeyOnlyProperties);

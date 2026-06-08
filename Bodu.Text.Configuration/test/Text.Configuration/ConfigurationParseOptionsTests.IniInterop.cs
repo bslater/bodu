@@ -21,7 +21,7 @@ public partial class ConfigurationParseOptionsTests
 
         var ini = strict.ToIniParseOptions();
 
-        Assert.AreEqual(IniDuplicateKeyBehavior.Disallowed, ini.DuplicateKeyBehavior);
+        Assert.AreEqual(DuplicateKeyPolicy.Disallowed, ini.DuplicateKeyBehavior);
     }
 
     /// <summary>

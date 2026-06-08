@@ -21,7 +21,7 @@ public class TextConfigurationDuplicateKeyTests
 {
     /// <summary>
     /// Verifies that duplicate keys inside a single section resolve to the last-written value under the
-    /// default (Bodu) profile, matching the document parser's <see cref="IniDuplicateKeyBehavior.LastWins" />
+    /// default (Bodu) profile, matching the document parser's <see cref="DuplicateKeyPolicy.LastWins" />
     /// default.
     /// </summary>
     [TestMethod]

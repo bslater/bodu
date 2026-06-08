@@ -33,7 +33,7 @@ namespace Bodu.Text.Configuration;
 /// </description>
 /// </item>
 /// <item>
-/// <term>Duplicate keys (<see cref="Bodu.Text.Ini.IniDuplicateKeyBehavior" />)</term>
+/// <term>Duplicate keys (<see cref="Bodu.Text.DuplicateKeyPolicy" />)</term>
 /// <description>
 /// LastWins | LastWins | Disallowed | LastWins
 /// </description>
