@@ -23,6 +23,8 @@ The calendar runtime is intentionally small. Region-specific holiday data and de
 | `Bodu.Globalization.Calendar.Americas` | Curated public-holiday rules for `US`, `CA`. |
 | `Bodu.Globalization.Calendar.Europe` | Curated rules for 28 European territories including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
 | `Bodu.Globalization.Calendar.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. |
+| `Bodu.Globalization.Calendar.Africa` | Curated rules for `ZA`, `NG`, `KE`, `GH`, `ET`, `EG`, `MA`. |
+| `Bodu.Globalization.Calendar.MiddleEast` | Curated rules for `AE`, `SA`, `IL`, `TR`, `QA`, `JO`. |
 
 The data packs are independent NuGet packages, so consumers pull in only the regions they need. See the [Calendar data packs guide](../../guides/calendar/data-packs.md) for per-pack install commands, territory coverage, and registration patterns.
 
@@ -130,7 +132,7 @@ The `Bodu.Globalization.Calendar.Algorithms` namespace resolves an `<Algorithm k
 | `matariki` | New Zealand Matariki (gazetted table). |
 | `diwali`, `holi`, `maha-shivaratri`, … | Hindu lunisolar festivals. |
 
-Region-specific holiday rules ship separately in `Bodu.Globalization.Calendar.Data.*` companion packages — see [Calendar data packs](../../guides/calendar/data-packs.md).
+Region-specific holiday rules ship separately in the `Bodu.Globalization.Calendar.<Region>` data packs (`Americas`, `AsiaPacific`, `Europe`, `Africa`, `MiddleEast`) — see [Calendar data packs](../../guides/calendar/data-packs.md).
 
 ### Types used when extending the library
 
@@ -149,7 +151,7 @@ The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package
 
 ## Advanced extensibility
 
-External plugin hosting and trust policies for loading custom algorithms from external assemblies (strong-name, file-hash, composite, or delegating policies) are documented in [Building and extending the service](../../guides/calendar/building-the-service.md). A first read of this introduction does not need them.
+Plugin loading is intentionally isolated in the separate **`Bodu.Globalization.Calendar.Plugins`** package. Use it only when custom notable-date algorithms must be discovered from *external* assemblies; applications that consume only the built-in algorithms or the curated data packs never need it. Loading is trust-gated and default-deny — an assembly is admitted only when it satisfies an explicit trust policy (strong-name, file-hash, composite, or delegating), so untrusted or user-writable locations are rejected rather than executed, and an unavailable algorithm surfaces as a clear failure rather than silently resolving. The host, the trust policies, and their failure behaviour are documented in [Building and extending the service](../../guides/calendar/building-the-service.md); a first read of this introduction does not need them.
 
 ## Where to go next
 
@@ -157,4 +159,4 @@ External plugin hosting and trust policies for loading custom algorithms from ex
 - **[Getting started](getting-started.md)** — install + minimal samples for loading a resource, resolving dates, and working-day arithmetic.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — using `NotableDateService`, algorithms, rule authoring, working-day arithmetic, territories, data packs.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
-- **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific resources (`AmericasCalendarData`, `EuropeCalendarData`, `AsiaPacificCalendarData`).
+- **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific resources (`AmericasCalendarData`, `AsiaPacificCalendarData`, `EuropeCalendarData`, `AfricaCalendarData`, `MiddleEastCalendarData`).

@@ -4,7 +4,7 @@ title: Introduction
 
 # Introduction
 
-**Bodu** is a solution that ships eight independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own — and most are self-contained, with the few cross-package dependencies listed below — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
+**Bodu** is a solution that ships a family of independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own — and most are self-contained, with the few cross-package dependencies listed below — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
 
 If you are new to Bodu, start with the **library introductions** below to understand what each package is for. Each links to a dedicated introduction page that maps its namespaces and headline types, and to the matching getting-started page.
 
@@ -20,8 +20,11 @@ If you are new to Bodu, start with the **library introductions** below to unders
 | **[Bodu.Text.Formats](formats/index.md)** | Self-framing text and binary serialization formats with strongly-typed value models and span- and stream-friendly codecs. Ships four sibling namespaces — **Bencode** (the BitTorrent BEP 3 grammar), **Delimited** (CSV / TSV), **Ini**, and **DotEnv** — each with `Encode` / `Decode` (or `Parse` / `Format`) and `Try*` overloads, an immutable value tree, and strict invariant enforcement on both sides of the pipeline. | `net8.0` |
 | **[Bodu.Text.Configuration](text-configuration/index.md)** | EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited `ConfigurationView` with typed accessors (`GetInt32`, `GetEnum<T>`, `GetValue<T>`). Profile presets, optional diagnostic collection, and byte-faithful round-trip save. | `net8.0` |
 | **[Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md)** | Bridges `Bodu.Text.Configuration` to `Microsoft.Extensions.Configuration`. Adds `AddBoduConfiguration*` entry points on `IConfigurationBuilder` — mirroring `AddJsonFile` / `AddJsonStream` — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support. | `net8.0` |
+| **[Bodu.Text](text/index.md)** | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` — BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0` |
+| **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives — `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates, and `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency. | `net8.0` |
+| **[Bodu.Financial](financial/index.md)** | Type-safe monetary primitives — `Money<TCurrency>` (currency as type parameter, so cross-currency arithmetic fails the build), `Money` for runtime-tagged scenarios, `MoneyBag` for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding. | `net8.0` |
 
-Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, and `Bodu.Extensions.Configuration.Text`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; and `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`.
+Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, and `Bodu.Financial`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; and `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch.
 
 ## Library introductions
 
@@ -115,6 +118,37 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="text/index.md">Bodu.Text</a></h3>
+  <p>Encoding detection and ergonomic text / byte conversion over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus span-, UTF-8-, and pooled-buffer-friendly <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code>.</p>
+  <div class="bodu-card-links">
+    <a href="text/index.md">Introduction</a>
+    <a href="xref:Bodu.Text">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="numerics/index.md">Bodu.Numerics</a></h3>
+  <p>Generic-math value primitives — <code>Fraction&lt;T&gt;</code> for exact rational arithmetic and <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded intervals, both over the <code>INumber&lt;T&gt;</code> abstractions.</p>
+  <div class="bodu-card-links">
+    <a href="numerics/index.md">Introduction</a>
+    <a href="numerics/getting-started.md">Getting started</a>
+    <a href="../guides/numerics/index.md">Guides</a>
+    <a href="xref:Bodu.Numerics">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="financial/index.md">Bodu.Financial</a></h3>
+  <p>Type-safe monetary primitives — <code>Money&lt;TCurrency&gt;</code> with compile-time currency safety, <code>Money</code> for runtime-tagged scenarios, the ISO 4217 catalogue, exchange-rate providers, allocation, and cash rounding.</p>
+  <div class="bodu-card-links">
+    <a href="financial/index.md">Introduction</a>
+    <a href="financial/getting-started.md">Getting started</a>
+    <a href="../guides/financial/index.md">Guides</a>
+    <a href="xref:Bodu.Financial">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Design principles
@@ -133,5 +167,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 ## Where to go next
 
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).

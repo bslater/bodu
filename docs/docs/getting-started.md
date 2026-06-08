@@ -29,11 +29,19 @@ dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
+dotnet add package Bodu.Text
+dotnet add package Bodu.Numerics
+dotnet add package Bodu.Financial
+
+# Optional companions:
+dotnet add package Bodu.Financial.DependencyInjection
 
 # Optional region-specific calendar data packs:
 dotnet add package Bodu.Globalization.Calendar.Americas
 dotnet add package Bodu.Globalization.Calendar.Europe
 dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Africa
+dotnet add package Bodu.Globalization.Calendar.MiddleEast
 ```
 
 ## Bodu.Core
@@ -212,8 +220,73 @@ string? indentSize = config["format:indent:size"];
 
 → **[Introduction](extensions-configuration-text/index.md)** · **[Getting started](extensions-configuration-text/getting-started.md)** · **[Guides](../guides/extensions-configuration-text/index.md)**
 
+## Bodu.Text
+
+**Bodu.Text** adds the ergonomic, allocation-aware surface the BCL leaves out on top of `System.Text.Encoding` — byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. (For binary-to-text codecs such as Base64, reach for `Bodu.Text.Encoding` above.)
+
+```csharp
+using Bodu.Text;
+
+byte[] bytes = File.ReadAllBytes("data.txt");
+
+System.Text.Encoding encoding =
+    EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? detected)
+        ? detected
+        : System.Text.Encoding.UTF8;
+
+string text = encoding.GetStringSkippingPreamble(bytes);
+```
+
+`EncodingDetection.TryDetectByPreamble` is non-allocating and recognises the five canonical Unicode BOMs; `GetStringSkippingPreamble` decodes the payload while dropping any leading preamble. The `EncodingExtensions` and `StringEncodingExtensions` surfaces add pooled, chunked, and `Try*` write-to-span overloads for the hot paths.
+
+→ **[Introduction](text/index.md)** · **[API reference](xref:Bodu.Text)**
+
+## Bodu.Numerics
+
+**Bodu.Numerics** ships two generic-math value types — `Fraction<T>` for exact rational arithmetic and `Interval<T>` for bounded intervals — both built on `INumber<T>` so they compose with any generic-math algorithm.
+
+```csharp
+using Bodu.Numerics;
+
+Fraction<int> total = Fraction<int>.Create(1, 3) + Fraction<int>.Create(2, 3); // 1/1
+
+Interval<int> range = Interval<int>.Closed(1, 10);
+bool containsFive = range.Contains(5); // true
+```
+
+Every `Fraction<T>` is GCD-reduced on construction and promotes to `BigInteger` for exact intermediates; `Interval<T>` expresses closed / open / half-open bounds with intersection, union, and adjacency operations.
+
+→ **[Introduction](numerics/index.md)** · **[Getting started](numerics/getting-started.md)** · **[Guides](../guides/numerics/index.md)**
+
+## Bodu.Financial
+
+**Bodu.Financial** provides type-safe monetary primitives: `Money` for runtime-tagged amounts, and `Money<TCurrency>` where the currency is encoded as the type parameter so cross-currency arithmetic fails the build.
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+// Runtime-tagged money — currency carried as an ISO 4217 code.
+Money price = new Money(125.50m, "AUD");
+Money gst   = price * 0.10m;
+Money total = price + gst;             // 138.05 AUD
+
+// Compile-time currency safety — the currency is the type parameter.
+Money<AUD> typed = new Money<AUD>(125.50m);
+```
+
+Mixing currencies on the typed form is a compile error; on the runtime form it throws. For service registration, the companion **Bodu.Financial.DependencyInjection** package wires currency lookup and monetary services into an `IServiceCollection`:
+
+```csharp
+using Bodu.Financial.DependencyInjection;
+
+services.AddBoduFinancial();
+```
+
+→ **[Introduction](financial/index.md)** · **[Getting started](financial/getting-started.md)** · **[Guides](../guides/financial/index.md)**
+
 ## Where to go next
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).

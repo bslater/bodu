@@ -25,7 +25,7 @@ _disableBreadcrumb: true
   <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, and self-framing binary formats.</p>
 </div>
 
-Ten focused NuGet packages — plus three companion calendar data packs, a calendar builder, and a calendar dependency-injection package — that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+A family of focused primary libraries — collections and utilities, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, document formats, configuration, text-encoding helpers, numerics, and financial primitives — alongside companion packages for dependency-injection bridges, regional calendar data packs, fluent calendar authoring, plugin loading, and financial service registration. Every package shares a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
 ## Libraries
 
@@ -67,7 +67,7 @@ Ten focused NuGet packages — plus three companion calendar data packs, a calen
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
-  <p>Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources and an observance-adjustment pipeline. Region-specific public-holiday rules ship in companion <code>Data.Americas</code>, <code>Data.Europe</code>, and <code>Data.AsiaPacific</code> packs that release independently of the main library.</p>
+  <p>Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources and an observance-adjustment pipeline. Region-specific public-holiday rules ship in independent <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>, <code>.Africa</code>, and <code>.MiddleEast</code> data packs that release on their own cadence.</p>
   <div class="bodu-card-links">
     <a href="docs/calendar/index.md">Introduction</a>
     <a href="guides/calendar/index.md">Guides</a>
@@ -141,6 +141,16 @@ Ten focused NuGet packages — plus three companion calendar data packs, a calen
   </div>
 </div>
 
+<div class="bodu-card">
+  <img src="images/hero-text.svg" alt="Bodu.Text" />
+  <h3>Bodu.Text</h3>
+  <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation.</p>
+  <div class="bodu-card-links">
+    <a href="docs/text/index.md">Introduction</a>
+    <a href="xref:Bodu.Text">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Install
@@ -156,6 +166,7 @@ dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
+dotnet add package Bodu.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 ```
