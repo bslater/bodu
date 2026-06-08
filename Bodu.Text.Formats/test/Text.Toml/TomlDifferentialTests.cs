@@ -44,6 +44,29 @@ public sealed class TomlDifferentialTests
     }
 
     /// <summary>
+    /// Verifies that text produced by the Bodu writer is accepted by Tomlyn and parses to the same model — confirming
+    /// the writer emits valid, reference-compatible TOML.
+    /// </summary>
+    /// <param name="source">The TOML document.</param>
+    [TestMethod]
+    [DataRow("a = \"x\"\nb = 1\nc = 3.5\nd = true\ne = -2")]
+    [DataRow("[t]\nx = 1\n[t.u]\ny = 2")]
+    [DataRow("a.b.c = 1\na.b.d = 2\nname = \"orange\"")]
+    [DataRow("arr = [1, 2, [3, 4], \"x\"]")]
+    [DataRow("inline = { a = 1, b = { c = 2 }, d = [1, 2] }")]
+    [DataRow("[[p]]\nn = 1\n[[p]]\nn = 2")]
+    [DataRow("[[fruits]]\nname = \"apple\"\n[fruits.physical]\ncolor = \"red\"\n[[fruits.varieties]]\nname = \"red delicious\"\n[[fruits]]\nname = \"banana\"")]
+    [DataRow("\"weird key\" = 1\nflt = 6.626e-34\nbig = 9_223_372_036_854_775_807")]
+    public void Format_WhenWrittenByBodu_ShouldBeAcceptedAndMatchedByTomlyn(string source)
+    {
+        var original = Toml.Parse(source);
+        var written = Toml.Format(original);
+
+        Assert.IsTrue(global::Tomlyn.Toml.TryToModel<global::Tomlyn.Model.TomlTable>(written, out var model, out var diagnostics) && !diagnostics.HasErrors, "Tomlyn rejected the Bodu writer output.");
+        Assert.AreEqual(NormalizeBodu(original), NormalizeTomlyn(model));
+    }
+
+    /// <summary>
     /// Verifies that both Bodu and Tomlyn reject the same malformed documents.
     /// </summary>
     /// <param name="source">The malformed TOML document.</param>
