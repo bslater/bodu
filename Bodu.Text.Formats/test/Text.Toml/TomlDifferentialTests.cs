@@ -62,7 +62,7 @@ public sealed class TomlDifferentialTests
         var original = Toml.Parse(source);
         var written = Toml.Format(original);
 
-        Assert.IsTrue(global::Tomlyn.Toml.TryToModel<global::Tomlyn.Model.TomlTable>(written, out var model, out var diagnostics) && !diagnostics.HasErrors, "Tomlyn rejected the Bodu writer output.");
+        Assert.IsTrue(global::Tomlyn.Toml.TryToModel<global::Tomlyn.Model.TomlTable>(written, out var model, out var diagnostics) && diagnostics?.HasErrors != true, "Tomlyn rejected the Bodu writer output.");
         Assert.AreEqual(NormalizeBodu(original), NormalizeTomlyn(model));
     }
 
@@ -93,7 +93,7 @@ public sealed class TomlDifferentialTests
     public void Parse_WhenInvalidDocument_ShouldBeRejectedByBothParsers(string source)
     {
         var boduRejects = !Toml.TryParse(source, out _);
-        var tomlynRejects = !global::Tomlyn.Toml.TryToModel<global::Tomlyn.Model.TomlTable>(source, out _, out var diagnostics) || diagnostics.HasErrors;
+        var tomlynRejects = !global::Tomlyn.Toml.TryToModel<global::Tomlyn.Model.TomlTable>(source, out _, out var diagnostics) || (diagnostics?.HasErrors ?? false);
 
         Assert.IsTrue(boduRejects, "Bodu accepted a document Tomlyn rejects.");
         Assert.IsTrue(tomlynRejects, "Tomlyn accepted this document; the case may not be invalid.");

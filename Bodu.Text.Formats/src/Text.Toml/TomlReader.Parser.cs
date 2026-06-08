@@ -101,6 +101,10 @@ public partial class TomlReader
         /// <exception cref="TomlFormatException">Thrown when the source is not valid TOML.</exception>
         public TomlTable Parse()
         {
+            // A leading UTF-8 byte-order mark, when decoded, appears as U+FEFF; skip it.
+            if (!Eof && Current == '\uFEFF')
+                Advance();
+
             SkipToNextExpression();
             while (!Eof)
             {
@@ -680,13 +684,13 @@ public partial class TomlReader
             if (_pos + digits > _src.Length)
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidEscape);
 
-            var value = 0;
+            long value = 0;
             for (var i = 0; i < digits; i++)
             {
                 var d = HexValue(_src[_pos + i]);
                 if (d < 0)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidEscape);
-                value = (value << 4) | d;
+                value = (value << 4) | (uint)d;
             }
 
             _pos += digits;
@@ -694,7 +698,7 @@ public partial class TomlReader
             if (value > 0x10FFFF || (value >= 0xD800 && value <= 0xDFFF))
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidEscape);
 
-            sb.Append(char.ConvertFromUtf32(value));
+            sb.Append(char.ConvertFromUtf32((int)value));
         }
 
         /// <summary>
@@ -880,7 +884,7 @@ public partial class TomlReader
             }
 
             var body = token[i..];
-            if (!TryStripUnderscores(body, out var clean) || clean.Length == 0 || !AllAsciiDigits(clean))
+            if (!TryStripUnderscores(body, allowHexLetters: false, out var clean) || clean.Length == 0 || !AllAsciiDigits(clean))
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidNumber);
             if (clean.Length > 1 && clean[0] == '0')
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidNumber);
@@ -908,7 +912,7 @@ public partial class TomlReader
         /// <returns>The integer value.</returns>
         private TomlValue ParseRadixInteger(string body, int radix)
         {
-            if (!TryStripUnderscores(body, out var clean) || clean.Length == 0)
+            if (!TryStripUnderscores(body, allowHexLetters: radix == 16, out var clean) || clean.Length == 0)
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidNumber);
 
             ulong value = 0;
@@ -934,7 +938,7 @@ public partial class TomlReader
         /// <returns>The float value.</returns>
         private TomlValue ParseFloat(string token)
         {
-            if (!TryStripUnderscores(token, out var clean))
+            if (!TryStripUnderscores(token, allowHexLetters: false, out var clean))
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidNumber);
             if (!IsValidFloatLiteral(clean))
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidNumber);
@@ -1243,12 +1247,17 @@ public partial class TomlReader
         }
 
         /// <summary>
-        /// Removes underscores from a numeric body, requiring each underscore to sit between two digits.
+        /// Removes underscores from a numeric body, requiring each underscore to sit between two digits of the
+        /// appropriate class.
         /// </summary>
         /// <param name="s">The numeric body.</param>
+        /// <param name="allowHexLetters">
+        /// When <see langword="true" />, hexadecimal letters count as adjacent digits; otherwise only decimal digits
+        /// do.
+        /// </param>
         /// <param name="result">The body with underscores removed.</param>
         /// <returns><see langword="true" /> when underscore placement is valid.</returns>
-        private static bool TryStripUnderscores(string s, out string result)
+        private static bool TryStripUnderscores(string s, bool allowHexLetters, out string result)
         {
             result = string.Empty;
             if (s.IndexOf('_') < 0)
@@ -1262,7 +1271,7 @@ public partial class TomlReader
             {
                 if (s[i] == '_')
                 {
-                    if (i == 0 || i == s.Length - 1 || !IsHexLike(s[i - 1]) || !IsHexLike(s[i + 1]))
+                    if (i == 0 || i == s.Length - 1 || !IsNeighborDigit(s[i - 1], allowHexLetters) || !IsNeighborDigit(s[i + 1], allowHexLetters))
                         return false;
                 }
                 else
@@ -1274,6 +1283,16 @@ public partial class TomlReader
             result = sb.ToString();
             return true;
         }
+
+        /// <summary>
+        /// Indicates whether <paramref name="c" /> may sit adjacent to an underscore in a numeric literal of the given
+        /// class.
+        /// </summary>
+        /// <param name="c">The character.</param>
+        /// <param name="allowHexLetters">When <see langword="true" />, hexadecimal letters are permitted.</param>
+        /// <returns><see langword="true" /> when the character is a permitted neighbor digit.</returns>
+        private static bool IsNeighborDigit(char c, bool allowHexLetters) =>
+            allowHexLetters ? IsHexLike(c) : IsDigit(c);
 
         /// <summary>
         /// Indicates whether <paramref name="c" /> may sit adjacent to an underscore in a numeric literal.
@@ -1416,6 +1435,11 @@ public partial class TomlReader
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlKeyOnValue);
                 if (_inline.Contains(child))
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlExtendInlineTable);
+
+                // Dotted keys may not extend a table already defined in [table] form (see toml-lang/toml#846).
+                if (_headerDefined.Contains(child))
+                    throw Error(FormatsResourceStrings.Format_Invalid_TomlDuplicateTable);
+
                 return child;
             }
 
