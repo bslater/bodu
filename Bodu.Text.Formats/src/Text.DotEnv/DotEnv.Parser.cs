@@ -39,7 +39,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowInvalidKey(string key, int lineNumber) =>
+    internal static void ThrowInvalidKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_invalidKey, key, lineNumber), lineNumber);
 
@@ -47,7 +47,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowMalformedEntry(int lineNumber) =>
+    internal static void ThrowMalformedEntry(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_malformedEntry, lineNumber), lineNumber);
 
@@ -55,7 +55,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
+    internal static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_unterminatedDoubleQuote, lineNumber), lineNumber);
 
@@ -63,7 +63,7 @@ public static partial class DotEnv
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowUnterminatedSingleQuote(int lineNumber) =>
+    internal static void ThrowUnterminatedSingleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
             string.Format(CultureInfo.CurrentCulture, s_unterminatedSingleQuote, lineNumber), lineNumber);
 
