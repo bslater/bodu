@@ -13,7 +13,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// example body and an all-zero baseline.
 /// </summary>
 [TestClass]
-public sealed class Gtin14ContractTests : CheckDigitContractTests<Gtin14>
+public sealed class Gtin14ContractTests
+    : CheckDigitContractTests<Gtin14>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

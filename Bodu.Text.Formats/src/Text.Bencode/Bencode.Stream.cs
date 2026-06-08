@@ -105,8 +105,9 @@ public static partial class Bencode
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
     /// <remarks>
-    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetFormattedLength(BencodedValue)" />
-    /// and then written to <paramref name="destination" /> in a single call. The stream is not closed.
+    /// The encoded payload is staged in a pooled buffer sized exactly to
+    /// <see cref="GetFormattedLength(BencodedValue)" /> and then written to <paramref name="destination" /> in a single
+    /// call. The stream is not closed.
     /// </remarks>
     public static void Format(BencodedValue value, Stream destination)
     {
@@ -149,8 +150,8 @@ public static partial class Bencode
     /// Thrown when <paramref name="cancellationToken" /> is signalled before the write completes.
     /// </exception>
     /// <remarks>
-    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetFormattedLength(BencodedValue)" />
-    /// and then written to <paramref name="destination" /> in a single
+    /// The encoded payload is staged in a pooled buffer sized exactly to
+    /// <see cref="GetFormattedLength(BencodedValue)" /> and then written to <paramref name="destination" /> in a single
     /// <see cref="Stream.WriteAsync(ReadOnlyMemory{byte}, CancellationToken)" /> call. The stream is not closed.
     /// </remarks>
     public static async ValueTask FormatAsync(BencodedValue value, Stream destination, CancellationToken cancellationToken = default)

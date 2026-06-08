@@ -27,7 +27,7 @@ public partial class ConfigurationViewTests
     [DataRow("On")]
     public void GetBoolean_WhenValueIsRelaxedSpelling_ShouldThrowFormatException(string value)
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse($"[*]\nflag = {value}\n");
+        var doc = ConfigurationDocument.Parse($"[*]\nflag = {value}\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetBoolean("flag"));
@@ -40,7 +40,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetBoolean_WhenValueIsRelaxedSpelling_ShouldReturnFalse()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nflag = yes\n");
+        var doc = ConfigurationDocument.Parse("[*]\nflag = yes\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetBoolean("flag", out _));
@@ -56,7 +56,7 @@ public partial class ConfigurationViewTests
     {
         // The parser trims values by default (TrimKeysAndValues = true), but bool.TryParse also tolerates
         // surrounding whitespace internally. Either layer suffices.
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nflag =   true   \n");
+        var doc = ConfigurationDocument.Parse("[*]\nflag =   true   \n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsTrue(view.GetBoolean("flag"));

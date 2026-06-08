@@ -17,7 +17,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenKeyExistsWithValidInteger_ShouldReturnParsedValue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = 42\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(42, view.GetInt32("size"));
@@ -43,7 +43,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetInt32("size"));
@@ -69,7 +69,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenPresentButMalformedAndFallbackProvided_ShouldThrowExactly()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetInt32("size", 0));
@@ -82,7 +82,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetInt32_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
+        var doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetInt32("missing", out var _));

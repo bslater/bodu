@@ -18,7 +18,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyExistsForIntegerType_ShouldReturnParsedValue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = 42\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(42, view.GetValue<int>("size"));
@@ -46,7 +46,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetValue<int>("size"));
@@ -59,7 +59,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetValueGeneric_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
+        var doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetValue("missing", out int _));
@@ -73,7 +73,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyUsesDottedForm_ShouldResolveToSameValue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nlogging.level.default = 7\n");
+        var doc = ConfigurationDocument.Parse("[*]\nlogging.level.default = 7\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(7, view.GetValue<int>("logging.level.default"));
@@ -87,7 +87,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyMissingAndFallbackProvided_ShouldReturnFallback()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(99, view.GetValue("missing", 99));

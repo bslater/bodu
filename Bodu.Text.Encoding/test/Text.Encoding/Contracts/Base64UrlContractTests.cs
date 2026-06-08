@@ -15,7 +15,8 @@ namespace Bodu.Text.Encoding.Contracts;
 /// existing <c>Base64UrlTests.*</c> partials.
 /// </summary>
 [TestClass]
-public sealed class Base64UrlContractTests : BinaryEncodingContractTests<object>
+public sealed class Base64UrlContractTests
+    : BinaryEncodingContractTests<object>
 {
     /// <inheritdoc />
     protected override string Encode(byte[] input) =>

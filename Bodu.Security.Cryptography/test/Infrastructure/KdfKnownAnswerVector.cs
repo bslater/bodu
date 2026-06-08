@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KdfKnownAnswerVector.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,10 +14,12 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 /// <remarks>
 /// Argon2 vectors populate <see cref="Variant" />, <see cref="Memory" />, <see cref="Iterations" />,
-/// <see cref="Parallelism" />, <see cref="Version" />, and optionally <see cref="Secret" /> / <see cref="AssociatedData" />;
-/// scrypt vectors populate <see cref="CostN" />, <see cref="BlockSizeR" />, and <see cref="Parallelism" />.
+/// <see cref="Parallelism" />, <see cref="Version" />, and optionally <see cref="Secret" /> /
+/// <see cref="AssociatedData" />; scrypt vectors populate <see cref="CostN" />, <see cref="BlockSizeR" />, and
+/// <see cref="Parallelism" />.
 /// </remarks>
-public sealed record KdfKnownAnswerVector : IKat
+public sealed record KdfKnownAnswerVector
+    : IKat
 {
     /// <summary>
     /// Gets the human-readable name identifying the vector and its source.

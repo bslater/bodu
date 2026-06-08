@@ -10,14 +10,14 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Reads a configuration document line by line, producing a populated <see cref="ConfigurationDocument" /> together with any
-/// diagnostics gathered under the rules of <see cref="ConfigurationParseOptions" />.
+/// Reads a configuration document line by line, producing a populated <see cref="ConfigurationDocument" /> together
+/// with any diagnostics gathered under the rules of <see cref="ConfigurationParseOptions" />.
 /// </summary>
 /// <remarks>
 /// This reader honors the Configuration-specific features that the underlying <c>Ini.Parser</c> does not: inline
 /// comment modes (<see cref="ConfigurationInlineCommentMode" />), diagnostic mode routing (
-/// <see cref="ConfigurationDiagnosticMode" />), and source location tracking. The resulting document inherits the read surface of
-/// <see cref="IniDocumentBase" /> so it composes naturally with everything else in <c>Bodu.Text.Ini</c>.
+/// <see cref="ConfigurationDiagnosticMode" />), and source location tracking. The resulting document inherits the read
+/// surface of <see cref="IniDocumentBase" /> so it composes naturally with everything else in <c>Bodu.Text.Ini</c>.
 /// </remarks>
 internal sealed partial class ConfigurationReader
 {
@@ -40,8 +40,8 @@ internal sealed partial class ConfigurationReader
     /// <param name="reader">The source of configuration text.</param>
     /// <param name="path">The optional file path used when emitting source locations.</param>
     /// <returns>
-    /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="ConfigurationDocument" /> and any diagnostics
-    /// collected.
+    /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="ConfigurationDocument" /> and any
+    /// diagnostics collected.
     /// </returns>
     internal ConfigurationParseResult Read(TextReader reader, string? path)
     {

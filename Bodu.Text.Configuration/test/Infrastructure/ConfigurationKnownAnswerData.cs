@@ -1019,7 +1019,8 @@ public enum ConfigurationKatOutcome
 /// <summary>
 /// Represents a known-answer test case for Bodu text configuration.
 /// </summary>
-public sealed record ConfigurationKat : IKat
+public sealed record ConfigurationKat
+    : IKat
 {
     private ConfigurationKat(
         string id,

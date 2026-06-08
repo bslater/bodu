@@ -31,7 +31,7 @@ public class ConfigurationReaderSectionHeaderTests
         };
 
         // Should not throw.
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*.cs] trailing\nkey = value\n", options);
+        var doc = ConfigurationDocument.Parse("[*.cs] trailing\nkey = value\n", options);
         Assert.HasCount(1, doc.Sections);
     }
 
@@ -71,7 +71,7 @@ public class ConfigurationReaderSectionHeaderTests
             DiagnosticMode = ConfigurationDiagnosticMode.Throw,
         };
 
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*.cs]   \nkey = value\n", options);
+        var doc = ConfigurationDocument.Parse("[*.cs]   \nkey = value\n", options);
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("*.cs", doc.Sections[0].Name);
     }
@@ -89,7 +89,7 @@ public class ConfigurationReaderSectionHeaderTests
             DiagnosticMode = ConfigurationDiagnosticMode.Throw,
         };
 
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*.cs] # comment\nkey = value\n", options);
+        var doc = ConfigurationDocument.Parse("[*.cs] # comment\nkey = value\n", options);
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("*.cs", doc.Sections[0].Name);
     }
@@ -107,7 +107,7 @@ public class ConfigurationReaderSectionHeaderTests
             DiagnosticMode = ConfigurationDiagnosticMode.Throw,
         };
 
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*.cs] ; comment\nkey = value\n", options);
+        var doc = ConfigurationDocument.Parse("[*.cs] ; comment\nkey = value\n", options);
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("*.cs", doc.Sections[0].Name);
     }
@@ -144,7 +144,7 @@ public class ConfigurationReaderSectionHeaderTests
             SectionHeaderMode = ConfigurationSectionHeaderMode.Lenient,
         };
 
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[abc]def]\nkey = value\n", options);
+        var doc = ConfigurationDocument.Parse("[abc]def]\nkey = value\n", options);
 
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("abc]def", doc.Sections[0].Name);

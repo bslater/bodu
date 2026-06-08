@@ -34,7 +34,8 @@ namespace Bodu.Text.Delimited;
 /// </code>
 /// </example>
 /// </remarks>
-public sealed class DelimitedWriter : IDisposable
+public sealed class DelimitedWriter
+    : IDisposable
 {
     private readonly TextWriter _writer;
     private readonly DelimitedParseOptions _options;
@@ -131,12 +132,12 @@ public sealed class DelimitedWriter : IDisposable
     /// Thrown when <paramref name="headers" /> contains a <see langword="null" /> element.
     /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
-    public async Task WriteHeaderAsync(IEnumerable<string> headers, CancellationToken cancellationToken = default)
+    public Task WriteHeaderAsync(IEnumerable<string> headers, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(headers);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        await _writer.WriteAsync(BuildRow(headers, nameof(headers)).AsMemory(), cancellationToken).ConfigureAwait(false);
+        return _writer.WriteAsync(BuildRow(headers, nameof(headers)).AsMemory(), cancellationToken);
     }
 
     /// <summary>
@@ -217,10 +218,10 @@ public sealed class DelimitedWriter : IDisposable
         var quote = _options.Quote;
 
         var needsQuoting = field.Length == 0 ||
-                            field.IndexOf(delimiter) >= 0 ||
-                            field.IndexOf(quote) >= 0 ||
-                            field.IndexOf('\n') >= 0 ||
-                            field.IndexOf('\r') >= 0;
+                            field.Contains(delimiter) ||
+                            field.Contains(quote) ||
+                            field.Contains('\n') ||
+                            field.Contains('\r');
 
         if (!needsQuoting)
         {
@@ -285,10 +286,10 @@ public sealed class DelimitedWriter : IDisposable
         var quote = _options.Quote;
 
         var needsQuoting = field.Length == 0 ||
-                           field.IndexOf(delimiter) >= 0 ||
-                           field.IndexOf(quote) >= 0 ||
-                           field.IndexOf('\n') >= 0 ||
-                           field.IndexOf('\r') >= 0;
+                           field.Contains(delimiter) ||
+                           field.Contains(quote) ||
+                           field.Contains('\n') ||
+                           field.Contains('\r');
 
         if (!needsQuoting)
         {

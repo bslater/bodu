@@ -40,7 +40,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// }
 ///]]>
 /// </example>
-public sealed class TextConfigurationProvider : FileConfigurationProvider
+public sealed class TextConfigurationProvider
+    : FileConfigurationProvider
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TextConfigurationProvider" /> class backed by the supplied source.

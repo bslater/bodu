@@ -84,7 +84,8 @@ key = value
     /// A read-only, forward-only wrapper around a byte buffer that explicitly disables seeking and length
     /// queries. Used to ensure the provider does not depend on either.
     /// </summary>
-    private sealed class NonSeekableStream : Stream
+    private sealed class NonSeekableStream
+        : Stream
     {
         private readonly MemoryStream _inner;
 

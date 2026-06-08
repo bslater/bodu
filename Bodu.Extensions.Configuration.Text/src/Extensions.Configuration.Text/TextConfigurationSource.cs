@@ -50,7 +50,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// IConfigurationProvider provider = source.Build(builder);
 ///]]>
 /// </example>
-public sealed class TextConfigurationSource : FileConfigurationSource
+public sealed class TextConfigurationSource
+    : FileConfigurationSource
 {
     /// <summary>
     /// Gets or sets the path used to evaluate glob-anchored sections during resolution. Defaults to

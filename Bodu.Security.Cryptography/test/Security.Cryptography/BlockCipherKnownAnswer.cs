@@ -70,7 +70,8 @@ namespace Bodu.Security.Cryptography;
 /// issue and kept until authoritative vectors are sourced.
 /// </para>
 /// </remarks>
-public sealed record BlockCipherKnownAnswer : IKat
+public sealed record BlockCipherKnownAnswer
+    : IKat
 {
     /// <summary>
     /// Gets the semantic name of this test vector used in diagnostic messages.

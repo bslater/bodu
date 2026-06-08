@@ -20,7 +20,8 @@ namespace Bodu.IO.Hashing;
 /// sixteen zero bytes, and the 0x00..0xFE sequence — are already covered by the typed slots on
 /// <see cref="NonCryptographicHashKnownAnswers" /> and should not be duplicated here.
 /// </remarks>
-public sealed record NonCryptographicHashKnownAnswer : IKat
+public sealed record NonCryptographicHashKnownAnswer
+    : IKat
 {
 
     /// <summary>

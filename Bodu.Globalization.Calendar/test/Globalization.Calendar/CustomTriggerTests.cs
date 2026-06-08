@@ -37,7 +37,8 @@ public sealed class CustomTriggerTests
     /// <summary>
     /// A custom trigger handler that fires only when the occurrence falls in a Gregorian leap year.
     /// </summary>
-    private sealed class FireInLeapYearHandler : IAdjustmentTriggerHandler
+    private sealed class FireInLeapYearHandler
+        : IAdjustmentTriggerHandler
     {
         /// <inheritdoc />
         public bool ShouldAdjust(AdjustmentTriggerContext context) =>
@@ -47,7 +48,8 @@ public sealed class CustomTriggerTests
     /// <summary>
     /// A custom trigger handler that records every context it receives and never fires.
     /// </summary>
-    private sealed class CapturingHandler : IAdjustmentTriggerHandler
+    private sealed class CapturingHandler
+        : IAdjustmentTriggerHandler
     {
         /// <summary>Gets the territory and policy id observed across invocations.</summary>
         public HashSet<(string Territory, string PolicyId)> Seen { get; } = new();

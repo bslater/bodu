@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2EncodedHash.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,9 @@ namespace Bodu.Security.Cryptography;
 /// <param name="Parallelism">The degree of parallelism <c>p</c>.</param>
 /// <param name="Salt">The decoded salt.</param>
 /// <param name="Hash">The decoded expected tag.</param>
-/// <param name="Data">The decoded associated data, or an empty array when the string carries no <c>data</c> field.</param>
+/// <param name="Data">
+/// The decoded associated data, or an empty array when the string carries no <c>data</c> field.
+/// </param>
 internal sealed record Argon2EncodedHash(
     Argon2Type Type,
     int Version,

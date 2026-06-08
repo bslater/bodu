@@ -17,7 +17,8 @@ namespace Bodu.Numerics.Contracts;
 /// <c>Bodu.Numerics/test/Numerics/FractionTests.*</c>.
 /// </summary>
 [TestClass]
-public sealed class FractionParseFormatContractTests : ParseFormatContractTests<Fraction<int>>
+public sealed class FractionParseFormatContractTests
+    : ParseFormatContractTests<Fraction<int>>
 {
     /// <inheritdoc />
     protected override Fraction<int> Parse(string text, string? format = null, IFormatProvider? provider = null) =>

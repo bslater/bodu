@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDocumentBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,10 +16,11 @@ namespace Bodu.Text.Ini;
 /// <remarks>
 /// <para>
 /// The public surface of <see cref="IniDocumentBase" /> is read-only: it exposes <see cref="GlobalSection" />,
-/// <see cref="Sections" />, and the <see cref="GetSection(string)" />/<see cref="TryGetSection(string, out IniSection?)" />
-/// lookups. Mutation is reserved to derived types through the <see langword="protected" /> core methods
-/// (<see cref="AddSectionCore(IniSection)" />, <see cref="GetOrAddSectionCore(string)" />,
-/// <see cref="RemoveSectionCore(string)" />); a concrete subclass chooses whether to re-expose them publicly.
+/// <see cref="Sections" />, and the <see cref="GetSection(string)" />/
+/// <see cref="TryGetSection(string, out IniSection?)" /> lookups. Mutation is reserved to derived types through the
+/// <see langword="protected" /> core methods (<see cref="AddSectionCore(IniSection)" />,
+/// <see cref="GetOrAddSectionCore(string)" />, <see cref="RemoveSectionCore(string)" />); a concrete subclass chooses
+/// whether to re-expose them publicly.
 /// </para>
 /// <para>
 /// Section lookup uses ordinal comparison, case-insensitive by default and case-sensitive when the document was created

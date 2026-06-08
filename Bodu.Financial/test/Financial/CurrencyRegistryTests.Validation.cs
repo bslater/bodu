@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyRegistryTests.Validation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void Register_WhenMinorUnitsOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             CurrencyRegistry.Register(new CurrencyInfo("XQV", 29, 0m, false, null, null));
         });
@@ -31,7 +31,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void Register_WhenCashRoundingNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             CurrencyRegistry.Register(new CurrencyInfo("XQV", 2, -0.05m, false, null, null));
         });
@@ -46,7 +46,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void Register_WhenCashRoundingFinerThanMinorUnits_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             CurrencyRegistry.Register(new CurrencyInfo("XQV", 0, 0.05m, false, null, null));
         });
@@ -61,7 +61,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void Register_WhenNumericCodeOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             CurrencyRegistry.Register(new CurrencyInfo("XQV", 2, 0m, false, null, null, "Test", 1000));
         });
@@ -101,7 +101,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void Register_WhenHistoricFieldsInconsistent_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             CurrencyRegistry.Register(new CurrencyInfo("XQV", 2, 0m, false, null, "EUR"));
         });

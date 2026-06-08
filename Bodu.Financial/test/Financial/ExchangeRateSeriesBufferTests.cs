@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class ExchangeRateSeriesBufferTests
     private static ExchangeRateSeriesBuffer NewBufferWith(params (int Day, decimal Rate)[] entries)
     {
         var buffer = new ExchangeRateSeriesBuffer();
-        foreach (var (day, rate) in entries)
+        foreach ((var day, var rate) in entries)
         {
             buffer.Add(day, rate, RateParam, DateParam);
         }

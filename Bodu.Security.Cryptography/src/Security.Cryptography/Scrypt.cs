@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Scrypt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,15 +33,11 @@ public sealed class Scrypt
     /// </summary>
     private const int GeneratedSaltLength = 16;
 
-    private readonly ScryptParameters _parameters;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Scrypt" /> class with the specified cost parameters.
     /// </summary>
     /// <param name="parameters">The cost parameters governing the derivation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="parameters" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 7914.
     /// </exception>
@@ -50,7 +46,7 @@ public sealed class Scrypt
         ThrowHelper.ThrowIfNull(parameters);
         parameters.Validate();
 
-        _parameters = parameters;
+        Parameters = parameters;
     }
 
     /// <summary>
@@ -70,7 +66,7 @@ public sealed class Scrypt
     /// Gets the cost parameters bound to this instance.
     /// </summary>
     /// <returns>The <see cref="ScryptParameters" /> supplied at construction.</returns>
-    public ScryptParameters Parameters => _parameters;
+    public ScryptParameters Parameters { get; }
 
     /// <summary>
     /// Derives a key of the requested length from the supplied password and salt.
@@ -79,15 +75,13 @@ public sealed class Scrypt
     /// <param name="salt">The salt.</param>
     /// <param name="length">The derived-key length, in bytes.</param>
     /// <returns>The derived key.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="length" /> is less than 1.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than 1.</exception>
     public byte[] GetBytes(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, int length)
     {
         ThrowIfInvalidLength(length);
 
-        byte[] output = new byte[length];
-        ScryptCore.DeriveKey(password, salt, _parameters.CostN, _parameters.BlockSizeR, _parameters.Parallelization, output);
+        var output = new byte[length];
+        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, output);
         return output;
     }
 
@@ -97,14 +91,12 @@ public sealed class Scrypt
     /// <param name="password">The password to derive from.</param>
     /// <param name="salt">The salt.</param>
     /// <param name="destination">The buffer to receive the derived key; its length is the derived-key length.</param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="destination" /> is empty.
-    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="destination" /> is empty.</exception>
     public void DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Span<byte> destination)
     {
         ThrowIfInvalidLength(destination.Length);
 
-        ScryptCore.DeriveKey(password, salt, _parameters.CostN, _parameters.BlockSizeR, _parameters.Parallelization, destination);
+        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, destination);
     }
 
     /// <summary>
@@ -128,17 +120,15 @@ public sealed class Scrypt
     /// <param name="salt">The salt to embed in the encoded string.</param>
     /// <param name="length">The hash length, in bytes.</param>
     /// <returns>The PHC encoded-hash string.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="length" /> is less than 1.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than 1.</exception>
     public string Hash(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, int length)
     {
         ThrowIfInvalidLength(length);
 
-        byte[] hash = new byte[length];
-        ScryptCore.DeriveKey(password, salt, _parameters.CostN, _parameters.BlockSizeR, _parameters.Parallelization, hash);
+        var hash = new byte[length];
+        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, hash);
 
-        string encoded = Encode(_parameters, salt, hash);
+        var encoded = Encode(Parameters, salt, hash);
         CryptographyHelper.Clear(hash);
         return encoded;
     }
@@ -187,14 +177,14 @@ public sealed class Scrypt
     /// <summary>
     /// Verifies a password against a scrypt PHC encoded-hash string.
     /// </summary>
-    /// <param name="encoded">The PHC encoded-hash string produced by <see cref="Hash(ReadOnlySpan{byte}, ReadOnlySpan{byte}, int)" />.</param>
+    /// <param name="encoded">
+    /// The PHC encoded-hash string produced by <see cref="Hash(ReadOnlySpan{byte}, ReadOnlySpan{byte}, int)" />.
+    /// </param>
     /// <param name="password">The password to verify.</param>
     /// <returns>
     /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="encoded" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed scrypt PHC string.
     /// </exception>
@@ -202,12 +192,12 @@ public sealed class Scrypt
     {
         ThrowHelper.ThrowIfNull(encoded);
 
-        (int costN, int blockSizeR, int parallelization, byte[] salt, byte[] hash) = Decode(encoded);
+        (var costN, var blockSizeR, var parallelization, var salt, var hash) = Decode(encoded);
 
-        byte[] computed = new byte[hash.Length];
+        var computed = new byte[hash.Length];
         ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed);
 
-        bool match = CryptographicOperations.FixedTimeEquals(computed, hash);
+        var match = CryptographicOperations.FixedTimeEquals(computed, hash);
         CryptographyHelper.Clear(computed);
         return match;
     }
@@ -231,7 +221,7 @@ public sealed class Scrypt
     /// </summary>
     private static string Encode(ScryptParameters p, ReadOnlySpan<byte> salt, ReadOnlySpan<byte> hash)
     {
-        int logN = BitOperations.Log2((uint)p.CostN);
+        var logN = BitOperations.Log2((uint)p.CostN);
 
         var sb = new StringBuilder();
         sb.Append("$scrypt$ln=").Append(logN.ToString(CultureInfo.InvariantCulture))
@@ -247,21 +237,21 @@ public sealed class Scrypt
     /// </summary>
     private static (int CostN, int BlockSizeR, int Parallelization, byte[] Salt, byte[] Hash) Decode(string encoded)
     {
-        string[] fields = PhcString.SplitFields(encoded);
+        var fields = PhcString.SplitFields(encoded);
 
         // Expect: "", scrypt, ln=..,r=..,p=.., salt, hash
         if (fields.Length != 5 || fields[1] != "scrypt")
             throw PhcString.Invalid();
 
         int? logN = null, blockSizeR = null, parallelization = null;
-        foreach (string part in fields[2].Split(','))
+        foreach (var part in fields[2].Split(','))
         {
-            int eq = part.IndexOf('=', StringComparison.Ordinal);
+            var eq = part.IndexOf('=', StringComparison.Ordinal);
             if (eq <= 0)
                 throw PhcString.Invalid();
 
-            string key = part[..eq];
-            string value = part[(eq + 1)..];
+            var key = part[..eq];
+            var value = part[(eq + 1)..];
 
             switch (key)
             {
@@ -275,8 +265,8 @@ public sealed class Scrypt
         if (logN is null or < 1 or > 30 || blockSizeR is null || parallelization is null)
             throw PhcString.Invalid();
 
-        byte[] salt = PhcString.DecodeBase64(fields[3]);
-        byte[] hash = PhcString.DecodeBase64(fields[4]);
+        var salt = PhcString.DecodeBase64(fields[3]);
+        var hash = PhcString.DecodeBase64(fields[4]);
 
         return (1 << logN.Value, blockSizeR.Value, parallelization.Value, salt, hash);
     }
@@ -285,7 +275,7 @@ public sealed class Scrypt
     /// Parses a non-negative decimal integer, throwing a <see cref="FormatException" /> on failure.
     /// </summary>
     private static int ParseInt(string value) =>
-        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int result)
+        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
             ? result
             : throw PhcString.Invalid();
 }

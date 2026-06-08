@@ -133,8 +133,8 @@ public sealed class ResolutionPolicyBuilder
     }
 
     /// <summary>
-    /// Sets the category precedence applied by <see cref="CollisionPolicy.CategoryPriority" />, ordered
-    /// highest-winning first.
+    /// Sets the category precedence applied by <see cref="CollisionPolicy.CategoryPriority" />, ordered highest-winning
+    /// first.
     /// </summary>
     /// <param name="precedence">The categories in descending precedence order.</param>
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>

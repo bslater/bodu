@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2Core.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -51,17 +51,17 @@ internal static class Argon2Core
         ReadOnlySpan<byte> salt,
         Span<byte> tag)
     {
-        int lanes = parameters.Parallelism;
+        var lanes = parameters.Parallelism;
 
         // m' is m rounded down to the nearest multiple of 4*p (RFC 9106 Section 3.2).
-        int memoryBlocks = SyncPoints * lanes * (parameters.MemoryKiB / (SyncPoints * lanes));
-        int laneLength = memoryBlocks / lanes;           // q columns per lane
-        int segmentLength = laneLength / SyncPoints;
+        var memoryBlocks = SyncPoints * lanes * (parameters.MemoryKiB / (SyncPoints * lanes));
+        var laneLength = memoryBlocks / lanes;           // q columns per lane
+        var segmentLength = laneLength / SyncPoints;
 
         if ((long)memoryBlocks * WordsPerBlock > Array.MaxLength)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KdfMemoryExceedsLimit);
 
-        ulong[] memory = new ulong[memoryBlocks * WordsPerBlock];
+        var memory = new ulong[memoryBlocks * WordsPerBlock];
         Span<byte> h0 = stackalloc byte[Argon2Blake2b.MaxDigestBytes];
 
         try
@@ -69,9 +69,9 @@ internal static class Argon2Core
             ComputeH0(type, parameters, password, salt, h0);
             InitializeBlocks(memory, h0, lanes, laneLength);
 
-            for (int pass = 0; pass < parameters.Iterations; pass++)
-                for (int slice = 0; slice < SyncPoints; slice++)
-                    for (int lane = 0; lane < lanes; lane++)
+            for (var pass = 0; pass < parameters.Iterations; pass++)
+                for (var slice = 0; slice < SyncPoints; slice++)
+                    for (var lane = 0; lane < lanes; lane++)
                         FillSegment(type, parameters, memory, pass, slice, lane, lanes, laneLength, segmentLength);
 
             Finalize(memory, lanes, laneLength, tag);
@@ -96,16 +96,16 @@ internal static class Argon2Core
         ReadOnlySpan<byte> secret = p.Secret ?? ReadOnlySpan<byte>.Empty;
         ReadOnlySpan<byte> associatedData = p.AssociatedData ?? ReadOnlySpan<byte>.Empty;
 
-        int length =
+        var length =
             (6 * 4) +
             (4 + password.Length) +
             (4 + salt.Length) +
             (4 + secret.Length) +
             (4 + associatedData.Length);
 
-        byte[] buffer = new byte[length];
+        var buffer = new byte[length];
         Span<byte> w = buffer;
-        int o = 0;
+        var o = 0;
 
         WriteLE32(w, ref o, p.Parallelism);
         WriteLE32(w, ref o, p.TagLength);
@@ -133,9 +133,9 @@ internal static class Argon2Core
 
         Span<byte> block = stackalloc byte[WordsPerBlock * 8];
 
-        for (int lane = 0; lane < lanes; lane++)
+        for (var lane = 0; lane < lanes; lane++)
         {
-            for (int column = 0; column < 2; column++)
+            for (var column = 0; column < 2; column++)
             {
                 BinaryPrimitives.WriteInt32LittleEndian(input.Slice(Argon2Blake2b.MaxDigestBytes, 4), column);
                 BinaryPrimitives.WriteInt32LittleEndian(input.Slice(Argon2Blake2b.MaxDigestBytes + 4, 4), lane);
@@ -160,7 +160,7 @@ internal static class Argon2Core
         int laneLength,
         int segmentLength)
     {
-        bool dataIndependent = type == Argon2Type.Argon2i
+        var dataIndependent = type == Argon2Type.Argon2i
             || (type == Argon2Type.Argon2id && pass == 0 && slice < SyncPoints / 2);
 
         Span<ulong> addressBlock = stackalloc ulong[WordsPerBlock];
@@ -178,7 +178,7 @@ internal static class Argon2Core
             inputBlock[5] = (ulong)(int)type;
         }
 
-        int startIndex = 0;
+        var startIndex = 0;
         if (pass == 0 && slice == 0)
         {
             startIndex = 2;   // the first two blocks are already filled
@@ -186,10 +186,10 @@ internal static class Argon2Core
                 NextAddresses(addressBlock, inputBlock, zeroBlock);
         }
 
-        for (int i = startIndex; i < segmentLength; i++)
+        for (var i = startIndex; i < segmentLength; i++)
         {
-            int column = slice * segmentLength + i;
-            int prevColumn = column == 0 ? laneLength - 1 : column - 1;
+            var column = slice * segmentLength + i;
+            var prevColumn = column == 0 ? laneLength - 1 : column - 1;
 
             ulong pseudoRand;
             if (dataIndependent)
@@ -203,11 +203,11 @@ internal static class Argon2Core
                 pseudoRand = BlockSpan(memory, lane * laneLength + prevColumn)[0];
             }
 
-            uint refLane = (pass == 0 && slice == 0)
+            var refLane = (pass == 0 && slice == 0)
                 ? (uint)lane
                 : (uint)((pseudoRand >> 32) % (ulong)lanes);
 
-            int refIndex = ReferenceIndex(
+            var refIndex = ReferenceIndex(
                 pass, slice, i, segmentLength, laneLength,
                 (uint)(pseudoRand & 0xFFFFFFFF), refLane == (uint)lane);
 
@@ -216,7 +216,7 @@ internal static class Argon2Core
             Span<ulong> curBlock = BlockSpan(memory, lane * laneLength + column);
 
             // Version 0x10 always overwrites; version 0x13 XORs on subsequent passes.
-            bool withXor = pass != 0 && parameters.Version != Argon2Parameters.Version10;
+            var withXor = pass != 0 && parameters.Version != Argon2Parameters.Version10;
             FillBlock(prevBlock, refBlock, curBlock, withXor);
         }
     }
@@ -259,7 +259,7 @@ internal static class Argon2Core
         relative = (relative * relative) >> 32;
         relative = (ulong)referenceAreaSize - 1 - (((ulong)referenceAreaSize * relative) >> 32);
 
-        int startPosition = 0;
+        var startPosition = 0;
         if (pass != 0)
             startPosition = slice == SyncPoints - 1 ? 0 : (slice + 1) * segmentLength;
 
@@ -275,10 +275,10 @@ internal static class Argon2Core
         Span<ulong> c = stackalloc ulong[WordsPerBlock];
         BlockSpan(memory, laneLength - 1).CopyTo(c);
 
-        for (int lane = 1; lane < lanes; lane++)
+        for (var lane = 1; lane < lanes; lane++)
         {
             ReadOnlySpan<ulong> last = BlockSpan(memory, lane * laneLength + laneLength - 1);
-            for (int k = 0; k < WordsPerBlock; k++)
+            for (var k = 0; k < WordsPerBlock; k++)
                 c[k] ^= last[k];
         }
 
@@ -302,17 +302,17 @@ internal static class Argon2Core
         Span<ulong> r = stackalloc ulong[WordsPerBlock];
         Span<ulong> tmp = stackalloc ulong[WordsPerBlock];
 
-        for (int k = 0; k < WordsPerBlock; k++)
+        for (var k = 0; k < WordsPerBlock; k++)
             r[k] = prev[k] ^ refBlock[k];
 
         r.CopyTo(tmp);
         if (withXor)
-            for (int k = 0; k < WordsPerBlock; k++)
+            for (var k = 0; k < WordsPerBlock; k++)
                 tmp[k] ^= next[k];
 
         Permute(r);
 
-        for (int k = 0; k < WordsPerBlock; k++)
+        for (var k = 0; k < WordsPerBlock; k++)
             next[k] = tmp[k] ^ r[k];
     }
 
@@ -322,13 +322,13 @@ internal static class Argon2Core
     /// </summary>
     private static void Permute(Span<ulong> block)
     {
-        for (int row = 0; row < 8; row++)
+        for (var row = 0; row < 8; row++)
             Round(block.Slice(row * 16, 16));
 
         Span<ulong> column = stackalloc ulong[16];
-        for (int col = 0; col < 8; col++)
+        for (var col = 0; col < 8; col++)
         {
-            int b = col * 2;
+            var b = col * 2;
             column[0] = block[b]; column[1] = block[b + 1];
             column[2] = block[b + 16]; column[3] = block[b + 17];
             column[4] = block[b + 32]; column[5] = block[b + 33];
@@ -386,7 +386,7 @@ internal static class Argon2Core
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong FBlaMka(ulong x, ulong y)
     {
-        ulong xy = (ulong)(uint)x * (uint)y;
+        var xy = (ulong)(uint)x * (uint)y;
         return x + y + (2 * xy);
     }
 
@@ -402,7 +402,7 @@ internal static class Argon2Core
     /// </summary>
     private static void LoadBlockLE(ReadOnlySpan<byte> source, Span<ulong> block)
     {
-        for (int i = 0; i < WordsPerBlock; i++)
+        for (var i = 0; i < WordsPerBlock; i++)
             block[i] = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(i * 8, 8));
     }
 
@@ -411,7 +411,7 @@ internal static class Argon2Core
     /// </summary>
     private static void StoreBlockLE(ReadOnlySpan<ulong> block, Span<byte> destination)
     {
-        for (int i = 0; i < WordsPerBlock; i++)
+        for (var i = 0; i < WordsPerBlock; i++)
             BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(i * 8, 8), block[i]);
     }
 

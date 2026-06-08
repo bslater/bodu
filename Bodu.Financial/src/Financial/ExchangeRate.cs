@@ -26,9 +26,9 @@ namespace Bodu.Financial;
 public readonly record struct ExchangeRate
 {
     /// <summary>
-    /// The underlying observed rate used for precise conversion. For a non-inverted rate this equals <see cref="Rate" />;
-    /// for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying by
-    /// a pre-rounded reciprocal.
+    /// The underlying observed rate used for precise conversion. For a non-inverted rate this equals
+    /// <see cref="Rate" />; for an inverted rate it is the original reverse-pair rate, so conversion divides by it
+    /// rather than multiplying by a pre-rounded reciprocal.
     /// </summary>
     private readonly decimal _observedRate;
 
@@ -101,16 +101,18 @@ public readonly record struct ExchangeRate
 
     /// <summary>
     /// Creates an <see cref="ExchangeRate" /> from an originally observed rate, deriving the public <see cref="Rate" />
-    /// multiplier from it. When <paramref name="isInverted" /> is <see langword="true" />, <paramref name="observedRate" />
-    /// is the reverse-pair rate and conversion divides by it, avoiding the precision loss of multiplying by a pre-rounded
-    /// reciprocal.
+    /// multiplier from it. When <paramref name="isInverted" /> is <see langword="true" />,
+    /// <paramref name="observedRate" /> is the reverse-pair rate and conversion divides by it, avoiding the precision
+    /// loss of multiplying by a pre-rounded reciprocal.
     /// </summary>
     /// <param name="fromIsoCode">The reported source-currency ISO-style code.</param>
     /// <param name="toIsoCode">The reported destination-currency ISO-style code.</param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="observedRate">The originally observed rate.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <param name="isInverted"><see langword="true" /> when <paramref name="observedRate" /> is the reverse-pair rate.</param>
+    /// <param name="isInverted">
+    /// <see langword="true" /> when <paramref name="observedRate" /> is the reverse-pair rate.
+    /// </param>
     /// <returns>The constructed exchange rate.</returns>
     internal static ExchangeRate FromObservedRate(
         string fromIsoCode,

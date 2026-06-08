@@ -91,7 +91,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void TryParse_WhenInvalid_ShouldReturnFalseAndDefault()
     {
-        bool parsed = TerritoryCode.TryParse("nope!", out TerritoryCode result);
+        var parsed = TerritoryCode.TryParse("nope!", out TerritoryCode result);
 
         Assert.AreEqual((false, true), (parsed, result.IsEmpty));
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTableBuilderTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -97,7 +97,7 @@ public partial class ExchangeRateTableBuilderTests
     {
         ExchangeRateTableBuilder table = new();
 
-        var found = table.TryGetBuilder(s_usdAud, "RBA", out var builder);
+        var found = table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder);
 
         Assert.IsFalse(found);
         Assert.IsNull(builder);
@@ -113,7 +113,7 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateSeriesBuilder seeded = table.GetOrAddSeries(s_usdAud, "RBA");
         seeded.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var found = table.TryGetBuilder(s_usdAud, "RBA", out var builder);
+        var found = table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder);
 
         Assert.IsTrue(found);
         Assert.AreSame(seeded, builder);
@@ -129,7 +129,7 @@ public partial class ExchangeRateTableBuilderTests
         table.GetOrAddSeries(s_usdAud, "RBA");
         table.GetOrAddSeries(s_usdJpy, "BoJ");
 
-        var keys = table.Keys.ToArray();
+        ExchangeRateSeriesKey[] keys = table.Keys.ToArray();
 
         Assert.AreEqual(2, keys.Length);
         CollectionAssert.Contains(keys, new ExchangeRateSeriesKey(s_usdAud, "RBA"));

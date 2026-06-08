@@ -16,7 +16,8 @@ namespace Bodu.Contracts;
 /// operators, bitmask equality) lives in <c>WeekPatternTests.*</c>.
 /// </summary>
 [TestClass]
-public sealed class WeekPatternParseFormatContractTests : ParseFormatContractTests<WeekPattern>
+public sealed class WeekPatternParseFormatContractTests
+    : ParseFormatContractTests<WeekPattern>
 {
     /// <inheritdoc />
     protected override WeekPattern Parse(string text, string? format = null, IFormatProvider? provider = null) =>

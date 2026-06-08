@@ -26,7 +26,7 @@ public partial class ConfigurationKatRunnerTests
         ConfigurationParseOptions parseOptions = ConfigurationParseOptions.Bodu;
         ConfigurationWriteOptions writeOptions = BuildWriteOptions(kat, writeProfile);
 
-        ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Source!, parseOptions);
+        var doc = ConfigurationDocument.Parse(kat.Source!, parseOptions);
 
         using StringWriter sw = new();
         ConfigurationDocument.Save(doc, sw, writeOptions);
@@ -44,7 +44,7 @@ public partial class ConfigurationKatRunnerTests
 
         if (kat.Kind is ConfigurationKatKind.RoundTrip)
         {
-            ConfigurationDocument reparsed = ConfigurationDocument.Parse(written, ConfigurationParseOptions.Bodu);
+            var reparsed = ConfigurationDocument.Parse(written, ConfigurationParseOptions.Bodu);
             AssertDocumentsEquivalent(kat, doc, reparsed);
             return;
         }

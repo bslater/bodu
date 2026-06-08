@@ -64,7 +64,7 @@ public readonly partial struct Money<TCurrency>
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
         var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
-        decimal[] shares = MoneyMath.AllocateByRatios(_amount, minorUnits, ratios);
+        var shares = MoneyMath.AllocateByRatios(_amount, minorUnits, ratios);
 
         var result = new Money<TCurrency>[shares.Length];
         for (var i = 0; i < shares.Length; i++)

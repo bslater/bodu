@@ -61,7 +61,8 @@ public sealed class CustomAdjustmentTests
     /// <summary>
     /// A custom handler that shifts an occurrence forward by ten days.
     /// </summary>
-    private sealed class ShiftTenHandler : IAdjustmentHandler
+    private sealed class ShiftTenHandler
+        : IAdjustmentHandler
     {
         /// <inheritdoc />
         public DateOnly? Adjust(AdjustmentHandlerContext context) =>

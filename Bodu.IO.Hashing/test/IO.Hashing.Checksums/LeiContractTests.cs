@@ -16,7 +16,8 @@ namespace Bodu.IO.Hashing.Checksums.Contracts;
 /// payload.
 /// </summary>
 [TestClass]
-public sealed class LeiContractTests : MultiCharCheckDigitContractTests<Lei>
+public sealed class LeiContractTests
+    : MultiCharCheckDigitContractTests<Lei>
 {
     /// <inheritdoc />
     protected override string Compute(string payload) =>

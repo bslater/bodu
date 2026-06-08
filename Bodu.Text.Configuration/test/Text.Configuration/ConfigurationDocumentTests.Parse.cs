@@ -31,7 +31,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Parse_WhenInputIsMinimalFixture_ShouldPopulateSingleSection()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.Minimal);
+        var doc = ConfigurationDocument.Parse(ConfigurationFixtures.Minimal);
 
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("*", doc.Sections[0].Name);
@@ -45,8 +45,8 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Parse_WhenInputUsesCrLf_ShouldProduceSameDocumentAsLf()
     {
-        ConfigurationDocument lf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
-        ConfigurationDocument crlf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative.Replace("\n", "\r\n"));
+        var lf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
+        var crlf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative.Replace("\n", "\r\n"));
 
         Assert.HasCount(lf.Sections.Count, crlf.Sections);
         Assert.HasCount(lf.GlobalSection.Entries.Count, crlf.GlobalSection.Entries);

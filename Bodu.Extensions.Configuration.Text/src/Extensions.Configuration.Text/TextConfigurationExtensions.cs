@@ -58,8 +58,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <see cref="IFileProvider" />. The convention overload uses the builder's default <see cref="IFileProvider" />; note
 /// that <see cref="IFileProvider" /> implementations such as
 /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default —
-/// see the remarks on <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround required to
-/// surface <c>.boduconfig</c>.
+/// see the remarks on <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
+/// required to surface <c>.boduconfig</c>.
 /// </para>
 /// </remarks>
 /// <example>
@@ -309,8 +309,8 @@ public static class TextConfigurationExtensions
 
     /// <summary>
     /// Adds an already-parsed <see cref="IniDocumentBase" /> (such as a <see cref="ConfigurationDocument" />) to the
-    /// configuration. The document is resolved against
-    /// <paramref name="targetPath" /> and the resulting key/value map is added via
+    /// configuration. The document is resolved against <paramref name="targetPath" /> and the resulting key/value map
+    /// is added via
     /// <see cref="MemoryConfigurationBuilderExtensions.AddInMemoryCollection(IConfigurationBuilder, IEnumerable{KeyValuePair{string, string?}}?)" />
     /// .
     /// </summary>

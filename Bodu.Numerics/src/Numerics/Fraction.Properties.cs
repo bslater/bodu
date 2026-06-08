@@ -15,7 +15,7 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <returns><see langword="true" /> if this value equals zero; otherwise, <see langword="false" />.</returns>
     public bool IsZero =>
-        T.IsZero(_numerator);
+        T.IsZero(Numerator);
 
     /// <summary>
     /// Gets a value indicating whether this rational value is an exact integer.
@@ -50,7 +50,7 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <returns><see langword="true" /> if this value is less than zero; otherwise, <see langword="false" />.</returns>
     public bool IsNegative =>
-        T.IsNegative(_numerator);
+        T.IsNegative(Numerator);
 
     /// <summary>
     /// Gets a value indicating whether this rational value is positive.
@@ -59,7 +59,7 @@ public readonly partial struct Fraction<T>
     /// <see langword="true" /> if this value is greater than zero; otherwise, <see langword="false" />.
     /// </returns>
     public bool IsPositive =>
-        !T.IsZero(_numerator) && !T.IsNegative(_numerator);
+        !T.IsZero(Numerator) && !T.IsNegative(Numerator);
 
     /// <summary>
     /// Gets a value indicating whether this rational value is a whole number.

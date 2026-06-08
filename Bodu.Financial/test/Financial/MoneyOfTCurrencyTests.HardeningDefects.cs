@@ -27,7 +27,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag that reports a null ISO code — invalid.
     /// </summary>
-    private sealed class NullIsoCurrency : ICurrency
+    private sealed class NullIsoCurrency
+        : ICurrency
     {
         public static string IsoCode => null!;
         public static int MinorUnits => 2;
@@ -36,7 +37,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag that reports an empty ISO code — invalid.
     /// </summary>
-    private sealed class EmptyIsoCurrency : ICurrency
+    private sealed class EmptyIsoCurrency
+        : ICurrency
     {
         public static string IsoCode => string.Empty;
         public static int MinorUnits => 2;
@@ -45,7 +47,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag whose ISO code is the wrong length — invalid.
     /// </summary>
-    private sealed class WrongLengthIsoCurrency : ICurrency
+    private sealed class WrongLengthIsoCurrency
+        : ICurrency
     {
         public static string IsoCode => "USDX";
         public static int MinorUnits => 2;
@@ -54,7 +57,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag whose ISO code is lowercase — invalid (ISO 4217 is uppercase).
     /// </summary>
-    private sealed class LowercaseIsoCurrency : ICurrency
+    private sealed class LowercaseIsoCurrency
+        : ICurrency
     {
         public static string IsoCode => "usd";
         public static int MinorUnits => 2;
@@ -63,7 +67,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag whose ISO code contains non-letter characters — invalid.
     /// </summary>
-    private sealed class NonLetterIsoCurrency : ICurrency
+    private sealed class NonLetterIsoCurrency
+        : ICurrency
     {
         public static string IsoCode => "U$D";
         public static int MinorUnits => 2;
@@ -151,7 +156,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A currency tag that reports a negative cash-rounding increment — invalid.
     /// </summary>
-    private sealed class NegativeCashIncrementCurrency : ICurrency
+    private sealed class NegativeCashIncrementCurrency
+        : ICurrency
     {
         public static string IsoCode => "XQN";
         public static int MinorUnits => 2;
@@ -162,7 +168,8 @@ public partial class MoneyOfTCurrencyTests
     /// A currency tag whose cash-rounding increment has finer precision than its minor-unit precision — invalid.
     /// A 2-dp currency cannot meaningfully round to 0.001 increments.
     /// </summary>
-    private sealed class FinerCashIncrementCurrency : ICurrency
+    private sealed class FinerCashIncrementCurrency
+        : ICurrency
     {
         public static string IsoCode => "XQF";
         public static int MinorUnits => 2;
@@ -283,7 +290,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A test-only currency tag with IsoCode "USD".
     /// </summary>
-    private sealed class TestUsdAlpha : ICurrency
+    private sealed class TestUsdAlpha
+        : ICurrency
     {
         public static string IsoCode => "USD";
         public static int MinorUnits => 2;
@@ -292,7 +300,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A second test-only currency tag also reporting IsoCode "USD".
     /// </summary>
-    private sealed class TestUsdBeta : ICurrency
+    private sealed class TestUsdBeta
+        : ICurrency
     {
         public static string IsoCode => "USD";
         public static int MinorUnits => 2;

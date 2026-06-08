@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ChristianProtestantKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,7 +64,7 @@ public sealed class ChristianProtestantKnownAnswerTests
 
         Assert.AreEqual(new DateOnly(year, month, day), feast.Date, $"reformation-sunday {year}");
         Assert.AreEqual(DayOfWeek.Sunday, feast.Date.DayOfWeek, $"reformation-sunday {year} must be a Sunday");
-        Assert.IsTrue(feast.Date <= new DateOnly(year, 10, 31), $"reformation-sunday {year} must fall on or before 31 October");
+        Assert.IsLessThanOrEqualTo(new DateOnly(year, 10, 31), feast.Date, $"reformation-sunday {year} must fall on or before 31 October");
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public sealed class ChristianProtestantKnownAnswerTests
 
         Assert.AreEqual(new DateOnly(year, month, day), feast.Date, $"all-saints-sunday {year}");
         Assert.AreEqual(DayOfWeek.Sunday, feast.Date.DayOfWeek, $"all-saints-sunday {year} must be a Sunday");
-        Assert.IsTrue(feast.Date >= new DateOnly(year, 11, 1), $"all-saints-sunday {year} must fall on or after 1 November");
+        Assert.IsGreaterThanOrEqualTo(new DateOnly(year, 11, 1), feast.Date, $"all-saints-sunday {year} must fall on or after 1 November");
     }
 
     /// <summary>

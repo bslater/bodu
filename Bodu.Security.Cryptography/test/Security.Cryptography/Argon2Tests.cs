@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2Tests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,10 +24,10 @@ public class Argon2Tests
     /// </summary>
     public static IEnumerable<object[]> Rfc9106Vectors()
     {
-        byte[] password = Repeat(0x01, 32);
-        byte[] salt = Repeat(0x02, 16);
-        byte[] secret = Repeat(0x03, 8);
-        byte[] associatedData = Repeat(0x04, 12);
+        var password = Repeat(0x01, 32);
+        var salt = Repeat(0x02, 16);
+        var secret = Repeat(0x03, 8);
+        var associatedData = Repeat(0x04, 12);
 
         yield return [new KdfKnownAnswerVector
         {
@@ -75,7 +75,7 @@ public class Argon2Tests
             AssociatedData = vector.AssociatedData,
         };
 
-        byte[] tag = DeriveKey(vector.Variant, vector.Password, vector.Salt, parameters);
+        var tag = DeriveKey(vector.Variant, vector.Password, vector.Salt, parameters);
 
         Assert.AreEqual(vector.ExpectedHex, Convert.ToHexString(tag).ToLowerInvariant());
     }
@@ -87,11 +87,11 @@ public class Argon2Tests
     public void DeriveKey_WhenInstanceAndStatic_ShouldProduceIdenticalTags()
     {
         var parameters = new Argon2Parameters { MemoryKiB = 64, Iterations = 2, Parallelism = 2 };
-        byte[] password = Encoding.UTF8.GetBytes("correct horse battery staple");
-        byte[] salt = Repeat(0x05, 16);
+        var password = Encoding.UTF8.GetBytes("correct horse battery staple");
+        var salt = Repeat(0x05, 16);
 
-        byte[] instance = new Argon2id(parameters).GetBytes(password, salt);
-        byte[] @static = Argon2id.DeriveKey(password, salt, parameters);
+        var instance = new Argon2id(parameters).GetBytes(password, salt);
+        var @static = Argon2id.DeriveKey(password, salt, parameters);
 
         CollectionAssert.AreEqual(instance, @static);
     }
@@ -103,10 +103,10 @@ public class Argon2Tests
     public void Verify_WhenPasswordMatchesEncodedHash_ShouldReturnTrue()
     {
         var parameters = new Argon2Parameters { MemoryKiB = 64, Iterations = 2, Parallelism = 1 };
-        byte[] password = Encoding.UTF8.GetBytes("hunter2");
-        byte[] salt = Repeat(0x07, 16);
+        var password = Encoding.UTF8.GetBytes("hunter2");
+        var salt = Repeat(0x07, 16);
 
-        string encoded = Argon2id.Hash(password, salt, parameters);
+        var encoded = Argon2id.Hash(password, salt, parameters);
 
         Assert.IsTrue(Argon2id.Verify(encoded, password));
         Assert.IsTrue(Argon2.Verify(encoded, password));
@@ -119,7 +119,7 @@ public class Argon2Tests
     public void Verify_WhenPasswordDoesNotMatch_ShouldReturnFalse()
     {
         var parameters = new Argon2Parameters { MemoryKiB = 64, Iterations = 2, Parallelism = 1 };
-        string encoded = Argon2id.Hash(Encoding.UTF8.GetBytes("hunter2"), Repeat(0x07, 16), parameters);
+        var encoded = Argon2id.Hash(Encoding.UTF8.GetBytes("hunter2"), Repeat(0x07, 16), parameters);
 
         Assert.IsFalse(Argon2id.Verify(encoded, Encoding.UTF8.GetBytes("hunter3")));
     }
@@ -130,10 +130,10 @@ public class Argon2Tests
     [TestMethod]
     public void Verify_WhenSecretSupplied_ShouldRoundTrip()
     {
-        byte[] secret = Repeat(0x09, 16);
+        var secret = Repeat(0x09, 16);
         var parameters = new Argon2Parameters { MemoryKiB = 64, Iterations = 2, Parallelism = 1, Secret = secret };
-        byte[] password = Encoding.UTF8.GetBytes("p@ssword");
-        string encoded = Argon2id.Hash(password, Repeat(0x07, 16), parameters);
+        var password = Encoding.UTF8.GetBytes("p@ssword");
+        var encoded = Argon2id.Hash(password, Repeat(0x07, 16), parameters);
 
         Assert.IsTrue(Argon2id.Verify(encoded, password, secret));
         Assert.IsFalse(Argon2id.Verify(encoded, password));
@@ -146,8 +146,8 @@ public class Argon2Tests
     public void Verify_WhenVariantDiffers_ShouldReturnFalse()
     {
         var parameters = new Argon2Parameters { MemoryKiB = 64, Iterations = 2, Parallelism = 1 };
-        byte[] password = Encoding.UTF8.GetBytes("hunter2");
-        string encoded = Argon2id.Hash(password, Repeat(0x07, 16), parameters);
+        var password = Encoding.UTF8.GetBytes("hunter2");
+        var encoded = Argon2id.Hash(password, Repeat(0x07, 16), parameters);
 
         Assert.IsFalse(Argon2i.Verify(encoded, password));
         Assert.IsFalse(Argon2d.Verify(encoded, password));
@@ -159,7 +159,7 @@ public class Argon2Tests
     [TestMethod]
     public void Constructor_WhenParallelismIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new Argon2id(new Argon2Parameters { MemoryKiB = 64, Iterations = 1, Parallelism = 0 });
         });
@@ -173,7 +173,7 @@ public class Argon2Tests
     [TestMethod]
     public void Constructor_WhenMemoryBelowFloor_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new Argon2id(new Argon2Parameters { MemoryKiB = 4, Iterations = 1, Parallelism = 4 });
         });
@@ -189,7 +189,7 @@ public class Argon2Tests
     {
         var argon2 = new Argon2id(new Argon2Parameters { MemoryKiB = 64, Iterations = 1, Parallelism = 1 });
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = argon2.GetBytes(Encoding.UTF8.GetBytes("pw"), Repeat(0x01, 4));
         });
@@ -216,7 +216,7 @@ public class Argon2Tests
     [TestCategory("Smoke")]
     public void DeriveKey_WhenGivenSimpleInput_ShouldReturnTagOfConfiguredLength()
     {
-        byte[] tag = Argon2id.DeriveKey(
+        var tag = Argon2id.DeriveKey(
             Encoding.UTF8.GetBytes("password"),
             Repeat(0x02, 16),
             new Argon2Parameters { MemoryKiB = 64, Iterations = 1, Parallelism = 1, TagLength = 32 });
@@ -248,7 +248,7 @@ public class Argon2Tests
     /// </summary>
     private static byte[] Repeat(byte value, int count)
     {
-        byte[] result = new byte[count];
+        var result = new byte[count];
         Array.Fill(result, value);
         return result;
     }

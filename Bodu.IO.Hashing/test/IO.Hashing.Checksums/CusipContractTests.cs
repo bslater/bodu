@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.Checksums.Contracts;
 /// Apple Inc. and Microsoft Corp. published CUSIP body vectors.
 /// </summary>
 [TestClass]
-public sealed class CusipContractTests : CheckDigitContractTests<Cusip>
+public sealed class CusipContractTests
+    : CheckDigitContractTests<Cusip>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.Add.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -175,7 +175,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         Assert.AreEqual(expected.Length, buffer.Count);
 
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         for (var i = 0; i < expected.Length; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(expected[i].Day), observations[i].Date);

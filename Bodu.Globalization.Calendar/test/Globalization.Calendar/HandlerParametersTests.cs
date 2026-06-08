@@ -67,7 +67,8 @@ public sealed class HandlerParametersTests
     /// <summary>
     /// A custom action handler that shifts the base date by the policy's <c>days</c> parameter.
     /// </summary>
-    private sealed class ShiftByParameterHandler : IAdjustmentHandler
+    private sealed class ShiftByParameterHandler
+        : IAdjustmentHandler
     {
         /// <inheritdoc />
         public DateOnly? Adjust(AdjustmentHandlerContext context) =>
@@ -79,7 +80,8 @@ public sealed class HandlerParametersTests
     /// <summary>
     /// A custom trigger handler that fires only when its <c>fire</c> parameter equals <c>yes</c>.
     /// </summary>
-    private sealed class ParameterTriggerHandler : IAdjustmentTriggerHandler
+    private sealed class ParameterTriggerHandler
+        : IAdjustmentTriggerHandler
     {
         /// <inheritdoc />
         public bool ShouldAdjust(AdjustmentTriggerContext context) =>

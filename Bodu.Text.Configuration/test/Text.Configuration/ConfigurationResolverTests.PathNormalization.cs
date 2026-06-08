@@ -20,7 +20,7 @@ public partial class ConfigurationResolverTests
 [src/**/*.cs]
 format.indent.size = 2
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationView windowsStyle = doc.Resolve(@"src\Foo.cs");
         ConfigurationView unixStyle = doc.Resolve("src/Foo.cs");
@@ -39,7 +39,7 @@ format.indent.size = 2
 [Foo.cs]
 format.indent.size = 2
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new() { PathRoot = "/project" };
         ConfigurationView view = doc.Resolve("/project/Foo.cs", options);
@@ -60,7 +60,7 @@ format.indent.size = 2
 [src/Foo.cs]
 format.indent.size = 2
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
 
         // Default PathComparison is Ordinal (case-sensitive); the root "/project" does not match "/Project/...".
         ConfigurationResolveOptions options = new() { PathRoot = "/project" };
@@ -80,7 +80,7 @@ format.indent.size = 2
 [src/Foo.cs]
 format.indent.size = 2
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new()
         {
@@ -100,7 +100,7 @@ format.indent.size = 2
     public void Resolve_WhenMissingPathRootModeIsThrow_ShouldThrowExactly()
     {
         const string fixture = "application.name = Bodu\n";
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new()
         {

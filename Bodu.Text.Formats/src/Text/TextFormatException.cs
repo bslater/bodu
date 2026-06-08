@@ -19,7 +19,8 @@ namespace Bodu.Text;
 /// report an offset.
 /// </para>
 /// </remarks>
-public abstract class TextFormatException : FormatException
+public abstract class TextFormatException
+    : FormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TextFormatException" /> class.

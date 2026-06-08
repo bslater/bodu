@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2Parameters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -91,12 +91,8 @@ public sealed record Argon2Parameters
     /// <summary>
     /// Validates the cost parameters against the ranges permitted by RFC 9106, Section 3.1.
     /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter falls outside its permitted range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// The version code is neither 0x10 nor 0x13.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">A cost parameter falls outside its permitted range.</exception>
+    /// <exception cref="ArgumentException">The version code is neither 0x10 nor 0x13.</exception>
     internal void Validate()
     {
         if (Parallelism is < 1 or > MaxParallelism)
@@ -116,7 +112,7 @@ public sealed record Argon2Parameters
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2TagLength, MinTagLength));
 
         // m must be at least 8 * p kibibytes (RFC 9106 Section 3.1).
-        long minMemory = 8L * Parallelism;
+        var minMemory = 8L * Parallelism;
         if (MemoryKiB < minMemory)
             throw new ArgumentOutOfRangeException(
                 nameof(MemoryKiB),

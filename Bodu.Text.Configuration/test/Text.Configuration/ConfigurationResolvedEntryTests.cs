@@ -26,7 +26,7 @@ public class ConfigurationResolvedEntryTests
         const string fixture = """
 service.name = Bodu
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationView view = doc.Resolve("any.cs");
 
         ConfigurationResolvedEntry? entry = view.GetEntry("service:name");
@@ -47,7 +47,7 @@ service.name = Bodu
 [*.cs]
 format.indent.size = 4
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationView view = doc.Resolve("Foo.cs");
 
         ConfigurationResolvedEntry? entry = view.GetEntry("format:indent:size");
@@ -70,7 +70,7 @@ format.indent.size = 4
 [src/**/*.cs]
 format.indent.size = 2
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationView view = doc.Resolve("src/Foo.cs");
 
         ConfigurationResolvedEntry? entry = view.GetEntry("format:indent:size");
@@ -92,7 +92,7 @@ service.name = Preamble
 [*.cs]
 service.name = Section
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationView view = doc.Resolve("Foo.cs");
 
         ConfigurationResolvedEntry? entry = view.GetEntry("service:name");
@@ -109,7 +109,7 @@ service.name = Section
     [TestMethod]
     public void GetEntry_WhenKeyIsAbsent_ShouldReturnNull()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("service.name = Bodu\n");
+        var doc = ConfigurationDocument.Parse("service.name = Bodu\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsNull(view.GetEntry("missing:key"));
@@ -122,7 +122,7 @@ service.name = Section
     [TestMethod]
     public void GetEntry_WhenKeyIsDottedForm_ShouldStillResolve()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("service.name = Bodu\n");
+        var doc = ConfigurationDocument.Parse("service.name = Bodu\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         ConfigurationResolvedEntry? viaDotted = view.GetEntry("service.name");
@@ -140,7 +140,7 @@ service.name = Section
     [TestMethod]
     public void GetEntry_WhenKeyIsNull_ShouldThrowExactly()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("service.name = Bodu\n");
+        var doc = ConfigurationDocument.Parse("service.name = Bodu\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = view.GetEntry(null!));
@@ -159,7 +159,7 @@ service.name = Bodu
 [*.cs]
 format.indent.size = 4
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationView view = doc.Resolve("Foo.cs");
 
         var keys = new HashSet<string>();
@@ -183,7 +183,7 @@ format.indent.size = 4
         // Line 3: [*.cs]
         // Line 4: format.indent.size = 4
         const string fixture = "service.name = Bodu\n\n[*.cs]\nformat.indent.size = 4\n";
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationView view = doc.Resolve("Foo.cs");
 
         ConfigurationResolvedEntry preamble = view.GetEntry("service:name")!;
@@ -207,7 +207,7 @@ format.indent.size = 4
 [generated/**]
 format.indent.size = unset
 """;
-        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
+        var doc = ConfigurationDocument.Parse(fixture);
         ConfigurationResolveOptions options = new() { UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue };
         ConfigurationView view = doc.Resolve("generated/Foo.cs", options);
 

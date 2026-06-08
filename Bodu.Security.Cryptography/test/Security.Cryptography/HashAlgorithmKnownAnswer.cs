@@ -19,7 +19,8 @@ namespace Bodu.Security.Cryptography;
 /// quick-brown-fox sentence, sixteen zero bytes, and the <c>0x00..0xFE</c> sequence — are already covered by the typed
 /// slots on <see cref="HashAlgorithmKnownAnswers" /> and should not be duplicated here.
 /// </remarks>
-public sealed record HashAlgorithmKnownAnswer : IKat
+public sealed record HashAlgorithmKnownAnswer
+    : IKat
 {
     /// <summary>
     /// Gets the semantic name of this test vector used in diagnostic messages.

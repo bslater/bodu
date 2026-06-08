@@ -14,7 +14,8 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use <see cref="ConfigurationExtensions.Resolve(Bodu.Text.Ini.IniDocumentBase, string?, ConfigurationResolveOptions?)" />
+/// Use
+/// <see cref="ConfigurationExtensions.Resolve(Bodu.Text.Ini.IniDocumentBase, string?, ConfigurationResolveOptions?)" />
 /// to obtain a view for a target path. The view is a one-shot snapshot — subsequent mutation of the originating
 /// document does not retroactively update the view.
 /// </para>
@@ -122,7 +123,9 @@ public sealed partial class ConfigurationView
     /// </summary>
     /// <param name="key">The raw lookup key.</param>
     /// <param name="canonical">When this method returns <see langword="true" />, the canonical key path.</param>
-    /// <returns><see langword="true" /> when <paramref name="key" /> was canonicalized; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="key" /> was canonicalized; otherwise, <see langword="false" />.
+    /// </returns>
     private bool TryCanonicalize(string key, out string canonical)
     {
         if (ConfigurationKey.TryParse(key, _keyOptions, out ConfigurationKey parsed))
@@ -204,8 +207,7 @@ public sealed partial class ConfigurationView
     }
 
     /// <summary>
-    /// Gets the values present in the resolved view. Satisfies
-    /// <see cref="IReadOnlyDictionary{TKey, TValue}.Values" />.
+    /// Gets the values present in the resolved view. Satisfies <see cref="IReadOnlyDictionary{TKey, TValue}.Values" />.
     /// </summary>
     /// <returns>An enumerable of the resolved values.</returns>
     IEnumerable<string?> IReadOnlyDictionary<string, string?>.Values =>

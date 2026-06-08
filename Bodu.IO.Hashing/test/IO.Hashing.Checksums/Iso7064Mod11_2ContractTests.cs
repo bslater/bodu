@@ -15,7 +15,8 @@ namespace Bodu.IO.Hashing.Checksums.Contracts;
 /// algorithm's output alphabet includes the multiplicative <c>'X'</c> sentinel.
 /// </summary>
 [TestClass]
-public sealed class Iso7064Mod11_2ContractTests : CheckDigitContractTests<Iso7064Mod11_2>
+public sealed class Iso7064Mod11_2ContractTests
+    : CheckDigitContractTests<Iso7064Mod11_2>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

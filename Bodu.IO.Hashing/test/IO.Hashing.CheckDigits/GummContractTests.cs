@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// single-error / transposition detection proof stays in <c>GummTests.ErrorDetection</c>.
 /// </summary>
 [TestClass]
-public sealed class GummContractTests : CheckDigitContractTests<Gumm>
+public sealed class GummContractTests
+    : CheckDigitContractTests<Gumm>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

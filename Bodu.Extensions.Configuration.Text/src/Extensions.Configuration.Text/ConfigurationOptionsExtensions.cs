@@ -18,9 +18,9 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <para>
 /// These helpers are thin shims over
 /// <c>Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure</c>; they
-/// exist purely to keep the call-site short and discoverable for consumers who reach for an <c>AddBoduConfiguration*</c>
-/// API by name. Callers comfortable with <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> binding may
-/// continue to call
+/// exist purely to keep the call-site short and discoverable for consumers who reach for an
+/// <c>AddBoduConfiguration*</c> API by name. Callers comfortable with
+/// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> binding may continue to call
 /// <see cref="Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, IConfiguration)" />
 /// directly.
 /// </para>

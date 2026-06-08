@@ -14,7 +14,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <summary>
 /// A test algorithm placing the occurrence on 1 July.
 /// </summary>
-public sealed class TestDayAlgorithm : INotableDateAlgorithm
+public sealed class TestDayAlgorithm
+    : INotableDateAlgorithm
 {
     /// <inheritdoc />
     public DateOnly? Calculate(int year) =>
@@ -24,7 +25,8 @@ public sealed class TestDayAlgorithm : INotableDateAlgorithm
 /// <summary>
 /// A test plugin contributing a single custom algorithm under the key <c>test-day</c>.
 /// </summary>
-public sealed class TestPlugin : INotableDateAlgorithmPlugin
+public sealed class TestPlugin
+    : INotableDateAlgorithmPlugin
 {
     /// <inheritdoc />
     public string Name => "Test Plugin";

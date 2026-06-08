@@ -31,9 +31,9 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenRepresentativeFixture_ShouldPreserveCountsAndOrder()
     {
-        ConfigurationDocument first = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
+        var first = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
         var emitted = Emit(first);
-        ConfigurationDocument second = ConfigurationDocument.Parse(emitted);
+        var second = ConfigurationDocument.Parse(emitted);
 
         Assert.HasCount(first.Sections.Count, second.Sections);
         Assert.HasCount(first.GlobalSection.Entries.Count, second.GlobalSection.Entries);
@@ -51,8 +51,8 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenLeadingCommentsPresent_ShouldPreserveLeadingComments()
     {
-        ConfigurationDocument first = ConfigurationDocument.Parse(ConfigurationFixtures.CommentsAndProperties);
-        ConfigurationDocument second = ConfigurationDocument.Parse(Emit(first));
+        var first = ConfigurationDocument.Parse(ConfigurationFixtures.CommentsAndProperties);
+        var second = ConfigurationDocument.Parse(Emit(first));
 
         Assert.HasCount(first.Sections[0].LeadingComments.Count, second.Sections[0].LeadingComments);
         Assert.HasCount(first.Sections[0].Entries[0].LeadingComments.Count, second.Sections[0].Entries[0].LeadingComments);
@@ -64,8 +64,8 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenInlineCommentsPresent_ShouldPreserveInlineComments()
     {
-        ConfigurationDocument first = ConfigurationDocument.Parse(ConfigurationFixtures.InlineComments);
-        ConfigurationDocument second = ConfigurationDocument.Parse(Emit(first));
+        var first = ConfigurationDocument.Parse(ConfigurationFixtures.InlineComments);
+        var second = ConfigurationDocument.Parse(Emit(first));
 
         IniEntry original = first.Sections[0].Entries[0];
         IniEntry reparsed = second.Sections[0].Entries[0];
@@ -80,8 +80,8 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenPreambleContainsRoot_ShouldPreserveRoot()
     {
-        ConfigurationDocument first = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
-        ConfigurationDocument second = ConfigurationDocument.Parse(Emit(first));
+        var first = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
+        var second = ConfigurationDocument.Parse(Emit(first));
 
         Assert.AreEqual(first.GlobalSection["root"], second.GlobalSection["root"]);
     }
@@ -100,7 +100,7 @@ public partial class ConfigurationDocumentTests
         section.SetEntry("format.indent.size", "4");
         section.SetEntry("format.indent.style", "space");
 
-        ConfigurationDocument reparsed = ConfigurationDocument.Parse(Emit(doc));
+        var reparsed = ConfigurationDocument.Parse(Emit(doc));
 
         Assert.AreEqual("true", reparsed.GlobalSection["root"]);
         Assert.HasCount(1, reparsed.Sections);

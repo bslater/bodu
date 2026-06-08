@@ -17,7 +17,8 @@ namespace Bodu.Financial;
 /// amounts consistently throughout a single accounting workflow.
 /// </para>
 /// </remarks>
-public sealed class DatedExchangeRateProviderAdapter : IExchangeRateProvider
+public sealed class DatedExchangeRateProviderAdapter
+    : IExchangeRateProvider
 {
     /// <summary>
     /// The underlying dated provider that resolves the actual rate.

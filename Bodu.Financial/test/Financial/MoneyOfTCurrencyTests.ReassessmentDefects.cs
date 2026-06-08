@@ -280,7 +280,8 @@ public partial class MoneyOfTCurrencyTests
     /// A minimal <see cref="IExchangeRateProvider" /> that returns a fixed rate for every pair, used to drive the
     /// bag's defensive zero/negative-rate check independently of <see cref="FixedExchangeRateTable" />.
     /// </summary>
-    private sealed class ConstantRateProvider : IExchangeRateProvider
+    private sealed class ConstantRateProvider
+        : IExchangeRateProvider
     {
         /// <summary>
         /// The fixed rate this provider returns from every lookup.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2Blake2b.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,8 +67,8 @@ internal static class Argon2Blake2b
     ];
 
     /// <summary>
-    /// Computes the unkeyed BLAKE2b digest of <paramref name="input" /> with an arbitrary output length and writes it to
-    /// <paramref name="output" />.
+    /// Computes the unkeyed BLAKE2b digest of <paramref name="input" /> with an arbitrary output length and writes it
+    /// to <paramref name="output" />.
     /// </summary>
     /// <param name="input">The message to hash.</param>
     /// <param name="output">The destination buffer; its length determines the digest size (1–64 bytes).</param>
@@ -89,8 +89,8 @@ internal static class Argon2Blake2b
         Span<ulong> m = stackalloc ulong[16];
 
         ulong counter = 0;
-        int offset = 0;
-        int remaining = input.Length;
+        var offset = 0;
+        var remaining = input.Length;
 
         // Process all but the final block (BLAKE2b always finalizes exactly one block, even for empty input).
         while (remaining > BlockSizeBytes)
@@ -112,7 +112,7 @@ internal static class Argon2Blake2b
 
         // Serialize the state little-endian and truncate to the requested length.
         Span<byte> digest = stackalloc byte[MaxDigestBytes];
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             BinaryPrimitives.WriteUInt64LittleEndian(digest.Slice(i * 8, 8), h[i]);
 
         digest[..output.Length].CopyTo(output);
@@ -130,10 +130,10 @@ internal static class Argon2Blake2b
     /// </remarks>
     internal static void HashVariableLength(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int outLen = output.Length;
+        var outLen = output.Length;
 
         // Prefix the little-endian 32-bit output length.
-        byte[] prefixed = new byte[4 + input.Length];
+        var prefixed = new byte[4 + input.Length];
         BinaryPrimitives.WriteInt32LittleEndian(prefixed, outLen);
         input.CopyTo(prefixed.AsSpan(4));
 
@@ -146,7 +146,7 @@ internal static class Argon2Blake2b
 
         // r = ceil(T / 32) - 2 full 64-byte digests contribute their first 32 bytes; the final
         // (r+1)-th digest is sized to the remaining bytes (RFC 9106, Figure 8).
-        int r = ((outLen + 31) / 32) - 2;
+        var r = ((outLen + 31) / 32) - 2;
 
         Span<byte> v = stackalloc byte[MaxDigestBytes];
         Hash(prefixed, v);                 // V_1
@@ -154,7 +154,7 @@ internal static class Argon2Blake2b
 
         v[..32].CopyTo(output[..32]);      // W_1
 
-        for (int i = 2; i <= r; i++)
+        for (var i = 2; i <= r; i++)
         {
             Hash(v, v);                    // V_i
             v[..32].CopyTo(output.Slice((i - 1) * 32, 32));   // W_i
@@ -173,7 +173,7 @@ internal static class Argon2Blake2b
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void LoadBlock(ReadOnlySpan<byte> block, Span<ulong> m)
     {
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
             m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
     }
 
@@ -182,10 +182,10 @@ internal static class Argon2Blake2b
     /// </summary>
     /// <param name="h">The eight-word chaining state, updated in place.</param>
     /// <param name="m">The sixteen message words for this block.</param>
-    /// <param name="counter">The total number of input bytes processed so far (low 64 bits; high word is zero here).</param>
-    /// <param name="last">
-    /// <see langword="true" /> when this is the final block, applying the finalization flag.
+    /// <param name="counter">
+    /// The total number of input bytes processed so far (low 64 bits; high word is zero here).
     /// </param>
+    /// <param name="last"><see langword="true" /> when this is the final block, applying the finalization flag.</param>
     private static void Compress(Span<ulong> h, ReadOnlySpan<ulong> m, ulong counter, bool last)
     {
         Span<ulong> v = stackalloc ulong[16];
@@ -197,9 +197,9 @@ internal static class Argon2Blake2b
         if (last)
             v[14] ^= 0xFFFF_FFFF_FFFF_FFFFUL;
 
-        for (int round = 0; round < 12; round++)
+        for (var round = 0; round < 12; round++)
         {
-            byte[] s = s_sigma[round];
+            var s = s_sigma[round];
 
             Mix(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
             Mix(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
@@ -212,7 +212,7 @@ internal static class Argon2Blake2b
             Mix(v, 3, 4, 9, 14, m[s[14]], m[s[15]]);
         }
 
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             h[i] ^= v[i] ^ v[i + 8];
     }
 

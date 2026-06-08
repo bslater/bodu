@@ -11,14 +11,14 @@ namespace Bodu.Text.Ini;
 
 /// <summary>
 /// Represents a single key/value entry within an <see cref="IniSection" />. The key and value are immutable data;
-/// callers assemble documents programmatically through the owning <see cref="IniSection" /> and may edit comment
-/// trivia before calling <see cref="Ini.Format(IniDocument)" />.
+/// callers assemble documents programmatically through the owning <see cref="IniSection" /> and may edit comment trivia
+/// before calling <see cref="Ini.Format(IniDocument)" />.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <see cref="Key" /> and <see cref="Value" /> are immutable once constructed: the owning section maintains a
-/// key-to-entry lookup that depends on the key, and the value forms the entry's data identity. To change a value,
-/// call <see cref="IniSection.SetEntry(string, string)" />, which replaces the entry while preserving its trivia.
+/// key-to-entry lookup that depends on the key, and the value forms the entry's data identity. To change a value, call
+/// <see cref="IniSection.SetEntry(string, string)" />, which replaces the entry while preserving its trivia.
 /// </para>
 /// <para>
 /// The comment trivia — <see cref="InlineComment" /> and the <see cref="LeadingComments" /> list — remains editable so

@@ -20,7 +20,8 @@ namespace Bodu.Financial;
 /// them.
 /// </para>
 /// </remarks>
-public sealed class CompositeDatedExchangeRateProvider : IDatedExchangeRateProvider
+public sealed class CompositeDatedExchangeRateProvider
+    : IDatedExchangeRateProvider
 {
     /// <summary>
     /// The ordered providers consulted on every lookup.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="JsonDocumentNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -131,7 +131,9 @@ internal sealed class JsonDocumentNode
     /// </summary>
     /// <param name="name">The property name.</param>
     /// <param name="value">When this method returns, the property value, or the default when absent.</param>
-    /// <returns><see langword="true" /> when a non-null property was found; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a non-null property was found; otherwise <see langword="false" />.
+    /// </returns>
     private bool TryGetProperty(string name, out JsonElement value)
     {
         if (_element.ValueKind == JsonValueKind.Object)

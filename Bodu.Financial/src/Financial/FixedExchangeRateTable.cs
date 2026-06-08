@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedExchangeRateTable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,8 @@ namespace Bodu.Financial;
 /// table. Each entry's ISO codes and rate are validated at construction time.
 /// </para>
 /// </remarks>
-public sealed class FixedExchangeRateTable : IExchangeRateProvider
+public sealed class FixedExchangeRateTable
+    : IExchangeRateProvider
 {
     /// <summary>
     /// The underlying rate table keyed by validated <see cref="ExchangeRatePair" /> values, frozen after construction

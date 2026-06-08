@@ -15,7 +15,8 @@ namespace Bodu.IO.Hashing.Checksums.Contracts;
 /// payload, and an all-letters baseline. The algorithm emits a 2-character decimal check sequence.
 /// </summary>
 [TestClass]
-public sealed class Iso7064Mod97_10ContractTests : MultiCharCheckDigitContractTests<Iso7064Mod97_10>
+public sealed class Iso7064Mod97_10ContractTests
+    : MultiCharCheckDigitContractTests<Iso7064Mod97_10>
 {
     /// <inheritdoc />
     protected override string Compute(string payload) =>

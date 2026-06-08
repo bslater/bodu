@@ -13,7 +13,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// Wikipedia EAN-8 reference vector.
 /// </summary>
 [TestClass]
-public sealed class Ean8ContractTests : CheckDigitContractTests<Ean8>
+public sealed class Ean8ContractTests
+    : CheckDigitContractTests<Ean8>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

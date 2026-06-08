@@ -333,7 +333,8 @@ public sealed partial class EncodingExtensionsTests
     /// Tracks calls to <see cref="MemoryPool{T}.Rent(int)" /> and <see cref="IMemoryOwner{T}.Dispose" /> so that
     /// tests can assert custom pool integration.
     /// </summary>
-    private sealed class TrackingMemoryPool : MemoryPool<byte>
+    private sealed class TrackingMemoryPool
+        : MemoryPool<byte>
     {
         /// <summary>Gets the number of <see cref="Rent(int)" /> calls observed.</summary>
         public int RentCount { get; private set; }
@@ -360,7 +361,8 @@ public sealed partial class EncodingExtensionsTests
         /// Wraps an inner <see cref="IMemoryOwner{T}" /> rented from <see cref="MemoryPool{T}.Shared" /> so that
         /// disposal increments <see cref="TrackingMemoryPool.DisposeCount" /> on the owning pool.
         /// </summary>
-        private sealed class TrackingOwner : IMemoryOwner<byte>
+        private sealed class TrackingOwner
+            : IMemoryOwner<byte>
         {
             private readonly TrackingMemoryPool _owner;
             private IMemoryOwner<byte>? _inner;

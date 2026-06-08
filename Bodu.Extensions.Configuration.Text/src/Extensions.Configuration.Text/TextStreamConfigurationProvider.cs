@@ -40,7 +40,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// }
 ///]]>
 /// </example>
-public sealed class TextStreamConfigurationProvider : StreamConfigurationProvider
+public sealed class TextStreamConfigurationProvider
+    : StreamConfigurationProvider
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TextStreamConfigurationProvider" /> class backed by the supplied

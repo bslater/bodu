@@ -17,7 +17,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag that reports a negative minor-unit precision — invalid.
     /// </summary>
-    private sealed class NegativeMinorUnitsCurrency : ICurrency
+    private sealed class NegativeMinorUnitsCurrency
+        : ICurrency
     {
         /// <summary>
         /// Gets a sentinel ISO code for the test-only currency tag.
@@ -35,7 +36,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag that reports a minor-unit precision above the 28-digit cap of <see cref="decimal" />.
     /// </summary>
-    private sealed class OverflowMinorUnitsCurrency : ICurrency
+    private sealed class OverflowMinorUnitsCurrency
+        : ICurrency
     {
         /// <summary>
         /// Gets a sentinel ISO code for the test-only currency tag.
@@ -53,7 +55,8 @@ public partial class MoneyOfTCurrencyTests
     /// <summary>
     /// A custom currency tag that reports <see cref="int.MaxValue" /> — pathologically out of range.
     /// </summary>
-    private sealed class IntMaxMinorUnitsCurrency : ICurrency
+    private sealed class IntMaxMinorUnitsCurrency
+        : ICurrency
     {
         /// <summary>
         /// Gets a sentinel ISO code for the test-only currency tag.

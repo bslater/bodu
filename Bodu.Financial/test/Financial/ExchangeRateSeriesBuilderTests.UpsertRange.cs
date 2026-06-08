@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.UpsertRange.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -143,7 +143,7 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var snapshotBefore = builder.GetObservations().ToArray();
+        ExchangeRateObservation[] snapshotBefore = builder.GetObservations().ToArray();
         ExchangeRateObservation[] invalidBatch =
         [
             new(new DateOnly(2026, 6, 2), 1.55m),

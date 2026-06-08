@@ -13,7 +13,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// Wikipedia EAN-13 reference vector and an ISBN-shaped 13-digit payload.
 /// </summary>
 [TestClass]
-public sealed class Ean13ContractTests : CheckDigitContractTests<Ean13>
+public sealed class Ean13ContractTests
+    : CheckDigitContractTests<Ean13>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

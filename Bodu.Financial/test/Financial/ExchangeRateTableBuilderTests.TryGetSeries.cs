@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTableBuilderTests.TryGetSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class ExchangeRateTableBuilderTests
     {
         ExchangeRateTableBuilder table = new();
 
-        var found = table.TryGetSeries(s_usdAud, "RBA", out var series);
+        var found = table.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? series);
 
         Assert.IsFalse(found);
         Assert.IsNull(series);
@@ -33,7 +33,7 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateTableBuilder table = new();
         table.GetOrAddSeries(s_usdAud, "RBA");
 
-        var found = table.TryGetSeries(s_usdAud, "RBA", out var series);
+        var found = table.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? series);
 
         Assert.IsFalse(found);
         Assert.IsNull(series);
@@ -49,7 +49,7 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
-        var found = table.TryGetSeries(s_usdAud, "RBA", out var series);
+        var found = table.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? series);
 
         Assert.IsTrue(found);
         Assert.IsNotNull(series);
@@ -68,7 +68,7 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
-        Assert.IsTrue(table.TryGetSeries(s_usdAud, "RBA", out var snapshot));
+        Assert.IsTrue(table.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? snapshot));
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 99m);
 
         Assert.IsTrue(snapshot!.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out var rate));

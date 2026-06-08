@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ServiceProviderExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -56,7 +56,8 @@ public sealed class ServiceProviderExtensionsTests
     /// <summary>
     /// A distinguishable <see cref="ICurrencyLookup" /> used to confirm the ambient default was replaced.
     /// </summary>
-    private sealed class MarkerLookup : ICurrencyLookup
+    private sealed class MarkerLookup
+        : ICurrencyLookup
     {
         /// <inheritdoc />
         public bool TryByIsoCode(string isoCode, out CurrencyInfo currency)

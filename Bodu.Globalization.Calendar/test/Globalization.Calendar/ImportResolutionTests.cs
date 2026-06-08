@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ImportResolutionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -96,7 +96,7 @@ public sealed class ImportResolutionTests
         NotableDateResource resource = NotableDateResourceLoader.Load(ImportJsonRegion, Resolver(("json-source", "\uFEFF\n    " + jsonSource)));
         IReadOnlyList<NotableDate> results = new NotableDateService(resource).Resolve(new DateOnly(2026, 7, 4), "XX");
 
-        Assert.IsTrue(results.Any(r => r.NotableDateId == "json-day"));
+        Assert.Contains(r => r.NotableDateId == "json-day", results);
     }
 
     /// <summary>

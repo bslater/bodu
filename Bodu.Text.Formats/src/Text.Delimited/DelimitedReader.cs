@@ -40,7 +40,8 @@ namespace Bodu.Text.Delimited;
 /// called.
 /// </para>
 /// </remarks>
-public sealed class DelimitedReader : IDisposable
+public sealed class DelimitedReader
+    : IDisposable
 {
     /// <summary>
     /// The default size of the internal character buffer in characters used when no buffer size is supplied to the

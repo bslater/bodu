@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationViewTests.GetInt64.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetInt64_WhenKeyExistsWithValidInteger_ShouldReturnParsedValue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 9000000000\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = 9000000000\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(9_000_000_000L, view.GetInt64("size"));
@@ -43,7 +43,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetInt64_WhenPresentButMalformedAndFallbackProvided_ShouldThrowExactly()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetInt64("size", 0L));
@@ -56,7 +56,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetInt64_WhenMissingOrMalformed_ShouldReturnFalseOtherwiseTrue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
+        var doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsTrue(view.TryGetInt64("size", out var value));

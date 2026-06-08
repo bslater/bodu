@@ -84,7 +84,8 @@ public sealed class DotEnvContractTests
     /// <see cref="DotEnvEntry.Value" /> pairs in order. Sufficient for the parse → format → parse round
     /// trip contract because the canonical formatter emits each entry once.
     /// </summary>
-    private sealed class EntryComparer : IEqualityComparer<DotEnvDocument>
+    private sealed class EntryComparer
+        : IEqualityComparer<DotEnvDocument>
     {
         public bool Equals(DotEnvDocument? x, DotEnvDocument? y)
         {

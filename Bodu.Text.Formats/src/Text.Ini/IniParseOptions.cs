@@ -52,8 +52,9 @@ public readonly struct IniParseOptions
     /// the global section.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> (the default) to collect pre-section keys into <see cref="IniDocumentBase.GlobalSection" />;
-    /// <see langword="false" /> to throw <see cref="IniFormatException" /> on the first such key.
+    /// <see langword="true" /> (the default) to collect pre-section keys into
+    /// <see cref="IniDocumentBase.GlobalSection" />; <see langword="false" /> to throw
+    /// <see cref="IniFormatException" /> on the first such key.
     /// </returns>
     public bool AllowGlobalSection { get; init; } = true;
 

@@ -16,7 +16,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(NextOrSameDateOfWeekTestData))]
     public void NextOrSameDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
     {
-        var actual = input.NextOrSameDateOfWeek(targetDay);
+        DateTime actual = input.NextOrSameDateOfWeek(targetDay);
 
         Assert.AreEqual(expected, actual);
     }
@@ -72,9 +72,9 @@ public partial class DateTimeExtensionsTests
     public void NextOrSameDateOfWeek_WhenTimeIsSet_ShouldPreserveTime()
     {
         var time = new TimeSpan(0, 12, 32, 55, 34, 903);
-        var input = new DateTime(2024, 4, 18).Add(time);
+        DateTime input = new DateTime(2024, 4, 18).Add(time);
 
-        var actual = input.NextOrSameDateOfWeek(DayOfWeek.Monday).TimeOfDay;
+        TimeSpan actual = input.NextOrSameDateOfWeek(DayOfWeek.Monday).TimeOfDay;
 
         Assert.AreEqual(time, actual);
     }

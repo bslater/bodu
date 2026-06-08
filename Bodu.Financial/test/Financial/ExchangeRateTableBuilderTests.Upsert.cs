@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTableBuilderTests.Upsert.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class ExchangeRateTableBuilderTests
 
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
-        Assert.IsTrue(table.TryGetBuilder(s_usdAud, "RBA", out var builder));
+        Assert.IsTrue(table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder));
         Assert.IsTrue(builder!.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
         Assert.AreEqual(1.50m, rate);
     }
@@ -36,7 +36,7 @@ public partial class ExchangeRateTableBuilderTests
 
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.75m);
 
-        Assert.IsTrue(table.TryGetBuilder(s_usdAud, "RBA", out var builder));
+        Assert.IsTrue(table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder));
         Assert.AreEqual(1, builder!.Count);
         Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
         Assert.AreEqual(1.75m, rate);

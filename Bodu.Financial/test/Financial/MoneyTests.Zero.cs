@@ -47,7 +47,7 @@ public partial class MoneyTests
     [DataRow("USDD")]
     public void Zero_WhenIsoCodeWrongShape_ShouldThrowArgumentException(string isoCode)
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Money.Zero(isoCode);
         });
@@ -62,7 +62,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Zero_WhenIsoCodeUnregistered_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Money.Zero("QQQ");
         });

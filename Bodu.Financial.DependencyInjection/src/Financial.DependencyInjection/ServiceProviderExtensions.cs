@@ -1,18 +1,17 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ServiceProviderExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>
 /// Provides the connector that promotes the container-registered <see cref="ICurrencyLookup" /> to the ambient
-/// <see cref="CurrencyResolution" /> default, so the runtime-tagged <see cref="Money" /> resolves currencies through the
-/// application's configured catalogue.
+/// <see cref="CurrencyResolution" /> default, so the runtime-tagged <see cref="Money" /> resolves currencies through
+/// the application's configured catalogue.
 /// </summary>
 public static class ServiceProviderExtensions
 {

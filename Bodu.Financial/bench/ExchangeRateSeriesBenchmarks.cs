@@ -112,7 +112,8 @@ public class ExchangeRateSeriesBenchmarks
     /// <summary>
     /// Provides a comparer over (date, rate) tuples that orders by date only, used for the array-of-structs baseline.
     /// </summary>
-    private sealed class StructDateComparer : IComparer<(DateOnly Date, decimal Rate)>
+    private sealed class StructDateComparer
+        : IComparer<(DateOnly Date, decimal Rate)>
     {
         /// <summary>
         /// Gets the shared comparer instance.

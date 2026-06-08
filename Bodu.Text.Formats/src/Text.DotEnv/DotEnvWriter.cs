@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,8 @@ namespace Bodu.Text.DotEnv;
 /// </code>
 /// </example>
 /// </remarks>
-public sealed class DotEnvWriter : IDisposable
+public sealed class DotEnvWriter
+    : IDisposable
 {
     private readonly TextWriter _writer;
     private bool _disposed;
@@ -74,7 +75,9 @@ public sealed class DotEnvWriter : IDisposable
     /// </summary>
     /// <param name="text">The comment text, written after the prefix.</param>
     /// <param name="prefix">The comment prefix character. Defaults to <c>#</c>.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="text" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="text" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteComment(string text, char prefix = '#')
     {
@@ -97,13 +100,13 @@ public sealed class DotEnvWriter : IDisposable
     /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
-    public async Task WriteEntryAsync(string key, string value, CancellationToken cancellationToken = default)
+    public Task WriteEntryAsync(string key, string value, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(value);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        await _writer.WriteAsync(FormatEntry(key, value).AsMemory(), cancellationToken).ConfigureAwait(false);
+        return _writer.WriteAsync(FormatEntry(key, value).AsMemory(), cancellationToken);
     }
 
     /// <summary>

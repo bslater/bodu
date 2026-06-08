@@ -22,7 +22,8 @@ namespace Bodu.Text.Encoding.Contracts;
 /// uses <see cref="object" /> as the placeholder.
 /// </remarks>
 [TestClass]
-public sealed class Base16ContractTests : BinaryEncodingContractTests<object>
+public sealed class Base16ContractTests
+    : BinaryEncodingContractTests<object>
 {
     /// <inheritdoc />
     protected override string Encode(byte[] input) =>

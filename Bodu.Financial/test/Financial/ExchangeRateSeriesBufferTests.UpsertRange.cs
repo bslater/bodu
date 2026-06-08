@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.UpsertRange.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -65,7 +65,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.UpsertRange(batch, ObservationsParam);
 
         Assert.AreEqual(4, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(1.4m, observations[0].Rate);
         Assert.AreEqual(DateOnly.FromDayNumber(1010), observations[1].Date);
@@ -81,7 +81,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void UpsertRange_WhenIncomingBatchContainsDuplicate_ShouldThrowAndLeaveBufferUnchanged()
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m));
-        var before = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] before = buffer.Enumerate().ToArray();
 
         ExchangeRateObservation[] batch =
         [
@@ -107,7 +107,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void UpsertRange_WhenAnyRateInvalid_ShouldThrowAndLeaveBufferUnchanged()
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m));
-        var before = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] before = buffer.Enumerate().ToArray();
 
         ExchangeRateObservation[] batch =
         [

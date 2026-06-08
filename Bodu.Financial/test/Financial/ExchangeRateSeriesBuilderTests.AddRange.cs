@@ -177,7 +177,7 @@ public partial class ExchangeRateSeriesBuilderTests
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
         builder.Add(new DateOnly(2026, 6, 3), 1.52m);
 
-        var snapshotBefore = builder.GetObservations().ToArray();
+        ExchangeRateObservation[] snapshotBefore = builder.GetObservations().ToArray();
         ExchangeRateObservation[] conflicting =
         [
             new(new DateOnly(2026, 6, 1), 1.55m), // collides with existing

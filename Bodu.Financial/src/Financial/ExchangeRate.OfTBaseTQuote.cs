@@ -29,8 +29,8 @@ public readonly record struct ExchangeRate<TBase, TQuote>
 {
     /// <summary>
     /// The underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted rate;
-    /// for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying by
-    /// a pre-rounded reciprocal.
+    /// for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying
+    /// by a pre-rounded reciprocal.
     /// </summary>
     private readonly decimal _observedRate;
 
@@ -57,7 +57,9 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> struct from fully resolved field
     /// values, including the underlying observed rate.
     /// </summary>
-    /// <param name="rate">The multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.</param>
+    /// <param name="rate">
+    /// The multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.
+    /// </param>
     /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>

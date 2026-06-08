@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// detection coverage stays in the existing <c>DammTests.*</c> partials.
 /// </summary>
 [TestClass]
-public sealed class DammContractTests : CheckDigitContractTests<Damm>
+public sealed class DammContractTests
+    : CheckDigitContractTests<Damm>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

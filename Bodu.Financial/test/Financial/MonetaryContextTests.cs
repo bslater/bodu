@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonetaryContextTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -106,7 +106,7 @@ public class MonetaryContextTests
     {
         MonetaryContext context = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 99 };
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => context.Validate());
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => context.Validate());
         Assert.AreEqual("CustomScale", ex.ParamName);
     }
 }

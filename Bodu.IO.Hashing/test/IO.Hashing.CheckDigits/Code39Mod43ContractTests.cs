@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// streaming and guard coverage stays in <see cref="Code39Mod43Tests" />.
 /// </summary>
 [TestClass]
-public sealed class Code39Mod43ContractTests : CheckDigitContractTests<Code39Mod43>
+public sealed class Code39Mod43ContractTests
+    : CheckDigitContractTests<Code39Mod43>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

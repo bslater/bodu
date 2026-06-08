@@ -161,7 +161,8 @@ public static class BinaryEncodings
         };
     }
 
-    private sealed class Base16LowerAdapter : IBinaryEncoding
+    private sealed class Base16LowerAdapter
+        : IBinaryEncoding
     {
         public string Description => "Base16 / hexadecimal, lower case (default Bodu Base16 form; compatible with Convert.ToHexStringLower).";
 
@@ -184,7 +185,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten);
     }
 
-    private sealed class Base16UpperAdapter : IBinaryEncoding
+    private sealed class Base16UpperAdapter
+        : IBinaryEncoding
     {
         public string Description => "Base16 / hexadecimal, upper case (RFC 4648 §8 canonical case; compatible with Convert.ToHexString).";
 
@@ -207,7 +209,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
     }
 
-    private sealed class Base45Adapter : IBinaryEncoding
+    private sealed class Base45Adapter
+        : IBinaryEncoding
     {
         public string Description => "RFC 9285 Base45 (QR-code Alphanumeric-mode alphabet; no padding).";
 
@@ -230,7 +233,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base45.TryEncode(source, destination, out charsWritten);
     }
 
-    private sealed class Base32VariantAdapter : IBinaryEncoding
+    private sealed class Base32VariantAdapter
+        : IBinaryEncoding
     {
         private readonly Base32Variant _variant;
 
@@ -262,7 +266,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base32.TryEncode(source, destination, out charsWritten, _variant);
     }
 
-    private sealed class Base62Adapter : IBinaryEncoding
+    private sealed class Base62Adapter
+        : IBinaryEncoding
     {
         public string Description => "GMP-style Base62 (0-9, A-Z, a-z; leading zero bytes preserved).";
 
@@ -285,7 +290,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base62.TryEncode(source, destination, out charsWritten);
     }
 
-    private sealed class Base58VariantAdapter : IBinaryEncoding
+    private sealed class Base58VariantAdapter
+        : IBinaryEncoding
     {
         private readonly Base58Variant _variant;
 
@@ -317,7 +323,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base58.TryEncode(source, destination, out charsWritten, _variant);
     }
 
-    private sealed class Base64VariantAdapter : IBinaryEncoding
+    private sealed class Base64VariantAdapter
+        : IBinaryEncoding
     {
         private readonly Base64Variant _variant;
 
@@ -349,7 +356,8 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base64.TryEncode(source, destination, out charsWritten, _variant);
     }
 
-    private sealed class Base85VariantAdapter : IBinaryEncoding
+    private sealed class Base85VariantAdapter
+        : IBinaryEncoding
     {
         private readonly Base85Variant _variant;
 

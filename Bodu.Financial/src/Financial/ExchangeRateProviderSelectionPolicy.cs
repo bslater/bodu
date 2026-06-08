@@ -36,7 +36,8 @@ public enum ExchangeRateProviderSelectionPolicy
 
     /// <summary>
     /// Reserved: pick the provider whose resolved date is closest to the requested date (using absolute offset),
-    /// breaking ties by the priority list. Not yet implemented; supplying it throws <see cref="NotSupportedException" />.
+    /// breaking ties by the priority list. Not yet implemented; supplying it throws
+    /// <see cref="NotSupportedException" />.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     SmallestDateOffsetThenProviderPriority = 2,

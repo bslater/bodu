@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,10 +36,12 @@ namespace Bodu.Text.Ini;
 ///     Console.WriteLine(db!["host"]);
 ///]]>
 /// </example>
-public sealed class IniDocument : IniDocumentBase
+public sealed class IniDocument
+    : IniDocumentBase
 {
     /// <summary>
-    /// Initializes a new <see cref="IniDocument" /> with an empty global section and no named sections.
+    /// Initializes a new instance of the <see cref="IniDocument" /> class with an empty global section and no named
+    /// sections.
     /// </summary>
     /// <param name="caseSensitiveSections">
     /// <see langword="true" /> to compare section names with ordinal case sensitivity; otherwise,

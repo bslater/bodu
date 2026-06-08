@@ -282,10 +282,10 @@ public static partial class Delimited
     private static void AppendField(StringBuilder sb, string field, char delimiter, char quote)
     {
         var needsQuoting = field.Length == 0 ||
-                            field.IndexOf(delimiter) >= 0 ||
-                            field.IndexOf(quote) >= 0 ||
-                            field.IndexOf('\n') >= 0 ||
-                            field.IndexOf('\r') >= 0;
+                            field.Contains(delimiter) ||
+                            field.Contains(quote) ||
+                            field.Contains('\n') ||
+                            field.Contains('\r');
 
         if (!needsQuoting)
         {

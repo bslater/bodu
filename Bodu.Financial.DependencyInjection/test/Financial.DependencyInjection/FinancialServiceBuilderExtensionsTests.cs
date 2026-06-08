@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialServiceBuilderExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,8 @@ public sealed class FinancialServiceBuilderExtensionsTests
     /// <summary>
     /// A stub <see cref="IExchangeRateProvider" /> for registration tests.
     /// </summary>
-    private sealed class StubRateProvider : IExchangeRateProvider
+    private sealed class StubRateProvider
+        : IExchangeRateProvider
     {
         /// <inheritdoc />
         public decimal GetRate(string fromIsoCode, string toIsoCode) => 1m;
@@ -29,7 +30,8 @@ public sealed class FinancialServiceBuilderExtensionsTests
     /// An alternative <see cref="ICurrencyLookup" /> used to verify replacement. All members are unsupported; the type
     /// exists only to confirm the registered implementation type.
     /// </summary>
-    private sealed class CustomLookup : ICurrencyLookup
+    private sealed class CustomLookup
+        : ICurrencyLookup
     {
         /// <inheritdoc />
         public bool TryByIsoCode(string isoCode, out CurrencyInfo currency) => throw new NotSupportedException();
@@ -127,7 +129,7 @@ public sealed class FinancialServiceBuilderExtensionsTests
             .AddFinancialJson(Serialization.FinancialJsonPolicy.Compact)
             .Services.BuildServiceProvider();
 
-        var options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
+        JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
         var json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
 
         Assert.AreEqual("\"19.99 USD\"", json);
