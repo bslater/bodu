@@ -85,7 +85,7 @@ internal static class TextConfigurationLoader
         ConfigurationParseOptions effectiveParse = parseOptions ?? ConfigurationParseOptions.Bodu;
         ConfigurationResolveOptions effectiveResolve = resolveOptions ?? ConfigurationResolveOptions.Bodu;
 
-        IniDocument document = ConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
+        ConfigurationDocument document = ConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
 
         return LoadData(document, targetPath, effectiveResolve);
     }
@@ -102,7 +102,7 @@ internal static class TextConfigurationLoader
     /// <returns>A case-insensitive dictionary with colon-delimited logical keys.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
     internal static IDictionary<string, string?> LoadData(
-        IniDocument document,
+        IniDocumentBase document,
         string? targetPath,
         ConfigurationResolveOptions? resolveOptions)
     {

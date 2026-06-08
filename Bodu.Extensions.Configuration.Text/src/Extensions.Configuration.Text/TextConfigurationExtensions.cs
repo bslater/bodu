@@ -92,7 +92,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// builder.Configuration.AddConfiguration(ms);
 ///
 /// 5. Pre-parsed document — share one parse across multiple builders.
-/// IniDocument doc = ConfigurationDocument.Parse(text);
+/// ConfigurationDocument doc = ConfigurationDocument.Parse(text);
 /// builder.Configuration.AddConfiguration(doc, targetPath: "src/Foo.cs");
 ///]]>
 /// </example>
@@ -308,7 +308,8 @@ public static class TextConfigurationExtensions
     }
 
     /// <summary>
-    /// Adds an already-parsed <see cref="IniDocument" /> to the configuration. The document is resolved against
+    /// Adds an already-parsed <see cref="IniDocumentBase" /> (such as a <see cref="ConfigurationDocument" />) to the
+    /// configuration. The document is resolved against
     /// <paramref name="targetPath" /> and the resulting key/value map is added via
     /// <see cref="MemoryConfigurationBuilderExtensions.AddInMemoryCollection(IConfigurationBuilder, IEnumerable{KeyValuePair{string, string?}}?)" />
     /// .
@@ -318,12 +319,18 @@ public static class TextConfigurationExtensions
     /// <param name="targetPath">The optional target path used for glob-anchored resolution.</param>
     /// <param name="resolveOptions">The resolve options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
+    /// <remarks>
+    /// This overload takes a <b>one-shot snapshot</b> of <paramref name="document" /> as it stands when called: the
+    /// document is resolved immediately and the flattened values are added in-memory. Unlike the file-based overloads,
+    /// it has <b>no reload-on-change</b> behaviour — subsequent edits to the document or its backing file are not
+    /// reflected in the built configuration.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="document" /> is <see langword="null" />.
     /// </exception>
     public static IConfigurationBuilder AddConfiguration(
         this IConfigurationBuilder builder,
-        IniDocument document,
+        IniDocumentBase document,
         string? targetPath = null,
         ConfigurationResolveOptions? resolveOptions = null)
     {
