@@ -18,7 +18,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <see cref="AssociatedData" />; scrypt vectors populate <see cref="CostN" />, <see cref="BlockSizeR" />, and
 /// <see cref="Parallelism" />.
 /// </remarks>
-public sealed record KdfKnownAnswerVector : IKat
+public sealed record KdfKnownAnswerVector
+    : IKat
 {
     /// <summary>
     /// Gets the human-readable name identifying the vector and its source.

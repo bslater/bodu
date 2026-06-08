@@ -20,7 +20,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// text form interleaves the country code and check digits ahead of the BBAN, so positive vectors must reflect that
 /// layout rather than the body order absorbed by <c>Append</c>.
 /// </remarks>
-public sealed record MultiCharCheckDigitIsValidKnownAnswer : IKat
+public sealed record MultiCharCheckDigitIsValidKnownAnswer
+    : IKat
 {
 
     /// <summary>

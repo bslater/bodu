@@ -27,7 +27,8 @@ namespace Bodu.Security.Cryptography;
 /// mode.
 /// </para>
 /// </remarks>
-public sealed record KeyedHashAlgorithmKnownAnswer : IKat
+public sealed record KeyedHashAlgorithmKnownAnswer
+    : IKat
 {
     /// <summary>
     /// Gets the semantic name of this test vector used in diagnostic messages.
