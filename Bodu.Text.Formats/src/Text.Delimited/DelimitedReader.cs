@@ -48,17 +48,18 @@ public sealed class DelimitedReader : IDisposable
     /// </summary>
     public const int DefaultBufferSize = 4096;
 
-    private readonly TextReader _reader;
     private readonly DelimitedParseOptions _options;
     private readonly char[] _buffer;
     private readonly List<string> _headers = new();
     private readonly List<string> _fields = new();
 
+    private TextReader _reader;
     private int _bufferLen;
     private int _pos;
     private bool _eof;
     private bool _disposed;
     private bool _initialized;
+    private bool _drainedForAsync;
     private int _lineNumber = 1;
     private int _rowNumber;
 
@@ -173,6 +174,39 @@ public sealed class DelimitedReader : IDisposable
 
         _rowNumber++;
         return true;
+    }
+
+    /// <summary>
+    /// Asynchronously advances the reader to the next data row and populates <see cref="Fields" />.
+    /// </summary>
+    /// <param name="cancellationToken">A token that can be used to cancel the read operation.</param>
+    /// <returns>
+    /// A task that completes with <see langword="true" /> when a row was read and <see cref="Fields" /> reflects its
+    /// values; <see langword="false" /> when the input is exhausted.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
+    /// <exception cref="DelimitedFormatException">
+    /// Thrown when the input contains an unterminated quoted field.
+    /// </exception>
+    /// <remarks>
+    /// On the first call, the remainder of the underlying <see cref="TextReader" /> is drained asynchronously into
+    /// memory, after which row parsing proceeds without further I/O. Do not interleave <see cref="ReadAsync" /> with
+    /// <see cref="Read" />: choose one access pattern per instance.
+    /// </remarks>
+    public async ValueTask<bool> ReadAsync(CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        if (!_drainedForAsync && !_initialized)
+        {
+            _drainedForAsync = true;
+            var remaining = await _reader.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
+            TextReader previous = _reader;
+            _reader = new StringReader(remaining);
+            previous.Dispose();
+        }
+
+        return Read();
     }
 
     /// <summary>
