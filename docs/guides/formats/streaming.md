@@ -12,8 +12,8 @@ For the synchronous span / array surface see [Using Bencode](bencode.md); this g
 
 | Direction | Sync | Async |
 |---|---|---|
-| Decode | `BencodedValue Bencode.Decode(Stream)` | `ValueTask<BencodedValue> Bencode.DecodeAsync(Stream, CancellationToken)` |
-| Encode | `void Bencode.Encode(BencodedValue, Stream)` | `ValueTask Bencode.EncodeAsync(BencodedValue, Stream, CancellationToken)` |
+| Decode | `BencodedValue Bencode.Parse(Stream)` | `ValueTask<BencodedValue> Bencode.ParseAsync(Stream, CancellationToken)` |
+| Encode | `void Bencode.Format(BencodedValue, Stream)` | `ValueTask Bencode.FormatAsync(BencodedValue, Stream, CancellationToken)` |
 
 All four overloads:
 
@@ -30,10 +30,10 @@ All four overloads:
 using Bodu.Text.Formats;
 
 using FileStream fs = File.OpenRead("doc.bencode");
-BencodedValue root = Bencode.Decode(fs);
+BencodedValue root = Bencode.Parse(fs);
 ```
 
-`Decode(Stream)` copies the stream to a pooled `MemoryStream`, then dispatches to the span parser. The pooled buffer is disposed before this method returns. The file stream is left open — the `using` block is what closes it.
+`Parse(Stream)` copies the stream to a pooled `MemoryStream`, then dispatches to the span parser. The pooled buffer is disposed before this method returns. The file stream is left open — the `using` block is what closes it.
 
 For seekable streams of known length this approach is fine in absolute cost (the copy is one pass through the bytes). For network streams it is the right shape: a half-arrived bencode payload cannot be partially parsed anyway.
 
@@ -43,10 +43,10 @@ For seekable streams of known length this approach is fine in absolute cost (the
 using Bodu.Text.Formats;
 
 await using FileStream fs = File.OpenRead("doc.bencode");
-BencodedValue root = await Bencode.DecodeAsync(fs, cancellationToken);
+BencodedValue root = await Bencode.ParseAsync(fs, cancellationToken);
 ```
 
-`DecodeAsync` does the same buffer-then-parse, using `Stream.CopyToAsync` to absorb the source. Cancellation is checked by the underlying copy — if the token fires mid-copy, `OperationCanceledException` propagates and the parser never runs.
+`ParseAsync` does the same buffer-then-parse, using `Stream.CopyToAsync` to absorb the source. Cancellation is checked by the underlying copy — if the token fires mid-copy, `OperationCanceledException` propagates and the parser never runs.
 
 The `BencodedValue` result is built from a temporary byte buffer that is disposed before the method returns; the returned value owns its own copies of every byte string and is safe to keep beyond the call.
 
@@ -56,10 +56,10 @@ The `BencodedValue` result is built from a temporary byte buffer that is dispose
 using Bodu.Text.Formats;
 
 using FileStream fs = File.Create("doc.bencode");
-Bencode.Encode(root, fs);
+Bencode.Format(root, fs);
 ```
 
-The synchronous `Encode(value, Stream)`:
+The synchronous `Format(value, Stream)`:
 
 1. Validates `value` and `destination` for `null` and writability.
 2. Calls `GetEncodedLength(value)` to obtain the exact byte count.
@@ -68,7 +68,7 @@ The synchronous `Encode(value, Stream)`:
 5. Calls `destination.Write(buffer, 0, length)` once.
 6. Returns the buffer to the pool in a `finally` block.
 
-`GetEncodedLength` uses `checked` arithmetic — if the encoded length would not fit in `int`, it throws `OverflowException` and the rented buffer is never allocated.
+`GetFormattedLength` uses `checked` arithmetic — if the encoded length would not fit in `int`, it throws `OverflowException` and the rented buffer is never allocated.
 
 ## Pattern 4 — encode asynchronously with cancellation
 
@@ -76,10 +76,10 @@ The synchronous `Encode(value, Stream)`:
 using Bodu.Text.Formats;
 
 await using FileStream fs = File.Create("doc.bencode");
-await Bencode.EncodeAsync(root, fs, cancellationToken);
+await Bencode.FormatAsync(root, fs, cancellationToken);
 ```
 
-`EncodeAsync` is structurally identical to the sync path but uses `WriteAsync(ReadOnlyMemory<byte>, CancellationToken)` for the single output call. Cancellation is checked by the underlying write — if the token fires before the write completes, `OperationCanceledException` propagates and the pooled buffer is still returned via the `finally` clause.
+`FormatAsync` is structurally identical to the sync path but uses `WriteAsync(ReadOnlyMemory<byte>, CancellationToken)` for the single output call. Cancellation is checked by the underlying write — if the token fires before the write completes, `OperationCanceledException` propagates and the pooled buffer is still returned via the `finally` clause.
 
 The token is **not** checked between encoding and writing — encoding is synchronous and (typically) fast; the cancellation surface is the I/O call itself.
 
@@ -91,17 +91,17 @@ using Bodu.Text.Formats;
 await using FileStream input = File.OpenRead("source.bencode");
 await using FileStream output = File.Create("normalized.bencode");
 
-BencodedValue tree = await Bencode.DecodeAsync(input, cancellationToken);
-await Bencode.EncodeAsync(tree, output, cancellationToken);
+BencodedValue tree = await Bencode.ParseAsync(input, cancellationToken);
+await Bencode.FormatAsync(tree, output, cancellationToken);
 ```
 
 The output is canonical: every dictionary in the source is re-emitted in raw byte order, every integer in shortest form, every string with the minimal length prefix. Use this pattern to normalize a corpus of bencoded files that may have been produced by encoders with different ordering conventions.
 
-For two-way piping through a network handshake, build the tree once and pass it to both `Encode` calls — the encoder is deterministic, so the same tree produces the same bytes every time.
+For two-way piping through a network handshake, build the tree once and pass it to both `Format` calls — the encoder is deterministic, so the same tree produces the same bytes every time.
 
 ## Pattern 6 — limit input size
 
-Stream `Decode` reads to end of stream. For untrusted streams, wrap the source in a length-limited adapter or apply a server-level cap before calling:
+Stream `Parse` reads to end of stream. For untrusted streams, wrap the source in a length-limited adapter or apply a server-level cap before calling:
 
 ```csharp
 using Bodu.Text.Formats;
@@ -111,10 +111,10 @@ const long maxBytes = 16L * 1024 * 1024;
 if (stream.CanSeek && stream.Length > maxBytes)
     throw new InvalidOperationException("Bencode payload too large.");
 
-BencodedValue root = await Bencode.DecodeAsync(stream, cancellationToken);
+BencodedValue root = await Bencode.ParseAsync(stream, cancellationToken);
 ```
 
-For non-seekable streams (network sockets, decompressors), wrap the stream in a `StreamReader`-style throttle — copy at most `maxBytes` into a `MemoryStream` yourself, then pass that to `Decode`. The bencode parser cannot help here because the size limit is a transport-layer concern.
+For non-seekable streams (network sockets, decompressors), wrap the stream in a `StreamReader`-style throttle — copy at most `maxBytes` into a `MemoryStream` yourself, then pass that to `Parse`. The bencode parser cannot help here because the size limit is a transport-layer concern.
 
 ## Why there is no incremental decoder
 
@@ -124,6 +124,24 @@ A streaming `OperationStatus`-style decoder is a non-goal for bencode for two re
 - **Key ordering.** Dictionary keys must be globally sorted. The parser cannot validate the ordering invariant on the *N*th key without having read every key before it. Suspending mid-dictionary trades complexity for no real benefit.
 
 Streaming-friendly formats (CBOR, MessagePack, length-prefixed protobufs) are better choices when incremental decode actually matters. For bencode, the buffer-then-parse approach is both simpler and identical in total work.
+
+## Streaming the text formats
+
+Unlike bencode, the line- and record-oriented text formats expose forward-only readers and writers that process one logical unit at a time without materialising the whole document. Each format's facade offers `CreateReader` / `CreateWriter` factory methods:
+
+| Format | Reader | Writer |
+|---|---|---|
+| Delimited (CSV/TSV) | `DelimitedReader.Read` / `ReadAsync` (one row) | `DelimitedWriter.WriteHeader` / `WriteRow` (+ `…Async`) |
+| INI | `IniReader.Read` / `ReadAsync` (one entry, exposing `Section`/`Key`/`Value`) | `IniWriter.WriteSection` / `WriteEntry` / `WriteComment` (+ `…Async`) |
+| DotEnv | `DotEnvReader.Read` / `ReadAsync` (one entry) | `DotEnvWriter.WriteEntry` / `WriteComment` (+ `…Async`) |
+
+```csharp
+using var reader = Ini.CreateReader(File.OpenText("config.ini"));
+while (reader.Read())
+    Console.WriteLine($"[{reader.Section}] {reader.Key} = {reader.Value}");
+```
+
+These readers surface raw units in source order: document-level policies that require the whole document — duplicate-key resolution and INI section merging — are applied by the in-memory `Parse` entry points, not by the streaming readers. `DotEnvReader` parses incrementally even across the embedded newlines and `\`-continuations a double-quoted value may contain; `DelimitedReader.ReadAsync` drains its source asynchronously before parsing (do not interleave `Read` and `ReadAsync` on one instance). All readers and writers take ownership of the supplied `TextReader` / `TextWriter` and dispose it.
 
 ## Where to go next
 

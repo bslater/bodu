@@ -28,6 +28,10 @@ byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF };
 string lower = Base16.Encode(data);                                  // "deadbeef"
 string upper = Base16.Encode(data, BaseFormattingOptions.UpperCase); // "DEADBEEF"
 
+// Or select the case with the variant overload, matching the uniform
+// (bytes, variant, options) shape used by Base32/58/64/85:
+string up2  = Base16.Encode(data, Base16Variant.Upper);              // "DEADBEEF"
+
 // Decode (strict — no decorations, even length, alphabet-only)
 byte[] back  = Base16.Decode("deadbeef");
 byte[] mixed = Base16.Decode("DeAdBeEf");                            // case-insensitive

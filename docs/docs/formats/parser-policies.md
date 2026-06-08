@@ -13,7 +13,7 @@ Every format-specific exception derives from `TextFormatException`, so a single 
 ```csharp
 try
 {
-    BencodedValue value = Bencode.Decode(payload);
+    BencodedValue value = Bencode.Parse(payload);
 }
 catch (TextFormatException ex)
 {
@@ -66,7 +66,7 @@ BencodeParseOptions options = new()
     RequireCompleteDocument = true,
 };
 
-if (Bencode.TryDecode(source, options, out BencodedValue? value, out int bytesConsumed))
+if (Bencode.TryParse(source, options, out BencodedValue? value, out int bytesConsumed))
     Use(value);
 ```
 

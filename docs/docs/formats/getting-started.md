@@ -23,7 +23,7 @@ using Bodu.Text.Formats;
 
 byte[] payload = File.ReadAllBytes("ubuntu.iso.torrent");
 
-BencodedValue root = Bencode.Decode(payload);
+BencodedValue root = Bencode.Parse(payload);
 BencodedDictionary doc = (BencodedDictionary)root;
 
 string tracker = ((BencodedString)doc["announce"]).GetUtf8String();
@@ -52,7 +52,7 @@ foreach (var kvp in info.GetOrderedItems())
 ```csharp
 using Bodu.Text.Formats;
 
-if (Bencode.TryDecode(input, out BencodedValue? value, out int consumed))
+if (Bencode.TryParse(input, out BencodedValue? value, out int consumed))
 {
     // value is non-null and 'consumed' bytes were read
 }
@@ -87,7 +87,7 @@ var doc = new BencodedDictionary([
         info),
 ]);
 
-byte[] encoded = Bencode.Encode(doc);
+byte[] encoded = Bencode.Format(doc);
 ```
 
 The constructor accepts items in any order — `BencodedDictionary` stores them in raw byte-ordinal key order using <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>, so `Encode` emits the canonical key ordering regardless of how the document was assembled.
@@ -97,10 +97,10 @@ The constructor accepts items in any order — `BencodedDictionary` stores them 
 ```csharp
 using Bodu.Text.Formats;
 
-int size = Bencode.GetEncodedLength(doc);  // exact, not an upper bound
+int size = Bencode.GetFormattedLength(doc);  // exact, not an upper bound
 
 byte[] buffer = new byte[size];
-bool ok = Bencode.TryEncode(doc, buffer, out int written);
+bool ok = Bencode.TryFormat(doc, buffer, out int written);
 // ok == true, written == size
 ```
 
@@ -114,21 +114,21 @@ using Bodu.Text.Formats;
 // Write canonically to a stream.
 using (FileStream fs = File.Create("doc.bencode"))
 {
-    Bencode.Encode(doc, fs);
+    Bencode.Format(doc, fs);
 }
 
 // Read it back.
 using (FileStream fs = File.OpenRead("doc.bencode"))
 {
-    BencodedValue root = Bencode.Decode(fs);
+    BencodedValue root = Bencode.Parse(fs);
 }
 ```
 
-The stream overloads stage to an `ArrayPool<byte>` buffer sized exactly to `GetEncodedLength`. The stream is **not** closed by the codec — the caller's `using` block owns its lifetime. For async I/O use `Bencode.EncodeAsync` / `Bencode.DecodeAsync`:
+The stream overloads stage to an `ArrayPool<byte>` buffer sized exactly to `GetEncodedLength`. The stream is **not** closed by the codec — the caller's `using` block owns its lifetime. For async I/O use `Bencode.FormatAsync` / `Bencode.ParseAsync`:
 
 ```csharp
 await using FileStream fs = File.OpenRead("doc.bencode");
-BencodedValue root = await Bencode.DecodeAsync(fs, cancellationToken);
+BencodedValue root = await Bencode.ParseAsync(fs, cancellationToken);
 ```
 
 ### Look up a key by UTF-8 text
@@ -151,7 +151,7 @@ using Bodu.Text.Formats;
 
 try
 {
-    BencodedValue value = Bencode.Decode(networkPayload);
+    BencodedValue value = Bencode.Parse(networkPayload);
     Process(value);
 }
 catch (BencodeFormatException ex)
@@ -177,11 +177,11 @@ var original = new BencodedList([
     ]),
 ]);
 
-byte[] encoded = Bencode.Encode(original);
+byte[] encoded = Bencode.Format(original);
 // encoded == "li-1024e4:spamd1:ki0eee"u8.ToArray()
 
-BencodedValue decoded = Bencode.Decode(encoded);
-byte[] reEncoded = Bencode.Encode(decoded);
+BencodedValue decoded = Bencode.Parse(encoded);
+byte[] reEncoded = Bencode.Format(decoded);
 
 Debug.Assert(encoded.SequenceEqual(reEncoded));   // round-trip is bit-exact
 ```
