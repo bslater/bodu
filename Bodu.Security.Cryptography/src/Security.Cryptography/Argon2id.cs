@@ -40,7 +40,7 @@ public sealed class Argon2id
     /// <param name="salt">The salt; must be at least 8 bytes.</param>
     /// <param name="parameters">The cost and auxiliary parameters.</param>
     /// <returns>The derived tag.</returns>
-    public static new byte[] DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Argon2Parameters parameters) =>
+    public static byte[] DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Argon2Parameters parameters) =>
         new Argon2id(parameters).GetBytes(password, salt);
 
     /// <summary>
@@ -50,7 +50,7 @@ public sealed class Argon2id
     /// <param name="salt">The salt to embed; must be at least 8 bytes.</param>
     /// <param name="parameters">The cost and auxiliary parameters.</param>
     /// <returns>The PHC encoded-hash string.</returns>
-    public static new string Hash(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Argon2Parameters parameters) =>
+    public static string Hash(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Argon2Parameters parameters) =>
         new Argon2id(parameters).Hash(password, salt);
 
     /// <summary>
