@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.Set.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.5m));
 
-        var ex = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        KeyNotFoundException ex = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             buffer.Set(1010, 1.6m, RateParam));
 
         Assert.IsTrue(ex.Message.Contains(

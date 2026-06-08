@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2Blake2bTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,13 +52,13 @@ public class Argon2Blake2bTests
     [TestMethod]
     public void Hash_WhenOutputIs256Bits_ShouldMatchPublicBlake2b()
     {
-        byte[] message = Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog");
+        var message = Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog");
 
         Span<byte> bundled = stackalloc byte[32];
         Argon2Blake2b.Hash(message, bundled);
 
         using var blake = new Blake2b(256);
-        byte[] reference = blake.ComputeHash(message);
+        var reference = blake.ComputeHash(message);
 
         CollectionAssert.AreEqual(reference, bundled.ToArray());
     }
@@ -70,7 +70,7 @@ public class Argon2Blake2bTests
     [TestMethod]
     public void Hash_WhenOutputLengthDiffers_ShouldNotBeATruncation()
     {
-        byte[] message = Encoding.ASCII.GetBytes("length parameterization");
+        var message = Encoding.ASCII.GetBytes("length parameterization");
 
         Span<byte> fifty = stackalloc byte[50];
         Span<byte> sixtyFour = stackalloc byte[64];
@@ -88,7 +88,7 @@ public class Argon2Blake2bTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            byte[] tooLong = new byte[65];
+            var tooLong = new byte[65];
             Argon2Blake2b.Hash(ReadOnlySpan<byte>.Empty, tooLong);
         });
     }

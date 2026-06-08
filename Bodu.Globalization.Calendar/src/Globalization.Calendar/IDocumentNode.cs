@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDocumentNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,8 +42,12 @@ internal interface IDocumentNode
     /// Enumerates the object items of a list: the XML item elements within an optional wrapper element (every element
     /// child when <paramref name="xmlItem" /> is <see langword="null" />), or the JSON array's elements.
     /// </summary>
-    /// <param name="xmlWrapper">The XML wrapper element, or <see langword="null" /> to read this node's children.</param>
-    /// <param name="xmlItem">The XML item element local name, or <see langword="null" /> for every element child.</param>
+    /// <param name="xmlWrapper">
+    /// The XML wrapper element, or <see langword="null" /> to read this node's children.
+    /// </param>
+    /// <param name="xmlItem">
+    /// The XML item element local name, or <see langword="null" /> for every element child.
+    /// </param>
     /// <param name="jsonProperty">The JSON array property name.</param>
     /// <returns>The item nodes; empty when absent.</returns>
     IEnumerable<IDocumentNode> List(string? xmlWrapper, string? xmlItem, string jsonProperty);
@@ -51,7 +55,9 @@ internal interface IDocumentNode
     /// <summary>
     /// Reads a list of scalar strings, returning an empty list when absent.
     /// </summary>
-    /// <param name="xmlWrapper">The XML wrapper element, or <see langword="null" /> to read this node's children.</param>
+    /// <param name="xmlWrapper">
+    /// The XML wrapper element, or <see langword="null" /> to read this node's children.
+    /// </param>
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute on each item carrying the value.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>
@@ -62,7 +68,9 @@ internal interface IDocumentNode
     /// Reads an optional list of scalar strings, returning <see langword="null" /> when the wrapper element or JSON
     /// property is absent so callers can distinguish "unspecified" from "empty".
     /// </summary>
-    /// <param name="xmlWrapper">The XML wrapper element, or <see langword="null" /> to read this node's children.</param>
+    /// <param name="xmlWrapper">
+    /// The XML wrapper element, or <see langword="null" /> to read this node's children.
+    /// </param>
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute on each item carrying the value.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>
@@ -72,7 +80,9 @@ internal interface IDocumentNode
     /// <summary>
     /// Reads a list of integer scalars, returning an empty list when absent.
     /// </summary>
-    /// <param name="xmlWrapper">The XML wrapper element, or <see langword="null" /> to read this node's children.</param>
+    /// <param name="xmlWrapper">
+    /// The XML wrapper element, or <see langword="null" /> to read this node's children.
+    /// </param>
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute on each item carrying the value.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>

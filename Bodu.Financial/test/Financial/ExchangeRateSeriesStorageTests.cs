@@ -90,7 +90,7 @@ public partial class ExchangeRateSeriesStorageTests
             [Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
-        var observations = storage.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = storage.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1010), observations[1].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1020), observations[2].Date);
@@ -137,7 +137,7 @@ public partial class ExchangeRateSeriesStorageTests
     [TestMethod]
     public void Create_Tuples_WhenRateInvalid_ShouldUseLegacyMessage()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             ExchangeRateSeriesStorage.Create(
                 [(DateOnly.FromDayNumber(1000), 0m)],
                 RatesParam));

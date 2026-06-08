@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ScryptCore.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,22 +43,22 @@ internal static class ScryptCore
         int parallelization,
         Span<byte> output)
     {
-        int unitWords = 2 * blockSizeR * BlockWords;   // 32*r words = 128*r bytes per ROMix unit
-        long totalBytes = (long)parallelization * unitWords * 4;
-        long vWords = (long)costN * unitWords;
+        var unitWords = 2 * blockSizeR * BlockWords;   // 32*r words = 128*r bytes per ROMix unit
+        var totalBytes = (long)parallelization * unitWords * 4;
+        var vWords = (long)costN * unitWords;
         if (totalBytes > Array.MaxLength || vWords > Array.MaxLength)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KdfMemoryExceedsLimit);
 
         // Step 1: B = PBKDF2-HMAC-SHA256(P, S, 1, p * 128 * r).
-        byte[] b = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 1, HashAlgorithmName.SHA256, parallelization * 128 * blockSizeR);
+        var b = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 1, HashAlgorithmName.SHA256, parallelization * 128 * blockSizeR);
 
-        uint[] words = new uint[parallelization * unitWords];
+        var words = new uint[parallelization * unitWords];
         BytesToWordsLE(b, words);
 
         try
         {
             // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
-            for (int i = 0; i < parallelization; i++)
+            for (var i = 0; i < parallelization; i++)
                 ROMix(words.AsSpan(i * unitWords, unitWords), costN, blockSizeR);
 
             WordsToBytesLE(words, b);
@@ -78,27 +78,27 @@ internal static class ScryptCore
     /// </summary>
     private static void ROMix(Span<uint> block, int costN, int blockSizeR)
     {
-        int unitWords = block.Length;
+        var unitWords = block.Length;
 
         // The caller (DeriveKey) has already verified costN * unitWords fits within Array.MaxLength.
-        uint[] x = block.ToArray();
-        uint[] y = new uint[unitWords];
-        uint[] v = new uint[costN * unitWords];
+        var x = block.ToArray();
+        var y = new uint[unitWords];
+        var v = new uint[costN * unitWords];
 
         try
         {
-            for (int i = 0; i < costN; i++)
+            for (var i = 0; i < costN; i++)
             {
                 x.AsSpan().CopyTo(v.AsSpan(i * unitWords, unitWords));
                 BlockMix(x, y, blockSizeR);
                 (x, y) = (y, x);
             }
 
-            for (int i = 0; i < costN; i++)
+            for (var i = 0; i < costN; i++)
             {
-                int j = (int)(Integerify(x, blockSizeR) % (ulong)costN);
+                var j = (int)(Integerify(x, blockSizeR) % (ulong)costN);
                 ReadOnlySpan<uint> vj = v.AsSpan(j * unitWords, unitWords);
-                for (int k = 0; k < unitWords; k++)
+                for (var k = 0; k < unitWords; k++)
                     x[k] ^= vj[k];
 
                 BlockMix(x, y, blockSizeR);
@@ -120,21 +120,21 @@ internal static class ScryptCore
     /// </summary>
     private static void BlockMix(ReadOnlySpan<uint> input, Span<uint> output, int blockSizeR)
     {
-        int blocks = 2 * blockSizeR;
+        var blocks = 2 * blockSizeR;
 
         Span<uint> x = stackalloc uint[BlockWords];
         input.Slice((blocks - 1) * BlockWords, BlockWords).CopyTo(x);
 
-        for (int i = 0; i < blocks; i++)
+        for (var i = 0; i < blocks; i++)
         {
             ReadOnlySpan<uint> bi = input.Slice(i * BlockWords, BlockWords);
-            for (int j = 0; j < BlockWords; j++)
+            for (var j = 0; j < BlockWords; j++)
                 x[j] ^= bi[j];
 
             Salsa20_8(x);
 
             // Even-indexed results occupy the first half; odd-indexed the second.
-            int dest = (i % 2 == 0) ? (i / 2) : (blockSizeR + (i - 1) / 2);
+            var dest = (i % 2 == 0) ? (i / 2) : (blockSizeR + (i - 1) / 2);
             x.CopyTo(output.Slice(dest * BlockWords, BlockWords));
         }
     }
@@ -144,7 +144,7 @@ internal static class ScryptCore
     /// </summary>
     private static ulong Integerify(ReadOnlySpan<uint> block, int blockSizeR)
     {
-        int offset = (2 * blockSizeR - 1) * BlockWords;
+        var offset = (2 * blockSizeR - 1) * BlockWords;
         return ((ulong)block[offset + 1] << 32) | block[offset];
     }
 
@@ -156,7 +156,7 @@ internal static class ScryptCore
         Span<uint> x = stackalloc uint[BlockWords];
         b.CopyTo(x);
 
-        for (int i = 0; i < 8; i += 2)
+        for (var i = 0; i < 8; i += 2)
         {
             QuarterRound(ref x[0], ref x[4], ref x[8], ref x[12]);
             QuarterRound(ref x[5], ref x[9], ref x[13], ref x[1]);
@@ -169,7 +169,7 @@ internal static class ScryptCore
             QuarterRound(ref x[15], ref x[12], ref x[13], ref x[14]);
         }
 
-        for (int i = 0; i < BlockWords; i++)
+        for (var i = 0; i < BlockWords; i++)
             b[i] += x[i];
     }
 
@@ -191,7 +191,7 @@ internal static class ScryptCore
     /// </summary>
     private static void BytesToWordsLE(ReadOnlySpan<byte> source, Span<uint> destination)
     {
-        for (int i = 0; i < destination.Length; i++)
+        for (var i = 0; i < destination.Length; i++)
             destination[i] = BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(i * 4, 4));
     }
 
@@ -200,7 +200,7 @@ internal static class ScryptCore
     /// </summary>
     private static void WordsToBytesLE(ReadOnlySpan<uint> source, Span<byte> destination)
     {
-        for (int i = 0; i < source.Length; i++)
+        for (var i = 0; i < source.Length; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(i * 4, 4), source[i]);
     }
 }

@@ -20,7 +20,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void Indexer_WhenKeyExists_ShouldReturnValue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\na = 1\n");
+        var doc = ConfigurationDocument.Parse("[*]\na = 1\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual("1", view["a"]);
@@ -32,7 +32,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void Indexer_WhenKeyIsMissing_ShouldReturnNull()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\na = 1\n");
+        var doc = ConfigurationDocument.Parse("[*]\na = 1\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsNull(view["missing"]);
@@ -56,7 +56,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void Count_WhenAccessed_ShouldReturnResolvedKeyCount()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
+        var doc = ConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(2, view.Count);

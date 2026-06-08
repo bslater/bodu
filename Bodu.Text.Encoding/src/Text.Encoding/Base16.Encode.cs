@@ -183,14 +183,15 @@ public static partial class Base16
         Encode(bytes, ApplyVariant(variant, options));
 
     /// <summary>
-    /// Encodes a read-only span of bytes directly into a pre-allocated character destination using the supplied variant.
+    /// Encodes a read-only span of bytes directly into a pre-allocated character destination using the supplied
+    /// variant.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The span that receives the encoded characters.</param>
     /// <param name="variant">The Base16 alphabet case.</param>
     /// <param name="options">
-    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload;
-    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this
+    /// overload; <paramref name="variant" /> takes precedence over it for the alphabet case.
     /// </param>
     /// <returns>The number of characters written to <paramref name="destination" />.</returns>
     /// <exception cref="ArgumentException">
@@ -238,8 +239,8 @@ public static partial class Base16
     /// </param>
     /// <param name="variant">The Base16 alphabet case.</param>
     /// <param name="options">
-    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload;
-    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this
+    /// overload; <paramref name="variant" /> takes precedence over it for the alphabet case.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the destination is large enough and the encoding succeeded; otherwise

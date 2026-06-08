@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,9 +23,9 @@ namespace Bodu.Text.DotEnv;
 /// Call <see cref="Read" /> (or <see cref="ReadAsync" />) repeatedly to advance through entries. When it returns
 /// <see langword="true" />, <see cref="Key" /> and <see cref="Value" /> reflect the current entry; when it returns
 /// <see langword="false" />, the input is exhausted. Comments and blank lines are skipped. The reader surfaces entries
-/// in source order and does <b>not</b> apply the document-level
-/// <see cref="DotEnvParseOptions.DuplicateKeyBehavior" /> policy, which requires the whole document and remains
-/// <see cref="DotEnv.Parse(ReadOnlySpan{char})" />'s responsibility.
+/// in source order and does <b>not</b> apply the document-level <see cref="DotEnvParseOptions.DuplicateKeyBehavior" />
+/// policy, which requires the whole document and remains <see cref="DotEnv.Parse(ReadOnlySpan{char})" />'s
+/// responsibility.
 /// </para>
 /// <para>
 /// The reader takes ownership of the supplied <see cref="TextReader" /> and disposes it when <see cref="Dispose" /> is
@@ -79,7 +79,9 @@ public sealed class DotEnvReader : IDisposable
     /// </summary>
     /// <param name="reader">The <see cref="TextReader" /> to read DotEnv text from. Owned by this instance.</param>
     /// <param name="options">Options that control how the source is interpreted.</param>
-    /// <param name="bufferSize">The number of characters read from the underlying reader per fill. Must be at least 1.</param>
+    /// <param name="bufferSize">
+    /// The number of characters read from the underlying reader per fill. Must be at least 1.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="reader" /> is <see langword="null" />.
     /// </exception>
@@ -215,16 +217,24 @@ public sealed class DotEnvReader : IDisposable
         _pending = _pending[consumed..];
     }
 
-    /// <summary>The outcome of a single-entry parse attempt over the pending buffer.</summary>
+    /// <summary>
+    /// The outcome of a single-entry parse attempt over the pending buffer.
+    /// </summary>
     private enum ReadResult
     {
-        /// <summary>A complete entry was parsed.</summary>
+        /// <summary>
+        /// A complete entry was parsed.
+        /// </summary>
         Entry,
 
-        /// <summary>More input is required before an entry can be resolved.</summary>
+        /// <summary>
+        /// More input is required before an entry can be resolved.
+        /// </summary>
         NeedMore,
 
-        /// <summary>The input is exhausted with no further entries.</summary>
+        /// <summary>
+        /// The input is exhausted with no further entries.
+        /// </summary>
         End,
     }
 
@@ -247,14 +257,18 @@ public sealed class DotEnvReader : IDisposable
     /// consuming input.
     /// </summary>
     /// <param name="s">The pending input.</param>
-    /// <param name="isFinal">Whether <paramref name="s" /> is the final block (the reader has reached end of stream).</param>
+    /// <param name="isFinal">
+    /// Whether <paramref name="s" /> is the final block (the reader has reached end of stream).
+    /// </param>
     /// <param name="options">The parse options.</param>
     /// <param name="baseLine">The 1-based line number of the first character in <paramref name="s" />.</param>
     /// <param name="key">When an entry is parsed, receives its key.</param>
     /// <param name="value">When an entry is parsed, receives its value.</param>
     /// <param name="consumed">When an entry is parsed, receives the number of characters consumed.</param>
     /// <param name="lineDelta">When an entry is parsed, receives the number of newlines consumed.</param>
-    /// <param name="keyLineDelta">When an entry is parsed, receives the number of newlines skipped before the key.</param>
+    /// <param name="keyLineDelta">
+    /// When an entry is parsed, receives the number of newlines skipped before the key.
+    /// </param>
     /// <returns>The parse outcome.</returns>
     /// <exception cref="DotEnvFormatException">Thrown when the source is malformed.</exception>
     private static ReadResult TryReadOneEntry(

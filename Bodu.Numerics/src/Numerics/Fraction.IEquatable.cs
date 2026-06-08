@@ -29,12 +29,12 @@ public readonly partial struct Fraction<T> :
     /// <see langword="false" />.
     /// </returns>
     public bool Equals(Fraction<T> other) =>
-        _numerator == other._numerator && Denominator == other.Denominator;
+        Numerator == other.Numerator && Denominator == other.Denominator;
 
     /// <summary>
     /// Returns a hash code for this rational value.
     /// </summary>
     /// <returns>A hash code derived from the canonical numerator and denominator.</returns>
     public override int GetHashCode() =>
-        HashCode.Combine(_numerator, Denominator);
+        HashCode.Combine(Numerator, Denominator);
 }

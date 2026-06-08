@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateObservationTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -54,7 +54,7 @@ public class ExchangeRateObservationTests
     {
         ExchangeRateObservation observation = new(new DateOnly(2026, 6, 1), 1.5m);
 
-        var (date, rate) = observation;
+        (DateOnly date, var rate) = observation;
 
         Assert.AreEqual(new DateOnly(2026, 6, 1), date);
         Assert.AreEqual(1.5m, rate);

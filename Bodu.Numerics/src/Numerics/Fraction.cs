@@ -86,17 +86,6 @@ public readonly partial struct Fraction<T>
     private static readonly BigInteger s_maxBackingBig;
 
     /// <summary>
-    /// The canonical numerator. Carries the sign of the rational value.
-    /// </summary>
-    private readonly T _numerator;
-
-    /// <summary>
-    /// The canonical denominator. A stored value of zero occurs only for a default-initialized instance and is
-    /// interpreted as one by <see cref="Denominator" />.
-    /// </summary>
-    private readonly T _denominator;
-
-    /// <summary>
     /// Initializes static members of the <see cref="Fraction{T}" /> struct.
     /// </summary>
     static Fraction()
@@ -116,8 +105,8 @@ public readonly partial struct Fraction<T>
     /// <param name="value">The integer value the fraction represents.</param>
     public Fraction(T value)
     {
-        _numerator = value;
-        _denominator = T.One;
+        Numerator = value;
+        Denominator = T.One;
     }
 
     /// <summary>
@@ -150,8 +139,8 @@ public readonly partial struct Fraction<T>
             d /= g;
         }
 
-        _numerator = T.CreateChecked(n);
-        _denominator = T.CreateChecked(d);
+        Numerator = T.CreateChecked(n);
+        Denominator = T.CreateChecked(d);
     }
 
     /// <summary>
@@ -166,8 +155,8 @@ public readonly partial struct Fraction<T>
     private Fraction(T numerator, T denominator, bool canonical)
     {
         _ = canonical;
-        _numerator = numerator;
-        _denominator = denominator;
+        Numerator = numerator;
+        Denominator = denominator;
     }
 
     /// <summary>
@@ -232,7 +221,7 @@ public readonly partial struct Fraction<T>
     /// Gets the numerator of the rational value in canonical form.
     /// </summary>
     /// <returns>The signed numerator.</returns>
-    public T Numerator => _numerator;
+    public T Numerator { get; }
 
     /// <summary>
     /// Gets the denominator of the rational value in canonical form.
@@ -243,7 +232,7 @@ public readonly partial struct Fraction<T>
     /// as the rational value zero.
     /// </value>
     public T Denominator =>
-        T.IsZero(_denominator) ? T.One : _denominator;
+        T.IsZero(field) ? T.One : field;
 
     /// <summary>
     /// Gets the sign of the rational value.
@@ -252,7 +241,7 @@ public readonly partial struct Fraction<T>
     /// <c>-1</c> if the value is negative, <c>0</c> if the value is zero, and <c>1</c> if the value is positive.
     /// </returns>
     public int Sign =>
-        T.IsZero(_numerator) ? 0 : (T.IsNegative(_numerator) ? -1 : 1);
+        T.IsZero(Numerator) ? 0 : (T.IsNegative(Numerator) ? -1 : 1);
 
     /// <summary>
     /// Deconstructs the rational value into its canonical numerator and denominator.
@@ -408,15 +397,20 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <param name="numerator">The numerator, assumed to pair with a non-zero <paramref name="denominator" />.</param>
     /// <param name="denominator">The non-zero denominator.</param>
-    /// <param name="canonicalNumerator">On success, the reduced numerator narrowed to <typeparamref name="T" />.</param>
-    /// <param name="canonicalDenominator">On success, the reduced, strictly positive denominator narrowed to <typeparamref name="T" />.</param>
+    /// <param name="canonicalNumerator">
+    /// On success, the reduced numerator narrowed to <typeparamref name="T" />.
+    /// </param>
+    /// <param name="canonicalDenominator">
+    /// On success, the reduced, strictly positive denominator narrowed to <typeparamref name="T" />.
+    /// </param>
     /// <returns>
-    /// <see langword="true" /> when both canonical components fit <typeparamref name="T" />; otherwise <see langword="false" />.
+    /// <see langword="true" /> when both canonical components fit <typeparamref name="T" />; otherwise
+    /// <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// Shared non-throwing core behind <see cref="TryCreate" /> and <see cref="TryFromBigInteger" />; the throwing
-    /// constructor and <see cref="FromBigInteger" /> retain their own narrowing so their <see cref="OverflowException" />
-    /// carries the framework conversion message.
+    /// constructor and <see cref="FromBigInteger" /> retain their own narrowing so their
+    /// <see cref="OverflowException" /> carries the framework conversion message.
     /// </remarks>
     private static bool TryReduceToCanonical(BigInteger numerator, BigInteger denominator, out T canonicalNumerator, out T canonicalDenominator)
     {
@@ -441,7 +435,9 @@ public readonly partial struct Fraction<T>
     /// <typeparamref name="T" /> is bounded.
     /// </summary>
     /// <param name="value">The value to narrow.</param>
-    /// <param name="result">On success, <paramref name="value" /> as <typeparamref name="T" />; otherwise the default.</param>
+    /// <param name="result">
+    /// On success, <paramref name="value" /> as <typeparamref name="T" />; otherwise the default.
+    /// </param>
     /// <returns><see langword="true" /> when <paramref name="value" /> fits <typeparamref name="T" />.</returns>
     private static bool TryNarrow(BigInteger value, out T result)
     {
@@ -480,8 +476,8 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
-    /// Determines whether <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" /> and therefore
-    /// exposes a finite range.
+    /// Determines whether <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" /> and therefore exposes
+    /// a finite range.
     /// </summary>
     /// <returns><see langword="true" /> when <typeparamref name="T" /> is a bounded type.</returns>
     private static bool ImplementsMinMaxValue()

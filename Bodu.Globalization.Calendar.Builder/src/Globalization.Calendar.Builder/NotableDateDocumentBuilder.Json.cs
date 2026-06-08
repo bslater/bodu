@@ -115,7 +115,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     public string ToJson()
     {
-        var root = ToJsonObject();
+        JsonObject root = ToJsonObject();
         using MemoryStream stream = new();
         using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Indented = true }))
             root.WriteTo(writer);

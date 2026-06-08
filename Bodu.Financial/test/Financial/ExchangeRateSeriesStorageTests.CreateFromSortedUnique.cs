@@ -37,7 +37,7 @@ public partial class ExchangeRateSeriesStorageTests
 
         var storage = ExchangeRateSeriesStorage.CreateFromSortedUnique(days, rates);
 
-        var observations = storage.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = storage.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(1.4m, observations[0].Rate);
         Assert.AreEqual(DateOnly.FromDayNumber(1020), observations[2].Date);

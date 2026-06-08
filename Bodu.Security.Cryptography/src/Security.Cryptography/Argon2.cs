@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,15 +40,11 @@ public abstract class Argon2
     /// </summary>
     private const int MinSaltLength = 8;
 
-    private readonly Argon2Parameters _parameters;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Argon2" /> class with the specified cost parameters.
     /// </summary>
     /// <param name="parameters">The cost and auxiliary parameters governing the derivation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="parameters" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106.
     /// </exception>
@@ -60,92 +56,19 @@ public abstract class Argon2
         ThrowHelper.ThrowIfNull(parameters);
         parameters.Validate();
 
-        _parameters = parameters;
+        Parameters = parameters;
     }
 
     /// <summary>
     /// Gets the cost and auxiliary parameters bound to this instance.
     /// </summary>
     /// <returns>The <see cref="Argon2Parameters" /> supplied at construction.</returns>
-    public Argon2Parameters Parameters => _parameters;
+    public Argon2Parameters Parameters { get; }
 
     /// <summary>
     /// Gets the variant code that selects the reference-indexing strategy for this instance.
     /// </summary>
     internal abstract Argon2Type Type { get; }
-
-    /// <summary>
-    /// Derives a tag of the configured <see cref="Argon2Parameters.TagLength" /> from the supplied password and salt.
-    /// </summary>
-    /// <param name="password">The password / message to derive from.</param>
-    /// <param name="salt">The salt; must be at least 8 bytes.</param>
-    /// <returns>The derived tag.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="salt" /> is shorter than 8 bytes.
-    /// </exception>
-    public byte[] GetBytes(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt)
-    {
-        ThrowIfSaltTooShort(salt);
-
-        byte[] tag = new byte[_parameters.TagLength];
-        Argon2Core.DeriveTag(Type, _parameters, password, salt, tag);
-        return tag;
-    }
-
-    /// <summary>
-    /// Derives a tag into the supplied destination buffer.
-    /// </summary>
-    /// <param name="password">The password / message to derive from.</param>
-    /// <param name="salt">The salt; must be at least 8 bytes.</param>
-    /// <param name="destination">The buffer to receive the tag; its length must equal the configured tag length.</param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="salt" /> is shorter than 8 bytes, or <paramref name="destination" /> does not have the configured
-    /// tag length.
-    /// </exception>
-    public void DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Span<byte> destination)
-    {
-        ThrowIfSaltTooShort(salt);
-        if (destination.Length != _parameters.TagLength)
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Argon2DestinationLength, _parameters.TagLength),
-                nameof(destination));
-
-        Argon2Core.DeriveTag(Type, _parameters, password, salt, destination);
-    }
-
-    /// <summary>
-    /// Derives a tag from the password and a freshly generated random 16-byte salt and returns the result as a PHC
-    /// encoded-hash string.
-    /// </summary>
-    /// <param name="password">The password to hash.</param>
-    /// <returns>The PHC encoded-hash string, including the generated salt.</returns>
-    public string Hash(ReadOnlySpan<byte> password)
-    {
-        Span<byte> salt = stackalloc byte[GeneratedSaltLength];
-        RandomNumberGenerator.Fill(salt);
-        return Hash(password, salt);
-    }
-
-    /// <summary>
-    /// Derives a tag from the password and the supplied salt and returns the result as a PHC encoded-hash string.
-    /// </summary>
-    /// <param name="password">The password to hash.</param>
-    /// <param name="salt">The salt to embed in the encoded string; must be at least 8 bytes.</param>
-    /// <returns>The PHC encoded-hash string.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="salt" /> is shorter than 8 bytes.
-    /// </exception>
-    public string Hash(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt)
-    {
-        ThrowIfSaltTooShort(salt);
-
-        byte[] tag = new byte[_parameters.TagLength];
-        Argon2Core.DeriveTag(Type, _parameters, password, salt, tag);
-
-        string encoded = Encode(Type, _parameters, salt, tag);
-        CryptographyHelper.Clear(tag);
-        return encoded;
-    }
 
     /// <summary>
     /// Verifies a password against an Argon2 PHC encoded-hash string, dispatching to the variant named in the string.
@@ -155,9 +78,7 @@ public abstract class Argon2
     /// <returns>
     /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="encoded" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
     /// </exception>
@@ -166,7 +87,7 @@ public abstract class Argon2
     /// verified through <see cref="Verify(string, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
     /// </remarks>
     public static bool Verify(string encoded, ReadOnlySpan<byte> password) =>
-        Verify(encoded, password, ReadOnlySpan<byte>.Empty);
+        Verify(encoded, password, []);
 
     /// <summary>
     /// Verifies a password against an Argon2 PHC encoded-hash string using the supplied secret key.
@@ -177,9 +98,7 @@ public abstract class Argon2
     /// <returns>
     /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="encoded" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
     /// </exception>
@@ -201,12 +120,83 @@ public abstract class Argon2
         };
         parameters.Validate();
 
-        byte[] computed = new byte[parsed.Hash.Length];
+        var computed = new byte[parsed.Hash.Length];
         Argon2Core.DeriveTag(parsed.Type, parameters, password, parsed.Salt, computed);
 
-        bool match = CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
+        var match = CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
         CryptographyHelper.Clear(computed);
         return match;
+    }
+
+    /// <summary>
+    /// Derives a tag into the supplied destination buffer.
+    /// </summary>
+    /// <param name="password">The password / message to derive from.</param>
+    /// <param name="salt">The salt; must be at least 8 bytes.</param>
+    /// <param name="destination">
+    /// The buffer to receive the tag; its length must equal the configured tag length.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="salt" /> is shorter than 8 bytes, or <paramref name="destination" /> does not have the
+    /// configured tag length.
+    /// </exception>
+    public void DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Span<byte> destination)
+    {
+        ThrowIfSaltTooShort(salt);
+        if (destination.Length != Parameters.TagLength)
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Argon2DestinationLength, Parameters.TagLength),
+                nameof(destination));
+
+        Argon2Core.DeriveTag(Type, Parameters, password, salt, destination);
+    }
+
+    /// <summary>
+    /// Derives a tag of the configured <see cref="Argon2Parameters.TagLength" /> from the supplied password and salt.
+    /// </summary>
+    /// <param name="password">The password / message to derive from.</param>
+    /// <param name="salt">The salt; must be at least 8 bytes.</param>
+    /// <returns>The derived tag.</returns>
+    /// <exception cref="ArgumentException"><paramref name="salt" /> is shorter than 8 bytes.</exception>
+    public byte[] GetBytes(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt)
+    {
+        ThrowIfSaltTooShort(salt);
+
+        var tag = new byte[Parameters.TagLength];
+        Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
+        return tag;
+    }
+
+    /// <summary>
+    /// Derives a tag from the password and a freshly generated random 16-byte salt and returns the result as a PHC
+    /// encoded-hash string.
+    /// </summary>
+    /// <param name="password">The password to hash.</param>
+    /// <returns>The PHC encoded-hash string, including the generated salt.</returns>
+    public string Hash(ReadOnlySpan<byte> password)
+    {
+        Span<byte> salt = stackalloc byte[GeneratedSaltLength];
+        RandomNumberGenerator.Fill(salt);
+        return Hash(password, salt);
+    }
+
+    /// <summary>
+    /// Derives a tag from the password and the supplied salt and returns the result as a PHC encoded-hash string.
+    /// </summary>
+    /// <param name="password">The password to hash.</param>
+    /// <param name="salt">The salt to embed in the encoded string; must be at least 8 bytes.</param>
+    /// <returns>The PHC encoded-hash string.</returns>
+    /// <exception cref="ArgumentException"><paramref name="salt" /> is shorter than 8 bytes.</exception>
+    public string Hash(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt)
+    {
+        ThrowIfSaltTooShort(salt);
+
+        var tag = new byte[Parameters.TagLength];
+        Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
+
+        var encoded = Encode(Type, Parameters, salt, tag);
+        CryptographyHelper.Clear(tag);
+        return encoded;
     }
 
     /// <summary>
@@ -231,14 +221,34 @@ public abstract class Argon2
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> if the salt is shorter than the minimum length.
+    /// Parses an Argon2 PHC encoded-hash string into its constituent fields.
     /// </summary>
-    private static void ThrowIfSaltTooShort(ReadOnlySpan<byte> salt)
+    private static Argon2EncodedHash Decode(string encoded)
     {
-        if (salt.Length < MinSaltLength)
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_KdfSaltTooShort, MinSaltLength),
-                nameof(salt));
+        var fields = PhcString.SplitFields(encoded);
+
+        // Expect: "", name, [v=..], m..t..p.., salt, hash
+        if (fields.Length is < 5 or > 6)
+            throw PhcString.Invalid();
+
+        var index = 1;
+        Argon2Type type = ParseTypeName(fields[index++]);
+
+        var version = Argon2Parameters.Version10;
+        if (fields[index].StartsWith("v=", StringComparison.Ordinal))
+        {
+            version = ParseInt(fields[index][2..]);
+            index++;
+        }
+
+        if (index + 3 != fields.Length)
+            throw PhcString.Invalid();
+
+        (var memory, var iterations, var parallelism, var data) = ParseCostFields(fields[index++]);
+        var salt = PhcString.DecodeBase64(fields[index++]);
+        var hash = PhcString.DecodeBase64(fields[index]);
+
+        return new Argon2EncodedHash(type, version, memory, iterations, parallelism, salt, hash, data);
     }
 
     /// <summary>
@@ -262,37 +272,6 @@ public abstract class Argon2
     }
 
     /// <summary>
-    /// Parses an Argon2 PHC encoded-hash string into its constituent fields.
-    /// </summary>
-    private static Argon2EncodedHash Decode(string encoded)
-    {
-        string[] fields = PhcString.SplitFields(encoded);
-
-        // Expect: "", name, [v=..], m..t..p.., salt, hash
-        if (fields.Length is < 5 or > 6)
-            throw PhcString.Invalid();
-
-        int index = 1;
-        Argon2Type type = ParseTypeName(fields[index++]);
-
-        int version = Argon2Parameters.Version10;
-        if (fields[index].StartsWith("v=", StringComparison.Ordinal))
-        {
-            version = ParseInt(fields[index][2..]);
-            index++;
-        }
-
-        if (index + 3 != fields.Length)
-            throw PhcString.Invalid();
-
-        (int memory, int iterations, int parallelism, byte[] data) = ParseCostFields(fields[index++]);
-        byte[] salt = PhcString.DecodeBase64(fields[index++]);
-        byte[] hash = PhcString.DecodeBase64(fields[index]);
-
-        return new Argon2EncodedHash(type, version, memory, iterations, parallelism, salt, hash, data);
-    }
-
-    /// <summary>
     /// Parses the comma-separated cost-parameter field (<c>m=..,t=..,p=..[,data=..]</c>).
     /// </summary>
     private static (int Memory, int Iterations, int Parallelism, byte[] Data) ParseCostFields(string field)
@@ -300,14 +279,14 @@ public abstract class Argon2
         int? memory = null, iterations = null, parallelism = null;
         byte[] data = [];
 
-        foreach (string part in field.Split(','))
+        foreach (var part in field.Split(','))
         {
-            int eq = part.IndexOf('=', StringComparison.Ordinal);
+            var eq = part.IndexOf('=', StringComparison.Ordinal);
             if (eq <= 0)
                 throw PhcString.Invalid();
 
-            string key = part[..eq];
-            string value = part[(eq + 1)..];
+            var key = part[..eq];
+            var value = part[(eq + 1)..];
 
             switch (key)
             {
@@ -329,19 +308,9 @@ public abstract class Argon2
     /// Parses a non-negative decimal integer, throwing a <see cref="FormatException" /> on failure.
     /// </summary>
     private static int ParseInt(string value) =>
-        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int result)
+        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
             ? result
             : throw PhcString.Invalid();
-
-    /// <summary>
-    /// Returns the PHC type name for a variant.
-    /// </summary>
-    private static string TypeName(Argon2Type type) => type switch
-    {
-        Argon2Type.Argon2d => "argon2d",
-        Argon2Type.Argon2i => "argon2i",
-        _ => "argon2id",
-    };
 
     /// <summary>
     /// Parses a PHC type name into a variant, throwing a <see cref="FormatException" /> on an unknown name.
@@ -352,5 +321,26 @@ public abstract class Argon2
         "argon2i" => Argon2Type.Argon2i,
         "argon2id" => Argon2Type.Argon2id,
         _ => throw PhcString.Invalid(),
+    };
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentException" /> if the salt is shorter than the minimum length.
+    /// </summary>
+    private static void ThrowIfSaltTooShort(ReadOnlySpan<byte> salt)
+    {
+        if (salt.Length < MinSaltLength)
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_KdfSaltTooShort, MinSaltLength),
+                nameof(salt));
+    }
+
+    /// <summary>
+    /// Returns the PHC type name for a variant.
+    /// </summary>
+    private static string TypeName(Argon2Type type) => type switch
+    {
+        Argon2Type.Argon2d => "argon2d",
+        Argon2Type.Argon2i => "argon2i",
+        _ => "argon2id",
     };
 }

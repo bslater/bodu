@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ScryptTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -54,7 +54,7 @@ public class ScryptTests
     [DynamicData(nameof(Rfc7914Vectors), DynamicDataDisplayName = nameof(GetVectorName))]
     public void DeriveKey_WhenGivenRfc7914Vector_ShouldMatchExpectedOutput(KdfKnownAnswerVector vector)
     {
-        byte[] derived = Scrypt.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, vector.OutputLength);
+        var derived = Scrypt.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, vector.OutputLength);
 
         Assert.AreEqual(vector.ExpectedHex, Convert.ToHexString(derived).ToLowerInvariant());
     }
@@ -66,7 +66,7 @@ public class ScryptTests
     [TestCategory("Stress")]
     public void DeriveKey_WhenGivenRfc7914LargeMemoryVector_ShouldMatchExpectedOutput()
     {
-        byte[] derived = Scrypt.DeriveKey(Ascii("pleaseletmein"), Ascii("SodiumChloride"), 1048576, 8, 1, 64);
+        var derived = Scrypt.DeriveKey(Ascii("pleaseletmein"), Ascii("SodiumChloride"), 1048576, 8, 1, 64);
 
         Assert.AreEqual(
             "2101cb9b6a511aaeaddbbe09cf70f881ec568d574a2ffd4dabe5ee9820adaa47" +
@@ -80,11 +80,11 @@ public class ScryptTests
     [TestMethod]
     public void DeriveKey_WhenInstanceAndStatic_ShouldProduceIdenticalOutput()
     {
-        byte[] password = Ascii("correct horse battery staple");
-        byte[] salt = Ascii("seasalt");
+        var password = Ascii("correct horse battery staple");
+        var salt = Ascii("seasalt");
 
-        byte[] instance = new Scrypt(16384, 8, 1).GetBytes(password, salt, 32);
-        byte[] @static = Scrypt.DeriveKey(password, salt, 16384, 8, 1, 32);
+        var instance = new Scrypt(16384, 8, 1).GetBytes(password, salt, 32);
+        var @static = Scrypt.DeriveKey(password, salt, 16384, 8, 1, 32);
 
         CollectionAssert.AreEqual(instance, @static);
     }
@@ -95,8 +95,8 @@ public class ScryptTests
     [TestMethod]
     public void Verify_WhenPasswordMatchesEncodedHash_ShouldReturnTrue()
     {
-        byte[] password = Ascii("hunter2");
-        string encoded = Scrypt.Hash(password, Ascii("seasalt"), 16384, 8, 1, 32);
+        var password = Ascii("hunter2");
+        var encoded = Scrypt.Hash(password, Ascii("seasalt"), 16384, 8, 1, 32);
 
         Assert.IsTrue(Scrypt.Verify(encoded, password));
         Assert.IsFalse(Scrypt.Verify(encoded, Ascii("hunter3")));
@@ -108,7 +108,7 @@ public class ScryptTests
     [TestMethod]
     public void Constructor_WhenCostNotPowerOfTwo_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new Scrypt(1000, 8, 1);
         });
@@ -122,7 +122,7 @@ public class ScryptTests
     [TestMethod]
     public void Constructor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new Scrypt(16384, 0, 1);
         });
@@ -151,7 +151,7 @@ public class ScryptTests
     [TestCategory("Smoke")]
     public void DeriveKey_WhenGivenSimpleInput_ShouldReturnOutputOfRequestedLength()
     {
-        byte[] derived = Scrypt.DeriveKey(Ascii("password"), Ascii("salt"), 1024, 8, 1, 32);
+        var derived = Scrypt.DeriveKey(Ascii("password"), Ascii("salt"), 1024, 8, 1, 32);
 
         Assert.AreEqual(32, derived.Length);
     }

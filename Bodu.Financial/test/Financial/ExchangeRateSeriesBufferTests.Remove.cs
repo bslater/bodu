@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.Remove.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class ExchangeRateSeriesBufferTests
 
         Assert.IsTrue(removed);
         Assert.AreEqual(2, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1010), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1020), observations[1].Date);
     }

@@ -64,7 +64,9 @@ public sealed partial class ConfigurationView
     /// <param name="fallback">The value to return when the key is absent.</param>
     /// <returns>The parsed value, or <paramref name="fallback" /> when the key is absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">The value is present but cannot be parsed as <typeparamref name="T" />.</exception>
+    /// <exception cref="FormatException">
+    /// The value is present but cannot be parsed as <typeparamref name="T" />.
+    /// </exception>
     public T GetValue<T>(string key, T fallback)
         where T : ISpanParsable<T>
     {
@@ -346,7 +348,9 @@ public sealed partial class ConfigurationView
     /// <param name="fallback">The value to return when the key is absent.</param>
     /// <returns>The parsed enum value, or <paramref name="fallback" /> when the key is absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">The value is present but cannot be parsed as <typeparamref name="TEnum" />.</exception>
+    /// <exception cref="FormatException">
+    /// The value is present but cannot be parsed as <typeparamref name="TEnum" />.
+    /// </exception>
     public TEnum GetEnum<TEnum>(string key, TEnum fallback)
         where TEnum : struct, Enum
     {

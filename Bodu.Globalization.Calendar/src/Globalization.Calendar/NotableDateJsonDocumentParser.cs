@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateJsonDocumentParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Parses a notable-date document expressed in JSON into its component model objects, delegating the structural shaping
-/// to <see cref="NotableDateDocumentReader" />. The JSON shape mirrors the XML vocabulary one-to-one (camelCase strategy
-/// discriminators, a <c>rules[].adjustments</c> array of policy identifiers).
+/// to <see cref="NotableDateDocumentReader" />. The JSON shape mirrors the XML vocabulary one-to-one (camelCase
+/// strategy discriminators, a <c>rules[].adjustments</c> array of policy identifiers).
 /// </summary>
 internal static class NotableDateJsonDocumentParser
 {

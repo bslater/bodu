@@ -18,13 +18,13 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Save_WhenPathProvided_ShouldRoundTripThroughDisk()
     {
-        ConfigurationDocument original = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
+        var original = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
         var outPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
             ConfigurationDocument.Save(original, outPath);
 
-            ConfigurationDocument reloaded = ConfigurationDocument.Load(outPath);
+            var reloaded = ConfigurationDocument.Load(outPath);
 
             Assert.HasCount(original.Sections.Count, reloaded.Sections);
             Assert.HasCount(original.Sections[0].Entries.Count, reloaded.Sections[0].Entries);

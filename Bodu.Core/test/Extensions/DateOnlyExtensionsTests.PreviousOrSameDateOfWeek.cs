@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.FromDateTime(inputDateTime);
         var expected = DateOnly.FromDateTime(expectedDateTime);
 
-        var actual = input.PreviousOrSameDateOfWeek(targetDay);
+        DateOnly actual = input.PreviousOrSameDateOfWeek(targetDay);
 
         Assert.AreEqual(expected, actual);
     }
@@ -47,7 +47,7 @@ public partial class DateOnlyExtensionsTests
     public void PreviousOrSameDateOfWeek_WhenAlreadyOnTargetDay_ShouldReturnInputUnchanged()
     {
         var input = new DateOnly(2024, 4, 18); // Thursday
-        var actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Thursday);
+        DateOnly actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Thursday);
 
         Assert.AreEqual(input, actual);
     }
@@ -59,8 +59,8 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void PreviousOrSameDateOfWeek_WhenUsingMaxValue_ShouldSucceed()
     {
-        var input = DateOnly.MaxValue;
-        var actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Saturday);
+        DateOnly input = DateOnly.MaxValue;
+        DateOnly actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Saturday);
 
         Assert.IsLessThanOrEqualTo(DateOnly.MaxValue, actual);
     }
@@ -72,8 +72,8 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void PreviousOrSameDateOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
     {
-        var input = DateOnly.MinValue;
-        var actual = input.PreviousOrSameDateOfWeek(input.DayOfWeek);
+        DateOnly input = DateOnly.MinValue;
+        DateOnly actual = input.PreviousOrSameDateOfWeek(input.DayOfWeek);
 
         Assert.AreEqual(input, actual);
     }

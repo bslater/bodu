@@ -136,8 +136,8 @@ public sealed class ResolutionPolicy
     public static ResolutionPolicy Default { get; } = new ResolutionPolicy();
 
     /// <summary>
-    /// Completes an authored category precedence by appending the built-in categories it omits, preserving the
-    /// authored order for the categories it supplies.
+    /// Completes an authored category precedence by appending the built-in categories it omits, preserving the authored
+    /// order for the categories it supplies.
     /// </summary>
     /// <param name="authored">The authored precedence, or <see langword="null" /> for the built-in precedence.</param>
     /// <returns>The completed precedence, highest-winning first.</returns>

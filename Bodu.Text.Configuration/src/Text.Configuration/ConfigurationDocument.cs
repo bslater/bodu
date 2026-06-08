@@ -303,8 +303,8 @@ public sealed class ConfigurationDocument : IniDocumentBase
 }
 
 /// <summary>
-/// Carries the outcome of a configuration parse: the populated <see cref="ConfigurationDocument" /> and any diagnostics collected
-/// during the parse.
+/// Carries the outcome of a configuration parse: the populated <see cref="ConfigurationDocument" /> and any diagnostics
+/// collected during the parse.
 /// </summary>
 /// <remarks>
 /// Under <see cref="ConfigurationDiagnosticMode.Throw" /> the parser raises <see cref="ConfigurationParseException" />

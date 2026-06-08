@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyResolution.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -75,7 +75,9 @@ public static class CurrencyResolution
     /// <see cref="CurrencyRegistry.TryGet(string, out CurrencyInfo?)" />.
     /// </summary>
     /// <param name="isoCode">The ISO 4217 alphabetic code, or <see langword="null" />.</param>
-    /// <param name="info">When this method returns <see langword="true" />, the matching currency; otherwise <see langword="null" />.</param>
+    /// <param name="info">
+    /// When this method returns <see langword="true" />, the matching currency; otherwise <see langword="null" />.
+    /// </param>
     /// <returns><see langword="true" /> when a currency is resolved; otherwise <see langword="false" />.</returns>
     internal static bool TryGet(string? isoCode, out CurrencyInfo? info)
     {

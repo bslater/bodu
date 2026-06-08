@@ -15,7 +15,7 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <returns>The numerator as a <see cref="BigInteger" />.</returns>
     private BigInteger BigNumerator =>
-        BigInteger.CreateChecked(_numerator);
+        BigInteger.CreateChecked(Numerator);
 
     /// <summary>
     /// Gets the canonical denominator promoted to <see cref="BigInteger" /> precision.

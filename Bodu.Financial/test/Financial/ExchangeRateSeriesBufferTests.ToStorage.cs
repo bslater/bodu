@@ -17,7 +17,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBuffer();
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() => buffer.ToStorage());
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() => buffer.ToStorage());
         Assert.AreEqual(FinancialResourceStrings.Op_Invalid_RateSeriesBuilderEmpty, ex.Message);
     }
 
@@ -51,7 +51,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Upsert(1000, 99m, RateParam);
         buffer.Add(1010, 1.5m, RateParam, DateParam);
 
-        var observations = snapshot.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = snapshot.Enumerate().ToArray();
         Assert.AreEqual(1, observations.Length);
         Assert.AreEqual(1.4m, observations[0].Rate);
     }
@@ -95,7 +95,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Add(1010, 1.5m, RateParam, DateParam);
 
         Assert.AreEqual(1, source.Count);
-        var sourceObservations = source.Enumerate().ToArray();
+        ExchangeRateObservation[] sourceObservations = source.Enumerate().ToArray();
         Assert.AreEqual(1.4m, sourceObservations[0].Rate);
     }
 
@@ -111,7 +111,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Add(1000, 1.4m, RateParam, DateParam);
         buffer.Add(1010, 1.5m, RateParam, DateParam);
 
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
 
         Assert.AreEqual(3, observations.Length);
         Assert.IsTrue(observations[0].Date < observations[1].Date);
@@ -126,8 +126,8 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m), (1020, 1.6m));
 
-        var first = buffer.Enumerate().ToArray();
-        var second = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] first = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] second = buffer.Enumerate().ToArray();
 
         CollectionAssert.AreEqual(first, second);
     }

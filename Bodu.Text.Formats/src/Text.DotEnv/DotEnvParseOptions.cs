@@ -55,8 +55,7 @@ public readonly struct DotEnvParseOptions
     /// Gets a value indicating how the parser behaves when the same key appears more than once in the source.
     /// </summary>
     /// <returns>
-    /// A <see cref="DuplicateKeyPolicy" /> value. The default is
-    /// <see cref="DuplicateKeyPolicy.LastWins" />.
+    /// A <see cref="DuplicateKeyPolicy" /> value. The default is <see cref="DuplicateKeyPolicy.LastWins" />.
     /// </returns>
     public DuplicateKeyPolicy DuplicateKeyBehavior { get; init; } = DuplicateKeyPolicy.LastWins;
 

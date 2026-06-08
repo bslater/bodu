@@ -158,7 +158,7 @@ public partial class ExchangeRateSeriesTests
     {
         ExchangeRateSeries series = new(s_usdAud, "RBA", CopyOnWriteSampleObservations());
 
-        var observations = series.GetObservations().ToArray();
+        ExchangeRateObservation[] observations = series.GetObservations().ToArray();
 
         Assert.AreEqual(3, observations.Length);
         for (var i = 1; i < observations.Length; i++)
@@ -175,8 +175,8 @@ public partial class ExchangeRateSeriesTests
     {
         ExchangeRateSeries series = new(s_usdAud, "RBA", CopyOnWriteSampleObservations());
 
-        var first = series.GetObservations().ToArray();
-        var second = series.GetObservations().ToArray();
+        ExchangeRateObservation[] first = series.GetObservations().ToArray();
+        ExchangeRateObservation[] second = series.GetObservations().ToArray();
 
         CollectionAssert.AreEqual(first, second);
     }

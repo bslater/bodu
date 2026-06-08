@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateConversionPrecisionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public sealed class ExchangeRateConversionPrecisionTests
     [TestMethod]
     public void Convert_WhenInvertedFromObservedRate_ShouldDivideExactly()
     {
-        ExchangeRate inverted = ExchangeRate.FromObservedRate("JPY", "USD", Date, 156.42m, "ECB", isInverted: true);
+        var inverted = ExchangeRate.FromObservedRate("JPY", "USD", Date, 156.42m, "ECB", isInverted: true);
 
         // 156.42 JPY -> USD must be exactly 1; amount * (1 / 156.42) would round to 0.999...9.
         Assert.AreEqual(1m, inverted.Convert(156.42m));
@@ -41,7 +41,7 @@ public sealed class ExchangeRateConversionPrecisionTests
     [TestMethod]
     public void Inverse_WhenAppliedTwice_ShouldReturnOriginalExactly()
     {
-        ExchangeRate<USD, JPY> original = ExchangeRate<USD, JPY>.From(156.42m, Date, "ECB");
+        var original = ExchangeRate<USD, JPY>.From(156.42m, Date, "ECB");
 
         ExchangeRate<USD, JPY> roundTrip = original.Inverse().Inverse();
 
@@ -55,7 +55,7 @@ public sealed class ExchangeRateConversionPrecisionTests
     [TestMethod]
     public void JsonRoundTrip_WhenInvertedFromObservedRate_ShouldPreservePreciseConversion()
     {
-        ExchangeRate inverted = ExchangeRate.FromObservedRate("JPY", "USD", Date, 156.42m, "ECB", isInverted: true);
+        var inverted = ExchangeRate.FromObservedRate("JPY", "USD", Date, 156.42m, "ECB", isInverted: true);
 
         var json = JsonSerializer.Serialize(inverted);
         ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json);

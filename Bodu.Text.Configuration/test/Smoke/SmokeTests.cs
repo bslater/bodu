@@ -56,7 +56,7 @@ logging.level.default = Warning
     [TestCategory(TestCategories.Smoke)]
     public void ConfigurationDocument_Resolve_ShouldLayerSectionsInOrder()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse(Sample);
+        var doc = ConfigurationDocument.Parse(Sample);
         ConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
 
         Assert.AreEqual("space", view.GetString("format:indent:style"));
@@ -72,10 +72,10 @@ logging.level.default = Warning
     [TestCategory(TestCategories.Smoke)]
     public void ConfigurationDocument_RoundTrip_ShouldPreserveSemantics()
     {
-        ConfigurationDocument original = ConfigurationDocument.Parse(Sample);
+        var original = ConfigurationDocument.Parse(Sample);
         using StringWriter sw = new();
         ConfigurationDocument.Save(original, sw);
-        ConfigurationDocument reparsed = ConfigurationDocument.Parse(sw.ToString());
+        var reparsed = ConfigurationDocument.Parse(sw.ToString());
 
         Assert.HasCount(original.Sections.Count, reparsed.Sections);
         Assert.AreEqual(original.GlobalSection["root"], reparsed.GlobalSection["root"]);

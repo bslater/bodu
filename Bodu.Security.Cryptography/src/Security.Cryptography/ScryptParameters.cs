@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ScryptParameters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// The peak memory cost of scrypt is approximately <c>128 * N * r</c> bytes. RFC 7914, Section 2 suggests
-/// <c>N = 16384</c>, <c>r = 8</c>, <c>p = 1</c> for interactive logins (about 16 MiB), scaling <c>N</c> up for
-/// more sensitive applications.
+/// <c>N = 16384</c>, <c>r = 8</c>, <c>p = 1</c> for interactive logins (about 16 MiB), scaling <c>N</c> up for more
+/// sensitive applications.
 /// </remarks>
 public sealed record ScryptParameters
 {
@@ -54,7 +54,7 @@ public sealed record ScryptParameters
                 nameof(CostN), CostN, CryptoResourceStrings.Arg_OutOfRange_ScryptCostNotPowerOfTwo);
 
         // p <= ((2^32 - 1) * 32) / (128 * r) (RFC 7914 Section 6).
-        long maxParallelization = ((long)uint.MaxValue * 32) / (128L * BlockSizeR);
+        var maxParallelization = ((long)uint.MaxValue * 32) / (128L * BlockSizeR);
         if (Parallelization < 1 || Parallelization > maxParallelization)
             throw new ArgumentOutOfRangeException(
                 nameof(Parallelization),

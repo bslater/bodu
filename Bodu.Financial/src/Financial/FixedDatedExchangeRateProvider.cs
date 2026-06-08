@@ -298,7 +298,7 @@ public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
 
             // Pass the originally observed rate so an inverted conversion divides by it rather than multiplying by a
             // pre-rounded reciprocal; the reported Rate is still the From->To multiplier.
-            ExchangeRate rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted);
+            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted);
 
             var offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
             result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays);

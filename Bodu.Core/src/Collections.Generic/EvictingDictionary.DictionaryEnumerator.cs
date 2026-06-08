@@ -43,7 +43,7 @@ public partial class EvictingDictionary<TKey, TValue>
         }
 
         /// <inheritdoc />
-        public object Current => Entry;
+        public readonly object Current => Entry;
 
         /// <inheritdoc />
         public readonly DictionaryEntry Entry => new(_inner.Current.Key!, _inner.Current.Value);

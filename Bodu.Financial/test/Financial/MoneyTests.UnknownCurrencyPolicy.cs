@@ -15,7 +15,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Constructor_WhenIsoCodeIsUnregistered_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new Money(12.3456m, "XYZ");
         });
@@ -30,7 +30,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenIsoCodeIsUnregistered_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Money.From(12.3456m, "XYZ");
         });
@@ -45,7 +45,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenUnregisteredAndRejectPolicy_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Money.From(12.3456m, "XYZ", UnknownCurrencyPolicy.Reject);
         });
@@ -61,7 +61,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenUnregisteredAndAllowWithExplicitScalePolicy_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Money.From(12.3456m, "XYZ", UnknownCurrencyPolicy.AllowWithExplicitScale);
         });
@@ -103,7 +103,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenPolicyIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Money.From(10m, "USD", (UnknownCurrencyPolicy)99);
         });
@@ -134,7 +134,7 @@ public partial class MoneyTests
     [DataRow(29)]
     public void FromUnchecked_WhenScaleOutOfRange_ShouldThrowArgumentOutOfRangeException(int minorUnits)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Money.FromUnchecked(1m, "XYZ", minorUnits);
         });

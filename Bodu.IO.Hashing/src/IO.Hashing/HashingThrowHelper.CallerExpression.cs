@@ -18,7 +18,9 @@ internal static partial class HashingThrowHelper
     /// </summary>
     /// <param name="value">The value to validate.</param>
     /// <param name="size">The permitted width, in bits.</param>
-    /// <param name="widthMask">The mask representing the largest value permitted for <paramref name="size" /> bits.</param>
+    /// <param name="widthMask">
+    /// The mask representing the largest value permitted for <paramref name="size" /> bits.
+    /// </param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="value" /> is greater than <paramref name="widthMask" />.

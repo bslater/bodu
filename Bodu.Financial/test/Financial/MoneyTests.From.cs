@@ -84,7 +84,7 @@ public partial class MoneyTests
     [TestMethod]
     public void From_WhenCurrencyCodeIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Money.From(10m, (CurrencyCode)9999);
         });

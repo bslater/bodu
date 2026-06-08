@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentParseHelpers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -179,8 +179,8 @@ internal static class NotableDateDocumentParseHelpers
         int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
 
     /// <summary>
-    /// Parses a boolean value expressed in XML-schema form (<c>true</c>/<c>false</c>/<c>1</c>/<c>0</c>), falling back to
-    /// a default when parsing fails.
+    /// Parses a boolean value expressed in XML-schema form (<c>true</c>/<c>false</c>/<c>1</c>/<c>0</c>), falling back
+    /// to a default when parsing fails.
     /// </summary>
     /// <param name="value">The raw value.</param>
     /// <param name="fallback">The value returned when parsing fails.</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ini.Stream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,9 @@ public static partial class Ini
     /// Creates a forward-only <see cref="IniReader" /> over the supplied <see cref="TextReader" /> using default
     /// options.
     /// </summary>
-    /// <param name="reader">The reader to consume INI text from. Owned by the returned <see cref="IniReader" />.</param>
+    /// <param name="reader">
+    /// The reader to consume INI text from. Owned by the returned <see cref="IniReader" />.
+    /// </param>
     /// <returns>A streaming reader positioned before the first entry.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="reader" /> is <see langword="null" />.
@@ -24,7 +26,9 @@ public static partial class Ini
     /// Creates a forward-only <see cref="IniReader" /> over the supplied <see cref="TextReader" /> using the specified
     /// options.
     /// </summary>
-    /// <param name="reader">The reader to consume INI text from. Owned by the returned <see cref="IniReader" />.</param>
+    /// <param name="reader">
+    /// The reader to consume INI text from. Owned by the returned <see cref="IniReader" />.
+    /// </param>
     /// <param name="options">Options that control how the source is interpreted.</param>
     /// <returns>A streaming reader positioned before the first entry.</returns>
     /// <exception cref="ArgumentNullException">

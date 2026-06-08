@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2i.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,15 +15,14 @@ namespace Bodu.Security.Cryptography;
 /// Argon2i is preferred where memory access patterns may be observed by an attacker but offers weaker time-memory
 /// trade-off resistance than Argon2d; for most password-hashing scenarios <see cref="Argon2id" /> is recommended.
 /// </remarks>
-public sealed class Argon2i : Argon2
+public sealed class Argon2i
+    : Argon2
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Argon2i" /> class with the specified cost parameters.
     /// </summary>
     /// <param name="parameters">The cost and auxiliary parameters governing the derivation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="parameters" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106.
     /// </exception>

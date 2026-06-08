@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,9 @@ public sealed class IniWriter : IDisposable
     /// Writes a section header in <c>[name]</c> form.
     /// </summary>
     /// <param name="name">The section name.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="name" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteSection(string name)
     {
@@ -94,7 +96,9 @@ public sealed class IniWriter : IDisposable
     /// </summary>
     /// <param name="text">The comment text, written after the prefix.</param>
     /// <param name="prefix">The comment prefix character. Defaults to <c>;</c>.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="text" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="text" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
     public void WriteComment(string text, char prefix = ';')
     {
@@ -112,14 +116,16 @@ public sealed class IniWriter : IDisposable
     /// <param name="name">The section name.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the write operation.</param>
     /// <returns>A task that completes when the header has been written.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="name" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
-    public async Task WriteSectionAsync(string name, CancellationToken cancellationToken = default)
+    public Task WriteSectionAsync(string name, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(name);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        await _writer.WriteAsync($"[{name}]\n".AsMemory(), cancellationToken).ConfigureAwait(false);
+        return _writer.WriteAsync($"[{name}]\n".AsMemory(), cancellationToken);
     }
 
     /// <summary>
@@ -133,13 +139,13 @@ public sealed class IniWriter : IDisposable
     /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the writer has been disposed.</exception>
-    public async Task WriteEntryAsync(string key, string value, CancellationToken cancellationToken = default)
+    public Task WriteEntryAsync(string key, string value, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(value);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        await _writer.WriteAsync($"{key} = {value}\n".AsMemory(), cancellationToken).ConfigureAwait(false);
+        return _writer.WriteAsync($"{key} = {value}\n".AsMemory(), cancellationToken);
     }
 
     /// <summary>

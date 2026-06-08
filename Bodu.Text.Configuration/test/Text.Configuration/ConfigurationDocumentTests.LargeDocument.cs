@@ -39,7 +39,7 @@ public partial class ConfigurationDocumentTests
         }
 
         var stopwatch = Stopwatch.StartNew();
-        ConfigurationDocument doc = ConfigurationDocument.Parse(builder.ToString());
+        var doc = ConfigurationDocument.Parse(builder.ToString());
         stopwatch.Stop();
 
         Assert.AreEqual(sectionCount, doc.Sections.Count);
@@ -65,7 +65,7 @@ public partial class ConfigurationDocumentTests
             builder.Append("key").Append(i).Append(" = value").Append(i).Append('\n');
 
         var stopwatch = Stopwatch.StartNew();
-        ConfigurationDocument doc = ConfigurationDocument.Parse(builder.ToString());
+        var doc = ConfigurationDocument.Parse(builder.ToString());
         stopwatch.Stop();
 
         Assert.AreEqual(entryCount, doc.Sections[0].Entries.Count);

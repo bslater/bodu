@@ -54,7 +54,9 @@ public sealed class AlgorithmDateStrategy
     /// Determines whether the supplied algorithm key is recognized by a built-in algorithm.
     /// </summary>
     /// <param name="key">The algorithm key to test.</param>
-    /// <returns><see langword="true" /> if a built-in algorithm is registered for the key; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if a built-in algorithm is registered for the key; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsKnownKey(string key) =>
         key is not null && DefaultNotableDateAlgorithms.Registry.Contains(key);
 

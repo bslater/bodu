@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,10 +22,10 @@ namespace Bodu.Text.Ini;
 /// current entry; when it returns <see langword="false" />, the input is exhausted.
 /// </para>
 /// <para>
-/// Because the reader is forward-only, it surfaces entries in source order and does <b>not</b> apply the
-/// document-level policies of <see cref="Ini.Parse(ReadOnlySpan{char})" /> — duplicate-key resolution
-/// (<see cref="IniParseOptions.DuplicateKeyBehavior" />) and section merging
-/// (<see cref="IniParseOptions.DuplicateSectionBehavior" />) require the whole document and are therefore the parser's
+/// Because the reader is forward-only, it surfaces entries in source order and does <b>not</b> apply the document-level
+/// policies of <see cref="Ini.Parse(ReadOnlySpan{char})" /> — duplicate-key resolution (
+/// <see cref="IniParseOptions.DuplicateKeyBehavior" />) and section merging (
+/// <see cref="IniParseOptions.DuplicateSectionBehavior" />) require the whole document and are therefore the parser's
 /// responsibility, not the reader's. Comments and blank lines are skipped. Malformed section headers, empty keys, and
 /// disallowed global keys are still reported as <see cref="IniFormatException" /> exactly as during parsing.
 /// </para>
@@ -182,7 +182,9 @@ public sealed class IniReader : IDisposable
     /// not produce an entry; key/value lines populate <see cref="_key" /> and <see cref="_value" />.
     /// </summary>
     /// <param name="rawLine">The raw line text, excluding the line terminator.</param>
-    /// <returns><see langword="true" /> when the line produced a key/value entry; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the line produced a key/value entry; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="IniFormatException">
     /// Thrown when a section header is malformed, a key is empty, or a global key is disallowed.
     /// </exception>

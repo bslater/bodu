@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialServiceBuilderExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -127,7 +127,7 @@ public sealed class FinancialServiceBuilderExtensionsTests
             .AddFinancialJson(Serialization.FinancialJsonPolicy.Compact)
             .Services.BuildServiceProvider();
 
-        var options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
+        JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
         var json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
 
         Assert.AreEqual("\"19.99 USD\"", json);

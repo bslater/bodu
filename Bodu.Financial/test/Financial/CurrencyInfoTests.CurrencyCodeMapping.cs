@@ -31,7 +31,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void FromCurrencyCode_WhenCodeIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = CurrencyInfo.FromCurrencyCode((CurrencyCode)9999);
         });

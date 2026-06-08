@@ -85,8 +85,8 @@ public static partial class Base16
     /// <param name="writer">The buffer writer that receives the encoded characters.</param>
     /// <param name="variant">The Base16 alphabet case.</param>
     /// <param name="options">
-    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload;
-    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this
+    /// overload; <paramref name="variant" /> takes precedence over it for the alphabet case.
     /// </param>
     /// <returns>The number of characters written to <paramref name="writer" />.</returns>
     /// <exception cref="ArgumentNullException">
@@ -107,8 +107,8 @@ public static partial class Base16
     /// <param name="writer">The buffer writer that receives the UTF-8 hexadecimal bytes.</param>
     /// <param name="variant">The Base16 alphabet case.</param>
     /// <param name="options">
-    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this overload;
-    /// <paramref name="variant" /> takes precedence over it for the alphabet case.
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is supported on this
+    /// overload; <paramref name="variant" /> takes precedence over it for the alphabet case.
     /// </param>
     /// <returns>The number of UTF-8 bytes written to <paramref name="writer" />.</returns>
     /// <exception cref="ArgumentNullException">

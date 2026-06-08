@@ -20,7 +20,7 @@ public partial class ConfigurationDocumentTests
     {
         using TempFileScope scope = new(ConfigurationFixtures.Representative);
 
-        ConfigurationDocument doc = ConfigurationDocument.Load(scope.Path);
+        var doc = ConfigurationDocument.Load(scope.Path);
 
         Assert.HasCount(2, doc.Sections);
         Assert.AreEqual("true", doc.GlobalSection["root"]);
@@ -57,10 +57,10 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Load_WhenStreamProvided_ShouldProduceSameDocumentAsParse()
     {
-        ConfigurationDocument fromText = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
+        var fromText = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
 
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(ConfigurationFixtures.Representative));
-        ConfigurationDocument fromStream = ConfigurationDocument.Load(stream);
+        var fromStream = ConfigurationDocument.Load(stream);
 
         Assert.HasCount(fromText.Sections.Count, fromStream.Sections);
         Assert.HasCount(fromText.GlobalSection.Entries.Count, fromStream.GlobalSection.Entries);
@@ -115,7 +115,7 @@ public partial class ConfigurationDocumentTests
     {
         using TempFileScope scope = new(ConfigurationFixtures.Minimal);
 
-        ConfigurationDocument doc = ConfigurationDocument.Load(scope.Path);
+        var doc = ConfigurationDocument.Load(scope.Path);
 
         Assert.AreEqual(2, doc.Sections[0].Entries[0].LineNumber);
     }

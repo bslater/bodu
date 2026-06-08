@@ -268,7 +268,7 @@ public readonly partial struct Fraction<T>
     /// </exception>
     public Fraction<TOther> As<TOther>()
         where TOther : IBinaryInteger<TOther> =>
-        new(TOther.CreateChecked(_numerator), TOther.CreateChecked(Denominator));
+        new(TOther.CreateChecked(Numerator), TOther.CreateChecked(Denominator));
 
     /// <summary>
     /// Decomposes a finite <see cref="double" /> into the exact numerator and denominator of its rational value.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekdayMath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,14 +7,15 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides the calendar-specific weekday-seeking and nth-weekday-in-month helpers used by the weekday-based strategies.
+/// Provides the calendar-specific weekday-seeking and nth-weekday-in-month helpers used by the weekday-based
+/// strategies.
 /// </summary>
 /// <remarks>
 /// The underlying weekday navigation is supplied by the <see cref="DateOnlyExtensions" /> primitives in
-/// <c>Bodu.Core</c> (<see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> and its
-/// <c>OrSame</c>/<c>Previous</c>/<c>Nearest</c> companions). This type layers on only the behavior the resolution
-/// pipeline requires that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a
-/// null-returning (rather than throwing) result at the year extremes and for ordinals that do not occur in a month.
+/// <c>Bodu.Core</c> (<see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> and its <c>OrSame</c>/
+/// <c>Previous</c>/<c>Nearest</c> companions). This type layers on only the behavior the resolution pipeline requires
+/// that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a null-returning (rather
+/// than throwing) result at the year extremes and for ordinals that do not occur in a month.
 /// </remarks>
 internal static class WeekdayMath
 {

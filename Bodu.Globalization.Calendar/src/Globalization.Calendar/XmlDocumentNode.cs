@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocumentNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -109,7 +109,9 @@ internal sealed class XmlDocumentNode
     /// Reads the values of an attribute across the item elements, returning <see langword="null" /> when the wrapper
     /// element is absent.
     /// </summary>
-    /// <param name="xmlWrapper">The XML wrapper element, or <see langword="null" /> to read this node's children.</param>
+    /// <param name="xmlWrapper">
+    /// The XML wrapper element, or <see langword="null" /> to read this node's children.
+    /// </param>
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute carrying the value.</param>
     /// <returns>The values, or <see langword="null" /> when the wrapper is absent.</returns>

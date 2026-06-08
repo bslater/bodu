@@ -33,7 +33,7 @@ logging.level.default = Warning
     public void AddConfiguration_WithIniDocument_ShouldFlattenIntoConfiguration()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
-        ConfigurationDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
+        var document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         IConfiguration configuration = new ConfigurationBuilder()
             .AddBoduConfigurationDocument(document)
@@ -49,7 +49,7 @@ logging.level.default = Warning
     public void AddConfiguration_WithIniDocument_WhenTargetPathProvided_ShouldApplyMatchingSection()
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
-        ConfigurationDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
+        var document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         IConfiguration configuration = new ConfigurationBuilder()
             .AddBoduConfigurationDocument(document, targetPath: "src/Foo.cs")
@@ -80,7 +80,7 @@ logging.level.default = Warning
     {
         IConfigurationBuilder builder = null!;
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
-        ConfigurationDocument document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
+        var document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

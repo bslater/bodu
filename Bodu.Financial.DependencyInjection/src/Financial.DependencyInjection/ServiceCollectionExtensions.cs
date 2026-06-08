@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -31,7 +30,9 @@ public static class ServiceCollectionExtensions
     /// Optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
     /// bound into <see cref="FinancialOptions" />.
     /// </param>
-    /// <param name="sectionName">The configuration section name. Defaults to <see cref="DefaultConfigurationSection" />.</param>
+    /// <param name="sectionName">
+    /// The configuration section name. Defaults to <see cref="DefaultConfigurationSection" />.
+    /// </param>
     /// <returns>An <see cref="IFinancialServiceBuilder" /> for further registration.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="services" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="sectionName" /> is empty or white space.</exception>

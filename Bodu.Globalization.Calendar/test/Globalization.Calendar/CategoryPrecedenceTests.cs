@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CategoryPrecedenceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -60,9 +60,9 @@ public sealed class CategoryPrecedenceTests
         foreach (NotableDateCategory category in Enum.GetValues<NotableDateCategory>())
         {
             if (category == NotableDateCategory.None)
-                Assert.IsFalse(precedence.Contains(category), "None must remain unranked.");
+                Assert.DoesNotContain(category, precedence, "None must remain unranked.");
             else
-                Assert.IsTrue(precedence.Contains(category), $"{category} must be ranked by the default precedence.");
+                Assert.Contains(category, precedence, $"{category} must be ranked by the default precedence.");
         }
     }
 

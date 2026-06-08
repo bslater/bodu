@@ -16,7 +16,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetBoolean_WhenValueIsTrueOrFalse_ShouldReturnParsedValue()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nflag = TRUE\nother = False\n");
+        var doc = ConfigurationDocument.Parse("[*]\nflag = TRUE\nother = False\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsTrue(view.GetBoolean("flag"));
@@ -29,7 +29,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetBoolean_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nflag = sometimes\n");
+        var doc = ConfigurationDocument.Parse("[*]\nflag = sometimes\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetBoolean("flag"));
@@ -55,7 +55,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetBoolean_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nbad = sometimes\n");
+        var doc = ConfigurationDocument.Parse("[*]\nbad = sometimes\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetBoolean("missing", out _));

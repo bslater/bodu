@@ -85,7 +85,7 @@ internal static class TextConfigurationLoader
         ConfigurationParseOptions effectiveParse = parseOptions ?? ConfigurationParseOptions.Bodu;
         ConfigurationResolveOptions effectiveResolve = resolveOptions ?? ConfigurationResolveOptions.Bodu;
 
-        ConfigurationDocument document = ConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
+        var document = ConfigurationDocument.Load(stream, effectiveParse, leaveOpen: true);
 
         return LoadData(document, targetPath, effectiveResolve);
     }

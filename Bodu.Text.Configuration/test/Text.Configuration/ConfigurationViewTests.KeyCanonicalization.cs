@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationViewTests.KeyCanonicalization.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,7 @@ public partial class ConfigurationViewTests
 {
     private static ConfigurationView ResolveWithMapping(string source, ConfigurationKeyMapping mapping)
     {
-        ConfigurationDocument doc = ConfigurationDocument.Parse(source);
+        var doc = ConfigurationDocument.Parse(source);
         ConfigurationResolveOptions options = new()
         {
             KeyOptions = new ConfigurationKeyOptions { Mapping = mapping },

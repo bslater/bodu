@@ -19,7 +19,7 @@ public partial class ExchangeRateSeriesStorageTests
             [Obs(1020, 1.6m), Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
-        var observations = storage.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = storage.Enumerate().ToArray();
 
         Assert.AreEqual(3, observations.Length);
         Assert.IsTrue(observations[0].Date < observations[1].Date);
@@ -37,8 +37,8 @@ public partial class ExchangeRateSeriesStorageTests
             [Obs(1000, 1.4m), Obs(1010, 1.5m), Obs(1020, 1.6m)],
             ObservationsParam);
 
-        var first = storage.Enumerate().ToArray();
-        var second = storage.Enumerate().ToArray();
+        ExchangeRateObservation[] first = storage.Enumerate().ToArray();
+        ExchangeRateObservation[] second = storage.Enumerate().ToArray();
 
         CollectionAssert.AreEqual(first, second);
     }
@@ -54,7 +54,7 @@ public partial class ExchangeRateSeriesStorageTests
             [Obs(1000, 1.4m), Obs(1010, 1.5m)],
             ObservationsParam);
 
-        var observations = storage.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = storage.Enumerate().ToArray();
 
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(1.4m, observations[0].Rate);

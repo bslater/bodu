@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ChristianAnglicanKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public sealed class ChristianAnglicanKnownAnswerTests
 
         Assert.AreEqual(new DateOnly(year, month, day), feast.Date, $"baptism-of-christ {year}");
         Assert.AreEqual(DayOfWeek.Sunday, feast.Date.DayOfWeek, $"baptism-of-christ {year} must be a Sunday");
-        Assert.IsTrue(feast.Date > new DateOnly(year, 1, 6), $"baptism-of-christ {year} must fall after Epiphany");
+        Assert.IsGreaterThan(new DateOnly(year, 1, 6), feast.Date, $"baptism-of-christ {year} must fall after Epiphany");
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyMath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,7 +68,7 @@ internal static class MoneyMath
         BigInteger minorTotal = ToMinorUnits(amount, minorUnits);
         BigInteger basePer = minorTotal / parts;
         BigInteger residual = minorTotal - (basePer * parts);
-        int sign = residual.Sign >= 0 ? 1 : -1;
+        var sign = residual.Sign >= 0 ? 1 : -1;
         var residualMagnitude = (int)BigInteger.Abs(residual);
 
         for (var i = 0; i < parts; i++)
@@ -86,9 +86,9 @@ internal static class MoneyMath
     /// <param name="minorUnits">The currency's minor-unit precision, in the inclusive range <c>[0, 28]</c>.</param>
     /// <param name="ratios">The validated, non-negative weights; at least one must be strictly positive.</param>
     /// <returns>
-    /// The per-ratio amounts in major units. Residual minor units are distributed by the largest-remainder
-    /// (Hamilton) method — each slot receives one extra unit in descending order of its fractional remainder, ties
-    /// broken by stable input order. Zero-ratio slots never receive residual.
+    /// The per-ratio amounts in major units. Residual minor units are distributed by the largest-remainder (Hamilton)
+    /// method — each slot receives one extra unit in descending order of its fractional remainder, ties broken by
+    /// stable input order. Zero-ratio slots never receive residual.
     /// </returns>
     /// <remarks>
     /// The proportional split retains the established <see cref="decimal" /> remainder arithmetic so its results are
@@ -102,8 +102,8 @@ internal static class MoneyMath
             totalWeight += ratios[i];
 
         BigInteger minorTotalSigned = ToMinorUnits(amount, minorUnits);
-        int sign = minorTotalSigned.Sign >= 0 ? 1 : -1;
-        BigInteger minorTotal = BigInteger.Abs(minorTotalSigned);
+        var sign = minorTotalSigned.Sign >= 0 ? 1 : -1;
+        var minorTotal = BigInteger.Abs(minorTotalSigned);
         var minorTotalDecimal = (decimal)minorTotal;
 
         // Compute floored shares over absolute minor units; track each slot's fractional remainder so the residual
@@ -190,7 +190,7 @@ internal static class MoneyMath
     /// <returns>The amount in major units.</returns>
     internal static decimal FromMinorUnits(BigInteger minor, int minorUnits)
     {
-        BigInteger quotient = BigInteger.DivRem(minor, BigInteger.Pow(10, minorUnits), out BigInteger remainder);
+        var quotient = BigInteger.DivRem(minor, BigInteger.Pow(10, minorUnits), out BigInteger remainder);
         return (decimal)quotient + ((decimal)remainder / MinorUnitFactor(minorUnits));
     }
 

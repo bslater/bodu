@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.Capacity.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class ExchangeRateSeriesBufferTests
 
         Assert.AreEqual(Total, buffer.Count);
 
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         for (var i = 0; i < Total; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(1000 + i), observations[i].Date);
@@ -50,7 +50,7 @@ public partial class ExchangeRateSeriesBufferTests
 
         Assert.AreEqual(Total, buffer.Count);
 
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         for (var i = 0; i < Total; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(1000 + i), observations[i].Date);
@@ -76,7 +76,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.AddRange(batch, ObservationsParam);
 
         Assert.AreEqual(Total, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1000 + Total - 1), observations[Total - 1].Date);
     }
@@ -100,7 +100,7 @@ public partial class ExchangeRateSeriesBufferTests
         }
 
         Assert.AreEqual(25, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         for (var i = 0; i < 25; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(2001 + 2 * i), observations[i].Date);

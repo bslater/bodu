@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyRegistryTests.Replace.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -74,7 +74,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void Register_WhenConflictPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             CurrencyRegistry.Register(new CurrencyInfo("XQK", 2, 0m, false, null, null), (CurrencyRegistrationConflictPolicy)99);
         });

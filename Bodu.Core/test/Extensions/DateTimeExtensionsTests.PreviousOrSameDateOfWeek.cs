@@ -72,9 +72,9 @@ public partial class DateTimeExtensionsTests
     public void PreviousOrSameDateOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
     {
         var time = new TimeSpan(0, 12, 32, 55, 34, 903);
-        var input = new DateTime(2024, 4, 18).Add(time);
+        DateTime input = new DateTime(2024, 4, 18).Add(time);
 
-        var actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Monday).TimeOfDay;
+        TimeSpan actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Monday).TimeOfDay;
 
         Assert.AreEqual(time, actual);
     }
@@ -86,8 +86,8 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOrSameDateOfWeek_WhenUsingMaxValue_ShouldSucceed()
     {
-        var input = DateTime.MaxValue;
-        var actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Saturday);
+        DateTime input = DateTime.MaxValue;
+        DateTime actual = input.PreviousOrSameDateOfWeek(DayOfWeek.Saturday);
 
         Assert.IsLessThanOrEqualTo(DateTime.MaxValue, actual);
     }
@@ -100,7 +100,7 @@ public partial class DateTimeExtensionsTests
     public void PreviousOrSameDateOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
     {
         DateTime input = DateTime.MinValue;
-        var actual = input.PreviousOrSameDateOfWeek(input.DayOfWeek);
+        DateTime actual = input.PreviousOrSameDateOfWeek(input.DayOfWeek);
 
         Assert.AreEqual(input, actual);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.AddRange.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void AddRange_WhenIncomingEmptyOnPopulatedBuffer_ShouldLeaveBufferUnchanged()
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m));
-        var before = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] before = buffer.Enumerate().ToArray();
 
         buffer.AddRange(Array.Empty<ExchangeRateObservation>(), ObservationsParam);
 
@@ -53,7 +53,7 @@ public partial class ExchangeRateSeriesBufferTests
 
         buffer.AddRange(batch, ObservationsParam);
 
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1010), observations[1].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1020), observations[2].Date);
@@ -75,7 +75,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.AddRange(batch, ObservationsParam);
 
         Assert.AreEqual(5, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1010), observations[1].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1020), observations[2].Date);
@@ -100,7 +100,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.AddRange(batch, ObservationsParam);
 
         Assert.AreEqual(4, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1030), observations[3].Date);
     }
@@ -121,7 +121,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.AddRange(batch, ObservationsParam);
 
         Assert.AreEqual(4, buffer.Count);
-        var observations = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
         Assert.AreEqual(DateOnly.FromDayNumber(1000), observations[0].Date);
         Assert.AreEqual(DateOnly.FromDayNumber(1030), observations[3].Date);
     }
@@ -133,7 +133,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void AddRange_WhenAnyIncomingDateCollidesWithExisting_ShouldThrowAndLeaveBufferUnchanged()
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1020, 1.6m));
-        var before = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] before = buffer.Enumerate().ToArray();
 
         ExchangeRateObservation[] batch =
         [
@@ -160,7 +160,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void AddRange_WhenIncomingBatchContainsDuplicate_ShouldThrowAndLeaveBufferUnchanged()
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m));
-        var before = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] before = buffer.Enumerate().ToArray();
 
         ExchangeRateObservation[] batch =
         [
@@ -186,7 +186,7 @@ public partial class ExchangeRateSeriesBufferTests
     public void AddRange_WhenAnyRateInvalid_ShouldThrowAndLeaveBufferUnchanged()
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m));
-        var before = buffer.Enumerate().ToArray();
+        ExchangeRateObservation[] before = buffer.Enumerate().ToArray();
 
         ExchangeRateObservation[] batch =
         [

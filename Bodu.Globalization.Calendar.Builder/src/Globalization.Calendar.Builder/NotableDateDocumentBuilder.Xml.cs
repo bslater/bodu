@@ -58,7 +58,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
     public string ToXml()
     {
-        var document = ToXDocument();
+        XDocument document = ToXDocument();
         XmlWriterSettings settings = new()
         {
             Indent = true,

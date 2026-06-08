@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PhcString.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,16 +30,14 @@ internal static class PhcString
     /// </summary>
     /// <param name="text">The unpadded Base64 text.</param>
     /// <returns>The decoded bytes.</returns>
-    /// <exception cref="FormatException">
-    /// <paramref name="text" /> is not valid Base64.
-    /// </exception>
+    /// <exception cref="FormatException"><paramref name="text" /> is not valid Base64.</exception>
     internal static byte[] DecodeBase64(string text)
     {
-        int padding = (4 - (text.Length % 4)) % 4;
+        var padding = (4 - (text.Length % 4)) % 4;
         if (padding == 3)
             throw new FormatException(CryptoResourceStrings.Format_Invalid_PhcString);
 
-        string padded = padding == 0 ? text : text + new string('=', padding);
+        var padded = padding == 0 ? text : text + new string('=', padding);
 
         try
         {
