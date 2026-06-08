@@ -21,7 +21,7 @@ namespace Bodu.Text.Ini;
 /// IniParseOptions options = new IniParseOptions
 /// {
 ///     AllowGlobalSection = false,
-///     DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins,
+///     DuplicateKeyBehavior = DuplicateKeyPolicy.FirstWins,
 /// };
 ///]]>
 /// </code>
@@ -78,8 +78,8 @@ public readonly struct IniParseOptions
     /// <summary>
     /// Gets the behavior applied when the same key appears more than once within a section.
     /// </summary>
-    /// <returns><see cref="IniDuplicateKeyBehavior.LastWins" /> by default.</returns>
-    public IniDuplicateKeyBehavior DuplicateKeyBehavior { get; init; } = IniDuplicateKeyBehavior.LastWins;
+    /// <returns><see cref="DuplicateKeyPolicy.LastWins" /> by default.</returns>
+    public DuplicateKeyPolicy DuplicateKeyBehavior { get; init; } = DuplicateKeyPolicy.LastWins;
 
     /// <summary>
     /// Gets the behavior applied when the same section name appears more than once in the source.

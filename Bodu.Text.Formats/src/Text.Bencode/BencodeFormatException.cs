@@ -66,7 +66,7 @@ public sealed class BencodeFormatException
     /// <param name="message">The error message.</param>
     /// <param name="offset">The 0-based byte offset from the start of the source.</param>
     public BencodeFormatException(string message, int offset)
-        : base(message, lineNumber: 0, columnNumber: null, offset: offset)
+        : base(message, lineNumber: 0, offset: offset)
     {
     }
 }

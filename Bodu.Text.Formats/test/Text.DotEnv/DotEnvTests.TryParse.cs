@@ -57,7 +57,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenDuplicateKeyDisallowed_ShouldReturnFalseOnDuplicate()
     {
-        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed };
+        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.Disallowed };
 
         var result = DotEnv.TryParse("KEY=a\nKEY=b", options, out DotEnvDocument? document);
 

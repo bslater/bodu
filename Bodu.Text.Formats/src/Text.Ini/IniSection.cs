@@ -105,7 +105,7 @@ public sealed class IniSection
     /// <param name="name">The section name, or an empty string for the global section.</param>
     /// <param name="entries">
     /// The ordered entries for this section. Duplicate keys are resolved by last-wins to mirror
-    /// <see cref="IniDuplicateKeyBehavior.LastWins" />; supply a deduplicated sequence to preserve order exactly.
+    /// <see cref="DuplicateKeyPolicy.LastWins" />; supply a deduplicated sequence to preserve order exactly.
     /// </param>
     /// <param name="caseSensitiveKeys">
     /// <see langword="true" /> to compare keys with ordinal case sensitivity; otherwise, <see langword="false" /> (the
@@ -158,7 +158,7 @@ public sealed class IniSection
     /// </summary>
     /// <returns>
     /// A read-only list of <see cref="IniEntry" /> instances in source order, with duplicates resolved according to the
-    /// <see cref="IniDuplicateKeyBehavior" /> that was active during parsing.
+    /// <see cref="DuplicateKeyPolicy" /> that was active during parsing.
     /// </returns>
     public IReadOnlyList<IniEntry> Entries { get; }
 

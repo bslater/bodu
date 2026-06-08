@@ -8,6 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.DotEnv;
 
 public static partial class DotEnv
@@ -190,14 +192,14 @@ public static partial class DotEnv
                 {
                     switch (_options.DuplicateKeyBehavior)
                     {
-                        case DotEnvDuplicateKeyBehavior.Disallowed:
+                        case DuplicateKeyPolicy.Disallowed:
                             DotEnv.ThrowDuplicateKey(key, entryLineNumber);
                             return default!;
 
-                        case DotEnvDuplicateKeyBehavior.FirstWins:
+                        case DuplicateKeyPolicy.FirstWins:
                             break;
 
-                        case DotEnvDuplicateKeyBehavior.LastWins:
+                        case DuplicateKeyPolicy.LastWins:
                             DotEnvEntry replacement = new(key, value, leadingComments);
                             var idx = entries.IndexOf(existing);
                             entries[idx] = replacement;

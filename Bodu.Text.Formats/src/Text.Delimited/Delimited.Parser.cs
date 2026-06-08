@@ -8,6 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Delimited;
 
 public static partial class Delimited

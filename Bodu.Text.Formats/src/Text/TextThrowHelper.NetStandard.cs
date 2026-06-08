@@ -7,7 +7,7 @@
 #if NETSTANDARD2_0_OR_GREATER
 using System.Runtime.CompilerServices;
 
-namespace Bodu.Text;
+namespace Bodu.Text.Formats;
 
 internal static partial class TextThrowHelper
 {

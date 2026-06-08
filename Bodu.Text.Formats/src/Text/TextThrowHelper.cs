@@ -6,7 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Bodu.Text;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Provides <c>ThrowIf</c> guard helpers for stream capability checks that are not covered by

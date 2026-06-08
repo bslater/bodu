@@ -6,6 +6,8 @@
 
 using System.Buffers;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Bencode;
 
 public static partial class Bencode

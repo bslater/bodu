@@ -120,7 +120,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenDuplicateKeyDisallowedAndKeyRepeated_ShouldThrowExactly()
     {
-        IniParseOptions options = new() { DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed };
+        IniParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.Disallowed };
 
         IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
         {

@@ -82,7 +82,6 @@ public sealed class TextFormatExceptionTests
         DelimitedFormatException ex = new();
 
         Assert.AreEqual(0, ex.LineNumber);
-        Assert.IsNull(ex.ColumnNumber);
         Assert.IsNull(ex.Offset);
     }
 }

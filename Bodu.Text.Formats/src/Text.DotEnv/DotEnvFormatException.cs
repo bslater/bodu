@@ -15,7 +15,7 @@ namespace Bodu.Text.DotEnv;
 /// Raised by <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> when the source cannot be interpreted as valid DotEnv text
 /// — for example, when a line is not a comment and does not match <c>KEY=VALUE</c>, when a key contains characters
 /// outside the <c>[A-Za-z_][A-Za-z0-9_]*</c> pattern, when a quoted value is left unterminated, or when the parser
-/// encounters a duplicate key under <see cref="DotEnvDuplicateKeyBehavior.Disallowed" />.
+/// encounters a duplicate key under <see cref="DuplicateKeyPolicy.Disallowed" />.
 /// </para>
 /// <para>
 /// <see cref="TextFormatException.LineNumber" /> carries the 1-based source line on which the parser detected the

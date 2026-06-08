@@ -1,15 +1,16 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DotEnvDuplicateKeyBehavior.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DuplicateKeyPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.DotEnv;
+namespace Bodu.Text;
 
 /// <summary>
-/// Specifies how the DotEnv parser behaves when the same key name appears more than once in the source.
+/// Specifies how a key-based text-format parser resolves a key that appears more than once in the source. Shared by
+/// the formats whose duplicate-key semantics are identical (DotEnv and INI).
 /// </summary>
-public enum DotEnvDuplicateKeyBehavior
+public enum DuplicateKeyPolicy
 {
     /// <summary>
     /// The last occurrence of a duplicated key wins; earlier values are discarded. This is the default.
@@ -22,7 +23,7 @@ public enum DotEnvDuplicateKeyBehavior
     FirstWins = 1,
 
     /// <summary>
-    /// Any duplicated key causes a <see cref="DotEnvFormatException" /> to be thrown.
+    /// Any duplicated key causes a <see cref="TextFormatException" /> to be thrown.
     /// </summary>
     Disallowed = 2,
 }

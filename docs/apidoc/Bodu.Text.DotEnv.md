@@ -14,7 +14,7 @@ uid: Bodu.Text.DotEnv
 - <xref:Bodu.Text.DotEnv.DotEnvDocument> — parsed document: ordered <xref:Bodu.Text.DotEnv.DotEnvEntry> values with indexer access by key.
 - <xref:Bodu.Text.DotEnv.DotEnvEntry> — a single `key=value` line with optional comment, quoting state, and source position.
 - <xref:Bodu.Text.DotEnv.DotEnvParseOptions> — duplicate-key, comment-preservation, variable-expansion, and quote-handling options.
-- <xref:Bodu.Text.DotEnv.DotEnvDuplicateKeyBehavior> — `LastWins`, `FirstWins`, `Disallowed`.
+- <xref:Bodu.Text.DuplicateKeyPolicy> — `LastWins`, `FirstWins`, `Disallowed`.
 - <xref:Bodu.Text.DotEnv.DotEnvFormatException> — derives from <xref:System.FormatException>; thrown on malformed input.
 
 ## Example

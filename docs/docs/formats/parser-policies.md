@@ -17,14 +17,13 @@ try
 }
 catch (TextFormatException ex)
 {
-    Console.Error.WriteLine($"Parse failed at line {ex.LineNumber}, column {ex.ColumnNumber}, offset {ex.Offset}: {ex.Message}");
+    Console.Error.WriteLine($"Parse failed at line {ex.LineNumber}, offset {ex.Offset}: {ex.Message}");
 }
 ```
 
 | Property | Meaning |
 |---|---|
 | `LineNumber` | 1-based source line; `0` when the parser cannot identify a line. |
-| `ColumnNumber` | 1-based column; `null` when the parser cannot identify a column. |
 | `Offset` | 0-based byte/character offset from the start of the source; `null` when not tracked. |
 
 ## Delimited
@@ -57,7 +56,7 @@ DelimitedDocument doc = Delimited.Parse(source.AsSpan(), lenient);
 | Option | Default | Behaviour |
 |---|---|---|
 | `MaxDepth` | `512` | Throw `BencodeFormatException` once nested lists / dictionaries exceed this depth, before the recursive parser exhausts the call stack on hostile input. |
-| `RequireCompleteDocument` | `false` | When `true`, `TryDecode` returns `false` unless the entire source was consumed by exactly one value. Mirrors the contract of `Decode`, which already rejects trailing bytes. |
+| `RequireCompleteDocument` | `false` | When `true`, `TryParse` returns `false` unless the entire source was consumed by exactly one value. Mirrors the contract of `Parse`, which already rejects trailing bytes. |
 
 ```csharp
 BencodeParseOptions options = new()
@@ -88,7 +87,7 @@ Both `Parse` and `Format` preserve the comment in the resulting document. Set `P
 
 ## INI
 
-The INI parser has the broadest existing policy surface. See [`IniDuplicateKeyBehavior`](xref:Bodu.Text.Ini.IniDuplicateKeyBehavior) and [`IniDuplicateSectionBehavior`](xref:Bodu.Text.Ini.IniDuplicateSectionBehavior) for the duplicate-resolution modes, and `IniParseOptions.PreserveComments` for trivia retention.
+The INI parser has the broadest existing policy surface. See [`DuplicateKeyPolicy`](xref:Bodu.Text.DuplicateKeyPolicy) and [`IniDuplicateSectionBehavior`](xref:Bodu.Text.Ini.IniDuplicateSectionBehavior) for the duplicate-resolution modes, and `IniParseOptions.PreserveComments` for trivia retention.
 
 ## Migration notes
 

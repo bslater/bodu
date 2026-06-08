@@ -12,13 +12,13 @@ public sealed partial class DotEnvTests
     // ---------------------------------------- DuplicateKeyBehavior ----------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="DotEnvDuplicateKeyBehavior.LastWins" /> causes the last value to win when the same
+    /// Verifies that <see cref="DuplicateKeyPolicy.LastWins" /> causes the last value to win when the same
     /// key appears more than once.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyLastWins_ShouldReturnLastValue()
     {
-        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.LastWins };
+        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.LastWins };
 
         DotEnvDocument doc = DotEnv.Parse("KEY=first\nKEY=second", options);
 
@@ -26,13 +26,13 @@ public sealed partial class DotEnvTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DotEnvDuplicateKeyBehavior.LastWins" /> produces exactly one entry for a
+    /// Verifies that <see cref="DuplicateKeyPolicy.LastWins" /> produces exactly one entry for a
     /// duplicated key.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyLastWins_ShouldProduceSingleEntry()
     {
-        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.LastWins };
+        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.LastWins };
 
         DotEnvDocument doc = DotEnv.Parse("KEY=first\nKEY=second", options);
 
@@ -40,13 +40,13 @@ public sealed partial class DotEnvTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DotEnvDuplicateKeyBehavior.FirstWins" /> causes the first value to be retained
+    /// Verifies that <see cref="DuplicateKeyPolicy.FirstWins" /> causes the first value to be retained
     /// when the same key appears more than once.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyFirstWins_ShouldReturnFirstValue()
     {
-        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.FirstWins };
+        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.FirstWins };
 
         DotEnvDocument doc = DotEnv.Parse("KEY=first\nKEY=second", options);
 
@@ -54,13 +54,13 @@ public sealed partial class DotEnvTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DotEnvDuplicateKeyBehavior.FirstWins" /> produces exactly one entry for a
+    /// Verifies that <see cref="DuplicateKeyPolicy.FirstWins" /> produces exactly one entry for a
     /// duplicated key.
     /// </summary>
     [TestMethod]
     public void Parse_WhenDuplicateKeyFirstWins_ShouldProduceSingleEntry()
     {
-        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.FirstWins };
+        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.FirstWins };
 
         DotEnvDocument doc = DotEnv.Parse("KEY=first\nKEY=second", options);
 

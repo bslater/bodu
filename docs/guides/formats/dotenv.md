@@ -106,7 +106,7 @@ The `DotEnvParseOptions` fields control the format dialect:
 
 ### Duplicate key behaviour
 
-`DotEnvDuplicateKeyBehavior`:
+`DuplicateKeyPolicy`:
 
 | Member | Effect |
 |---|---|

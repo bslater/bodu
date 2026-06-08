@@ -313,7 +313,7 @@ public static partial class Ini
 
         /// <summary>
         /// Parses a single key/value line and adds the resulting entry to the active section's state, applying the
-        /// configured <see cref="IniDuplicateKeyBehavior" />.
+        /// configured <see cref="DuplicateKeyPolicy" />.
         /// </summary>
         /// <param name="line">The trimmed source line (not a comment, not a section header, not empty).</param>
         /// <param name="entries">The ordered entry list for the active section.</param>
@@ -360,14 +360,14 @@ public static partial class Ini
             {
                 switch (_options.DuplicateKeyBehavior)
                 {
-                    case IniDuplicateKeyBehavior.Disallowed:
+                    case DuplicateKeyPolicy.Disallowed:
                         Ini.ThrowDuplicateKey(key, _lineNumber);
                         return;
 
-                    case IniDuplicateKeyBehavior.FirstWins:
+                    case DuplicateKeyPolicy.FirstWins:
                         return;
 
-                    case IniDuplicateKeyBehavior.LastWins:
+                    case DuplicateKeyPolicy.LastWins:
                         // Replace the existing entry in-place so its original position is preserved.
                         var idx = entries.IndexOf(existing);
                         IniEntry replacement = new(key, value, _lineNumber, leadingComments);

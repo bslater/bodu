@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Provides shared, allocation-free character-cursor primitives over a <see cref="ReadOnlySpan{T}" /> of

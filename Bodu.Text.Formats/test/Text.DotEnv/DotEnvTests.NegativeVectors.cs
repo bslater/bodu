@@ -98,7 +98,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void Parse_WhenDuplicateKeyDisallowedAndKeyRepeated_ShouldThrowExactly()
     {
-        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DotEnvDuplicateKeyBehavior.Disallowed };
+        DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.Disallowed };
 
         DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
         {
