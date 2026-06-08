@@ -240,6 +240,12 @@
           href: cryptography/ascon-xof.md
         - name: ASCON authenticated encryption (AEAD)
           href: cryptography/ascon-aead.md
+    - name: Key derivation
+      items:
+        - name: Using Argon2
+          href: cryptography/argon2.md
+        - name: Using scrypt
+          href: cryptography/scrypt.md
 - name: Bodu.Text.Configuration
   items:
     - name: Overview

@@ -161,6 +161,22 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 
 </div>
 
+## Key derivation
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="argon2.md">Using Argon2</a></h3>
+  <p><code>Argon2id</code> / <code>Argon2i</code> / <code>Argon2d</code> (RFC 9106) — memory-hard password hashing and key derivation, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="scrypt.md">Using scrypt</a></h3>
+  <p><code>Scrypt</code> (RFC 7914) — the established memory-hard password KDF, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+</div>
+
+</div>
+
 ## Where to go next
 
 - [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) — namespaces, headline types, scenarios.

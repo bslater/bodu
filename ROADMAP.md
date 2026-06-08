@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-02. The extended-nonce Poly1305 AEAD constructions have landed — `XChaCha20Poly1305`, the `crypto_secretbox`-compatible `XSalsa20Poly1305`, and the Bodu-defined `XSalsa20Poly1305Aead` ship on the shared `Poly1305AeadTransform` base and the new construction-neutral `IAeadTransform` / `IStreamAeadTransform` surface, closing the stream-cipher AEAD gap left by the BCL's 12-byte-nonce `ChaCha20Poly1305`. With the ChaCha/Salsa stream-cipher family and its AEAD layer complete, the next crypto step is the password-hashing KDFs Argon2 and scrypt — the remaining BCL gap (HKDF and PBKDF2 already ship in `System.Security.Cryptography`).*
+*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), the highest-leverage net-new engineering items are now a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
 
 ## How to read this
 
@@ -44,18 +44,26 @@ The roadmap assumes the conventions already documented in
 ## Release focus
 
 The `[Unreleased]` block in [`CHANGELOG.md`](CHANGELOG.md) is the
-immediate publishing target. Five packages are queued:
+immediate publishing target. The queued packages are:
 
 | Package | Version | Notes |
 | --- | --- | --- |
 | `Bodu.Numerics` | 1.0.0 | Initial release. `Fraction<T>` over any `IBinaryInteger<T>` and `Interval<T>` over any `INumber<T>`. |
 | `Bodu.Financial` | 1.0.0 | Initial release. `Money<TCurrency>`, `MoneyValue`, `MoneyBag`, the ISO 4217 catalogue, and the timeless + dated FX provider stack. References `Bodu.Numerics`. |
 | `Bodu.Globalization.Calendar` | 1.1.0 | Multi-assembly rule resolution; embedded `region-*.xml` resources removed. **Behavioural change** — parameterless `NotableDateService()` no longer ships every region's rules; consumers must reference a data pack. |
-| `Bodu.Globalization.Calendar.Americas` | 1.0.0 | Initial release. US and CA. |
-| `Bodu.Globalization.Calendar.AsiaPacific` | 1.0.0 | Initial release. AU, CN, IN, JP, KR, MY, NZ, SG. |
-| `Bodu.Globalization.Calendar.Europe` | 1.0.0 | Initial release. DE, ES, FR, GB, IE, IT, NL, SE. |
+| `Bodu.Globalization.Calendar.Americas` | 1.0.0 | Initial release. AR, BR, CA, CL, CO, MX, PE, US. |
+| `Bodu.Globalization.Calendar.AsiaPacific` | 1.0.0 | Initial release. AU, CN, HK, ID, IN, JP, KR, MY, NZ, PH, SG, TH, TW, VN. |
+| `Bodu.Globalization.Calendar.Europe` | 1.0.0 | Initial release. 28 EU/EEA territories (AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK), with Orthodox-Easter overrides for GR, CY, BG, RO. |
+| `Bodu.Globalization.Calendar.MiddleEast` | 1.0.0 | Initial release. AE, IL, JO, QA, SA, TR. |
+| `Bodu.Globalization.Calendar.Africa` | 1.0.0 | Initial release. EG, ET, GH, KE, MA, NG, ZA. |
 
-**Release order.** The four Calendar packages must release together, as
+> **Note.** The data packs in the solution have outgrown the country
+> sets recorded in the `[Unreleased]` CHANGELOG block (which still lists
+> Americas as US/CA, Europe as eight countries, Asia-Pacific as eight,
+> and omits the Middle East and Africa packs entirely). Reconcile the
+> CHANGELOG to the table above before cutting the release.
+
+**Release order.** The six Calendar packages must release together, as
 Calendar 1.1.0 is the breaking change that necessitates the data packs.
 `Bodu.Numerics` 1.0.0 / `Bodu.Financial` 1.0.0 can ship independently and should go first to
 exercise the package-validation pipeline on a brand-new package ID.
@@ -115,8 +123,12 @@ single-TFM `net8.0` Core, intentional `InternalsVisibleTo` set.
 
 With that pass closed, the active focus shifts to:
 
-1. Cut the five `[Unreleased]` packages above.
-2. Begin the per-project items below in roadmap order. The raw
+1. Cut the `[Unreleased]` packages above (reconciling the CHANGELOG
+   country sets to the expanded data packs first).
+2. **Argon2 and scrypt** are the highest-leverage net-new engineering
+   item now that the calendar territorial expansion has largely shipped
+   — see `Bodu.Security.Cryptography` below.
+3. Begin the remaining per-project items below in roadmap order. The raw
    ChaCha20 / XChaCha20 family in crypto — the highest-leverage
    opening move — **has landed**: it closes the visible stream-cipher
    gaps that the BCL's `ChaCha20Poly1305` does not, and establishes the
@@ -200,12 +212,17 @@ SipHash plus EAX/OFB/GCM/OCB/SIV modes.
   Bodu-defined XSalsa20 hybrid (no published
   vector) is checked against a derived oracle built from the
   independently-tested public `XSalsa20` keystream and `Poly1305` MAC.
-- **Add password-hashing KDFs: Argon2 and scrypt.** No
-  password-hashing surface today. `HKDF` and `Pbkdf2` are already in
-  `System.Security.Cryptography` and are not in scope. Argon2 and
-  scrypt are the real gap — Microsoft has explicitly declined to ship
-  Argon2 because only OpenSSL implements it among the supported OS
-  crypto providers.
+- **Password-hashing KDFs Argon2 and scrypt have landed.** ✅
+  **Shipped.** `Argon2d` / `Argon2i` / `Argon2id` (RFC 9106) and
+  `Scrypt` (RFC 7914) close the remaining BCL gap (`HKDF` and `Pbkdf2`
+  already ship in `System.Security.Cryptography`; Microsoft declined
+  Argon2). Each offers an instance surface and static one-shot
+  `DeriveKey`, plus PHC encoded-hash `Hash` / constant-time `Verify`
+  for password storage. Argon2 bundles its own arbitrary-length
+  BLAKE2b for `H'`; scrypt composes the BCL `Pbkdf2` (HMAC-SHA256)
+  with a Salsa20/8 core. Locked against every RFC 9106 §5 and RFC 7914
+  §12 vector (the ~1 GiB scrypt vector runs in the Stress tier). The
+  next crypto step is the AVX-512 capability-detection contract below.
 - Finalise the AVX-512 fast paths shipped for BLAKE2/BLAKE3/Threefish
   behind a documented capability-detection contract, so consumers can
   reason about when SIMD paths engage and how to disable them in
@@ -401,10 +418,14 @@ calendar services.
 
 ### `Bodu.Globalization.Calendar.Americas`
 
-Current state: shipping in `[Unreleased]` 1.0.0. US, CA.
+Current state: shipping in `[Unreleased]` 1.0.0. AR, BR, CA, CL, CO,
+MX, PE, US.
 
-- **Expand to MX, BR, AR, CL, CO.** Today the Americas pack is North
-  America only; Latin America is the single largest territorial gap.
+- **The Latin America expansion has landed** — AR, BR, CL, CO, MX, and
+  PE now ship alongside US/CA, all at national level. The next
+  territorial gap is **subdivision-level data** (Brazilian states,
+  Mexican states, Canadian provinces beyond the national set) where US
+  state and Canadian provincial coverage is the model to extend.
 - **Document holiday-source citations** per country so consumers can
   audit the rule pack against authoritative sources.
 - **Ship fiscal-calendar packs** (US federal FY, retail 4-5-4). These
@@ -413,12 +434,15 @@ Current state: shipping in `[Unreleased]` 1.0.0. US, CA.
 
 ### `Bodu.Globalization.Calendar.AsiaPacific`
 
-Current state: shipping in `[Unreleased]` 1.0.0. AU, CN, IN, JP, KR,
-MY, NZ, SG.
+Current state: shipping in `[Unreleased]` 1.0.0. AU, CN, HK, ID, IN,
+JP, KR, MY, NZ, PH, SG, TH, TW, VN.
 
-- **Add subdivision-level data** for India, Pakistan, Bangladesh,
-  Indonesia, Philippines, Vietnam, Thailand. AU subdivisions already
-  exist; the rest of the region needs the same treatment.
+- **The country expansion has landed** — HK, ID, PH, TH, TW, and VN
+  now ship alongside the original eight, all at national level.
+  **Subdivision-level data** remains the open gap: India, Indonesia,
+  Philippines, Vietnam, Thailand (and Pakistan/Bangladesh when added)
+  are national-only today. AU subdivisions already exist; the rest of
+  the region needs the same treatment.
 - **Add multi-day Chinese New Year expansion** and Lunar New Year
   regional variants. Today the rule fires for the single primary date.
 - **Wire territory rules to `global-islamic-umm-al-qura.xml`** for
@@ -430,37 +454,52 @@ MY, NZ, SG.
 
 ### `Bodu.Globalization.Calendar.Europe`
 
-Current state: shipping in `[Unreleased]` 1.0.0. DE, ES, FR, GB, IE,
-IT, NL, SE.
+Current state: shipping in `[Unreleased]` 1.0.0. 28 EU/EEA territories
+— AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT,
+LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK.
 
+- **The country expansion and Orthodox overrides have landed** — the
+  pack grew from eight to twenty-eight territories, and the
+  Orthodox-Easter overrides for Greece, Cyprus, Bulgaria, and Romania
+  are wired against the existing Orthodox Easter algorithm.
 - **Add subdivision-level packs** — Spanish autonomous communities and
   Swiss cantons. German *Länder* and the UK constituent-country splits
   (England, Wales, Scotland, Northern Ireland) already ship; the bulk of
-  remaining European regional holidays are subdivision-specific.
-- **Add Orthodox-calendar overrides** for Greece, Cyprus, Bulgaria,
-  Romania. The Orthodox Easter algorithm already exists in Calendar;
-  the data pack just needs to wire it.
+  remaining European regional holidays are subdivision-specific. (Note:
+  Switzerland is not yet in the national set above; add CH before, or
+  alongside, its canton data.)
 
-### `Bodu.Globalization.Calendar.Data.Africa` *(proposed)*
+### `Bodu.Globalization.Calendar.Africa`
 
-Does not yet exist. v1 set: ZA, NG, KE, EG, MA, GH, ET.
+Current state: exists in the solution under
+`Bodu.Globalization.Calendar.Data/`; queued for `[Unreleased]` 1.0.0.
+EG, ET, GH, KE, MA, NG, ZA. Islamic observances are wired
+(`global-islamic.xml` tabular and `global-islamic-umm-al-qura.xml`
+Saudi-aligned).
 
-- **Create the package** and ship the v1 country set. Islamic
-  observances are unblocked (`global-islamic.xml` for tabular,
-  `global-islamic-umm-al-qura.xml` for Saudi-aligned).
-- Ethiopia uses the Ge'ez calendar — may need its own algorithm
-  (or BCL coverage check) in `Bodu.Globalization.Calendar` before
-  this pack can fully cover it.
+- **Verify Ethiopia's Ge'ez-calendar coverage.** Ethiopia uses the
+  Ge'ez calendar; confirm whether the shipped EG/ET rules cover the
+  Ge'ez-dated observances correctly or whether a dedicated algorithm
+  (or a BCL coverage check) is still owed in
+  `Bodu.Globalization.Calendar`.
+- **Add subdivision-level data** and **document holiday-source
+  citations** per country, matching the pattern owed across the other
+  packs.
 
-### `Bodu.Globalization.Calendar.Data.MiddleEast` *(proposed)*
+### `Bodu.Globalization.Calendar.MiddleEast`
 
-Does not yet exist. v1 set: SA, AE, IL, TR, IR, JO, QA.
+Current state: exists in the solution under
+`Bodu.Globalization.Calendar.Data/`; queued for `[Unreleased]` 1.0.0.
+AE, IL, JO, QA, SA, TR. Saudi/UAE/Qatar/Jordan wire
+`global-islamic-umm-al-qura.xml`, IL wires `global-jewish.xml`, and TR
+wires tabular `global-islamic.xml` (Diyanet uses tabular rather than
+Saudi sighting).
 
-- **Create the package.** Calendar dependencies are now all in place:
-  Saudi/UAE/Qatar/Jordan can wire `global-islamic-umm-al-qura.xml`,
-  IL can wire `global-jewish.xml`, IR can wire `global-persian.xml`,
-  TR can wire tabular `global-islamic.xml` (Diyanet uses tabular
-  rather than Saudi sighting).
+- **Add Iran (IR).** The original v1 set included IR via
+  `global-persian.xml`; it is not yet in the shipped pack and is the
+  obvious next country.
+- **Add subdivision-level data** and **document holiday-source
+  citations** per country.
 
 ### `Bodu.Test` *(shared test infrastructure)*
 
