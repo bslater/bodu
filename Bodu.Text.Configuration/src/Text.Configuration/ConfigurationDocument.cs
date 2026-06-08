@@ -11,17 +11,21 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Provides the profile-aware entry points for parsing, loading, and saving Bodu Text Configuration documents. The
-/// underlying data model is <see cref="IniDocument" /> from <c>Bodu.Text.Ini</c>; this class adds Bodu-specific
-/// behaviour — profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support — on top of
-/// the shared INI infrastructure.
+/// Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
+/// loading, and saving such documents. It inherits the read-only INI model from <see cref="IniDocumentBase" /> (global
+/// section, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling,
+/// diagnostic routing, and round-trip support — on top of the shared INI infrastructure.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Pair the <see cref="Parse(string)" /> family with the
-/// <see cref="ConfigurationExtensions.Resolve(IniDocument, string?, ConfigurationResolveOptions?)" /> extension method
-/// to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
+/// <see cref="ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)" /> extension
+/// method to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
 /// <see cref="ConfigurationView" /> holds the resolved, target-specific snapshot consumed by application code.
+/// </para>
+/// <para>
+/// A <see cref="ConfigurationDocument" /> exposes only the read surface of <see cref="IniDocumentBase" />; it is
+/// produced by the configuration reader and is not mutated by application code.
 /// </para>
 /// <para>
 /// Diagnostic routing is controlled by the supplied <see cref="ConfigurationParseOptions" />. In
@@ -34,8 +38,8 @@ namespace Bodu.Text.Configuration;
 /// <example>
 ///<![CDATA[
 /// Parse and resolve a configuration file for a specific target path.
-/// IniDocument         doc    = ConfigurationDocument.Parse(text);
-/// ConfigurationView view = doc.Resolve("src/Foo.cs");
+/// ConfigurationDocument doc  = ConfigurationDocument.Parse(text);
+/// ConfigurationView     view = doc.Resolve("src/Foo.cs");
 /// int indent = view.GetInt32("format:indent:size", 4);
 ///
 /// Collect every diagnostic instead of failing on the first issue.
@@ -49,16 +53,47 @@ namespace Bodu.Text.Configuration;
 ///     Console.WriteLine(d);
 ///]]>
 /// </example>
-public static class ConfigurationDocument
+public sealed class ConfigurationDocument : IniDocumentBase
 {
+    /// <summary>
+    /// Initializes a new, empty instance of the <see cref="ConfigurationDocument" /> class for the configuration reader
+    /// to populate.
+    /// </summary>
+    /// <param name="caseSensitiveSections">
+    /// <see langword="true" /> to compare section names with ordinal case sensitivity; otherwise,
+    /// <see langword="false" />.
+    /// </param>
+    internal ConfigurationDocument(bool caseSensitiveSections)
+        : base(caseSensitiveSections)
+    {
+    }
+
+    /// <summary>
+    /// Appends <paramref name="section" /> to the document. Exposed to the configuration reader so it can build the
+    /// model without re-leaking a public INI mutation surface.
+    /// </summary>
+    /// <param name="section">The section to append.</param>
+    internal void AddSection(IniSection section) =>
+        AddSectionCore(section);
+
+    /// <summary>
+    /// Returns the first section with the supplied name, creating and appending one when no match exists. Exposed
+    /// internally for the reader and test infrastructure so the model can be built without a public INI mutation
+    /// surface.
+    /// </summary>
+    /// <param name="name">The section name.</param>
+    /// <returns>The matching or newly created section.</returns>
+    internal IniSection GetOrAddSection(string name) =>
+        GetOrAddSectionCore(name);
+
     /// <summary>
     /// Parses configuration text using the default Bodu profile.
     /// </summary>
     /// <param name="text">The configuration text to parse.</param>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="ConfigurationParseException">The text could not be parsed.</exception>
-    public static IniDocument Parse(string text) =>
+    public static ConfigurationDocument Parse(string text) =>
         Parse(text, options: null);
 
     /// <summary>
@@ -66,10 +101,10 @@ public static class ConfigurationDocument
     /// </summary>
     /// <param name="text">The configuration text to parse.</param>
     /// <param name="options">The parse options to apply, or <see langword="null" /> for the Bodu defaults.</param>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="ConfigurationParseException">The text could not be parsed.</exception>
-    public static IniDocument Parse(string text, ConfigurationParseOptions? options)
+    public static ConfigurationDocument Parse(string text, ConfigurationParseOptions? options)
     {
         ThrowHelper.ThrowIfNull(text);
 
@@ -105,7 +140,7 @@ public static class ConfigurationDocument
     /// <param name="text">The text to parse.</param>
     /// <param name="document">The parsed document on success; <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> on success; otherwise, <see langword="false" />.</returns>
-    public static bool TryParse(string? text, out IniDocument? document) =>
+    public static bool TryParse(string? text, out ConfigurationDocument? document) =>
         TryParse(text, options: null, out document);
 
     /// <summary>
@@ -115,7 +150,7 @@ public static class ConfigurationDocument
     /// <param name="options">The parse options, or <see langword="null" /> for the Bodu defaults.</param>
     /// <param name="document">The parsed document on success; <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> on success; otherwise, <see langword="false" />.</returns>
-    public static bool TryParse(string? text, ConfigurationParseOptions? options, out IniDocument? document)
+    public static bool TryParse(string? text, ConfigurationParseOptions? options, out ConfigurationDocument? document)
     {
         if (text is null)
         {
@@ -140,10 +175,10 @@ public static class ConfigurationDocument
     /// UTF-8 encoding with BOM detection.
     /// </summary>
     /// <param name="path">The file path.</param>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
-    public static IniDocument Load(string path) =>
+    public static ConfigurationDocument Load(string path) =>
         Load(path, options: null);
 
     /// <summary>
@@ -151,10 +186,10 @@ public static class ConfigurationDocument
     /// </summary>
     /// <param name="path">The file path.</param>
     /// <param name="options">The parse options, or <see langword="null" /> for the Bodu defaults.</param>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
-    public static IniDocument Load(string path, ConfigurationParseOptions? options)
+    public static ConfigurationDocument Load(string path, ConfigurationParseOptions? options)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
@@ -174,10 +209,10 @@ public static class ConfigurationDocument
     /// options' default encoding.
     /// </param>
     /// <param name="leaveOpen">When <see langword="true" />, the stream remains open after parsing.</param>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="stream" /> does not support reading.</exception>
-    public static IniDocument Load(
+    public static ConfigurationDocument Load(
         Stream stream,
         ConfigurationParseOptions? options = null,
         Encoding? encoding = null,
@@ -198,9 +233,9 @@ public static class ConfigurationDocument
     /// </summary>
     /// <param name="reader">The reader to consume.</param>
     /// <param name="options">The parse options, or <see langword="null" /> for the defaults.</param>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="reader" /> is <see langword="null" />.</exception>
-    public static IniDocument Load(TextReader reader, ConfigurationParseOptions? options = null)
+    public static ConfigurationDocument Load(TextReader reader, ConfigurationParseOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(reader);
         return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu).Read(reader, path: null).Document;
@@ -216,7 +251,7 @@ public static class ConfigurationDocument
     /// <paramref name="document" /> or <paramref name="path" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
-    public static void Save(IniDocument document, string path, ConfigurationWriteOptions? options = null)
+    public static void Save(IniDocumentBase document, string path, ConfigurationWriteOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
@@ -238,7 +273,7 @@ public static class ConfigurationDocument
     /// <paramref name="document" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="stream" /> does not support writing.</exception>
-    public static void Save(IniDocument document, Stream stream, ConfigurationWriteOptions? options = null, bool leaveOpen = false)
+    public static void Save(IniDocumentBase document, Stream stream, ConfigurationWriteOptions? options = null, bool leaveOpen = false)
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(stream);
@@ -258,7 +293,7 @@ public static class ConfigurationDocument
     /// <exception cref="ArgumentNullException">
     /// <paramref name="document" /> or <paramref name="writer" /> is <see langword="null" />.
     /// </exception>
-    public static void Save(IniDocument document, TextWriter writer, ConfigurationWriteOptions? options = null)
+    public static void Save(IniDocumentBase document, TextWriter writer, ConfigurationWriteOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(writer);
@@ -268,7 +303,7 @@ public static class ConfigurationDocument
 }
 
 /// <summary>
-/// Carries the outcome of a configuration parse: the populated <see cref="IniDocument" /> and any diagnostics collected
+/// Carries the outcome of a configuration parse: the populated <see cref="ConfigurationDocument" /> and any diagnostics collected
 /// during the parse.
 /// </summary>
 /// <remarks>
@@ -286,7 +321,7 @@ public sealed class ConfigurationParseResult
     /// <param name="document">The parsed document.</param>
     /// <param name="diagnostics">The diagnostics collected during the parse.</param>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
-    public ConfigurationParseResult(IniDocument document, ImmutableArray<ConfigurationDiagnostic> diagnostics)
+    public ConfigurationParseResult(ConfigurationDocument document, ImmutableArray<ConfigurationDiagnostic> diagnostics)
     {
         ThrowHelper.ThrowIfNull(document);
         Document = document;
@@ -296,8 +331,8 @@ public sealed class ConfigurationParseResult
     /// <summary>
     /// Gets the parsed document.
     /// </summary>
-    /// <returns>A populated <see cref="IniDocument" />.</returns>
-    public IniDocument Document { get; }
+    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
+    public ConfigurationDocument Document { get; }
 
     /// <summary>
     /// Gets the diagnostics collected during the parse.

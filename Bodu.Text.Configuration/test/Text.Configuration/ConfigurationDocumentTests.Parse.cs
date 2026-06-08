@@ -31,7 +31,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Parse_WhenInputIsMinimalFixture_ShouldPopulateSingleSection()
     {
-        IniDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.Minimal);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.Minimal);
 
         Assert.HasCount(1, doc.Sections);
         Assert.AreEqual("*", doc.Sections[0].Name);
@@ -45,8 +45,8 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Parse_WhenInputUsesCrLf_ShouldProduceSameDocumentAsLf()
     {
-        IniDocument lf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
-        IniDocument crlf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative.Replace("\n", "\r\n"));
+        ConfigurationDocument lf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
+        ConfigurationDocument crlf = ConfigurationDocument.Parse(ConfigurationFixtures.Representative.Replace("\n", "\r\n"));
 
         Assert.HasCount(lf.Sections.Count, crlf.Sections);
         Assert.HasCount(lf.GlobalSection.Entries.Count, crlf.GlobalSection.Entries);
@@ -60,7 +60,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndProduceDocument()
     {
-        var ok = ConfigurationDocument.TryParse(ConfigurationFixtures.Minimal, out IniDocument? doc);
+        var ok = ConfigurationDocument.TryParse(ConfigurationFixtures.Minimal, out ConfigurationDocument? doc);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(doc);
@@ -74,7 +74,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldReturnFalse()
     {
-        var ok = ConfigurationDocument.TryParse("[*.cs]\nformat.indent.size\n", ConfigurationParseOptions.Strict, out IniDocument? doc);
+        var ok = ConfigurationDocument.TryParse("[*.cs]\nformat.indent.size\n", ConfigurationParseOptions.Strict, out ConfigurationDocument? doc);
 
         Assert.IsFalse(ok);
         Assert.IsNull(doc);
@@ -87,7 +87,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsNull_ShouldReturnFalse()
     {
-        var ok = ConfigurationDocument.TryParse(null, out IniDocument? doc);
+        var ok = ConfigurationDocument.TryParse(null, out ConfigurationDocument? doc);
 
         Assert.IsFalse(ok);
         Assert.IsNull(doc);

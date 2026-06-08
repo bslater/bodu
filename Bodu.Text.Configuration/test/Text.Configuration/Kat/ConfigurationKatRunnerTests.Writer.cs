@@ -26,7 +26,7 @@ public partial class ConfigurationKatRunnerTests
         ConfigurationParseOptions parseOptions = ConfigurationParseOptions.Bodu;
         ConfigurationWriteOptions writeOptions = BuildWriteOptions(kat, writeProfile);
 
-        IniDocument doc = ConfigurationDocument.Parse(kat.Source!, parseOptions);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Source!, parseOptions);
 
         using StringWriter sw = new();
         ConfigurationDocument.Save(doc, sw, writeOptions);
@@ -44,7 +44,7 @@ public partial class ConfigurationKatRunnerTests
 
         if (kat.Kind is ConfigurationKatKind.RoundTrip)
         {
-            IniDocument reparsed = ConfigurationDocument.Parse(written, ConfigurationParseOptions.Bodu);
+            ConfigurationDocument reparsed = ConfigurationDocument.Parse(written, ConfigurationParseOptions.Bodu);
             AssertDocumentsEquivalent(kat, doc, reparsed);
             return;
         }
@@ -76,7 +76,7 @@ public partial class ConfigurationKatRunnerTests
         };
     }
 
-    private static void AssertDocumentsEquivalent(ConfigurationKat kat, IniDocument expected, IniDocument actual)
+    private static void AssertDocumentsEquivalent(ConfigurationKat kat, IniDocumentBase expected, IniDocumentBase actual)
     {
         Assert.HasCount(expected.Sections.Count, actual.Sections, $"{kat.Id}: section count");
         Assert.HasCount(expected.GlobalSection.Entries.Count, actual.GlobalSection.Entries, $"{kat.Id}: preamble count");

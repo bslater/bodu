@@ -16,7 +16,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnumerator_WhenResolved_ShouldYieldEveryResolvedKey()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         var entries = view.ToList();
@@ -32,7 +32,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void Keys_WhenAccessed_ShouldExposeEveryKey()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         var keys = view.Keys.ToList();

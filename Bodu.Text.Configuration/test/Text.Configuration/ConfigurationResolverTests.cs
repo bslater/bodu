@@ -24,7 +24,7 @@ public partial class ConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenNoSectionMatches_ShouldStillApplyPreamble()
     {
-        IniDocument doc = ConfigurationDocument.Parse("root = true\napplication.name = Bodu\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("root = true\napplication.name = Bodu\n");
         ConfigurationView view = doc.Resolve("README");
 
         Assert.AreEqual("Bodu", view.GetString("application:name"));
@@ -37,7 +37,7 @@ public partial class ConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenEditorConfigCompatible_ShouldIgnoreNonRootPreamblePairs()
     {
-        IniDocument doc = ConfigurationDocument.Parse("application.name = Bodu\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("application.name = Bodu\n");
         ConfigurationView view = doc.Resolve("Foo.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 
         Assert.IsNull(view["application:name"]);
@@ -62,7 +62,7 @@ public partial class ConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenDocumentMutatedAfterwards_ShouldNotAffectExistingView()
     {
-        IniDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.Minimal);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.Minimal);
         ConfigurationView view = doc.Resolve("Foo.cs");
 
         doc.Sections[0].SetEntry("format.indent.size", "999");

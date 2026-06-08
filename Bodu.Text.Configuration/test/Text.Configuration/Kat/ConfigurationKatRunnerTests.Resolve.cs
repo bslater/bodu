@@ -22,7 +22,7 @@ public partial class ConfigurationKatRunnerTests
     public void Resolve_Kat(ConfigurationKat kat)
     {
         ConfigurationProfile profile = MapProfile(kat.Profile);
-        IniDocument doc = ConfigurationDocument.Parse(kat.Source!, ConfigurationParseOptions.For(profile));
+        ConfigurationDocument doc = ConfigurationDocument.Parse(kat.Source!, ConfigurationParseOptions.For(profile));
         ConfigurationResolveOptions resolveOptions = BuildResolveOptions(kat, profile);
 
         if (kat.Outcome is ConfigurationKatOutcome.Fail)

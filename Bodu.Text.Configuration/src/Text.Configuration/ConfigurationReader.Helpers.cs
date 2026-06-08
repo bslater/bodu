@@ -55,7 +55,7 @@ internal sealed partial class ConfigurationReader
     /// </summary>
     /// <param name="document">The document being populated.</param>
     /// <returns>The current target section.</returns>
-    private static IniSection GetCurrentSection(IniDocument document) =>
+    private static IniSection GetCurrentSection(ConfigurationDocument document) =>
         document.Sections.Count > 0 ? document.Sections[^1] : document.GlobalSection;
 
     /// <summary>

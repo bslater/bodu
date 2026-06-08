@@ -35,7 +35,7 @@ public partial class ConfigurationKatRunnerTests
     private static void ExecuteParsePass(ConfigurationKat kat, ConfigurationParseOptions options)
     {
         ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(kat.Source!, options);
-        IniDocument doc = result.Document;
+        ConfigurationDocument doc = result.Document;
 
         ExpectedDocument expected = kat.ExpectedDocument
             ?? throw new InvalidOperationException($"{kat.Id} is missing ExpectedDocument.");

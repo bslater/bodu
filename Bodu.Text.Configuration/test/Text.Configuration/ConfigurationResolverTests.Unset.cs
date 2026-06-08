@@ -19,7 +19,7 @@ public partial class ConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenUnsetModeIsTreatAsLiteral_ShouldPreserveUnsetLiteral()
     {
-        IniDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.UnsetSentinel);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.UnsetSentinel);
 
         ConfigurationView view = doc.Resolve("generated/Foo.cs");
 
@@ -33,7 +33,7 @@ public partial class ConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenUnsetModeIsRemoveEffectiveValue_ShouldOmitUnsetKey()
     {
-        IniDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.UnsetSentinel);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(ConfigurationFixtures.UnsetSentinel);
 
         ConfigurationResolveOptions options = new()
         {
@@ -59,7 +59,7 @@ format.indent.size = 4
 [generated/**]
 format.indent.size = unset
 """;
-        IniDocument doc = ConfigurationDocument.Parse(fixture);
+        ConfigurationDocument doc = ConfigurationDocument.Parse(fixture);
 
         ConfigurationResolveOptions options = new()
         {

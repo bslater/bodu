@@ -9,7 +9,7 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Projects an <see cref="IniDocument" /> into a flattened <see cref="ConfigurationView" /> for a specific target path,
+/// Projects an <see cref="IniDocumentBase" /> into a flattened <see cref="ConfigurationView" /> for a specific target path,
 /// applying glob matching, preamble layering, and the EditorConfig <c>unset</c> sentinel.
 /// </summary>
 internal sealed class ConfigurationResolver
@@ -37,7 +37,7 @@ internal sealed class ConfigurationResolver
     /// The configured options require a path root, the document was parsed without one, and no target path was
     /// supplied.
     /// </exception>
-    internal ConfigurationView Resolve(IniDocument document, string? targetPath)
+    internal ConfigurationView Resolve(IniDocumentBase document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
 

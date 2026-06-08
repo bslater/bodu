@@ -23,7 +23,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueMatchesEnumMember_ShouldReturnParsedValue()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = warning\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = warning\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(Severity.Warning, view.GetEnum<Severity>("severity"));
@@ -49,7 +49,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueDoesNotMatchEnumMember_ShouldThrowExactly()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum<Severity>("severity"));

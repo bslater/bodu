@@ -34,7 +34,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueIsNumericAndDefined_ShouldReturnEnumMember()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = 1\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = 1\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(RejectionSeverity.Warning, view.GetEnum<RejectionSeverity>("severity"));
@@ -48,7 +48,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueIsNumericButUndefined_ShouldThrowFormatException()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = 99\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = 99\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum<RejectionSeverity>("severity"));
@@ -60,7 +60,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueIsNegativeAndUndefined_ShouldThrowFormatException()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\nseverity = -1\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\nseverity = -1\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum<RejectionSeverity>("severity"));
@@ -76,7 +76,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenFlagsEnumWithCombinedValue_ShouldRejectAsUndefined()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\npermissions = Read, Write\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\npermissions = Read, Write\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum<RejectionPermissions>("permissions"));
@@ -89,7 +89,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenFlagsEnumWithSingleValue_ShouldReturnMember()
     {
-        IniDocument doc = ConfigurationDocument.Parse("[*]\npermissions = Read\n");
+        ConfigurationDocument doc = ConfigurationDocument.Parse("[*]\npermissions = Read\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(RejectionPermissions.Read, view.GetEnum<RejectionPermissions>("permissions"));
