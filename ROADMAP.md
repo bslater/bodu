@@ -4,7 +4,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
 (repository conventions for contributors).
 
-*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), and `Bodu.Text.Formats` having grown forward-only `*Reader` / `*Writer` pairs with `ValueTask` async streaming across all four text formats, the highest-leverage net-new engineering items are now a TOML reader/writer in `Bodu.Text.Formats` and the Base45 / Bech32 encodings in `Bodu.Text.Encoding`.*
+*Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), and `Bodu.Text.Formats` having grown forward-only `*Reader` / `*Writer` pairs with `ValueTask` async streaming across all four text formats, and the `Bodu.Text.Encoding` Base45 / Bech32 / Bech32m / Base62 additions now shipped, the highest-leverage remaining net-new engineering item is a full TOML 1.0.0 reader/writer in `Bodu.Text.Formats`.*
 
 ## How to read this
 
@@ -263,11 +263,15 @@ Current state: mature; 80 src / 137 test files. Base16, Base32, Base58,
 Base64, Base64Url, Base85 with RFC 4648 / Bitcoin / Crockford / Ascii85
 / Z85 variants.
 
-- **Ship Base45** (RFC 9285) and **Base62**. Base45 in particular is
-  the QR-code workhorse encoding and a frequent request.
-- **Ship Bech32 and Bech32m.** Base58Check is already present; Bech32
-  is the natural sibling and the address encoding used across newer
-  cryptocurrency protocols.
+- **Base45 (RFC 9285), Bech32 / Bech32m (BIP-173 / BIP-350), and Base62
+  have shipped.** ✅ Base45 is the QR-code workhorse encoding (registered
+  in `BinaryEncodings` as `base45`, strict decoder per RFC 9285 §6).
+  Base62 is the GMP-alphabet (`0-9 A-Z a-z`) bignum encoding, leading-zero
+  preserving like Base58 (`base62`). Bech32 / Bech32m carry an HRP plus a
+  six-symbol checksum, so — like `Base58Check` — they sit outside the
+  `IBinaryEncoding` family as a standalone `Bech32` type with a public
+  `ConvertBits` and byte-level convenience members, validated against the
+  canonical BIP-173 / BIP-350 vectors and the P2WPKH address example.
 - Audit that every `Base*.Utf8.cs` surface has full
   `IUtf8SpanFormattable`-style writer parity with the char paths.
   Several paths skew char-first.
