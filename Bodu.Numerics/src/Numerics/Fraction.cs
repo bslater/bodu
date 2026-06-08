@@ -39,6 +39,22 @@ namespace Bodu.Numerics;
 /// <see cref="OverflowException" /> at run time.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// Construct from components; the value is reduced to canonical form on creation.
+/// Fraction<int> oneHalf = new Fraction<int>(2, 4);   // 1/2
+/// Fraction<int> oneThird = new Fraction<int>(1, 3);
+///
+/// Exact arithmetic through the operators.
+/// Fraction<int> sum = oneHalf + oneThird;            // 5/6
+///
+/// Parse and format round-trip through the invariant "numerator/denominator" form.
+/// Fraction<int> parsed = Fraction<int>.Parse("3/8");
+/// string text = parsed.ToString();                   // "3/8"
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(FractionJsonConverterFactory))]
 public readonly partial struct Fraction<T>

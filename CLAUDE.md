@@ -16,12 +16,15 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Text.Encoding` | `Bodu.Text.Encoding/` | Binary encodings: Base16, Base32, Base58, Base64, Base64Url, Base85 (with variants, formatting options, span/UTF-8 surfaces). |
 | `Bodu.Text.Configuration` | `Bodu.Text.Configuration/` | Bodu text configuration parser/resolver (INI-compatible profile, resolver precedence, typed view getters, write options). |
 | `Bodu.Text.Formats` | `Bodu.Text.Formats/` | Document formats: Bencode, Delimited (RFC 4180 CSV/TSV), DotEnv, INI. |
+| `Bodu.Text` | `Bodu.Text/` | Text/encoding utilities: encoding detection (`EncodingDetection`) and string/byte encoding extensions (`EncodingExtensions`, `StringEncodingExtensions`). |
 | `Bodu.Extensions.Configuration.Text` | `Bodu.Extensions.Configuration.Text/` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. |
 | `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Resource-driven notable-date engine on the notable-date schema: rule model, date-calculation strategies and astronomical algorithms (`Algorithms`), range resolution (`RangeResolution`), observed-date adjustments, working-day extensions (`Bodu.Extensions`), and `NotableDateService`. |
 | `Bodu.Globalization.Calendar.Plugins` | `Bodu.Globalization.Calendar.Plugins/` | Trust-gated external plugin loading for assemblies contributing custom `INotableDateAlgorithm` implementations. |
 | `Bodu.Globalization.Calendar.Builder` | `Bodu.Globalization.Calendar.Builder/` | Fluent authoring API (`NotableDateDocumentBuilder`) that constructs notable-date documents on the notable-date schema, with full XML and JSON-subset serialization (`ToXml`/`ToJson`/`Save`) and parsing (`FromXml`/`FromJson`/`Load`); materializes a `NotableDateResource` via the loader. |
 | `Bodu.Globalization.Calendar.<Region>` | `…Calendar.Data.<Region>/` | Per-region calendar data bundles — one self-contained embedded pack per country (national rules plus ISO 3166-2 subdivisions), each exposing a `<Region>CalendarData` factory and importing the shared catalogues through a `<region>-common` hub. `<Region>` ∈ `Americas` (US, CA, MX, BR, AR, CL, CO, PE), `AsiaPacific` (AU, CN, IN, JP, KR, MY, NZ, SG, ID, TH, PH, VN, HK, TW), `Europe` (28 EU/EEA territories incl. GB, FR, DE), `MiddleEast` (AE, SA, IL, TR, QA, JO), `Africa` (ZA, NG, KE, GH, ET, EG, MA). |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `…Calendar.DependencyInjection/` | `IServiceCollection` extensions for registering calendar services. |
+| `Bodu.Financial` | `Bodu.Financial/` | Money and currency primitives: `Money` / `Money<TCurrency>`, the ISO 4217 `CurrencyCode` catalogue and per-currency `ICurrency` types, exchange rates (`ExchangeRate` / `ExchangeRate<TBase, TQuote>`, rate series and providers), allocation and rounding policies, and JSON converters. |
+| `Bodu.Financial.DependencyInjection` | `Bodu.Financial.DependencyInjection/` | `IServiceCollection` extensions for registering financial services (`IFinancialServiceBuilder`, named monetary contexts, `FinancialOptions`). |
 | `BouncyCastle.Crypto` | `bc-csharp/crypto/src/` | Third-party vendor reference (used by Cryptography tests for reference vectors). |
 | `docs` | `docs/` | DocFX documentation project. |
 
@@ -39,7 +42,7 @@ Each project has the layout:
 
 All projects target `net8.0`.
 
-Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for most projects but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/src/`, add explicit `using` directives. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
+Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled across all projects, including `Bodu.Core`. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
 
 ## Key Types
 
@@ -157,10 +160,10 @@ The suite is partitioned into tiers via `[TestCategory(...)]` so the build can r
 Run-settings files at the repository root drive each tier:
 
 ```bash
-dotnet test Bodu.sln --settings smoke.runsettings        # Smoke only
-dotnet test Bodu.sln --settings bvt.runsettings          # BVT (default build run)
-dotnet test Bodu.sln --settings regression.runsettings   # Everything
-dotnet test Bodu.sln --settings test.runsettings         # Everything (legacy alias)
+dotnet test bodu.slnx --settings smoke.runsettings        # Smoke only
+dotnet test bodu.slnx --settings bvt.runsettings          # BVT (default build run)
+dotnet test bodu.slnx --settings regression.runsettings   # Everything
+dotnet test bodu.slnx --settings test.runsettings         # Everything (legacy alias)
 ```
 
 Conventions:

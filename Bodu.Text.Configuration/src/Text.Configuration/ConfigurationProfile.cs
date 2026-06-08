@@ -77,6 +77,15 @@ namespace Bodu.Text.Configuration;
 /// </item>
 /// </list>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// Start from the profile closest to the desired behaviour, then override only what differs.
+/// ConfigurationParseOptions options = ConfigurationParseOptions.For(ConfigurationProfile.Strict);
+/// ConfigurationDocument document = ConfigurationDocument.Parse(text, options);
+///]]>
+/// </code>
+/// </example>
 public enum ConfigurationProfile
 {
     /// <summary>
