@@ -32,7 +32,8 @@ namespace Bodu.Text.DotEnv;
 /// </code>
 /// </example>
 /// </remarks>
-public sealed class DotEnvWriter : IDisposable
+public sealed class DotEnvWriter
+    : IDisposable
 {
     private readonly TextWriter _writer;
     private bool _disposed;

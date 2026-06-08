@@ -13,7 +13,8 @@ namespace Bodu.Text.Encoding.Contracts;
 /// overloads, formatting options) live in the existing <c>Base64Tests.*.cs</c> partials.
 /// </summary>
 [TestClass]
-public sealed class Base64ContractTests : BinaryEncodingContractTests<object>
+public sealed class Base64ContractTests
+    : BinaryEncodingContractTests<object>
 {
     /// <inheritdoc />
     protected override string Encode(byte[] input) =>

@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// detection coverage stays in the existing <c>VerhoeffTests.*</c> partials.
 /// </summary>
 [TestClass]
-public sealed class VerhoeffContractTests : CheckDigitContractTests<Verhoeff>
+public sealed class VerhoeffContractTests
+    : CheckDigitContractTests<Verhoeff>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

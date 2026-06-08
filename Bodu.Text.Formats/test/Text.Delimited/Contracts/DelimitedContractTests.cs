@@ -64,7 +64,8 @@ public sealed class DelimitedContractTests
     /// Compares two <see cref="DelimitedDocument" /> instances by header sequence and row field
     /// sequence, ignoring object identity.
     /// </summary>
-    private sealed class RowFieldComparer : IEqualityComparer<DelimitedDocument>
+    private sealed class RowFieldComparer
+        : IEqualityComparer<DelimitedDocument>
     {
         public bool Equals(DelimitedDocument? x, DelimitedDocument? y)
         {

@@ -29,7 +29,8 @@ namespace Bodu.Financial;
 /// success.
 /// </para>
 /// </remarks>
-public sealed class FixedDatedExchangeRateProvider : IDatedExchangeRateProvider
+public sealed class FixedDatedExchangeRateProvider
+    : IDatedExchangeRateProvider
 {
     /// <summary>
     /// The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit

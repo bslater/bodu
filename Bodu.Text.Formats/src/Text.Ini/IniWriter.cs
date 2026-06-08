@@ -32,7 +32,8 @@ namespace Bodu.Text.Ini;
 /// </code>
 /// </example>
 /// </remarks>
-public sealed class IniWriter : IDisposable
+public sealed class IniWriter
+    : IDisposable
 {
     private readonly TextWriter _writer;
     private bool _disposed;

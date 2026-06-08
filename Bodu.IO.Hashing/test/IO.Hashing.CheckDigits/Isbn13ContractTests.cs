@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// Wikipedia ISBN-13 reference, Knuth Volume 1 ISBN-13, and an all-zero baseline.
 /// </summary>
 [TestClass]
-public sealed class Isbn13ContractTests : CheckDigitContractTests<Isbn13>
+public sealed class Isbn13ContractTests
+    : CheckDigitContractTests<Isbn13>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

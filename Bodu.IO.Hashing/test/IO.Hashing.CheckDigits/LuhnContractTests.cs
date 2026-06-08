@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// streaming/append/error-detection coverage stays in the existing <c>LuhnTests.*</c> partials.
 /// </summary>
 [TestClass]
-public sealed class LuhnContractTests : CheckDigitContractTests<Luhn>
+public sealed class LuhnContractTests
+    : CheckDigitContractTests<Luhn>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

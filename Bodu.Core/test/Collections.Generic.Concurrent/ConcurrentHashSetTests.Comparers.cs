@@ -12,7 +12,8 @@ public partial class ConcurrentHashSetTests
     /// An <see cref="int" /> equality comparer that returns a single constant hash code for every value, forcing every
     /// element into the same bucket so that bucket-chain logic is exercised deterministically.
     /// </summary>
-    private sealed class ConstantHashComparer : IEqualityComparer<int>
+    private sealed class ConstantHashComparer
+        : IEqualityComparer<int>
     {
         public bool Equals(int x, int y) =>
             x == y;
@@ -26,7 +27,8 @@ public partial class ConcurrentHashSetTests
     /// <see cref="InvalidOperationException" /> for one designated value, modelling a user comparer that faults while
     /// hashing an element.
     /// </summary>
-    private sealed class ThrowingHashCodeComparer : IEqualityComparer<int>
+    private sealed class ThrowingHashCodeComparer
+        : IEqualityComparer<int>
     {
         private readonly int _faultingValue;
 
@@ -52,7 +54,8 @@ public partial class ConcurrentHashSetTests
     /// <see cref="FaultArmed" /> is set, throws an <see cref="InvalidOperationException" /> from <see cref="Equals" />,
     /// modelling a user comparer that faults while comparing two elements during a bucket-chain walk.
     /// </summary>
-    private sealed class ThrowingEqualsComparer : IEqualityComparer<int>
+    private sealed class ThrowingEqualsComparer
+        : IEqualityComparer<int>
     {
         /// <summary>
         /// When <see langword="true" />, every <see cref="Equals" /> call throws.

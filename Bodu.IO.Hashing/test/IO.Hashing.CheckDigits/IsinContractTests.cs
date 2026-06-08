@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// alphanumeric body characters with the Luhn check digit on the converted digit stream.
 /// </summary>
 [TestClass]
-public sealed class IsinContractTests : CheckDigitContractTests<Isin>
+public sealed class IsinContractTests
+    : CheckDigitContractTests<Isin>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

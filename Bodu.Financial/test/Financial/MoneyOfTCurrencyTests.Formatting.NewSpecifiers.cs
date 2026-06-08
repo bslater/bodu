@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyOfTCurrencyTests.Formatting.NewSpecifiers.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -224,7 +224,8 @@ public partial class MoneyOfTCurrencyTests
     /// A custom currency that omits <see cref="ICurrency.EnglishName" />, exercising the <c>L</c>-specifier
     /// fallback to the ISO-code form for currencies without an English name.
     /// </summary>
-    private sealed class NoEnglishNameCurrency : ICurrency
+    private sealed class NoEnglishNameCurrency
+        : ICurrency
     {
         /// <summary>
         /// Gets the ISO-style code used for tests.

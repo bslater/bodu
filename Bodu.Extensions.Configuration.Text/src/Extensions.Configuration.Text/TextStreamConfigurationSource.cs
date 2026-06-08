@@ -53,7 +53,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// Console.WriteLine(root["format:indent:size"]);     // "4"
 ///]]>
 /// </example>
-public sealed class TextStreamConfigurationSource : StreamConfigurationSource
+public sealed class TextStreamConfigurationSource
+    : StreamConfigurationSource
 {
     /// <summary>
     /// Gets or sets the path used to evaluate glob-anchored sections during resolution. Defaults to

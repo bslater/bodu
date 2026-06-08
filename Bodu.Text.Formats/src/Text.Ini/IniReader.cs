@@ -45,7 +45,8 @@ namespace Bodu.Text.Ini;
 /// called.
 /// </para>
 /// </remarks>
-public sealed class IniReader : IDisposable
+public sealed class IniReader
+    : IDisposable
 {
     private readonly TextReader _reader;
     private readonly IniParseOptions _options;

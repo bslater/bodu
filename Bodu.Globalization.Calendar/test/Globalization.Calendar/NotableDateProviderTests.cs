@@ -33,7 +33,8 @@ public sealed class NotableDateProviderTests
     /// <summary>
     /// A provider that contributes a single "Founders Day" observance on a fixed date.
     /// </summary>
-    private sealed class FoundersDayProvider : INotableDateProvider
+    private sealed class FoundersDayProvider
+        : INotableDateProvider
     {
         private readonly DateOnly _date;
 

@@ -130,7 +130,8 @@ public sealed partial class EncodingExtensionsTests
     /// fallback branch of <see cref="EncodingExtensions.GetDisplayName(System.Text.Encoding)" /> can be
     /// exercised without depending on <c>System.Text.CodePagesEncodingProvider</c>.
     /// </summary>
-    private sealed class NonUtfNonAsciiTestEncoding : System.Text.Encoding
+    private sealed class NonUtfNonAsciiTestEncoding
+        : System.Text.Encoding
     {
         /// <inheritdoc />
         public override int CodePage => 1252;

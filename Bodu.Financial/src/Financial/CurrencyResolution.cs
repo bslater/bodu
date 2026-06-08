@@ -102,7 +102,8 @@ public static class CurrencyResolution
     /// <summary>
     /// Restores the previous scoped override when disposed.
     /// </summary>
-    private sealed class ScopeReverter : IDisposable
+    private sealed class ScopeReverter
+        : IDisposable
     {
         /// <summary>
         /// The override that was active before the enclosing <see cref="PushScoped(ICurrencyLookup)" /> call.

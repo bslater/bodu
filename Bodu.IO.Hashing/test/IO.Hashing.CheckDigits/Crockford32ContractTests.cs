@@ -14,7 +14,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// and guard coverage stays in <see cref="Crockford32Tests" />.
 /// </summary>
 [TestClass]
-public sealed class Crockford32ContractTests : CheckDigitContractTests<Crockford32>
+public sealed class Crockford32ContractTests
+    : CheckDigitContractTests<Crockford32>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

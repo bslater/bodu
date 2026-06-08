@@ -34,7 +34,8 @@ namespace Bodu.Text.DotEnv;
 /// }
 ///]]>
 /// </example>
-public sealed class DotEnvFormatException : TextFormatException
+public sealed class DotEnvFormatException
+    : TextFormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DotEnvFormatException" /> class with a default message and no

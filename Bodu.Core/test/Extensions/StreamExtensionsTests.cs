@@ -17,7 +17,8 @@ public partial class StreamExtensionsTests
     /// A <see cref="MemoryStream" /> that reports itself as non-seekable, forcing the <see cref="StreamExtensions" />
     /// read helpers down their growable-buffer path while still serving content from memory.
     /// </summary>
-    private sealed class NonSeekableMemoryStream : MemoryStream
+    private sealed class NonSeekableMemoryStream
+        : MemoryStream
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NonSeekableMemoryStream" /> class over the supplied bytes.

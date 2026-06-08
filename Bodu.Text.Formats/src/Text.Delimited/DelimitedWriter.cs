@@ -34,7 +34,8 @@ namespace Bodu.Text.Delimited;
 /// </code>
 /// </example>
 /// </remarks>
-public sealed class DelimitedWriter : IDisposable
+public sealed class DelimitedWriter
+    : IDisposable
 {
     private readonly TextWriter _writer;
     private readonly DelimitedParseOptions _options;

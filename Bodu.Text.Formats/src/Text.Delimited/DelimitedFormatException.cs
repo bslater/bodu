@@ -34,7 +34,8 @@ namespace Bodu.Text.Delimited;
 /// }
 ///]]>
 /// </example>
-public sealed class DelimitedFormatException : TextFormatException
+public sealed class DelimitedFormatException
+    : TextFormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DelimitedFormatException" /> class with a default message and no

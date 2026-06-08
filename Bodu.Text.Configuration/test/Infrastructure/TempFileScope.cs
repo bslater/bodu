@@ -10,7 +10,8 @@ namespace Bodu.Text.Configuration.Infrastructure;
 /// Disposable wrapper around a single temporary file. Writes initial content on creation and deletes the file on
 /// disposal so individual tests do not leak files into the temp directory.
 /// </summary>
-internal sealed class TempFileScope : IDisposable
+internal sealed class TempFileScope
+    : IDisposable
 {
     private bool _disposed;
 

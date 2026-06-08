@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyResolutionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,7 +80,8 @@ public sealed class CurrencyResolutionTests
     /// <summary>
     /// A minimal <see cref="ICurrencyLookup" /> that resolves only the ISO codes supplied at construction.
     /// </summary>
-    private sealed class StubCurrencyLookup : ICurrencyLookup
+    private sealed class StubCurrencyLookup
+        : ICurrencyLookup
     {
         /// <summary>
         /// The currencies this stub knows, keyed by ISO code.

@@ -32,7 +32,8 @@ namespace Bodu.Text.DotEnv;
 /// called.
 /// </para>
 /// </remarks>
-public sealed class DotEnvReader : IDisposable
+public sealed class DotEnvReader
+    : IDisposable
 {
     /// <summary>
     /// The default size of the internal character buffer in characters used when no buffer size is supplied.

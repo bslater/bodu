@@ -13,7 +13,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// Wikipedia UPC-A reference vector.
 /// </summary>
 [TestClass]
-public sealed class UpcAContractTests : CheckDigitContractTests<UpcA>
+public sealed class UpcAContractTests
+    : CheckDigitContractTests<UpcA>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

@@ -13,7 +13,8 @@ namespace Bodu.IO.Hashing.CheckDigits.Contracts;
 /// with the published Federal Reserve Bank of Boston and FRB New York routing-number bodies.
 /// </summary>
 [TestClass]
-public sealed class AbaRoutingNumberContractTests : CheckDigitContractTests<AbaRoutingNumber>
+public sealed class AbaRoutingNumberContractTests
+    : CheckDigitContractTests<AbaRoutingNumber>
 {
     /// <inheritdoc />
     protected override char Compute(string payload) =>

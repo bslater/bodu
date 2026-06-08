@@ -100,7 +100,8 @@ public sealed class CollisionResolutionTests
     /// <summary>
     /// A custom resolver that keeps only the observance occurrence.
     /// </summary>
-    private sealed class KeepObservanceResolver : INotableDateCollisionResolver
+    private sealed class KeepObservanceResolver
+        : INotableDateCollisionResolver
     {
         /// <inheritdoc />
         public IReadOnlyList<NotableDate> Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding) =>

@@ -60,7 +60,8 @@ public sealed class IniContractTests
         return document;
     }
 
-    private sealed class SectionNameComparer : IEqualityComparer<IniDocument>
+    private sealed class SectionNameComparer
+        : IEqualityComparer<IniDocument>
     {
         public bool Equals(IniDocument? x, IniDocument? y)
         {

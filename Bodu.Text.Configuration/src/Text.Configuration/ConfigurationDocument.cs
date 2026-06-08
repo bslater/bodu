@@ -53,11 +53,12 @@ namespace Bodu.Text.Configuration;
 ///     Console.WriteLine(d);
 ///]]>
 /// </example>
-public sealed class ConfigurationDocument : IniDocumentBase
+public sealed class ConfigurationDocument
+    : IniDocumentBase
 {
     /// <summary>
-    /// Initializes a new, empty instance of the <see cref="ConfigurationDocument" /> class for the configuration reader
-    /// to populate.
+    /// Initializes a new instance of the <see cref="ConfigurationDocument" /> class for the configuration reader to
+    /// populate.
     /// </summary>
     /// <param name="caseSensitiveSections">
     /// <see langword="true" /> to compare section names with ordinal case sensitivity; otherwise,

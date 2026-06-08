@@ -44,7 +44,8 @@ public sealed class CustomAlgorithmTests
     /// <summary>
     /// A custom algorithm placing the occurrence on 14 March.
     /// </summary>
-    private sealed class PiDayAlgorithm : INotableDateAlgorithm
+    private sealed class PiDayAlgorithm
+        : INotableDateAlgorithm
     {
         /// <inheritdoc />
         public DateOnly? Calculate(int year) =>
@@ -54,7 +55,8 @@ public sealed class CustomAlgorithmTests
     /// <summary>
     /// A custom algorithm placing every occurrence on 1 April, used to override a built-in key.
     /// </summary>
-    private sealed class AprilFoolsAlgorithm : INotableDateAlgorithm
+    private sealed class AprilFoolsAlgorithm
+        : INotableDateAlgorithm
     {
         /// <inheritdoc />
         public DateOnly? Calculate(int year) =>

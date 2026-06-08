@@ -43,7 +43,8 @@ namespace Bodu.Text.Configuration;
 ///]]>
 /// </example>
 [Serializable]
-public sealed class ConfigurationParseException : FormatException
+public sealed class ConfigurationParseException
+    : FormatException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with a default message.
