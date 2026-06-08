@@ -48,7 +48,7 @@ public static partial class Ini
     /// entries are disallowed.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowGlobalKeyDisallowed(int lineNumber) =>
+    internal static void ThrowGlobalKeyDisallowed(int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.CurrentCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
 
@@ -56,7 +56,7 @@ public static partial class Ini
     /// Throws an <see cref="IniFormatException" /> for a malformed section header.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowMalformedSectionHeader(int lineNumber) =>
+    internal static void ThrowMalformedSectionHeader(int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.CurrentCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
 
@@ -64,7 +64,7 @@ public static partial class Ini
     /// Throws an <see cref="IniFormatException" /> for a property line with an empty key.
     /// </summary>
     [DoesNotReturn]
-    private static void ThrowMissingKey(int lineNumber) =>
+    internal static void ThrowMissingKey(int lineNumber) =>
         throw new IniFormatException(
             string.Format(CultureInfo.CurrentCulture, s_iniMissingKey, lineNumber), lineNumber);
 
