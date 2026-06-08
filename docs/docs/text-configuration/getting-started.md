@@ -42,7 +42,7 @@ format.indent.size = 2
 logging.level.default = Warning
 """;
 
-IniDocument doc = ConfigurationDocument.Parse(source);
+ConfigurationDocument doc = ConfigurationDocument.Parse(source);
 
 ConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
 
@@ -86,12 +86,12 @@ All parsing uses `CultureInfo.InvariantCulture` so behaviour is deterministic ac
 
 ```csharp
 // Strict — duplicate keys are rejected, key-only properties forbidden, inline comments off.
-IniDocument generated = ConfigurationDocument.Parse(
+ConfigurationDocument generated = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.Strict);
 
 // EditorConfig-compatible — inline comments disabled, identity key mapping, only `root` from preamble.
-IniDocument editorConfig = ConfigurationDocument.Parse(
+ConfigurationDocument editorConfig = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.EditorConfigCompatible);
 
@@ -126,10 +126,10 @@ usable in `result.Document`. Under the default `Throw` diagnostic mode, the same
 ### Load from a file or stream
 
 ```csharp
-IniDocument fromPath = ConfigurationDocument.Load(".boduconfig");
+ConfigurationDocument fromPath = ConfigurationDocument.Load(".boduconfig");
 
 await using FileStream fs = File.OpenRead("bodu.config");
-IniDocument fromStream = ConfigurationDocument.Load(fs);
+ConfigurationDocument fromStream = ConfigurationDocument.Load(fs);
 ```
 
 `Load(path)` records the originating directory so anchored glob patterns (e.g. `[src/**]`) can resolve against the
@@ -140,7 +140,7 @@ path context, so anchored globs require `ConfigurationResolveOptions.PathRoot` t
 ### Resolve options — anchor a path root
 
 ```csharp
-IniDocument doc = ConfigurationDocument.Parse(source);
+ConfigurationDocument doc = ConfigurationDocument.Parse(source);
 
 ConfigurationResolveOptions options = new()
 {
@@ -155,9 +155,9 @@ ConfigurationView view = doc.Resolve("src/Bodu/Foo.cs", options);
 ### Save (round-trip)
 
 ```csharp
-IniDocument doc = ConfigurationDocument.Parse(source);
+ConfigurationDocument doc = ConfigurationDocument.Parse(source);
 
-// Modify a value via the underlying IniDocument API.
+// Entry values remain mutable via the underlying IniSection API.
 doc.Sections[0].SetEntry("format.indent.size", "8");
 
 ConfigurationDocument.Save(doc, "/tmp/output.boduconfig");
@@ -215,7 +215,7 @@ format.indent.size  = 4
 """;
 
 // Parse → Resolve → Read.
-IniDocument doc = ConfigurationDocument.Parse(source);
+ConfigurationDocument doc = ConfigurationDocument.Parse(source);
 ConfigurationView view = doc.Resolve("Bodu/Foo.cs");
 
 string style = view.GetString("format:indent:style");                 // "space"
@@ -225,7 +225,7 @@ int size = view.GetInt32("format:indent:size");                       // 4
 using StringWriter sw = new();
 ConfigurationDocument.Save(doc, sw);
 
-IniDocument reparsed = ConfigurationDocument.Parse(sw.ToString());
+ConfigurationDocument reparsed = ConfigurationDocument.Parse(sw.ToString());
 Debug.Assert(reparsed.Sections.Count == doc.Sections.Count);
 Debug.Assert(reparsed.GlobalSection["root"] == doc.GlobalSection["root"]);
 ```

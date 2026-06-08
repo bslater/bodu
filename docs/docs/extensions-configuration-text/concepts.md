@@ -17,7 +17,7 @@ The library follows the three-part contract every `Microsoft.Extensions.Configur
 |---|---|---|
 | **Source** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | Holds the configuration of "what to load and how" — the path, target path, parse and resolve options, reload behaviour. Implements `Build(IConfigurationBuilder)`. |
 | **Provider** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | Performs the actual load. Subclasses `FileConfigurationProvider` / `StreamConfigurationProvider`; inherits change-token plumbing. Populates the inherited `Data` dictionary. |
-| **Loader** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses a stream into an <xref:Bodu.Text.Ini.IniDocument>, resolves it, and flattens the view into `Dictionary<string, string?>` for the provider. |
+| **Loader** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses a stream into a <xref:Bodu.Text.Configuration.ConfigurationDocument>, resolves it, and flattens the view into `Dictionary<string, string?>` for the provider. |
 
 Both providers share the same loader, so behaviour stays in lockstep across file and stream backings.
 

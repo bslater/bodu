@@ -32,7 +32,7 @@ foreach (ConfigurationDiagnostic d in result.Diagnostics)
     Console.WriteLine($"{d.Severity} {d.Code} at {d.Location}: {d.Message}");
 }
 
-IniDocument document = result.Document;  // still populated, on a best-effort basis
+ConfigurationDocument document = result.Document;  // still populated, on a best-effort basis
 ```
 
 ## Diagnostic severity

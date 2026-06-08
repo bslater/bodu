@@ -54,7 +54,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. Six `AddConfiguration` overloads: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocument`. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. Six `AddConfiguration` overloads: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocumentBase`. |
 
 ### Sources and providers
 
@@ -89,7 +89,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | Read from a stream (test fixtures, embedded resources) | `builder.AddConfiguration(stream)` |
 | Wire up everything via a configure callback | `builder.AddConfiguration(src => { src.Path = …; src.TargetPath = …; src.ReloadOnChange = true; })` |
 | Bind a section to an options class | `services.AddConfigurationOptions<MyOptions>(configuration, "service")` |
-| Pre-parsed `IniDocument` (already loaded elsewhere) | `builder.AddConfiguration(document, targetPath: …)` |
+| Pre-parsed document (already loaded elsewhere) | `builder.AddConfiguration(document, targetPath: …)` |
 
 ## Conventional file probe
 

@@ -78,7 +78,7 @@ using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 using Bodu.Text.Ini;
 
-IniDocument doc = ConfigurationDocument.Parse(iniText);
+ConfigurationDocument doc = ConfigurationDocument.Parse(iniText);
 
 // Mutate the document programmatically.
 doc.GetOrAddSection("logging").SetEntry("level", "Debug");

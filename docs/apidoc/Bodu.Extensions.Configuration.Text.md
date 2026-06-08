@@ -27,7 +27,7 @@ Once added, the source loads the file (or stream, or pre-parsed document), parse
     - `AddConfiguration(builder, Action<TextConfigurationSource> configureSource)` — configure callback.
     - `AddConfiguration(builder, bool optional, bool reloadOnChange)` — conventional file probe (`.boduconfig` → `bodu.config`).
     - `AddConfiguration(builder, Stream)` — stream source (no reload-on-change).
-    - `AddConfiguration(builder, IniDocument, string? targetPath)` — pre-parsed document source.
+    - `AddConfiguration(builder, IniDocumentBase, string? targetPath)` — pre-parsed document source (e.g. a `ConfigurationDocument`).
 
 **Sources and providers**
 
@@ -35,7 +35,7 @@ Once added, the source loads the file (or stream, or pre-parsed document), parse
 - <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> — the matching `FileConfigurationProvider`. Reads the file via the standard MEC pipeline and projects the resolved view into the inherited `Data` dictionary.
 - <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> — stream-backed configuration source. Subclasses <xref:Microsoft.Extensions.Configuration.StreamConfigurationSource>; adds the same `TargetPath` / `ParseOptions` / `ResolveOptions` triple. One-shot — no reload-on-change.
 - <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> — the matching `StreamConfigurationProvider`.
-- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> — internal helper shared by both providers that parses a stream into an `IniDocument`, resolves it for `TargetPath`, and flattens the resolved view into `Dictionary<string, string?>`.
+- <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> — internal helper shared by both providers that parses a stream into a `ConfigurationDocument`, resolves it for `TargetPath`, and flattens the resolved view into `Dictionary<string, string?>`.
 
 **Options binding**
 
