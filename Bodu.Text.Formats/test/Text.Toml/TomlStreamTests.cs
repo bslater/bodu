@@ -16,6 +16,18 @@ public sealed class TomlStreamTests
 {
     private const string Sample = "title = \"x\"\n\n[server]\nhost = \"localhost\"\nport = 8080\n";
 
+    /// <summary>
+    /// Provides streams whose bytes are not valid UTF-8 and therefore must be rejected.
+    /// </summary>
+    /// <returns>One named byte sequence per row.</returns>
+    public static IEnumerable<object[]> InvalidUtf8Cases()
+    {
+        yield return ["lone-continuation", new byte[] { 0x80 }];
+        yield return ["overlong-slash", new byte[] { 0xC0, 0xAF }];
+        yield return ["encoded-surrogate", new byte[] { 0xED, 0xA0, 0x80 }];
+        yield return ["above-unicode-range", new byte[] { 0xF4, 0x90, 0x80, 0x80 }];
+    }
+
     [TestMethod]
     public void FormatThenParse_WhenUsingStreams_ShouldRoundTrip()
     {
