@@ -109,4 +109,33 @@ public class CurrencyLookupServiceTests
             Assert.AreEqual(info.NumericCode, resolved.NumericCode);
         }
     }
+
+    /// <summary>
+    /// Verifies that every lookup reports failure (without throwing) when no currency matches the supplied code,
+    /// numeric code, symbol, or region.
+    /// </summary>
+    [TestMethod]
+    public void Lookups_WhenNoMatch_ShouldReturnFalseOrEmpty()
+    {
+        ICurrencyLookup lookup = new CurrencyLookupService();
+
+        Assert.IsFalse(lookup.TryByCurrencyCode((CurrencyCode)(-1), out _));
+        Assert.IsFalse(lookup.TryByNumericCode(99999, out _));
+        Assert.IsFalse(lookup.TryBySymbol("☃", out IReadOnlyList<CurrencyInfo> bySymbol));
+        Assert.AreEqual(0, bySymbol.Count);
+        Assert.IsFalse(lookup.TryByRegion("ZZ", out IReadOnlyList<CurrencyInfo> byRegion));
+        Assert.AreEqual(0, byRegion.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CurrencyLookupService.ByCulture(CultureInfo)" /> returns no currencies for a neutral
+    /// culture, which carries no region context.
+    /// </summary>
+    [TestMethod]
+    public void ByCulture_WhenNeutralCulture_ShouldReturnEmpty()
+    {
+        ICurrencyLookup lookup = new CurrencyLookupService();
+
+        Assert.AreEqual(0, lookup.ByCulture(new CultureInfo("en")).Count);
+    }
 }

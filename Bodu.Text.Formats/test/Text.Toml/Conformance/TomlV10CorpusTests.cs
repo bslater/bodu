@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlV10CorpusTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -73,7 +73,7 @@ public sealed class TomlV10CorpusTests
     [DynamicData(nameof(ValidVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Parse_WhenValidVectorUnderV10_ShouldMatchExpectedModel(TomlV10ValidKat vector)
     {
-        var document = Toml.Parse(vector.Toml);
+        TomlTable document = Toml.Parse(vector.Toml);
         JsonNode actual = TomlTestEncoder.Encode(document);
         JsonNode expected = JsonNode.Parse(vector.Expected)!;
 

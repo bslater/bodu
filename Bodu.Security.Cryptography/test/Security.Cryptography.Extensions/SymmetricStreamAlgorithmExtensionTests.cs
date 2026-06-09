@@ -208,4 +208,80 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
             _ = cipher.Encrypt(source, target, 0);
         });
     }
+
+    /// <summary>
+    /// Verifies that the array-and-offset decrypt overload recovers the plaintext.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenGivenArrayAndOffset_ShouldRecoverPlaintext()
+    {
+        var plaintext = CreatePayload(64);
+
+        byte[] ciphertext;
+        using (ChaCha20 cipher = CreateCipher())
+            ciphertext = cipher.Encrypt(plaintext);
+
+        byte[] recovered;
+        using (ChaCha20 cipher = CreateCipher())
+            recovered = cipher.Decrypt(ciphertext, 0);
+
+        CollectionAssert.AreEqual(plaintext, recovered);
+    }
+
+    /// <summary>
+    /// Verifies that the array-and-offset encrypt overload matches the full-array overload.
+    /// </summary>
+    [TestMethod]
+    public void Encrypt_WhenGivenArrayAndOffset_ShouldMatchFullArrayOverload()
+    {
+        var plaintext = CreatePayload(64);
+
+        byte[] viaFull;
+        using (ChaCha20 cipher = CreateCipher())
+            viaFull = cipher.Encrypt(plaintext);
+
+        byte[] viaOffset;
+        using (ChaCha20 cipher = CreateCipher())
+            viaOffset = cipher.Encrypt(plaintext, 0);
+
+        CollectionAssert.AreEqual(viaFull, viaOffset);
+    }
+
+    /// <summary>
+    /// Verifies that the read-only-memory decrypt overload recovers the plaintext.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenGivenReadOnlyMemory_ShouldRecoverPlaintext()
+    {
+        var plaintext = CreatePayload(48);
+
+        byte[] ciphertext;
+        using (ChaCha20 cipher = CreateCipher())
+            ciphertext = cipher.Encrypt(plaintext);
+
+        byte[] recovered;
+        using (ChaCha20 cipher = CreateCipher())
+            recovered = cipher.Decrypt((ReadOnlyMemory<byte>)ciphertext);
+
+        CollectionAssert.AreEqual(plaintext, recovered);
+    }
+
+    /// <summary>
+    /// Verifies that the read-only-memory encrypt overload matches the full-array overload.
+    /// </summary>
+    [TestMethod]
+    public void Encrypt_WhenGivenReadOnlyMemory_ShouldMatchFullArrayOverload()
+    {
+        var plaintext = CreatePayload(48);
+
+        byte[] viaArray;
+        using (ChaCha20 cipher = CreateCipher())
+            viaArray = cipher.Encrypt(plaintext);
+
+        byte[] viaMemory;
+        using (ChaCha20 cipher = CreateCipher())
+            viaMemory = cipher.Encrypt((ReadOnlyMemory<byte>)plaintext);
+
+        CollectionAssert.AreEqual(viaArray, viaMemory);
+    }
 }

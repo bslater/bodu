@@ -254,4 +254,24 @@ public sealed class TerritoryCodeTests
             _ = TerritoryCode.ParseList("AU, not-a-code");
         });
     }
+
+    /// <summary>
+    /// Verifies that the boxed <see cref="object.Equals(object)" /> override matches an equal code and rejects a
+    /// non-<see cref="TerritoryCode" /> object.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenComparedAsObject_ShouldMatchValue()
+    {
+        TerritoryCode code = TerritoryCode.Parse("AU-NSW");
+
+        Assert.IsTrue(code.Equals((object)TerritoryCode.Parse("AU-NSW")));
+        Assert.IsFalse(code.Equals((object)"AU-NSW"));
+    }
+
+    /// <summary>
+    /// Verifies that a subdivision containing a non-alphanumeric character is rejected by <c>TryParse</c>.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenSubdivisionHasInvalidCharacter_ShouldReturnFalse() =>
+        Assert.IsFalse(TerritoryCode.TryParse("US-1$", out _));
 }

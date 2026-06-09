@@ -144,4 +144,42 @@ public sealed class DelimitedExtensionsTests
             _ = ((DelimitedDocument)null!).FormatDelimited();
         });
     }
+
+    /// <summary>
+    /// Verifies that the span overload of <see cref="DelimitedExtensions.ParseDelimited(ReadOnlySpan{char},
+    /// DelimitedParseOptions)" /> parses using the supplied options.
+    /// </summary>
+    [TestMethod]
+    public void ParseDelimited_OnReadOnlySpanWithOptions_ShouldParse()
+    {
+        DelimitedDocument doc = CanonicalSource.AsSpan().ParseDelimited(DelimitedParseOptions.Default);
+
+        Assert.AreEqual(2, doc.Rows.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the span overload of <see cref="DelimitedExtensions.TryParseDelimited(ReadOnlySpan{char},
+    /// DelimitedParseOptions, out DelimitedDocument)" /> succeeds and yields a document.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDelimited_OnReadOnlySpanWithOptions_ShouldReturnTrueAndDocument()
+    {
+        var parsed = CanonicalSource.AsSpan().TryParseDelimited(DelimitedParseOptions.Default, out DelimitedDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+    }
+
+    /// <summary>
+    /// Verifies that the string overload of <see cref="DelimitedExtensions.TryParseDelimited(string,
+    /// DelimitedParseOptions, out DelimitedDocument)" /> succeeds and yields a document.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDelimited_OnStringWithOptions_ShouldReturnTrueAndDocument()
+    {
+        var parsed = CanonicalSource.TryParseDelimited(DelimitedParseOptions.Default, out DelimitedDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+    }
 }

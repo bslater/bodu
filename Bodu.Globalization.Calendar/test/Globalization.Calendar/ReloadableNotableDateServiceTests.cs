@@ -148,4 +148,24 @@ public sealed class ReloadableNotableDateServiceTests
             provider.Reload(null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that the single-date, filtered, and supported-territory/calendar query overloads all delegate to the
+    /// current inner service.
+    /// </summary>
+    [TestMethod]
+    public void QueryOverloads_ShouldDelegateToCurrentService()
+    {
+        MutableNotableDateResourceProvider provider = new(NotableDateResourceLoader.Load(JanuaryXml));
+        ReloadableNotableDateService service = new(provider);
+
+        var date = new DateOnly(2025, 1, 1);
+        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+
+        Assert.IsNotNull(service.Resolve(date, "XX"));
+        Assert.IsNotNull(service.Resolve(date, "XX", filter));
+        Assert.IsNotNull(service.Resolve(Year2025, "XX", filter));
+        Assert.IsNotNull(service.GetSupportedTerritories());
+        Assert.IsNotNull(service.GetSupportedCalendars());
+    }
 }

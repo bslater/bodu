@@ -89,4 +89,16 @@ public partial class IntervalTests
         Assert.IsTrue(Interval<int>.Empty.Intersect(Interval<int>.Closed(1, 5)).IsEmpty);
         Assert.IsTrue(Interval<int>.Closed(1, 5).Intersect(Interval<int>.Empty).IsEmpty);
     }
+
+    /// <summary>
+    /// Verifies that intersecting an interval whose lower bound starts after the other operand keeps this interval's
+    /// lower endpoint and the other operand's upper endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenThisStartsAfterOther_ShouldClampToThisLowerAndOtherUpper()
+    {
+        var result = Interval<int>.Closed(3, 8).Intersect(Interval<int>.Closed(1, 5));
+
+        Assert.AreEqual(Interval<int>.Closed(3, 5), result);
+    }
 }

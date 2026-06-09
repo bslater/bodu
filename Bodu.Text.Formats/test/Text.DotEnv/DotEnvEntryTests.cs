@@ -124,4 +124,14 @@ public sealed class DotEnvEntryTests
         Assert.IsFalse(result);
     }
 
+    /// <summary>
+    /// Verifies that the key/value constructor exposes the supplied values with an empty leading-comment list.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenGivenKeyAndValue_ShouldExposeThemWithNoComments()
+    {
+        DotEnvEntry entry = new("KEY", "value");
+
+        Assert.AreEqual(("KEY", "value", 0), (entry.Key, entry.Value, entry.LeadingComments.Count));
+    }
 }

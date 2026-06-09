@@ -1,42 +1,30 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlStreamTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Behavioural tests for the <see cref="Toml" /> stream surface — UTF-8 parsing and formatting, strict encoding
-/// validation, the asynchronous overloads and their cancellation contract, byte-order-mark handling, and argument
-/// validation.
+/// Behavioural tests for the <see cref="Toml" /> stream surface — UTF-8 parsing and formatting, the asynchronous
+/// overloads, byte-order-mark handling, and argument validation.
 /// </summary>
 [TestClass]
 public sealed class TomlStreamTests
 {
     private const string Sample = "title = \"x\"\n\n[server]\nhost = \"localhost\"\nport = 8080\n";
 
-    /// <summary>
-    /// Provides streams whose bytes are not valid UTF-8 and therefore must be rejected.
-    /// </summary>
-    /// <returns>One named byte sequence per row.</returns>
-    public static IEnumerable<object[]> InvalidUtf8Cases()
-    {
-        yield return ["lone-continuation", new byte[] { 0x80 }];
-        yield return ["overlong-slash", new byte[] { 0xC0, 0xAF }];
-        yield return ["encoded-surrogate", new byte[] { 0xED, 0xA0, 0x80 }];
-        yield return ["above-unicode-range", new byte[] { 0xF4, 0x90, 0x80, 0x80 }];
-    }
-
     [TestMethod]
     public void FormatThenParse_WhenUsingStreams_ShouldRoundTrip()
     {
-        var document = Toml.Parse(Sample);
+        TomlTable document = Toml.Parse(Sample);
 
         using MemoryStream stream = new();
         Toml.Format(document, stream);
         stream.Position = 0;
-        var reparsed = Toml.Parse(stream);
+        TomlTable reparsed = Toml.Parse(stream);
 
         Assert.AreEqual(Normalize(document), Normalize(reparsed));
     }
@@ -44,12 +32,12 @@ public sealed class TomlStreamTests
     [TestMethod]
     public async Task FormatAsyncThenParseAsync_WhenUsingStreams_ShouldRoundTrip()
     {
-        var document = Toml.Parse(Sample);
+        TomlTable document = Toml.Parse(Sample);
 
         using MemoryStream stream = new();
         await Toml.FormatAsync(document, stream);
         stream.Position = 0;
-        var reparsed = await Toml.ParseAsync(stream);
+        TomlTable reparsed = await Toml.ParseAsync(stream);
 
         Assert.AreEqual(Normalize(document), Normalize(reparsed));
     }
@@ -71,7 +59,7 @@ public sealed class TomlStreamTests
         var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(System.Text.Encoding.UTF8.GetBytes("a = 1")).ToArray();
 
         using MemoryStream stream = new(bytes);
-        var document = Toml.Parse(stream);
+        TomlTable document = Toml.Parse(stream);
 
         Assert.AreEqual(1, ((TomlInteger)document["a"]).Value);
     }
@@ -95,7 +83,7 @@ public sealed class TomlStreamTests
     public void Parse_WhenStreamHasNonAsciiUtf8_ShouldDecodeCorrectly()
     {
         using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("name = \"José\"\nemoji = \"\U0001F600\""));
-        var document = Toml.Parse(stream);
+        TomlTable document = Toml.Parse(stream);
 
         Assert.AreEqual("José", ((TomlString)document["name"]).Value);
         Assert.AreEqual("\U0001F600", ((TomlString)document["emoji"]).Value);
@@ -206,13 +194,13 @@ public sealed class TomlStreamTests
         {
             case TomlTable table:
                 var entries = new List<string>();
-                foreach (var pair in table)
+                foreach (KeyValuePair<string, TomlValue> pair in table)
                     entries.Add("<" + pair.Key + ">=" + Normalize(pair.Value));
                 entries.Sort(StringComparer.Ordinal);
                 return "{" + string.Join(",", entries) + "}";
             case TomlArray array:
                 var items = new List<string>();
-                foreach (var item in array)
+                foreach (TomlValue item in array)
                     items.Add(Normalize(item));
                 return "[" + string.Join(",", items) + "]";
             default:

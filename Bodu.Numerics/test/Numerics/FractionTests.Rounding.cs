@@ -103,4 +103,31 @@ public partial class FractionTests
         Assert.AreEqual(-3, numerator);
         Assert.AreEqual(4, denominator);
     }
+
+    /// <summary>
+    /// Verifies that rounding a value lying exactly on a half-integer boundary resolves the tie according to each
+    /// supported midpoint rule.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 2, MidpointRounding.ToEven, 0)]
+    [DataRow(3, 2, MidpointRounding.ToEven, 2)]
+    [DataRow(1, 2, MidpointRounding.AwayFromZero, 1)]
+    [DataRow(-1, 2, MidpointRounding.AwayFromZero, -1)]
+    [DataRow(1, 2, MidpointRounding.ToZero, 0)]
+    [DataRow(1, 2, MidpointRounding.ToNegativeInfinity, 0)]
+    [DataRow(1, 2, MidpointRounding.ToPositiveInfinity, 1)]
+    public void Round_WhenValueIsExactlyHalf_ShouldResolveTieByMode(int numerator, int denominator, MidpointRounding mode, int expected) =>
+        Assert.AreEqual(new Fraction<int>(expected), new Fraction<int>(numerator, denominator).Round(mode));
+
+    /// <summary>
+    /// Verifies that rounding a value that does not lie on a half-integer boundary rounds toward the nearer integer
+    /// without consulting the midpoint rule.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 3, 0)]
+    [DataRow(2, 3, 1)]
+    [DataRow(-1, 3, 0)]
+    [DataRow(-2, 3, -1)]
+    public void Round_WhenValueIsNotOnMidpoint_ShouldRoundToNearest(int numerator, int denominator, int expected) =>
+        Assert.AreEqual(new Fraction<int>(expected), new Fraction<int>(numerator, denominator).Round(MidpointRounding.ToEven));
 }

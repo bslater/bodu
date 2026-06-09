@@ -111,4 +111,16 @@ public partial class MoneyOfTCurrencyTests
 
         Assert.AreEqual(original, recovered);
     }
+
+    /// <summary>
+    /// Verifies that typed parsing rejects blank input and an ISO-shaped token that does not match the type
+    /// parameter's currency, without throwing.
+    /// </summary>
+    [TestMethod]
+    [DataRow("")]
+    [DataRow("   ")]
+    [DataRow("EUR 10.00")]
+    [DataRow("$19.99")]
+    public void TryParse_WhenInputBlankOrMismatchedIso_ShouldReturnFalse(string text) =>
+        Assert.IsFalse(Money<USD>.TryParse(text, CultureInfo.InvariantCulture, out _));
 }

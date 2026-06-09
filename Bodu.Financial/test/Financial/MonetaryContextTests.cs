@@ -109,4 +109,15 @@ public class MonetaryContextTests
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => context.Validate());
         Assert.AreEqual("CustomScale", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a custom scale policy with no scale supplied is rejected by <c>Validate</c>.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenCustomScalePolicyWithoutScale_ShouldThrowArgumentException()
+    {
+        MonetaryContext context = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = null };
+
+        Assert.ThrowsExactly<ArgumentException>(() => context.Validate());
+    }
 }

@@ -78,4 +78,18 @@ public class ConfigurationSourceLocationTests
 
         Assert.IsTrue(location.ToString().StartsWith("file.boduconfig", StringComparison.Ordinal));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationSourceLocation.Equals(object)" /> returns <see langword="true" /> for an
+    /// equal boxed location and <see langword="false" /> for a different type.
+    /// </summary>
+    [TestMethod]
+    public void Equals_OnObject_ShouldMatchOnlyEqualLocations()
+    {
+        ConfigurationSourceLocation a = new(1, 1, 5, "file.cs");
+        ConfigurationSourceLocation b = new(1, 1, 5, "file.cs");
+
+        Assert.IsTrue(a.Equals((object)b));
+        Assert.IsFalse(a.Equals("not a location"));
+    }
 }

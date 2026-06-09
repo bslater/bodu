@@ -152,4 +152,57 @@ public sealed class IniReaderTests
             _ = reader.Read();
         });
     }
+
+    /// <summary>
+    /// Verifies that an empty section header (<c>[]</c>) throws <see cref="IniFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSectionHeaderIsEmpty_ShouldThrowIniFormatException()
+    {
+        using IniReader reader = new(new StringReader("[]"));
+
+        Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a key/value line with an empty key throws <see cref="IniFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeyIsEmpty_ShouldThrowIniFormatException()
+    {
+        using IniReader reader = new(new StringReader("[s]\n=value"));
+
+        Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniReader.LineNumber" /> reflects the source line of the most recent entry.
+    /// </summary>
+    [TestMethod]
+    public void LineNumber_AfterReadingEntry_ShouldReflectSourceLine()
+    {
+        using IniReader reader = new(new StringReader("[s]\nk=v"));
+
+        _ = reader.Read();
+
+        Assert.AreEqual(2, reader.LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that disposing an <see cref="IniReader" /> twice is a no-op on the second call.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        IniReader reader = new(new StringReader("k=v"));
+
+        reader.Dispose();
+        reader.Dispose();
+    }
 }

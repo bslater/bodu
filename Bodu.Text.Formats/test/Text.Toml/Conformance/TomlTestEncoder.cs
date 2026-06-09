@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlTestEncoder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ internal static class TomlTestEncoder
     private static JsonObject EncodeTable(TomlTable table)
     {
         var node = new JsonObject();
-        foreach (var pair in table)
+        foreach (KeyValuePair<string, TomlValue> pair in table)
             node[pair.Key] = Encode(pair.Value);
         return node;
     }
@@ -50,7 +50,7 @@ internal static class TomlTestEncoder
     private static JsonArray EncodeArray(TomlArray array)
     {
         var node = new JsonArray();
-        foreach (var item in array)
+        foreach (TomlValue item in array)
             node.Add(Encode(item));
         return node;
     }

@@ -91,4 +91,16 @@ public partial class IntervalTests
         var roundTripped = System.Text.Encoding.UTF8.GetString(buffer.Slice(0, written));
         Assert.AreEqual("[1, 5)", roundTripped);
     }
+
+    /// <summary>
+    /// Verifies that the single-argument <see cref="Interval{T}.ToString(string?)" /> overload applies the endpoint
+    /// format using the current culture.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WithFormatOnly_ShouldApplyFormatToEndpoints()
+    {
+        var interval = Interval<double>.Closed(1.5, 2.5);
+
+        Assert.AreEqual(interval.ToString("F2", CultureInfo.CurrentCulture), interval.ToString("F2"));
+    }
 }

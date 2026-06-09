@@ -327,4 +327,75 @@ public partial class MoneyBagTests
         StringAssert.Contains(json, "\"balances\"");
         StringAssert.Contains(json, "\"USD\":100");
     }
+
+    /// <summary>
+    /// Verifies that the typed <see cref="MoneyBag.Subtract{TCurrency}(Money{TCurrency})" /> overload reduces the
+    /// matching currency's balance.
+    /// </summary>
+    [TestMethod]
+    public void Subtract_WhenTypedAmount_ShouldReduceBalance()
+    {
+        MoneyBag bag = MoneyBag.Empty.Add(new Money(100m, "USD")).Subtract(new Money<USD>(25m));
+
+        Assert.AreEqual(new Money(75m, "USD"), bag.GetBalance("USD"));
+    }
+
+    /// <summary>
+    /// Verifies that the bag-plus-bag operator sums per-currency balances and drops a currency whose combined balance
+    /// nets to zero.
+    /// </summary>
+    [TestMethod]
+    public void OperatorPlus_WhenCombiningTwoBags_ShouldSumAndCancelToZero()
+    {
+        var left = new MoneyBag([new Money(10m, "USD"), new Money(5m, "EUR")]);
+        var right = new MoneyBag([new Money(-10m, "USD"), new Money(3m, "EUR")]);
+
+        MoneyBag combined = left + right;
+
+        Assert.IsNull(combined.GetBalance("USD"));
+        Assert.AreEqual(new Money(8m, "EUR"), combined.GetBalance("EUR"));
+    }
+
+    /// <summary>
+    /// Verifies that enumerating a bag through the non-generic <see cref="System.Collections.IEnumerable" /> surface
+    /// yields its balances.
+    /// </summary>
+    [TestMethod]
+    public void NonGenericEnumeration_ShouldYieldBalances()
+    {
+        System.Collections.IEnumerable bag = new MoneyBag([new Money(1m, "USD")]);
+
+        var items = new List<object>();
+        foreach (var item in bag)
+            items.Add(item);
+
+        Assert.AreEqual(1, items.Count);
+        Assert.AreEqual(new Money(1m, "USD"), (Money)items[0]);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum" /> policy rounds each
+    /// converted balance to the target precision before summing, and passes the target-currency balance through
+    /// without conversion.
+    /// </summary>
+    [TestMethod]
+    public void ConvertTo_WhenRoundEachCurrencyThenSum_ShouldRoundPerCurrencyBeforeSumming()
+    {
+        MoneyBag bag = MoneyBag.Empty
+            .Add(new Money<USD>(5m))
+            .Add(new Money<EUR>(2m))
+            .Add(new Money<JPY>(100m));
+
+        Money<USD> total = bag.ConvertTo<USD>(
+            (from, to) => (from, to) switch
+            {
+                ("EUR", "USD") => 1.10m,
+                ("JPY", "USD") => 0.01m,
+                _ => 1m,
+            },
+            MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum);
+
+        // USD 5 (pass-through) + EUR 2×1.10 = 2.20 + JPY 100×0.01 = 1.00 → 8.20.
+        Assert.AreEqual(new Money<USD>(8.20m), total);
+    }
 }

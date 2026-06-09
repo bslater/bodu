@@ -110,4 +110,14 @@ public partial class MoneyOfTCurrencyTests
             _ = ((IComparable)usd).CompareTo(jpy);
         });
     }
+
+    /// <summary>
+    /// Verifies that the inequality operator on two typed values is the negation of equality.
+    /// </summary>
+    [TestMethod]
+    public void InequalityOperator_WhenComparingValues_ShouldReflectEquality()
+    {
+        Assert.IsTrue(new Money<USD>(1m) != new Money<USD>(2m));
+        Assert.IsFalse(new Money<USD>(1m) != new Money<USD>(1m));
+    }
 }

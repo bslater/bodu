@@ -111,4 +111,96 @@ public partial class MoneyTests
             _ = Money.TryParse("USD 1.00".AsSpan(), new MoneyParseOptions { Mode = (MoneyParseMode)99 }, out _);
         });
     }
+
+    /// <summary>
+    /// Verifies that option-based parsing of blank input reports failure.
+    /// </summary>
+    [TestMethod]
+    public void ParseOptions_WhenInputIsBlank_ShouldReturnFalse() =>
+        Assert.IsFalse(Money.TryParse("   ", new MoneyParseOptions { Mode = MoneyParseMode.StrictIso }, out _));
+
+    /// <summary>
+    /// Verifies that <see cref="MoneyParseMode.LenientImport" /> upper-cases a lower-case ISO code before resolving the
+    /// currency.
+    /// </summary>
+    [TestMethod]
+    public void ParseOptions_WhenLenientImportLowercaseIso_ShouldUpperCaseAndResolve()
+    {
+        var options = new MoneyParseOptions { Mode = MoneyParseMode.LenientImport, FormatProvider = CultureInfo.InvariantCulture };
+
+        Assert.IsTrue(Money.TryParse("usd 10.50", options, out Money result));
+        Assert.AreEqual(new Money(10.50m, "USD"), result);
+    }
+
+    /// <summary>
+    /// Verifies that a trailing currency symbol is resolved through the culture-aware symbol lookup.
+    /// </summary>
+    [TestMethod]
+    public void ParseOptions_WhenSymbolIsSuffix_ShouldResolveViaLookup()
+    {
+        var options = new MoneyParseOptions
+        {
+            Mode = MoneyParseMode.CultureAware,
+            FormatProvider = CultureInfo.InvariantCulture,
+            CurrencyLookup = new CurrencyLookupService(),
+        };
+
+        var money = Money.Parse("10.50Ω", options);
+
+        Assert.AreEqual("XQP", money.IsoCode);
+        Assert.AreEqual(10.50m, money.Amount);
+    }
+
+    /// <summary>
+    /// Verifies that a symbol with no accompanying numeric portion fails to compose a value.
+    /// </summary>
+    [TestMethod]
+    public void ParseOptions_WhenSymbolHasNoAmount_ShouldReturnFalse()
+    {
+        var options = new MoneyParseOptions
+        {
+            Mode = MoneyParseMode.CultureAware,
+            FormatProvider = CultureInfo.InvariantCulture,
+            CurrencyLookup = new CurrencyLookupService(),
+        };
+
+        Assert.IsFalse(Money.TryParse("Ω", options, out _));
+    }
+
+    /// <summary>
+    /// Verifies that the unknown-currency policy governs whether an unregistered ISO code parses: rejected by default,
+    /// accepted under <see cref="UnknownCurrencyPolicy.AllowUnscaled" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseOptions_WhenCurrencyUnregistered_ShouldHonourUnknownCurrencyPolicy()
+    {
+        var reject = new MoneyParseOptions { Mode = MoneyParseMode.StrictIso, FormatProvider = CultureInfo.InvariantCulture, UnknownCurrency = UnknownCurrencyPolicy.Reject };
+        Assert.IsFalse(Money.TryParse("XYZ 10.50", reject, out _));
+
+        var allow = new MoneyParseOptions { Mode = MoneyParseMode.StrictIso, FormatProvider = CultureInfo.InvariantCulture, UnknownCurrency = UnknownCurrencyPolicy.AllowUnscaled };
+        Assert.IsTrue(Money.TryParse("XYZ 10.50", allow, out Money result));
+        Assert.AreEqual("XYZ", result.IsoCode);
+    }
+
+    /// <summary>
+    /// Verifies that the plain <see cref="Money.TryParse(string?, IFormatProvider?, out Money)" /> recognizes the ISO
+    /// suffix form, rejects a non-numeric amount, and rejects an unregistered currency.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_PlainCulture_ShouldHandleSuffixAndRejectInvalid()
+    {
+        Assert.IsTrue(Money.TryParse("19.99 USD", CultureInfo.InvariantCulture, out Money suffix));
+        Assert.AreEqual(new Money(19.99m, "USD"), suffix);
+
+        Assert.IsFalse(Money.TryParse("USD .", CultureInfo.InvariantCulture, out _));
+        Assert.IsFalse(Money.TryParse("XYZ 10.00", CultureInfo.InvariantCulture, out _));
+    }
+
+    /// <summary>
+    /// Verifies that the plain <see cref="Money.TryParse(string?, IFormatProvider?, out Money)" /> reports failure for
+    /// a null string rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenStringIsNull_ShouldReturnFalse() =>
+        Assert.IsFalse(Money.TryParse((string?)null, CultureInfo.InvariantCulture, out _));
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReaderDiagnosticsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed class TomlReaderDiagnosticsTests
     [TestMethod]
     public void Parse_WhenInvalidOnThirdLine_ForLf_ShouldReportLineThree()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("a = 1\n\nkey = "));
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("a = 1\n\nkey = "));
 
         Assert.AreEqual(3, ex.LineNumber);
     }
@@ -31,7 +31,7 @@ public sealed class TomlReaderDiagnosticsTests
     [TestMethod]
     public void Parse_WhenInvalidOnSecondLine_ForCrlf_ShouldReportLineTwo()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("a = 1\r\nbad ="));
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("a = 1\r\nbad ="));
 
         Assert.AreEqual(2, ex.LineNumber);
     }
@@ -42,7 +42,7 @@ public sealed class TomlReaderDiagnosticsTests
     [TestMethod]
     public void Parse_WhenInvalidAfterComment_ShouldReportLineTwo()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("# comment\nbad ="));
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("# comment\nbad ="));
 
         Assert.AreEqual(2, ex.LineNumber);
     }
@@ -54,7 +54,7 @@ public sealed class TomlReaderDiagnosticsTests
     [TestMethod]
     public void Parse_WhenInvalidAfterMultilineString_ShouldReportCorrectLine()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("s = \"\"\"\nhello\n\"\"\"\nbad ="));
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse("s = \"\"\"\nhello\n\"\"\"\nbad ="));
 
         Assert.AreEqual(4, ex.LineNumber);
     }

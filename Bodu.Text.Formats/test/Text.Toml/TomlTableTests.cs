@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlTableTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public sealed class TomlTableTests
     {
         var table = new TomlTable { { "k", new TomlInteger(1) } };
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             table.Add("k", new TomlInteger(2));
         });
@@ -72,9 +72,9 @@ public sealed class TomlTableTests
     {
         var table = new TomlTable { { "present", new TomlBoolean(true) } };
 
-        Assert.IsTrue(table.TryGetValue("present", out var found));
+        Assert.IsTrue(table.TryGetValue("present", out TomlValue? found));
         Assert.AreEqual(TomlValueKind.Boolean, found.Kind);
-        Assert.IsFalse(table.TryGetValue("absent", out var missing));
+        Assert.IsFalse(table.TryGetValue("absent", out TomlValue? missing));
         Assert.IsNull(missing);
     }
 

@@ -126,4 +126,42 @@ public sealed class DotEnvExtensionsTests
             _ = ((DotEnvDocument)null!).FormatDotEnv();
         });
     }
+
+    /// <summary>
+    /// Verifies that the span overload of <see cref="DotEnvExtensions.ParseDotEnv(ReadOnlySpan{char},
+    /// DotEnvParseOptions)" /> parses using the supplied options.
+    /// </summary>
+    [TestMethod]
+    public void ParseDotEnv_OnReadOnlySpanWithOptions_ShouldParse()
+    {
+        DotEnvDocument doc = CanonicalSource.AsSpan().ParseDotEnv(DotEnvParseOptions.Default);
+
+        Assert.AreEqual("8080", doc["PORT"]);
+    }
+
+    /// <summary>
+    /// Verifies that the span overload of <see cref="DotEnvExtensions.TryParseDotEnv(ReadOnlySpan{char},
+    /// DotEnvParseOptions, out DotEnvDocument)" /> succeeds and yields a document.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDotEnv_OnReadOnlySpanWithOptions_ShouldReturnTrueAndDocument()
+    {
+        var parsed = CanonicalSource.AsSpan().TryParseDotEnv(DotEnvParseOptions.Default, out DotEnvDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+    }
+
+    /// <summary>
+    /// Verifies that the string overload of <see cref="DotEnvExtensions.TryParseDotEnv(string, DotEnvParseOptions, out
+    /// DotEnvDocument)" /> succeeds and yields a document.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDotEnv_OnStringWithOptions_ShouldReturnTrueAndDocument()
+    {
+        var parsed = CanonicalSource.TryParseDotEnv(DotEnvParseOptions.Default, out DotEnvDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+    }
 }

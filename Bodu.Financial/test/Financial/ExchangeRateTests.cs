@@ -160,4 +160,16 @@ public partial class ExchangeRateTests
             },
             "provider");
     }
+
+    /// <summary>
+    /// Verifies that two exchange rates with identical fields produce the same hash code.
+    /// </summary>
+    [TestMethod]
+    public void GetHashCode_WhenFieldsMatch_ShouldBeEqual()
+    {
+        var a = new ExchangeRate("USD", "AUD", s_sampleDate, 1.5m, "ecb");
+        var b = new ExchangeRate("USD", "AUD", s_sampleDate, 1.5m, "ecb");
+
+        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+    }
 }

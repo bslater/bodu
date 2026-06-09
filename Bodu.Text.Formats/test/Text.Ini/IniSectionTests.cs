@@ -285,4 +285,106 @@ public sealed class IniSectionTests
         Assert.AreEqual("MySection", section.Name);
     }
 
+    // ------------------------------------------- programmatic construction ----------------------------------------
+
+    /// <summary>
+    /// Verifies that constructing a section with duplicate keys resolves them last-wins.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenEntriesContainDuplicateKey_ShouldKeepLastWins()
+    {
+        IniSection section = new("s", new[] { new IniEntry("k", "1"), new IniEntry("k", "2") });
+
+        Assert.AreEqual((1, "2"), (section.Entries.Count, section["k"]));
+    }
+
+    /// <summary>
+    /// Verifies that constructing a section with a <see langword="null" /> entry throws
+    /// <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenEntriesContainNull_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniSection("s", new IniEntry[] { null! }));
+
+        Assert.AreEqual("entries", ex.ParamName);
+    }
+
+    // ------------------------------------------- mutation -----------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="IniSection.TryGetEntry(string, out IniEntry)" /> returns the entry for a present key.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEntry_WhenKeyPresent_ShouldReturnTrueAndEntry()
+    {
+        IniSection section = new("s", new[] { new IniEntry("host", "local") });
+
+        Assert.IsTrue(section.TryGetEntry("host", out IniEntry? entry));
+        Assert.AreEqual("local", entry!.Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniSection.TryGetEntry(string, out IniEntry)" /> returns <see langword="false" /> for a
+    /// <see langword="null" /> key.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEntry_WhenKeyIsNull_ShouldReturnFalse()
+    {
+        IniSection section = new("s", Array.Empty<IniEntry>());
+
+        Assert.IsFalse(section.TryGetEntry(null!, out IniEntry? entry));
+        Assert.IsNull(entry);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniSection.AddEntry(IniEntry)" /> replaces an existing entry that shares the key.
+    /// </summary>
+    [TestMethod]
+    public void AddEntry_WhenKeyExists_ShouldReplaceInPlace()
+    {
+        IniSection section = new("s", new[] { new IniEntry("k", "1") });
+
+        section.AddEntry(new IniEntry("k", "2"));
+
+        Assert.AreEqual((1, "2"), (section.Entries.Count, section["k"]));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniSection.RemoveEntry(string)" /> returns <see langword="false" /> for an absent key.
+    /// </summary>
+    [TestMethod]
+    public void RemoveEntry_WhenKeyAbsent_ShouldReturnFalse()
+    {
+        IniSection section = new("s", Array.Empty<IniEntry>());
+
+        Assert.IsFalse(section.RemoveEntry("missing"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniSection.ClearEntries" /> removes every entry.
+    /// </summary>
+    [TestMethod]
+    public void ClearEntries_ShouldRemoveAllEntries()
+    {
+        IniSection section = new("s", new[] { new IniEntry("a", "1"), new IniEntry("b", "2") });
+
+        section.ClearEntries();
+
+        Assert.AreEqual(0, section.Entries.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniSection.ClearLeadingComments" /> removes every leading comment.
+    /// </summary>
+    [TestMethod]
+    public void ClearLeadingComments_ShouldRemoveAllLeadingComments()
+    {
+        IniSection section = new("s", Array.Empty<IniEntry>());
+        section.AddLeadingComment(new IniComment('#', " note"));
+
+        section.ClearLeadingComments();
+
+        Assert.AreEqual(0, section.LeadingComments.Count);
+    }
 }
