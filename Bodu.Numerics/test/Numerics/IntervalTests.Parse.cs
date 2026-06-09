@@ -128,4 +128,34 @@ public partial class IntervalTests
             Assert.AreEqual(original, parsed, $"Round-trip failed for '{text}'.");
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" /> reports failure
+    /// for a null string rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenStringIsNull_ShouldReturnFalse() =>
+        Assert.IsFalse(Interval<int>.TryParse((string?)null, CultureInfo.InvariantCulture, out _));
+
+    /// <summary>
+    /// Verifies that parsing fails for a non-empty token shorter than the minimum five-character interval form.
+    /// </summary>
+    [TestMethod]
+    [DataRow("[1]")]
+    [DataRow("()")]
+    public void TryParse_WhenTokenIsTooShort_ShouldReturnFalse(string text) =>
+        Assert.IsFalse(Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out _));
+
+    /// <summary>
+    /// Verifies that the span-based <see cref="Interval{T}.Parse(ReadOnlySpan{char}, IFormatProvider?)" /> overload
+    /// throws <see cref="FormatException" /> for malformed input.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSpanIsMalformed_ShouldThrowFormatException()
+    {
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Interval<int>.Parse("not-an-interval".AsSpan(), CultureInfo.InvariantCulture);
+        });
+    }
 }

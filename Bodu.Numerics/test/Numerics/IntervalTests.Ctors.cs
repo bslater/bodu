@@ -105,4 +105,18 @@ public partial class IntervalTests
         Assert.AreEqual(1.0, b.Lower);
         Assert.AreEqual(0m, c.Lower);
     }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="Interval.Singleton{T}(T)" /> factory infers the endpoint type and
+    /// produces a degenerate closed interval containing only the supplied value.
+    /// </summary>
+    [TestMethod]
+    public void Singleton_WhenCreatedFromValue_ShouldContainOnlyThatValue()
+    {
+        var interval = Interval.Singleton(7);
+
+        Assert.AreEqual(Interval<int>.Closed(7, 7), interval);
+        Assert.IsTrue(interval.Contains(7));
+        Assert.IsFalse(interval.Contains(8));
+    }
 }

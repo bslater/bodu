@@ -202,4 +202,27 @@ public partial class FractionTests
         Assert.IsFalse(parsed);
         Assert.AreEqual(Fraction<int>.Zero, result);
     }
+
+    /// <summary>
+    /// Verifies that parsing a string consisting only of a sign character fails because no magnitude remains after the
+    /// sign is consumed.
+    /// </summary>
+    [TestMethod]
+    [DataRow("-")]
+    [DataRow("+")]
+    public void TryParse_WhenInputIsSignOnly_ShouldReturnFalse(string text)
+    {
+        Assert.IsFalse(Fraction<int>.TryParse(text, out Fraction<int> result));
+        Assert.AreEqual(Fraction<int>.Zero, result);
+    }
+
+    /// <summary>
+    /// Verifies that parsing a Unicode vulgar fraction whose leading whole-number part is non-numeric fails.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenVulgarGlyphWholePartIsNonNumeric_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Fraction<int>.TryParse("x½", out Fraction<int> result));
+        Assert.AreEqual(Fraction<int>.Zero, result);
+    }
 }

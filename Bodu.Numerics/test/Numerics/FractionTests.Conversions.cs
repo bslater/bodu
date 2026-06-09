@@ -245,4 +245,29 @@ public partial class FractionTests
         Assert.IsFalse(value.TryToDecimal(out var result));
         Assert.AreEqual(0m, result);
     }
+
+    /// <summary>
+    /// Verifies that the explicit cast operators between <see cref="Fraction{T}" /> and the primitive numeric types
+    /// agree with the named conversion methods they delegate to.
+    /// </summary>
+    [TestMethod]
+    public void ExplicitOperators_WhenCastingToAndFromPrimitives_ShouldMatchNamedMethods()
+    {
+        var half = new Fraction<int>(1, 2);
+
+        Assert.AreEqual(half, (Fraction<int>)0.5);
+        Assert.AreEqual(half.ToDouble(), (double)half);
+        Assert.AreEqual(half.ToDecimal(), (decimal)half);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.TryFromDouble(double, out Fraction{T})" /> reports failure when the
+    /// canonical numerator overflows the backing integer type instead of throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryFromDouble_WhenResultOverflowsBackingType_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Fraction<int>.TryFromDouble(1e18, out Fraction<int> result));
+        Assert.AreEqual(Fraction<int>.Zero, result);
+    }
 }

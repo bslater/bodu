@@ -85,4 +85,26 @@ public partial class IntervalTests
         Assert.IsTrue(Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Open(1, 5), out Interval<int> result));
         Assert.AreEqual(Interval<int>.Closed(1, 5), result);
     }
+
+    /// <summary>
+    /// Verifies that the union of an interval fully contained within another adopts the wider operand's endpoints on
+    /// both sides.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenThisIsContainedInOther_ShouldAdoptOtherBounds()
+    {
+        Assert.IsTrue(Interval<int>.Closed(3, 7).TryUnion(Interval<int>.Closed(1, 9), out Interval<int> result));
+        Assert.AreEqual(Interval<int>.Closed(1, 9), result);
+    }
+
+    /// <summary>
+    /// Verifies that the union of an interval that extends past the other operand on the upper side keeps this
+    /// interval's upper endpoint and the other operand's lower endpoint.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenThisExtendsPastOtherUpper_ShouldKeepThisUpperAndOtherLower()
+    {
+        Assert.IsTrue(Interval<int>.Closed(3, 9).TryUnion(Interval<int>.Closed(1, 5), out Interval<int> result));
+        Assert.AreEqual(Interval<int>.Closed(1, 9), result);
+    }
 }
