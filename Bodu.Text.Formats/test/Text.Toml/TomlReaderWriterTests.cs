@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReaderWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -91,7 +91,8 @@ public sealed class TomlReaderWriterTests
         Assert.AreEqual(1, ((TomlInteger)reader.ReadDocument("a = 1")["a"]).Value);
     }
 
-    private sealed class DerivedReader : TomlReader
+    private sealed class DerivedReader
+        : TomlReader
     {
         public TomlTable ReadDocument(string source) => Read(source);
     }

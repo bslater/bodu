@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFloat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,7 +11,9 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML float value, stored as an IEEE 754 binary64 floating-point number.
 /// </summary>
-public sealed class TomlFloat : TomlValue, IEquatable<TomlFloat>
+public sealed class TomlFloat
+    : TomlValue
+    , IEquatable<TomlFloat>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlFloat" /> class.

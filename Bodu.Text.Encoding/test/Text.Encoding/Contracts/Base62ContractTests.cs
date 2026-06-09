@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base62ContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,8 @@ namespace Bodu.Text.Encoding.Contracts;
 /// subclass uses <see cref="object" /> as the placeholder.
 /// </remarks>
 [TestClass]
-public sealed class Base62ContractTests : BinaryEncodingContractTests<object>
+public sealed class Base62ContractTests
+    : BinaryEncodingContractTests<object>
 {
     /// <inheritdoc />
     protected override string Encode(byte[] input) =>

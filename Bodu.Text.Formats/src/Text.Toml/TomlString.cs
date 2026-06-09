@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlString.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,7 +9,9 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML string value.
 /// </summary>
-public sealed class TomlString : TomlValue, IEquatable<TomlString>
+public sealed class TomlString
+    : TomlValue
+    , IEquatable<TomlString>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlString" /> class.

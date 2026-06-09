@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlConfigurationSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// The source is read once when the configuration is built; it attaches no reload-on-change machinery. Exactly one of
 /// <see cref="Stream" /> or <see cref="Path" /> should be set.
 /// </remarks>
-public sealed class TomlConfigurationSource : IConfigurationSource
+public sealed class TomlConfigurationSource
+    : IConfigurationSource
 {
     /// <summary>
     /// Gets or sets the stream containing UTF-8 TOML text. Takes precedence over <see cref="Path" /> when both are set.

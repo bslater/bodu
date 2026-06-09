@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlArray.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,9 @@ namespace Bodu.Text.Toml;
 /// Represents a TOML array — an ordered, mutable sequence of <see cref="TomlValue" /> elements. TOML permits arrays to
 /// hold elements of differing types.
 /// </summary>
-public sealed class TomlArray : TomlValue, IReadOnlyList<TomlValue>
+public sealed class TomlArray
+    : TomlValue
+    , IReadOnlyList<TomlValue>
 {
     /// <summary>
     /// The backing element list, in document order.

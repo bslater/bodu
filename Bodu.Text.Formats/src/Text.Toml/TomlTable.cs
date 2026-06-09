@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlTable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,9 @@ namespace Bodu.Text.Toml;
 /// intact.
 /// </para>
 /// </remarks>
-public sealed class TomlTable : TomlValue, IReadOnlyCollection<KeyValuePair<string, TomlValue>>
+public sealed class TomlTable
+    : TomlValue
+    , IReadOnlyCollection<KeyValuePair<string, TomlValue>>
 {
     /// <summary>
     /// The key/value pairs in insertion order.

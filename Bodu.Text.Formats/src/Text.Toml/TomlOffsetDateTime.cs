@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlOffsetDateTime.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,7 +9,9 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML offset date-time — an RFC 3339 instant carrying a time offset.
 /// </summary>
-public sealed class TomlOffsetDateTime : TomlValue, IEquatable<TomlOffsetDateTime>
+public sealed class TomlOffsetDateTime
+    : TomlValue
+    , IEquatable<TomlOffsetDateTime>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlOffsetDateTime" /> class.

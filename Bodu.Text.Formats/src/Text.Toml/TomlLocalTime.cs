@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlLocalTime.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,7 +9,9 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML local time — a time of day without any offset or time-zone relation.
 /// </summary>
-public sealed class TomlLocalTime : TomlValue, IEquatable<TomlLocalTime>
+public sealed class TomlLocalTime
+    : TomlValue
+    , IEquatable<TomlLocalTime>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlLocalTime" /> class.

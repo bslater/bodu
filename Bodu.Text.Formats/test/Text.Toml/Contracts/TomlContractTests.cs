@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,7 +64,8 @@ public sealed class TomlContractTests
     /// Compares two TOML documents by structural equality of their values, since <see cref="TomlTable" /> uses
     /// reference equality by default.
     /// </summary>
-    private sealed class StructuralComparer : IEqualityComparer<TomlTable>
+    private sealed class StructuralComparer
+        : IEqualityComparer<TomlTable>
     {
         /// <inheritdoc />
         public bool Equals(TomlTable? x, TomlTable? y) =>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlBoolean.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,7 +9,9 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML boolean value.
 /// </summary>
-public sealed class TomlBoolean : TomlValue, IEquatable<TomlBoolean>
+public sealed class TomlBoolean
+    : TomlValue
+    , IEquatable<TomlBoolean>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlBoolean" /> class.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlConfigurationProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,9 @@ namespace Bodu.Extensions.Configuration.Text;
 /// through the provider.
 /// </para>
 /// </remarks>
-public sealed class TomlConfigurationProvider : TomlReader, IConfigurationProvider
+public sealed class TomlConfigurationProvider
+    : TomlReader
+    , IConfigurationProvider
 {
     /// <summary>
     /// The source that produced this provider.

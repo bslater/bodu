@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlInteger.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,7 +11,9 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML integer value, stored as a 64-bit signed integer.
 /// </summary>
-public sealed class TomlInteger : TomlValue, IEquatable<TomlInteger>
+public sealed class TomlInteger
+    : TomlValue
+    , IEquatable<TomlInteger>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlInteger" /> class.
