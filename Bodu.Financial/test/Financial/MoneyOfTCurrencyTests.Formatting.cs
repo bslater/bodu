@@ -308,5 +308,18 @@ public partial class MoneyOfTCurrencyTests
 
         Assert.AreEqual("20", result);
     }
+
+    /// <summary>
+    /// Verifies that the parameterless and single-argument <c>ToString</c> overloads format under the current culture,
+    /// matching their culture-qualified counterparts.
+    /// </summary>
+    [TestMethod]
+    public void ToString_ParameterlessAndFormatOnly_ShouldUseCurrentCulture()
+    {
+        var money = new Money<USD>(1234.56m);
+
+        Assert.AreEqual(money.ToString(default, CultureInfo.CurrentCulture), money.ToString());
+        Assert.AreEqual(money.ToString("N", CultureInfo.CurrentCulture), money.ToString("N"));
+    }
 }
 
