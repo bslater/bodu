@@ -39,6 +39,19 @@ The primitives provided here exist mainly to cover what the BCL does not ship (B
 | GCM-SIV | RFC 8452 | 128 | 96-bit; per-message key derivation | Nonce-misuse resistant; faster than SIV |
 | Ascon-AEAD128 | NIST SP 800-232 | 128 | 128-bit, must be unique | Lightweight; intended for constrained devices |
 
+### Stream ciphers
+
+| Algorithm | Standard | Key sizes (bits) | Nonce (bits) | Status | Notes |
+|---|---|---:|---:|---|---|
+| ChaCha20 | RFC 8439 | 256 | 96 | Recommended | 32-bit block counter; pair with Poly1305 for integrity |
+| XChaCha20 | draft-irtf-cfrg-xchacha | 256 | 192 | Recommended | Extended nonce; safe for random nonces |
+| Salsa20 | Bernstein (eSTREAM) | 128 / 256 | 64 | Recommended | Predecessor to ChaCha |
+| XSalsa20 | Bernstein | 256 | 192 | Recommended | Extended-nonce Salsa20 |
+| Rabbit | RFC 4503 (eSTREAM) | 128 | 64 | Legacy / compat | |
+| HC-128 | eSTREAM portfolio | 128 | 128 | Legacy / compat | |
+
+The AEAD stream constructions pair a stream cipher with Poly1305: `ChaCha20-Poly1305` (RFC 8439), `XChaCha20-Poly1305`, and `XSalsa20-Poly1305` (NaCl `secretbox`). Each is single-use per message and verifies the tag with `CryptographicOperations.FixedTimeEquals`.
+
 ### Block cipher modes (unauthenticated)
 
 | Mode | Notes |
@@ -48,11 +61,12 @@ The primitives provided here exist mainly to cover what the BCL does not ship (B
 | CTR | Counter-mode keystream; same nonce-uniqueness rules as GCM apply |
 | OFB | Synchronous stream from feedback register |
 | CTS | Ciphertext stealing variant for non-aligned final blocks |
+| XTS | Tweakable mode for length-preserving sector/storage encryption |
 | ECB | Compatibility / primitive use only — leaks block-level patterns |
 
 ### Padding schemes
 
-PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, and `None`. All are exercised by `CryptoHelpersTests.PadBlock` / `.DepadBlock` with positive and negative cases.
+PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exercised by the block-cipher transform tests with positive and negative cases.
 
 ### Hash and MAC
 
@@ -66,11 +80,12 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, and `None`. All are exercised by `Cry
 | SHAKE128 / SHAKE256 | XOF | NIST FIPS 202 | extendable | Recommended | |
 | Poly1305 | one-time MAC | RFC 8439 | 128 | Recommended (one-time key only) | Reuse with same key is rejected at runtime |
 | SipHash-64 / SipHash-128 | keyed hash | Aumasson & Bernstein | 64 / 128 | Recommended for hash-table integrity | Multi-message key reuse permitted |
+| CubeHash | hash | Bernstein (SHA-3 candidate) | configurable | Legacy / educational | Tunable rounds / block / output |
 | Tiger / Tiger2 | hash | Anderson & Biham | 128 / 160 / 192 | Legacy / compat | |
-| FNV-1a | non-crypto hash | Fowler, Noll, Vo | 32 / 64 | Compatibility | Non-cryptographic |
-| Adler-32 | checksum | RFC 1950 | 32 | Compatibility | Non-cryptographic |
+| Whirlpool | hash | ISO/IEC 10118-3 | 512 | Legacy / compat | Software table-based |
+| Snefru | hash | Merkle (1990) | 128 / 256 | Legacy / educational | Software table-based |
 
-CRC-3 through CRC-64 and Fletcher-16/32/64 live in the sibling `Bodu.IO.Hashing` package.
+Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-64, and Fletcher-16/32/64 — live in the sibling `Bodu.IO.Hashing` package.
 
 ## Lifecycle and disposal guarantees
 
@@ -84,11 +99,11 @@ CRC-3 through CRC-64 and Fletcher-16/32/64 live in the sibling `Bodu.IO.Hashing`
 
 | Helper | Purpose |
 |---|---|
-| `CryptoHelpers.Clear` / `ClearAndNullify` | Zero arrays, spans, or scalar fields in-place (delegates to `CryptographicOperations.ZeroMemory`) |
-| `CryptoHelpers.ThrowIf*` | Argument-validation guards mirroring `Bodu.Core.ThrowHelper` conventions |
 | `BlockCipherModeFactory` | Build a configured `BlockCipherTransform` from an `IBlockCipher`, `IBlockCipherModeTransform`, and `IPaddingStrategy` |
+| `BlockCipherTransform` | `ICryptoTransform` that drives a cipher through a mode + padding; owns and disposes the underlying `IBlockCipher` |
 | `IAeadBlockCipherModeTransform` | Common surface for every AEAD mode (`ProcessAssociatedData` → `Encrypt`/`Decrypt`) |
-| `IResumableHashAlgorithm` | Hash state snapshot/restore for resumable hashing |
+| `IBlockCipher` / `IPaddingStrategy` | Extension points for supplying a custom primitive or padding scheme |
+| `IStreamCipher` / `IStreamAeadTransform` | Common surfaces for the stream-cipher and stream-AEAD families |
 
 ## Testing
 
@@ -100,4 +115,4 @@ dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.cspr
 dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings regression.runsettings
 ```
 
-The shared `AeadBlockCipherModeTests<TTest, TTransform>` base contains the lifecycle / reuse / failed-tag-poisoning suite that every AEAD mode inherits. The shared `HashAlgorithmTests<TTest, TAlgorithm, TVariant>` base provides spec-driven KAT, boundary, and disposal coverage for every hash and MAC.
+The shared `AeadBlockCipherModeTests<TTest, TTransform>` base contains the lifecycle / reuse / failed-tag-poisoning suite that every AEAD mode inherits. The `HashAlgorithmTests<TTest, TAlgorithm, TVariant>` base (and its `BlockHashAlgorithmTests` / `KeyedBlockHashAlgorithmTests` specialisations) provides spec-driven KAT, boundary, and disposal coverage for every hash and MAC. Block ciphers extend `BlockCipherTests<TTest, TCipher, TVariant>`, and every stream cipher inherits `SymmetricStreamAlgorithmTests<TTest, TAlgorithm>` for key/nonce sizing, lifecycle, transform-reuse, overlap, and disposal coverage.
