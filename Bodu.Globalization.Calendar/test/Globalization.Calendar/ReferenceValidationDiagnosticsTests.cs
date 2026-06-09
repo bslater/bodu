@@ -43,6 +43,50 @@ public class ReferenceValidationDiagnosticsTests
         </NotableDateResource>
         """;
 
+    private const string AmbiguousReplaceReference = """
+        <?xml version="1.0" encoding="utf-8"?>
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.replace-ambiguous">
+          <AdjustmentPolicies>
+            <AdjustmentPolicy id="replace-amb" priority="100">
+              <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
+              <Action type="ReplaceWithRule" notableDateRef="anchor" />
+              <Emission mode="ObservedOnly" reason="Replaced" />
+            </AdjustmentPolicy>
+          </AdjustmentPolicies>
+          <NotableDates>
+            <NotableDate id="anchor" displayName="Anchor" category="PublicHoliday">
+              <Rules>
+                <Rule id="r1"><Strategy><Fixed month="January" day="1" /></Strategy></Rule>
+                <Rule id="r2"><Strategy><Fixed month="January" day="2" /></Strategy></Rule>
+              </Rules>
+            </NotableDate>
+            <NotableDate id="trigger" displayName="Trigger" category="PublicHoliday">
+              <Rules>
+                <Rule id="t">
+                  <Strategy><Fixed month="July" day="4" /></Strategy>
+                  <Adjustments><Adjustment policyRef="replace-amb" /></Adjustments>
+                </Rule>
+              </Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+    /// <summary>
+    /// Verifies that a replace-with-rule action referencing a notable date with multiple rules — without naming a
+    /// specific rule — reports the <c>BODU-CAL-REPLACE-AMBIGUOUS</c> diagnostic.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenReplaceReferenceIsAmbiguous_ShouldReportAmbiguousDiagnostic()
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(AmbiguousReplaceReference);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-REPLACE-AMBIGUOUS", ex.Diagnostics);
+    }
+
     /// <summary>
     /// Verifies that an offset strategy referencing a notable date with multiple rules — without naming a specific rule
     /// — reports the <c>BODU-CAL-OFFSET-AMBIGUOUS</c> diagnostic.
