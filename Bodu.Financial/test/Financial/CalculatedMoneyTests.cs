@@ -165,4 +165,76 @@ public class CalculatedMoneyTests
         Assert.AreEqual(1m / 3m, third.Amount);
         Assert.AreNotEqual(1m, third.Amount * 3m);
     }
+
+    /// <summary>
+    /// Verifies that every arithmetic operator on same-currency operands computes the full-precision result without
+    /// rounding.
+    /// </summary>
+    [TestMethod]
+    public void Operators_WhenSameCurrency_ShouldComputeFullPrecisionResults()
+    {
+        CalculatedMoney a = new(10m, "USD");
+        CalculatedMoney b = new(3m, "USD");
+
+        Assert.AreEqual(new CalculatedMoney(13m, "USD"), a + b);
+        Assert.AreEqual(new CalculatedMoney(7m, "USD"), a - b);
+        Assert.AreEqual(new CalculatedMoney(-10m, "USD"), -a);
+        Assert.AreEqual(a, +a);
+        Assert.AreEqual(new CalculatedMoney(20m, "USD"), a * 2m);
+        Assert.AreEqual(new CalculatedMoney(20m, "USD"), 2m * a);
+        Assert.AreEqual(new CalculatedMoney(5m, "USD"), a / 2m);
+    }
+
+    /// <summary>
+    /// Verifies that subtracting amounts in different currencies throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Subtraction_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
+    {
+        Assert.ThrowsExactly<InvalidOperationException>(() => _ = new CalculatedMoney(1m, "USD") - new CalculatedMoney(1m, "EUR"));
+    }
+
+    /// <summary>
+    /// Verifies that the equality members agree: equal values compare equal through the operators, the boxed override,
+    /// and the hash code, while a non-<see cref="CalculatedMoney" /> object is never equal.
+    /// </summary>
+    [TestMethod]
+    public void EqualityMembers_WhenComparingValues_ShouldBeConsistent()
+    {
+        CalculatedMoney a = new(1.5m, "USD");
+        CalculatedMoney b = new(1.5m, "USD");
+        CalculatedMoney c = new(2.5m, "USD");
+
+        Assert.IsTrue(a == b);
+        Assert.IsFalse(a != b);
+        Assert.IsTrue(a != c);
+        Assert.IsTrue(a.Equals((object)b));
+        Assert.IsFalse(a.Equals("not money"));
+        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CalculatedMoney.IsZero" /> and <see cref="CalculatedMoney.Sign" /> report the amount's
+    /// zero-ness and sign.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenInspectingAmount_ShouldReportZeroAndSign()
+    {
+        Assert.IsTrue(new CalculatedMoney(0m, "USD").IsZero);
+        Assert.IsFalse(new CalculatedMoney(1m, "USD").IsZero);
+
+        Assert.AreEqual(1, new CalculatedMoney(2m, "USD").Sign);
+        Assert.AreEqual(-1, new CalculatedMoney(-2m, "USD").Sign);
+        Assert.AreEqual(0, new CalculatedMoney(0m, "USD").Sign);
+    }
+
+    /// <summary>
+    /// Verifies that settling a currency-less <see cref="CalculatedMoney" /> throws
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void RoundToMoney_WhenCurrencyless_ShouldThrowInvalidOperationException()
+    {
+        Assert.ThrowsExactly<InvalidOperationException>(() => _ = default(CalculatedMoney).RoundToMoney());
+    }
 }
