@@ -53,4 +53,29 @@ public partial class MoneyTests
             _ = (Money<USD>)runtime;
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Money.TryAs{TCurrency}(out Money{TCurrency})" /> succeeds and yields the typed value
+    /// when the runtime ISO code matches the requested currency.
+    /// </summary>
+    [TestMethod]
+    public void TryAs_WhenCurrencyMatches_ShouldReturnTrueAndTypedValue()
+    {
+        Money runtime = new(12.34m, "USD");
+
+        Assert.IsTrue(runtime.TryAs(out Money<USD> typed));
+        Assert.AreEqual(12.34m, typed.Amount);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Money.Of{TCurrency}(decimal, MidpointRounding)" /> factory rounds the amount to the
+    /// currency's minor units using the supplied midpoint rule.
+    /// </summary>
+    [TestMethod]
+    public void Of_WhenRoundingOverload_ShouldRoundToMinorUnits()
+    {
+        Money<USD> value = Money.Of<USD>(1.005m, MidpointRounding.AwayFromZero);
+
+        Assert.AreEqual(1.01m, value.Amount);
+    }
 }

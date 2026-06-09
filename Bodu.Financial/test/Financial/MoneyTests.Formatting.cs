@@ -130,4 +130,97 @@ public partial class MoneyTests
 
         Assert.AreEqual("19.99", actual);
     }
+
+    /// <summary>
+    /// Verifies that the single-argument <see cref="Money.ToString(string?)" /> overload formats using the current
+    /// culture.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WithFormatOnly_ShouldUseCurrentCulture()
+    {
+        var money = new Money(1234.56m, "USD");
+
+        Assert.AreEqual(money.ToString("N", CultureInfo.CurrentCulture), money.ToString("N"));
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"~G"</c> and <c>"~L"</c> elision prefixes drop the currency qualifier when the culture's
+    /// region currency matches the amount's ISO code.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTildeGOrTildeLAndCultureMatches_ShouldElideQualifier()
+    {
+        var money = new Money(19.99m, "USD");
+        var enUs = new CultureInfo("en-US");
+
+        Assert.AreEqual("19.99", money.ToString("~G", enUs));
+        Assert.AreEqual("19.99", money.ToString("~L", enUs));
+    }
+
+    /// <summary>
+    /// Verifies that the <c>"F"</c> and <c>"D"</c> specifiers render the fixed-point amount without grouping or a
+    /// currency qualifier.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFOrDSpecifier_ShouldRenderFixedPointAmount()
+    {
+        var money = new Money(1234.56m, "USD");
+
+        Assert.AreEqual("1234.56", money.ToString("F", CultureInfo.InvariantCulture));
+        Assert.AreEqual("1234.56", money.ToString("D", CultureInfo.InvariantCulture));
+    }
+
+    /// <summary>
+    /// Verifies that a malformed precision suffix is rejected with a <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenPrecisionSuffixIsMalformed_ShouldThrowFormatException() =>
+        Assert.ThrowsExactly<FormatException>(() => _ = new Money(1m, "USD").ToString("Nz", CultureInfo.InvariantCulture));
+
+    /// <summary>
+    /// Verifies that the <c>"C"</c> specifier substitutes the ISO code for a negative mismatched-currency amount,
+    /// honouring the locale's negative-currency pattern.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenCSpecifierMismatchedAndNegative_ShouldSubstituteIsoCode()
+    {
+        var money = new Money(-1234.56m, "USD");
+
+        var actual = money.ToString("C", new CultureInfo("de-DE"));
+
+        StringAssert.Contains(actual, "USD");
+        StringAssert.Contains(actual, "1.234,56");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money.TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider?)" /> writes
+    /// the formatted value when the destination is large enough and reports failure when it is too small.
+    /// </summary>
+    [TestMethod]
+    public void TryFormat_Char_ShouldWriteWhenLargeEnoughAndFailWhenTooSmall()
+    {
+        var money = new Money(1234.56m, "USD");
+
+        Span<char> large = stackalloc char[32];
+        Assert.IsTrue(money.TryFormat(large, out int written, "N", CultureInfo.InvariantCulture));
+        Assert.AreEqual("1,234.56", large[..written].ToString());
+
+        Span<char> tiny = stackalloc char[2];
+        Assert.IsFalse(money.TryFormat(tiny, out int none, "N", CultureInfo.InvariantCulture));
+        Assert.AreEqual(0, none);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money.TryFormat(Span{byte}, out int, ReadOnlySpan{char}, IFormatProvider?)" /> writes
+    /// the formatted value as UTF-8 bytes.
+    /// </summary>
+    [TestMethod]
+    public void TryFormat_Utf8_ShouldWriteFormattedBytes()
+    {
+        var money = new Money(1234.56m, "USD");
+
+        Span<byte> buffer = stackalloc byte[32];
+        Assert.IsTrue(money.TryFormat(buffer, out int written, "N", CultureInfo.InvariantCulture));
+        Assert.AreEqual("1,234.56", System.Text.Encoding.UTF8.GetString(buffer[..written]));
+    }
 }
