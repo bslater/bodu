@@ -39,25 +39,6 @@ public sealed class TomlConformanceTests
     private static readonly (HashSet<string> Valid, HashSet<string> Invalid) s_manifestV11 = LoadManifest("toml-test-files-1.1.0.txt");
 
     /// <summary>
-    /// Invalid manifest cases deliberately not vendored into the consolidated corpus, so the reverse drift guard does
-    /// not flag them. The <c>invalid/encoding/*</c> cases (byte-level UTF-8, see the README) are excluded by their
-    /// <c>encoding/</c> prefix; the spec-derived cases below are listed in a <c>files-toml-1.0.0</c> manifest but are
-    /// absent from the consolidated corpus. They are tracked explicitly so their absence is documented rather than
-    /// silent, and so re-vendoring that restores them surfaces here.
-    /// </summary>
-    private static readonly HashSet<string> s_unvendoredInvalidCases = new(StringComparer.Ordinal)
-    {
-        "spec-1.0.0/inline-table-2-0",
-        "spec-1.0.0/inline-table-3-0",
-        "spec-1.0.0/key-value-pair-1",
-        "spec-1.0.0/keys-2",
-        "spec-1.0.0/string-4-0",
-        "spec-1.0.0/string-7-0",
-        "spec-1.0.0/table-9-0",
-        "spec-1.0.0/table-9-1",
-    };
-
-    /// <summary>
     /// Provides every valid conformance case. TOML v1.1.0 is a superset of v1.0.0, so the v1.1.0 parser must accept all
     /// of them.
     /// </summary>
@@ -176,9 +157,9 @@ public sealed class TomlConformanceTests
 
     /// <summary>
     /// Verifies the reverse of <see cref="Manifest_WhenLoaded_ShouldClassifyEveryCorpusCase" />: every case a version
-    /// manifest lists is vendored in the consolidated corpus, except the documented byte-level <c>encoding/*</c> cases
-    /// and the explicitly tracked <see cref="s_unvendoredInvalidCases" />. This fails when a manifest entry silently
-    /// loses its corpus document on re-vendor, so coverage cannot be dropped without the guard noticing.
+    /// manifest lists is vendored in the consolidated corpus, except the byte-level <c>invalid/encoding/*</c> cases that
+    /// cannot be represented as JSON strings (see the README). This fails when a manifest entry silently loses its
+    /// corpus document on re-vendor, so coverage cannot be dropped without the guard noticing.
     /// </summary>
     [TestMethod]
     public void Manifest_WhenLoaded_ShouldVendorEveryManifestCase()
@@ -199,13 +180,14 @@ public sealed class TomlConformanceTests
     }
 
     /// <summary>
-    /// Indicates whether an invalid manifest case is intentionally absent from the consolidated corpus — either a
-    /// byte-level <c>encoding/*</c> case or an explicitly tracked unvendored case.
+    /// Indicates whether an invalid manifest case is intentionally absent from the consolidated corpus. Only the
+    /// byte-level <c>encoding/*</c> cases qualify: their ill-formed UTF-8 cannot be carried in a JSON string, so they
+    /// are exercised by the stream encoding tests instead.
     /// </summary>
     /// <param name="name">The case name.</param>
     /// <returns><see langword="true" /> when the case is a documented exclusion.</returns>
     private static bool IsExcludedInvalidCase(string name) =>
-        name.StartsWith("encoding/", StringComparison.Ordinal) || s_unvendoredInvalidCases.Contains(name);
+        name.StartsWith("encoding/", StringComparison.Ordinal);
 
     /// <summary>
     /// Loads a vendored <c>files-toml-&lt;version&gt;</c> manifest into the set of valid and invalid case names it

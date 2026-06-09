@@ -22,7 +22,7 @@ manifest:
 | v1.1.0 valid | 266 | parse under `SpecVersion = V1_1` and match the expected tree (v1.1.0 is a superset, so it accepts every valid document) |
 | v1.0.0 valid | 209 | parse under the strict v1.0.0 default and match the expected tree |
 | v1.1.0 invalid | 473 | rejected under `SpecVersion = V1_1` |
-| v1.0.0 invalid | 472 | rejected under the strict v1.0.0 default |
+| v1.0.0 invalid | 480 | rejected under the strict v1.0.0 default |
 
 Two guards keep the corpus and manifests in sync, so drift in either direction surfaces on the next
 re-vendor rather than silently dropping coverage:
@@ -38,17 +38,11 @@ The version *boundary* itself — that strict v1.0.0 rejects the specific v1.1.0
 
 ## Exclusions
 
-The following upstream cases are excluded when consolidating: `invalid/encoding/*` (byte-level UTF-8
-validation). The reader decodes streams with strict UTF-8 (invalid bytes raise
-`TomlFormatException`); byte-level rejection is exercised directly by the stream encoding tests
-rather than this string-driven corpus.
-
-In addition, the consolidated corpus does not currently vendor eight spec-derived invalid cases that
-the `files-toml-1.0.0` manifest lists: `spec-1.0.0/inline-table-2-0`, `inline-table-3-0`,
-`key-value-pair-1`, `keys-2`, `string-4-0`, `string-7-0`, `table-9-0`, and `table-9-1`. They are
-tracked explicitly by the reverse drift guard (`s_unvendoredInvalidCases`) so their absence is
-documented rather than silent; a re-vendor that restores them satisfies the guard without further
-change.
+The only upstream cases excluded when consolidating are `invalid/encoding/*` (byte-level UTF-8
+validation). Their ill-formed UTF-8 cannot be carried in a JSON string, so the reader's byte-level
+rejection — streams are decoded with strict UTF-8 and invalid bytes raise `TomlFormatException` — is
+exercised directly by the stream encoding tests rather than this string-driven corpus. The reverse
+drift guard treats this `encoding/` prefix as its sole permitted exclusion.
 
 ## Refreshing
 
