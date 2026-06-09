@@ -57,6 +57,23 @@ public sealed class TomlWriterModelBoundaryTests
     }
 
     /// <summary>
+    /// Verifies that the cycle exception names the key path at which the cycle closes rather than reporting a generic
+    /// failure, so the diagnostic points the author at the offending location.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenNestedCycle_ShouldReportKeyPathInMessage()
+    {
+        var root = new TomlTable();
+        var child = new TomlTable();
+        root["parent"] = child;
+        child["loop"] = root;
+
+        var ex = Assert.ThrowsExactly<InvalidOperationException>(() => Toml.Format(root));
+
+        Assert.IsTrue(ex.Message.Contains("parent.loop", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a shared but acyclic sub-table is written without error, confirming that cycle detection releases
     /// nodes on exit.
     /// </summary>
