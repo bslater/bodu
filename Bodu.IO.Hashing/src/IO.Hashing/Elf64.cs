@@ -130,6 +130,13 @@ public sealed class Elf64
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt64BigEndian(destination, _workingHash);
 
+    /// <summary>
+    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun
+    /// consuming input, guarding configuration that may only change before hashing starts.
+    /// </summary>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The algorithm has already started consuming input.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState() =>
         HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(_started);

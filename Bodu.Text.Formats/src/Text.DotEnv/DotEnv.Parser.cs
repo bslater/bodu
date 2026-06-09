@@ -32,6 +32,8 @@ public static partial class DotEnv
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for a duplicate key.
     /// </summary>
+    /// <param name="key">The duplicate key name.</param>
+    /// <param name="lineNumber">The 1-based line number where the duplicate key was found.</param>
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
@@ -40,6 +42,8 @@ public static partial class DotEnv
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
     /// </summary>
+    /// <param name="key">The offending key text.</param>
+    /// <param name="lineNumber">The 1-based line number where the invalid key was found.</param>
     [DoesNotReturn]
     internal static void ThrowInvalidKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
@@ -48,6 +52,7 @@ public static partial class DotEnv
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.
     /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the malformed entry.</param>
     [DoesNotReturn]
     internal static void ThrowMalformedEntry(int lineNumber) =>
         throw new DotEnvFormatException(
@@ -56,6 +61,7 @@ public static partial class DotEnv
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.
     /// </summary>
+    /// <param name="lineNumber">The 1-based line number on which the unterminated value begins.</param>
     [DoesNotReturn]
     internal static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
@@ -64,6 +70,7 @@ public static partial class DotEnv
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.
     /// </summary>
+    /// <param name="lineNumber">The 1-based line number on which the unterminated value begins.</param>
     [DoesNotReturn]
     internal static void ThrowUnterminatedSingleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
@@ -224,12 +231,22 @@ public static partial class DotEnv
         /// <summary>
         /// Returns <see langword="true" /> when <paramref name="c" /> is a valid key start character.
         /// </summary>
+        /// <param name="c">The character to test.</param>
+        /// <returns>
+        /// <see langword="true" /> if <paramref name="c" /> is an ASCII letter or underscore; otherwise,
+        /// <see langword="false" />.
+        /// </returns>
         private static bool IsKeyStart(char c) =>
             c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '_';
 
         /// <summary>
         /// Returns <see langword="true" /> when <paramref name="c" /> is a valid key continuation character.
         /// </summary>
+        /// <param name="c">The character to test.</param>
+        /// <returns>
+        /// <see langword="true" /> if <paramref name="c" /> is a key start character or an ASCII digit; otherwise,
+        /// <see langword="false" />.
+        /// </returns>
         private static bool IsKeyContinue(char c) =>
             IsKeyStart(c) || (c >= '0' && c <= '9');
 

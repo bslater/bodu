@@ -145,6 +145,12 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override bool ShouldPadFinalBlock() => false;
 
+    /// <summary>
+    /// Writes the least-significant bytes of <paramref name="value" /> into <paramref name="destination" /> in
+    /// big-endian order, emitting exactly as many bytes as the span can hold.
+    /// </summary>
+    /// <param name="value">The value whose low-order bytes are written.</param>
+    /// <param name="destination">The span that receives the big-endian bytes.</param>
     private static void WriteBigEndian(ulong value, Span<byte> destination)
     {
         for (var i = 0; i < destination.Length; i++)

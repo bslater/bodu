@@ -141,6 +141,14 @@ public abstract class Fnv<TSelf>
         }
     }
 
+    /// <summary>
+    /// Validates that <paramref name="hashSize" /> is one of the FNV hash sizes this implementation supports.
+    /// </summary>
+    /// <param name="hashSize">The requested hash size, in bits.</param>
+    /// <returns>The validated <paramref name="hashSize" />.</returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="hashSize" /> is not one of the supported hash sizes.
+    /// </exception>
     private static int ValidateHashSize(int hashSize)
     {
         if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
@@ -157,6 +165,11 @@ public abstract class Fnv<TSelf>
         return hashSize;
     }
 
+    /// <summary>
+    /// Folds the supplied bytes into the running hash using the FNV-1 ordering: multiply by the prime, then XOR
+    /// the byte.
+    /// </summary>
+    /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1(ReadOnlySpan<byte> source)
     {
@@ -171,6 +184,11 @@ public abstract class Fnv<TSelf>
         _workingHash = hash;
     }
 
+    /// <summary>
+    /// Folds the supplied bytes into the running hash using the FNV-1a ordering: XOR the byte, then multiply by
+    /// the prime.
+    /// </summary>
+    /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1a(ReadOnlySpan<byte> source)
     {

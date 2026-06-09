@@ -76,6 +76,9 @@ internal static class ScryptCore
     /// <summary>
     /// Applies <c>scryptROMix</c> to a single 128*r-byte block in place (RFC 7914, Section 5).
     /// </summary>
+    /// <param name="block">The 128·r-byte block, as 32-bit words, processed in place.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     private static void ROMix(Span<uint> block, int costN, int blockSizeR)
     {
         var unitWords = block.Length;
@@ -118,6 +121,9 @@ internal static class ScryptCore
     /// <summary>
     /// Applies <c>scryptBlockMix</c>, writing the shuffled result to <paramref name="output" /> (RFC 7914, Section 4).
     /// </summary>
+    /// <param name="input">The 2·r 64-byte input blocks, as 32-bit words.</param>
+    /// <param name="output">The destination that receives the shuffled blocks.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     private static void BlockMix(ReadOnlySpan<uint> input, Span<uint> output, int blockSizeR)
     {
         var blocks = 2 * blockSizeR;
@@ -142,6 +148,9 @@ internal static class ScryptCore
     /// <summary>
     /// Interprets the last 64-byte block as a little-endian integer (RFC 7914, Section 5).
     /// </summary>
+    /// <param name="block">The block whose final 64-byte sub-block is interpreted.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <returns>The little-endian integer value of the final 64-byte sub-block.</returns>
     private static ulong Integerify(ReadOnlySpan<uint> block, int blockSizeR)
     {
         var offset = (2 * blockSizeR - 1) * BlockWords;
@@ -151,6 +160,7 @@ internal static class ScryptCore
     /// <summary>
     /// Applies the Salsa20/8 core in place: <c>B = B + doubleround^4(B)</c> (RFC 7914, Section 3).
     /// </summary>
+    /// <param name="b">The sixteen 32-bit state words transformed in place.</param>
     private static void Salsa20_8(Span<uint> b)
     {
         Span<uint> x = stackalloc uint[BlockWords];
@@ -176,6 +186,10 @@ internal static class ScryptCore
     /// <summary>
     /// Applies the Salsa20 quarter-round to four state words in place.
     /// </summary>
+    /// <param name="a">The first state word, updated in place.</param>
+    /// <param name="b">The second state word, updated in place.</param>
+    /// <param name="c">The third state word, updated in place.</param>
+    /// <param name="d">The fourth state word, updated in place.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped add / rotate / XOR steps mirror the Salsa20 quarter-round definition.")]
     private static void QuarterRound(ref uint a, ref uint b, ref uint c, ref uint d)
@@ -189,6 +203,8 @@ internal static class ScryptCore
     /// <summary>
     /// Converts a little-endian byte buffer into 32-bit words.
     /// </summary>
+    /// <param name="source">The little-endian byte buffer to read.</param>
+    /// <param name="destination">The span that receives the decoded 32-bit words.</param>
     private static void BytesToWordsLE(ReadOnlySpan<byte> source, Span<uint> destination)
     {
         for (var i = 0; i < destination.Length; i++)
@@ -198,6 +214,8 @@ internal static class ScryptCore
     /// <summary>
     /// Converts 32-bit words into a little-endian byte buffer.
     /// </summary>
+    /// <param name="source">The 32-bit words to encode.</param>
+    /// <param name="destination">The span that receives the little-endian bytes.</param>
     private static void WordsToBytesLE(ReadOnlySpan<uint> source, Span<byte> destination)
     {
         for (var i = 0; i < source.Length; i++)

@@ -145,6 +145,14 @@ internal static class Alphanumeric
         }
     }
 
+    /// <summary>
+    /// Builds the culture-aware error message describing a character that is not valid for a given check-digit
+    /// character set.
+    /// </summary>
+    /// <param name="ch">The offending character.</param>
+    /// <param name="characterSetName">The display name of the character set that rejected the character.</param>
+    /// <param name="validCharacterDescription">A human-readable description of the characters the set permits.</param>
+    /// <returns>The formatted error message.</returns>
     private static string FormatInvalidCharacterMessage(
         char ch,
         string characterSetName,

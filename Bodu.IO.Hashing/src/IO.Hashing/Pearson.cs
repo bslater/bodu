@@ -227,6 +227,14 @@ public sealed partial class Pearson
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         _workingHash.AsSpan().CopyTo(destination);
 
+    /// <summary>
+    /// Returns a fresh copy of the 256-byte permutation table associated with the specified Pearson table type.
+    /// </summary>
+    /// <param name="type">The permutation table to retrieve.</param>
+    /// <returns>A new array containing the selected permutation table.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="type" /> is not a defined <see cref="PearsonTableType" /> value.
+    /// </exception>
     private static byte[] GetPermutationTable(PearsonTableType type) => type switch
     {
         PearsonTableType.Pearson => (byte[])s_pearsonTable.Value.Clone(),
@@ -239,6 +247,15 @@ public sealed partial class Pearson
 
     };
 
+    /// <summary>
+    /// Validates that <paramref name="hashSizeBits" /> is within the supported range and a positive multiple of
+    /// eight.
+    /// </summary>
+    /// <param name="hashSizeBits">The requested hash size, in bits.</param>
+    /// <returns>The validated <paramref name="hashSizeBits" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="hashSizeBits" /> is outside the supported range or is not a positive multiple of eight.
+    /// </exception>
     private static int ValidateHashSize(int hashSizeBits)
     {
         ThrowHelper.ThrowIfOutOfRange(hashSizeBits, MinHashSizeBits, MaxHashSizeBits);

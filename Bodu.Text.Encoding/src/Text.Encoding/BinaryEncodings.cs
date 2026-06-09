@@ -168,19 +168,26 @@ public static class BinaryEncodings
 
         public string Name => "base16-lower";
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base16.Decode(chars);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base16.Encode(bytes);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base16.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base16.GetEncodedLength(byteCount);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base16.IsValid(source);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base16.TryDecode(source, destination, out bytesWritten);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten);
     }
@@ -192,19 +199,26 @@ public static class BinaryEncodings
 
         public string Name => "base16-upper";
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base16.Decode(chars);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base16.Encode(bytes, BaseFormattingOptions.UpperCase);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base16.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base16.GetEncodedLength(byteCount, BaseFormattingOptions.UpperCase);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base16.IsValid(source);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base16.TryDecode(source, destination, out bytesWritten);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
     }
@@ -238,6 +252,14 @@ public static class BinaryEncodings
     {
         private readonly Base32Variant _variant;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Base32VariantAdapter" /> class.
+        /// </summary>
+        /// <param name="variant">The Base32 variant the adapter delegates to.</param>
+        /// <param name="name">The canonical name surfaced through <see cref="Name" />.</param>
+        /// <param name="description">
+        /// The human-readable description surfaced through <see cref="Description" />.
+        /// </param>
         public Base32VariantAdapter(Base32Variant variant, string name, string description)
         {
             _variant = variant;
@@ -249,19 +271,26 @@ public static class BinaryEncodings
 
         public string Name { get; }
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base32.Decode(chars, _variant);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base32.Encode(bytes, _variant);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base32.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base32.GetEncodedLength(byteCount, _variant);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base32.IsValid(source, _variant);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base32.TryDecode(source, destination, out bytesWritten, _variant);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base32.TryEncode(source, destination, out charsWritten, _variant);
     }
@@ -295,6 +324,14 @@ public static class BinaryEncodings
     {
         private readonly Base58Variant _variant;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Base58VariantAdapter" /> class.
+        /// </summary>
+        /// <param name="variant">The Base58 variant the adapter delegates to.</param>
+        /// <param name="name">The canonical name surfaced through <see cref="Name" />.</param>
+        /// <param name="description">
+        /// The human-readable description surfaced through <see cref="Description" />.
+        /// </param>
         public Base58VariantAdapter(Base58Variant variant, string name, string description)
         {
             _variant = variant;
@@ -306,19 +343,26 @@ public static class BinaryEncodings
 
         public string Name { get; }
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base58.Decode(chars, _variant);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base58.Encode(bytes, _variant);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base58.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base58.GetMaxEncodedLength(byteCount);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base58.IsValid(source, _variant);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base58.TryDecode(source, destination, out bytesWritten, _variant);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base58.TryEncode(source, destination, out charsWritten, _variant);
     }
@@ -328,6 +372,14 @@ public static class BinaryEncodings
     {
         private readonly Base64Variant _variant;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Base64VariantAdapter" /> class.
+        /// </summary>
+        /// <param name="variant">The Base64 variant the adapter delegates to.</param>
+        /// <param name="name">The canonical name surfaced through <see cref="Name" />.</param>
+        /// <param name="description">
+        /// The human-readable description surfaced through <see cref="Description" />.
+        /// </param>
         public Base64VariantAdapter(Base64Variant variant, string name, string description)
         {
             _variant = variant;
@@ -339,19 +391,26 @@ public static class BinaryEncodings
 
         public string Name { get; }
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base64.Decode(chars, _variant);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base64.Encode(bytes, _variant);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base64.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base64.GetEncodedLength(byteCount, _variant);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base64.IsValid(source, _variant);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base64.TryDecode(source, destination, out bytesWritten, _variant);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base64.TryEncode(source, destination, out charsWritten, _variant);
     }
@@ -361,6 +420,14 @@ public static class BinaryEncodings
     {
         private readonly Base85Variant _variant;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Base85VariantAdapter" /> class.
+        /// </summary>
+        /// <param name="variant">The Base85 variant the adapter delegates to.</param>
+        /// <param name="name">The canonical name surfaced through <see cref="Name" />.</param>
+        /// <param name="description">
+        /// The human-readable description surfaced through <see cref="Description" />.
+        /// </param>
         public Base85VariantAdapter(Base85Variant variant, string name, string description)
         {
             _variant = variant;
@@ -372,19 +439,26 @@ public static class BinaryEncodings
 
         public string Name { get; }
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base85.Decode(chars, _variant);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base85.Encode(bytes, _variant);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base85.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base85.GetMaxEncodedLength(byteCount, _variant);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base85.IsValid(source, _variant);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base85.TryDecode(source, destination, out bytesWritten, _variant);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base85.TryEncode(source, destination, out charsWritten, _variant);
     }

@@ -251,6 +251,12 @@ public sealed class CityHash32
         return Mix(Mur(c, Mur(b, Mur(a, d))));
     }
 
+    /// <summary>
+    /// Applies the CityHash 32-bit avalanche step to <paramref name="value" />: multiply by <c>C1</c>, rotate the
+    /// result right by 17 bits, then multiply by <c>C2</c>.
+    /// </summary>
+    /// <param name="value">The value to mix.</param>
+    /// <returns>The mixed value.</returns>
     private static uint RotateMix32(uint value)
     {
         unchecked

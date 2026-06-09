@@ -230,6 +230,7 @@ public sealed class DelimitedRow
     /// <summary>
     /// Throws a <see cref="KeyNotFoundException" /> for an absent column header.
     /// </summary>
+    /// <param name="header">The column header name that was not found.</param>
     [DoesNotReturn]
     private static void ThrowHeaderNotFound(string header) =>
         throw new KeyNotFoundException(

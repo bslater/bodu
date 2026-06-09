@@ -251,6 +251,11 @@ public sealed class Twofish
         base.Dispose(disposing);
     }
 
+    /// <summary>
+    /// Creates the underlying Twofish block cipher for the specified key.
+    /// </summary>
+    /// <param name="key">The key used to initialize the cipher.</param>
+    /// <returns>A new <see cref="TwofishBlockCipher" /> keyed with <paramref name="key" />.</returns>
     private static TwofishBlockCipher CreateCipher(byte[] key) =>
         new(key);
 

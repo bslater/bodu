@@ -209,6 +209,11 @@ public sealed class DotEnvReader
     /// Commits a successfully parsed entry: publishes its key/value/line, advances the consumed-line counter, and drops
     /// the consumed prefix from the pending buffer.
     /// </summary>
+    /// <param name="key">The parsed entry key.</param>
+    /// <param name="value">The parsed entry value.</param>
+    /// <param name="consumed">The number of characters consumed from the pending buffer.</param>
+    /// <param name="lineDelta">The number of newlines consumed by the entry.</param>
+    /// <param name="keyLineDelta">The number of newlines preceding the key within the consumed span.</param>
     private void Commit(string key, string value, int consumed, int lineDelta, int keyLineDelta)
     {
         _key = key;
@@ -242,12 +247,22 @@ public sealed class DotEnvReader
     /// <summary>
     /// Returns <see langword="true" /> when <paramref name="c" /> may start a key.
     /// </summary>
+    /// <param name="c">The character to test.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="c" /> is an ASCII letter or underscore; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     private static bool IsKeyStart(char c) =>
         c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '_';
 
     /// <summary>
     /// Returns <see langword="true" /> when <paramref name="c" /> may continue a key.
     /// </summary>
+    /// <param name="c">The character to test.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="c" /> is a key start character or an ASCII digit; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     private static bool IsKeyContinue(char c) =>
         IsKeyStart(c) || (c >= '0' && c <= '9');
 
@@ -454,6 +469,21 @@ public sealed class DotEnvReader
     /// Parses a double-quoted value (with escape sequences and literal/continuation newlines) starting at the opening
     /// quote. Returns <see cref="ReadResult.NeedMore" /> when the closing quote has not yet been buffered.
     /// </summary>
+    /// <param name="s">The pending input.</param>
+    /// <param name="i">
+    /// The current read offset at the opening quote; advanced past the closing quote on success.
+    /// </param>
+    /// <param name="line">The current line counter; advanced for each newline consumed within the value.</param>
+    /// <param name="isFinal">Whether <paramref name="s" /> is the final block of input.</param>
+    /// <param name="entryLine">The 1-based line number on which the entry begins.</param>
+    /// <param name="value">When an entry is parsed, receives the processed string value.</param>
+    /// <returns>
+    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise,
+    /// <see cref="ReadResult.NeedMore" /> when more input is required.
+    /// </returns>
+    /// <exception cref="DotEnvFormatException">
+    /// Thrown when the value is unterminated and <paramref name="isFinal" /> is <see langword="true" />.
+    /// </exception>
     private static ReadResult ParseDoubleQuoted(ReadOnlySpan<char> s, ref int i, ref int line, bool isFinal, int entryLine, out string value)
     {
         value = string.Empty;
@@ -547,6 +577,21 @@ public sealed class DotEnvReader
     /// Parses a single-quoted (literal) value starting at the opening quote. The value must close on the same line.
     /// Returns <see cref="ReadResult.NeedMore" /> when the closing quote has not yet been buffered.
     /// </summary>
+    /// <param name="s">The pending input.</param>
+    /// <param name="i">
+    /// The current read offset at the opening quote; advanced past the closing quote on success.
+    /// </param>
+    /// <param name="isFinal">Whether <paramref name="s" /> is the final block of input.</param>
+    /// <param name="entryLine">The 1-based line number on which the entry begins.</param>
+    /// <param name="value">When an entry is parsed, receives the literal string value.</param>
+    /// <returns>
+    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise,
+    /// <see cref="ReadResult.NeedMore" /> when more input is required.
+    /// </returns>
+    /// <exception cref="DotEnvFormatException">
+    /// Thrown when the value is unterminated and <paramref name="isFinal" /> is <see langword="true" />, or when a line
+    /// break occurs before the closing quote.
+    /// </exception>
     private static ReadResult ParseSingleQuoted(ReadOnlySpan<char> s, ref int i, bool isFinal, int entryLine, out string value)
     {
         value = string.Empty;
@@ -577,6 +622,17 @@ public sealed class DotEnvReader
     /// Parses an unquoted value, trimming surrounding whitespace and honoring inline comments when enabled. Returns
     /// <see cref="ReadResult.NeedMore" /> when the end of the line has not yet been buffered.
     /// </summary>
+    /// <param name="s">The pending input.</param>
+    /// <param name="i">
+    /// The current read offset at the start of the value; advanced to the end of the line on success.
+    /// </param>
+    /// <param name="isFinal">Whether <paramref name="s" /> is the final block of input.</param>
+    /// <param name="options">The parse options that govern inline-comment handling.</param>
+    /// <param name="value">When an entry is parsed, receives the trimmed value.</param>
+    /// <returns>
+    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise,
+    /// <see cref="ReadResult.NeedMore" /> when more input is required.
+    /// </returns>
     private static ReadResult ParseUnquoted(ReadOnlySpan<char> s, ref int i, bool isFinal, DotEnvParseOptions options, out string value)
     {
         value = string.Empty;

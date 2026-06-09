@@ -102,6 +102,16 @@ public static partial class IListExtensions
             : LastIndexOfCore(list, predicate, startIndex, count);
     }
 
+    /// <summary>
+    /// Validates the start index supplied to the backward-search overloads, honoring the convention that a start
+    /// index of <c>-1</c> is the only value permitted for an empty list.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the elements in <paramref name="list" />.</typeparam>
+    /// <param name="list">The list whose size bounds the valid start index.</param>
+    /// <param name="startIndex">The zero-based index at which a backward search would begin.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="startIndex" /> falls outside the valid range for the current list size.
+    /// </exception>
     private static void ValidateLastIndexOfStart<TSource>(IList<TSource> list, int startIndex)
     {
         if (list.Count == 0)
@@ -114,6 +124,16 @@ public static partial class IListExtensions
         }
     }
 
+    /// <summary>
+    /// Performs the backward scan for the public <c>LastIndexOf</c> overload once the arguments have been validated,
+    /// returning the position of the last element that satisfies the predicate within the requested range.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the elements in <paramref name="list" />.</typeparam>
+    /// <param name="list">The list to scan.</param>
+    /// <param name="predicate">The condition each element is tested against.</param>
+    /// <param name="startIndex">The zero-based index at which the scan starts.</param>
+    /// <param name="count">The number of elements to examine.</param>
+    /// <returns>The zero-based index of the last matching element; otherwise, <c>-1</c>.</returns>
     private static int LastIndexOfCore<TSource>(IList<TSource> list, Func<TSource, bool> predicate, int startIndex, int count)
     {
         var end = startIndex - count;

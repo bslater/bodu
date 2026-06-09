@@ -301,6 +301,11 @@ public sealed class EaxModeTransform
     /// Computes <c>OMAC_K^t(m) = CMAC_K([t]_n ‖ m)</c>, where <c>[t]_n</c> is the integer <paramref name="t" /> encoded
     /// as a full-block big-endian prefix.
     /// </summary>
+    /// <param name="t">
+    /// The single-byte tweak that selects the OMAC domain, encoded as a full-block big-endian prefix.
+    /// </param>
+    /// <param name="m">The message bytes to authenticate.</param>
+    /// <returns>The OMAC tag for <paramref name="m" /> under tweak <paramref name="t" />.</returns>
     private byte[] Omac(byte t, ReadOnlySpan<byte> m)
     {
         var blockSize = _cipher.BlockSize / 8;
@@ -322,6 +327,8 @@ public sealed class EaxModeTransform
     /// <summary>
     /// Computes AES-CMAC of <paramref name="message" /> under the mode's cipher, per RFC 4493.
     /// </summary>
+    /// <param name="message">The message to authenticate.</param>
+    /// <returns>The CMAC tag, one cipher block in length.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
         var blockSize = _cipher.BlockSize / 8;
@@ -407,6 +414,9 @@ public sealed class EaxModeTransform
     /// <paramref name="counter" /> (copied defensively) and XORs it with <paramref name="input" />. The final block may
     /// be partial; remaining keystream bytes are discarded.
     /// </summary>
+    /// <param name="input">The bytes to encrypt or decrypt.</param>
+    /// <param name="output">The span that receives the transformed bytes.</param>
+    /// <param name="counter">The initial counter block; copied defensively and left unmodified.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
         var blockSize = _cipher.BlockSize / 8;
@@ -438,6 +448,7 @@ public sealed class EaxModeTransform
     /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
     /// x + 1.
     /// </summary>
+    /// <param name="x">The block doubled in place.</param>
     private static void Dbl(byte[] x)
     {
         var msb = (x[0] & 0x80) != 0;
@@ -454,6 +465,9 @@ public sealed class EaxModeTransform
     /// <summary>
     /// XORs two equally-sized input spans into <paramref name="result" />.
     /// </summary>
+    /// <param name="a">The first input span.</param>
+    /// <param name="b">The second input span.</param>
+    /// <param name="result">The span that receives the XOR of <paramref name="a" /> and <paramref name="b" />.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
         for (var i = 0; i < result.Length; i++)

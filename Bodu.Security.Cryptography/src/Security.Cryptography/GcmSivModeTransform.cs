@@ -268,6 +268,9 @@ public sealed class GcmSivModeTransform
     /// Derives K_auth (16 bytes) and K_enc (16 bytes) from the master cipher and nonce using four cipher calls per RFC
     /// 8452 Section 4. Input block format: LE32(i) || nonce (4 + 12 = 16 bytes). Take first 8 bytes of each output.
     /// </summary>
+    /// <param name="cipher">The master block cipher keyed with the key-generating key.</param>
+    /// <param name="nonce">The 12-byte nonce.</param>
+    /// <returns>The derived message-authentication key and message-encryption key.</returns>
     private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce)
     {
         var blockSize = cipher.BlockSize / 8;

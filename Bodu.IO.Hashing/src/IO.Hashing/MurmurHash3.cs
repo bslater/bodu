@@ -200,6 +200,14 @@ public abstract class MurmurHash3<T>
         digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
 
+    /// <summary>
+    /// Validates that <paramref name="hashSize" /> is one of the hash sizes this algorithm supports.
+    /// </summary>
+    /// <param name="hashSize">The requested hash size, in bits.</param>
+    /// <returns>The validated <paramref name="hashSize" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="hashSize" /> is not one of the supported hash sizes.
+    /// </exception>
     private static int ValidateHashSize(int hashSize)
     {
         HashingThrowHelper.ThrowIfInvalidHashSize(hashSize, s_validHashSizes);
