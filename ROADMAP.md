@@ -1,8 +1,7 @@
 # Roadmap
 
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
-[`CHANGELOG.md`](CHANGELOG.md) (what shipped) and [`CLAUDE.md`](CLAUDE.md)
-(repository conventions for contributors).
+[`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
 *Last updated: 2026-06-08. The calendar territorial expansion has largely landed: the Americas pack now spans the Latin American set (AR, BR, CL, CO, MX, PE) alongside US/CA; Asia-Pacific has grown to fourteen countries (adding HK, ID, PH, TH, TW, VN); Europe now ships twenty-eight EU/EEA territories with the Orthodox-Easter overrides wired for Greece, Cyprus, Bulgaria, and Romania; and the two packs previously marked "proposed / does not exist" — `Bodu.Globalization.Calendar.Africa` (EG, ET, GH, KE, MA, NG, ZA) and `Bodu.Globalization.Calendar.MiddleEast` (AE, IL, JO, QA, SA, TR) — now exist in the solution. With that expansion done, the ChaCha/Salsa stream-cipher family and its AEAD layer complete, and the **password-hashing KDFs Argon2 and scrypt now shipped** (RFC 9106 / RFC 7914 — the last real BCL crypto gap), and `Bodu.Text.Formats` having grown forward-only `*Reader` / `*Writer` pairs with `ValueTask` async streaming across all four text formats, the `Bodu.Text.Encoding` Base45 / Bech32 / Bech32m / Base62 additions shipped, and a full **TOML implementation** now landed in `Bodu.Text.Formats` — structured `System.Xml`-style as three objects (`TomlValue` model, `TomlReader`, `TomlWriter`), with stream/async surfaces, contract-harness wiring, a read-only `Bodu.Extensions.Configuration.Text` TOML configuration source, and strict TOML v1.0.0 by default with opt-in TOML v1.1.0 via `TomlReaderOptions` — the headline net-new format work is complete. Remaining items are smaller per-project polish (a Bencode configuration source, and the standing AOT/package-validation cross-cutting work).*
 
@@ -43,8 +42,7 @@ The roadmap assumes the conventions already documented in
 
 ## Release focus
 
-The `[Unreleased]` block in [`CHANGELOG.md`](CHANGELOG.md) is the
-immediate publishing target. The queued packages are:
+The immediate publishing target is the set of queued packages below:
 
 | Package | Version | Notes |
 | --- | --- | --- |
@@ -57,11 +55,7 @@ immediate publishing target. The queued packages are:
 | `Bodu.Globalization.Calendar.MiddleEast` | 1.0.0 | Initial release. AE, IL, JO, QA, SA, TR. |
 | `Bodu.Globalization.Calendar.Africa` | 1.0.0 | Initial release. EG, ET, GH, KE, MA, NG, ZA. |
 
-> **Note.** The data packs in the solution have outgrown the country
-> sets recorded in the `[Unreleased]` CHANGELOG block (which still lists
-> Americas as US/CA, Europe as eight countries, Asia-Pacific as eight,
-> and omits the Middle East and Africa packs entirely). Reconcile the
-> CHANGELOG to the table above before cutting the release.
+The table above is the authoritative country set for each data pack at release time.
 
 **Release order.** The six Calendar packages must release together, as
 Calendar 1.1.0 is the breaking change that necessitates the data packs.
@@ -123,8 +117,7 @@ single-TFM `net8.0` Core, intentional `InternalsVisibleTo` set.
 
 With that pass closed, the active focus shifts to:
 
-1. Cut the `[Unreleased]` packages above (reconciling the CHANGELOG
-   country sets to the expanded data packs first).
+1. Cut the queued packages above.
 2. **Argon2 and scrypt have shipped** (RFC 9106 / RFC 7914), closing the
    last real BCL crypto gap — see `Bodu.Security.Cryptography` below. With
    that done, a **TOML reader/writer** in `Bodu.Text.Formats` and the
@@ -638,5 +631,4 @@ Treat this file the same as any other source change — open a PR, link
 the issue or discussion that motivates the change, and bump the
 "Last updated" line at the top. Changes should be **directional** (add
 a project, change a non-goal, retire an item) rather than
-release-tracking (the `CHANGELOG.md` is the authoritative shipping
-record).
+release-tracking.

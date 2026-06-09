@@ -42,4 +42,13 @@
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
   </ItemGroup>
 
+
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>

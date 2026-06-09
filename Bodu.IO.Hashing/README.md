@@ -1,0 +1,62 @@
+# Bodu.IO.Hashing
+
+Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8. Hash algorithms derive from `System.IO.Hashing.NonCryptographicHashAlgorithm`, so they expose the standard `Append` / `GetCurrentHash` / `GetHashAndReset` streaming surface and slot into existing pipelines. This package covers data-integrity and identifier-validation use cases — **not** security. For keyed/cryptographic hashing use the sibling `Bodu.Security.Cryptography` package or the platform `System.Security.Cryptography` types.
+
+## Installation
+
+```shell
+dotnet add package Bodu.IO.Hashing
+```
+
+Targets `net8.0`.
+
+## Checksums and non-cryptographic hashes
+
+| Family | Algorithms | Output (bits) | Notes |
+|---|---|---|---|
+| Fletcher | `Fletcher16`, `Fletcher32`, `Fletcher64` | 16 / 32 / 64 | Position-sensitive checksum |
+| Adler | `Adler32`, `Adler32C`, `Adler64` | 32 / 64 | RFC 1950 family |
+| FNV | `Fnv132`, `Fnv164`, `Fnv1a32`, `Fnv1a64` | 32 / 64 | Fowler–Noll–Vo |
+| CityHash | `CityHash32`, `CityHash64`, `CityHash128` | 32 / 64 / 128 | Google CityHash |
+| MurmurHash3 | `MurmurHash3_32`, `MurmurHash3_128` | 32 / 128 | |
+| Pearson | `Pearson` (selectable `PearsonTableType`) | 8 | |
+| String hashes | `ApHash`, `Bernstein`, `BKDR`, `Elf64`, `JSHash`, `Pjw32`, `SDBM`, `SuperFastHash` | varies | Classic table / multiplicative hashes |
+
+## CRC
+
+A single parametric `Crc` engine drives the full RevEng catalogue — **112 standards** spanning widths from CRC-3 to CRC-64 (CRC-3, -4, -5, -6, -7, -8, -10…-17, -21, -24, -30, -31, -32, -40, -64). `CrcStandard` is the immutable parameter bundle (polynomial, init, reflect-in/out, final XOR); the catalogue is exposed through the `CrcStandards` enum, and `CrcLookupTableCache` shares lookup tables across instances with matching `(width, polynomial, reflectIn)`. `Crc` implements `IResumableHashAlgorithm`, so a digest can be extended from a prior hash without replaying the original input.
+
+## Check digits
+
+Streaming check-digit algorithms (`Append(ReadOnlySpan<char>)` → `GetCurrentCheckDigit()`) for identifier validation and generation:
+
+| Domain | Algorithms |
+|---|---|
+| General | `Luhn`, `Damm`, `Verhoeff`, `Gumm`, `Iso7064Mod11_2`, `Iso7064Mod97_10` |
+| Banking | `AbaRoutingNumber`, `Iban` |
+| Retail / barcode | `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Code39Mod43` |
+| Securities | `Isin`, `Cusip`, `Sedol`, `Lei` |
+| Publishing | `Isbn10`, `Isbn13` |
+| Encoding | `Crockford32` |
+
+Decimal algorithms derive from `CheckDigitAlgorithm`; alphanumeric and multi-character schemes derive from `AlphanumericCheckDigitAlgorithm` / `MultiCharCheckDigitAlgorithm`, with `CheckDigitInputAlphabet` / `CheckDigitOutputAlphabet` selecting the permitted character sets.
+
+## Streaming and one-shot APIs
+
+The extension surface on `NonCryptographicHashAlgorithm` adds `AppendData(Stream)`, one-shot `ComputeHash(...)` / `ComputeHashAsync(Stream)`, and constant-time `VerifyHash` / `TryVerifyHash` (sync and async) over the standard incremental `Append` / `GetCurrentHash` / `Reset` methods.
+
+## Testing
+
+Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
+
+```bash
+dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings smoke.runsettings
+dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings bvt.runsettings
+dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings regression.runsettings
+```
+
+Algorithms are validated against published known-answer vectors through the shared `NonCryptographicHashAlgorithmContractTests<TAlgorithm>`, `CheckDigitContractTests<TAlgorithm>`, and `MultiCharCheckDigitContractTests<TAlgorithm>` bases, with the full CRC catalogue exercised in the Regression tier.
+
+## License
+
+MIT. © Bodu Pty. Ltd.
