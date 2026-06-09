@@ -144,4 +144,22 @@ public sealed class AdjustmentPolicyYearScopeTests
 
         Assert.Contains(d => d.Code == "BODU-CAL-YEARS", ex.Diagnostics);
     }
+
+    /// <summary>
+    /// Verifies that a scope restricting the policy by territory, calendar, category, notable date, or rule that the
+    /// resolution does not satisfy skips the substitution, leaving the occurrence unobserved. 1 January 2022 is a
+    /// Saturday, so an in-scope policy would otherwise shift it.
+    /// </summary>
+    [TestMethod]
+    [DataRow("""<Scope><Territory code="ZZ" /></Scope>""", DisplayName = "Territory mismatch")]
+    [DataRow("""<Scope><Calendar name="Hebrew" /></Scope>""", DisplayName = "Calendar mismatch")]
+    [DataRow("""<Scope><Category value="Observance" /></Scope>""", DisplayName = "Category mismatch")]
+    [DataRow("""<Scope><NotableDate ref="other-nd" /></Scope>""", DisplayName = "Notable-date mismatch")]
+    [DataRow("""<Scope><Rule notableDateRef="new-year" ruleRef="other-rule" /></Scope>""", DisplayName = "Rule mismatch")]
+    public void Scope_WhenFilterDoesNotMatch_ShouldNotApplySubstitution(string scope)
+    {
+        NotableDate occurrence = ResolveNewYear(Build(scope), 2022);
+
+        Assert.IsFalse(occurrence.IsObserved);
+    }
 }
