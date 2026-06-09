@@ -68,7 +68,7 @@ public static partial class DateTimeExtensions
         return resultWeek != week
             ? throw new ArgumentOutOfRangeException(
                 nameof(week),
-                string.Format(ResourceStrings.Arg_OutOfRange_WeekNotValidForYearAndCulture, week, year, (culture ?? CultureInfo.CurrentCulture).Name))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_WeekNotValidForYearAndCulture, week, year, (culture ?? CultureInfo.CurrentCulture).Name))
             : new DateTime(ticks, DateTimeKind.Unspecified);
     }
 }

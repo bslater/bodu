@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu;
 
 public partial struct WeekPattern :
@@ -37,7 +39,7 @@ public partial struct WeekPattern :
                 ? CompareTo(other)
                 : obj is byte b
                     ? CompareTo(b)
-                    : throw new ArgumentException(string.Format(ResourceStrings.Arg_Invalid_MustBeComparableType, string.Join(" or ", nameof(WeekPattern), nameof(Byte))), nameof(obj));
+                    : throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_MustBeComparableType, string.Join(" or ", nameof(WeekPattern), nameof(Byte))), nameof(obj));
 
     /// <summary>
     /// Compares this instance to a specified <see cref="WeekPattern" /> and returns an indication of their relative

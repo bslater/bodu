@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateOnlyExtensions
@@ -60,7 +62,7 @@ public static partial class DateOnlyExtensions
                 var result = DateOnly.FromDayNumber(
                     dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7));
 
-                if (result.Month != date.Month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, date.ToString("MMMM yyyy")));
+                if (result.Month != date.Month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, date.ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
                 return result;
         }
@@ -125,7 +127,7 @@ public static partial class DateOnlyExtensions
             default:
                 var result = DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7));
 
-                if (result.Month != month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateOnly(year, month, 1).ToString("MMMM yyyy")));
+                if (result.Month != month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateOnly(year, month, 1).ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
                 return result;
         }

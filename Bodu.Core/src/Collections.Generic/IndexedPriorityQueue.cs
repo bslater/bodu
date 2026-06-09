@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Bodu.Collections.Generic;
 
@@ -236,7 +237,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         {
             ThrowHelper.ThrowIfNull(pair.Key);
             if (!_index.TryAdd(pair.Key, _size))
-                throw new ArgumentException(string.Format(DuplicateElementMessageFormat, pair.Key), nameof(items));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, DuplicateElementMessageFormat, pair.Key), nameof(items));
 
             if (_size == _nodes.Length)
                 Grow(_size + 1);
@@ -299,7 +300,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         ThrowHelper.ThrowIfNull(element);
 
         return !_index.TryGetValue(element, out var slot)
-            ? throw new KeyNotFoundException(string.Format(ElementNotFoundMessageFormat, element))
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, ElementNotFoundMessageFormat, element))
             : _nodes[slot].Priority;
     }
 
@@ -382,7 +383,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         ThrowHelper.ThrowIfNull(element);
 
         if (!TryEnqueueCore(element, priority))
-            throw new ArgumentException(string.Format(DuplicateElementMessageFormat, element), nameof(element));
+            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, DuplicateElementMessageFormat, element), nameof(element));
     }
 
     /// <summary>
@@ -485,7 +486,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         ThrowHelper.ThrowIfNull(element);
 
         if (!_index.TryGetValue(element, out var slot))
-            throw new KeyNotFoundException(string.Format(ElementNotFoundMessageFormat, element));
+            throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, ElementNotFoundMessageFormat, element));
 
         UpdateAt(slot, priority);
     }

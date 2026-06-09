@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
@@ -95,7 +97,7 @@ public static partial class DateTimeExtensions
 
         return definition == CalendarQuarterDefinition.Custom
             ? throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)))
             : FirstDateOfQuarterInternal(dateTime, definition);
     }
 
@@ -206,7 +208,7 @@ public static partial class DateTimeExtensions
 
         return definition == CalendarQuarterDefinition.Custom
             ? throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)))
             : new DateTime(ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition)), DateTimeKind.Unspecified);
     }
 

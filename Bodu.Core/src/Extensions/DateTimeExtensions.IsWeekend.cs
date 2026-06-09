@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
@@ -93,7 +95,7 @@ public static partial class DateTimeExtensions
             ? provider is null
                 ? throw new ArgumentOutOfRangeException(
                     nameof(workingWeek),
-                    string.Format(ResourceStrings.Arg_OutOfRange_EnumValue, workingWeek, nameof(WorkingDaysOfWeek)))
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, workingWeek, nameof(WorkingDaysOfWeek)))
                 : provider.IsWeekend(dayOfWeek)
             : !workingWeek.ToWeekPattern().Contains(dayOfWeek);
     }

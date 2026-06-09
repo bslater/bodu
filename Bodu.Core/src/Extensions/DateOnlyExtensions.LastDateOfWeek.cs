@@ -61,7 +61,7 @@ public static partial class DateOnlyExtensions
         return dayNumber > DateOnly.MaxValue.DayNumber
             ? throw new ArgumentOutOfRangeException(
                 nameof(date),
-                string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)))
             : DateOnly.FromDayNumber(dayNumber);
     }
 
@@ -99,7 +99,7 @@ public static partial class DateOnlyExtensions
         return dayNumber > DateOnly.MaxValue.DayNumber
             ? throw new ArgumentOutOfRangeException(
                 nameof(date),
-                string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)))
             : DateOnly.FromDayNumber(dayNumber);
     }
 }

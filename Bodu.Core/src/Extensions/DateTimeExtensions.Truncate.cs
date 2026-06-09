@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
@@ -119,7 +121,7 @@ public static partial class DateTimeExtensions
             default:
                 throw new ArgumentOutOfRangeException(
                     nameof(resolution),
-                    string.Format(ResourceStrings.Arg_OutOfRange_EnumValue, resolution, nameof(DateTimeResolution)));
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, resolution, nameof(DateTimeResolution)));
         }
     }
 }

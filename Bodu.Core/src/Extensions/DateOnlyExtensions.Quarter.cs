@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Extensions;
@@ -57,7 +58,7 @@ public static partial class DateOnlyExtensions
 
         return definition == CalendarQuarterDefinition.Custom
             ? throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)))
             : GetQuarterForDate(date, GetQuarterDefinition(definition));
     }
 
