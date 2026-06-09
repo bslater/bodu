@@ -12,16 +12,24 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// A check-digit algorithm consumes a sequence of decimal digits (<c>'0'</c> to <c>'9'</c>) and yields a single
-/// trailing digit that, when appended to the body, allows the concatenated sequence to be validated. Unlike the
-/// byte-stream oriented <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />, this class operates on
-/// <see cref="char" /> sequences natively and emits a single <see cref="char" /> result — matching the domain of card
-/// numbers, national identifiers, and serial codes on which these algorithms are typically applied.
+/// trailing digit that, when appended to the body, allows the concatenated sequence to be validated — matching the
+/// domain of card numbers, national identifiers, and serial codes on which these algorithms are typically applied.
+/// </para>
+/// <para>
+/// This is a deliberately separate family from the byte-stream oriented
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />, and it does <b>not</b> derive from it. The two serve
+/// different purposes: a non-cryptographic hash produces a fixed-length opaque <em>byte</em> digest over arbitrary
+/// input, whereas a check digit performs error detection over a constrained ASCII text alphabet and emits a single
+/// <see cref="char" /> result. Modeling one as the other would either narrow the hash contract or reduce the check
+/// character to an encoding artifact, so the families are kept distinct by design.
 /// </para>
 /// <para>
 /// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and
-/// <see cref="GetCurrentCheckDigit" /> — mirrors the familiar hash-algorithm idiom. Reading the current check digit is
-/// non-destructive and idempotent. On an empty body every built-in algorithm in this library returns the digit
-/// <c>'0'</c>; concrete implementations document any exception.
+/// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm:
+/// <see cref="Append(ReadOnlySpan{char})" /> accumulates input, <see cref="Reset" /> restarts the computation, and
+/// reading the current check digit is non-destructive and idempotent. That resemblance is incidental convenience for
+/// the reader's intuition, not a shared contract. On an empty body every built-in algorithm in this library returns the
+/// digit <c>'0'</c>; concrete implementations document any exception.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.
@@ -43,6 +51,9 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("7893729977");
 ///]]>
 /// </example>
+/// <seealso cref="AlphanumericCheckDigitAlgorithm" />
+/// <seealso cref="MultiCharCheckDigitAlgorithm" />
+/// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />
 public abstract class CheckDigitAlgorithm
 {
     /// <summary>
