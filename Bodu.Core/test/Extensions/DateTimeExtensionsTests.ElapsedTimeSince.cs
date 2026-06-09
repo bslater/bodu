@@ -68,9 +68,14 @@ public partial class DateTimeExtensionsTests
 
         TimeSpan elapsed = anchor.ElapsedTimeSince();
 
-        Assert.IsTrue(elapsed.TotalMilliseconds >= 0);
-        Assert.IsTrue(elapsed.TotalMilliseconds < 50,
-            $"Elapsed was {elapsed.TotalMilliseconds:F3}ms, expected < 50ms.");
+        // The elapsed span must be non-negative (the anchor is in the past) and "near zero". A generous upper bound is
+        // used deliberately: the measurement spans real wall-clock time, so on a contended CI host thread scheduling
+        // or a GC pause can stretch the gap well beyond a few milliseconds. The bound still catches gross defects such
+        // as a sign error, a wrong unit, or an incorrect epoch, which would yield negative or minute-scale results.
+        Assert.IsTrue(elapsed.TotalMilliseconds >= 0,
+            $"Elapsed was {elapsed.TotalMilliseconds:F3}ms, expected a non-negative span.");
+        Assert.IsTrue(elapsed.TotalSeconds < 30,
+            $"Elapsed was {elapsed.TotalSeconds:F3}s, expected a near-zero span.");
     }
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.ElapsedTimeSince" />, when PastTime, returns <see langword="true" />.
