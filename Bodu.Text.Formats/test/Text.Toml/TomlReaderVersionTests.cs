@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReaderVersionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ public sealed class TomlReaderVersionTests
     [TestMethod]
     public void Parse_WhenEscapeE_ForV11Profile_ShouldDecodeToEscapeCharacter()
     {
-        var doc = Toml.Parse("s = \"\\e\"", s_v11);
+        TomlTable doc = Toml.Parse("s = \"\\e\"", s_v11);
         Assert.AreEqual("\u001b", ((TomlString)doc["s"]).Value);
     }
 
@@ -79,7 +79,7 @@ public sealed class TomlReaderVersionTests
     [TestMethod]
     public void Parse_WhenHexEscape_ForV11Profile_ShouldDecodeByte()
     {
-        var doc = Toml.Parse("s = \"\\x41\"", s_v11);
+        TomlTable doc = Toml.Parse("s = \"\\x41\"", s_v11);
         Assert.AreEqual("A", ((TomlString)doc["s"]).Value);
     }
 
@@ -89,7 +89,7 @@ public sealed class TomlReaderVersionTests
     [TestMethod]
     public void Parse_WhenOffsetDateTimeWithoutSeconds_ForV11Profile_ShouldDefaultSecondsToZero()
     {
-        var doc = Toml.Parse("x = 1979-05-27T07:32Z", s_v11);
+        TomlTable doc = Toml.Parse("x = 1979-05-27T07:32Z", s_v11);
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), ((TomlOffsetDateTime)doc["x"]).Value);
     }
 
@@ -99,7 +99,7 @@ public sealed class TomlReaderVersionTests
     [TestMethod]
     public void Parse_WhenLocalTimeWithoutSeconds_ForV11Profile_ShouldDefaultSecondsToZero()
     {
-        var doc = Toml.Parse("x = 07:32", s_v11);
+        TomlTable doc = Toml.Parse("x = 07:32", s_v11);
         Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["x"]).Value);
     }
 
@@ -109,7 +109,7 @@ public sealed class TomlReaderVersionTests
     [TestMethod]
     public void Parse_WhenMultilineInlineTable_ForV11Profile_ShouldReadKeys()
     {
-        var doc = Toml.Parse("x = {\n  a = 1,\n  b = 2,\n}", s_v11);
+        TomlTable doc = Toml.Parse("x = {\n  a = 1,\n  b = 2,\n}", s_v11);
         var x = (TomlTable)doc["x"];
         Assert.AreEqual(1, ((TomlInteger)x["a"]).Value);
         Assert.AreEqual(2, ((TomlInteger)x["b"]).Value);
@@ -129,7 +129,7 @@ public sealed class TomlReaderVersionTests
     public void Read_WhenReaderConfiguredForV11_ShouldAcceptV11Syntax()
     {
         var reader = new TomlReader(s_v11);
-        var doc = reader.Read("x = 07:32");
+        TomlTable doc = reader.Read("x = 07:32");
         Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["x"]).Value);
     }
 }

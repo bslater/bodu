@@ -17,7 +17,7 @@ public sealed class TomlReaderWriterTests
     [TestMethod]
     public void Reader_WhenReadString_ShouldDeserialize()
     {
-        var document = new TomlReader().Read("a = 1\nb = \"x\"");
+        TomlTable document = new TomlReader().Read("a = 1\nb = \"x\"");
 
         Assert.AreEqual(1, ((TomlInteger)document["a"]).Value);
         Assert.AreEqual("x", ((TomlString)document["b"]).Value);
@@ -27,7 +27,7 @@ public sealed class TomlReaderWriterTests
     public void Reader_WhenReadTextReader_ShouldDeserialize()
     {
         using var textReader = new StringReader("[t]\nx = 1");
-        var document = new TomlReader().Read(textReader);
+        TomlTable document = new TomlReader().Read(textReader);
 
         Assert.AreEqual(1, ((TomlInteger)((TomlTable)document["t"])["x"]).Value);
     }
@@ -37,9 +37,9 @@ public sealed class TomlReaderWriterTests
     {
         var reader = new TomlReader();
 
-        Assert.IsTrue(reader.TryRead("a = 1".AsSpan(), out var document));
+        Assert.IsTrue(reader.TryRead("a = 1".AsSpan(), out TomlTable? document));
         Assert.AreEqual(1, ((TomlInteger)document["a"]).Value);
-        Assert.IsFalse(reader.TryRead("a = ".AsSpan(), out var failed));
+        Assert.IsFalse(reader.TryRead("a = ".AsSpan(), out TomlTable? failed));
         Assert.IsNull(failed);
     }
 

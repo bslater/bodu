@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlWriterModelBoundaryTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,7 +68,7 @@ public sealed class TomlWriterModelBoundaryTests
 
         var text = Toml.Format(document);
 
-        var reparsed = Toml.Parse(text);
+        TomlTable reparsed = Toml.Parse(text);
         Assert.AreEqual(1, ((TomlInteger)((TomlTable)reparsed["a"])["v"]).Value);
         Assert.AreEqual(1, ((TomlInteger)((TomlTable)reparsed["b"])["v"]).Value);
     }
@@ -103,7 +103,7 @@ public sealed class TomlWriterModelBoundaryTests
     {
         var document = new TomlTable { ["s"] = new TomlString("\U0001F600") };
 
-        var reparsed = Toml.Parse(Toml.Format(document));
+        TomlTable reparsed = Toml.Parse(Toml.Format(document));
 
         Assert.AreEqual("\U0001F600", ((TomlString)reparsed["s"]).Value);
     }
@@ -116,7 +116,7 @@ public sealed class TomlWriterModelBoundaryTests
     {
         var document = new TomlTable { ["line\nkey"] = new TomlInteger(1) };
 
-        var reparsed = Toml.Parse(Toml.Format(document));
+        TomlTable reparsed = Toml.Parse(Toml.Format(document));
 
         Assert.AreEqual(1, ((TomlInteger)reparsed["line\nkey"]).Value);
     }
@@ -141,7 +141,7 @@ public sealed class TomlWriterModelBoundaryTests
         };
 
         // Parsing under the strict v1.0 default proves the writer emitted no v1.1-only syntax.
-        var reparsed = Toml.Parse(Toml.Format(document));
+        TomlTable reparsed = Toml.Parse(Toml.Format(document));
 
         Assert.AreEqual("text", ((TomlString)reparsed["s"]).Value);
         Assert.AreEqual(long.MinValue, ((TomlInteger)reparsed["i"]).Value);

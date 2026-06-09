@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlParseTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,14 +23,14 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenBasicKeyValue_ShouldReadString()
     {
-        var doc = Parse("""key = "value" """);
+        TomlTable doc = Parse("""key = "value" """);
         Assert.AreEqual("value", Str(doc["key"]));
     }
 
     [TestMethod]
     public void Parse_WhenIntegerForms_ShouldReadValues()
     {
-        var doc = Parse("a = 42\nb = -17\nc = 1_000\nd = 0xDEAD_BEEF\ne = 0o755\nf = 0b1101");
+        TomlTable doc = Parse("a = 42\nb = -17\nc = 1_000\nd = 0xDEAD_BEEF\ne = 0o755\nf = 0b1101");
         Assert.AreEqual(42, Int(doc["a"]));
         Assert.AreEqual(-17, Int(doc["b"]));
         Assert.AreEqual(1000, Int(doc["c"]));
@@ -42,7 +42,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenFloatForms_ShouldReadValues()
     {
-        var doc = Parse("a = 3.1415\nb = 5e+22\nc = -2E-2\nd = 6.626e-34\ne = 224_617.445_991\nf = inf\ng = -inf\nh = nan");
+        TomlTable doc = Parse("a = 3.1415\nb = 5e+22\nc = -2E-2\nd = 6.626e-34\ne = 224_617.445_991\nf = inf\ng = -inf\nh = nan");
         Assert.AreEqual(3.1415, ((TomlFloat)doc["a"]).Value, 1e-9);
         Assert.AreEqual(5e22, ((TomlFloat)doc["b"]).Value);
         Assert.IsTrue(double.IsPositiveInfinity(((TomlFloat)doc["f"]).Value));
@@ -53,7 +53,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenBooleans_ShouldReadValues()
     {
-        var doc = Parse("t = true\nf = false");
+        TomlTable doc = Parse("t = true\nf = false");
         Assert.IsTrue(((TomlBoolean)doc["t"]).Value);
         Assert.IsFalse(((TomlBoolean)doc["f"]).Value);
     }
@@ -61,42 +61,42 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenBasicStringEscapes_ShouldDecode()
     {
-        var doc = Parse("""s = "a\tb\nc\"d\\eé" """);
+        TomlTable doc = Parse("""s = "a\tb\nc\"d\\eé" """);
         Assert.AreEqual("a\tb\nc\"d\\eé", Str(doc["s"]));
     }
 
     [TestMethod]
     public void Parse_WhenLiteralString_ShouldNotUnescape()
     {
-        var doc = Parse("""path = 'C:\Users\nodejs' """);
+        TomlTable doc = Parse("""path = 'C:\Users\nodejs' """);
         Assert.AreEqual(@"C:\Users\nodejs", Str(doc["path"]));
     }
 
     [TestMethod]
     public void Parse_WhenMultilineBasicWithLineEndingBackslash_ShouldTrim()
     {
-        var doc = Parse("str = \"\"\"\nThe quick brown \\\n\n  fox jumps over \\\n    the lazy dog.\"\"\"");
+        TomlTable doc = Parse("str = \"\"\"\nThe quick brown \\\n\n  fox jumps over \\\n    the lazy dog.\"\"\"");
         Assert.AreEqual("The quick brown fox jumps over the lazy dog.", Str(doc["str"]));
     }
 
     [TestMethod]
     public void Parse_WhenMultilineBasicTrimsLeadingNewline_ShouldMatch()
     {
-        var doc = Parse("str = \"\"\"\nRoses are red\nViolets are blue\"\"\"");
+        TomlTable doc = Parse("str = \"\"\"\nRoses are red\nViolets are blue\"\"\"");
         Assert.AreEqual("Roses are red\nViolets are blue", Str(doc["str"]));
     }
 
     [TestMethod]
     public void Parse_WhenMultilineBasicWithInteriorQuotes_ShouldKeep()
     {
-        var doc = Parse("str = \"\"\"Here are two quotation marks: \"\". Simple enough.\"\"\"");
+        TomlTable doc = Parse("str = \"\"\"Here are two quotation marks: \"\". Simple enough.\"\"\"");
         Assert.AreEqual("Here are two quotation marks: \"\". Simple enough.", Str(doc["str"]));
     }
 
     [TestMethod]
     public void Parse_WhenDottedKeys_ShouldCreateNestedTables()
     {
-        var doc = Parse("physical.color = \"orange\"\nphysical.shape = \"round\"\nsite.\"google.com\" = true");
+        TomlTable doc = Parse("physical.color = \"orange\"\nphysical.shape = \"round\"\nsite.\"google.com\" = true");
         var physical = (TomlTable)doc["physical"];
         Assert.AreEqual("orange", Str(physical["color"]));
         Assert.AreEqual("round", Str(physical["shape"]));
@@ -106,7 +106,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenStandardTables_ShouldGroupKeys()
     {
-        var doc = Parse("[table-1]\nkey1 = \"a\"\nkey2 = 123\n\n[table-2]\nkey1 = \"b\"");
+        TomlTable doc = Parse("[table-1]\nkey1 = \"a\"\nkey2 = 123\n\n[table-2]\nkey1 = \"b\"");
         Assert.AreEqual("a", Str(((TomlTable)doc["table-1"])["key1"]));
         Assert.AreEqual(123, Int(((TomlTable)doc["table-1"])["key2"]));
         Assert.AreEqual("b", Str(((TomlTable)doc["table-2"])["key1"]));
@@ -115,7 +115,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenSuperTableImplicit_ShouldCreateAncestors()
     {
-        var doc = Parse("[x.y.z.w]\na = 1\n\n[x]\nb = 2");
+        TomlTable doc = Parse("[x.y.z.w]\na = 1\n\n[x]\nb = 2");
         var x = (TomlTable)doc["x"];
         Assert.AreEqual(2, Int(x["b"]));
         Assert.AreEqual(1, Int(((TomlTable)((TomlTable)((TomlTable)x["y"])["z"])["w"])["a"]));
@@ -124,7 +124,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenArray_ShouldReadElements()
     {
-        var doc = Parse("a = [ 1, 2, 3 ]\nb = [ \"x\", 'y' ]\nc = [\n  1,\n  2, # trailing comma ok\n]");
+        TomlTable doc = Parse("a = [ 1, 2, 3 ]\nb = [ \"x\", 'y' ]\nc = [\n  1,\n  2, # trailing comma ok\n]");
         var a = (TomlArray)doc["a"];
         Assert.AreEqual(3, a.Count);
         Assert.AreEqual(2, Int(a[1]));
@@ -134,7 +134,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenInlineTable_ShouldReadKeys()
     {
-        var doc = Parse("name = { first = \"Tom\", last = \"Preston-Werner\" }\npoint = {x=1,y=2}\nanimal = { type.name = \"pug\" }");
+        TomlTable doc = Parse("name = { first = \"Tom\", last = \"Preston-Werner\" }\npoint = {x=1,y=2}\nanimal = { type.name = \"pug\" }");
         var name = (TomlTable)doc["name"];
         Assert.AreEqual("Tom", Str(name["first"]));
         Assert.AreEqual(1, Int(((TomlTable)doc["point"])["x"]));
@@ -144,7 +144,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenArrayOfTables_ShouldAppendElements()
     {
-        var doc = Parse("[[product]]\nname = \"Hammer\"\nsku = 738594937\n\n[[product]]\n\n[[product]]\nname = \"Nail\"\ncolor = \"gray\"");
+        TomlTable doc = Parse("[[product]]\nname = \"Hammer\"\nsku = 738594937\n\n[[product]]\n\n[[product]]\nname = \"Nail\"\ncolor = \"gray\"");
         var products = (TomlArray)doc["product"];
         Assert.AreEqual(3, products.Count);
         Assert.AreEqual("Hammer", Str(((TomlTable)products[0])["name"]));
@@ -155,7 +155,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenNestedArrayOfTables_ShouldMatchSpecExample()
     {
-        var doc = Parse("[[fruits]]\nname = \"apple\"\n\n[fruits.physical]\ncolor = \"red\"\n\n[[fruits.varieties]]\nname = \"red delicious\"\n\n[[fruits.varieties]]\nname = \"granny smith\"\n\n[[fruits]]\nname = \"banana\"\n\n[[fruits.varieties]]\nname = \"plantain\"");
+        TomlTable doc = Parse("[[fruits]]\nname = \"apple\"\n\n[fruits.physical]\ncolor = \"red\"\n\n[[fruits.varieties]]\nname = \"red delicious\"\n\n[[fruits.varieties]]\nname = \"granny smith\"\n\n[[fruits]]\nname = \"banana\"\n\n[[fruits.varieties]]\nname = \"plantain\"");
         var fruits = (TomlArray)doc["fruits"];
         Assert.AreEqual(2, fruits.Count);
         var apple = (TomlTable)fruits[0];
@@ -167,7 +167,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenOffsetDateTime_ShouldReadInstant()
     {
-        var doc = Parse("odt = 1979-05-27T07:32:00Z\nspace = 1979-05-27 07:32:00Z");
+        TomlTable doc = Parse("odt = 1979-05-27T07:32:00Z\nspace = 1979-05-27 07:32:00Z");
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), ((TomlOffsetDateTime)doc["odt"]).Value);
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), ((TomlOffsetDateTime)doc["space"]).Value);
     }
@@ -175,7 +175,7 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenLocalDateTimeDateAndTime_ShouldReadValues()
     {
-        var doc = Parse("ldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00");
+        TomlTable doc = Parse("ldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00");
         Assert.AreEqual(new DateTime(1979, 5, 27, 7, 32, 0), ((TomlLocalDateTime)doc["ldt"]).Value);
         Assert.AreEqual(new DateOnly(1979, 5, 27), ((TomlLocalDate)doc["ld"]).Value);
         Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["lt"]).Value);
@@ -211,14 +211,14 @@ public sealed class TomlParseTests
     [TestMethod]
     public void TryParse_WhenInvalid_ShouldReturnFalse()
     {
-        Assert.IsFalse(Toml.TryParse("a = ", out var doc));
+        Assert.IsFalse(Toml.TryParse("a = ", out TomlTable? doc));
         Assert.IsNull(doc);
     }
 
     [TestMethod]
     public void TryParse_WhenValid_ShouldReturnTrue()
     {
-        Assert.IsTrue(Toml.TryParse("a = 1", out var doc));
+        Assert.IsTrue(Toml.TryParse("a = 1", out TomlTable? doc));
         Assert.AreEqual(1, Int(doc["a"]));
     }
 }

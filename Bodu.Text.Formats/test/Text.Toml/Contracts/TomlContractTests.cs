@@ -86,13 +86,13 @@ public sealed class TomlContractTests
             {
                 case TomlTable table:
                     var entries = new List<string>();
-                    foreach (var pair in table)
+                    foreach (KeyValuePair<string, TomlValue> pair in table)
                         entries.Add("<" + pair.Key + ">=" + Normalize(pair.Value));
                     entries.Sort(StringComparer.Ordinal);
                     return "{" + string.Join(",", entries) + "}";
                 case TomlArray array:
                     var items = new List<string>();
-                    foreach (var item in array)
+                    foreach (TomlValue item in array)
                         items.Add(Normalize(item));
                     return "[" + string.Join(",", items) + "]";
                 default:

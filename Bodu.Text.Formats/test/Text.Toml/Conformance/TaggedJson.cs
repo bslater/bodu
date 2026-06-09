@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TaggedJson.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,9 +35,9 @@ internal static class TaggedJson
         switch (expected)
         {
             case JsonObject expectedTable:
-                var actualTable = actual as JsonObject ?? throw Fail(caseName, path, "expected a table");
+                JsonObject actualTable = actual as JsonObject ?? throw Fail(caseName, path, "expected a table");
                 Assert.AreEqual(expectedTable.Count, actualTable.Count, $"[{caseName}] at '{path}': table size differs.");
-                foreach (var pair in expectedTable)
+                foreach (KeyValuePair<string, JsonNode?> pair in expectedTable)
                 {
                     Assert.IsTrue(actualTable.ContainsKey(pair.Key), $"[{caseName}] at '{path}': missing key '{pair.Key}'.");
                     AssertEquivalent(caseName, pair.Value, actualTable[pair.Key], path + "/" + pair.Key);
@@ -46,7 +46,7 @@ internal static class TaggedJson
                 break;
 
             case JsonArray expectedArray:
-                var actualArray = actual as JsonArray ?? throw Fail(caseName, path, "expected an array");
+                JsonArray actualArray = actual as JsonArray ?? throw Fail(caseName, path, "expected an array");
                 Assert.AreEqual(expectedArray.Count, actualArray.Count, $"[{caseName}] at '{path}': array length differs.");
                 for (var i = 0; i < expectedArray.Count; i++)
                     AssertEquivalent(caseName, expectedArray[i], actualArray[i], path + "[" + i.ToString(CultureInfo.InvariantCulture) + "]");
