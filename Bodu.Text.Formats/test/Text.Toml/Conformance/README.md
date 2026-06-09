@@ -24,11 +24,17 @@ manifest:
 | v1.1.0 invalid | 473 | rejected under `SpecVersion = V1_1` |
 | v1.0.0 invalid | 472 | rejected under the strict v1.0.0 default |
 
-A `Manifest_WhenLoaded_ShouldClassifyEveryCorpusCase` guard fails if any vendored case is missing
-from both manifests, so corpus/manifest drift surfaces on the next re-vendor rather than silently
-dropping coverage. The version *boundary* itself — that strict v1.0.0 rejects the specific v1.1.0
-additions (`\e` / `\xHH`, optional seconds, multi-line / trailing-comma inline tables) — is asserted
-directly by `TomlReaderVersionTests`.
+Two guards keep the corpus and manifests in sync, so drift in either direction surfaces on the next
+re-vendor rather than silently dropping coverage:
+
+- `Manifest_WhenLoaded_ShouldClassifyEveryCorpusCase` fails if any vendored case is missing from both
+  manifests.
+- `Manifest_WhenLoaded_ShouldVendorEveryManifestCase` fails if any manifest case is missing from the
+  corpus, other than the documented exclusions below.
+
+The version *boundary* itself — that strict v1.0.0 rejects the specific v1.1.0 additions (`\e` /
+`\xHH`, optional seconds, multi-line / trailing-comma inline tables) — is asserted directly by
+`TomlReaderVersionTests`.
 
 ## Exclusions
 
@@ -36,6 +42,13 @@ The following upstream cases are excluded when consolidating: `invalid/encoding/
 validation). The reader decodes streams with strict UTF-8 (invalid bytes raise
 `TomlFormatException`); byte-level rejection is exercised directly by the stream encoding tests
 rather than this string-driven corpus.
+
+In addition, the consolidated corpus does not currently vendor eight spec-derived invalid cases that
+the `files-toml-1.0.0` manifest lists: `spec-1.0.0/inline-table-2-0`, `inline-table-3-0`,
+`key-value-pair-1`, `keys-2`, `string-4-0`, `string-7-0`, `table-9-0`, and `table-9-1`. They are
+tracked explicitly by the reverse drift guard (`s_unvendoredInvalidCases`) so their absence is
+documented rather than silent; a re-vendor that restores them satisfies the guard without further
+change.
 
 ## Refreshing
 
