@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 #if !NETSTANDARD2_0
 
 using Bodu.Buffers;
@@ -84,6 +86,7 @@ public static partial class IEnumerableExtensions
             _ => throw new ArgumentOutOfRangeException(
                 nameof(mode),
                 string.Format(
+                    CultureInfo.CurrentCulture,
                     ResourceStrings.Arg_OutOfRange_EnumValue,
                     mode,
                     nameof(RandomizationMode)))

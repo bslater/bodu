@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
@@ -93,7 +95,7 @@ public static partial class DateTimeExtensions
         return totalTicks < DateTime.MinValue.Ticks || totalTicks > DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(
                 nameof(dateTime),
-                string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)))
             : new DateTime(totalTicks, dateTime.Kind);
     }
 }

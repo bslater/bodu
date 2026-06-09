@@ -73,7 +73,7 @@ public static partial class DateTimeExtensions
         return (ulong)ticks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(
                 nameof(dateTime),
-                string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)))
             : new DateTime(ticks, dateTime.Kind);
     }
 
@@ -117,7 +117,7 @@ public static partial class DateTimeExtensions
         return (ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(
                 nameof(dateTime),
-                string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)))
             : new DateTime(dateTicks, dateTime.Kind);
     }
 }

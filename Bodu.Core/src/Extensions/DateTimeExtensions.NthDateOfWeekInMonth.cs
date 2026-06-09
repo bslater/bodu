@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
@@ -63,7 +65,7 @@ public static partial class DateTimeExtensions
             default:
                 var result = new DateTime(GetFirstDateOfWeekInMonthTicks(dateTime, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), dateTime.Kind);
 
-                if (result.Month != dateTime.Month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, dateTime.ToString("MMMM yyyy")));
+                if (result.Month != dateTime.Month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, dateTime.ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
                 return result;
         }
@@ -132,7 +134,7 @@ public static partial class DateTimeExtensions
             default:
                 var result = new DateTime(GetFirstDateOfWeekInMonthTicks(year, month, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), DateTimeKind.Unspecified);
 
-                if (result.Month != month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, $"{GetMonthName(month)} {year:0000}"));
+                if (result.Month != month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateTime(year, month, 1).ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
                 return result;
         }
