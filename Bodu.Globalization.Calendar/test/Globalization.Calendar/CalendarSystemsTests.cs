@@ -74,5 +74,5 @@ public class CalendarSystemsTests
     /// </summary>
     [TestMethod]
     public void ResolveFixedAll_WhenChineseLeapSkipMonthExceedsYear_ShouldReturnEmpty() =>
-        Assert.AreEqual(0, CalendarSystems.ResolveFixedAll(CalendarSystem.ChineseLunisolar, 13, null, 1, false, true, 2025).Count);
+        Assert.AreEqual(0, CalendarSystems.ResolveFixedAll(CalendarSystem.ChineseLunisolar, 14, null, 1, false, true, 2025).Count);
 }
