@@ -75,6 +75,23 @@ public sealed class TomlConformanceTests
     public static IEnumerable<object[]> AllInvalidCases() =>
         LoadCases("toml-test-invalid.json", includeExpected: false);
 
+    /// <summary>
+    /// Provides the valid corpus cases the strict TOML v1.0.0 parser accepts — the v1.0-valid subset, partitioned by
+    /// the parser itself rather than a hand-maintained version list.
+    /// </summary>
+    /// <returns>One <see cref="ConformanceCase" /> per v1.0-accepted valid document.</returns>
+    public static IEnumerable<object[]> V10AcceptedValidCases() =>
+        LoadCases("toml-test-valid.json", includeExpected: true)
+            .Where(row => new TomlReader().TryRead(((ConformanceCase)row[0]).Toml, out _));
+
+    /// <summary>
+    /// Provides the valid corpus cases the strict TOML v1.0.0 parser rejects — the TOML v1.1.0-only valid subset.
+    /// </summary>
+    /// <returns>One <see cref="ConformanceCase" /> per v1.1-only valid document.</returns>
+    public static IEnumerable<object[]> V11OnlyValidCases() =>
+        LoadCases("toml-test-valid.json", includeExpected: true)
+            .Where(row => !new TomlReader().TryRead(((ConformanceCase)row[0]).Toml, out _));
+
 #pragma warning disable CA1062 // Conformance cases are statically constructed by the data sources and are never null.
 
     /// <summary>
@@ -85,13 +102,44 @@ public sealed class TomlConformanceTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(ValidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Valid_WhenParsedAss_v11_ShouldMatchExpectedModel(ConformanceCase testCase)
+    public void Valid_WhenParsedAsV11_ShouldMatchExpectedModel(ConformanceCase testCase)
     {
         var document = Toml.Parse(testCase.Toml, s_v11);
         JsonNode actual = TomlTestEncoder.Encode(document);
         JsonNode expected = JsonNode.Parse(testCase.Expected!)!;
 
         AssertEquivalent(testCase.Name, expected, actual, testCase.Name);
+    }
+
+    /// <summary>
+    /// Verifies that every valid corpus document the strict TOML v1.0.0 parser accepts yields the same model as the
+    /// expected tagged-JSON tree. Because v1.1.0 is a superset of v1.0.0, an accepted document's model is
+    /// version-independent, so this exercises the v1.0 parser across the full v1.0-valid subset of the corpus.
+    /// </summary>
+    /// <param name="testCase">The conformance case.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DynamicData(nameof(V10AcceptedValidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Valid_WhenAcceptedByStrictV10_ShouldMatchExpectedModel(ConformanceCase testCase)
+    {
+        var document = Toml.Parse(testCase.Toml);
+        JsonNode actual = TomlTestEncoder.Encode(document);
+        JsonNode expected = JsonNode.Parse(testCase.Expected!)!;
+
+        AssertEquivalent(testCase.Name, expected, actual, testCase.Name);
+    }
+
+    /// <summary>
+    /// Verifies that every valid corpus document the strict TOML v1.0.0 parser rejects is one the v1.1.0 parser accepts
+    /// — confirming each v1.0 rejection is a deliberate version boundary rather than a parser defect.
+    /// </summary>
+    /// <param name="testCase">The conformance case.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DynamicData(nameof(V11OnlyValidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Valid_WhenRejectedByStrictV10_ShouldBeAcceptedByV11(ConformanceCase testCase)
+    {
+        Assert.IsNotNull(Toml.Parse(testCase.Toml, s_v11), testCase.Name);
     }
 
     /// <summary>
@@ -102,7 +150,7 @@ public sealed class TomlConformanceTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(InvalidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Invalid_WhenParsedAss_v11_ShouldThrowTomlFormatException(ConformanceCase testCase)
+    public void Invalid_WhenParsedAsV11_ShouldThrowTomlFormatException(ConformanceCase testCase)
     {
         Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(testCase.Toml, s_v11), $"Conformance case '{testCase.Name}' should have been rejected.");
     }
