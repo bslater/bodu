@@ -182,4 +182,16 @@ public sealed class NotableDatePluginLoaderTests
             (TestAssembly.GetName().Name, (string?)expectedToken),
             ((string?)captured!.AssemblyName, captured.PublicKeyToken));
     }
+
+    /// <summary>
+    /// Verifies that the file-path <see cref="NotableDatePluginLoader.LoadFrom(string, IPluginTrustPolicy)" /> overload
+    /// loads the assembly from disk and activates its plugin.
+    /// </summary>
+    [TestMethod]
+    public void LoadFrom_WhenGivenAssemblyPath_ShouldActivateThePlugin()
+    {
+        INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(TestAssembly.Location, new AllowAllPluginTrustPolicy());
+
+        Assert.AreEqual("Test Plugin", plugin.Name);
+    }
 }
