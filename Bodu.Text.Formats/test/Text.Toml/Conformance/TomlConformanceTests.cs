@@ -180,9 +180,9 @@ public sealed class TomlConformanceTests
     }
 
     /// <summary>
-    /// Indicates whether an invalid manifest case is intentionally absent from the consolidated corpus. Only the
-    /// byte-level <c>encoding/*</c> cases qualify: their ill-formed UTF-8 cannot be carried in a JSON string, so they
-    /// are exercised by the stream encoding tests instead.
+    /// Indicates whether an invalid manifest case is intentionally absent from the consolidated JSON corpus. Only the
+    /// byte-level <c>encoding/*</c> cases qualify: their ill-formed UTF-8 cannot be carried in a JSON string, so they are
+    /// vendored as raw bytes and exercised by <see cref="TomlEncodingConformanceTests" /> instead.
     /// </summary>
     /// <param name="name">The case name.</param>
     /// <returns><see langword="true" /> when the case is a documented exclusion.</returns>

@@ -8,6 +8,9 @@ known-answer test data for `TomlConformanceTests`.
   tagged-JSON encoding (`{"type": "...", "value": "..."}`).
 - **invalid**: each entry is a TOML document the parser must reject.
 
+Together with the `encoding/` files described under [Exclusions](#exclusions), this vendors every
+upstream `toml-test` case for both spec versions.
+
 ## Per-version gating
 
 `toml-test-files-1.0.0.txt` and `toml-test-files-1.1.0.txt` are toml-test's own
@@ -36,19 +39,23 @@ The version *boundary* itself — that strict v1.0.0 rejects the specific v1.1.0
 `\xHH`, optional seconds, multi-line / trailing-comma inline tables) — is asserted directly by
 `TomlReaderVersionTests`.
 
-## Exclusions
+## Encoding cases
 
-The only upstream cases excluded when consolidating are `invalid/encoding/*` (byte-level UTF-8
-validation). Their ill-formed UTF-8 cannot be carried in a JSON string, so the reader's byte-level
-rejection — streams are decoded with strict UTF-8 and invalid bytes raise `TomlFormatException` — is
-exercised directly by the stream encoding tests rather than this string-driven corpus. The reverse
-drift guard treats this `encoding/` prefix as its sole permitted exclusion.
+The `invalid/encoding/*` cases — ill-formed UTF-8, UTF-16 input, and misplaced byte-order marks —
+have no JSON-string representation, so they are excluded from the two consolidated JSON files and
+instead vendored verbatim as raw bytes under `encoding/`. `TomlEncodingConformanceTests` reads each
+as a stream and asserts rejection under both the strict v1.0.0 default and the v1.1.0 profile, and a
+guard keeps those resources in exact correspondence with the manifests' `encoding/*` entries. The
+JSON corpus's reverse drift guard therefore treats the `encoding/` prefix as its sole permitted
+exclusion, because that coverage lives in the binary resources instead.
 
 ## Refreshing
 
 To re-vendor, copy `toml-test`'s `tests/files-toml-1.0.0` and `tests/files-toml-1.1.0` into the
-`*.txt` files here and regenerate the two JSON corpora from `tests/valid` and `tests/invalid`. The
-manifests are the source of truth for the per-version split; no skip list is maintained by hand.
+`*.txt` files here, regenerate the two JSON corpora from `tests/valid` and `tests/invalid` (excluding
+`invalid/encoding/*`), and copy `tests/invalid/encoding/*.toml` verbatim into `encoding/`. The
+manifests are the source of truth for the per-version split; no skip list is maintained by hand, and
+the drift guards fail if the corpus, the encoding resources, and the manifests fall out of sync.
 
 toml-test is distributed under the MIT License; see `toml-test-LICENSE.txt`. The vendored
 `files-toml-*` manifests are part of toml-test and carry the same license.
