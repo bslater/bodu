@@ -20,6 +20,13 @@ namespace Bodu.Text.Toml;
 /// emits inline key/values before sub-table sections and standard tables rather than inline tables — so a round trip
 /// through the writer preserves the document's values and semantics, not its original source layout or table style.
 /// </para>
+/// <para>
+/// The model is <em>semantic</em>, not source-preserving: it records each table's keys, values, and nesting, but not
+/// the syntactic form used to express them. A standard <c>[table]</c>, an inline <c>{ }</c> table, dotted keys, and an
+/// array-of-tables element all materialize as <see cref="TomlTable" /> instances, so two documents that differ only in
+/// that syntactic choice parse to equal models. Callers needing to retain original formatting should keep the source
+/// text alongside the model.
+/// </para>
 /// </remarks>
 public sealed class TomlTable
     : TomlValue
