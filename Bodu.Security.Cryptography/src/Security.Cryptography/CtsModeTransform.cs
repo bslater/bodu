@@ -57,12 +57,12 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
 ///
-/// CTS preserves length: plaintext.Length == ciphertext.Length, no padding required.
+/// // CTS preserves length: plaintext.Length == ciphertext.Length, no padding required.
 /// byte[] ciphertext = new byte[plaintext.Length];
 /// int written = cts.Transform(plaintext, ciphertext, encrypt: true);
 ///]]>

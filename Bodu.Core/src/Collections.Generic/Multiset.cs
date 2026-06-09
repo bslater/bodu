@@ -63,7 +63,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Letter-frequency histogram.
+/// // Letter-frequency histogram.
 /// var histogram = new Multiset<char>();
 /// foreach (char c in "mississippi")
 ///     histogram.Add(c);
@@ -75,7 +75,7 @@ namespace Bodu.Collections.Generic;
 /// foreach (KeyValuePair<char, int> kv in histogram.Frequencies())
 ///     Console.WriteLine($"{kv.Key}: {kv.Value}");
 ///
-/// Multiset algebra — combine two histograms without mutating either operand.
+/// // Multiset algebra — combine two histograms without mutating either operand.
 /// var other = new Multiset<char> { 'i', 'i', 's' };
 /// Multiset<char> combined = histogram.Sum(other);
 ///]]>

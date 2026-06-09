@@ -62,11 +62,11 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// Default seed, suitable for an in-memory hash table.
+/// // Default seed, suitable for an in-memory hash table.
 /// var m = new MurmurHash3_32();
 /// byte[] digest = m.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key"));
 ///
-/// Custom seed for a second, independent hash family (useful in bloom filters).
+/// // Custom seed for a second, independent hash family (useful in bloom filters).
 /// var m2 = new MurmurHash3_32(seed: 0x9E3779B1u);
 /// byte[] digest2 = m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key"));
 ///]]>

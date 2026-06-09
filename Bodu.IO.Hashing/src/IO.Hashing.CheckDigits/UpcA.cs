@@ -26,13 +26,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against the 11-digit body.
+/// // Single-call computation against the 11-digit body.
 /// char check = UpcA.Compute("03600029145");   // '2'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = UpcA.IsValid("036000291452");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new UpcA();
 /// algo.Append("03600029145");
 /// char d = algo.GetCurrentCheckDigit();       // '2'

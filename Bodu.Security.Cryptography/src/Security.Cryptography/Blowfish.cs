@@ -70,7 +70,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
-/// Legacy interop only.
+/// // Legacy interop only.
 /// using var blowfish = new Blowfish();
 /// blowfish.Key = legacyKeyMaterial; // 4–56 bytes
 /// blowfish.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block

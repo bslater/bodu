@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 ///<![CDATA[
 /// using Bodu.Security.Cryptography;
 ///
-/// Legacy interop only — padding bytes are random; only the final length byte is validated.
+/// // Legacy interop only — padding bytes are random; only the final length byte is validated.
 /// IPaddingStrategy padding = new Iso10126Padding();
 /// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// byte[] recovered = padding.Unpad(padded, blockSize: 128);

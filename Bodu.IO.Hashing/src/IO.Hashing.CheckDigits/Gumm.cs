@@ -38,13 +38,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against an in-memory body.
+/// // Single-call computation against an in-memory body.
 /// char check = Gumm.Compute("236");   // '9'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Gumm.IsValid("2369");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Gumm();
 /// algo.Append("236");
 /// char d = algo.GetCurrentCheckDigit();   // '9'

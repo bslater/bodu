@@ -30,7 +30,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Typical lambda registration via the IConfigurationBuilder extension.
+/// // Typical lambda registration via the IConfigurationBuilder extension.
 /// builder.Configuration.AddBoduConfigurationFile(source =>
 /// {
 ///     source.Path           = "app.boduconfig";
@@ -40,7 +40,7 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     source.ParseOptions   = ConfigurationParseOptions.Strict;
 /// });
 ///
-/// Direct construction — for example, in a custom builder host.
+/// // Direct construction — for example, in a custom builder host.
 /// var source = new TextConfigurationSource
 /// {
 ///     Path           = "app.boduconfig",

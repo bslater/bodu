@@ -31,7 +31,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Buffer a streamed sequence whose length is unknown, then random-access it by index.
+/// // Buffer a streamed sequence whose length is unknown, then random-access it by index.
 /// var buffer = new SegmentedBuffer<int>(segmentSize: 512);
 /// foreach (int value in ReadStream())
 ///     buffer.Add(value);

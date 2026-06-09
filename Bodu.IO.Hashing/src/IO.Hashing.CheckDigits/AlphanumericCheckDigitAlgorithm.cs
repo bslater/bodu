@@ -32,13 +32,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Use a concrete derivative through the abstract surface — ISIN accepts a mix of
-/// ASCII letters (the country code) and digits.
+/// // Use a concrete derivative through the abstract surface — ISIN accepts a mix of
+/// // ASCII letters (the country code) and digits.
 /// AlphanumericCheckDigitAlgorithm algo = new Isin();
 /// algo.Append("US037833100");                          // Apple Inc.
 /// char check = algo.GetCurrentCheckDigit();            // '5'
 ///
-/// Inspect the declared alphabets for input validation upstream.
+/// // Inspect the declared alphabets for input validation upstream.
 /// CheckDigitInputAlphabet  inputs  = algo.InputAlphabet;
 /// CheckDigitOutputAlphabet outputs = algo.OutputAlphabet;
 ///]]>

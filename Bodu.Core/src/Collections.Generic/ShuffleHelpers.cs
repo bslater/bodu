@@ -31,12 +31,12 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Deterministic shuffle of an array — useful for tests and reproducible demos.
+/// // Deterministic shuffle of an array — useful for tests and reproducible demos.
 /// var deck = Enumerable.Range(1, 52).ToArray();
 /// IRandomGenerator rng = new XorShiftRandom(seed: 42);
 /// ShuffleHelpers.Shuffle(deck, rng);
 ///
-/// Sample five cards without replacement using the yield-based overload.
+/// // Sample five cards without replacement using the yield-based overload.
 /// foreach (int card in ShuffleHelpers.ShuffleAndYield(deck, rng, count: 5))
 ///     Console.WriteLine(card);
 ///]]>

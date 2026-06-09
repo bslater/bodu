@@ -34,14 +34,14 @@ namespace Bodu.Collections.Generic.Extensions;
 ///<![CDATA[
 /// IList<string> items = new List<string> { "alpha", "beta", "gamma", "beta" };
 ///
-/// Predicate-based search.
+/// // Predicate-based search.
 /// int firstBetaIndex = items.IndexOf(s => s.StartsWith("b")); // 1
 ///
-/// Try-style relocation that won't throw on out-of-range indices.
+/// // Try-style relocation that won't throw on out-of-range indices.
 /// if (items.TryMove(oldIndex: 0, newIndex: 2))
 ///     Console.WriteLine(string.Join(", ", items)); // beta, gamma, alpha, beta
 ///
-/// Bulk replacement with a count of changes.
+/// // Bulk replacement with a count of changes.
 /// int replaced = items.ReplaceAll(oldItem: "beta", newItem: "BETA"); // 2
 ///]]>
 /// </example>

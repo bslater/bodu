@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography;
 ///<![CDATA[
 /// using Bodu.Security.Cryptography;
 ///
-/// 16-byte secret key — keep it private to your process; SipHash assumes attackers cannot guess it.
+/// // 16-byte secret key — keep it private to your process; SipHash assumes attackers cannot guess it.
 /// byte[] hashTableKey = RandomNumberGenerator.GetBytes(16);
 /// using var sip = new SipHash64 { Key = hashTableKey };
 /// byte[] tag = sip.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user-supplied-key"));

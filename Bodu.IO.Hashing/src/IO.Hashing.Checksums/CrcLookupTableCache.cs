@@ -39,10 +39,10 @@ namespace Bodu.IO.Hashing.Checksums;
 ///<![CDATA[
 /// using Bodu.IO.Hashing.Checksums;
 ///
-/// Most callers do not interact with the cache directly — Crc resolves it through Crc.GlobalCache.
+/// // Most callers do not interact with the cache directly — Crc resolves it through Crc.GlobalCache.
 /// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 ///
-/// Use a scoped cache for an isolated test, then restore the default.
+/// // Use a scoped cache for an isolated test, then restore the default.
 /// CrcLookupTableCache previous = Crc.GlobalCache;
 /// try
 /// {

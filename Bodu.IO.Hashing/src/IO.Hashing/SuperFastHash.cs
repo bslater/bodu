@@ -45,7 +45,7 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// Suited to short keys; avoid for multi-megabyte streams (the input is fully buffered).
+/// // Suited to short keys; avoid for multi-megabyte streams (the input is fully buffered).
 /// var sfh = new SuperFastHash();
 /// byte[] digest = sfh.ComputeHash(System.Text.Encoding.UTF8.GetBytes("short-key"));
 ///]]>

@@ -104,7 +104,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// SHA-256 leaves, 64 KiB blocks, fan-out of 4 — a typical large-content configuration.
+/// // SHA-256 leaves, 64 KiB blocks, fan-out of 4 — a typical large-content configuration.
 /// using var merkle = new ParallelMerkleTreeHash(
 ///     algorithmFactory: () => SHA256.Create(),
 ///     blockSize: 64 * 1024,

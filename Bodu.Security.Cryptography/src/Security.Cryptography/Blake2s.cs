@@ -70,11 +70,11 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// Unkeyed hash
+/// // Unkeyed hash
 /// using var blake2s = new Blake2s(256);
 /// byte[] digest = blake2s.ComputeHash(message);
 ///
-/// Keyed MAC (BLAKE2s-MAC-256)
+/// // Keyed MAC (BLAKE2s-MAC-256)
 /// using var mac = new Blake2s(256) { Key = myKey };
 /// byte[] tag = mac.ComputeHash(message);
 ///]]>

@@ -83,18 +83,18 @@ namespace Bodu.IO.Hashing.Checksums;
 ///<![CDATA[
 /// using Bodu.IO.Hashing.Checksums;
 ///
-/// 1. Direct named accessor — most callers want exactly this.
+/// // 1. Direct named accessor — most callers want exactly this.
 /// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 ///
-/// 2. Data-driven look-up — pick the variant from a configuration value.
+/// // 2. Data-driven look-up — pick the variant from a configuration value.
 /// CrcStandards configured = Enum.Parse<CrcStandards>(config["CrcVariant"]);
 /// var configuredCrc = new Crc(CrcStandard.Get(configured));
 ///
-/// 3. Look-up by alias — accept legacy or vendor names supplied by users.
+/// // 3. Look-up by alias — accept legacy or vendor names supplied by users.
 /// CrcStandard pkzip = CrcStandard.FromName("PKZIP");      // same instance as CRC32_ISOHDLC
 /// CrcStandard ccitt = CrcStandard.FromName("CRC-CCITT");  // resolves to CRC16_KERMIT
 ///
-/// 4. Custom variant (not in the RevEng catalogue): a 12-bit CRC with bespoke parameters.
+/// // 4. Custom variant (not in the RevEng catalogue): a 12-bit CRC with bespoke parameters.
 /// var custom = new CrcStandard(
 ///     name:         "CRC-12/MY-SPEC",
 ///     size:         12,

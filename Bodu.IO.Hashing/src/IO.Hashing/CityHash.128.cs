@@ -67,7 +67,7 @@ namespace Bodu.IO.Hashing;
 ///
 /// var city = new CityHash128();
 /// byte[] fingerprint = city.ComputeHash(blob);
-/// fingerprint = [low 64 bits || high 64 bits], each little-endian.
+/// // fingerprint = [low 64 bits || high 64 bits], each little-endian.
 ///]]>
 /// </code>
 /// </example>

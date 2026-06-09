@@ -61,7 +61,7 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// Pick a width and variant; FNV-1a is the recommended default.
+/// // Pick a width and variant; FNV-1a is the recommended default.
 /// var fnv = new Fnv1a64();
 /// byte[] digest = fnv.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user@example.com"));
 ///]]>

@@ -32,13 +32,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Apple Inc. — CUSIP body "03783310".
+/// // Apple Inc. — CUSIP body "03783310".
 /// char check = Cusip.Compute("03783310");   // '0'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Cusip.IsValid("037833100");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Cusip();
 /// algo.Append("03783310");
 /// char d = algo.GetCurrentCheckDigit();     // '0'

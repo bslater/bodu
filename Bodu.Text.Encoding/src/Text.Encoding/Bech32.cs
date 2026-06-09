@@ -26,11 +26,11 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Encode 5-bit data groups under a human-readable prefix.
+/// // Encode 5-bit data groups under a human-readable prefix.
 /// byte[] data = { 0x00, 0x01, 0x02 };                 // already 5-bit values
 /// string encoded = Bech32.Encode("abc", data);        // "abc1..." with a Bech32 checksum
 ///
-/// Decode and recover the parts.
+/// // Decode and recover the parts.
 /// Bech32.Decode(encoded, out string hrp, out byte[] groups, out Bech32Encoding scheme);
 ///]]>
 /// </example>

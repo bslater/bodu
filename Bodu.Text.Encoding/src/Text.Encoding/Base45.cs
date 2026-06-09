@@ -27,11 +27,11 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Encode an arbitrary byte payload for inclusion in a QR code.
+/// // Encode an arbitrary byte payload for inclusion in a QR code.
 /// byte[] data = { 0x41, 0x42 };
 /// string encoded = Base45.Encode(data);          // "BB8"
 ///
-/// Round-trip.
+/// // Round-trip.
 /// byte[] roundtrip = Base45.Decode(encoded);      // { 0x41, 0x42 }
 ///]]>
 /// </example>

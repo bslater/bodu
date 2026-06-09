@@ -20,8 +20,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Consume through a concrete derivative — the shared 64-bit finalization layout
-/// is identical across every Adler64Base subclass.
+/// // Consume through a concrete derivative — the shared 64-bit finalization layout
+/// // is identical across every Adler64Base subclass.
 /// Adler64Base hash = new Adler64();
 /// hash.Append("Wikipedia"u8);
 /// byte[] digest = hash.GetCurrentHash();   // big-endian (B << 32) | A

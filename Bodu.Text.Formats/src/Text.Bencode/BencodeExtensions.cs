@@ -22,7 +22,7 @@ namespace Bodu.Text.Bencode;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Parse and round-trip via the receiver-typed extensions.
+/// // Parse and round-trip via the receiver-typed extensions.
 /// byte[] payload = File.ReadAllBytes("example.torrent");
 /// BencodedValue root = payload.ParseBencode();
 /// byte[] reencoded = root.FormatBencode();

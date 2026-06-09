@@ -35,13 +35,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation — body is the country code followed by the BBAN.
+/// // Single-call computation — body is the country code followed by the BBAN.
 /// string check = Iban.Compute("GBWEST12345698765432");   // "82"
 ///
-/// Full-sequence validation against the complete IBAN.
+/// // Full-sequence validation against the complete IBAN.
 /// bool ok = Iban.IsValid("GB82WEST12345698765432");      // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Iban();
 /// algo.Append("GBWEST12345698765432");
 /// string code = algo.GetCurrentCheckDigits();            // "82"

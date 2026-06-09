@@ -175,77 +175,77 @@ namespace Bodu.Collections.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// Common input structure
+/// // Common input structure
 /// var root = new[]
 /// {
 ///     new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
 ///     new Node { Name = "D" }
 /// };
 /// //
-/// RecursiveSelect using different control values
+/// // RecursiveSelect using different control values
 ///
-/// YieldAndRecurse
+/// // YieldAndRecurse
 /// var all = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.YieldAndRecurse);
-/// Output: A, B, C, D
+/// // Output: A, B, C, D
 ///
-/// SkipOnly
+/// // SkipOnly
 /// var skip = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.SkipOnly);
-/// Output: (empty)
+/// // Output: (empty)
 ///
-/// YieldOnly
+/// // YieldOnly
 /// var yieldOnly = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.YieldOnly);
-/// Output: A, D
+/// // Output: A, D
 ///
-/// RecurseOnly
+/// // RecurseOnly
 /// var recurseOnly = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.RecurseOnly);
-/// Output: B, C
+/// // Output: B, C
 ///
-/// SkipAndRecurse
+/// // SkipAndRecurse
 /// var skipAndRecurse = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.SkipAndRecurse);
-/// Output: B, C
+/// // Output: B, C
 ///
-/// YieldAndBreak
+/// // YieldAndBreak
 /// var yieldAndBreak = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.YieldAndBreak);
-/// Output: A
+/// // Output: A
 ///
-/// SkipAndBreak
+/// // SkipAndBreak
 /// var skipAndBreak = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.SkipAndBreak);
-/// Output: (empty)
+/// // Output: (empty)
 ///
-/// YieldAndExit
+/// // YieldAndExit
 /// var yieldAndExit = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.YieldAndExit);
-/// Output: A
+/// // Output: A
 ///
-/// SkipAndExit
+/// // SkipAndExit
 /// var skipAndExit = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.SkipAndExit);
-/// Output: (empty)
+/// // Output: (empty)
 ///]]>
 /// </code>
 /// </example>

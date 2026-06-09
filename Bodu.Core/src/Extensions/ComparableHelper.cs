@@ -39,7 +39,7 @@ namespace Bodu.Extensions;
 /// int? smaller = ComparableHelper.Min(a, b);       // 5 (null is skipped)
 /// int? either  = ComparableHelper.Coalesce(b, a);  // 5
 ///
-/// Custom comparer for reverse-ordered strings.
+/// // Custom comparer for reverse-ordered strings.
 /// string? winner = ComparableHelper.Max("alpha", "beta", StringComparer.OrdinalIgnoreCase); // "beta"
 ///]]>
 /// </example>

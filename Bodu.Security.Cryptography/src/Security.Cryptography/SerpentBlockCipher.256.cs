@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Direct single-block use. For most workloads prefer the Serpent256 SymmetricAlgorithm wrapper.
+/// // Direct single-block use. For most workloads prefer the Serpent256 SymmetricAlgorithm wrapper.
 /// byte[] key   = new byte[32];   // 256-bit key
 /// byte[] tweak = new byte[16];   // 128-bit tweak
 /// RandomNumberGenerator.Fill(key);
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// byte[] roundtrip = new byte[32];
 /// cipher.Decrypt(ciphertext, roundtrip);
-/// roundtrip equals plaintext
+/// // roundtrip equals plaintext
 ///]]>
 /// </example>
 /// <seealso cref="Serpent256"/>

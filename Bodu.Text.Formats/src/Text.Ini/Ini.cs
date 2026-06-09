@@ -46,7 +46,7 @@ namespace Bodu.Text.Ini;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Parse a document and read a typed value out of a known section.
+/// // Parse a document and read a typed value out of a known section.
 /// IniDocument doc = Ini.Parse("""
 ///     [database]
 ///     host=localhost
@@ -57,10 +57,10 @@ namespace Bodu.Text.Ini;
 /// string host  = db["host"];
 /// int    port  = db.GetInt32("port", fallback: 5432);
 ///
-/// Round-trip: emit the document back to a string.
+/// // Round-trip: emit the document back to a string.
 /// string text = Ini.Format(doc);
 ///
-/// Dialect override: case-sensitive section names.
+/// // Dialect override: case-sensitive section names.
 /// IniDocument strict = Ini.Parse(source, new IniParseOptions { CaseSensitiveSections = true });
 ///]]>
 /// </example>

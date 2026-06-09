@@ -60,7 +60,7 @@ namespace Bodu.Text.DotEnv;
 /// foreach (DotEnvEntry entry in doc.Entries)
 ///     Environment.SetEnvironmentVariable(entry.Key, entry.Value);
 ///
-/// Direct lookup is O(1).
+/// // Direct lookup is O(1).
 /// string port = doc["PORT"];   // "8080"
 ///]]>
 /// </example>

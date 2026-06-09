@@ -37,13 +37,13 @@ namespace Bodu.Extensions;
 ///<![CDATA[
 /// int[] source = { 1, 2, 3, 4, 5, 6 };
 ///
-/// Reverse only the middle window — in place.
+/// // Reverse only the middle window — in place.
 /// source.Reverse(1, 4); // => source is now { 1, 5, 4, 3, 2, 6 }
 ///
-/// Take a freshly allocated slice using a Range expression.
+/// // Take a freshly allocated slice using a Range expression.
 /// int[] tail = source.Slice(2..); // => { 4, 3, 2, 6 }
 ///
-/// Clear the prefix without touching the tail.
+/// // Clear the prefix without touching the tail.
 /// source.Clear(0, 3); // => source is now { 0, 0, 0, 3, 2, 6 }
 ///]]>
 /// </code>

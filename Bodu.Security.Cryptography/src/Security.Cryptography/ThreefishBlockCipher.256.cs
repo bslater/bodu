@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Direct single-block use — most callers should prefer the Threefish256 SymmetricAlgorithm.
+/// // Direct single-block use — most callers should prefer the Threefish256 SymmetricAlgorithm.
 /// byte[] key   = new byte[32];   // 256-bit key
 /// byte[] tweak = new byte[16];   // 128-bit tweak
 /// RandomNumberGenerator.Fill(key);
@@ -43,7 +43,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// byte[] roundtrip = new byte[32];
 /// cipher.Decrypt(ciphertext, roundtrip);
-/// roundtrip equals plaintext
+/// // roundtrip equals plaintext
 ///]]>
 /// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.

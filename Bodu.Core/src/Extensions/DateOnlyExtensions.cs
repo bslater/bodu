@@ -40,13 +40,13 @@ namespace Bodu.Extensions;
 ///<![CDATA[
 /// var date = new DateOnly(2025, 4, 30);
 ///
-/// Anchor to the first Monday in this month.
+/// // Anchor to the first Monday in this month.
 /// DateOnly firstMonday = date.FirstDateOfWeekInMonth(DayOfWeek.Monday); // => 2025-04-07
 ///
-/// Walk to the previous Friday, even if today is already a Friday.
+/// // Walk to the previous Friday, even if today is already a Friday.
 /// DateOnly priorFriday = date.PreviousDateOfWeek(DayOfWeek.Friday); // => 2025-04-25
 ///
-/// Compute the calendar week within the month using ISO rules.
+/// // Compute the calendar week within the month using ISO rules.
 /// int weekOfMonth = date.WeekOfMonth(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday); // => 5
 ///]]>
 /// </code>

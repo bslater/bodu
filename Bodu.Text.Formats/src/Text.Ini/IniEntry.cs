@@ -28,14 +28,14 @@ namespace Bodu.Text.Ini;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Build a section programmatically and format it back to text.
+/// // Build a section programmatically and format it back to text.
 /// var doc = new IniDocument();
 /// IniSection db = doc.GetOrAddSection("database");
 /// db.SetEntry("host", "localhost");
 /// IniEntry port = db.SetEntry("port", "5432");
 /// port.InlineComment = new IniComment('#', " default Postgres port");
 ///
-/// Key and Value are immutable; replace the value via SetEntry.
+/// // Key and Value are immutable; replace the value via SetEntry.
 /// db.SetEntry("port", "5433");
 ///
 /// string text = Ini.Format(doc);
