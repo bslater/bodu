@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -203,9 +203,9 @@ public partial class TomlReader
     /// <returns>The decoded text.</returns>
     /// <exception cref="TomlFormatException">Thrown when the bytes are not valid UTF-8.</exception>
     /// <remarks>
-    /// A leading byte-order mark is decoded to U+FEFF and left in place; the parser strips exactly one leading mark, so a
-    /// second or otherwise misplaced mark is preserved here and rejected during parsing. Stripping the mark at the byte
-    /// level as well would silently swallow a second mark and accept a non-conformant document.
+    /// A leading byte-order mark is decoded to U+FEFF and left in place; the parser strips exactly one leading mark, so
+    /// a second or otherwise misplaced mark is preserved here and rejected during parsing. Stripping the mark at the
+    /// byte level as well would silently swallow a second mark and accept a non-conformant document.
     /// </remarks>
     private static string Decode(MemoryStream buffer)
     {
@@ -229,12 +229,12 @@ public partial class TomlReader
     /// Thrown when <paramref name="source" /> contains an unpaired surrogate.
     /// </exception>
     /// <remarks>
-    /// A TOML document is valid UTF-8, and an unpaired surrogate is not a Unicode scalar value that UTF-8 can represent.
-    /// Stream input is already guaranteed well-formed by the strict UTF-8 decoder, so this guard exists for the
-    /// <see cref="string" />, <see cref="ReadOnlySpan{T}" />, and <see cref="TextReader" /> paths, whose .NET character
-    /// data can carry a lone surrogate half that no real UTF-8 source could have produced. Validating once up front
-    /// applies the rule uniformly to every place source text appears — string and key values, comments, and the text
-    /// between tokens — and keeps reader and writer surrogate policy aligned.
+    /// A TOML document is valid UTF-8, and an unpaired surrogate is not a Unicode scalar value that UTF-8 can
+    /// represent. Stream input is already guaranteed well-formed by the strict UTF-8 decoder, so this guard exists for
+    /// the <see cref="string" />, <see cref="ReadOnlySpan{T}" />, and <see cref="TextReader" /> paths, whose .NET
+    /// character data can carry a lone surrogate half that no real UTF-8 source could have produced. Validating once up
+    /// front applies the rule uniformly to every place source text appears — string and key values, comments, and the
+    /// text between tokens — and keeps reader and writer surrogate policy aligned.
     /// </remarks>
     private static void EnsureValidScalarValues(ReadOnlySpan<char> source)
     {

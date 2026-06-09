@@ -166,8 +166,8 @@ public abstract class Fnv<TSelf>
     }
 
     /// <summary>
-    /// Folds the supplied bytes into the running hash using the FNV-1 ordering: multiply by the prime, then XOR
-    /// the byte.
+    /// Folds the supplied bytes into the running hash using the FNV-1 ordering: multiply by the prime, then XOR the
+    /// byte.
     /// </summary>
     /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -185,8 +185,8 @@ public abstract class Fnv<TSelf>
     }
 
     /// <summary>
-    /// Folds the supplied bytes into the running hash using the FNV-1a ordering: XOR the byte, then multiply by
-    /// the prime.
+    /// Folds the supplied bytes into the running hash using the FNV-1a ordering: XOR the byte, then multiply by the
+    /// prime.
     /// </summary>
     /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

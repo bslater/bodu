@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Text.Bencode;
 /// <para>
 /// The encoded form is deterministic: dictionary entries are emitted with their keys in ascending bytewise order, so a
 /// given document always produces the same bytes. <see cref="GetWrittenLength(BencodedValue)" /> reports the exact size
-/// in advance, allowing callers to pool destination buffers, and <see cref="TryWrite(BencodedValue, Span{byte}, out int)" />
-/// encodes into a caller-supplied span without allocating.
+/// in advance, allowing callers to pool destination buffers, and
+/// <see cref="TryWrite(BencodedValue, Span{byte}, out int)" /> encodes into a caller-supplied span without allocating.
 /// </para>
 /// </remarks>
 /// <example>
@@ -71,9 +71,8 @@ public sealed class BencodeWriter
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
     /// <remarks>
-    /// The encoded payload is staged in a pooled buffer sized exactly to
-    /// <see cref="GetWrittenLength(BencodedValue)" /> and then written to <paramref name="destination" /> in a single
-    /// call. The stream is not closed.
+    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetWrittenLength(BencodedValue)" />
+    /// and then written to <paramref name="destination" /> in a single call. The stream is not closed.
     /// </remarks>
     public void Write(BencodedValue value, Stream destination)
     {
@@ -115,8 +114,8 @@ public sealed class BencodeWriter
     /// Thrown when <paramref name="cancellationToken" /> is signalled before the write completes.
     /// </exception>
     /// <remarks>
-    /// The encoded payload is staged in a pooled buffer sized exactly to
-    /// <see cref="GetWrittenLength(BencodedValue)" /> and then written to <paramref name="destination" /> in a single
+    /// The encoded payload is staged in a pooled buffer sized exactly to <see cref="GetWrittenLength(BencodedValue)" />
+    /// and then written to <paramref name="destination" /> in a single
     /// <see cref="Stream.WriteAsync(ReadOnlyMemory{byte}, CancellationToken)" /> call. The stream is not closed.
     /// </remarks>
     public async ValueTask WriteAsync(BencodedValue value, Stream destination, CancellationToken cancellationToken = default)

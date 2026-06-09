@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFormatException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -73,8 +73,8 @@ public sealed class TomlFormatException
     /// line.
     /// </param>
     /// <param name="columnNumber">
-    /// The 1-based column number within the line at which the error occurred, or <c>0</c> if the error is not associated
-    /// with a specific column.
+    /// The 1-based column number within the line at which the error occurred, or <c>0</c> if the error is not
+    /// associated with a specific column.
     /// </param>
     /// <param name="offset">
     /// The 0-based offset from the start of the source at which the error occurred, or <see langword="null" /> when

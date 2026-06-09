@@ -190,8 +190,8 @@ public sealed class Iban
     }
 
     /// <summary>
-    /// Folds a single character into the running ISO 7064 mod-97 remainder, contributing a digit as its value and
-    /// a letter <c>A</c>–<c>Z</c> as the two-digit value <c>10</c>–<c>35</c>.
+    /// Folds a single character into the running ISO 7064 mod-97 remainder, contributing a digit as its value and a
+    /// letter <c>A</c>–<c>Z</c> as the two-digit value <c>10</c>–<c>35</c>.
     /// </summary>
     /// <param name="r">The current mod-97 remainder.</param>
     /// <param name="ch">The character to fold in.</param>
@@ -200,8 +200,8 @@ public sealed class Iban
         (uint)(ch - '0') > 9u ? ((r * 100) + ch - 'A' + 10) % 97 : ((r * 10) + (ch - '0')) % 97;
 
     /// <summary>
-    /// Attempts to fold a single character into the running ISO 7064 mod-97 remainder, accepting digits and the
-    /// letters <c>A</c>–<c>Z</c>.
+    /// Attempts to fold a single character into the running ISO 7064 mod-97 remainder, accepting digits and the letters
+    /// <c>A</c>–<c>Z</c>.
     /// </summary>
     /// <param name="r">The current mod-97 remainder, updated in place when the character is accepted.</param>
     /// <param name="ch">The character to fold in.</param>

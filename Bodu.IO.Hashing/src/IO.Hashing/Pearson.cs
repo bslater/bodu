@@ -248,8 +248,7 @@ public sealed partial class Pearson
     };
 
     /// <summary>
-    /// Validates that <paramref name="hashSizeBits" /> is within the supported range and a positive multiple of
-    /// eight.
+    /// Validates that <paramref name="hashSizeBits" /> is within the supported range and a positive multiple of eight.
     /// </summary>
     /// <param name="hashSizeBits">The requested hash size, in bits.</param>
     /// <returns>The validated <paramref name="hashSizeBits" />.</returns>

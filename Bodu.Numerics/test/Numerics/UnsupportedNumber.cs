@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UnsupportedNumber.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -183,7 +183,9 @@ internal readonly struct UnsupportedNumber : INumberBase<UnsupportedNumber>
     /// <typeparam name="TOther">The requested destination type.</typeparam>
     /// <param name="value">The value being converted.</param>
     /// <param name="result">When this method returns, contains the converted value, or its default on failure.</param>
-    /// <returns><see langword="true" /> when an infinite double is produced; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when an infinite double is produced; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool TryConvertToDouble<TOther>(UnsupportedNumber value, [MaybeNullWhen(false)] out TOther result)
         where TOther : INumberBase<TOther>
     {

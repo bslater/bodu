@@ -165,8 +165,8 @@ public sealed class Bernstein
         BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 
     /// <summary>
-    /// Folds the supplied bytes into the running hash using the modified Bernstein recurrence
-    /// (<c>hash = hash * 33 ^ b</c>).
+    /// Folds the supplied bytes into the running hash using the modified Bernstein recurrence (
+    /// <c>hash = hash * 33 ^ b</c>).
     /// </summary>
     /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -182,8 +182,8 @@ public sealed class Bernstein
     }
 
     /// <summary>
-    /// Folds the supplied bytes into the running hash using the original Bernstein recurrence
-    /// (<c>hash = hash * 33 + b</c>).
+    /// Folds the supplied bytes into the running hash using the original Bernstein recurrence (
+    /// <c>hash = hash * 33 + b</c>).
     /// </summary>
     /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -199,8 +199,8 @@ public sealed class Bernstein
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun
-    /// consuming input, guarding configuration that may only change before hashing starts.
+    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun consuming
+    /// input, guarding configuration that may only change before hashing starts.
     /// </summary>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// The algorithm has already started consuming input.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45.Decode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,14 @@ public static partial class Base45
     /// Decodes a Base45 string into a byte array.
     /// </summary>
     /// <param name="s">The Base45 input.</param>
-    /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect, and it skips tab, carriage return, and line feed but never the space symbol.</param>
+    /// <param name="styles">
+    /// Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect, and it skips tab, carriage
+    /// return, and line feed but never the space symbol.
+    /// </param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="s" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base45.</exception>
     public static byte[] Decode(string s, BaseFormatStyles styles = BaseFormatStyles.None)
     {
@@ -62,7 +67,9 @@ public static partial class Base45
     /// </summary>
     /// <param name="chars">The Base45 character span.</param>
     /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on failure.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// </param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns>
     /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
@@ -92,7 +99,9 @@ public static partial class Base45
     /// <param name="chars">The input span.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <param name="result">When this method returns, contains the decoded byte array on success.</param>
-    /// <param name="error">When this method returns, contains a failure reason or <see langword="null" /> on success.</param>
+    /// <param name="error">
+    /// When this method returns, contains a failure reason or <see langword="null" /> on success.
+    /// </param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on failure.</returns>
     private static bool TryDecodeCore(ReadOnlySpan<char> chars, BaseFormatStyles styles, out byte[]? result, out string? error)
     {

@@ -69,8 +69,8 @@ public abstract class TextFormatException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextFormatException" /> class with the specified error message and a
-    /// full line, column, and offset location.
+    /// Initializes a new instance of the <see cref="TextFormatException" /> class with the specified error message and
+    /// a full line, column, and offset location.
     /// </summary>
     /// <param name="message">A message that describes the error.</param>
     /// <param name="lineNumber">

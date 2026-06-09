@@ -131,8 +131,8 @@ public sealed class Elf64
         BinaryPrimitives.WriteUInt64BigEndian(destination, _workingHash);
 
     /// <summary>
-    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun
-    /// consuming input, guarding configuration that may only change before hashing starts.
+    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun consuming
+    /// input, guarding configuration that may only change before hashing starts.
     /// </summary>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// The algorithm has already started consuming input.

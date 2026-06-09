@@ -478,8 +478,8 @@ public sealed class DotEnvReader
     /// <param name="entryLine">The 1-based line number on which the entry begins.</param>
     /// <param name="value">When an entry is parsed, receives the processed string value.</param>
     /// <returns>
-    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise,
-    /// <see cref="ReadResult.NeedMore" /> when more input is required.
+    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise, <see cref="ReadResult.NeedMore" /> when
+    /// more input is required.
     /// </returns>
     /// <exception cref="DotEnvFormatException">
     /// Thrown when the value is unterminated and <paramref name="isFinal" /> is <see langword="true" />.
@@ -585,8 +585,8 @@ public sealed class DotEnvReader
     /// <param name="entryLine">The 1-based line number on which the entry begins.</param>
     /// <param name="value">When an entry is parsed, receives the literal string value.</param>
     /// <returns>
-    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise,
-    /// <see cref="ReadResult.NeedMore" /> when more input is required.
+    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise, <see cref="ReadResult.NeedMore" /> when
+    /// more input is required.
     /// </returns>
     /// <exception cref="DotEnvFormatException">
     /// Thrown when the value is unterminated and <paramref name="isFinal" /> is <see langword="true" />, or when a line
@@ -630,8 +630,8 @@ public sealed class DotEnvReader
     /// <param name="options">The parse options that govern inline-comment handling.</param>
     /// <param name="value">When an entry is parsed, receives the trimmed value.</param>
     /// <returns>
-    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise,
-    /// <see cref="ReadResult.NeedMore" /> when more input is required.
+    /// <see cref="ReadResult.Entry" /> when the value was parsed; otherwise, <see cref="ReadResult.NeedMore" /> when
+    /// more input is required.
     /// </returns>
     private static ReadResult ParseUnquoted(ReadOnlySpan<char> s, ref int i, bool isFinal, DotEnvParseOptions options, out string value)
     {

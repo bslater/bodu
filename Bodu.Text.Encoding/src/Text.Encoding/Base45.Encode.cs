@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45.Encode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,7 +63,9 @@ public static partial class Base45
     /// Encodes a span of bytes directly into a destination character span.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
-    /// <param name="destination">The destination span; must be at least <see cref="GetEncodedLength(int)" /> characters.</param>
+    /// <param name="destination">
+    /// The destination span; must be at least <see cref="GetEncodedLength(int)" /> characters.
+    /// </param>
     /// <returns>The number of characters written.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is too small.</exception>
     public static int Encode(ReadOnlySpan<byte> bytes, Span<char> destination)
@@ -87,7 +89,9 @@ public static partial class Base45
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.
+    /// </returns>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten)
     {
         if (bytes.IsEmpty)

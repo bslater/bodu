@@ -14,11 +14,7 @@ public static partial class NumericExtensions
     /// Returns a byte array representing the binary encoding of the specified numeric value, in the requested byte
     /// order.
     /// </summary>
-    /// <typeparam name="T">
-    /// The numeric type to convert. Supported types are <see cref="byte" />, <see cref="sbyte" />, <see cref="short" />
-    /// , <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />,
-    /// <see cref="float" />, and <see cref="double" />.
-    /// </typeparam>
+    /// <typeparam name="T">The numeric type to convert.</typeparam>
     /// <param name="value">The numeric value to convert.</param>
     /// <param name="asBigEndian">
     /// <see langword="true" /> to return bytes in big-endian order (most significant byte first);
@@ -36,6 +32,11 @@ public static partial class NumericExtensions
     /// <see cref="BitConverter" /> is used to obtain the binary representation of each value in the system's native
     /// byte order. The resulting array is reversed when the requested byte order differs from the platform's native
     /// endianness.
+    /// </para>
+    /// <para>
+    /// Supported types are <see cref="byte" />, <see cref="sbyte" />, <see cref="short" /> , <see cref="ushort" />,
+    /// <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, and
+    /// <see cref="double" />.
     /// </para>
     /// <para>
     /// For <see cref="float" /> and <see cref="double" />, the encoding follows the IEEE 754 standard.

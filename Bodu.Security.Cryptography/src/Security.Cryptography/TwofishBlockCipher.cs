@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Direct single-block use. For most workloads prefer the Twofish SymmetricAlgorithm wrapper.
+/// // Direct single-block use. For most workloads prefer the Twofish SymmetricAlgorithm wrapper.
 /// byte[] key = new byte[32];   // 128, 192, or 256 bits
 /// RandomNumberGenerator.Fill(key);
 ///
@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// byte[] roundtrip = new byte[16];
 /// cipher.Decrypt(ciphertext, roundtrip);
-/// roundtrip equals plaintext
+/// // roundtrip equals plaintext
 ///]]>
 /// </example>
 /// <seealso cref="Twofish"/>

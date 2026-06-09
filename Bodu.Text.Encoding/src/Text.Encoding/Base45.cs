@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base45 encoding and decoding of binary data as defined by RFC 9285 — the compact alphanumeric encoding
-/// used to carry binary payloads inside a QR code's Alphanumeric mode.
+/// Provides Base45 encoding and decoding of binary data as defined by RFC 9285 — the compact alphanumeric encoding used
+/// to carry binary payloads inside a QR code's Alphanumeric mode.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -120,7 +120,10 @@ public static partial class Base45
     /// Indicates whether <paramref name="source" /> is a valid Base45 input.
     /// </summary>
     /// <param name="source">The character span to validate.</param>
-    /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect, and it skips tab, carriage return, and line feed but never the space symbol.</param>
+    /// <param name="styles">
+    /// Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect, and it skips tab, carriage
+    /// return, and line feed but never the space symbol.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
     /// <see langword="false" />.

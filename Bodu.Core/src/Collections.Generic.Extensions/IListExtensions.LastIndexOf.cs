@@ -103,8 +103,8 @@ public static partial class IListExtensions
     }
 
     /// <summary>
-    /// Validates the start index supplied to the backward-search overloads, honoring the convention that a start
-    /// index of <c>-1</c> is the only value permitted for an empty list.
+    /// Validates the start index supplied to the backward-search overloads, honoring the convention that a start index
+    /// of <c>-1</c> is the only value permitted for an empty list.
     /// </summary>
     /// <typeparam name="TSource">The type of the elements in <paramref name="list" />.</typeparam>
     /// <param name="list">The list whose size bounds the valid start index.</param>
