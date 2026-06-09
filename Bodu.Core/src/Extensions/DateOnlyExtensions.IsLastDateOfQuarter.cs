@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateOnlyExtensions
@@ -54,7 +56,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 
-        if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+        if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
         (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
         return date.DayNumber == ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition));
     }

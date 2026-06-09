@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu;
 
 public partial struct WeekPattern
@@ -31,7 +33,7 @@ public partial struct WeekPattern
     {
         ThrowHelper.ThrowIfNull(input);
         if (input.Length != 7)
-            throw new FormatException(string.Format(ResourceStrings.Format_Invalid_StringLength, 7));
+            throw new FormatException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_StringLength, 7));
 
         byte mask = 0;
 
@@ -70,7 +72,7 @@ public partial struct WeekPattern
                     '0' => false,
                     '1' => true,
                     _ => throw new FormatException(
-                               string.Format(ResourceStrings.Format_Invalid_Character, c, i + 1))
+                               string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, c, i + 1))
                 };
 
                 if (bitSet)
@@ -108,7 +110,7 @@ public partial struct WeekPattern
                 else
                 {
                     throw new FormatException(
-                        string.Format(ResourceStrings.Format_Invalid_Character, c, i + 1));
+                        string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, c, i + 1));
                 }
             }
         }

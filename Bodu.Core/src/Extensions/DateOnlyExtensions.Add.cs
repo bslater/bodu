@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public static partial class DateOnlyExtensions
@@ -68,7 +70,7 @@ public static partial class DateOnlyExtensions
         return (uint)dayNumber > DateOnly.MaxValue.DayNumber
             ? throw new ArgumentOutOfRangeException(
                 nameof(date),
-                string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)))
             : DateOnly.FromDayNumber(dayNumber);
     }
 }

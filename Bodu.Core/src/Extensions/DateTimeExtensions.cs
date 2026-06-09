@@ -737,7 +737,7 @@ public static partial class DateTimeExtensions
 
             _ => throw new ArgumentOutOfRangeException(
                     nameof(rule),
-                    string.Format(ResourceStrings.Arg_OutOfRange_EnumValue, rule, nameof(CalendarWeekRule))),
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, rule, nameof(CalendarWeekRule))),
         };
     }
 
@@ -882,7 +882,7 @@ public static partial class DateTimeExtensions
     /// allocation and is optimized for internal calendar calculations.
     /// </para>
     /// </remarks>
-    private static long GetLastDateOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, dateTime.DaysInMonth());
+    private static long GetLastDateOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
 
     /// <summary>
     /// Returns the tick count that represents the last day of week in the current month of the

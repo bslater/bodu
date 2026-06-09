@@ -86,4 +86,72 @@ public partial struct WeekPattern
     {
         return left._selectedDays != right._selectedDays;
     }
+
+    /// <summary>
+    /// Determines whether one <see cref="WeekPattern" /> precedes another in the underlying bitmask ordering.
+    /// </summary>
+    /// <param name="left">The first operand.</param>
+    /// <param name="right">The second operand.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="left" /> is less than <paramref name="right" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.
+    /// </remarks>
+    public static bool operator <(WeekPattern left, WeekPattern right)
+    {
+        return left._selectedDays < right._selectedDays;
+    }
+
+    /// <summary>
+    /// Determines whether one <see cref="WeekPattern" /> precedes or equals another in the underlying bitmask ordering.
+    /// </summary>
+    /// <param name="left">The first operand.</param>
+    /// <param name="right">The second operand.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.
+    /// </remarks>
+    public static bool operator <=(WeekPattern left, WeekPattern right)
+    {
+        return left._selectedDays <= right._selectedDays;
+    }
+
+    /// <summary>
+    /// Determines whether one <see cref="WeekPattern" /> follows another in the underlying bitmask ordering.
+    /// </summary>
+    /// <param name="left">The first operand.</param>
+    /// <param name="right">The second operand.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.
+    /// </remarks>
+    public static bool operator >(WeekPattern left, WeekPattern right)
+    {
+        return left._selectedDays > right._selectedDays;
+    }
+
+    /// <summary>
+    /// Determines whether one <see cref="WeekPattern" /> follows or equals another in the underlying bitmask ordering.
+    /// </summary>
+    /// <param name="left">The first operand.</param>
+    /// <param name="right">The second operand.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="left" /> is greater than or equal to <paramref name="right" />;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.
+    /// </remarks>
+    public static bool operator >=(WeekPattern left, WeekPattern right)
+    {
+        return left._selectedDays >= right._selectedDays;
+    }
 }
