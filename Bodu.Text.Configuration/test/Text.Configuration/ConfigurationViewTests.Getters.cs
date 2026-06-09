@@ -99,4 +99,16 @@ public partial class ConfigurationViewTests
 
         Assert.ThrowsExactly<FormatException>(() => view.GetBoolean("int", false));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationView.GetInt64(string)" /> throws <see cref="FormatException" /> when the
+    /// present value cannot be parsed as a 64-bit integer.
+    /// </summary>
+    [TestMethod]
+    public void GetInt64_WhenValueMalformed_ShouldThrowFormatException()
+    {
+        ConfigurationView view = TypedView();
+
+        Assert.ThrowsExactly<FormatException>(() => view.GetInt64("flag"));
+    }
 }
