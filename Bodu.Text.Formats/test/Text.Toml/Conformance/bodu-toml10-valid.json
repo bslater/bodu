@@ -1,0 +1,380 @@
+[
+  {
+    "name": "arrays",
+    "toml": "integers = [1, 2, 3]\nmixed = [0.1, 1, \"two\", true]\nnested = [[1, 2], [\"a\", \"b\"]]\ntrailing = [\n  \"red\",\n  \"yellow\",\n  \"green\",\n]\n",
+    "expected": {
+      "integers": [
+        {
+          "type": "integer",
+          "value": "1"
+        },
+        {
+          "type": "integer",
+          "value": "2"
+        },
+        {
+          "type": "integer",
+          "value": "3"
+        }
+      ],
+      "mixed": [
+        {
+          "type": "float",
+          "value": "0.1"
+        },
+        {
+          "type": "integer",
+          "value": "1"
+        },
+        {
+          "type": "string",
+          "value": "two"
+        },
+        {
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "nested": [
+        [
+          {
+            "type": "integer",
+            "value": "1"
+          },
+          {
+            "type": "integer",
+            "value": "2"
+          }
+        ],
+        [
+          {
+            "type": "string",
+            "value": "a"
+          },
+          {
+            "type": "string",
+            "value": "b"
+          }
+        ]
+      ],
+      "trailing": [
+        {
+          "type": "string",
+          "value": "red"
+        },
+        {
+          "type": "string",
+          "value": "yellow"
+        },
+        {
+          "type": "string",
+          "value": "green"
+        }
+      ]
+    }
+  },
+  {
+    "name": "basic-types",
+    "toml": "title = \"TOML Example\"\nenabled = true\nanswer = 42\npi = 3.1415\n",
+    "expected": {
+      "title": {
+        "type": "string",
+        "value": "TOML Example"
+      },
+      "enabled": {
+        "type": "bool",
+        "value": "true"
+      },
+      "answer": {
+        "type": "integer",
+        "value": "42"
+      },
+      "pi": {
+        "type": "float",
+        "value": "3.1415"
+      }
+    }
+  },
+  {
+    "name": "datetimes",
+    "toml": "odt = 1979-05-27T07:32:00Z\nodt_space = 1979-05-27 00:32:00-07:00\nldt = 1979-05-27T07:32:00.999\nld = 1979-05-27\nlt = 07:32:00.999\n",
+    "expected": {
+      "odt": {
+        "type": "datetime",
+        "value": "1979-05-27T07:32:00Z"
+      },
+      "odt_space": {
+        "type": "datetime",
+        "value": "1979-05-27T00:32:00-07:00"
+      },
+      "ldt": {
+        "type": "datetime-local",
+        "value": "1979-05-27T07:32:00.999"
+      },
+      "ld": {
+        "type": "date-local",
+        "value": "1979-05-27"
+      },
+      "lt": {
+        "type": "time-local",
+        "value": "07:32:00.999"
+      }
+    }
+  },
+  {
+    "name": "implicit-super-table",
+    "toml": "[x.y.z.w]\nvalue = 1\n\n[x]\nname = \"x\"\n",
+    "expected": {
+      "x": {
+        "y": {
+          "z": {
+            "w": {
+              "value": {
+                "type": "integer",
+                "value": "1"
+              }
+            }
+          }
+        },
+        "name": {
+          "type": "string",
+          "value": "x"
+        }
+      }
+    }
+  },
+  {
+    "name": "inline-tables",
+    "toml": "name = { first = \"Tom\", last = \"Preston-Werner\" }\npoint = { x = 1, y = 2 }\nanimal = { type.name = \"pug\" }\nempty = {}\n",
+    "expected": {
+      "name": {
+        "first": {
+          "type": "string",
+          "value": "Tom"
+        },
+        "last": {
+          "type": "string",
+          "value": "Preston-Werner"
+        }
+      },
+      "point": {
+        "x": {
+          "type": "integer",
+          "value": "1"
+        },
+        "y": {
+          "type": "integer",
+          "value": "2"
+        }
+      },
+      "animal": {
+        "type": {
+          "name": {
+            "type": "string",
+            "value": "pug"
+          }
+        }
+      },
+      "empty": {}
+    }
+  },
+  {
+    "name": "integers-and-floats",
+    "toml": "dec = +99\nneg = -17\nhex = 0xDEAD_BEEF\noct = 0o755\nbin = 0b1101_0110\nlarge = 9223372036854775807\nsmall = -9223372036854775808\nexp = 5e+22\nboth = 6.626e-34\npos_inf = +inf\nneg_inf = -inf\nnan_value = nan\n",
+    "expected": {
+      "dec": {
+        "type": "integer",
+        "value": "99"
+      },
+      "neg": {
+        "type": "integer",
+        "value": "-17"
+      },
+      "hex": {
+        "type": "integer",
+        "value": "3735928559"
+      },
+      "oct": {
+        "type": "integer",
+        "value": "493"
+      },
+      "bin": {
+        "type": "integer",
+        "value": "214"
+      },
+      "large": {
+        "type": "integer",
+        "value": "9223372036854775807"
+      },
+      "small": {
+        "type": "integer",
+        "value": "-9223372036854775808"
+      },
+      "exp": {
+        "type": "float",
+        "value": "5e+22"
+      },
+      "both": {
+        "type": "float",
+        "value": "6.626e-34"
+      },
+      "pos_inf": {
+        "type": "float",
+        "value": "inf"
+      },
+      "neg_inf": {
+        "type": "float",
+        "value": "-inf"
+      },
+      "nan_value": {
+        "type": "float",
+        "value": "nan"
+      }
+    }
+  },
+  {
+    "name": "keys-and-dotted-keys",
+    "toml": "bare_key = \"bare\"\nbare-key = \"dash\"\n1234 = \"numeric bare key\"\n\"quoted.key\" = \"not dotted\"\nsite.\"google.com\" = true\nphysical.color = \"orange\"\nphysical.shape = \"round\"\n",
+    "expected": {
+      "bare_key": {
+        "type": "string",
+        "value": "bare"
+      },
+      "bare-key": {
+        "type": "string",
+        "value": "dash"
+      },
+      "1234": {
+        "type": "string",
+        "value": "numeric bare key"
+      },
+      "quoted.key": {
+        "type": "string",
+        "value": "not dotted"
+      },
+      "site": {
+        "google.com": {
+          "type": "bool",
+          "value": "true"
+        }
+      },
+      "physical": {
+        "color": {
+          "type": "string",
+          "value": "orange"
+        },
+        "shape": {
+          "type": "string",
+          "value": "round"
+        }
+      }
+    }
+  },
+  {
+    "name": "strings-basic-literal-multiline",
+    "toml": "basic = \"quote: \\\" tab: \\t newline: \\n unicode: \\u00E9\"\nliteral = 'C:\\Users\\nodejs\\templates'\nmultiline_basic = \"\"\"The quick brown fox jumps over the lazy dog.\"\"\"\nmultiline_literal = '''\nThe first newline is trimmed.\nBackslashes are literal: C:\\tmp\\file.txt\n'''\n",
+    "expected": {
+      "basic": {
+        "type": "string",
+        "value": "quote: \" tab: \t newline: \n unicode: é"
+      },
+      "literal": {
+        "type": "string",
+        "value": "C:\\Users\\nodejs\\templates"
+      },
+      "multiline_basic": {
+        "type": "string",
+        "value": "The quick brown fox jumps over the lazy dog."
+      },
+      "multiline_literal": {
+        "type": "string",
+        "value": "The first newline is trimmed.\nBackslashes are literal: C:\\tmp\\file.txt\n"
+      }
+    }
+  },
+  {
+    "name": "tables-and-aot",
+    "toml": "name = \"root\"\n\n[owner]\nname = \"Regina\"\nmember_since = 1999-08-04\n\n[database]\nenabled = true\nports = [8000, 8001, 8002]\n\n[[products]]\nname = \"Hammer\"\nsku = 738594937\n\n[[products]]\n\n[[products]]\nname = \"Nail\"\nsku = 284758393\ncolor = \"gray\"\n",
+    "expected": {
+      "name": {
+        "type": "string",
+        "value": "root"
+      },
+      "owner": {
+        "name": {
+          "type": "string",
+          "value": "Regina"
+        },
+        "member_since": {
+          "type": "date-local",
+          "value": "1999-08-04"
+        }
+      },
+      "database": {
+        "enabled": {
+          "type": "bool",
+          "value": "true"
+        },
+        "ports": [
+          {
+            "type": "integer",
+            "value": "8000"
+          },
+          {
+            "type": "integer",
+            "value": "8001"
+          },
+          {
+            "type": "integer",
+            "value": "8002"
+          }
+        ]
+      },
+      "products": [
+        {
+          "name": {
+            "type": "string",
+            "value": "Hammer"
+          },
+          "sku": {
+            "type": "integer",
+            "value": "738594937"
+          }
+        },
+        {},
+        {
+          "name": {
+            "type": "string",
+            "value": "Nail"
+          },
+          "sku": {
+            "type": "integer",
+            "value": "284758393"
+          },
+          "color": {
+            "type": "string",
+            "value": "gray"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "unicode-and-comments",
+    "toml": "# UTF-8 is valid here\nname = \"José\"\nemoji = \"snowman: ☃\"\nmessage = \"# not a comment\"\n",
+    "expected": {
+      "name": {
+        "type": "string",
+        "value": "José"
+      },
+      "emoji": {
+        "type": "string",
+        "value": "snowman: ☃"
+      },
+      "message": {
+        "type": "string",
+        "value": "# not a comment"
+      }
+    }
+  }
+]

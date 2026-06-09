@@ -1,0 +1,90 @@
+[
+  {
+    "name": "array-missing-comma",
+    "toml": "bad = [1 2]\n"
+  },
+  {
+    "name": "basic-string-unescaped-newline",
+    "toml": "bad = \"line one\nline two\"\n"
+  },
+  {
+    "name": "basic-string-unknown-escape-e",
+    "toml": "bad = \"escape: \\e\"\n"
+  },
+  {
+    "name": "basic-string-unknown-escape-x",
+    "toml": "bad = \"escape: \\x1B\"\n"
+  },
+  {
+    "name": "bool-titlecase",
+    "toml": "bad = True\n"
+  },
+  {
+    "name": "datetime-missing-seconds",
+    "toml": "bad = 1979-05-27T07:32Z\n"
+  },
+  {
+    "name": "dotted-key-turns-scalar-into-table",
+    "toml": "fruit.apple = 1\nfruit.apple.smooth = true\n"
+  },
+  {
+    "name": "duplicate-key",
+    "toml": "name = \"Tom\"\nname = \"Pradyun\"\n"
+  },
+  {
+    "name": "empty-bare-key",
+    "toml": "= \"no key name\"\n"
+  },
+  {
+    "name": "empty-value",
+    "toml": "key = # INVALID\n"
+  },
+  {
+    "name": "float-leading-dot",
+    "toml": "bad = .7\n"
+  },
+  {
+    "name": "float-trailing-dot",
+    "toml": "bad = 7.\n"
+  },
+  {
+    "name": "inline-table-extend-outside",
+    "toml": "product = { type = { name = \"Nail\" } }\nproduct.type.edible = false\n"
+  },
+  {
+    "name": "inline-table-newline",
+    "toml": "bad = {\n  x = 1\n}\n"
+  },
+  {
+    "name": "inline-table-trailing-comma",
+    "toml": "bad = { x = 1, }\n"
+  },
+  {
+    "name": "integer-leading-zero",
+    "toml": "bad = 0123\n"
+  },
+  {
+    "name": "integer-overflow-int64",
+    "toml": "bad = 9223372036854775808\n"
+  },
+  {
+    "name": "integer-underscore-adjacent",
+    "toml": "bad = 1__000\n"
+  },
+  {
+    "name": "local-time-missing-seconds",
+    "toml": "bad = 07:32\n"
+  },
+  {
+    "name": "quoted-equivalent-duplicate-key",
+    "toml": "spelling = \"favorite\"\n\"spelling\" = \"favourite\"\n"
+  },
+  {
+    "name": "table-after-dotted-key-defined",
+    "toml": "fruit.apple.color = \"red\"\n[fruit.apple]\ntexture = \"smooth\"\n"
+  },
+  {
+    "name": "table-redefined",
+    "toml": "[fruit]\napple = \"red\"\n\n[fruit]\norange = \"orange\"\n"
+  }
+]
