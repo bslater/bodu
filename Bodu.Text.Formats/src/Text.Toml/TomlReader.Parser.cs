@@ -12,8 +12,9 @@ namespace Bodu.Text.Toml;
 public partial class TomlReader
 {
     /// <summary>
-    /// A single-pass recursive-descent parser that materializes TOML v1.1.0 source text into a <see cref="TomlTable" />
-    /// document, enforcing the specification's key, value, table, and array-of-tables rules.
+    /// A single-pass recursive-descent parser that materializes TOML source text into a <see cref="TomlTable" />
+    /// document, enforcing the specification's key, value, table, and array-of-tables rules for the configured
+    /// <see cref="TomlSpecVersion" />.
     /// </summary>
     private sealed class Parser
     {
@@ -58,6 +59,11 @@ public partial class TomlReader
         private readonly HashSet<TomlArray> _tableArrays = new();
 
         /// <summary>
+        /// The TOML specification version whose grammar features the parser enforces.
+        /// </summary>
+        private readonly TomlSpecVersion _specVersion;
+
+        /// <summary>
         /// The cursor position within <see cref="_src" />.
         /// </summary>
         private int _pos;
@@ -76,10 +82,12 @@ public partial class TomlReader
         /// Initializes a new instance of the <see cref="Parser" /> class over the supplied source.
         /// </summary>
         /// <param name="source">The TOML source text.</param>
-        public Parser(ReadOnlySpan<char> source)
+        /// <param name="specVersion">The specification version whose grammar to enforce.</param>
+        public Parser(ReadOnlySpan<char> source, TomlSpecVersion specVersion)
         {
             _src = source.ToString();
             _current = _root;
+            _specVersion = specVersion;
         }
 
         /// <summary>
@@ -216,8 +224,8 @@ public partial class TomlReader
         }
 
         /// <summary>
-        /// Skips whitespace, comments, and newlines — the <c>ws-comment-newline</c> production used inside arrays and
-        /// inline tables.
+        /// Skips whitespace, comments, and newlines — the <c>ws-comment-newline</c> production used inside arrays (and,
+        /// in TOML v1.1.0, inside inline tables).
         /// </summary>
         private void SkipValueSeparators()
         {
@@ -240,6 +248,18 @@ public partial class TomlReader
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Skips the separators permitted between inline-table tokens. TOML v1.1.0 permits the full
+        /// whitespace/comment/newline production; strict TOML v1.0.0 permits only spaces and tabs.
+        /// </summary>
+        private void SkipInlineTableSeparators()
+        {
+            if (_specVersion == TomlSpecVersion.V1_1)
+                SkipValueSeparators();
+            else
+                SkipInlineWhitespace();
         }
 
         /// <summary>
@@ -657,6 +677,11 @@ public partial class TomlReader
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidEscape);
 
             var e = Current;
+
+            // The \e (escape) and \xHH (hex byte) escapes were introduced in TOML v1.1.0; reject them under v1.0.
+            if (_specVersion != TomlSpecVersion.V1_1 && (e == 'e' || e == 'x'))
+                throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidEscape);
+
             switch (e)
             {
                 case '"': sb.Append('"'); Advance(); break;
@@ -754,15 +779,15 @@ public partial class TomlReader
         }
 
         /// <summary>
-        /// Parses an inline table (its opening brace at the cursor), including the v1.1.0 multi-line and trailing-comma
-        /// forms.
+        /// Parses an inline table (its opening brace at the cursor). TOML v1.1.0 permits the multi-line and
+        /// trailing-comma forms; strict TOML v1.0.0 requires a single-line table with no trailing comma.
         /// </summary>
         /// <returns>The inline table.</returns>
         private TomlTable ParseInlineTable()
         {
             Advance();
             var table = new TomlTable();
-            SkipValueSeparators();
+            SkipInlineTableSeparators();
             if (!Eof && Current == '}')
             {
                 Advance();
@@ -773,7 +798,7 @@ public partial class TomlReader
             while (true)
             {
                 ParseKeyValue(table);
-                SkipValueSeparators();
+                SkipInlineTableSeparators();
 
                 if (Eof)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidInlineTable);
@@ -781,9 +806,12 @@ public partial class TomlReader
                 if (Current == ',')
                 {
                     Advance();
-                    SkipValueSeparators();
+                    SkipInlineTableSeparators();
                     if (!Eof && Current == '}')
                     {
+                        if (_specVersion != TomlSpecVersion.V1_1)
+                            throw Error(FormatsResourceStrings.Format_Invalid_TomlInlineTableTrailingComma);
+
                         Advance();
                         break;
                     }
@@ -1075,6 +1103,11 @@ public partial class TomlReader
                     fractionTicks = ReadFractionTicks();
                 }
             }
+            else if (_specVersion != TomlSpecVersion.V1_1)
+            {
+                // Optional seconds were introduced in TOML v1.1.0; v1.0 requires HH:MM:SS.
+                throw Error(FormatsResourceStrings.Format_Invalid_TomlSecondsRequired);
+            }
 
             return (hour, minute, second, fractionTicks);
         }
@@ -1185,8 +1218,9 @@ public partial class TomlReader
         /// <returns>The time.</returns>
         private TimeOnly MakeTime(int hour, int minute, int second, long fractionTicks)
         {
+            // Leap seconds (:60) cannot be represented by TimeOnly/DateTime; reject rather than silently clamp to :59.
             if (second == 60)
-                second = 59;
+                throw Error(FormatsResourceStrings.Format_Invalid_TomlLeapSecond);
             if (hour > 23 || minute > 59 || second > 59)
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidDateTime);
 
@@ -1207,8 +1241,9 @@ public partial class TomlReader
         /// <returns>The date-time.</returns>
         private DateTime MakeDateTime(int year, int month, int day, int hour, int minute, int second, long fractionTicks)
         {
+            // Leap seconds (:60) cannot be represented by TimeOnly/DateTime; reject rather than silently clamp to :59.
             if (second == 60)
-                second = 59;
+                throw Error(FormatsResourceStrings.Format_Invalid_TomlLeapSecond);
             if (hour > 23 || minute > 59 || second > 59)
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidDateTime);
 

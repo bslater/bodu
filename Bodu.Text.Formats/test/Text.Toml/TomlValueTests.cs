@@ -77,4 +77,28 @@ public sealed class TomlValueTests
             _ = new TomlString(null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="TomlValue" /> hierarchy is closed: the type is abstract and every constructor is
+    /// inaccessible outside this assembly, so external code cannot introduce a value kind the writer cannot render. This
+    /// makes the audit's "unknown subclass" scenario impossible to author rather than something guarded at run time.
+    /// </summary>
+    [TestMethod]
+    public void TomlValue_WhenInspected_ShouldNotBeConstructibleOutsideAssembly()
+    {
+        Assert.IsTrue(typeof(TomlValue).IsAbstract);
+
+        var constructors = typeof(TomlValue).GetConstructors(
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+
+        Assert.AreNotEqual(0, constructors.Length);
+        foreach (var constructor in constructors)
+        {
+            // A 'private' or 'private protected' (FamANDAssem) constructor cannot be reached from another assembly;
+            // a public, protected, internal, or protected-internal one could, which would permit external subclassing.
+            Assert.IsTrue(
+                constructor.IsPrivate || constructor.IsFamilyAndAssembly,
+                $"TomlValue constructor '{constructor}' must not be accessible outside this assembly.");
+        }
+    }
 }

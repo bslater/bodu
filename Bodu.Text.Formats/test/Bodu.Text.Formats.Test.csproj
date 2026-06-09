@@ -19,7 +19,6 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
-    <PackageReference Include="Tomlyn" Version="0.17.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +28,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Text.Toml\Conformance\toml-test-valid.json" />
     <EmbeddedResource Include="Text.Toml\Conformance\toml-test-invalid.json" />
+    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.0.0.txt" />
+    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.1.0.txt" />
+    <EmbeddedResource Include="Text.Toml\Conformance\bodu-toml10-valid.json" />
+    <EmbeddedResource Include="Text.Toml\Conformance\bodu-toml10-invalid.json" />
   </ItemGroup>
 
   <ItemGroup>

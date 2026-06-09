@@ -628,6 +628,42 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A trailing comma is not permitted in an inline table..
+        /// </summary>
+        internal static string Format_Invalid_TomlInlineTableTrailingComma {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInlineTableTrailingComma", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The input does not contain valid UTF-8 text..
+        /// </summary>
+        internal static string Format_Invalid_TomlInvalidUtf8 {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlInvalidUtf8", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Leap seconds are not supported..
+        /// </summary>
+        internal static string Format_Invalid_TomlLeapSecond {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlLeapSecond", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A time value must include seconds..
+        /// </summary>
+        internal static string Format_Invalid_TomlSecondsRequired {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlSecondsRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Cannot define a dotted key under a value that is not a table..
         /// </summary>
         internal static string Format_Invalid_TomlKeyOnValue {
@@ -723,6 +759,33 @@ namespace Bodu {
         internal static string Op_Invalid_StringLengthFormatFailed {
             get {
                 return ResourceManager.GetString("Op_Invalid_StringLengthFormatFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The document graph contains a cycle at &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_TomlCycle {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TomlCycle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A key or string value contains an unpaired surrogate and cannot be encoded as UTF-8..
+        /// </summary>
+        internal static string Op_Invalid_TomlUnpairedSurrogate {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TomlUnpairedSurrogate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The TOML value type is not supported by the writer..
+        /// </summary>
+        internal static string Op_NotSupported_TomlValueKind {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_TomlValueKind", resourceCulture);
             }
         }
     }

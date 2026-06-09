@@ -288,6 +288,9 @@
   <data name="Format_Invalid_TomlExtendInlineTable" xml:space="preserve">
     <value>Cannot extend an inline table after it has been defined.</value>
   </data>
+  <data name="Format_Invalid_TomlInlineTableTrailingComma" xml:space="preserve">
+    <value>A trailing comma is not permitted in an inline table.</value>
+  </data>
   <data name="Format_Invalid_TomlIntegerOutOfRange" xml:space="preserve">
     <value>The integer value is outside the range of a 64-bit signed integer.</value>
   </data>
@@ -306,11 +309,20 @@
   <data name="Format_Invalid_TomlInvalidNumber" xml:space="preserve">
     <value>The numeric value is not valid.</value>
   </data>
+  <data name="Format_Invalid_TomlInvalidUtf8" xml:space="preserve">
+    <value>The input does not contain valid UTF-8 text.</value>
+  </data>
   <data name="Format_Invalid_TomlKeyOnValue" xml:space="preserve">
     <value>Cannot define a dotted key under a value that is not a table.</value>
   </data>
+  <data name="Format_Invalid_TomlLeapSecond" xml:space="preserve">
+    <value>Leap seconds are not supported.</value>
+  </data>
   <data name="Format_Invalid_TomlMultilineKey" xml:space="preserve">
     <value>A multi-line string cannot be used as a key.</value>
+  </data>
+  <data name="Format_Invalid_TomlSecondsRequired" xml:space="preserve">
+    <value>A time value must include seconds.</value>
   </data>
   <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve">
     <value>The string is not terminated.</value>
@@ -338,5 +350,14 @@
   </data>
   <data name="Op_Invalid_StringLengthFormatFailed" xml:space="preserve">
     <value>The string length could not be formatted.</value>
+  </data>
+  <data name="Op_Invalid_TomlCycle" xml:space="preserve">
+    <value>The document graph contains a cycle at '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_TomlUnpairedSurrogate" xml:space="preserve">
+    <value>A key or string value contains an unpaired surrogate and cannot be encoded as UTF-8.</value>
+  </data>
+  <data name="Op_NotSupported_TomlValueKind" xml:space="preserve">
+    <value>The TOML value type is not supported by the writer.</value>
   </data>
 </root>

@@ -10,8 +10,8 @@ using System.Text;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Serializes a <see cref="TomlTable" /> document model to canonical TOML v1.1.0 text. The writer is the serialization
-/// half of the read/write pair; <see cref="TomlReader" /> is its deserialization counterpart.
+/// Serializes a <see cref="TomlTable" /> document model to canonical TOML text. The writer is the serialization half of
+/// the read/write pair; <see cref="TomlReader" /> is its deserialization counterpart.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -19,6 +19,11 @@ namespace Bodu.Text.Toml;
 /// sub-tables are written under <c>[header]</c> sections, and arrays of tables under <c>[[header]]</c> sections.
 /// Because the document model does not record whether a table was originally authored as an inline table or a standard
 /// table, the output is canonicalized to the standard form; reading the output back yields an equal model.
+/// </para>
+/// <para>
+/// The output uses only constructs that are valid under both TOML v1.0.0 and TOML v1.1.0 (full <c>HH:mm:ss</c> times,
+/// standard escapes, single-line inline tables with no trailing comma), so it is accepted by a strict v1.0 reader. The
+/// writer rejects document graphs that contain a cycle or a key or string value with an unpaired surrogate.
 /// </para>
 /// </remarks>
 /// <example>
@@ -36,9 +41,10 @@ public sealed class TomlWriter
     private const long TicksPerSecond = 10_000_000L;
 
     /// <summary>
-    /// The UTF-8 encoding used when writing to a stream, configured to emit no byte-order mark.
+    /// The UTF-8 encoding used when writing to a stream, configured to emit no byte-order mark. Invalid UTF-16 content
+    /// is rejected rather than replaced; string and key values are validated before encoding.
     /// </summary>
-    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: false);
+    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>
     /// Serializes <paramref name="document" /> to canonical TOML text.
@@ -53,7 +59,7 @@ public sealed class TomlWriter
         ThrowHelper.ThrowIfNull(document);
 
         var builder = new StringBuilder();
-        WriteTableBody(builder, document, new List<string>());
+        WriteTableBody(builder, document, new List<string>(), new HashSet<TomlValue>(ReferenceEqualityComparer.Instance));
         return builder.ToString();
     }
 
@@ -131,8 +137,15 @@ public sealed class TomlWriter
     /// <param name="builder">The destination builder.</param>
     /// <param name="table">The table to write.</param>
     /// <param name="path">The header path of <paramref name="table" />.</param>
-    private static void WriteTableBody(StringBuilder builder, TomlTable table, List<string> path)
+    /// <param name="ancestors">The set of containers on the current traversal path, used to detect cycles.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="table" /> participates in a cycle.
+    /// </exception>
+    private static void WriteTableBody(StringBuilder builder, TomlTable table, List<string> path, HashSet<TomlValue> ancestors)
     {
+        if (!ancestors.Add(table))
+            throw CycleError(path);
+
         var inlineEntries = new List<KeyValuePair<string, TomlValue>>();
         var sectionEntries = new List<KeyValuePair<string, TomlValue>>();
 
@@ -146,8 +159,9 @@ public sealed class TomlWriter
 
         foreach (var entry in inlineEntries)
         {
+            var entryPath = new List<string>(path) { entry.Key };
             builder.Append(FormatKey(entry.Key)).Append(" = ");
-            WriteInlineValue(builder, entry.Value);
+            WriteInlineValue(builder, entry.Value, entryPath, ancestors);
             builder.Append('\n');
         }
 
@@ -159,17 +173,19 @@ public sealed class TomlWriter
             if (entry.Value is TomlTable subTable)
             {
                 WriteHeaderLine(builder, "[" + header + "]");
-                WriteTableBody(builder, subTable, childPath);
+                WriteTableBody(builder, subTable, childPath, ancestors);
             }
             else
             {
                 foreach (var element in (TomlArray)entry.Value)
                 {
                     WriteHeaderLine(builder, "[[" + header + "]]");
-                    WriteTableBody(builder, (TomlTable)element, childPath);
+                    WriteTableBody(builder, (TomlTable)element, childPath, ancestors);
                 }
             }
         }
+
+        ancestors.Remove(table);
     }
 
     /// <summary>
@@ -208,7 +224,15 @@ public sealed class TomlWriter
     /// </summary>
     /// <param name="builder">The destination builder.</param>
     /// <param name="value">The value to write.</param>
-    private static void WriteInlineValue(StringBuilder builder, TomlValue value)
+    /// <param name="path">The key path of <paramref name="value" />, used in diagnostics.</param>
+    /// <param name="ancestors">The set of containers on the current traversal path, used to detect cycles.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="value" /> participates in a cycle.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="value" /> is of an unsupported kind.
+    /// </exception>
+    private static void WriteInlineValue(StringBuilder builder, TomlValue value, List<string> path, HashSet<TomlValue> ancestors)
     {
         switch (value)
         {
@@ -237,11 +261,13 @@ public sealed class TomlWriter
                 builder.Append(lt.Value.ToString("HH:mm:ss", CultureInfo.InvariantCulture)).Append(FractionString(lt.Value.Ticks));
                 break;
             case TomlArray array:
-                WriteInlineArray(builder, array);
+                WriteInlineArray(builder, array, path, ancestors);
                 break;
             case TomlTable table:
-                WriteInlineTable(builder, table);
+                WriteInlineTable(builder, table, path, ancestors);
                 break;
+            default:
+                throw new NotSupportedException(FormatsResourceStrings.Op_NotSupported_TomlValueKind);
         }
     }
 
@@ -250,17 +276,26 @@ public sealed class TomlWriter
     /// </summary>
     /// <param name="builder">The destination builder.</param>
     /// <param name="array">The array.</param>
-    private static void WriteInlineArray(StringBuilder builder, TomlArray array)
+    /// <param name="path">The key path of <paramref name="array" />, used in diagnostics.</param>
+    /// <param name="ancestors">The set of containers on the current traversal path, used to detect cycles.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="array" /> participates in a cycle.
+    /// </exception>
+    private static void WriteInlineArray(StringBuilder builder, TomlArray array, List<string> path, HashSet<TomlValue> ancestors)
     {
+        if (!ancestors.Add(array))
+            throw CycleError(path);
+
         builder.Append('[');
         for (var i = 0; i < array.Count; i++)
         {
             if (i > 0)
                 builder.Append(", ");
-            WriteInlineValue(builder, array[i]);
+            WriteInlineValue(builder, array[i], path, ancestors);
         }
 
         builder.Append(']');
+        ancestors.Remove(array);
     }
 
     /// <summary>
@@ -268,11 +303,20 @@ public sealed class TomlWriter
     /// </summary>
     /// <param name="builder">The destination builder.</param>
     /// <param name="table">The table.</param>
-    private static void WriteInlineTable(StringBuilder builder, TomlTable table)
+    /// <param name="path">The key path of <paramref name="table" />, used in diagnostics.</param>
+    /// <param name="ancestors">The set of containers on the current traversal path, used to detect cycles.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="table" /> participates in a cycle.
+    /// </exception>
+    private static void WriteInlineTable(StringBuilder builder, TomlTable table, List<string> path, HashSet<TomlValue> ancestors)
     {
+        if (!ancestors.Add(table))
+            throw CycleError(path);
+
         if (table.Count == 0)
         {
             builder.Append("{}");
+            ancestors.Remove(table);
             return;
         }
 
@@ -284,10 +328,11 @@ public sealed class TomlWriter
                 builder.Append(", ");
             first = false;
             builder.Append(FormatKey(pair.Key)).Append(" = ");
-            WriteInlineValue(builder, pair.Value);
+            WriteInlineValue(builder, pair.Value, path, ancestors);
         }
 
         builder.Append(" }");
+        ancestors.Remove(table);
     }
 
     /// <summary>
@@ -347,11 +392,28 @@ public sealed class TomlWriter
     /// </summary>
     /// <param name="builder">The destination builder.</param>
     /// <param name="value">The string value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="value" /> contains an unpaired surrogate.
+    /// </exception>
     private static void WriteBasicString(StringBuilder builder, string value)
     {
         builder.Append('"');
-        foreach (var c in value)
+        for (var i = 0; i < value.Length; i++)
         {
+            var c = value[i];
+
+            // Surrogate halves must form a complete pair so the result encodes to valid UTF-8.
+            if (char.IsHighSurrogate(c))
+            {
+                if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
+                    throw UnpairedSurrogateError();
+                builder.Append(c).Append(value[++i]);
+                continue;
+            }
+
+            if (char.IsLowSurrogate(c))
+                throw UnpairedSurrogateError();
+
             switch (c)
             {
                 case '"': builder.Append("\\\""); break;
@@ -372,6 +434,24 @@ public sealed class TomlWriter
 
         builder.Append('"');
     }
+
+    /// <summary>
+    /// Creates the exception thrown when a document graph contains a cycle.
+    /// </summary>
+    /// <param name="path">The key path at which the cycle was detected.</param>
+    /// <returns>The exception to throw.</returns>
+    private static InvalidOperationException CycleError(List<string> path)
+    {
+        var location = path.Count == 0 ? "<root>" : FormatKeyPath(path);
+        return new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Op_Invalid_TomlCycle, location));
+    }
+
+    /// <summary>
+    /// Creates the exception thrown when a key or string value contains an unpaired surrogate.
+    /// </summary>
+    /// <returns>The exception to throw.</returns>
+    private static InvalidOperationException UnpairedSurrogateError() =>
+        new(FormatsResourceStrings.Op_Invalid_TomlUnpairedSurrogate);
 
     /// <summary>
     /// Formats a double as a valid TOML float, ensuring the result carries a fractional point or exponent and rendering

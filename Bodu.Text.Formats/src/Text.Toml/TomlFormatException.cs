@@ -7,7 +7,7 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Represents an error that occurs when TOML data is malformed or violates the TOML v1.1.0 specification.
+/// Represents an error that occurs when TOML data is malformed or violates the TOML specification.
 /// </summary>
 /// <remarks>
 /// <para>

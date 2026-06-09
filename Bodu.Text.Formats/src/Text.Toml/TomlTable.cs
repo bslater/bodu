@@ -16,8 +16,9 @@ namespace Bodu.Text.Toml;
 /// <remarks>
 /// <para>
 /// Keys are case-sensitive Unicode strings compared with ordinal semantics, matching the TOML specification. Insertion
-/// order is preserved so that a document can be round-tripped through the TOML writer with its declaration order
-/// intact.
+/// order is preserved for stable enumeration and deterministic writer output. The writer canonicalizes structure — it
+/// emits inline key/values before sub-table sections and standard tables rather than inline tables — so a round trip
+/// through the writer preserves the document's values and semantics, not its original source layout or table style.
 /// </para>
 /// </remarks>
 public sealed class TomlTable
