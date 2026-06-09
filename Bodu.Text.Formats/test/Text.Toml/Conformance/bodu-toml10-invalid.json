@@ -1,90 +1,112 @@
 [
   {
     "name": "array-missing-comma",
-    "toml": "bad = [1 2]\n"
+    "toml": "bad = [1 2]\n",
+    "rule": "Array elements must be separated by a comma."
   },
   {
     "name": "basic-string-unescaped-newline",
-    "toml": "bad = \"line one\nline two\"\n"
+    "toml": "bad = \"line one\nline two\"\n",
+    "rule": "A basic string may not contain a literal newline."
   },
   {
     "name": "basic-string-unknown-escape-e",
-    "toml": "bad = \"escape: \\e\"\n"
+    "toml": "bad = \"escape: \\e\"\n",
+    "rule": "TOML 1.0.0 has no \\e escape; the basic-string escape set is fixed."
   },
   {
     "name": "basic-string-unknown-escape-x",
-    "toml": "bad = \"escape: \\x1B\"\n"
+    "toml": "bad = \"escape: \\x1B\"\n",
+    "rule": "TOML 1.0.0 has no \\xHH escape; the basic-string escape set is fixed."
   },
   {
     "name": "bool-titlecase",
-    "toml": "bad = True\n"
+    "toml": "bad = True\n",
+    "rule": "Booleans must be lowercase true or false."
   },
   {
     "name": "datetime-missing-seconds",
-    "toml": "bad = 1979-05-27T07:32Z\n"
+    "toml": "bad = 1979-05-27T07:32Z\n",
+    "rule": "TOML 1.0.0 date-times require seconds (HH:MM:SS)."
   },
   {
     "name": "dotted-key-turns-scalar-into-table",
-    "toml": "fruit.apple = 1\nfruit.apple.smooth = true\n"
+    "toml": "fruit.apple = 1\nfruit.apple.smooth = true\n",
+    "rule": "A key already defined as a value cannot be redefined as a table by a dotted key."
   },
   {
     "name": "duplicate-key",
-    "toml": "name = \"Tom\"\nname = \"Pradyun\"\n"
+    "toml": "name = \"Tom\"\nname = \"Pradyun\"\n",
+    "rule": "A key may not be defined more than once in the same table."
   },
   {
     "name": "empty-bare-key",
-    "toml": "= \"no key name\"\n"
+    "toml": "= \"no key name\"\n",
+    "rule": "A key/value pair must have a key."
   },
   {
     "name": "empty-value",
-    "toml": "key = # INVALID\n"
+    "toml": "key = # INVALID\n",
+    "rule": "A key/value pair must have a value."
   },
   {
     "name": "float-leading-dot",
-    "toml": "bad = .7\n"
+    "toml": "bad = .7\n",
+    "rule": "A float must have at least one digit before the decimal point."
   },
   {
     "name": "float-trailing-dot",
-    "toml": "bad = 7.\n"
+    "toml": "bad = 7.\n",
+    "rule": "A float must have at least one digit after the decimal point."
   },
   {
     "name": "inline-table-extend-outside",
-    "toml": "product = { type = { name = \"Nail\" } }\nproduct.type.edible = false\n"
+    "toml": "product = { type = { name = \"Nail\" } }\nproduct.type.edible = false\n",
+    "rule": "An inline table is closed once defined and cannot be extended."
   },
   {
     "name": "inline-table-newline",
-    "toml": "bad = {\n  x = 1\n}\n"
+    "toml": "bad = {\n  x = 1\n}\n",
+    "rule": "TOML 1.0.0 inline tables must be written on a single line."
   },
   {
     "name": "inline-table-trailing-comma",
-    "toml": "bad = { x = 1, }\n"
+    "toml": "bad = { x = 1, }\n",
+    "rule": "TOML 1.0.0 inline tables may not have a trailing comma."
   },
   {
     "name": "integer-leading-zero",
-    "toml": "bad = 0123\n"
+    "toml": "bad = 0123\n",
+    "rule": "Integers may not have leading zeros."
   },
   {
     "name": "integer-overflow-int64",
-    "toml": "bad = 9223372036854775808\n"
+    "toml": "bad = 9223372036854775808\n",
+    "rule": "Integer is outside the range of a 64-bit signed integer."
   },
   {
     "name": "integer-underscore-adjacent",
-    "toml": "bad = 1__000\n"
+    "toml": "bad = 1__000\n",
+    "rule": "An integer underscore must sit between digits and not be adjacent to another underscore."
   },
   {
     "name": "local-time-missing-seconds",
-    "toml": "bad = 07:32\n"
+    "toml": "bad = 07:32\n",
+    "rule": "TOML 1.0.0 local times require seconds (HH:MM:SS)."
   },
   {
     "name": "quoted-equivalent-duplicate-key",
-    "toml": "spelling = \"favorite\"\n\"spelling\" = \"favourite\"\n"
+    "toml": "spelling = \"favorite\"\n\"spelling\" = \"favourite\"\n",
+    "rule": "A bare key and its quoted equivalent denote the same key and may not both be defined."
   },
   {
     "name": "table-after-dotted-key-defined",
-    "toml": "fruit.apple.color = \"red\"\n[fruit.apple]\ntexture = \"smooth\"\n"
+    "toml": "fruit.apple.color = \"red\"\n[fruit.apple]\ntexture = \"smooth\"\n",
+    "rule": "A table header cannot redefine a table already established by a dotted key."
   },
   {
     "name": "table-redefined",
-    "toml": "[fruit]\napple = \"red\"\n\n[fruit]\norange = \"orange\"\n"
+    "toml": "[fruit]\napple = \"red\"\n\n[fruit]\norange = \"orange\"\n",
+    "rule": "A table may not be defined more than once."
   }
 ]

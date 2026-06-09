@@ -14,10 +14,11 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Drives the hand-authored Bodu TOML 1.0.0 corpus — a focused supplement to the official <c>toml-test</c> suite —
-/// as a table of <see cref="TomlV10Kat" /> known-answer vectors. Every valid vector must parse under the strict v1.0.0
-/// default and match its expected value tree; every invalid vector (which includes documents using TOML 1.1.0 syntax
-/// such as <c>\e</c>, <c>\xHH</c>, optional seconds, and multi-line / trailing-comma inline tables) must be rejected.
+/// Drives the hand-authored Bodu TOML 1.0.0 corpus — a focused supplement to the official <c>toml-test</c> suite — as
+/// tables of known-answer vectors. Every valid <see cref="TomlV10ValidKat" /> must parse under the strict v1.0.0 default
+/// and match its expected value tree; every invalid <see cref="TomlV10InvalidKat" /> (which includes documents using
+/// TOML 1.1.0 syntax such as <c>\e</c>, <c>\xHH</c>, optional seconds, and multi-line / trailing-comma inline tables)
+/// must be rejected, and each carries the v1.0.0 rule it violates.
 /// </summary>
 [TestClass]
 public sealed class TomlV10CorpusTests
@@ -25,16 +26,40 @@ public sealed class TomlV10CorpusTests
     /// <summary>
     /// Provides the valid TOML 1.0.0 vectors, each carrying its expected tagged-JSON value tree.
     /// </summary>
-    /// <returns>One <see cref="TomlV10Kat" /> per valid document.</returns>
-    public static IEnumerable<object[]> ValidVectors() =>
-        LoadVectors("bodu-toml10-valid.json", includeExpected: true);
+    /// <returns>One <see cref="TomlV10ValidKat" /> per valid document.</returns>
+    public static IEnumerable<object[]> ValidVectors()
+    {
+        using JsonDocument document = LoadCorpus("bodu-toml10-valid.json");
+        var rows = new List<object[]>();
+        foreach (JsonElement element in document.RootElement.EnumerateArray())
+        {
+            rows.Add([new TomlV10ValidKat(
+                element.GetProperty("name").GetString()!,
+                element.GetProperty("toml").GetString()!,
+                element.GetProperty("expected").GetRawText())]);
+        }
+
+        return rows;
+    }
 
     /// <summary>
-    /// Provides the invalid TOML 1.0.0 vectors that a strict v1.0.0 parser must reject.
+    /// Provides the invalid TOML 1.0.0 vectors a strict v1.0.0 parser must reject, each carrying the rule it violates.
     /// </summary>
-    /// <returns>One <see cref="TomlV10Kat" /> per invalid document.</returns>
-    public static IEnumerable<object[]> InvalidVectors() =>
-        LoadVectors("bodu-toml10-invalid.json", includeExpected: false);
+    /// <returns>One <see cref="TomlV10InvalidKat" /> per invalid document.</returns>
+    public static IEnumerable<object[]> InvalidVectors()
+    {
+        using JsonDocument document = LoadCorpus("bodu-toml10-invalid.json");
+        var rows = new List<object[]>();
+        foreach (JsonElement element in document.RootElement.EnumerateArray())
+        {
+            rows.Add([new TomlV10InvalidKat(
+                element.GetProperty("name").GetString()!,
+                element.GetProperty("toml").GetString()!,
+                element.GetProperty("rule").GetString()!)]);
+        }
+
+        return rows;
+    }
 
 #pragma warning disable CA1062 // Vectors are statically constructed by the data sources and are never null.
 
@@ -46,60 +71,58 @@ public sealed class TomlV10CorpusTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(ValidVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Parse_WhenValidVectorUnderV10_ShouldMatchExpectedModel(TomlV10Kat vector)
+    public void Parse_WhenValidVectorUnderV10_ShouldMatchExpectedModel(TomlV10ValidKat vector)
     {
         var document = Toml.Parse(vector.Toml);
         JsonNode actual = TomlTestEncoder.Encode(document);
-        JsonNode expected = JsonNode.Parse(vector.Expected!)!;
+        JsonNode expected = JsonNode.Parse(vector.Expected)!;
 
         TaggedJson.AssertEquivalent(vector.Name, expected, actual, vector.Name);
     }
 
     /// <summary>
-    /// Verifies that each invalid TOML 1.0.0 vector is rejected under the strict v1.0.0 default profile.
+    /// Verifies that each invalid TOML 1.0.0 vector is rejected under the strict v1.0.0 default profile, citing the rule
+    /// it violates when it is not.
     /// </summary>
     /// <param name="vector">The known-answer vector.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(InvalidVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Parse_WhenInvalidVectorUnderV10_ShouldThrowTomlFormatException(TomlV10Kat vector)
+    public void Parse_WhenInvalidVectorUnderV10_ShouldThrowTomlFormatException(TomlV10InvalidKat vector)
     {
-        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(vector.Toml), $"Vector '{vector.Name}' should have been rejected under strict TOML v1.0.0.");
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(vector.Toml), $"Vector '{vector.Name}' should have been rejected under strict TOML v1.0.0: {vector.Rule}");
     }
 
     /// <summary>
-    /// Loads the known-answer vectors from the named embedded corpus resource.
+    /// Opens the named embedded corpus resource as a <see cref="JsonDocument" />.
     /// </summary>
     /// <param name="resourceSuffix">The trailing portion of the embedded resource name.</param>
-    /// <param name="includeExpected">Whether the corpus carries an <c>expected</c> value tree.</param>
-    /// <returns>The vectors, each wrapped as a single-element argument array.</returns>
-    private static IEnumerable<object[]> LoadVectors(string resourceSuffix, bool includeExpected)
+    /// <returns>The parsed corpus document, which the caller disposes.</returns>
+    private static JsonDocument LoadCorpus(string resourceSuffix)
     {
         Assembly assembly = typeof(TomlV10CorpusTests).Assembly;
         var resourceName = Array.Find(assembly.GetManifestResourceNames(), n => n.EndsWith(resourceSuffix, StringComparison.Ordinal))
             ?? throw new InvalidOperationException($"Embedded corpus resource '{resourceSuffix}' was not found.");
 
         using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
-        using JsonDocument document = JsonDocument.Parse(stream);
-
-        var rows = new List<object[]>();
-        foreach (JsonElement element in document.RootElement.EnumerateArray())
-        {
-            var name = element.GetProperty("name").GetString()!;
-            var toml = element.GetProperty("toml").GetString()!;
-            var expected = includeExpected ? element.GetProperty("expected").GetRawText() : null;
-            rows.Add([new TomlV10Kat(name, toml, expected)]);
-        }
-
-        return rows;
+        return JsonDocument.Parse(stream);
     }
 
     /// <summary>
-    /// A known-answer vector for the Bodu TOML 1.0.0 corpus: a source document, and (for valid documents) the expected
-    /// value tree in toml-test's tagged-JSON encoding.
+    /// A known-answer vector for a valid Bodu TOML 1.0.0 document: a source document and its expected value tree in
+    /// toml-test's tagged-JSON encoding.
     /// </summary>
     /// <param name="Name">The vector name.</param>
     /// <param name="Toml">The TOML source document.</param>
-    /// <param name="Expected">The expected tagged-JSON value tree, or <see langword="null" /> for invalid documents.</param>
-    public sealed record TomlV10Kat(string Name, string Toml, string? Expected) : IKat;
+    /// <param name="Expected">The expected tagged-JSON value tree.</param>
+    public sealed record TomlV10ValidKat(string Name, string Toml, string Expected) : IKat;
+
+    /// <summary>
+    /// A known-answer vector for an invalid Bodu TOML 1.0.0 document: a source document and the strict v1.0.0 rule it
+    /// violates.
+    /// </summary>
+    /// <param name="Name">The vector name.</param>
+    /// <param name="Toml">The TOML source document.</param>
+    /// <param name="Rule">The TOML 1.0.0 rule the document violates.</param>
+    public sealed record TomlV10InvalidKat(string Name, string Toml, string Rule) : IKat;
 }
