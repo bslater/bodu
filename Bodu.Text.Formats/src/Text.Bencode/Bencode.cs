@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bencode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -270,5 +270,5 @@ public static class Bencode
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
     public static int GetFormattedLength(BencodedValue value) =>
-        s_writer.GetWrittenLength(value);
+        BencodeWriter.GetWrittenLength(value);
 }

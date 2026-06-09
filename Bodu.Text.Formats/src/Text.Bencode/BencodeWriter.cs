@@ -184,7 +184,7 @@ public sealed class BencodeWriter
     /// <exception cref="OverflowException">
     /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
-    public int GetWrittenLength(BencodedValue value)
+    public static int GetWrittenLength(BencodedValue value)
     {
         ThrowHelper.ThrowIfNull(value);
 

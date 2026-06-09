@@ -58,15 +58,29 @@ public static partial class IEnumerableExtensions
         return mode switch
         {
             RandomizationMode.BufferAll => RandomizeBuffered(source, rng, count),
+
             RandomizationMode.ReservoirSample => count is null
                 ? throw new ArgumentException(
-                    string.Format(ResourceStrings.Arg_Invalid_ParameterRequiredIf, nameof(count), nameof(mode), nameof(RandomizationMode.ReservoirSample)), nameof(count))
+                    string.Format(
+                        ResourceStrings.Arg_Invalid_ParameterRequiredIf,
+                        nameof(count),
+                        nameof(mode),
+                        nameof(RandomizationMode.ReservoirSample)),
+                    nameof(count))
                 : ReservoirSample(source, rng, count.Value),
+
             RandomizationMode.StreamWindowed => StreamWindowedShuffle(source, rng),
+
             RandomizationMode.LazyShuffle => count is null
                 ? throw new ArgumentException(
-                    string.Format(ResourceStrings.Arg_Invalid_ParameterRequiredIf, nameof(count), nameof(mode), nameof(RandomizationMode.LazyShuffle)), nameof(count))
+                    string.Format(
+                        ResourceStrings.Arg_Invalid_ParameterRequiredIf,
+                        nameof(count),
+                        nameof(mode),
+                        nameof(RandomizationMode.LazyShuffle)),
+                    nameof(count))
                 : LazyShuffle(source, rng, count.Value),
+
             _ => throw new ArgumentOutOfRangeException(
                 nameof(mode),
                 string.Format(

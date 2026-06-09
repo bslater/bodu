@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReader.Parser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -902,8 +902,8 @@ public partial class TomlReader
                 }
             }
 
-            var hasDot = token.IndexOf('.') >= 0;
-            var hasExp = token.IndexOf('e') >= 0 || token.IndexOf('E') >= 0;
+            var hasDot = token.Contains('.');
+            var hasExp = token.Contains('e') || token.Contains('E');
             return hasDot || hasExp ? ParseFloat(token) : ParseDecimalInteger(token);
         }
 
