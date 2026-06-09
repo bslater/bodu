@@ -179,7 +179,7 @@ $catBuilder = [System.Text.StringBuilder]::new()
 [void]$catBuilder.AppendLine()
 [void]$catBuilder.AppendLine('public sealed partial class CrcStandard')
 [void]$catBuilder.AppendLine('{')
-[void]$catBuilder.AppendLine('#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.')
+[void]$catBuilder.AppendLine('#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a #nullable annotations context. Auto-generated code requires an explicit #nullable directive in source.')
 [void]$catBuilder.AppendLine('    /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>')
 [void]$catBuilder.AppendLine('    private readonly struct CatalogEntry')
 [void]$catBuilder.AppendLine('    {')
@@ -348,7 +348,7 @@ foreach ($spec in $supported) {
 [void]$catBuilder.AppendLine('        IReadOnlyList<CrcStandard>? winner = Interlocked.CompareExchange(ref s_all, readOnly, null);')
 [void]$catBuilder.AppendLine('        return winner ?? readOnly;')
 [void]$catBuilder.AppendLine('    }')
-[void]$catBuilder.AppendLine('#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.')
+[void]$catBuilder.AppendLine('#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a #nullable annotations context. Auto-generated code requires an explicit #nullable directive in source.')
 [void]$catBuilder.AppendLine('}')
 
 Set-Content -LiteralPath $CatalogOutputPath -Value $catBuilder.ToString() -Encoding utf8
