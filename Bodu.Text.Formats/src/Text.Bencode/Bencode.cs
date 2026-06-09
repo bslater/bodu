@@ -1,19 +1,18 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bencode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Text;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Text;
 
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Provides methods for encoding and decoding values using the Bencode serialization format used by the BitTorrent
-/// protocol (BEP 3) and a handful of related peer-to-peer protocols.
+/// Provides convenience entry points for decoding and encoding values using the Bencode serialization format used by
+/// the BitTorrent protocol (BEP 3) and a handful of related peer-to-peer protocols, delegating to the
+/// <see cref="BencodeReader" /> and <see cref="BencodeWriter" /> types that own deserialization and serialization
+/// respectively. The document structure itself is the <see cref="BencodedValue" /> model.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -43,9 +42,12 @@ namespace Bodu.Text.Bencode;
 /// </item>
 /// </list>
 /// <para>
-/// <see cref="Parse(ReadOnlySpan{byte})" /> consumes a complete document and rejects trailing bytes.
-/// <see cref="Format(BencodedValue)" /> produces a fresh byte array; <see cref="GetFormattedLength(BencodedValue)" />
-/// reports the exact size in advance so callers can pool destination buffers.
+/// These static helpers exist for ergonomic one-liners; the read/write pair (<see cref="BencodeReader" /> and
+/// <see cref="BencodeWriter" />) is the primary surface, mirroring the relationship between <c>XmlReader</c> /
+/// <c>XmlWriter</c> and their document model. <see cref="Parse(ReadOnlySpan{byte})" /> consumes a complete document and
+/// rejects trailing bytes; <see cref="Format(BencodedValue)" /> produces a fresh byte array; and
+/// <see cref="GetFormattedLength(BencodedValue)" /> reports the exact size in advance so callers can pool destination
+/// buffers.
 /// </para>
 /// </remarks>
 /// <example>
@@ -66,20 +68,17 @@ namespace Bodu.Text.Bencode;
 /// byte[] reencoded = Bencode.Format(root);
 ///]]>
 /// </example>
-public static partial class Bencode
+public static class Bencode
 {
-    private const byte DictionaryPrefix = (byte)'d';
-    private const byte EndMarker = (byte)'e';
-    private const byte IntegerPrefix = (byte)'i';
-    private const byte ListPrefix = (byte)'l';
-    private const byte MinusSign = (byte)'-';
-    private const byte StringLengthSeparator = (byte)':';
+    /// <summary>
+    /// The shared, stateless reader used by the convenience parse methods.
+    /// </summary>
+    private static readonly BencodeReader s_reader = new();
 
-    private static readonly CompositeFormat s_nestingTooDeep =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_BencodeNestingTooDeep);
-
-    private static readonly CompositeFormat s_unexpectedToken =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedToken);
+    /// <summary>
+    /// The shared, stateless writer used by the convenience format methods.
+    /// </summary>
+    private static readonly BencodeWriter s_writer = new();
 
     /// <summary>
     /// Decodes a complete bencoded document under the default parsing options.
@@ -91,7 +90,7 @@ public static partial class Bencode
     /// <see cref="BencodeParseOptions.DefaultMaxDepth" />.
     /// </exception>
     public static BencodedValue Parse(ReadOnlySpan<byte> source) =>
-        Parse(source, BencodeParseOptions.Default);
+        s_reader.Read(source);
 
     /// <summary>
     /// Decodes a complete bencoded document using the supplied parsing options.
@@ -105,54 +104,56 @@ public static partial class Bencode
     /// Thrown when <paramref name="source" /> is malformed, contains trailing bytes, or nests more deeply than
     /// <see cref="BencodeParseOptions.MaxDepth" />.
     /// </exception>
-    public static BencodedValue Parse(ReadOnlySpan<byte> source, BencodeParseOptions options)
-    {
-        Parser parser = new(source, options.MaxDepth);
-        BencodedValue value = parser.ParseValue();
-
-        if (parser.Position != source.Length)
-            throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeTrailingData);
-
-        return value;
-    }
+    public static BencodedValue Parse(ReadOnlySpan<byte> source, BencodeParseOptions options) =>
+        s_reader.Read(source, options);
 
     /// <summary>
-    /// Encodes a bencoded value into a new byte array.
+    /// Decodes a complete bencoded document from the supplied byte array.
     /// </summary>
-    /// <param name="value">The value to encode.</param>
-    /// <returns>The encoded bytes.</returns>
+    /// <param name="source">The bencoded source bytes.</param>
+    /// <returns>The decoded value.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when <paramref name="source" /> is malformed or contains trailing bytes.
     /// </exception>
-    public static byte[] Format(BencodedValue value)
-    {
-        ThrowHelper.ThrowIfNull(value);
-
-        var destination = new byte[GetFormattedLength(value)];
-        WriteValue(value, destination);
-        return destination;
-    }
+    public static BencodedValue Parse(byte[] source) =>
+        s_reader.Read(source);
 
     /// <summary>
-    /// Gets the exact number of bytes required to encode the specified value.
+    /// Decodes a complete bencoded document by reading <paramref name="source" /> to its end.
     /// </summary>
-    /// <param name="value">The value to measure.</param>
-    /// <returns>The exact encoded length, in bytes.</returns>
+    /// <param name="source">The readable stream containing the bencoded bytes.</param>
+    /// <returns>The decoded value.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="OverflowException">
-    /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the stream contents are malformed or contain trailing bytes.
     /// </exception>
-    public static int GetFormattedLength(BencodedValue value)
-    {
-        ThrowHelper.ThrowIfNull(value);
+    public static BencodedValue Parse(Stream source) =>
+        s_reader.Read(source);
 
-        return checked(GetEncodedLengthCore(value));
-    }
+    /// <summary>
+    /// Asynchronously decodes a complete bencoded document by reading <paramref name="source" /> to its end.
+    /// </summary>
+    /// <param name="source">The readable stream containing the bencoded bytes.</param>
+    /// <param name="cancellationToken">A token that can be used to request cancellation of the read.</param>
+    /// <returns>A task that completes with the decoded value.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the stream contents are malformed or contain trailing bytes.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signalled before the read completes.
+    /// </exception>
+    public static ValueTask<BencodedValue> ParseAsync(Stream source, CancellationToken cancellationToken = default) =>
+        s_reader.ReadAsync(source, cancellationToken);
 
     /// <summary>
     /// Attempts to decode a single bencoded value.
@@ -165,7 +166,7 @@ public static partial class Bencode
         ReadOnlySpan<byte> source,
         [NotNullWhen(true)] out BencodedValue? value,
         out int bytesConsumed) =>
-        TryParse(source, BencodeParseOptions.Default, out value, out bytesConsumed);
+        s_reader.TryRead(source, out value, out bytesConsumed);
 
     /// <summary>
     /// Attempts to decode a single bencoded value under the supplied parsing options.
@@ -179,30 +180,61 @@ public static partial class Bencode
         ReadOnlySpan<byte> source,
         BencodeParseOptions options,
         [NotNullWhen(true)] out BencodedValue? value,
-        out int bytesConsumed)
-    {
-        try
-        {
-            Parser parser = new(source, options.MaxDepth);
-            value = parser.ParseValue();
+        out int bytesConsumed) =>
+        s_reader.TryRead(source, options, out value, out bytesConsumed);
 
-            if (options.RequireCompleteDocument && parser.Position != source.Length)
-            {
-                value = null;
-                bytesConsumed = 0;
-                return false;
-            }
+    /// <summary>
+    /// Encodes a bencoded value into a new byte array.
+    /// </summary>
+    /// <param name="value">The value to encode.</param>
+    /// <returns>The encoded bytes.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
+    /// </exception>
+    public static byte[] Format(BencodedValue value) =>
+        s_writer.Write(value);
 
-            bytesConsumed = parser.Position;
-            return true;
-        }
-        catch (BencodeFormatException)
-        {
-            value = null;
-            bytesConsumed = 0;
-            return false;
-        }
-    }
+    /// <summary>
+    /// Encodes a bencoded value and writes the result to the supplied stream.
+    /// </summary>
+    /// <param name="value">The value to encode.</param>
+    /// <param name="destination">The writable stream that receives the encoded bytes.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> or <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
+    /// </exception>
+    public static void Format(BencodedValue value, Stream destination) =>
+        s_writer.Write(value, destination);
+
+    /// <summary>
+    /// Asynchronously encodes a bencoded value and writes the result to the supplied stream.
+    /// </summary>
+    /// <param name="value">The value to encode.</param>
+    /// <param name="destination">The writable stream that receives the encoded bytes.</param>
+    /// <param name="cancellationToken">A token that can be used to request cancellation of the write.</param>
+    /// <returns>A task that completes once the encoded bytes have been written.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> or <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signalled before the write completes.
+    /// </exception>
+    public static ValueTask FormatAsync(BencodedValue value, Stream destination, CancellationToken cancellationToken = default) =>
+        s_writer.WriteAsync(value, destination, cancellationToken);
 
     /// <summary>
     /// Attempts to encode a bencoded value into the supplied destination buffer.
@@ -223,477 +255,20 @@ public static partial class Bencode
     public static bool TryFormat(
         BencodedValue value,
         Span<byte> destination,
-        out int bytesWritten)
-    {
-        ThrowHelper.ThrowIfNull(value);
-
-        var length = GetFormattedLength(value);
-
-        if (destination.Length < length)
-        {
-            bytesWritten = 0;
-            return false;
-        }
-
-        bytesWritten = WriteValue(value, destination);
-        return true;
-    }
+        out int bytesWritten) =>
+        s_writer.TryWrite(value, destination, out bytesWritten);
 
     /// <summary>
-    /// Gets the number of ASCII decimal digits required to represent a non-negative integer.
-    /// </summary>
-    /// <param name="value">The non-negative value to measure.</param>
-    /// <returns>The number of decimal digits, which is at least one.</returns>
-    private static int GetDecimalDigitCount(int value)
-    {
-        if (value == 0)
-            return 1;
-
-        var count = 0;
-
-        while (value != 0)
-        {
-            count++;
-            value /= 10;
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Computes the exact encoded length of a value, recursing into list items and dictionary entries.
+    /// Gets the exact number of bytes required to encode the specified value.
     /// </summary>
     /// <param name="value">The value to measure.</param>
     /// <returns>The exact encoded length, in bytes.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value" /> is not a recognized bencoded value kind.
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    private static int GetEncodedLengthCore(BencodedValue value)
-    {
-        checked
-        {
-            return value switch
-            {
-                BencodedInteger integer => 2 + GetIntegerDigitCount(integer.Value),
-
-                BencodedString text => GetStringEncodedLength(text),
-
-                BencodedList list => 2 + list.Items.Sum(GetEncodedLengthCore),
-
-                BencodedDictionary dictionary => 2 + dictionary.GetOrderedItems()
-                    .Sum(item => GetStringEncodedLength(item.Key) + GetEncodedLengthCore(item.Value)),
-
-                _ => throw new ArgumentOutOfRangeException(nameof(value), FormatsResourceStrings.Arg_OutOfRange_UnsupportedBencodedValueType),
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets the number of ASCII characters required to represent a signed integer, including the leading minus sign for
-    /// negative values.
-    /// </summary>
-    /// <param name="value">The value to measure.</param>
-    /// <returns>The number of characters, which is at least one.</returns>
-    private static int GetIntegerDigitCount(long value)
-    {
-        if (value == 0)
-            return 1;
-
-        var count = value < 0 ? 1 : 0;
-        var magnitude = value < 0
-            ? (ulong)-(value + 1) + 1
-            : (ulong)value;
-
-        while (magnitude != 0)
-        {
-            count++;
-            magnitude /= 10;
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Computes the encoded length of a byte string, including its decimal length prefix and the separator.
-    /// </summary>
-    /// <param name="value">The string value to measure.</param>
-    /// <returns>The exact encoded length, in bytes.</returns>
-    private static int GetStringEncodedLength(BencodedString value)
-    {
-        checked
-        {
-            return GetDecimalDigitCount(value.Length) + 1 + value.Length;
-        }
-    }
-
-    /// <summary>
-    /// Determines whether a byte is an ASCII decimal digit.
-    /// </summary>
-    /// <param name="value">The byte to test.</param>
-    /// <returns>
-    /// <see langword="true" /> if <paramref name="value" /> is in the range <c>'0'</c>–<c>'9'</c>; otherwise,
-    /// <see langword="false" />.
-    /// </returns>
-    private static bool IsAsciiDigit(byte value) =>
-        value is >= (byte)'0' and <= (byte)'9';
-
-    /// <summary>
-    /// Writes the bencoded form of an integer (<c>i</c>&lt;digits&gt;<c>e</c>) into the destination buffer.
-    /// </summary>
-    /// <param name="value">The integer value to encode.</param>
-    /// <param name="destination">The span that receives the encoded bytes.</param>
-    /// <param name="offset">The current write position; advanced past the bytes written on return.</param>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the integer cannot be formatted into the buffer.
+    /// <exception cref="OverflowException">
+    /// Thrown when the encoded length exceeds <see cref="int.MaxValue" />.
     /// </exception>
-    private static void WriteInteger(BencodedInteger value, Span<byte> destination, ref int offset)
-    {
-        destination[offset++] = IntegerPrefix;
-
-        if (!Utf8Formatter.TryFormat(value.Value, destination[offset..], out var bytesWritten))
-            throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_IntegerFormatFailed);
-
-        offset += bytesWritten;
-        destination[offset++] = EndMarker;
-    }
-
-    /// <summary>
-    /// Writes the bencoded form of a byte string (&lt;length&gt;<c>:</c>&lt;bytes&gt;) into the destination buffer.
-    /// </summary>
-    /// <param name="value">The string value to encode.</param>
-    /// <param name="destination">The span that receives the encoded bytes.</param>
-    /// <param name="offset">The current write position; advanced past the bytes written on return.</param>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the length prefix cannot be formatted into the buffer.
-    /// </exception>
-    private static void WriteString(BencodedString value, Span<byte> destination, ref int offset)
-    {
-        if (!Utf8Formatter.TryFormat(value.Length, destination[offset..], out var bytesWritten))
-            throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_StringLengthFormatFailed);
-
-        offset += bytesWritten;
-        destination[offset++] = StringLengthSeparator;
-
-        value.Bytes.Span.CopyTo(destination[offset..]);
-        offset += value.Length;
-    }
-
-    /// <summary>
-    /// Writes the bencoded form of a value into the destination buffer, starting at the beginning.
-    /// </summary>
-    /// <param name="value">The value to encode.</param>
-    /// <param name="destination">The span that receives the encoded bytes.</param>
-    /// <returns>The number of bytes written.</returns>
-    private static int WriteValue(BencodedValue value, Span<byte> destination)
-    {
-        var offset = 0;
-        WriteValue(value, destination, ref offset);
-        return offset;
-    }
-
-    /// <summary>
-    /// Writes the bencoded form of a value into the destination buffer at the specified position, recursing into list
-    /// items and dictionary entries.
-    /// </summary>
-    /// <param name="value">The value to encode.</param>
-    /// <param name="destination">The span that receives the encoded bytes.</param>
-    /// <param name="offset">The current write position; advanced past the bytes written on return.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value" /> is not a recognized bencoded value kind.
-    /// </exception>
-    private static void WriteValue(BencodedValue value, Span<byte> destination, ref int offset)
-    {
-        switch (value)
-        {
-            case BencodedInteger integer:
-                WriteInteger(integer, destination, ref offset);
-                return;
-
-            case BencodedString text:
-                WriteString(text, destination, ref offset);
-                return;
-
-            case BencodedList list:
-                destination[offset++] = ListPrefix;
-
-                foreach (BencodedValue item in list.Items)
-                {
-                    WriteValue(item, destination, ref offset);
-                }
-
-                destination[offset++] = EndMarker;
-                return;
-
-            case BencodedDictionary dictionary:
-                destination[offset++] = DictionaryPrefix;
-
-                foreach (KeyValuePair<BencodedString, BencodedValue> item in dictionary.GetOrderedItems())
-                {
-                    WriteString(item.Key, destination, ref offset);
-                    WriteValue(item.Value, destination, ref offset);
-                }
-
-                destination[offset++] = EndMarker;
-                return;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(value), FormatsResourceStrings.Arg_OutOfRange_UnsupportedBencodedValueType);
-        }
-    }
-
-    private ref struct Parser
-    {
-        private readonly ReadOnlySpan<byte> _source;
-        private readonly int _maxDepth;
-        private int _depth;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Parser" /> struct.
-        /// </summary>
-        /// <param name="source">The bencoded source bytes to decode.</param>
-        /// <param name="maxDepth">The maximum permitted container nesting depth.</param>
-        public Parser(ReadOnlySpan<byte> source, int maxDepth)
-        {
-            this._source = source;
-            this._maxDepth = maxDepth;
-            this._depth = 0;
-            Position = 0;
-        }
-
-        public int Position { get; private set; }
-
-        /// <summary>
-        /// Parses a single bencoded value starting at the current position, dispatching by its leading token.
-        /// </summary>
-        /// <returns>The decoded value.</returns>
-        /// <exception cref="BencodeFormatException">
-        /// Thrown when the source is exhausted or the current byte does not begin a valid bencoded value.
-        /// </exception>
-        public BencodedValue ParseValue()
-        {
-            if (Position >= _source.Length)
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData);
-
-            switch (_source[Position])
-            {
-                case IntegerPrefix:
-                    return ParseInteger();
-                case ListPrefix:
-                    return ParseList();
-                case DictionaryPrefix:
-                    return ParseDictionary();
-                case >= (byte)'0' and <= (byte)'9':
-                    return ParseString();
-                default:
-                    throw new BencodeFormatException(
-                        string.Format(CultureInfo.CurrentCulture, s_unexpectedToken, (char)_source[Position], Position));
-            }
-        }
-
-        /// <summary>
-        /// Records entry into a list or dictionary and enforces the maximum nesting depth.
-        /// </summary>
-        /// <exception cref="BencodeFormatException">
-        /// Thrown when the current nesting depth exceeds the configured maximum.
-        /// </exception>
-        private void EnterContainer()
-        {
-            _depth++;
-
-            if (_depth > _maxDepth)
-                throw new BencodeFormatException(
-                    string.Format(CultureInfo.CurrentCulture, s_nestingTooDeep, _maxDepth));
-        }
-
-        /// <summary>
-        /// Parses a dictionary value, verifying that keys are byte strings in strictly ascending bytewise order.
-        /// </summary>
-        /// <returns>The decoded dictionary.</returns>
-        /// <exception cref="BencodeFormatException">
-        /// Thrown when the dictionary is unterminated, contains a non-string key, or has out-of-order keys.
-        /// </exception>
-        private BencodedDictionary ParseDictionary()
-        {
-            EnterContainer();
-            Position++;
-
-            List<KeyValuePair<BencodedString, BencodedValue>> values = new();
-            BencodedString? previousKey = null;
-
-            while (true)
-            {
-                if (Position >= _source.Length)
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedDictionary);
-
-                if (_source[Position] == EndMarker)
-                {
-                    Position++;
-                    _depth--;
-                    return new BencodedDictionary(values);
-                }
-
-                if (!IsAsciiDigit(_source[Position]))
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeNonStringDictionaryKey);
-
-                BencodedString key = ParseString();
-
-                if (previousKey is not null &&
-                    BencodedStringComparer.Ordinal.Compare(previousKey, key) >= 0)
-                {
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys);
-                }
-
-                BencodedValue value = ParseValue();
-                values.Add(new KeyValuePair<BencodedString, BencodedValue>(key, value));
-                previousKey = key;
-            }
-        }
-
-        /// <summary>
-        /// Parses an integer value, rejecting leading zeros, negative zero, and unterminated or out-of-range values.
-        /// </summary>
-        /// <returns>The decoded integer.</returns>
-        /// <exception cref="BencodeFormatException">
-        /// Thrown when the integer is malformed, unterminated, or outside the range of <see cref="long" />.
-        /// </exception>
-        private BencodedInteger ParseInteger()
-        {
-            Position++;
-
-            if (Position >= _source.Length)
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedInteger);
-
-            var numberStart = Position;
-            var isNegative = false;
-
-            if (_source[Position] == MinusSign)
-            {
-                isNegative = true;
-                Position++;
-
-                if (Position >= _source.Length)
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeInvalidInteger);
-            }
-
-            if (!IsAsciiDigit(_source[Position]))
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeInvalidInteger);
-
-            if (_source[Position] == (byte)'0')
-            {
-                Position++;
-
-                if (isNegative)
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeNegativeZeroInteger);
-
-                if (Position < _source.Length && IsAsciiDigit(_source[Position]))
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeLeadingZerosInteger);
-            }
-            else
-            {
-                while (Position < _source.Length && IsAsciiDigit(_source[Position]))
-                {
-                    Position++;
-                }
-            }
-
-            if (Position >= _source.Length || _source[Position] != EndMarker)
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedInteger);
-
-            ReadOnlySpan<byte> number = _source[numberStart..Position];
-
-            if (!Utf8Parser.TryParse(number, out long value, out var bytesConsumed) ||
-                bytesConsumed != number.Length)
-            {
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, numberStart);
-            }
-
-            Position++;
-            return new BencodedInteger(value);
-        }
-
-        /// <summary>
-        /// Parses a list value, decoding each contained value until the end marker is reached.
-        /// </summary>
-        /// <returns>The decoded list.</returns>
-        /// <exception cref="BencodeFormatException">Thrown when the list is unterminated.</exception>
-        private BencodedList ParseList()
-        {
-            EnterContainer();
-            Position++;
-
-            List<BencodedValue> values = new();
-
-            while (true)
-            {
-                if (Position >= _source.Length)
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedList);
-
-                if (_source[Position] == EndMarker)
-                {
-                    Position++;
-                    _depth--;
-                    return new BencodedList(values);
-                }
-
-                values.Add(ParseValue());
-            }
-        }
-
-        /// <summary>
-        /// Parses a byte string value, reading its decimal length prefix and the following bytes.
-        /// </summary>
-        /// <returns>The decoded byte string.</returns>
-        /// <exception cref="BencodeFormatException">
-        /// Thrown when the declared length exceeds the remaining input or the length prefix is malformed.
-        /// </exception>
-        private BencodedString ParseString()
-        {
-            var length = ParseStringLength();
-
-            if (length > _source.Length - Position)
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthExceedsInput);
-
-            BencodedString value = new(_source.Slice(Position, length));
-            Position += length;
-
-            return value;
-        }
-
-        /// <summary>
-        /// Parses the decimal length prefix of a byte string and consumes the trailing separator.
-        /// </summary>
-        /// <returns>The declared string length, in bytes.</returns>
-        /// <exception cref="BencodeFormatException">
-        /// Thrown when the length is missing, has leading zeros, lacks a separator, or overflows <see cref="int" />.
-        /// </exception>
-        private int ParseStringLength()
-        {
-            if (Position >= _source.Length || !IsAsciiDigit(_source[Position]))
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthExpected);
-
-            var digitStart = Position;
-            var hasLeadingZero = _source[Position] == (byte)'0';
-            var length = 0;
-
-            while (Position < _source.Length && IsAsciiDigit(_source[Position]))
-            {
-                var digit = _source[Position] - (byte)'0';
-
-                if (length > (int.MaxValue - digit) / 10)
-                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthTooLarge);
-
-                length = (length * 10) + digit;
-                Position++;
-            }
-
-            if (Position >= _source.Length || _source[Position] != StringLengthSeparator)
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringMissingSeparator);
-
-            if (hasLeadingZero && Position - digitStart > 1)
-                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthLeadingZeros);
-
-            Position++;
-            return length;
-        }
-    }
+    public static int GetFormattedLength(BencodedValue value) =>
+        s_writer.GetWrittenLength(value);
 }
