@@ -120,6 +120,13 @@ public readonly partial struct WeekPattern : IEnumerable<DayOfWeek>
         : this(Parse(input))
     { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WeekPattern" /> struct from a raw day bitmask.
+    /// </summary>
+    /// <param name="value">The day bitmask, where each of the seven low-order bits selects a day of the week.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="value" /> is less than <see cref="MinValue" /> or greater than <see cref="MaxValue" />.
+    /// </exception>
     private WeekPattern(int value)
     {
         ThrowHelper.ThrowIfOutOfRange(value, MinValue, MaxValue);

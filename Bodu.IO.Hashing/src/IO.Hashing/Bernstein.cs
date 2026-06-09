@@ -164,6 +164,11 @@ public sealed class Bernstein
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 
+    /// <summary>
+    /// Folds the supplied bytes into the running hash using the modified Bernstein recurrence
+    /// (<c>hash = hash * 33 ^ b</c>).
+    /// </summary>
+    /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
@@ -176,6 +181,11 @@ public sealed class Bernstein
         _workingHash = v;
     }
 
+    /// <summary>
+    /// Folds the supplied bytes into the running hash using the original Bernstein recurrence
+    /// (<c>hash = hash * 33 + b</c>).
+    /// </summary>
+    /// <param name="source">The bytes to incorporate into the hash.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendOriginal(ReadOnlySpan<byte> source)
     {
@@ -188,6 +198,13 @@ public sealed class Bernstein
         _workingHash = v;
     }
 
+    /// <summary>
+    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun
+    /// consuming input, guarding configuration that may only change before hashing starts.
+    /// </summary>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The algorithm has already started consuming input.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState() =>
         HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(_started);

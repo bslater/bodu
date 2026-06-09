@@ -205,6 +205,8 @@ public sealed class Scrypt
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if the requested output length is less than 1.
     /// </summary>
+    /// <param name="length">The requested output length, in bytes.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than 1.</exception>
     private static void ThrowIfInvalidLength(int length)
     {
         // The RFC 7914 upper bound of (2^32 - 1) * 32 always exceeds Array.MaxLength, so only the lower bound is
@@ -219,6 +221,10 @@ public sealed class Scrypt
     /// <summary>
     /// Formats a scrypt PHC encoded-hash string.
     /// </summary>
+    /// <param name="p">The scrypt parameters to encode.</param>
+    /// <param name="salt">The salt bytes.</param>
+    /// <param name="hash">The derived hash bytes.</param>
+    /// <returns>The scrypt PHC encoded-hash string.</returns>
     private static string Encode(ScryptParameters p, ReadOnlySpan<byte> salt, ReadOnlySpan<byte> hash)
     {
         var logN = BitOperations.Log2((uint)p.CostN);
@@ -235,6 +241,9 @@ public sealed class Scrypt
     /// <summary>
     /// Parses a scrypt PHC encoded-hash string into its constituent fields.
     /// </summary>
+    /// <param name="encoded">The scrypt PHC encoded-hash string to parse.</param>
+    /// <returns>The cost parameters, salt, and hash parsed from <paramref name="encoded" />.</returns>
+    /// <exception cref="FormatException"><paramref name="encoded" /> is not a valid scrypt PHC string.</exception>
     private static (int CostN, int BlockSizeR, int Parallelization, byte[] Salt, byte[] Hash) Decode(string encoded)
     {
         var fields = PhcString.SplitFields(encoded);
@@ -274,6 +283,8 @@ public sealed class Scrypt
     /// <summary>
     /// Parses a non-negative decimal integer, throwing a <see cref="FormatException" /> on failure.
     /// </summary>
+    /// <param name="value">The text to parse.</param>
+    /// <returns>The parsed non-negative integer.</returns>
     private static int ParseInt(string value) =>
         int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
             ? result

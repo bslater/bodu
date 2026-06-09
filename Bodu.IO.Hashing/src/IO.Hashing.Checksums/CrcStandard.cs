@@ -155,6 +155,12 @@ public sealed partial class CrcStandard
         XOrOut = xOrOut;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CrcStandard" /> class from serialized parameter values.
+    /// </summary>
+    /// <param name="info">The store from which the CRC parameters are read.</param>
+    /// <param name="context">The streaming context describing the source of the deserialization.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
     private CrcStandard(SerializationInfo info, StreamingContext context)
     {
         ThrowHelper.ThrowIfNull(info);

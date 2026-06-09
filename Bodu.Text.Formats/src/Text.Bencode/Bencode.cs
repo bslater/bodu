@@ -239,6 +239,11 @@ public static partial class Bencode
         return true;
     }
 
+    /// <summary>
+    /// Gets the number of ASCII decimal digits required to represent a non-negative integer.
+    /// </summary>
+    /// <param name="value">The non-negative value to measure.</param>
+    /// <returns>The number of decimal digits, which is at least one.</returns>
     private static int GetDecimalDigitCount(int value)
     {
         if (value == 0)
@@ -255,6 +260,14 @@ public static partial class Bencode
         return count;
     }
 
+    /// <summary>
+    /// Computes the exact encoded length of a value, recursing into list items and dictionary entries.
+    /// </summary>
+    /// <param name="value">The value to measure.</param>
+    /// <returns>The exact encoded length, in bytes.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value" /> is not a recognized bencoded value kind.
+    /// </exception>
     private static int GetEncodedLengthCore(BencodedValue value)
     {
         checked
@@ -275,6 +288,12 @@ public static partial class Bencode
         }
     }
 
+    /// <summary>
+    /// Gets the number of ASCII characters required to represent a signed integer, including the leading minus sign for
+    /// negative values.
+    /// </summary>
+    /// <param name="value">The value to measure.</param>
+    /// <returns>The number of characters, which is at least one.</returns>
     private static int GetIntegerDigitCount(long value)
     {
         if (value == 0)
@@ -294,6 +313,11 @@ public static partial class Bencode
         return count;
     }
 
+    /// <summary>
+    /// Computes the encoded length of a byte string, including its decimal length prefix and the separator.
+    /// </summary>
+    /// <param name="value">The string value to measure.</param>
+    /// <returns>The exact encoded length, in bytes.</returns>
     private static int GetStringEncodedLength(BencodedString value)
     {
         checked
@@ -302,9 +326,26 @@ public static partial class Bencode
         }
     }
 
+    /// <summary>
+    /// Determines whether a byte is an ASCII decimal digit.
+    /// </summary>
+    /// <param name="value">The byte to test.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="value" /> is in the range <c>'0'</c>–<c>'9'</c>; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     private static bool IsAsciiDigit(byte value) =>
         value is >= (byte)'0' and <= (byte)'9';
 
+    /// <summary>
+    /// Writes the bencoded form of an integer (<c>i</c>&lt;digits&gt;<c>e</c>) into the destination buffer.
+    /// </summary>
+    /// <param name="value">The integer value to encode.</param>
+    /// <param name="destination">The span that receives the encoded bytes.</param>
+    /// <param name="offset">The current write position; advanced past the bytes written on return.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the integer cannot be formatted into the buffer.
+    /// </exception>
     private static void WriteInteger(BencodedInteger value, Span<byte> destination, ref int offset)
     {
         destination[offset++] = IntegerPrefix;
@@ -316,6 +357,15 @@ public static partial class Bencode
         destination[offset++] = EndMarker;
     }
 
+    /// <summary>
+    /// Writes the bencoded form of a byte string (&lt;length&gt;<c>:</c>&lt;bytes&gt;) into the destination buffer.
+    /// </summary>
+    /// <param name="value">The string value to encode.</param>
+    /// <param name="destination">The span that receives the encoded bytes.</param>
+    /// <param name="offset">The current write position; advanced past the bytes written on return.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the length prefix cannot be formatted into the buffer.
+    /// </exception>
     private static void WriteString(BencodedString value, Span<byte> destination, ref int offset)
     {
         if (!Utf8Formatter.TryFormat(value.Length, destination[offset..], out var bytesWritten))
@@ -328,6 +378,12 @@ public static partial class Bencode
         offset += value.Length;
     }
 
+    /// <summary>
+    /// Writes the bencoded form of a value into the destination buffer, starting at the beginning.
+    /// </summary>
+    /// <param name="value">The value to encode.</param>
+    /// <param name="destination">The span that receives the encoded bytes.</param>
+    /// <returns>The number of bytes written.</returns>
     private static int WriteValue(BencodedValue value, Span<byte> destination)
     {
         var offset = 0;
@@ -335,6 +391,16 @@ public static partial class Bencode
         return offset;
     }
 
+    /// <summary>
+    /// Writes the bencoded form of a value into the destination buffer at the specified position, recursing into list
+    /// items and dictionary entries.
+    /// </summary>
+    /// <param name="value">The value to encode.</param>
+    /// <param name="destination">The span that receives the encoded bytes.</param>
+    /// <param name="offset">The current write position; advanced past the bytes written on return.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value" /> is not a recognized bencoded value kind.
+    /// </exception>
     private static void WriteValue(BencodedValue value, Span<byte> destination, ref int offset)
     {
         switch (value)
@@ -381,6 +447,11 @@ public static partial class Bencode
         private readonly int _maxDepth;
         private int _depth;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parser" /> struct.
+        /// </summary>
+        /// <param name="source">The bencoded source bytes to decode.</param>
+        /// <param name="maxDepth">The maximum permitted container nesting depth.</param>
         public Parser(ReadOnlySpan<byte> source, int maxDepth)
         {
             this._source = source;
@@ -391,6 +462,13 @@ public static partial class Bencode
 
         public int Position { get; private set; }
 
+        /// <summary>
+        /// Parses a single bencoded value starting at the current position, dispatching by its leading token.
+        /// </summary>
+        /// <returns>The decoded value.</returns>
+        /// <exception cref="BencodeFormatException">
+        /// Thrown when the source is exhausted or the current byte does not begin a valid bencoded value.
+        /// </exception>
         public BencodedValue ParseValue()
         {
             if (Position >= _source.Length)
@@ -412,6 +490,12 @@ public static partial class Bencode
             }
         }
 
+        /// <summary>
+        /// Records entry into a list or dictionary and enforces the maximum nesting depth.
+        /// </summary>
+        /// <exception cref="BencodeFormatException">
+        /// Thrown when the current nesting depth exceeds the configured maximum.
+        /// </exception>
         private void EnterContainer()
         {
             _depth++;
@@ -421,6 +505,13 @@ public static partial class Bencode
                     string.Format(CultureInfo.CurrentCulture, s_nestingTooDeep, _maxDepth));
         }
 
+        /// <summary>
+        /// Parses a dictionary value, verifying that keys are byte strings in strictly ascending bytewise order.
+        /// </summary>
+        /// <returns>The decoded dictionary.</returns>
+        /// <exception cref="BencodeFormatException">
+        /// Thrown when the dictionary is unterminated, contains a non-string key, or has out-of-order keys.
+        /// </exception>
         private BencodedDictionary ParseDictionary()
         {
             EnterContainer();
@@ -458,6 +549,13 @@ public static partial class Bencode
             }
         }
 
+        /// <summary>
+        /// Parses an integer value, rejecting leading zeros, negative zero, and unterminated or out-of-range values.
+        /// </summary>
+        /// <returns>The decoded integer.</returns>
+        /// <exception cref="BencodeFormatException">
+        /// Thrown when the integer is malformed, unterminated, or outside the range of <see cref="long" />.
+        /// </exception>
         private BencodedInteger ParseInteger()
         {
             Position++;
@@ -513,6 +611,11 @@ public static partial class Bencode
             return new BencodedInteger(value);
         }
 
+        /// <summary>
+        /// Parses a list value, decoding each contained value until the end marker is reached.
+        /// </summary>
+        /// <returns>The decoded list.</returns>
+        /// <exception cref="BencodeFormatException">Thrown when the list is unterminated.</exception>
         private BencodedList ParseList()
         {
             EnterContainer();
@@ -536,6 +639,13 @@ public static partial class Bencode
             }
         }
 
+        /// <summary>
+        /// Parses a byte string value, reading its decimal length prefix and the following bytes.
+        /// </summary>
+        /// <returns>The decoded byte string.</returns>
+        /// <exception cref="BencodeFormatException">
+        /// Thrown when the declared length exceeds the remaining input or the length prefix is malformed.
+        /// </exception>
         private BencodedString ParseString()
         {
             var length = ParseStringLength();
@@ -549,6 +659,13 @@ public static partial class Bencode
             return value;
         }
 
+        /// <summary>
+        /// Parses the decimal length prefix of a byte string and consumes the trailing separator.
+        /// </summary>
+        /// <returns>The declared string length, in bytes.</returns>
+        /// <exception cref="BencodeFormatException">
+        /// Thrown when the length is missing, has leading zeros, lacks a separator, or overflows <see cref="int" />.
+        /// </exception>
         private int ParseStringLength()
         {
             if (Position >= _source.Length || !IsAsciiDigit(_source[Position]))

@@ -189,9 +189,26 @@ public sealed class Iban
         _rBban = 0;
     }
 
+    /// <summary>
+    /// Folds a single character into the running ISO 7064 mod-97 remainder, contributing a digit as its value and
+    /// a letter <c>A</c>–<c>Z</c> as the two-digit value <c>10</c>–<c>35</c>.
+    /// </summary>
+    /// <param name="r">The current mod-97 remainder.</param>
+    /// <param name="ch">The character to fold in.</param>
+    /// <returns>The updated mod-97 remainder.</returns>
     private static int FoldChar(int r, char ch) =>
         (uint)(ch - '0') > 9u ? ((r * 100) + ch - 'A' + 10) % 97 : ((r * 10) + (ch - '0')) % 97;
 
+    /// <summary>
+    /// Attempts to fold a single character into the running ISO 7064 mod-97 remainder, accepting digits and the
+    /// letters <c>A</c>–<c>Z</c>.
+    /// </summary>
+    /// <param name="r">The current mod-97 remainder, updated in place when the character is accepted.</param>
+    /// <param name="ch">The character to fold in.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="ch" /> is a valid alphanumeric character and was folded into
+    /// <paramref name="r" />; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool TryFold(ref int r, char ch)
     {
         if ((uint)(ch - '0') <= 9u)

@@ -144,6 +144,11 @@ public sealed class BKDR
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 
+    /// <summary>
+    /// Validates that the supplied seed is one of the BKDR multipliers supported by this implementation.
+    /// </summary>
+    /// <param name="value">The seed multiplier to validate.</param>
+    /// <exception cref="ArgumentException"><paramref name="value" /> is not a supported BKDR seed.</exception>
     private static void ValidateSeed(uint value)
     {
         if (Array.IndexOf(s_validSeedValues, value) == -1)

@@ -386,6 +386,12 @@ public sealed partial class Blake3
     /// Scalar reference implementation of the BLAKE3 compression function used as a fallback on hosts without AVX-512 +
     /// VL support. Implements §2.4 of the BLAKE3 specification directly on a 16-element <see cref="uint" /> array.
     /// </summary>
+    /// <param name="cv">The 8-word input chaining value.</param>
+    /// <param name="blockWords">The 16-word message block.</param>
+    /// <param name="counter">The 64-bit chunk counter.</param>
+    /// <param name="blockLen">The number of input bytes in the block.</param>
+    /// <param name="flags">The BLAKE3 domain-separation flags for the block.</param>
+    /// <returns>The 16-word output state produced by the compression function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static uint[] CompressScalar(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
     {

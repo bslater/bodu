@@ -120,6 +120,11 @@ public partial struct WeekPattern
     /// Parses the format string for use in <see cref="ParseExact" /> or <see cref="TryParseExact" />, throwing
     /// <see cref="FormatException" /> if the format is unrecognized or <see langword="null" />.
     /// </summary>
+    /// <param name="format">The format string to interpret.</param>
+    /// <returns>
+    /// A tuple describing the parsed format: the start-of-week day, the unselected-day placeholder character, and
+    /// whether binary output is requested.
+    /// </returns>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForParse(string format)
     {
         ThrowHelper.ThrowIfNull(format);
@@ -132,6 +137,11 @@ public partial struct WeekPattern
     /// Parses the format string for use in <see cref="ToString(string, IFormatProvider)" />, throwing
     /// <see cref="ArgumentException" /> if the format is unrecognized.
     /// </summary>
+    /// <param name="format">The format string to interpret; <see langword="null" /> selects the default.</param>
+    /// <returns>
+    /// A tuple describing the parsed format: the start-of-week day, the unselected-day placeholder character, and
+    /// whether binary output is requested.
+    /// </returns>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForToString(string? format)
     {
         format ??= "S";

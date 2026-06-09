@@ -546,6 +546,11 @@ public sealed class PooledBufferBuilder<T> :
         GrowIfNeeded(minimum);
     }
 
+    /// <summary>
+    /// Ensures the internal buffer can accommodate at least <paramref name="minimum" /> elements, renting a larger
+    /// pooled array and copying the existing contents forward when the current capacity is insufficient.
+    /// </summary>
+    /// <param name="minimum">The minimum total capacity, in elements, the buffer must be able to hold.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void GrowIfNeeded(int minimum)
     {

@@ -30,6 +30,8 @@ public static partial class Ini
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a duplicate key.
     /// </summary>
+    /// <param name="key">The duplicate key name.</param>
+    /// <param name="lineNumber">The 1-based line number where the duplicate key was found.</param>
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new IniFormatException(
@@ -38,6 +40,8 @@ public static partial class Ini
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a duplicate section name.
     /// </summary>
+    /// <param name="name">The duplicate section name.</param>
+    /// <param name="lineNumber">The 1-based line number where the duplicate section header was found.</param>
     [DoesNotReturn]
     private static void ThrowDuplicateSection(string name, int lineNumber) =>
         throw new IniFormatException(
@@ -47,6 +51,7 @@ public static partial class Ini
     /// Throws an <see cref="IniFormatException" /> when a key appears before the first section header and global
     /// entries are disallowed.
     /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the disallowed global key.</param>
     [DoesNotReturn]
     internal static void ThrowGlobalKeyDisallowed(int lineNumber) =>
         throw new IniFormatException(
@@ -55,6 +60,7 @@ public static partial class Ini
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a malformed section header.
     /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the malformed section header.</param>
     [DoesNotReturn]
     internal static void ThrowMalformedSectionHeader(int lineNumber) =>
         throw new IniFormatException(
@@ -63,6 +69,7 @@ public static partial class Ini
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a property line with an empty key.
     /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the property line with the empty key.</param>
     [DoesNotReturn]
     internal static void ThrowMissingKey(int lineNumber) =>
         throw new IniFormatException(
@@ -294,6 +301,12 @@ public static partial class Ini
         /// </summary>
         private struct SectionBuilder
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="SectionBuilder" /> struct.
+            /// </summary>
+            /// <param name="name">The section name.</param>
+            /// <param name="entries">The ordered entry list backing the section.</param>
+            /// <param name="lookup">The case-resolved key lookup backing the section.</param>
             internal SectionBuilder(string name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup)
             {
                 Name = name;

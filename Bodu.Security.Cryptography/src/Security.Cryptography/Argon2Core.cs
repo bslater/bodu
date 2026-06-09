@@ -86,6 +86,11 @@ internal static class Argon2Core
     /// <summary>
     /// Computes the 64-byte pre-hashing digest <c>H0</c> (RFC 9106, Figure 1).
     /// </summary>
+    /// <param name="type">The Argon2 variant being computed.</param>
+    /// <param name="p">The Argon2 parameters describing cost and auxiliary inputs.</param>
+    /// <param name="password">The password bytes.</param>
+    /// <param name="salt">The salt bytes.</param>
+    /// <param name="h0">The destination span that receives the 64-byte <c>H0</c> digest.</param>
     private static void ComputeH0(
         Argon2Type type,
         Argon2Parameters p,
@@ -126,6 +131,10 @@ internal static class Argon2Core
     /// Fills the first two columns of every lane from <c>H0</c> via the variable-length hash <c>H'</c> (RFC 9106,
     /// Figures 3 and 4).
     /// </summary>
+    /// <param name="memory">The full memory matrix, as a flat array of 64-bit words.</param>
+    /// <param name="h0">The 64-byte pre-hashing digest <c>H0</c>.</param>
+    /// <param name="lanes">The number of parallel lanes.</param>
+    /// <param name="laneLength">The number of blocks in each lane.</param>
     private static void InitializeBlocks(ulong[] memory, ReadOnlySpan<byte> h0, int lanes, int laneLength)
     {
         Span<byte> input = stackalloc byte[Argon2Blake2b.MaxDigestBytes + 8];
@@ -149,6 +158,15 @@ internal static class Argon2Core
     /// <summary>
     /// Computes one segment (the intersection of a lane and a slice) of the memory matrix.
     /// </summary>
+    /// <param name="type">The Argon2 variant, which selects data-dependent or data-independent indexing.</param>
+    /// <param name="parameters">The Argon2 parameters describing cost and version.</param>
+    /// <param name="memory">The full memory matrix, as a flat array of 64-bit words.</param>
+    /// <param name="pass">The zero-based pass (iteration) index.</param>
+    /// <param name="slice">The zero-based slice index within the pass.</param>
+    /// <param name="lane">The zero-based lane index being filled.</param>
+    /// <param name="lanes">The total number of lanes.</param>
+    /// <param name="laneLength">The number of blocks in each lane.</param>
+    /// <param name="segmentLength">The number of blocks in each segment.</param>
     private static void FillSegment(
         Argon2Type type,
         Argon2Parameters parameters,
@@ -224,6 +242,9 @@ internal static class Argon2Core
     /// <summary>
     /// Regenerates the Argon2i address block: <c>address = G(ZERO, G(ZERO, input))</c> (RFC 9106, Section 3.4.1.2).
     /// </summary>
+    /// <param name="addressBlock">The block that receives the regenerated pseudo-random addresses.</param>
+    /// <param name="inputBlock">The counter input block; its counter word is incremented in place.</param>
+    /// <param name="zeroBlock">A block of zero words used as the first compression operand.</param>
     private static void NextAddresses(Span<ulong> addressBlock, Span<ulong> inputBlock, ReadOnlySpan<ulong> zeroBlock)
     {
         inputBlock[6]++;
@@ -234,6 +255,14 @@ internal static class Argon2Core
     /// <summary>
     /// Maps the pseudo-random value to a reference-block column within the same lane (RFC 9106, Section 3.4.2).
     /// </summary>
+    /// <param name="pass">The zero-based pass index.</param>
+    /// <param name="slice">The zero-based slice index.</param>
+    /// <param name="index">The zero-based position within the current segment.</param>
+    /// <param name="segmentLength">The number of blocks in each segment.</param>
+    /// <param name="laneLength">The number of blocks in each lane.</param>
+    /// <param name="j1">The low 32 bits of the pseudo-random value driving the mapping.</param>
+    /// <param name="sameLane"><see langword="true" /> when the reference block is taken from the current lane.</param>
+    /// <returns>The column index of the reference block within its lane.</returns>
     private static int ReferenceIndex(
         int pass, int slice, int index, int segmentLength, int laneLength, uint j1, bool sameLane)
     {
@@ -270,6 +299,10 @@ internal static class Argon2Core
     /// Computes the final block as the XOR of the last column across lanes, then emits the tag via <c>H'</c> (RFC 9106,
     /// Figure 7).
     /// </summary>
+    /// <param name="memory">The full memory matrix, as a flat array of 64-bit words.</param>
+    /// <param name="lanes">The number of lanes.</param>
+    /// <param name="laneLength">The number of blocks in each lane.</param>
+    /// <param name="tag">The destination span that receives the final tag.</param>
     private static void Finalize(ulong[] memory, int lanes, int laneLength, Span<byte> tag)
     {
         Span<ulong> c = stackalloc ulong[WordsPerBlock];
@@ -320,6 +353,7 @@ internal static class Argon2Core
     /// Applies the BLAKE2b-based permutation <c>P</c> rowwise then columnwise to a 1024-byte block (RFC 9106, Figures
     /// 15 and 18).
     /// </summary>
+    /// <param name="block">The 128-word (1024-byte) block permuted in place.</param>
     private static void Permute(Span<ulong> block)
     {
         for (var row = 0; row < 8; row++)
@@ -354,6 +388,7 @@ internal static class Argon2Core
     /// <summary>
     /// Applies one BLAKE2b round (eight <c>GB</c> calls) to sixteen 64-bit words.
     /// </summary>
+    /// <param name="v">The sixteen 64-bit words mixed in place.</param>
     private static void Round(Span<ulong> v)
     {
         GB(ref v[0], ref v[4], ref v[8], ref v[12]);
@@ -371,6 +406,10 @@ internal static class Argon2Core
     /// The Argon2 mixing function <c>GB</c> — the BLAKE2b round function augmented with 64-bit multiplications (RFC
     /// 9106, Section 3.6).
     /// </summary>
+    /// <param name="a">The first state word, combined and updated in place.</param>
+    /// <param name="b">The second state word, combined and updated in place.</param>
+    /// <param name="c">The third state word, combined and updated in place.</param>
+    /// <param name="d">The fourth state word, combined and updated in place.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped add / rotate / XOR steps mirror the GB definition and preserve a compact, specification-like layout.")]
     private static void GB(ref ulong a, ref ulong b, ref ulong c, ref ulong d)
     {
@@ -383,6 +422,9 @@ internal static class Argon2Core
     /// <summary>
     /// Computes <c>a + b + 2 * trunc(a) * trunc(b)</c> modulo 2^64, where <c>trunc(x)</c> is the low 32 bits of x.
     /// </summary>
+    /// <param name="x">The first operand.</param>
+    /// <param name="y">The second operand.</param>
+    /// <returns>The value <c>x + y + 2·trunc(x)·trunc(y)</c> modulo 2^64.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong FBlaMka(ulong x, ulong y)
     {
@@ -393,6 +435,9 @@ internal static class Argon2Core
     /// <summary>
     /// Returns the 128-word span of the block at the specified absolute block index.
     /// </summary>
+    /// <param name="memory">The full memory matrix, as a flat array of 64-bit words.</param>
+    /// <param name="blockIndex">The absolute, zero-based block index.</param>
+    /// <returns>The 128-word span backing the requested block.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static Span<ulong> BlockSpan(ulong[] memory, int blockIndex) =>
         memory.AsSpan(blockIndex * WordsPerBlock, WordsPerBlock);
@@ -400,6 +445,8 @@ internal static class Argon2Core
     /// <summary>
     /// Loads a 1024-byte block into 128 little-endian 64-bit words.
     /// </summary>
+    /// <param name="source">The 1024-byte source buffer.</param>
+    /// <param name="block">The destination span of 128 64-bit words.</param>
     private static void LoadBlockLE(ReadOnlySpan<byte> source, Span<ulong> block)
     {
         for (var i = 0; i < WordsPerBlock; i++)
@@ -409,6 +456,8 @@ internal static class Argon2Core
     /// <summary>
     /// Serializes 128 64-bit words into a 1024-byte little-endian block.
     /// </summary>
+    /// <param name="block">The source span of 128 64-bit words.</param>
+    /// <param name="destination">The 1024-byte destination buffer.</param>
     private static void StoreBlockLE(ReadOnlySpan<ulong> block, Span<byte> destination)
     {
         for (var i = 0; i < WordsPerBlock; i++)
@@ -418,6 +467,9 @@ internal static class Argon2Core
     /// <summary>
     /// Writes a 32-bit value in little-endian order and advances the offset.
     /// </summary>
+    /// <param name="destination">The buffer that receives the encoded value.</param>
+    /// <param name="offset">The write offset, advanced by four bytes on return.</param>
+    /// <param name="value">The 32-bit value to write.</param>
     private static void WriteLE32(Span<byte> destination, ref int offset, int value)
     {
         BinaryPrimitives.WriteInt32LittleEndian(destination.Slice(offset, 4), value);
@@ -427,6 +479,9 @@ internal static class Argon2Core
     /// <summary>
     /// Writes a 32-bit length prefix followed by the bytes, advancing the offset.
     /// </summary>
+    /// <param name="destination">The buffer that receives the length prefix and bytes.</param>
+    /// <param name="offset">The write offset, advanced past the written data on return.</param>
+    /// <param name="value">The bytes to write after their 32-bit length prefix.</param>
     private static void WriteLengthPrefixed(Span<byte> destination, ref int offset, ReadOnlySpan<byte> value)
     {
         WriteLE32(destination, ref offset, value.Length);

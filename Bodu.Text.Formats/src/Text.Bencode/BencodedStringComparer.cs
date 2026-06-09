@@ -39,6 +39,9 @@ public sealed class BencodedStringComparer
     : IComparer<BencodedString>
     , IEqualityComparer<BencodedString>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BencodedStringComparer" /> class.
+    /// </summary>
     private BencodedStringComparer()
     {
     }
@@ -71,6 +74,16 @@ public sealed class BencodedStringComparer
         return hashCode.ToHashCode();
     }
 
+    /// <summary>
+    /// Compares two byte spans using bytewise ordinal ordering, treating the shorter span as ordered before a longer
+    /// span that shares its prefix.
+    /// </summary>
+    /// <param name="x">The first byte span to compare.</param>
+    /// <param name="y">The second byte span to compare.</param>
+    /// <returns>
+    /// A negative value when <paramref name="x" /> sorts before <paramref name="y" />, zero when they are equal, or a
+    /// positive value when <paramref name="x" /> sorts after <paramref name="y" />.
+    /// </returns>
     internal static int CompareBytes(ReadOnlySpan<byte> x, ReadOnlySpan<byte> y)
     {
         var length = Math.Min(x.Length, y.Length);

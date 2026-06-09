@@ -99,6 +99,16 @@ public static partial class IListExtensions
                 : IndexOfCore(list, predicate, index, count);
     }
 
+    /// <summary>
+    /// Performs the forward scan for the public <c>IndexOf</c> overload once the arguments have been validated,
+    /// returning the position of the first element that satisfies the predicate within the requested range.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the elements in <paramref name="list" />.</typeparam>
+    /// <param name="list">The list to scan.</param>
+    /// <param name="predicate">The condition each element is tested against.</param>
+    /// <param name="index">The zero-based index at which the scan starts.</param>
+    /// <param name="count">The number of elements to examine.</param>
+    /// <returns>The zero-based index of the first matching element; otherwise, <c>-1</c>.</returns>
     private static int IndexOfCore<TSource>(IList<TSource> list, Func<TSource, bool> predicate, int index, int count)
     {
         var end = index + count;

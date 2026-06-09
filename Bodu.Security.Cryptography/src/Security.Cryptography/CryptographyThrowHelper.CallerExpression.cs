@@ -515,6 +515,12 @@ internal static partial class CryptographyThrowHelper
     /// Returns <see langword="true" /> if <paramref name="sizeBits" /> falls inside any of the ranges supplied by
     /// <paramref name="legalSizes" />.
     /// </summary>
+    /// <param name="sizeBits">The size to test, in bits.</param>
+    /// <param name="legalSizes">The permitted size ranges.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="sizeBits" /> matches one of <paramref name="legalSizes" />;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
     {
         foreach (KeySizes range in legalSizes)

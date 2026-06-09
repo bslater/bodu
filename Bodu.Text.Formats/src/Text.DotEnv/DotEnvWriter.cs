@@ -124,6 +124,9 @@ public sealed class DotEnvWriter : IDisposable
     /// Builds the <c>KEY=VALUE</c> line (terminated by a line feed) for one entry, reusing the document formatter's
     /// quoting and escaping rules so streamed output matches <see cref="DotEnv.Format(DotEnvDocument)" />.
     /// </summary>
+    /// <param name="key">The entry key.</param>
+    /// <param name="value">The entry value to format.</param>
+    /// <returns>The formatted <c>KEY=VALUE</c> line, terminated by a line feed.</returns>
     private static string FormatEntry(string key, string value)
     {
         StringBuilder sb = new();

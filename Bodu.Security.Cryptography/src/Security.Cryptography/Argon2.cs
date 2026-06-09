@@ -223,6 +223,9 @@ public abstract class Argon2
     /// <summary>
     /// Parses an Argon2 PHC encoded-hash string into its constituent fields.
     /// </summary>
+    /// <param name="encoded">The Argon2 PHC encoded-hash string to parse.</param>
+    /// <returns>The fields parsed from <paramref name="encoded" />.</returns>
+    /// <exception cref="FormatException"><paramref name="encoded" /> is not a valid Argon2 PHC string.</exception>
     private static Argon2EncodedHash Decode(string encoded)
     {
         var fields = PhcString.SplitFields(encoded);
@@ -254,6 +257,11 @@ public abstract class Argon2
     /// <summary>
     /// Formats an Argon2 PHC encoded-hash string.
     /// </summary>
+    /// <param name="type">The Argon2 variant.</param>
+    /// <param name="p">The Argon2 parameters to encode.</param>
+    /// <param name="salt">The salt bytes.</param>
+    /// <param name="hash">The derived hash (tag) bytes.</param>
+    /// <returns>The Argon2 PHC encoded-hash string.</returns>
     private static string Encode(Argon2Type type, Argon2Parameters p, ReadOnlySpan<byte> salt, ReadOnlySpan<byte> hash)
     {
         var sb = new StringBuilder();
@@ -274,6 +282,11 @@ public abstract class Argon2
     /// <summary>
     /// Parses the comma-separated cost-parameter field (<c>m=..,t=..,p=..[,data=..]</c>).
     /// </summary>
+    /// <param name="field">The comma-separated cost-parameter field.</param>
+    /// <returns>The decoded memory, iterations, parallelism, and optional associated data.</returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="field" /> is malformed or omits a required parameter.
+    /// </exception>
     private static (int Memory, int Iterations, int Parallelism, byte[] Data) ParseCostFields(string field)
     {
         int? memory = null, iterations = null, parallelism = null;
@@ -307,6 +320,8 @@ public abstract class Argon2
     /// <summary>
     /// Parses a non-negative decimal integer, throwing a <see cref="FormatException" /> on failure.
     /// </summary>
+    /// <param name="value">The text to parse.</param>
+    /// <returns>The parsed non-negative integer.</returns>
     private static int ParseInt(string value) =>
         int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
             ? result
@@ -315,6 +330,8 @@ public abstract class Argon2
     /// <summary>
     /// Parses a PHC type name into a variant, throwing a <see cref="FormatException" /> on an unknown name.
     /// </summary>
+    /// <param name="name">The PHC type name (for example, <c>argon2id</c>).</param>
+    /// <returns>The matching <see cref="Argon2Type" />.</returns>
     private static Argon2Type ParseTypeName(string name) => name switch
     {
         "argon2d" => Argon2Type.Argon2d,
@@ -326,6 +343,8 @@ public abstract class Argon2
     /// <summary>
     /// Throws an <see cref="ArgumentException" /> if the salt is shorter than the minimum length.
     /// </summary>
+    /// <param name="salt">The salt whose length is validated.</param>
+    /// <exception cref="ArgumentException"><paramref name="salt" /> is shorter than the minimum length.</exception>
     private static void ThrowIfSaltTooShort(ReadOnlySpan<byte> salt)
     {
         if (salt.Length < MinSaltLength)
@@ -337,6 +356,8 @@ public abstract class Argon2
     /// <summary>
     /// Returns the PHC type name for a variant.
     /// </summary>
+    /// <param name="type">The Argon2 variant.</param>
+    /// <returns>The PHC type name for <paramref name="type" />.</returns>
     private static string TypeName(Argon2Type type) => type switch
     {
         Argon2Type.Argon2d => "argon2d",
