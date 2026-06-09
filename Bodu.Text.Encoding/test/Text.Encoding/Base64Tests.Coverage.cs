@@ -111,4 +111,15 @@ public partial class Base64Tests
         Assert.AreEqual("TWFu", System.Text.Encoding.ASCII.GetString(writer.WrittenSpan));
         Assert.AreEqual(4, written);
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="IBufferWriter{T}" /> UTF-8 encode overload writes nothing for an empty source.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_ToBufferWriter_WhenSourceEmpty_ShouldWriteNothing()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        Assert.AreEqual(0, Base64.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer));
+    }
 }

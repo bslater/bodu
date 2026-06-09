@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+
 namespace Bodu.Text.Encoding;
 
 public partial class Base85Tests
@@ -32,8 +34,60 @@ public partial class Base85Tests
         byte[] data = { 1, 2, 3, 4 };
         char[] encoded = Base85.Encode(data).ToCharArray();
 
-        var decoded = Base85.TryDecode(encoded, Span<byte>.Empty, out _);
+        Assert.IsFalse(Base85.TryDecode(encoded, Span<byte>.Empty, out _));
+    }
 
-        Assert.IsFalse(decoded);
+    /// <summary>
+    /// Verifies that encoding an empty source into a span writes nothing.
+    /// </summary>
+    [TestMethod]
+    public void Encode_ToSpan_WhenSourceEmpty_ShouldReturnZero()
+    {
+        Assert.AreEqual(0, Base85.Encode(ReadOnlySpan<byte>.Empty, Span<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="IBufferWriter{T}" /> character encode overload writes nothing for an empty source.
+    /// </summary>
+    [TestMethod]
+    public void Encode_ToBufferWriter_WhenSourceEmpty_ShouldWriteNothing()
+    {
+        ArrayBufferWriter<char> writer = new();
+
+        Assert.AreEqual((0, 0), (Base85.Encode(ReadOnlySpan<byte>.Empty, writer), writer.WrittenCount));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="IBufferWriter{T}" /> UTF-8 encode overload writes nothing for an empty source.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_ToBufferWriter_WhenSourceEmpty_ShouldWriteNothing()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        Assert.AreEqual(0, Base85.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer));
+    }
+
+    /// <summary>
+    /// Verifies that decoding an empty UTF-8 source reports completion.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenSourceEmpty_ShouldReturnDone()
+    {
+        OperationStatus status = Base85.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out _, out _);
+
+        Assert.AreEqual(OperationStatus.Done, status);
+    }
+
+    /// <summary>
+    /// Verifies that Z85 encoding rejects an input whose length is not a multiple of four bytes.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenZ85InputNotMultipleOfFour_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Base85.Encode(new byte[] { 1, 2, 3 }, Base85Variant.Z85);
+        });
     }
 }

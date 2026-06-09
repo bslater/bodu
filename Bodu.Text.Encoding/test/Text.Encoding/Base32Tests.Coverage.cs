@@ -27,9 +27,16 @@ public partial class Base32Tests
     [TestMethod]
     public void EncodeToUtf8_WhenSourceEmpty_ShouldReturnEmpty()
     {
-        var encoded = Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty);
+        Assert.AreEqual(0, Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty).Length);
+    }
 
-        Assert.AreEqual(0, encoded.Length);
+    /// <summary>
+    /// Verifies that encoding an empty source into a span writes nothing.
+    /// </summary>
+    [TestMethod]
+    public void Encode_ToSpan_WhenSourceEmpty_ShouldReturnZero()
+    {
+        Assert.AreEqual(0, Base32.Encode(ReadOnlySpan<byte>.Empty, Span<char>.Empty));
     }
 
     /// <summary>
@@ -52,13 +59,23 @@ public partial class Base32Tests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base32.Encode(ReadOnlySpan<byte>.Empty, writer);
-
-        Assert.AreEqual((0, 0), (written, writer.WrittenCount));
+        Assert.AreEqual((0, 0), (Base32.Encode(ReadOnlySpan<byte>.Empty, writer), writer.WrittenCount));
     }
 
     /// <summary>
-    /// Verifies that the <see cref="IBufferWriter{T}" /> UTF-8 encode overload writes the encoded bytes.
+    /// Verifies that the <see cref="IBufferWriter{T}" /> UTF-8 encode overload writes nothing for an empty source.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_ToBufferWriter_WhenSourceEmpty_ShouldWriteNothing()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        Assert.AreEqual(0, Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="IBufferWriter{T}" /> UTF-8 encode overload writes the encoded bytes for a non-empty
+    /// source.
     /// </summary>
     [TestMethod]
     public void EncodeToUtf8_ToBufferWriter_ShouldWriteEncodedBytes()
@@ -69,5 +86,34 @@ public partial class Base32Tests
 
         Assert.IsTrue(written > 0);
         Assert.AreEqual(written, writer.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that interior whitespace is skipped when decoding with the ignore-whitespace style.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenWhitespaceWithIgnoreStyle_ShouldDecodeAroundIt()
+    {
+        byte[] original = { 1, 2, 3 };
+        var spaced = Base32.Encode(original).Insert(2, " ");
+        Span<byte> destination = stackalloc byte[3];
+
+        OperationStatus status = Base32.DecodeFromUtf8(
+            System.Text.Encoding.ASCII.GetBytes(spaced), destination, out _, out var written, Base32Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+
+        Assert.AreEqual((OperationStatus.Done, 3), (status, written));
+    }
+
+    /// <summary>
+    /// Verifies that decoding a source containing a character outside the Base32 alphabet throws
+    /// <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenCharacterOutsideAlphabet_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base32.Decode("0000");
+        });
     }
 }
