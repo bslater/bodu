@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="tp-t tp-d">
+  <title id="tp-t">TOML parse/format pipeline</title>
+  <desc id="tp-d">The TOML codec follows a reader/writer shape and runs in both directions. Parsing takes TOML source text, runs TomlReader to tokenize and apply the grammar, validates the specification rules (the v1.0.0 or v1.1.0 version, no duplicate keys, no table redefinition, valid UTF-8 with no unpaired surrogates), and returns a strongly typed TomlTable document. Formatting takes a TomlTable document, runs TomlWriter to walk the model in insertion order, canonicalizes the layout into block-style tables with inline scalars and arrays, and writes canonical TOML text that is valid under both spec versions. The static Toml.Parse and Toml.Format helpers are one-line facades over shared reader and writer singletons.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .row   { fill: #2DD4BF; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .rowd  { fill: #A78BFA; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .src   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .mid   { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .dst   { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .out   { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .wt    { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .wp    { stroke: #A78BFA; stroke-width: 1.6; fill: none; }
+    </style>
+    <marker id="tpt-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="tpd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="280"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="260" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">TOML parse/format pipeline</text>
+
+    <!-- ===== Top row — PARSE (left-to-right, teal) ===== -->
+    <text class="row" x="20" y="58">PARSE  ▸ Toml.Parse · TomlReader.Read  ·  text → document</text>
+
+    <g transform="translate(20 70)">
+      <rect class="out" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">TOML text</text>
+      <text class="mut" x="80" y="36">string · span · stream</text>
+    </g>
+
+    <line class="wt" x1="180" y1="93" x2="220" y2="93" marker-end="url(#tpt-a)"/>
+
+    <g transform="translate(220 70)">
+      <rect class="mid" width="160" height="46" rx="6"/>
+      <text class="lbl" x="80" y="20">TomlReader</text>
+      <text class="mut" x="80" y="36">tokenize + grammar</text>
+    </g>
+
+    <line class="wt" x1="380" y1="93" x2="420" y2="93" marker-end="url(#tpt-a)"/>
+
+    <g transform="translate(420 70)">
+      <rect class="mid" width="160" height="46" rx="6"/>
+      <text class="lbl" x="80" y="20">Validate spec rules</text>
+      <text class="mut" x="80" y="36">v1.0 / v1.1 · no dup keys</text>
+    </g>
+
+    <line class="wt" x1="580" y1="93" x2="620" y2="93" marker-end="url(#tpt-a)"/>
+
+    <g transform="translate(620 70)">
+      <rect class="src" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">TomlTable</text>
+      <text class="mut" x="80" y="36">typed value model</text>
+    </g>
+
+    <!-- ===== Middle separator ===== -->
+    <line x1="20" y1="138" x2="780" y2="138" stroke="#334155" stroke-width="1"/>
+
+    <!-- ===== Bottom row — FORMAT (left-to-right, purple) ===== -->
+    <text class="rowd" x="20" y="160">FORMAT  ▸ Toml.Format · TomlWriter.Write  ·  document → text</text>
+
+    <g transform="translate(20 172)">
+      <rect class="src" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">TomlTable</text>
+      <text class="mut" x="80" y="36">authored or parsed</text>
+    </g>
+
+    <line class="wp" x1="180" y1="195" x2="220" y2="195" marker-end="url(#tpd-a)"/>
+
+    <g transform="translate(220 172)">
+      <rect class="dst" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">TomlWriter</text>
+      <text class="mut" x="80" y="36">walk in insertion order</text>
+    </g>
+
+    <line class="wp" x1="380" y1="195" x2="420" y2="195" marker-end="url(#tpd-a)"/>
+
+    <g transform="translate(420 172)">
+      <rect class="dst" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">Canonicalize</text>
+      <text class="mut" x="80" y="36">block tables · inline arrays</text>
+    </g>
+
+    <line class="wp" x1="580" y1="195" x2="620" y2="195" marker-end="url(#tpd-a)"/>
+
+    <g transform="translate(620 172)">
+      <rect class="out" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">TOML text</text>
+      <text class="mut" x="80" y="36">valid under v1.0 &amp; v1.1</text>
+    </g>
+
+    <!-- Footer note -->
+    <text class="mut" x="400" y="244" style="font-size:9.5px">TryParse returns false instead of throwing; a Parse → Format round trip yields an equal model and canonical text, but drops comments and original layout.</text>
+  </g>
+</svg>

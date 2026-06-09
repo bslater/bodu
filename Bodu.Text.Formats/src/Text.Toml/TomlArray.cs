@@ -12,6 +12,25 @@ namespace Bodu.Text.Toml;
 /// Represents a TOML array — an ordered, mutable sequence of <see cref="TomlValue" /> elements. TOML permits arrays to
 /// hold elements of differing types.
 /// </summary>
+/// <remarks>
+/// Elements are stored and enumerated in document order, and the array implements <see cref="IReadOnlyList{T}" /> so it
+/// can be indexed and iterated like any list. Because TOML arrays may be heterogeneous, an element's concrete kind is
+/// discovered through <see cref="TomlValue.Kind" /> rather than assumed from its position.
+/// </remarks>
+/// <example>
+///<![CDATA[
+/// // Compose an array, then read elements back by index.
+/// var ports = new TomlArray
+/// {
+///     new TomlInteger(8000),
+///     new TomlInteger(8001),
+/// };
+/// ports.Add(new TomlInteger(8002));
+///
+/// long first = ((TomlInteger)ports[0]).Value;   // 8000
+/// int count  = ports.Count;                      // 3
+///]]>
+/// </example>
 public sealed class TomlArray
     : TomlValue
     , IReadOnlyList<TomlValue>

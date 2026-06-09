@@ -12,6 +12,9 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/encoding-special-purpose.svg" alt="Special-purpose encodings. Base45 (RFC 9285) packs each pair of bytes into three characters from the QR-code Alphanumeric-mode alphabet (0-9, A-Z, and nine symbols) with no padding; a trailing odd byte becomes two characters. Base62 uses the GMP-style alphabet 0-9 A-Z a-z and big-integer division by 62, preserving leading zero bytes. Bech32 and Bech32m comprise a human-readable part, the 1 separator, 5-bit data groups, and a six-symbol checksum."/>
+/// </para>
+/// <para>
 /// Base45 encodes each pair of input bytes as a base-45 number written in three characters, and a trailing odd byte as
 /// a two-character base-45 number. Unlike Base64, Base32, and Base16 it uses no padding. The 45-character alphabet is
 /// the Alphanumeric-mode subset of US-ASCII: the digits <c>0-9</c>, the upper-case letters <c>A-Z</c>, and the symbols

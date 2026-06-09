@@ -13,6 +13,9 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/encoding-special-purpose.svg" alt="Special-purpose encodings. Base45 (RFC 9285) packs each pair of bytes into three characters from the QR-code Alphanumeric-mode alphabet with no padding. Base62 uses the GMP-style alphabet 0-9 A-Z a-z and big-integer division by 62. Bech32 and Bech32m (BIP 173 / 350) are not plain binary-to-text encodings: an encoded string is a human-readable part, the 1 separator, 5-bit data groups, and a six-symbol error-detecting checksum."/>
+/// </para>
+/// <para>
 /// Bech32 is not a plain binary-to-text encoding: every encoded string carries an HRP prefix and a checksum, so the
 /// type is modelled on <see cref="Base58Check" /> rather than the <see cref="IBinaryEncoding" /> family. The core
 /// surface operates on 5-bit data groups (each value <c>0</c>–<c>31</c>); use <see cref="ConvertBits" /> — or the

@@ -9,6 +9,14 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML boolean value.
 /// </summary>
+/// <example>
+///<![CDATA[
+/// var enabled = new TomlBoolean(true);
+/// bool value = enabled.Value;                    // true
+///
+/// bool flag = ((TomlBoolean)database["enabled"]).Value;
+///]]>
+/// </example>
 public sealed class TomlBoolean
     : TomlValue
     , IEquatable<TomlBoolean>

@@ -9,8 +9,18 @@ using System.Globalization;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Represents a TOML integer value, stored as a 64-bit signed integer.
+/// Represents a TOML integer value, stored as a 64-bit signed integer. Decimal, hexadecimal, octal, and binary
+/// literals all parse to the same numeric value.
 /// </summary>
+/// <example>
+///<![CDATA[
+/// var port = new TomlInteger(8080);
+/// long value = port.Value;                       // 8080
+///
+/// // 0xFF, 0o17, and 0b1010 literals all yield a TomlInteger.
+/// long first = ((TomlInteger)ports[0]).Value;
+///]]>
+/// </example>
 public sealed class TomlInteger
     : TomlValue
     , IEquatable<TomlInteger>
