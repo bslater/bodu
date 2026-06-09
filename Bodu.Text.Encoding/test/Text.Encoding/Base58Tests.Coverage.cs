@@ -63,4 +63,26 @@ public partial class Base58Tests
 
         Assert.IsFalse(Base58.TryDecode("0OIl", destination, out _));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.TryDecode(ReadOnlySpan{char}, Span{byte}, out int, Base58Variant,
+    /// BaseFormatStyles)" /> returns <see langword="false" /> when the destination is too small.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenDestinationTooSmall_ShouldReturnFalse()
+    {
+        var encoded = Base58.Encode(new byte[] { 1, 2, 3, 4, 5 });
+
+        Assert.IsFalse(Base58.TryDecode(encoded, Span<byte>.Empty, out _));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58Check.IsValid(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> returns
+    /// <see langword="false" /> for a source containing characters outside the Base58 alphabet.
+    /// </summary>
+    [TestMethod]
+    public void Base58Check_IsValid_WhenSourceNotBase58_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base58Check.IsValid("0OIl0OIl0OIl"));
+    }
 }

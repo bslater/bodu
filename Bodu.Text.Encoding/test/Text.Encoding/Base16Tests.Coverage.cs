@@ -117,4 +117,25 @@ public partial class Base16Tests
 
         Assert.IsFalse(Base16.TryDecode("GG", destination, out _));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryDecode(ReadOnlySpan{char}, Span{byte}, out int, BaseFormatStyles)" /> returns
+    /// <see langword="false" /> for an odd-length source.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenLengthIsOdd_ShouldReturnFalse()
+    {
+        Span<byte> destination = stackalloc byte[2];
+
+        Assert.IsFalse(Base16.TryDecode("ABC", destination, out _));
+    }
+
+    /// <summary>
+    /// Verifies that the variant UTF-8 encode overload returns an empty array for an empty source.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_WithVariant_WhenSourceEmpty_ShouldReturnEmpty()
+    {
+        Assert.AreEqual(0, Base16.EncodeToUtf8(ReadOnlySpan<byte>.Empty, Base16Variant.Upper).Length);
+    }
 }

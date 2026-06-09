@@ -90,4 +90,17 @@ public partial class Base85Tests
             _ = Base85.Encode(new byte[] { 1, 2, 3 }, Base85Variant.Z85);
         });
     }
+
+    /// <summary>
+    /// Verifies that the span encode overload also rejects a Z85 input whose length is not a multiple of four bytes.
+    /// </summary>
+    [TestMethod]
+    public void Encode_ToSpan_WhenZ85InputNotMultipleOfFour_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            Span<char> destination = stackalloc char[32];
+            _ = Base85.Encode(new byte[] { 1, 2, 3 }, destination, Base85Variant.Z85);
+        });
+    }
 }

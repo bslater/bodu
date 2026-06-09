@@ -116,4 +116,31 @@ public partial class Base32Tests
             _ = Base32.Decode("0000");
         });
     }
+
+    /// <summary>
+    /// Verifies that decoding a source containing a non-ASCII character (outside the lookup table) throws
+    /// <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenCharacterOutsideLookupTable_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base32.Decode("éé");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the BCL-compatible UTF-8 decode alias returns the full destination when the decoded length exactly
+    /// fills it.
+    /// </summary>
+    [TestMethod]
+    public void FromBase32String_WhenDecodedFillsDestination_ShouldReturnIt()
+    {
+        var encoded = Base32.EncodeToUtf8(new byte[5]);
+
+        var decoded = Base32.FromBase32String(encoded);
+
+        Assert.AreEqual(5, decoded.Length);
+    }
 }
