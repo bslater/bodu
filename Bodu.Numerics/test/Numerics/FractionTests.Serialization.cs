@@ -6,6 +6,7 @@
 
 using System.Numerics;
 using System.Text.Json;
+using Bodu.Numerics.Serialization;
 
 namespace Bodu.Numerics;
 
@@ -91,6 +92,35 @@ public partial class FractionTests
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = Fraction<int>.FromXml(null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the parameterless <see cref="FractionJsonConverter{T}" /> constructor selects the canonical
+    /// Strict object shape.
+    /// </summary>
+    [TestMethod]
+    public void FractionJsonConverter_WhenConstructedWithoutPolicy_ShouldUseStrictObjectShape()
+    {
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new FractionJsonConverter<int>());
+
+        Assert.AreEqual("{\"numerator\":3,\"denominator\":4}", JsonSerializer.Serialize(new Fraction<int>(3, 4), options));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing the canonical object form rejects malformed payloads — a duplicate property, a
+    /// missing required property, or a non-numeric value — with a <see cref="JsonException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow("{\"numerator\":1,\"denominator\":2,\"denominator\":3}", DisplayName = "Duplicate denominator")]
+    [DataRow("{\"denominator\":2}", DisplayName = "Missing numerator")]
+    [DataRow("{\"numerator\":true,\"denominator\":2}", DisplayName = "Numerator is not a number")]
+    public void FractionJsonConverter_WhenObjectPayloadIsMalformed_ShouldThrowJsonException(string json)
+    {
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<Fraction<int>>(json);
         });
     }
 }

@@ -115,4 +115,16 @@ public sealed class IniWriterTests
             writer.WriteEntry("k", "v");
         });
     }
+
+    /// <summary>
+    /// Verifies that disposing an <see cref="IniWriter" /> twice is a no-op on the second call.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        IniWriter writer = new(new StringWriter());
+
+        writer.Dispose();
+        writer.Dispose();
+    }
 }

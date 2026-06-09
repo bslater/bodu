@@ -152,4 +152,17 @@ public partial class MoneyTests
         Assert.AreEqual(Money.From(50_000_000_000_000_000m, "USD"), shares[1]);
         Assert.AreEqual(huge, shares[0] + shares[1]);
     }
+
+    /// <summary>
+    /// Verifies that a ratio-based allocation assigns nothing to a zero-weighted slot, even when a residual cent must
+    /// be distributed across the remaining slots.
+    /// </summary>
+    [TestMethod]
+    public void Allocate_WhenRatioIsZero_ShouldGiveZeroSlotNothing()
+    {
+        Money[] shares = new Money(0.11m, "USD").Allocate([0m, 1m, 1m]);
+
+        Assert.AreEqual(Money.From(0m, "USD"), shares[0]);
+        Assert.AreEqual(new Money(0.11m, "USD"), shares[0] + shares[1] + shares[2]);
+    }
 }

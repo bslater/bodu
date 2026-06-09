@@ -25,4 +25,28 @@ public partial class NotableDateDocumentBuilderTests
             (4, 5),
             (original.Build().NotableDates.Count, clone.Build().NotableDates.Count));
     }
+
+    /// <summary>
+    /// Verifies that cloning a document carrying overrides deep-copies the override set, so the clone serializes to XML
+    /// identical to the original.
+    /// </summary>
+    [TestMethod]
+    public void Clone_WhenDocumentHasOverrides_ShouldDeepCopyToEqualXml()
+    {
+        NotableDateDocumentBuilder original = ComprehensiveDocument();
+
+        Assert.AreEqual(original.ToXml(), original.Clone().ToXml());
+    }
+
+    /// <summary>
+    /// Verifies that cloning a document carrying imports and a scoped adjustment policy deep-copies the imports, their
+    /// uses, and the policy scope, so the clone serializes to XML identical to the original.
+    /// </summary>
+    [TestMethod]
+    public void Clone_WhenDocumentHasImportsAndScope_ShouldDeepCopyToEqualXml()
+    {
+        NotableDateDocumentBuilder original = ImportingDocument();
+
+        Assert.AreEqual(original.ToXml(), original.Clone().ToXml());
+    }
 }

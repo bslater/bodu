@@ -44,4 +44,48 @@ public class MoneyFormatterBuilderTests
 
         Assert.AreEqual("1,235 US Dollar", formatter.Format(new Money(1234.56m, "USD")));
     }
+
+    /// <summary>
+    /// Verifies that the ISO-code designator renders the three-letter code alongside the amount.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenIsoCode_ShouldRenderIsoDesignator()
+    {
+        MoneyFormatter formatter = new MoneyFormatterBuilder()
+            .WithIsoCode()
+            .WithCulture(CultureInfo.InvariantCulture)
+            .Build();
+
+        StringAssert.Contains(formatter.Format(new Money(1234.56m, "USD")), "USD");
+    }
+
+    /// <summary>
+    /// Verifies that the symbol designator renders the culture's native currency symbol.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenSymbol_ShouldRenderNativeSymbol()
+    {
+        MoneyFormatter formatter = new MoneyFormatterBuilder()
+            .WithSymbol()
+            .WithCulture(new CultureInfo("en-US"))
+            .Build();
+
+        StringAssert.Contains(formatter.Format(new Money(1234.56m, "USD")), "$");
+    }
+
+    /// <summary>
+    /// Verifies that the elide-on-match option drops the currency designator when the culture's region currency
+    /// matches the amount's currency.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenElideOnCultureMatch_ShouldDropDesignator()
+    {
+        MoneyFormatter formatter = new MoneyFormatterBuilder()
+            .WithIsoCode()
+            .ElideWhenCultureMatches()
+            .WithCulture(new CultureInfo("en-US"))
+            .Build();
+
+        Assert.IsFalse(formatter.Format(new Money(1234.56m, "USD")).Contains("USD", StringComparison.Ordinal));
+    }
 }

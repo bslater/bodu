@@ -191,4 +191,17 @@ public partial class FractionTests
         Assert.AreEqual("1¾", value.ToUnicodeString(CultureInfo.InvariantCulture));
         Assert.AreEqual("175%", value.ToPercentString(CultureInfo.InvariantCulture));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider?)" />
+    /// reports failure and writes nothing when the destination span is too small.
+    /// </summary>
+    [TestMethod]
+    public void TryFormat_WhenDestinationIsTooSmall_ShouldReturnFalse()
+    {
+        Span<char> destination = stackalloc char[1];
+
+        Assert.IsFalse(new Fraction<int>(123, 457).TryFormat(destination, out int charsWritten, [], CultureInfo.InvariantCulture));
+        Assert.AreEqual(0, charsWritten);
+    }
 }

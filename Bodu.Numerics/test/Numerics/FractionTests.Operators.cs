@@ -131,4 +131,28 @@ public partial class FractionTests
         Assert.AreEqual(order == 0, a == b);
         Assert.AreEqual(order != 0, a != b);
     }
+
+    /// <summary>
+    /// Verifies that applying the remainder operator with a zero divisor throws
+    /// <see cref="DivideByZeroException" />.
+    /// </summary>
+    [TestMethod]
+    public void ModulusOperator_WhenDividingByZero_ShouldThrowExactly()
+    {
+        _ = Assert.ThrowsExactly<DivideByZeroException>(() =>
+        {
+            _ = new Fraction<int>(1, 2) % Fraction<int>.Zero;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the unary plus operator returns the operand unchanged.
+    /// </summary>
+    [TestMethod]
+    public void UnaryPlusOperator_WhenApplied_ShouldReturnValueUnchanged()
+    {
+        var value = new Fraction<int>(-3, 4);
+
+        Assert.AreEqual(value, +value);
+    }
 }

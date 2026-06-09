@@ -139,4 +139,69 @@ public sealed class IniEntryTests
         Assert.AreEqual(default, value);
     }
 
+    /// <summary>
+    /// Verifies that the line-number constructor exposes the supplied source line.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenGivenLineNumber_ShouldExposeIt()
+    {
+        IniEntry entry = new("host", "localhost", 12);
+
+        Assert.AreEqual(("host", "localhost", 12), (entry.Key, entry.Value, entry.LineNumber));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniEntry.AddLeadingComment(IniComment)" /> appends a comment to the entry's trivia.
+    /// </summary>
+    [TestMethod]
+    public void AddLeadingComment_ShouldAppendComment()
+    {
+        IniEntry entry = new("k", "v");
+
+        entry.AddLeadingComment(new IniComment('#', " note"));
+
+        Assert.AreEqual(1, entry.LeadingComments.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniEntry.SetLeadingComments(IEnumerable{IniComment})" /> replaces the existing trivia.
+    /// </summary>
+    [TestMethod]
+    public void SetLeadingComments_ShouldReplaceComments()
+    {
+        IniEntry entry = new("k", "v");
+        entry.AddLeadingComment(new IniComment('#', " old"));
+
+        entry.SetLeadingComments(new[] { new IniComment(';', " a"), new IniComment('#', " b") });
+
+        Assert.AreEqual(2, entry.LeadingComments.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniEntry.SetLeadingComments(IEnumerable{IniComment})" /> throws
+    /// <see cref="ArgumentNullException" /> when the sequence is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void SetLeadingComments_WhenNull_ShouldThrowArgumentNullException()
+    {
+        IniEntry entry = new("k", "v");
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => entry.SetLeadingComments(null!));
+
+        Assert.AreEqual("comments", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniEntry.ClearLeadingComments" /> removes every leading comment.
+    /// </summary>
+    [TestMethod]
+    public void ClearLeadingComments_ShouldRemoveAll()
+    {
+        IniEntry entry = new("k", "v");
+        entry.AddLeadingComment(new IniComment('#', " note"));
+
+        entry.ClearLeadingComments();
+
+        Assert.AreEqual(0, entry.LeadingComments.Count);
+    }
 }

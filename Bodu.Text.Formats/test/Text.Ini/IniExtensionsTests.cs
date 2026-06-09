@@ -128,4 +128,42 @@ public sealed class IniExtensionsTests
             _ = ((IniDocument)null!).FormatIni();
         });
     }
+
+    /// <summary>
+    /// Verifies that the span overload of <see cref="IniExtensions.ParseIni(ReadOnlySpan{char}, IniParseOptions)" />
+    /// parses using the supplied options.
+    /// </summary>
+    [TestMethod]
+    public void ParseIni_OnReadOnlySpanWithOptions_ShouldParse()
+    {
+        IniDocument doc = CanonicalSource.AsSpan().ParseIni(IniParseOptions.Default);
+
+        Assert.AreEqual("localhost", doc.GetSection("database")!["host"]);
+    }
+
+    /// <summary>
+    /// Verifies that the span overload of <see cref="IniExtensions.TryParseIni(ReadOnlySpan{char}, IniParseOptions, out
+    /// IniDocument)" /> succeeds and yields a document.
+    /// </summary>
+    [TestMethod]
+    public void TryParseIni_OnReadOnlySpanWithOptions_ShouldReturnTrueAndDocument()
+    {
+        var parsed = CanonicalSource.AsSpan().TryParseIni(IniParseOptions.Default, out IniDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+    }
+
+    /// <summary>
+    /// Verifies that the string overload of <see cref="IniExtensions.TryParseIni(string, IniParseOptions, out
+    /// IniDocument)" /> succeeds and yields a document.
+    /// </summary>
+    [TestMethod]
+    public void TryParseIni_OnStringWithOptions_ShouldReturnTrueAndDocument()
+    {
+        var parsed = CanonicalSource.TryParseIni(IniParseOptions.Default, out IniDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+    }
 }

@@ -1,10 +1,14 @@
 #!/bin/bash
-# Installs the .NET SDK 8.0 on session start so the agent can run `dotnet
-# build` and `dotnet test` against Bodu.sln. Only runs in the remote Claude
+# Installs the .NET SDK 10.0 on session start so the agent can run `dotnet
+# build` and `dotnet test` against bodu.slnx. Only runs in the remote Claude
 # Code on the web environment; on a developer's local machine the SDK is
 # expected to be installed already.
 #
-# The script is idempotent: when `dotnet` is already on PATH it exits
+# SDK 10.0 is required because the solution uses C# 14 language features (for
+# example the `field` keyword on semi-auto properties). An older SDK such as
+# 8.0 cannot compile the sources.
+#
+# The script is idempotent: when a .NET 10 SDK is already installed it exits
 # immediately, so re-invocation (resume, clear, compact) is essentially free.
 set -euo pipefail
 
@@ -13,24 +17,26 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
     exit 0
 fi
 
-# Fast path: SDK already installed.
-if command -v dotnet >/dev/null 2>&1; then
+# Fast path: a .NET 10 SDK is already installed. Checking for the 10.x band
+# specifically (rather than merely `dotnet` on PATH) ensures we still upgrade
+# a container image that ships only an older SDK such as 8.0.
+if command -v dotnet >/dev/null 2>&1 && dotnet --list-sdks 2>/dev/null | grep -q '^10\.'; then
     exit 0
 fi
 
-echo "[session-start] dotnet not found; installing dotnet-sdk-8.0 via apt..."
+echo "[session-start] .NET 10 SDK not found; installing dotnet-sdk-10.0 via apt..."
 
 export DEBIAN_FRONTEND=noninteractive
 
 # Refresh apt only if no recent lists are present, to keep re-runs cheap.
 # Tolerate third-party PPA failures (deadsnakes, ondrej, etc.) — the main
-# Ubuntu archive is sufficient for dotnet-sdk-8.0.
+# Ubuntu archive is sufficient for dotnet-sdk-10.0.
 if [ -z "$(find /var/lib/apt/lists -maxdepth 1 -type f -mmin -1440 2>/dev/null)" ]; then
     apt-get update -qq || echo "[session-start] apt-get update reported errors; continuing with existing cache."
 fi
 
-if ! apt-get install -y --no-install-recommends dotnet-sdk-8.0; then
-    echo "[session-start] dotnet-sdk-8.0 install failed. If this is a transient cache issue, retry the session." >&2
+if ! apt-get install -y --no-install-recommends dotnet-sdk-10.0; then
+    echo "[session-start] dotnet-sdk-10.0 install failed. If this is a transient cache issue, retry the session." >&2
     exit 1
 fi
 

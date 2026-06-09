@@ -174,4 +174,137 @@ public sealed class IniDocumentTests
         });
     }
 
+    // ------------------------------------------- construction ----------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the global-and-sections constructor exposes the supplied global section and named sections.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenGivenGlobalAndSections_ShouldExposeThem()
+    {
+        IniSection global = new(string.Empty, Array.Empty<IniEntry>());
+        IniSection db = new("db", new[] { new IniEntry("host", "local") });
+
+        IniDocument doc = new(global, new[] { db });
+
+        Assert.AreSame(global, doc.GlobalSection);
+        Assert.AreEqual((1, "local"), (doc.Sections.Count, doc.GetSection("db")!["host"]));
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> global section throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenGlobalSectionIsNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniDocument(null!, Array.Empty<IniSection>()));
+
+        Assert.AreEqual("globalSection", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> sections sequence throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenSectionsIsNull_ShouldThrowArgumentNullException()
+    {
+        IniSection global = new(string.Empty, Array.Empty<IniEntry>());
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniDocument(global, null!));
+
+        Assert.AreEqual("sections", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a global section with a non-empty name throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenGlobalSectionHasName_ShouldThrowArgumentException()
+    {
+        IniSection notGlobal = new("named", Array.Empty<IniEntry>());
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(notGlobal, Array.Empty<IniSection>()));
+
+        Assert.AreEqual("globalSection", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry in the sections sequence throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenSectionsContainNull_ShouldThrowArgumentException()
+    {
+        IniSection global = new(string.Empty, Array.Empty<IniEntry>());
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(global, new IniSection[] { null! }));
+
+        Assert.AreEqual("sections", ex.ParamName);
+    }
+
+    // ------------------------------------------- mutation --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="IniDocument.AddSection(IniSection)" /> appends a named section.
+    /// </summary>
+    [TestMethod]
+    public void AddSection_WhenNamed_ShouldAppend()
+    {
+        IniDocument doc = new();
+
+        doc.AddSection(new IniSection("db", Array.Empty<IniEntry>()));
+
+        Assert.AreEqual(1, doc.Sections.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniDocument.AddSection(IniSection)" /> rejects the global (empty-named) section.
+    /// </summary>
+    [TestMethod]
+    public void AddSection_WhenSectionIsGlobal_ShouldThrowArgumentException()
+    {
+        IniDocument doc = new();
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => doc.AddSection(new IniSection(string.Empty, Array.Empty<IniEntry>())));
+
+        Assert.AreEqual("section", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniDocument.RemoveSection(string)" /> removes a present section and returns
+    /// <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void RemoveSection_WhenPresent_ShouldRemoveAndReturnTrue()
+    {
+        IniDocument doc = new();
+        doc.AddSection(new IniSection("db", Array.Empty<IniEntry>()));
+
+        Assert.IsTrue(doc.RemoveSection("db"));
+        Assert.AreEqual(0, doc.Sections.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniDocument.RemoveSection(string)" /> returns <see langword="false" /> for an absent
+    /// section name.
+    /// </summary>
+    [TestMethod]
+    public void RemoveSection_WhenAbsent_ShouldReturnFalse()
+    {
+        IniDocument doc = new();
+
+        Assert.IsFalse(doc.RemoveSection("missing"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IniDocument.GetOrAddSection(string)" /> rejects an empty section name.
+    /// </summary>
+    [TestMethod]
+    public void GetOrAddSection_WhenNameIsEmpty_ShouldThrowArgumentException()
+    {
+        IniDocument doc = new();
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = doc.GetOrAddSection(string.Empty));
+
+        Assert.AreEqual("name", ex.ParamName);
+    }
 }

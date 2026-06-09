@@ -109,4 +109,15 @@ public partial class IntervalTests
         Assert.IsFalse(outer.Contains(Interval<int>.Closed(5, 11)));
         Assert.IsFalse(Interval<int>.Open(0, 10).Contains(Interval<int>.Closed(0, 10)));
     }
+
+    /// <summary>
+    /// Verifies that an empty interval contains no non-empty interval, while still vacuously containing the empty
+    /// interval.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenReceiverIsEmpty_ShouldReturnFalseForNonEmptyInterval()
+    {
+        Assert.IsFalse(Interval<int>.Empty.Contains(Interval<int>.Closed(1, 5)));
+        Assert.IsTrue(Interval<int>.Empty.Contains(Interval<int>.Empty));
+    }
 }

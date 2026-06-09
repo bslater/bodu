@@ -100,4 +100,30 @@ public sealed class DotEnvWriterTests
             writer.WriteEntry("k", "v");
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnvWriter.WriteComment(string, char)" /> writes the prefix, text, and a newline.
+    /// </summary>
+    [TestMethod]
+    public void WriteComment_ShouldEmitPrefixedLine()
+    {
+        StringWriter sink = new();
+
+        using (DotEnvWriter writer = new(sink))
+            writer.WriteComment(" note");
+
+        Assert.AreEqual("# note\n", sink.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that disposing a <see cref="DotEnvWriter" /> twice is a no-op on the second call.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        DotEnvWriter writer = new(new StringWriter());
+
+        writer.Dispose();
+        writer.Dispose();
+    }
 }

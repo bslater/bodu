@@ -517,4 +517,23 @@ public partial class MoneyOfTCurrencyTests
         Assert.AreEqual(new Money<USD>(113.81m), oneShot);
         Assert.IsTrue(Math.Abs(chained.Amount - oneShot.Amount) <= 0.02m, $"Chained={chained.Amount} OneShot={oneShot.Amount}");
     }
+
+    /// <summary>
+    /// Verifies that an exact multiply landing on a half-minor-unit midpoint resolves the tie according to each
+    /// supported rounding rule, exercising the directed and nearest <see cref="BigInteger" /> rounding paths.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 8, MidpointRounding.ToEven, 0.12)]
+    [DataRow(1, 8, MidpointRounding.AwayFromZero, 0.13)]
+    [DataRow(1, 8, MidpointRounding.ToZero, 0.12)]
+    [DataRow(1, 8, MidpointRounding.ToPositiveInfinity, 0.13)]
+    [DataRow(1, 8, MidpointRounding.ToNegativeInfinity, 0.12)]
+    [DataRow(-1, 8, MidpointRounding.ToNegativeInfinity, -0.13)]
+    [DataRow(-1, 8, MidpointRounding.ToPositiveInfinity, -0.12)]
+    public void MultiplyExact_WhenResultLandsOnMidpoint_ShouldRoundByMode(int factorNumerator, int factorDenominator, MidpointRounding rounding, double expected)
+    {
+        Money<USD> result = new Money<USD>(1m).MultiplyExact(new Fraction<BigInteger>(factorNumerator, factorDenominator), rounding);
+
+        Assert.AreEqual((decimal)expected, result.Amount);
+    }
 }

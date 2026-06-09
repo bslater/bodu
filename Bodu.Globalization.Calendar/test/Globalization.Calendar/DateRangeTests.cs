@@ -107,4 +107,30 @@ public sealed class DateRangeTests
     {
         Assert.IsFalse(Range(5, 1).Intersects(Range(1, 9)));
     }
+
+    /// <summary>
+    /// Verifies that the inclusive day count is zero for an ill-formed (reversed) range and the span length plus one
+    /// for a well-formed range.
+    /// </summary>
+    [TestMethod]
+    public void DayCount_ShouldBeZeroWhenInvalidAndInclusiveWhenValid()
+    {
+        Assert.AreEqual(0, Range(5, 1).DayCount);
+        Assert.AreEqual(10, Range(1, 10).DayCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateRange.Contains(DateOnly)" /> includes the endpoints and excludes dates outside the
+    /// range.
+    /// </summary>
+    [TestMethod]
+    public void Contains_ShouldIncludeEndpointsAndExcludeOutside()
+    {
+        DateRange range = Range(5, 10);
+
+        Assert.IsTrue(range.Contains(new DateOnly(2025, 1, 5)));
+        Assert.IsTrue(range.Contains(new DateOnly(2025, 1, 10)));
+        Assert.IsFalse(range.Contains(new DateOnly(2025, 1, 4)));
+        Assert.IsFalse(range.Contains(new DateOnly(2025, 1, 11)));
+    }
 }

@@ -176,4 +176,165 @@ public sealed class DotEnvReaderTests
             _ = reader.Read();
         });
     }
+
+    // ------------------------------------------- streaming edge coverage ------------------------------------------
+
+    /// <summary>
+    /// Streams every entry from <paramref name="source" /> at the supplied buffer size.
+    /// </summary>
+    /// <param name="source">The DotEnv source text.</param>
+    /// <param name="options">The parse options, or <see langword="null" /> for the defaults.</param>
+    /// <param name="bufferSize">The reader buffer size in characters.</param>
+    /// <returns>The (key, value) pairs in source order.</returns>
+    private static List<(string Key, string Value)> StreamAll(string source, DotEnvParseOptions? options = null, int bufferSize = 1)
+    {
+        using DotEnvReader reader = new(new StringReader(source), options ?? DotEnvParseOptions.Default, bufferSize);
+        List<(string, string)> list = new();
+        while (reader.Read())
+            list.Add((reader.Key, reader.Value));
+
+        return list;
+    }
+
+    /// <summary>
+    /// Verifies that disposing a <see cref="DotEnvReader" /> twice is a no-op on the second call.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        DotEnvReader reader = new(new StringReader("A=1\n"));
+
+        reader.Dispose();
+        reader.Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that leading whitespace, blank CRLF lines, and a CRLF-terminated comment are skipped before the entry,
+    /// even one character at a time.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenLeadingWhitespaceBlankCrlfAndCrlfComment_ShouldSkipToEntry()
+    {
+        List<(string, string)> result = StreamAll("\r\n  \t# c\r\n\r\n   KEY=value\r\n");
+
+        CollectionAssert.AreEqual(new[] { ("KEY", "value") }, result);
+    }
+
+    /// <summary>
+    /// Verifies that the legacy <c>export </c> prefix is stripped before the key, even one character at a time.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenExportPrefix_ShouldStripIt()
+    {
+        List<(string, string)> result = StreamAll("export KEY=value\n");
+
+        CollectionAssert.AreEqual(new[] { ("KEY", "value") }, result);
+    }
+
+    /// <summary>
+    /// Verifies that a key beginning with an invalid character throws <see cref="DotEnvFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeyStartsWithInvalidChar_ShouldThrow()
+    {
+        using DotEnvReader reader = new(new StringReader("1KEY=value\n"));
+
+        Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a key with no <c>=</c> at end of input throws <see cref="DotEnvFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeyHasNoEqualsAtEof_ShouldThrow()
+    {
+        using DotEnvReader reader = new(new StringReader("KEY"));
+
+        Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that characters trailing a closing double quote are consumed up to the line terminator.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTrailingCharsAfterQuotedValue_ShouldConsumeToLineEnd()
+    {
+        List<(string, string)> result = StreamAll("A=\"x\" junk\nB=2\n");
+
+        CollectionAssert.AreEqual(new[] { ("A", "x"), ("B", "2") }, result);
+    }
+
+    /// <summary>
+    /// Verifies that the double-quoted escape grammar resolves backslash, tab, carriage return, dollar, and unknown
+    /// escapes, even one character at a time.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDoubleQuotedHasVariedEscapes_ShouldResolveThem()
+    {
+        var source = "A=\"x" + "\\\\" + "\\t" + "\\r" + "\\$" + "\\q" + "\"\n";
+
+        var result = StreamAll(source);
+
+        Assert.AreEqual("x\\\t\r$\\q", result[0].Value);
+    }
+
+    /// <summary>
+    /// Verifies that a backslash-CRLF inside a double-quoted value acts as a line continuation, joining the lines.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDoubleQuotedCarriageReturnContinuation_ShouldJoinLines()
+    {
+        var result = StreamAll("A=\"a\\\r\nb\"\nB=2\n");
+
+        Assert.AreEqual("ab", result[0].Value);
+    }
+
+    /// <summary>
+    /// Verifies that a double-quoted value ending with a dangling backslash at end of input throws
+    /// <see cref="DotEnvFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDoubleQuotedEndsWithBackslashAtEof_ShouldThrow()
+    {
+        using DotEnvReader reader = new(new StringReader("A=\"x\\"), DotEnvParseOptions.Default, 2);
+
+        Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a newline inside a single-quoted value throws <see cref="DotEnvFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSingleQuoteContainsNewline_ShouldThrow()
+    {
+        using DotEnvReader reader = new(new StringReader("A='x\ny'\n"));
+
+        Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an unterminated single-quoted value at end of input throws <see cref="DotEnvFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSingleQuoteUnterminatedAtEof_ShouldThrow()
+    {
+        using DotEnvReader reader = new(new StringReader("A='x"), DotEnvParseOptions.Default, 2);
+
+        Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+    }
 }
