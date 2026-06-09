@@ -143,4 +143,32 @@ public partial class Base32Tests
 
         Assert.AreEqual(5, decoded.Length);
     }
+
+    /// <summary>
+    /// Verifies that decoding a complete quantum as a non-final block reports completion without requiring more data.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenCompleteQuantumNonFinalBlock_ShouldReturnDone()
+    {
+        var encoded = Base32.EncodeToUtf8(new byte[5]);
+        Span<byte> destination = stackalloc byte[5];
+
+        OperationStatus status = Base32.DecodeFromUtf8(
+            encoded, destination, out _, out var written, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: false);
+
+        Assert.AreEqual((OperationStatus.Done, 5), (status, written));
+    }
+
+    /// <summary>
+    /// Verifies that a data character following padding reports invalid data when decoding from UTF-8.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenSymbolFollowsPadding_ShouldReturnInvalidData()
+    {
+        Span<byte> destination = stackalloc byte[5];
+
+        OperationStatus status = Base32.DecodeFromUtf8("AA=A"u8, destination, out _, out _);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+    }
 }

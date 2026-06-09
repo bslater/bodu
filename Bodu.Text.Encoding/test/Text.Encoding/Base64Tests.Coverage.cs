@@ -122,4 +122,14 @@ public partial class Base64Tests
 
         Assert.AreEqual(0, Base64.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.IsValid(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> rejects a source
+    /// with a data character following a padding character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSymbolFollowsPadding_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base64.IsValid("AB=C"));
+    }
 }
