@@ -160,6 +160,43 @@ public sealed class TomlConformanceTests
     }
 
     /// <summary>
+    /// Verifies the reverse of <see cref="Manifest_WhenLoaded_ShouldClassifyEveryCorpusCase" />: every case a version
+    /// manifest lists is vendored in the consolidated corpus, except the byte-level <c>invalid/encoding/*</c> cases that
+    /// cannot be represented as JSON strings (see the README). This fails when a manifest entry silently loses its
+    /// corpus document on re-vendor, so coverage cannot be dropped without the guard noticing.
+    /// </summary>
+    [TestMethod]
+    public void Manifest_WhenLoaded_ShouldVendorEveryManifestCase()
+    {
+        var corpusValid = ValidCases().Select(row => ((ConformanceCase)row[0]).Name).ToHashSet(StringComparer.Ordinal);
+        var corpusInvalid = LoadCases("toml-test-invalid.json", includeExpected: false)
+            .Select(row => ((ConformanceCase)row[0]).Name).ToHashSet(StringComparer.Ordinal);
+
+        foreach (var name in s_manifestV10.Valid.Concat(s_manifestV11.Valid))
+            Assert.IsTrue(corpusValid.Contains(name), $"Manifest valid case '{name}' is not vendored in the corpus.");
+
+        foreach (var name in s_manifestV10.Invalid.Concat(s_manifestV11.Invalid))
+        {
+            Assert.IsTrue(
+                corpusInvalid.Contains(name) || IsExcludedInvalidCase(name),
+                $"Manifest invalid case '{name}' is not vendored in the corpus and is not a documented exclusion.");
+        }
+    }
+
+    /// <summary>
+    /// Indicates whether an invalid manifest case is intentionally absent from the consolidated JSON corpus. Only the
+    /// byte-level <c>encoding/*</c> cases qualify: their ill-formed UTF-8 cannot be carried in a JSON string, so they are
+    /// vendored as raw bytes and exercised by <see cref="TomlEncodingConformanceTests" /> instead.
+    /// </summary>
+    /// <param name="name">The case name.</param>
+    /// <returns><see langword="true" /> when the case is a documented exclusion.</returns>
+    private static bool IsExcludedInvalidCase(string name) =>
+        name.StartsWith("encoding/", StringComparison.Ordinal);
+
+    /// <summary>
+    /// Loads a vendored <c>files-toml-&lt;version&gt;</c> manifest into the set of valid and invalid case names it
+    /// lists, keyed the same way as the corpus (the path under <c>valid/</c> or <c>invalid/</c> without the
+    /// <c>.toml</c> extension). The accompanying <c>.json</c> expected-value entries are ignored.
     /// Compares two tagged-JSON scalar leaves by type and value semantics.
     /// </summary>
     /// <param name="caseName">The conformance case name, for diagnostics.</param>

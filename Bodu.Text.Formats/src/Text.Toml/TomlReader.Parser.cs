@@ -74,6 +74,12 @@ public partial class TomlReader
         private int _line = 1;
 
         /// <summary>
+        /// The offset within <see cref="_src" /> at which the current line begins, used to derive the column of an
+        /// error as <c>_pos - _lineStart + 1</c>.
+        /// </summary>
+        private int _lineStart;
+
+        /// <summary>
         /// The table that bare key/value pairs are currently assigned to.
         /// </summary>
         private TomlTable _current;
@@ -109,9 +115,13 @@ public partial class TomlReader
         /// <exception cref="TomlFormatException">Thrown when the source is not valid TOML.</exception>
         public TomlTable Parse()
         {
-            // A leading UTF-8 byte-order mark, when decoded, appears as U+FEFF; skip it.
+            // A leading UTF-8 byte-order mark, when decoded, appears as U+FEFF; skip it and treat the first real
+            // character as column one.
             if (!Eof && Current == '\uFEFF')
+            {
                 Advance();
+                _lineStart = _pos;
+            }
 
             SkipToNextExpression();
             while (!Eof)
@@ -167,6 +177,7 @@ public partial class TomlReader
                 Advance();
             Advance();
             _line++;
+            _lineStart = _pos;
         }
 
         /// <summary>
@@ -1485,11 +1496,11 @@ public partial class TomlReader
         }
 
         /// <summary>
-        /// Creates a <see cref="TomlFormatException" /> tagged with the current source line.
+        /// Creates a <see cref="TomlFormatException" /> tagged with the current source line, column, and offset.
         /// </summary>
         /// <param name="message">The error message.</param>
         /// <returns>The exception to throw.</returns>
         private TomlFormatException Error(string message) =>
-            new(message, _line);
+            new(message, _line, (_pos - _lineStart) + 1, _pos);
     }
 }

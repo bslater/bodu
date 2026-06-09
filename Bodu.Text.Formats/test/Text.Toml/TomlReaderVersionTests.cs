@@ -132,4 +132,57 @@ public sealed class TomlReaderVersionTests
         TomlTable doc = reader.Read("x = 07:32");
         Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["x"]).Value);
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="TomlReaderOptions.SpecVersion" /> option flows through the stream parse overload, so
+    /// a v1.1-only construct is accepted when the v1.1.0 profile is supplied.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenStreamWithV11Options_ShouldApplyV11Profile()
+    {
+        using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("x = 07:32"));
+
+        var doc = Toml.Parse(stream, s_v11);
+
+        Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["x"]).Value);
+    }
+
+    /// <summary>
+    /// Verifies that the stream parse overload still defaults to the strict v1.0.0 profile, rejecting a v1.1-only
+    /// construct when no options are supplied.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenStreamWithoutOptions_ShouldDefaultToStrictV10()
+    {
+        using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("x = 07:32"));
+
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="TomlReaderOptions.SpecVersion" /> option flows through the asynchronous stream parse
+    /// overload.
+    /// </summary>
+    [TestMethod]
+    public async Task ParseAsync_WhenStreamWithV11Options_ShouldApplyV11Profile()
+    {
+        using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("x = 07:32"));
+
+        var doc = await Toml.ParseAsync(stream, s_v11);
+
+        Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["x"]).Value);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="TomlReaderOptions.SpecVersion" /> option flows through the try-parse overload — a
+    /// v1.1-only construct succeeds under the v1.1.0 profile but fails under the strict v1.0.0 default.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenV11Options_ShouldApplyV11Profile()
+    {
+        Assert.IsTrue(Toml.TryParse("x = 07:32", s_v11, out var parsed));
+        Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)parsed["x"]).Value);
+
+        Assert.IsFalse(Toml.TryParse("x = 07:32", out _));
+    }
 }

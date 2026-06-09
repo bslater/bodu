@@ -32,6 +32,7 @@
     <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.1.0.txt" />
     <EmbeddedResource Include="Text.Toml\Conformance\bodu-toml10-valid.json" />
     <EmbeddedResource Include="Text.Toml\Conformance\bodu-toml10-invalid.json" />
+    <EmbeddedResource Include="Text.Toml\Conformance\encoding\*.toml" />
   </ItemGroup>
 
   <ItemGroup>

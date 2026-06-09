@@ -64,6 +64,21 @@ public sealed class TomlStreamTests
         Assert.AreEqual(1, ((TomlInteger)document["a"]).Value);
     }
 
+    /// <summary>
+    /// Verifies that a second leading byte-order mark is rejected: the reader strips exactly one leading mark, so a
+    /// doubled mark leaves an unexpected U+FEFF that fails parsing.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenStreamHasDoubledByteOrderMark_ShouldThrowTomlFormatException()
+    {
+        var bom = new byte[] { 0xEF, 0xBB, 0xBF };
+        var bytes = bom.Concat(bom).Concat(System.Text.Encoding.UTF8.GetBytes("a = 1")).ToArray();
+
+        using MemoryStream stream = new(bytes);
+
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream));
+    }
+
     [TestMethod]
     public void Parse_WhenStreamHasNonAsciiUtf8_ShouldDecodeCorrectly()
     {
@@ -102,6 +117,75 @@ public sealed class TomlStreamTests
         using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("a = "));
 
         Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream));
+    }
+
+    /// <summary>
+    /// Verifies that a stream whose bytes are not valid UTF-8 is rejected with a <see cref="TomlFormatException" />
+    /// rather than decoded with replacement characters.
+    /// </summary>
+    /// <param name="name">The scenario name, used as the failure message.</param>
+    /// <param name="bytes">The invalid UTF-8 byte sequence.</param>
+    [TestMethod]
+    [DynamicData(nameof(InvalidUtf8Cases))]
+    public void Parse_WhenStreamHasInvalidUtf8_ShouldThrowTomlFormatException(string name, byte[] bytes)
+    {
+        using MemoryStream stream = new(bytes);
+
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream), name);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous stream path also rejects bytes that are not valid UTF-8 with a
+    /// <see cref="TomlFormatException" />, matching the synchronous path.
+    /// </summary>
+    /// <param name="name">The scenario name, used as the failure message.</param>
+    /// <param name="bytes">The invalid UTF-8 byte sequence.</param>
+    [TestMethod]
+    [DynamicData(nameof(InvalidUtf8Cases))]
+    public async Task ParseAsync_WhenStreamHasInvalidUtf8_ShouldThrowTomlFormatException(string name, byte[] bytes)
+    {
+        using MemoryStream stream = new(bytes);
+
+        await Assert.ThrowsExactlyAsync<TomlFormatException>(async () => await Toml.ParseAsync(stream), name);
+    }
+
+    /// <summary>
+    /// Verifies that an already-cancelled token causes <see cref="Toml.ParseAsync(Stream, CancellationToken)" /> to
+    /// observe cancellation.
+    /// </summary>
+    [TestMethod]
+    public async Task ParseAsync_WhenCancellationAlreadyRequested_ShouldThrowOperationCanceledException()
+    {
+        using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("a = 1"));
+        using CancellationTokenSource cts = new();
+        await cts.CancelAsync();
+
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await Toml.ParseAsync(stream, cts.Token));
+    }
+
+    /// <summary>
+    /// Verifies that an already-cancelled token causes
+    /// <see cref="Toml.FormatAsync(TomlTable, Stream, CancellationToken)" /> to observe cancellation.
+    /// </summary>
+    [TestMethod]
+    public async Task FormatAsync_WhenCancellationAlreadyRequested_ShouldThrowOperationCanceledException()
+    {
+        using MemoryStream stream = new();
+        using CancellationTokenSource cts = new();
+        await cts.CancelAsync();
+
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await Toml.FormatAsync(new TomlTable { { "a", new TomlInteger(1) } }, stream, cts.Token));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Toml.FormatAsync(TomlTable, Stream, CancellationToken)" /> validates its arguments.
+    /// </summary>
+    [TestMethod]
+    public async Task FormatAsync_WhenNullArguments_ShouldThrowExactly()
+    {
+        using MemoryStream stream = new();
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await Toml.FormatAsync(null!, stream));
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await Toml.FormatAsync(new TomlTable(), null!));
     }
 
     private static string Normalize(TomlValue value)

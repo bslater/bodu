@@ -324,6 +324,9 @@
   <data name="Format_Invalid_TomlSecondsRequired" xml:space="preserve">
     <value>A time value must include seconds.</value>
   </data>
+  <data name="Format_Invalid_TomlUnpairedSurrogate" xml:space="preserve">
+    <value>The input contains an unpaired surrogate and is not valid UTF-8 text.</value>
+  </data>
   <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve">
     <value>The string is not terminated.</value>
   </data>
