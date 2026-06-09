@@ -132,6 +132,21 @@ public sealed class TomlStreamTests
     }
 
     /// <summary>
+    /// Verifies that the asynchronous stream path also rejects bytes that are not valid UTF-8 with a
+    /// <see cref="TomlFormatException" />, matching the synchronous path.
+    /// </summary>
+    /// <param name="name">The scenario name, used as the failure message.</param>
+    /// <param name="bytes">The invalid UTF-8 byte sequence.</param>
+    [TestMethod]
+    [DynamicData(nameof(InvalidUtf8Cases))]
+    public async Task ParseAsync_WhenStreamHasInvalidUtf8_ShouldThrowTomlFormatException(string name, byte[] bytes)
+    {
+        using MemoryStream stream = new(bytes);
+
+        await Assert.ThrowsExactlyAsync<TomlFormatException>(async () => await Toml.ParseAsync(stream), name);
+    }
+
+    /// <summary>
     /// Verifies that an already-cancelled token causes <see cref="Toml.ParseAsync(Stream, CancellationToken)" /> to
     /// observe cancellation.
     /// </summary>
