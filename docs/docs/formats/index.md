@@ -4,7 +4,7 @@ title: Bodu.Text.Formats — Introduction
 
 # Bodu.Text.Formats
 
-**Bodu.Text.Formats** decodes and encodes self-framing document formats — formats whose structure is described inline by the bytes themselves, rather than by an external schema. The library ships four format families, each with a strongly-typed value model and a span- and stream-friendly codec:
+**Bodu.Text.Formats** decodes and encodes self-framing document formats — formats whose structure is described inline by the bytes themselves, rather than by an external schema. The library ships five format families, each with a strongly-typed value model and a span- and stream-friendly codec:
 
 | Format | Namespace | Source | Use when |
 |---|---|---|---|
@@ -12,6 +12,7 @@ title: Bodu.Text.Formats — Introduction
 | **Delimited** | <xref:Bodu.Text.Delimited> | [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) CSV and TSV variants | Row-oriented data interchange, spreadsheet import/export, log lines. |
 | **DotEnv** | <xref:Bodu.Text.DotEnv> | `.env` key/value convention | Process environment configuration, deployment-time secrets, twelve-factor app config. |
 | **INI** | <xref:Bodu.Text.Ini> | Classic INI / EditorConfig | Section/comment-preserving round-trippable configuration documents. Underpins [`Bodu.Text.Configuration`](../text-configuration/index.md). |
+| **TOML** | <xref:Bodu.Text.Toml> | [TOML](https://toml.io/) v1.0.0 / v1.1.0 | Strongly-typed application configuration with tables, arrays, and first-class date-time values. |
 
 Each format exposes the same modern shape: a strongly-typed value tree, a static `Encode` / `Decode` entry point, `Try*` variants that swap exceptions for `bool` results, an explicit `GetEncodedLength` for pre-sizing destinations, and synchronous + asynchronous `Stream` overloads. No reflection, no `dynamic`, no allocations beyond the immutable result graph.
 
@@ -114,11 +115,23 @@ Every format follows the same shape — a static codec, a typed value tree, a fo
 | <xref:Bodu.Text.Ini.IniParseOptions> | Profile presets, escape rules, duplicate-section policy. Shared between read and write paths. |
 | <xref:Bodu.Text.Ini.IniFormatException> | Thrown for malformed headers, entries, or escape sequences. |
 
+### TOML — <xref:Bodu.Text.Toml>
+
+TOML follows a reader/writer shape rather than a single static codec: <xref:Bodu.Text.Toml.TomlReader> and <xref:Bodu.Text.Toml.TomlWriter> own deserialization and serialization, with the static <xref:Bodu.Text.Toml.Toml> class as a convenience façade.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Text.Toml.Toml> | Static façade — `Parse` / `TryParse` / `Format` over spans, streams, and async, each with a `TomlReaderOptions` overload. |
+| <xref:Bodu.Text.Toml.TomlReader>, <xref:Bodu.Text.Toml.TomlWriter> | The deserialize / serialize pair; the primary surface for configurable or reusable reads and writes. |
+| <xref:Bodu.Text.Toml.TomlTable>, <xref:Bodu.Text.Toml.TomlArray>, <xref:Bodu.Text.Toml.TomlValue> | Ordered, mutable value model. `TomlTable` is the document root; the scalar and date-time subtypes derive from `TomlValue`. |
+| <xref:Bodu.Text.Toml.TomlReaderOptions>, <xref:Bodu.Text.Toml.TomlSpecVersion> | Selects strict TOML v1.0.0 (default) or v1.1.0 grammar. |
+| <xref:Bodu.Text.Toml.TomlFormatException> | Thrown for malformed TOML; carries line, column, and offset. |
+
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — full vocabulary: value vs. document, canonical encoding, framing tokens, byte string vs. text, format exception.
 - **[Getting started](getting-started.md)** — install + minimal samples for `Decode`, `Encode`, `Try*`, and the stream overloads.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — using each codec, the value models, and stream support.
-- **Per-format guides** — [Bencode](../../guides/formats/bencode.md), [Delimited](../../guides/formats/delimited.md), [DotEnv](../../guides/formats/dotenv.md), [INI](../../guides/formats/ini.md), [Streaming](../../guides/formats/streaming.md), [Value model](../../guides/formats/value-model.md).
-- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini).
+- **Per-format guides** — [Bencode](../../guides/formats/bencode.md), [Delimited](../../guides/formats/delimited.md), [DotEnv](../../guides/formats/dotenv.md), [INI](../../guides/formats/ini.md), [TOML](../../guides/formats/toml.md), [Streaming](../../guides/formats/streaming.md), [Value model](../../guides/formats/value-model.md).
+- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini), [Toml](xref:Bodu.Text.Toml).
 - **For EditorConfig-style configuration layering on `IniDocument`**, see [Bodu.Text.Configuration](../text-configuration/index.md).

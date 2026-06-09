@@ -12,8 +12,9 @@ For the high-level shape of the library and the type map, start with the [introd
 
 ## Encoding and variant
 
-An **encoding** is the family-level concept: Base16, Base32, Base64, Base58, Base85. Each family has a radix (16,
-32, 64, 58, 85) which determines how many bits each output symbol represents.
+An **encoding** is the family-level concept: the five core radices — Base16, Base32, Base64, Base58, Base85 — plus
+the special-purpose Base45, Base62, and Bech32. Each family has a radix (16, 32, 64, 58, 85, 45, 62, 32) which
+determines how many bits each output symbol represents.
 
 A **variant** is a specific choice within an encoding family — typically a different *alphabet* but sometimes
 different padding, line-wrap, or shortcut rules:
@@ -25,6 +26,9 @@ different padding, line-wrap, or shortcut rules:
 | Base64 | `Standard` (RFC 4648 §4), `UrlSafe` (RFC 4648 §5), `Mime` (RFC 2045) |
 | Base58 | `BitcoinFlickr` (default), `Ripple` |
 | Base85 | `Ascii85` (Adobe Tech Note 5045), `Z85` (RFC 32 ZeroMQ) |
+| Base45 | RFC 9285 (single alphabet) |
+| Base62 | GMP-style (single alphabet) |
+| Bech32 | `Bech32` (BIP 173, default), `Bech32m` (BIP 350) — selected by `Bech32Encoding` |
 
 ## Alphabet
 
@@ -42,6 +46,9 @@ Base64 URL-safe:       "A..Za..z0..9-_"             (RFC 4648 §5)
 Base58 Bitcoin/Flickr: "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  (no 0 O I l)
 Base85 Ascii85:        '!' (33) through 'u' (117)   (Adobe alphabet)
 Base85 Z85:            "0..9a..zA..Z.-:+=^!/*?&<>()[]{}@%$#"  (shell-safe)
+Base45:                "0..9A..Z" + " $%*+-./:"      (45 chars, RFC 9285)
+Base62:                "0..9A..Za..z"               (GMP order: digits, upper, lower)
+Bech32:                "qpzry9x8gf2tvdw0s3jn54khce6mua7l"   (5-bit values 0..31, BIP 173)
 ```
 
 ## Bit packing
@@ -52,8 +59,11 @@ one output symbol.
 
 ![Bit-stream packing — Base16, Base32, Base64](../../images/diagrams/encoding-bit-packing.svg)
 
-Base58 is **not** a power of two: it uses big-integer divmod by 58. Base85 uses **4-byte blocks** packed into a
-32-bit unsigned integer, then divided by 85 four times to emit five characters.
+Base58 is **not** a power of two: it uses big-integer divmod by 58. Base62 works the same way with divmod by 62.
+Base85 uses **4-byte blocks** packed into a 32-bit unsigned integer, then divided by 85 four times to emit five
+characters. Base45 packs each **2-byte group** into a base-45 triple (a trailing single byte becomes 2 characters).
+Bech32 is a 5-bit (base-32) bit-stream like Base32, but wrapped with a human-readable part, a `1` separator, and a
+six-symbol checksum computed over the whole data part.
 
 ## Terminal quantum
 
@@ -171,6 +181,11 @@ that could complete with another chunk.
 > Base58 and Base85 are not streamable: each requires the entire input to be available before decode (Base58 because
 > of big-integer arithmetic, Base85 because of fixed-size block packing). The `isFinalBlock` parameter on those
 > variants is accepted for API consistency but has no behavioural effect.
+>
+> The special-purpose encodings — Base45, Base62, and Bech32 — are likewise single-shot and expose no
+> `OperationStatus` path at all (Base45 packs in fixed groups, Base62 uses big-integer arithmetic, and Bech32 must
+> read the whole string to verify its checksum). They throw `FormatException` on invalid input and offer `Try*`
+> methods that report failure as `false`.
 
 ## IBinaryEncoding interface
 

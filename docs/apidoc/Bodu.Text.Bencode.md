@@ -6,7 +6,7 @@ uid: Bodu.Text.Bencode
 
 ## Purpose
 
-**Bodu.Text.Bencode** decodes and encodes the **Bencode** serialization grammar specified by [BEP 3](https://www.bittorrent.org/beps/bep_0003.html), the BitTorrent metadata format. It is one of four format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.DotEnv>, and <xref:Bodu.Text.Ini>.
+**Bodu.Text.Bencode** decodes and encodes the **Bencode** serialization grammar specified by [BEP 3](https://www.bittorrent.org/beps/bep_0003.html), the BitTorrent metadata format. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, and <xref:Bodu.Text.Toml>.
 
 Bencode is exposed through the same shape used across the format family: a strongly-typed value tree, a static codec with `Encode` / `Decode` / `TryEncode` / `TryDecode` / `GetEncodedLength` over `ReadOnlySpan<byte>` / `byte[]` / `Stream`, and BEP 3 invariants that the encoder always honours and the parser always enforces. No reflection, no `dynamic`, no schema, no allocations beyond the immutable result graph.
 

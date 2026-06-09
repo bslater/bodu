@@ -272,6 +272,12 @@
           href: text-encoding/base58.md
         - name: Using Base85 (Ascii85 and Z85)
           href: text-encoding/base85.md
+        - name: Using Base45 (QR codes)
+          href: text-encoding/base45.md
+        - name: Using Base62
+          href: text-encoding/base62.md
+        - name: Using Bech32 and Bech32m
+          href: text-encoding/bech32.md
     - name: Bodu.Text.Encoding — Patterns
       items:
         - name: The IBinaryEncoding interface
@@ -294,6 +300,8 @@
           href: formats/dotenv.md
         - name: Using INI
           href: formats/ini.md
+        - name: Using TOML
+          href: formats/toml.md
     - name: Bodu.Text.Formats — I/O
       items:
         - name: Streams and async I/O

@@ -6,7 +6,7 @@ uid: Bodu.Text.Delimited
 
 ## Purpose
 
-**Bodu.Text.Delimited** parses and emits **delimited** records — CSV, TSV, and other character-separated value documents — using a strongly-typed row model and a static codec with `Parse` / `Format` / `Try*` overloads over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`. It is one of four format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.DotEnv>, and <xref:Bodu.Text.Ini>.
+**Bodu.Text.Delimited** parses and emits **delimited** records — CSV, TSV, and other character-separated value documents — using a strongly-typed row model and a static codec with `Parse` / `Format` / `Try*` overloads over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, and <xref:Bodu.Text.Toml>.
 
 ## Key types
 

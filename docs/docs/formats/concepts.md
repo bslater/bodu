@@ -10,7 +10,7 @@ For the high-level shape of the library and the encode/decode pipeline diagram, 
 
 ## Format and codec
 
-A **format** is the wire grammar — for now, **Bencode** as specified by [BEP 3](https://www.bittorrent.org/beps/bep_0003.html). The grammar defines four kinds of value (integer, byte string, list, dictionary), the framing tokens that delimit each kind, and the invariants every encoder must preserve.
+A **format** is the wire grammar. The package ships five — Bencode, Delimited, DotEnv, INI, and TOML — and this page uses **Bencode** (as specified by [BEP 3](https://www.bittorrent.org/beps/bep_0003.html)) as its worked example, because its compact grammar exercises every concept the others reuse. Bencode's grammar defines four kinds of value (integer, byte string, list, dictionary), the framing tokens that delimit each kind, and the invariants every encoder must preserve; the typed-tree, codec, canonicality, and format-exception vocabulary below applies to all five. For the value model unique to each of the other formats — including TOML's tables, arrays, and date-time kinds — see the [per-format guides](../../guides/formats/index.md) and [parser policies](parser-policies.md).
 
 A **codec** is the static façade that exposes encode and decode operations for a format. For Bencode it is <xref:Bodu.Text.Bencode.Bencode> — a single `static partial class` with the recursive writer, the forward-only parser, and the span / array / stream overloads layered around them.
 
@@ -165,5 +165,5 @@ Dictionary keys are ordered and compared by raw byte ordinal — *not* by Unicod
 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — deep-dive walk-throughs for every concept above.
-- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini).
+- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini), [Toml](xref:Bodu.Text.Toml).
 - **[Introduction](index.md)** — the high-level shape of the library.

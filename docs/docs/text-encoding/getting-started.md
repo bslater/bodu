@@ -150,6 +150,59 @@ string ascii85  = data.ToBase85String();
 byte[] backFromHex = hex.FromBase16String();
 ```
 
+### Encode a QR-code payload with Base45
+
+```csharp
+using Bodu.Text.Encoding;
+
+// RFC 9285 — the encoding the EU Digital COVID Certificate carries in a QR code.
+byte[] payload = "Hello!!"u8.ToArray();
+string base45 = Base45.Encode(payload);   // "%69 VD92EX0"
+
+byte[] back = Base45.Decode(base45);
+```
+
+### Generate a compact identifier with Base62
+
+```csharp
+using Bodu.Text.Encoding;
+
+// URL-safe, no special characters — ideal for short links and slugs.
+byte[] random = RandomNumberGenerator.GetBytes(16);
+string id = Base62.Encode(random);
+
+byte[] bytes = Base62.Decode(id);
+```
+
+### Encode an address with Bech32 / Bech32m
+
+```csharp
+using Bodu.Text.Encoding;
+
+// Bech32 carries a human-readable part (HRP), the data, and a checksum together.
+// EncodeFromBytes / DecodeToBytes repack 8-bit bytes to and from the 5-bit data part.
+byte[] program = Base16.Decode("751e76e8199196d454941c45d1b3a323f1433bd6");
+string address = Bech32.EncodeFromBytes("bc", program, Bech32Encoding.Bech32m);
+
+Bech32.DecodeToBytes(address, out string hrp, out byte[] data, out Bech32Encoding scheme);
+// hrp == "bc"; data == program; scheme == Bech32Encoding.Bech32m
+
+// Non-throwing form reports which scheme validated the checksum.
+if (Bech32.TryDecodeToBytes(address, out string? hrp2, out byte[]? data2, out Bech32Encoding scheme2))
+{
+    // hrp2 / data2 are non-null; scheme2 tells Bech32 from Bech32m
+}
+```
+
+### Protect a payload with a checksum (Base58Check)
+
+```csharp
+using Bodu.Text.Encoding;
+
+string encoded = Base58Check.Encode(payload);   // payload + 4-byte double-SHA-256 checksum
+byte[] decoded = Base58Check.Decode(encoded);   // verifies the checksum, then strips it
+```
+
 ## Round-trip example with whitespace tolerance
 
 ```csharp

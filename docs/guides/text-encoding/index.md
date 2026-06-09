@@ -26,7 +26,10 @@ Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte 
 | **[Base64](base64.md)** | 33 % | Standard, URL-safe, MIME | MIME / SMTP, JWT, certificates, generic binary-in-text |
 | **[Base58](base58.md)** | ≈ 37 % | Bitcoin/Flickr, Ripple | Bitcoin addresses, IPFS CIDs, Solana, Stellar |
 | **[Base85](base85.md)** | 25 % | Ascii85 (Adobe), Z85 (ZeroMQ) | PDF / PostScript, ZeroMQ wire keys |
-| **[`IBinaryEncoding` interface](binary-encodings-interface.md)** | — | every variant above | Runtime-selected encoding choice (config-driven serializers, plugins) |
+| **[Base45](base45.md)** | 50 % | RFC 9285 | QR-code payloads, EU Digital COVID Certificate |
+| **[Base62](base62.md)** | ≈ 35 % | GMP-style | Short URLs, compact identifiers, slugs |
+| **[Bech32](bech32.md)** | data + checksum | Bech32 (BIP 173), Bech32m (BIP 350) | Bitcoin SegWit addresses, Lightning invoices |
+| **[`IBinaryEncoding` interface](binary-encodings-interface.md)** | — | the flat-byte encodings above | Runtime-selected encoding choice (config-driven serializers, plugins) |
 
 ## Choosing between encodings
 
@@ -36,7 +39,11 @@ Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte 
 | Human-readable, spoken aloud | Base32 Crockford or Z-Base-32 |
 | Crypto key / TOTP secret display | Base32 Standard |
 | Hex dump for debugging / forensics | Base16 with `InsertSpacing | InsertLineBreaks` |
-| Bitcoin / blockchain address | Base58 Bitcoin/Flickr |
+| Bitcoin / blockchain address (legacy) | Base58 Bitcoin/Flickr |
+| Bitcoin SegWit / Lightning address | Bech32 / Bech32m |
+| Checksum-protected address or key | Base58Check |
+| Binary inside a QR code | Base45 |
+| Compact URL-safe identifier or slug | Base62 |
 | Embedded in PostScript / PDF | Base85 Ascii85 |
 | Shell-safe binary key transport | Base85 Z85 |
 
@@ -65,5 +72,8 @@ guides drill into the variant-specific options:
 - **[Base64 guide](base64.md)** — Standard / URL-safe / MIME; line wrapping; JWT.
 - **[Base58 guide](base58.md)** — leading zeros, big-integer encoding; Bitcoin/IPFS.
 - **[Base85 guide](base85.md)** — Ascii85 vs Z85; the `z` shortcut; partial-group rules.
+- **[Base45 guide](base45.md)** — RFC 9285; the QR-code payload encoding; group packing and strictness.
+- **[Base62 guide](base62.md)** — GMP-style compact identifiers; leading-zero preservation.
+- **[Bech32 guide](bech32.md)** — Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding pattern.
 - **[Encoding helpers and BOM detection](encoding-helpers.md)** — `System.Text.Encoding` helpers: `string`↔`byte[]` conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.
