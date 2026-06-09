@@ -682,6 +682,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The input contains an unpaired surrogate and is not valid UTF-8 text..
+        /// </summary>
+        internal static string Format_Invalid_TomlUnpairedSurrogate {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlUnpairedSurrogate", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The string is not terminated..
         /// </summary>
         internal static string Format_Invalid_TomlUnterminatedString {

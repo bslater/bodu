@@ -25,7 +25,8 @@ namespace Bodu.Text.Toml;
 /// The grammar covers bare, quoted, and dotted keys; the four string forms; decimal, hexadecimal, octal, and binary
 /// integers; floats including <c>inf</c> and <c>nan</c>; the four RFC 3339 date-time types; arrays; inline tables;
 /// standard tables; and arrays of tables, with the specification's redefinition and ordering rules enforced. Stream
-/// input must be valid UTF-8.
+/// input must be valid UTF-8, and character input must consist of valid Unicode scalar values — a lone, unpaired
+/// surrogate half is rejected because no valid UTF-8 document can contain one.
 /// </para>
 /// <para>
 /// The class is unsealed so that consumers — such as a configuration provider — may inherit its read capability without
@@ -85,6 +86,8 @@ public partial class TomlReader
     /// </exception>
     public TomlTable Read(ReadOnlySpan<char> source)
     {
+        EnsureValidScalarValues(source);
+
         Parser parser = new(source, _options.SpecVersion);
         return parser.Parse();
     }
@@ -212,6 +215,48 @@ public partial class TomlReader
         catch (DecoderFallbackException ex)
         {
             throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlInvalidUtf8, ex);
+        }
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="source" /> contains no unpaired UTF-16 surrogate before parsing begins.
+    /// </summary>
+    /// <param name="source">The source text to validate.</param>
+    /// <exception cref="TomlFormatException">
+    /// Thrown when <paramref name="source" /> contains an unpaired surrogate.
+    /// </exception>
+    /// <remarks>
+    /// A TOML document is valid UTF-8, and an unpaired surrogate is not a Unicode scalar value that UTF-8 can represent.
+    /// Stream input is already guaranteed well-formed by the strict UTF-8 decoder, so this guard exists for the
+    /// <see cref="string" />, <see cref="ReadOnlySpan{T}" />, and <see cref="TextReader" /> paths, whose .NET character
+    /// data can carry a lone surrogate half that no real UTF-8 source could have produced. Validating once up front
+    /// applies the rule uniformly to every place source text appears — string and key values, comments, and the text
+    /// between tokens — and keeps reader and writer surrogate policy aligned.
+    /// </remarks>
+    private static void EnsureValidScalarValues(ReadOnlySpan<char> source)
+    {
+        var line = 1;
+        for (var i = 0; i < source.Length; i++)
+        {
+            var c = source[i];
+            if (c == '\n')
+            {
+                line++;
+                continue;
+            }
+
+            if (char.IsHighSurrogate(c))
+            {
+                // A high surrogate is only valid when immediately followed by a low surrogate to form a scalar value.
+                if (i + 1 >= source.Length || !char.IsLowSurrogate(source[i + 1]))
+                    throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlUnpairedSurrogate, line);
+
+                i++;
+                continue;
+            }
+
+            if (char.IsLowSurrogate(c))
+                throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlUnpairedSurrogate, line);
         }
     }
 }
