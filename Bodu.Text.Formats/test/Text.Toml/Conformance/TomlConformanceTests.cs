@@ -15,94 +15,74 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Runs the vendored <c>toml-test</c> conformance corpus against the TOML reader in both specification profiles. Under
-/// the TOML v1.1.0 profile every valid document must parse and match its expected value tree (in toml-test's tagged-JSON
-/// encoding) and every invalid document (excluding the cases v1.1.0 made valid) must be rejected. Under the strict TOML
-/// v1.0.0 default every invalid document — including the v1.1.0 relaxations — must be rejected. The corpus is
-/// data-driven over a published vector table, so the tests are tagged <see cref="TestCategories.Regression" />.
+/// Runs the vendored <c>toml-test</c> conformance corpus against the TOML reader, gating each specification version
+/// against its own authoritative <c>files-toml-&lt;version&gt;</c> manifest from toml-test. A parser at version X must
+/// accept every valid document the X manifest lists and reject every invalid document it lists; the per-version split is
+/// taken from those manifests, not inferred. The corpus is data-driven over a published vector table, so the tests are
+/// tagged <see cref="TestCategories.Regression" />.
 /// </summary>
 [TestClass]
 public sealed class TomlConformanceTests
 {
     /// <summary>
-    /// The options that select the TOML v1.1.0 profile, under which the valid corpus and the relaxed-invalid corpus are
-    /// evaluated.
+    /// The options that select the TOML v1.1.0 profile.
     /// </summary>
     private static readonly TomlReaderOptions s_v11 = new() { SpecVersion = TomlSpecVersion.V1_1 };
 
     /// <summary>
-    /// Individual invalid cases that TOML v1.1.0 made valid relative to the vendored corpus, and so must not be run as
-    /// rejection cases against a 1.1.0 parser. They remain rejection cases under the strict v1.0.0 profile.
+    /// The TOML v1.0.0 suite membership (valid and invalid case names) from <c>files-toml-1.0.0</c>.
     /// </summary>
-    private static readonly HashSet<string> s_invalidSkip = new(StringComparer.Ordinal)
-    {
-        // Optional seconds in date-times are permitted in TOML 1.1.0.
-        "datetime/no-secs",
-        "local-datetime/no-secs",
-        "local-time/no-secs",
-
-        // Multi-line and trailing-comma inline tables are permitted in TOML 1.1.0.
-        "inline-table/linebreak-01",
-        "inline-table/linebreak-02",
-        "inline-table/linebreak-03",
-        "inline-table/linebreak-04",
-        "inline-table/trailing-comma",
-
-        // The \xHH byte escape is permitted in TOML 1.1.0.
-        "string/basic-byte-escapes",
-    };
+    private static readonly (HashSet<string> Valid, HashSet<string> Invalid) s_manifestV10 = LoadManifest("toml-test-files-1.0.0.txt");
 
     /// <summary>
-    /// Provides the valid conformance cases.
+    /// The TOML v1.1.0 suite membership (valid and invalid case names) from <c>files-toml-1.1.0</c>.
+    /// </summary>
+    private static readonly (HashSet<string> Valid, HashSet<string> Invalid) s_manifestV11 = LoadManifest("toml-test-files-1.1.0.txt");
+
+    /// <summary>
+    /// Provides every valid conformance case. TOML v1.1.0 is a superset of v1.0.0, so the v1.1.0 parser must accept all
+    /// of them.
     /// </summary>
     /// <returns>One <see cref="ConformanceCase" /> per valid document.</returns>
     public static IEnumerable<object[]> ValidCases() =>
         LoadCases("toml-test-valid.json", includeExpected: true);
 
     /// <summary>
-    /// Provides the invalid conformance cases, excluding those relaxed by TOML v1.1.0.
+    /// Provides the valid cases that belong to the TOML v1.0.0 suite — the documents a strict v1.0.0 parser must accept.
     /// </summary>
-    /// <returns>One <see cref="ConformanceCase" /> per invalid document.</returns>
-    public static IEnumerable<object[]> InvalidCases() =>
+    /// <returns>One <see cref="ConformanceCase" /> per v1.0.0-valid document.</returns>
+    public static IEnumerable<object[]> ValidCasesV10() =>
+        ValidCases().Where(row => s_manifestV10.Valid.Contains(((ConformanceCase)row[0]).Name));
+
+    /// <summary>
+    /// Provides the invalid cases that belong to the TOML v1.0.0 suite — the documents a strict v1.0.0 parser must
+    /// reject.
+    /// </summary>
+    /// <returns>One <see cref="ConformanceCase" /> per v1.0.0-invalid document.</returns>
+    public static IEnumerable<object[]> InvalidCasesV10() =>
         LoadCases("toml-test-invalid.json", includeExpected: false)
-            .Where(row => !s_invalidSkip.Contains(((ConformanceCase)row[0]).Name));
+            .Where(row => s_manifestV10.Invalid.Contains(((ConformanceCase)row[0]).Name));
 
     /// <summary>
-    /// Provides every invalid conformance case, including those TOML v1.1.0 relaxed — all of which a strict TOML v1.0.0
-    /// parser must reject.
+    /// Provides the invalid cases that belong to the TOML v1.1.0 suite — the documents a v1.1.0 parser must reject (the
+    /// cases v1.1.0 relaxed to valid are excluded by the manifest).
     /// </summary>
-    /// <returns>One <see cref="ConformanceCase" /> per invalid document.</returns>
-    public static IEnumerable<object[]> AllInvalidCases() =>
-        LoadCases("toml-test-invalid.json", includeExpected: false);
-
-    /// <summary>
-    /// Provides the valid corpus cases the strict TOML v1.0.0 parser accepts — the v1.0-valid subset, partitioned by
-    /// the parser itself rather than a hand-maintained version list.
-    /// </summary>
-    /// <returns>One <see cref="ConformanceCase" /> per v1.0-accepted valid document.</returns>
-    public static IEnumerable<object[]> V10AcceptedValidCases() =>
-        LoadCases("toml-test-valid.json", includeExpected: true)
-            .Where(row => new TomlReader().TryRead(((ConformanceCase)row[0]).Toml, out _));
-
-    /// <summary>
-    /// Provides the valid corpus cases the strict TOML v1.0.0 parser rejects — the TOML v1.1.0-only valid subset.
-    /// </summary>
-    /// <returns>One <see cref="ConformanceCase" /> per v1.1-only valid document.</returns>
-    public static IEnumerable<object[]> V11OnlyValidCases() =>
-        LoadCases("toml-test-valid.json", includeExpected: true)
-            .Where(row => !new TomlReader().TryRead(((ConformanceCase)row[0]).Toml, out _));
+    /// <returns>One <see cref="ConformanceCase" /> per v1.1.0-invalid document.</returns>
+    public static IEnumerable<object[]> InvalidCasesV11() =>
+        LoadCases("toml-test-invalid.json", includeExpected: false)
+            .Where(row => s_manifestV11.Invalid.Contains(((ConformanceCase)row[0]).Name));
 
 #pragma warning disable CA1062 // Conformance cases are statically constructed by the data sources and are never null.
 
     /// <summary>
-    /// Verifies that a valid corpus document parses under the TOML v1.1.0 profile and matches its expected tagged-JSON
-    /// value tree.
+    /// Verifies that every valid corpus document parses under the TOML v1.1.0 profile and matches its expected
+    /// tagged-JSON value tree.
     /// </summary>
     /// <param name="testCase">The conformance case.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(ValidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Valid_WhenParsedAsV11_ShouldMatchExpectedModel(ConformanceCase testCase)
+    public void Parse_WhenValidCorpusUnderV11_ShouldMatchExpectedModel(ConformanceCase testCase)
     {
         var document = Toml.Parse(testCase.Toml, s_v11);
         JsonNode actual = TomlTestEncoder.Encode(document);
@@ -112,15 +92,14 @@ public sealed class TomlConformanceTests
     }
 
     /// <summary>
-    /// Verifies that every valid corpus document the strict TOML v1.0.0 parser accepts yields the same model as the
-    /// expected tagged-JSON tree. Because v1.1.0 is a superset of v1.0.0, an accepted document's model is
-    /// version-independent, so this exercises the v1.0 parser across the full v1.0-valid subset of the corpus.
+    /// Verifies that every document in the TOML v1.0.0 valid suite parses under the strict v1.0.0 default profile and
+    /// matches its expected tagged-JSON value tree.
     /// </summary>
     /// <param name="testCase">The conformance case.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(V10AcceptedValidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Valid_WhenAcceptedByStrictV10_ShouldMatchExpectedModel(ConformanceCase testCase)
+    [DynamicData(nameof(ValidCasesV10), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenValidCorpusUnderV10_ShouldMatchExpectedModel(ConformanceCase testCase)
     {
         var document = Toml.Parse(testCase.Toml);
         JsonNode actual = TomlTestEncoder.Encode(document);
@@ -130,42 +109,85 @@ public sealed class TomlConformanceTests
     }
 
     /// <summary>
-    /// Verifies that every valid corpus document the strict TOML v1.0.0 parser rejects is one the v1.1.0 parser accepts
-    /// — confirming each v1.0 rejection is a deliberate version boundary rather than a parser defect.
+    /// Verifies that every document in the TOML v1.1.0 invalid suite is rejected under the v1.1.0 profile.
     /// </summary>
     /// <param name="testCase">The conformance case.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(V11OnlyValidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Valid_WhenRejectedByStrictV10_ShouldBeAcceptedByV11(ConformanceCase testCase)
+    [DynamicData(nameof(InvalidCasesV11), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenInvalidCorpusUnderV11_ShouldThrowTomlFormatException(ConformanceCase testCase)
     {
-        Assert.IsNotNull(Toml.Parse(testCase.Toml, s_v11), testCase.Name);
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(testCase.Toml, s_v11), $"Conformance case '{testCase.Name}' should have been rejected under TOML v1.1.0.");
     }
 
     /// <summary>
-    /// Verifies that an invalid corpus document is rejected under the TOML v1.1.0 profile, excluding the cases v1.1.0
-    /// made valid.
+    /// Verifies that every document in the TOML v1.0.0 invalid suite is rejected under the strict v1.0.0 default profile.
     /// </summary>
     /// <param name="testCase">The conformance case.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(InvalidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Invalid_WhenParsedAsV11_ShouldThrowTomlFormatException(ConformanceCase testCase)
-    {
-        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(testCase.Toml, s_v11), $"Conformance case '{testCase.Name}' should have been rejected.");
-    }
-
-    /// <summary>
-    /// Verifies that every invalid corpus document — including the cases TOML v1.1.0 relaxed — is rejected under the
-    /// strict TOML v1.0.0 default profile.
-    /// </summary>
-    /// <param name="testCase">The conformance case.</param>
-    [TestMethod]
-    [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(AllInvalidCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Invalid_WhenParsedAsStrictV10_ShouldThrowTomlFormatException(ConformanceCase testCase)
+    [DynamicData(nameof(InvalidCasesV10), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenInvalidCorpusUnderV10_ShouldThrowTomlFormatException(ConformanceCase testCase)
     {
         Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(testCase.Toml), $"Conformance case '{testCase.Name}' should have been rejected under strict TOML v1.0.0.");
+    }
+
+    /// <summary>
+    /// Verifies that every vendored corpus case is classified by at least one version manifest, so no document is
+    /// silently excluded from both per-version suites when the corpus or manifests are re-vendored.
+    /// </summary>
+    [TestMethod]
+    public void Manifest_WhenLoaded_ShouldClassifyEveryCorpusCase()
+    {
+        foreach (var row in ValidCases())
+        {
+            var name = ((ConformanceCase)row[0]).Name;
+            Assert.IsTrue(
+                s_manifestV10.Valid.Contains(name) || s_manifestV11.Valid.Contains(name),
+                $"Valid corpus case '{name}' is not listed in any toml-test version manifest.");
+        }
+
+        foreach (var row in LoadCases("toml-test-invalid.json", includeExpected: false))
+        {
+            var name = ((ConformanceCase)row[0]).Name;
+            Assert.IsTrue(
+                s_manifestV10.Invalid.Contains(name) || s_manifestV11.Invalid.Contains(name),
+                $"Invalid corpus case '{name}' is not listed in any toml-test version manifest.");
+        }
+    }
+
+    /// <summary>
+    /// Loads a vendored <c>files-toml-&lt;version&gt;</c> manifest into the set of valid and invalid case names it
+    /// lists, keyed the same way as the corpus (the path under <c>valid/</c> or <c>invalid/</c> without the
+    /// <c>.toml</c> extension). The accompanying <c>.json</c> expected-value entries are ignored.
+    /// </summary>
+    /// <param name="resourceSuffix">The trailing portion of the embedded manifest resource name.</param>
+    /// <returns>The valid and invalid case-name sets.</returns>
+    private static (HashSet<string> Valid, HashSet<string> Invalid) LoadManifest(string resourceSuffix)
+    {
+        var valid = new HashSet<string>(StringComparer.Ordinal);
+        var invalid = new HashSet<string>(StringComparer.Ordinal);
+
+        Assembly assembly = typeof(TomlConformanceTests).Assembly;
+        var resourceName = Array.Find(assembly.GetManifestResourceNames(), n => n.EndsWith(resourceSuffix, StringComparison.Ordinal))
+            ?? throw new InvalidOperationException($"Embedded manifest resource '{resourceSuffix}' was not found.");
+
+        using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
+        using StreamReader reader = new(stream);
+        string? line;
+        while ((line = reader.ReadLine()) is not null)
+        {
+            line = line.Trim();
+            if (!line.EndsWith(".toml", StringComparison.Ordinal))
+                continue;
+
+            if (line.StartsWith("valid/", StringComparison.Ordinal))
+                valid.Add(line["valid/".Length..^".toml".Length]);
+            else if (line.StartsWith("invalid/", StringComparison.Ordinal))
+                invalid.Add(line["invalid/".Length..^".toml".Length]);
+        }
+
+        return (valid, invalid);
     }
 
     /// <summary>

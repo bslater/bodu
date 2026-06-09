@@ -28,6 +28,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Text.Toml\Conformance\toml-test-valid.json" />
     <EmbeddedResource Include="Text.Toml\Conformance\toml-test-invalid.json" />
+    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.0.0.txt" />
+    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.1.0.txt" />
   </ItemGroup>
 
   <ItemGroup>
