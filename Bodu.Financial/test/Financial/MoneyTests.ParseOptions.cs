@@ -195,4 +195,12 @@ public partial class MoneyTests
         Assert.IsFalse(Money.TryParse("USD .", CultureInfo.InvariantCulture, out _));
         Assert.IsFalse(Money.TryParse("XYZ 10.00", CultureInfo.InvariantCulture, out _));
     }
+
+    /// <summary>
+    /// Verifies that the plain <see cref="Money.TryParse(string?, IFormatProvider?, out Money)" /> reports failure for
+    /// a null string rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenStringIsNull_ShouldReturnFalse() =>
+        Assert.IsFalse(Money.TryParse((string?)null, CultureInfo.InvariantCulture, out _));
 }
