@@ -527,4 +527,39 @@ public sealed class NotableDateTraversalExtensionTests
             _ = new DateOnly(2026, 1, 6).NextNotableDate(null!, "XX");
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime" />-based working-day enumeration yields the working days in the range while
+    /// preserving the start's time-of-day and kind.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateWorkingDays_OnDateTime_ShouldPreserveTimeAndKind()
+    {
+        DateTime start = new(2026, 1, 5, 9, 30, 0, DateTimeKind.Utc);
+        DateTime end = new(2026, 1, 9, 0, 0, 0, DateTimeKind.Utc);
+
+        DateTime[] result = start.EnumerateWorkingDays(end, HolidayService, "XX").ToArray();
+
+        Assert.HasCount(5, result);
+        Assert.AreEqual(new DateTime(2026, 1, 5, 9, 30, 0, DateTimeKind.Utc), result[0]);
+        Assert.AreEqual(DateTimeKind.Utc, result[0].Kind);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeOffset" />-based working-day enumeration yields the working days in the range
+    /// while preserving the start's offset and time-of-day.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateWorkingDays_OnDateTimeOffset_ShouldPreserveOffsetAndTime()
+    {
+        TimeSpan offset = TimeSpan.FromHours(10);
+        DateTimeOffset start = new(2026, 1, 5, 9, 30, 0, offset);
+        DateTimeOffset end = new(2026, 1, 9, 0, 0, 0, offset);
+
+        DateTimeOffset[] result = start.EnumerateWorkingDays(end, HolidayService, "XX").ToArray();
+
+        Assert.HasCount(5, result);
+        Assert.AreEqual(offset, result[0].Offset);
+        Assert.AreEqual(new TimeOnly(9, 30), TimeOnly.FromDateTime(result[0].DateTime));
+    }
 }
