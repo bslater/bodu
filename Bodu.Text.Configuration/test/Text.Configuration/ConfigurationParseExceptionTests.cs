@@ -74,4 +74,42 @@ public class ConfigurationParseExceptionTests
         Assert.IsEmpty(ex.Diagnostics);
         Assert.IsNull(ex.Diagnostic);
     }
+
+    /// <summary>
+    /// Verifies that the message constructor sets the message and exposes no diagnostics.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenMessage_ShouldSetMessageAndExposeEmptyDiagnostics()
+    {
+        ConfigurationParseException ex = new("parse failed");
+
+        Assert.AreEqual("parse failed", ex.Message);
+        Assert.IsEmpty(ex.Diagnostics);
+    }
+
+    /// <summary>
+    /// Verifies that the message-and-inner-exception constructor sets both.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenMessageAndInnerException_ShouldSetBoth()
+    {
+        InvalidOperationException inner = new("root cause");
+
+        ConfigurationParseException ex = new("parse failed", inner);
+
+        Assert.AreEqual("parse failed", ex.Message);
+        Assert.AreSame(inner, ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationParseException.Location" /> returns
+    /// <see cref="ConfigurationSourceLocation.None" /> when no primary diagnostic is present.
+    /// </summary>
+    [TestMethod]
+    public void Location_WhenNoDiagnostic_ShouldReturnNone()
+    {
+        ConfigurationParseException ex = new("parse failed");
+
+        Assert.AreEqual(ConfigurationSourceLocation.None, ex.Location);
+    }
 }

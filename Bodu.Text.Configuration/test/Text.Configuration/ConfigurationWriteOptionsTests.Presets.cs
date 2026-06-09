@@ -41,4 +41,18 @@ public partial class ConfigurationWriteOptionsTests
             _ = ConfigurationWriteOptions.For((ConfigurationProfile)42);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationWriteOptions.For(ConfigurationProfile)" /> maps the <c>Relaxed</c> profile
+    /// to inline comments enabled and comment preservation enabled.
+    /// </summary>
+    [TestMethod]
+    public void For_WhenRelaxedProfile_ShouldEnableInlineCommentsAndPreserveComments()
+    {
+        ConfigurationWriteOptions options = ConfigurationWriteOptions.For(ConfigurationProfile.Relaxed);
+
+        Assert.AreEqual(
+            (ConfigurationProfile.Relaxed, true, true),
+            (options.Profile, options.WriteInlineComments, options.PreserveComments));
+    }
 }
