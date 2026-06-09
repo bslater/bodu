@@ -236,12 +236,14 @@ public partial class TomlReader
     private static void EnsureValidScalarValues(ReadOnlySpan<char> source)
     {
         var line = 1;
+        var lineStart = 0;
         for (var i = 0; i < source.Length; i++)
         {
             var c = source[i];
             if (c == '\n')
             {
                 line++;
+                lineStart = i + 1;
                 continue;
             }
 
@@ -249,14 +251,14 @@ public partial class TomlReader
             {
                 // A high surrogate is only valid when immediately followed by a low surrogate to form a scalar value.
                 if (i + 1 >= source.Length || !char.IsLowSurrogate(source[i + 1]))
-                    throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlUnpairedSurrogate, line);
+                    throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlUnpairedSurrogate, line, (i - lineStart) + 1, i);
 
                 i++;
                 continue;
             }
 
             if (char.IsLowSurrogate(c))
-                throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlUnpairedSurrogate, line);
+                throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlUnpairedSurrogate, line, (i - lineStart) + 1, i);
         }
     }
 }

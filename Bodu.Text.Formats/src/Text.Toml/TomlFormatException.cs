@@ -16,8 +16,10 @@ namespace Bodu.Text.Toml;
 /// through the <see cref="FormatException" /> hierarchy so callers can catch it alongside other parse failures.
 /// </para>
 /// <para>
-/// <see cref="TextFormatException.LineNumber" /> carries the 1-based source line that triggered the failure when the
-/// parser was able to pinpoint it, or <c>0</c> when the error is not associated with a specific line.
+/// <see cref="TextFormatException.LineNumber" /> and <see cref="TextFormatException.ColumnNumber" /> carry the 1-based
+/// source line and column that triggered the failure, and <see cref="TextFormatException.Offset" /> the 0-based offset
+/// from the start of the source. Each is <c>0</c> (or <see langword="null" /> for the offset) when the error is not
+/// associated with a specific location.
 /// </para>
 /// </remarks>
 public sealed class TomlFormatException
@@ -59,6 +61,27 @@ public sealed class TomlFormatException
     /// </param>
     public TomlFormatException(string message, int lineNumber)
         : base(message, lineNumber)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlFormatException" /> class with a full source location.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="lineNumber">
+    /// The 1-based line number at which the error occurred, or <c>0</c> if the error is not associated with a specific
+    /// line.
+    /// </param>
+    /// <param name="columnNumber">
+    /// The 1-based column number within the line at which the error occurred, or <c>0</c> if the error is not associated
+    /// with a specific column.
+    /// </param>
+    /// <param name="offset">
+    /// The 0-based offset from the start of the source at which the error occurred, or <see langword="null" /> when
+    /// unknown.
+    /// </param>
+    public TomlFormatException(string message, int lineNumber, int columnNumber, int? offset = null)
+        : base(message, lineNumber, columnNumber, offset)
     {
     }
 }
