@@ -7,8 +7,9 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Behavioural tests for <see cref="Toml.Parse(ReadOnlySpan{char})" /> covering the TOML v1.1.0 value types, tables,
-/// dotted keys, arrays, inline tables, arrays of tables, and the specification's rejection rules.
+/// Behavioural tests for <see cref="Toml.Parse(ReadOnlySpan{char})" /> under the default strict TOML v1.0.0 profile,
+/// covering the value types, tables, dotted keys, arrays, inline tables, arrays of tables, and the specification's
+/// rejection rules. Version-boundary behaviour (the TOML v1.1.0 additions) lives in <c>TomlReaderVersionTests</c>.
 /// </summary>
 [TestClass]
 public sealed class TomlParseTests
@@ -60,15 +61,8 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenBasicStringEscapes_ShouldDecode()
     {
-        var doc = Parse("""s = "a\tb\nc\"d\\eé\x41" """);
-        Assert.AreEqual("a\tb\nc\"d\\eéA", Str(doc["s"]));
-    }
-
-    [TestMethod]
-    public void Parse_WhenEscapeEscapeSequence_ShouldDecodeToU001B()
-    {
-        var doc = Parse("""s = "\e" """);
-        Assert.AreEqual("", Str(doc["s"]));
+        var doc = Parse("""s = "a\tb\nc\"d\\eé" """);
+        Assert.AreEqual("a\tb\nc\"d\\eé", Str(doc["s"]));
     }
 
     [TestMethod]
@@ -148,14 +142,6 @@ public sealed class TomlParseTests
     }
 
     [TestMethod]
-    public void Parse_WhenMultilineInlineTable_ShouldReadKeys()
-    {
-        var doc = Parse("contact = {\n  personal = {\n    name = \"Donald\",\n    email = \"d@x.com\",\n  },\n}");
-        var personal = (TomlTable)((TomlTable)doc["contact"])["personal"];
-        Assert.AreEqual("Donald", Str(personal["name"]));
-    }
-
-    [TestMethod]
     public void Parse_WhenArrayOfTables_ShouldAppendElements()
     {
         var doc = Parse("[[product]]\nname = \"Hammer\"\nsku = 738594937\n\n[[product]]\n\n[[product]]\nname = \"Nail\"\ncolor = \"gray\"");
@@ -181,19 +167,18 @@ public sealed class TomlParseTests
     [TestMethod]
     public void Parse_WhenOffsetDateTime_ShouldReadInstant()
     {
-        var doc = Parse("odt = 1979-05-27T07:32:00Z\nspace = 1979-05-27 07:32:00Z\nnosec = 1979-05-27 07:32Z");
+        var doc = Parse("odt = 1979-05-27T07:32:00Z\nspace = 1979-05-27 07:32:00Z");
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), ((TomlOffsetDateTime)doc["odt"]).Value);
-        Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), ((TomlOffsetDateTime)doc["nosec"]).Value);
+        Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), ((TomlOffsetDateTime)doc["space"]).Value);
     }
 
     [TestMethod]
     public void Parse_WhenLocalDateTimeDateAndTime_ShouldReadValues()
     {
-        var doc = Parse("ldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00\nltnosec = 07:32");
+        var doc = Parse("ldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00");
         Assert.AreEqual(new DateTime(1979, 5, 27, 7, 32, 0), ((TomlLocalDateTime)doc["ldt"]).Value);
         Assert.AreEqual(new DateOnly(1979, 5, 27), ((TomlLocalDate)doc["ld"]).Value);
         Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["lt"]).Value);
-        Assert.AreEqual(new TimeOnly(7, 32, 0), ((TomlLocalTime)doc["ltnosec"]).Value);
     }
 
     [TestMethod]
@@ -213,6 +198,11 @@ public sealed class TomlParseTests
     [DataRow("invalid_float_3 = 3.e+20")]
     [DataRow("leading_zero = 01")]
     [DataRow("bad = 1__0")]
+    [DataRow("overflow = 9223372036854775808")]              // 2^63, above long.MaxValue
+    [DataRow("leap_time = 23:59:60")]                        // leap second (local time)
+    [DataRow("leap_datetime = 1979-05-27T23:59:60Z")]        // leap second (offset date-time)
+    [DataRow("bad_hour = 24:00:00")]                         // hour out of range
+    [DataRow("bad_minute = 23:60:00")]                       // minute out of range
     public void Parse_WhenInvalid_ShouldThrowTomlFormatException(string source)
     {
         Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(source));

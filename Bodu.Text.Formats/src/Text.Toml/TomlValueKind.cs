@@ -7,8 +7,7 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Identifies the concrete type of a TOML value, corresponding to the value types defined by the TOML v1.1.0
-/// specification.
+/// Identifies the concrete type of a TOML value, corresponding to the value types defined by the TOML specification.
 /// </summary>
 public enum TomlValueKind
 {

@@ -7,13 +7,26 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Behavioural tests for the <see cref="Toml" /> stream surface — UTF-8 parsing and formatting, the asynchronous
-/// overloads, byte-order-mark handling, and argument validation.
+/// Behavioural tests for the <see cref="Toml" /> stream surface — UTF-8 parsing and formatting, strict encoding
+/// validation, the asynchronous overloads and their cancellation contract, byte-order-mark handling, and argument
+/// validation.
 /// </summary>
 [TestClass]
 public sealed class TomlStreamTests
 {
     private const string Sample = "title = \"x\"\n\n[server]\nhost = \"localhost\"\nport = 8080\n";
+
+    /// <summary>
+    /// Provides streams whose bytes are not valid UTF-8 and therefore must be rejected.
+    /// </summary>
+    /// <returns>One named byte sequence per row.</returns>
+    public static IEnumerable<object[]> InvalidUtf8Cases()
+    {
+        yield return ["lone-continuation", new byte[] { 0x80 }];
+        yield return ["overlong-slash", new byte[] { 0xC0, 0xAF }];
+        yield return ["encoded-surrogate", new byte[] { 0xED, 0xA0, 0x80 }];
+        yield return ["above-unicode-range", new byte[] { 0xF4, 0x90, 0x80, 0x80 }];
+    }
 
     [TestMethod]
     public void FormatThenParse_WhenUsingStreams_ShouldRoundTrip()
@@ -101,6 +114,60 @@ public sealed class TomlStreamTests
         using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("a = "));
 
         Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream));
+    }
+
+    /// <summary>
+    /// Verifies that a stream whose bytes are not valid UTF-8 is rejected with a <see cref="TomlFormatException" />
+    /// rather than decoded with replacement characters.
+    /// </summary>
+    /// <param name="name">The scenario name, used as the failure message.</param>
+    /// <param name="bytes">The invalid UTF-8 byte sequence.</param>
+    [TestMethod]
+    [DynamicData(nameof(InvalidUtf8Cases))]
+    public void Parse_WhenStreamHasInvalidUtf8_ShouldThrowTomlFormatException(string name, byte[] bytes)
+    {
+        using MemoryStream stream = new(bytes);
+
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream), name);
+    }
+
+    /// <summary>
+    /// Verifies that an already-cancelled token causes <see cref="Toml.ParseAsync(Stream, CancellationToken)" /> to
+    /// observe cancellation.
+    /// </summary>
+    [TestMethod]
+    public async Task ParseAsync_WhenCancellationAlreadyRequested_ShouldThrowOperationCanceledException()
+    {
+        using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes("a = 1"));
+        using CancellationTokenSource cts = new();
+        await cts.CancelAsync();
+
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await Toml.ParseAsync(stream, cts.Token));
+    }
+
+    /// <summary>
+    /// Verifies that an already-cancelled token causes
+    /// <see cref="Toml.FormatAsync(TomlTable, Stream, CancellationToken)" /> to observe cancellation.
+    /// </summary>
+    [TestMethod]
+    public async Task FormatAsync_WhenCancellationAlreadyRequested_ShouldThrowOperationCanceledException()
+    {
+        using MemoryStream stream = new();
+        using CancellationTokenSource cts = new();
+        await cts.CancelAsync();
+
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await Toml.FormatAsync(new TomlTable { { "a", new TomlInteger(1) } }, stream, cts.Token));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Toml.FormatAsync(TomlTable, Stream, CancellationToken)" /> validates its arguments.
+    /// </summary>
+    [TestMethod]
+    public async Task FormatAsync_WhenNullArguments_ShouldThrowExactly()
+    {
+        using MemoryStream stream = new();
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await Toml.FormatAsync(null!, stream));
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await Toml.FormatAsync(new TomlTable(), null!));
     }
 
     private static string Normalize(TomlValue value)

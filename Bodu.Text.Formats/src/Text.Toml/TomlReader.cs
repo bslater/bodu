@@ -10,17 +10,22 @@ using System.Text;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Deserializes TOML v1.1.0 text into a <see cref="TomlTable" /> document model. The reader is the deserialization half
-/// of the read/write pair; <see cref="TomlWriter" /> is its serialization counterpart, and <see cref="TomlTable" />
-/// holds the resulting structure.
+/// Deserializes TOML text into a <see cref="TomlTable" /> document model. The reader is the deserialization half of the
+/// read/write pair; <see cref="TomlWriter" /> is its serialization counterpart, and <see cref="TomlTable" /> holds the
+/// resulting structure.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The reader implements the full TOML v1.1.0 grammar: bare, quoted, and dotted keys; the four string forms with the
-/// v1.1.0 <c>\e</c> and <c>\xHH</c> escapes; decimal, hexadecimal, octal, and binary integers; floats including
-/// <c>inf</c> and <c>nan</c>; the four RFC 3339 date-time types with optional seconds; arrays; inline tables (including
-/// the v1.1.0 multi-line and trailing-comma forms); standard tables; and arrays of tables, with the specification's
-/// redefinition and ordering rules enforced.
+/// The reader enforces strict TOML v1.0.0 by default; pass a <see cref="TomlReaderOptions" /> with
+/// <see cref="TomlReaderOptions.SpecVersion" /> set to <see cref="TomlSpecVersion.V1_1" /> to additionally accept the
+/// TOML v1.1.0 features (the <c>\e</c> and <c>\xHH</c> escapes, time values without seconds, and multi-line and
+/// trailing-comma inline tables).
+/// </para>
+/// <para>
+/// The grammar covers bare, quoted, and dotted keys; the four string forms; decimal, hexadecimal, octal, and binary
+/// integers; floats including <c>inf</c> and <c>nan</c>; the four RFC 3339 date-time types; arrays; inline tables;
+/// standard tables; and arrays of tables, with the specification's redefinition and ordering rules enforced. Stream
+/// input must be valid UTF-8.
 /// </para>
 /// <para>
 /// The class is unsealed so that consumers — such as a configuration provider — may inherit its read capability without
@@ -38,9 +43,37 @@ namespace Bodu.Text.Toml;
 public partial class TomlReader
 {
     /// <summary>
-    /// The UTF-8 encoding used when reading from a stream; a leading byte-order mark is stripped separately.
+    /// The UTF-8 encoding used when reading from a stream; a leading byte-order mark is stripped separately. Invalid
+    /// byte sequences are rejected rather than replaced.
     /// </summary>
-    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: false);
+    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
+    /// <summary>
+    /// The options that govern parsing, including the TOML specification version.
+    /// </summary>
+    private readonly TomlReaderOptions _options;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlReader" /> class that enforces strict TOML v1.0.0.
+    /// </summary>
+    public TomlReader()
+        : this(new TomlReaderOptions())
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlReader" /> class with the specified options.
+    /// </summary>
+    /// <param name="options">The options that govern parsing.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    public TomlReader(TomlReaderOptions options)
+    {
+        ThrowHelper.ThrowIfNull(options);
+
+        _options = options;
+    }
 
     /// <summary>
     /// Deserializes a TOML document from the specified character span.
@@ -52,7 +85,7 @@ public partial class TomlReader
     /// </exception>
     public TomlTable Read(ReadOnlySpan<char> source)
     {
-        Parser parser = new(source);
+        Parser parser = new(source, _options.SpecVersion);
         return parser.Parse();
     }
 
@@ -165,12 +198,20 @@ public partial class TomlReader
     /// </summary>
     /// <param name="buffer">The buffered bytes.</param>
     /// <returns>The decoded text.</returns>
+    /// <exception cref="TomlFormatException">Thrown when the bytes are not valid UTF-8.</exception>
     private static string Decode(MemoryStream buffer)
     {
         ReadOnlySpan<byte> bytes = buffer.GetBuffer().AsSpan(0, (int)buffer.Length);
         if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
             bytes = bytes[3..];
 
-        return s_utf8.GetString(bytes);
+        try
+        {
+            return s_utf8.GetString(bytes);
+        }
+        catch (DecoderFallbackException ex)
+        {
+            throw new TomlFormatException(FormatsResourceStrings.Format_Invalid_TomlInvalidUtf8, ex);
+        }
     }
 }

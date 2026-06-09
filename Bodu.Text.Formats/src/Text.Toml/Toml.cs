@@ -9,14 +9,21 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Provides convenience entry points for parsing and formatting TOML v1.1.0 text, delegating to the
-/// <see cref="TomlReader" /> and <see cref="TomlWriter" /> types that own deserialization and serialization
-/// respectively. The document structure itself is the <see cref="TomlTable" /> / <see cref="TomlValue" /> model.
+/// Provides convenience entry points for parsing and formatting TOML text, delegating to the <see cref="TomlReader" />
+/// and <see cref="TomlWriter" /> types that own deserialization and serialization respectively. The document structure
+/// itself is the <see cref="TomlTable" /> / <see cref="TomlValue" /> model.
 /// </summary>
 /// <remarks>
+/// <para>
 /// These static helpers exist for ergonomic one-liners; the read/write pair (<see cref="TomlReader" /> and
 /// <see cref="TomlWriter" />) is the primary surface, mirroring the relationship between <c>XmlReader</c> /
 /// <c>XmlWriter</c> and their document model.
+/// </para>
+/// <para>
+/// The parameterless parse methods enforce strict TOML v1.0.0. The overloads that accept a
+/// <see cref="TomlReaderOptions" /> allow opting in to TOML v1.1.0 grammar via
+/// <see cref="TomlReaderOptions.SpecVersion" />.
+/// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[
@@ -55,6 +62,21 @@ public static class Toml
         s_reader.Read(source);
 
     /// <summary>
+    /// Parses a TOML document from the specified character span using the supplied options.
+    /// </summary>
+    /// <param name="source">The TOML source text.</param>
+    /// <param name="options">The options that govern parsing, including the specification version.</param>
+    /// <returns>The root <see cref="TomlTable" /> of the parsed document.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="TomlFormatException">
+    /// Thrown when <paramref name="source" /> is not a valid TOML document.
+    /// </exception>
+    public static TomlTable Parse(ReadOnlySpan<char> source, TomlReaderOptions options) =>
+        new TomlReader(options).Read(source);
+
+    /// <summary>
     /// Parses a TOML document by reading <paramref name="source" /> to its end as UTF-8 text.
     /// </summary>
     /// <param name="source">The readable stream containing the UTF-8 TOML bytes.</param>
@@ -66,6 +88,21 @@ public static class Toml
     /// <exception cref="TomlFormatException">Thrown when the stream contents are not a valid TOML document.</exception>
     public static TomlTable Parse(Stream source) =>
         s_reader.Read(source);
+
+    /// <summary>
+    /// Parses a TOML document by reading <paramref name="source" /> to its end as UTF-8 text, using the supplied
+    /// options.
+    /// </summary>
+    /// <param name="source">The readable stream containing the UTF-8 TOML bytes.</param>
+    /// <param name="options">The options that govern parsing, including the specification version.</param>
+    /// <returns>The root <see cref="TomlTable" /> of the parsed document.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
+    /// <exception cref="TomlFormatException">Thrown when the stream contents are not a valid TOML document.</exception>
+    public static TomlTable Parse(Stream source, TomlReaderOptions options) =>
+        new TomlReader(options).Read(source);
 
     /// <summary>
     /// Asynchronously parses a TOML document by reading <paramref name="source" /> to its end as UTF-8 text.
@@ -85,6 +122,25 @@ public static class Toml
         s_reader.ReadAsync(source, cancellationToken);
 
     /// <summary>
+    /// Asynchronously parses a TOML document by reading <paramref name="source" /> to its end as UTF-8 text, using the
+    /// supplied options.
+    /// </summary>
+    /// <param name="source">The readable stream containing the UTF-8 TOML bytes.</param>
+    /// <param name="options">The options that govern parsing, including the specification version.</param>
+    /// <param name="cancellationToken">A token that can be used to request cancellation of the read.</param>
+    /// <returns>A task that completes with the root <see cref="TomlTable" /> of the parsed document.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
+    /// <exception cref="TomlFormatException">Thrown when the stream contents are not a valid TOML document.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signalled before the read completes.
+    /// </exception>
+    public static ValueTask<TomlTable> ParseAsync(Stream source, TomlReaderOptions options, CancellationToken cancellationToken = default) =>
+        new TomlReader(options).ReadAsync(source, cancellationToken);
+
+    /// <summary>
     /// Attempts to parse a TOML document from the specified character span.
     /// </summary>
     /// <param name="source">The TOML source text.</param>
@@ -94,6 +150,21 @@ public static class Toml
     /// <returns><see langword="true" /> when parsing succeeded; otherwise <see langword="false" />.</returns>
     public static bool TryParse(ReadOnlySpan<char> source, [NotNullWhen(true)] out TomlTable? document) =>
         s_reader.TryRead(source, out document);
+
+    /// <summary>
+    /// Attempts to parse a TOML document from the specified character span using the supplied options.
+    /// </summary>
+    /// <param name="source">The TOML source text.</param>
+    /// <param name="options">The options that govern parsing, including the specification version.</param>
+    /// <param name="document">
+    /// When this method returns <see langword="true" />, the parsed document; otherwise <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when parsing succeeded; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    public static bool TryParse(ReadOnlySpan<char> source, TomlReaderOptions options, [NotNullWhen(true)] out TomlTable? document) =>
+        new TomlReader(options).TryRead(source, out document);
 
     /// <summary>
     /// Formats a <see cref="TomlTable" /> document to canonical TOML text.

@@ -20,9 +20,21 @@ namespace Bodu.Text.Toml;
 /// Scalar values are immutable. <see cref="TomlArray" /> and <see cref="TomlTable" /> are mutable containers so that a
 /// document can be authored programmatically before being rendered by the TOML writer.
 /// </para>
+/// <para>
+/// The hierarchy is closed: the constructor is inaccessible outside this assembly, so the only value kinds are the
+/// built-in ones. This guarantees the writer can render every value it is given.
+/// </para>
 /// </remarks>
 public abstract class TomlValue
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlValue" /> class. The constructor is inaccessible outside this
+    /// assembly, preventing external subclassing.
+    /// </summary>
+    private protected TomlValue()
+    {
+    }
+
     /// <summary>
     /// Gets the concrete kind of the value.
     /// </summary>

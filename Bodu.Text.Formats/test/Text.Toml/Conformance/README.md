@@ -8,9 +8,17 @@ known-answer test data for `TomlConformanceTests`.
   tagged-JSON encoding (`{"type": "...", "value": "..."}`).
 - **invalid**: each entry is a TOML document the parser must reject.
 
-Targeting **TOML v1.1.0**, the following upstream cases are excluded when consolidating:
-`invalid/spec-1.0.0/*` (restrictions relaxed in 1.1.0) and `invalid/encoding/*` (byte-level
-UTF-8 validation; the stream reader decodes with spec-permitted U+FFFD replacement). A small
-runtime skip list in `TomlConformanceTests` covers individual cases that 1.1.0 made valid.
+`TomlConformanceTests` drives the corpus through **both** specification profiles:
+
+- **TOML v1.1.0** (`TomlReaderOptions.SpecVersion = V1_1`): every valid document must parse and
+  match its expected value tree, and every invalid document must be rejected — excluding a small
+  runtime skip list of cases that 1.1.0 made valid (`s_invalidSkip`).
+- **Strict TOML v1.0.0** (the parser default): the entire invalid corpus, *including* the cases
+  1.1.0 relaxed, must be rejected.
+
+The following upstream cases are excluded when consolidating: `invalid/spec-1.0.0/*`
+(restrictions relaxed in 1.1.0) and `invalid/encoding/*` (byte-level UTF-8 validation). The reader
+now decodes streams with strict UTF-8 (invalid bytes raise `TomlFormatException`); byte-level
+rejection is exercised directly by the stream encoding tests rather than this string-driven corpus.
 
 toml-test is distributed under the MIT License; see `toml-test-LICENSE.txt`.
