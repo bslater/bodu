@@ -269,4 +269,21 @@ public partial class NotableDateDocumentBuilderTests
 
         Assert.AreEqual(xml, NotableDateDocumentBuilder.FromXml(xml).ToXml());
     }
+
+    /// <summary>
+    /// Verifies that an override patch carrying applicability and a strategy — a shape the XML override can represent but
+    /// the flat JSON override cannot — round-trips through XML.
+    /// </summary>
+    [TestMethod]
+    public void OverridePatchWithApplicabilityAndStrategy_ShouldRoundTripThroughXml()
+    {
+        var xml = NotableDateDocumentBuilder.Create("demo.patch")
+            .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
+                .AddRule("r", x => x.Fixed(1, 1)))
+            .AddOverride(o => o
+                .PatchRule("nd", "r", x => x.ForTerritory("US").FromYear(2020).Fixed(2, 2)))
+            .ToXml();
+
+        Assert.AreEqual(xml, NotableDateDocumentBuilder.FromXml(xml).ToXml());
+    }
 }
