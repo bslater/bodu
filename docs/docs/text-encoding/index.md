@@ -4,15 +4,17 @@ title: Bodu.Text.Encoding — Introduction
 
 # Bodu.Text.Encoding
 
-**Bodu.Text.Encoding** is a focused, allocation-conscious library of binary-to-text encodings. It implements the
-five practical radix encodings that .NET applications reach for — **Base16**, **Base32**, **Base64**, **Base58**,
-and **Base85** — and gives each one the same modern API shape: span- and UTF-8-friendly overloads,
-`OperationStatus`-returning streaming methods, length-prediction helpers, validation predicates, and a unified
-`IBinaryEncoding` interface that lets code select an encoding at runtime.
+**Bodu.Text.Encoding** is a focused, allocation-conscious library of binary-to-text encodings. The five core radix
+encodings that .NET applications reach for — **Base16**, **Base32**, **Base64**, **Base58**, and **Base85** — each
+carry the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus`-returning streaming methods,
+length-prediction helpers, validation predicates, and a unified `IBinaryEncoding` interface that lets code select an
+encoding at runtime. Three special-purpose encodings sit alongside them — **Base45** (RFC 9285, QR-code payloads),
+**Base62** (compact identifiers), and **Bech32 / Bech32m** (BIP 173 / 350, checksummed addresses) — plus the
+convenience wrappers **Base58Check** and **Base64Url**.
 
 It fills two gaps that `System.Convert` and `System.Buffers.Text.Base64` leave open:
 
-1. **Variants** the BCL does not cover — base32hex, Crockford Base32, z-base-32, Base58 (Bitcoin / Flickr / Ripple), Ascii85, Z85.
+1. **Variants** the BCL does not cover — base32hex, Crockford Base32, z-base-32, Base58 (Bitcoin / Flickr / Ripple), Ascii85, Z85, Base45, Base62, Bech32 / Bech32m.
 2. **Lenient parsing** and **formatting decoration** — `0x` prefix tolerance, whitespace stripping, byte spacing, line breaks every 64 / 76 characters — for the encodings that benefit from them.
 
 ## Core mental model
@@ -36,10 +38,13 @@ decoration, apply alphabet lookup, then bit-stream unpack / divmod / block expan
 | **Base64** | 6 | 33 % | MIME / SMTP, JWT (URL-safe), TLS certificates, generic binary-in-text |
 | **Base58** | ≈5.86 | ≈37 % | Bitcoin addresses, IPFS CIDs, Solana, NEAR, Stellar, Flickr short URLs |
 | **Base85** | ≈6.41 | 25 % | PDF / PostScript (Ascii85), ZeroMQ keys (Z85), tight ASCII transport |
+| **Base45** | ≈5.49 | 50 % (2 bytes → 3 chars) | QR-code payloads (RFC 9285), EU Digital COVID Certificate |
+| **Base62** | ≈5.95 | ≈35 % | Short URLs, compact identifiers, URL-safe slugs (no special characters) |
+| **Bech32 / Bech32m** | 5 (+ HRP + checksum) | base-32 data + 6-symbol checksum | Bitcoin SegWit addresses, Lightning invoices (BIP 173 / 350) |
 
-## Five entry points, one shape
+## A shared shape
 
-Every encoding type exposes the same public surface:
+Every **core** encoding type (Base16, Base32, Base64, Base58, Base85) exposes the same public surface:
 
 | Member group | Methods |
 |---|---|
@@ -55,6 +60,13 @@ For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/t
 `BinaryEncodings` registry: `BinaryEncodings.Base64`, `BinaryEncodings.Base32Crockford`,
 `BinaryEncodings.Z85`, etc.
 
+The **special-purpose** encodings (Base45, Base62, Bech32) share the `Encode` / `Decode` / `TryEncode` / `TryDecode`,
+sizing, and `IsValid` members but omit the `OperationStatus` streaming path — each needs the whole input at once.
+Base45 and Base62 are registered as `BinaryEncodings.Base45` / `BinaryEncodings.Base62`; Bech32 takes a
+human-readable part and verifies a checksum, so it stays outside the flat-byte `IBinaryEncoding` contract.
+See the per-encoding guides — [Base45](../../guides/text-encoding/base45.md), [Base62](../../guides/text-encoding/base62.md),
+and [Bech32](../../guides/text-encoding/bech32.md).
+
 ## Variants at a glance
 
 | Encoding | Variant enum | Variants |
@@ -64,6 +76,9 @@ For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/t
 | Base64 | <xref:Bodu.Text.Encoding.Base64Variant> | Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap) |
 | Base58 | <xref:Bodu.Text.Encoding.Base58Variant> | BitcoinFlickr (default), Ripple |
 | Base85 | <xref:Bodu.Text.Encoding.Base85Variant> | Ascii85 (Adobe), Z85 (RFC 32 ZeroMQ) |
+| Base45 | (none) | RFC 9285 |
+| Base62 | (none) | GMP-style (`0-9 A-Z a-z`) |
+| Bech32 | <xref:Bodu.Text.Encoding.Bech32Encoding> | Bech32 (BIP 173, default), Bech32m (BIP 350) |
 
 ## Common scenarios
 
@@ -89,6 +104,11 @@ For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/t
 | <xref:Bodu.Text.Encoding.Base64> | Base64 — 6 bits per symbol; three variants (Standard, UrlSafe, Mime); delegates inner conversion to BCL for SIMD speed |
 | <xref:Bodu.Text.Encoding.Base58> | Base58 — non-power-of-two radix using big-integer arithmetic; preserves leading zeros |
 | <xref:Bodu.Text.Encoding.Base85> | Base85 — 4-byte block → 5 chars; Ascii85 with <c>z</c> shortcut and partial groups; Z85 with 4-byte alignment |
+| <xref:Bodu.Text.Encoding.Base45> | Base45 — RFC 9285; 2 bytes → 3 chars; QR-code Alphanumeric-mode alphabet; no padding |
+| <xref:Bodu.Text.Encoding.Base62> | Base62 — GMP-style `0-9 A-Z a-z`; big-integer arithmetic; preserves leading zeros |
+| <xref:Bodu.Text.Encoding.Bech32> | Bech32 / Bech32m — HRP + `1` separator + 5-bit data + 6-symbol checksum; scheme via <xref:Bodu.Text.Encoding.Bech32Encoding> |
+| <xref:Bodu.Text.Encoding.Base58Check> | Base58 plus the Bitcoin four-byte double-SHA-256 checksum, verified on decode |
+| <xref:Bodu.Text.Encoding.Base64Url> | RFC 4648 §5 URL-safe Base64 as a first-class type; padding omitted by default; UTF-8 path |
 
 ### Runtime selection
 
@@ -111,4 +131,5 @@ For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/t
 - **[Getting started](getting-started.md)** — install + minimal sample per encoding type.
 - **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
 - **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
-- **For structured binary serialization formats** (Bencode, INI) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md).
+- **Special-purpose guides** — [Base45](../../guides/text-encoding/base45.md) (QR codes), [Base62](../../guides/text-encoding/base62.md) (compact IDs), [Bech32](../../guides/text-encoding/bech32.md) (checksummed addresses).
+- **For structured document formats** (Bencode, INI, TOML) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md).

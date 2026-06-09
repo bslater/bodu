@@ -18,7 +18,11 @@ A bencoded document is a single tree of typed values. **`Bencode`** is the stati
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Text.Formats` | Codec entry point (`Bencode`), value model (`BencodedValue` and the four kinds), supporting types (`BencodedStringComparer`, `BencodedValueKind`), and `BencodeFormatException`. | [Using Bencode](bencode.md) · [The BencodedValue model](value-model.md) · [Streams and async I/O](streaming.md) |
+| <xref:Bodu.Text.Bencode> | The `Bencode` codec, the `BencodedValue` model and its four kinds, `BencodedStringComparer`, and `BencodeFormatException`. | [Using Bencode](bencode.md) · [The BencodedValue model](value-model.md) |
+| <xref:Bodu.Text.Delimited> | The `Delimited` codec, `DelimitedDocument` / `DelimitedRow`, the streaming reader / writer, and `DelimitedParseOptions`. | [Using delimited](delimited.md) |
+| <xref:Bodu.Text.DotEnv> | The `DotEnv` codec, `DotEnvDocument` / `DotEnvEntry`, and `DotEnvParseOptions`. | [Using DotEnv](dotenv.md) |
+| <xref:Bodu.Text.Ini> | The `Ini` codec, `IniDocument` / `IniSection` / `IniEntry`, and `IniParseOptions`. | [Using INI](ini.md) |
+| <xref:Bodu.Text.Toml> | The `Toml` façade, the `TomlReader` / `TomlWriter` pair, the `TomlValue` model, `TomlReaderOptions`, and `TomlFormatException`. | [Using TOML](toml.md) |
 
 ## Guides
 
@@ -34,6 +38,26 @@ A bencoded document is a single tree of typed values. **`Bencode`** is the stati
 <div class="bodu-card">
   <h3><a href="value-model.md">The BencodedValue model</a></h3>
   <p>Walk-through of <code>BencodedInteger</code>, <code>BencodedString</code>, <code>BencodedList</code>, and <code>BencodedDictionary</code> — their construction rules, dispatch via <code>BencodedValueKind</code>, and the ordinal <code>BencodedStringComparer</code> that drives dictionary ordering.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="delimited.md">Using delimited (CSV / TSV)</a></h3>
+  <p>The <code>Delimited</code> codec — RFC 4180 quoting, delimiter selection, header handling, the streaming <code>DelimitedReader</code> / <code>DelimitedWriter</code>, and the strictness policies on <code>DelimitedParseOptions</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="dotenv.md">Using DotEnv</a></h3>
+  <p>The <code>DotEnv</code> codec — <code>KEY=VALUE</code> parsing, quoting and escape rules, comment preservation, and duplicate-key policies on <code>DotEnvParseOptions</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="ini.md">Using INI</a></h3>
+  <p>The <code>Ini</code> codec — section / entry model, comment trivia, duplicate-section and duplicate-key policies, and programmatic mutation of the round-trippable <code>IniDocument</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="toml.md">Using TOML</a></h3>
+  <p>The <code>TomlReader</code> / <code>TomlWriter</code> pair and the <code>Toml</code> façade — the typed <code>TomlValue</code> model, tables and arrays, first-class date-time kinds, TOML v1.0.0 / v1.1.0 selection, and stream support.</p>
 </div>
 
 </div>

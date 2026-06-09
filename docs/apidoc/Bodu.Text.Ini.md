@@ -6,7 +6,7 @@ uid: Bodu.Text.Ini
 
 ## Purpose
 
-**Bodu.Text.Ini** parses and emits **INI**-style configuration documents — section-organised `key = value` lines with optional comments. It is one of four format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.Delimited>, and <xref:Bodu.Text.DotEnv>.
+**Bodu.Text.Ini** parses and emits **INI**-style configuration documents — section-organised `key = value` lines with optional comments. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.DotEnv>, and <xref:Bodu.Text.Toml>.
 
 INI is exposed through the same shape used across the format family: a strongly-typed value tree, a static codec with `Parse` / `Format` / `Load` / `Save` over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`, and parser invariants the writer always honours and the parser always enforces. The model preserves comments, key order, and section order so round-tripping is byte-faithful under default options.
 

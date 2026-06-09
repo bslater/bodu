@@ -78,7 +78,7 @@ A family of focused primary libraries — collections and utilities, non-cryptog
 <div class="bodu-card">
   <img src="images/hero-text.svg" alt="Bodu.Text.Encoding" />
   <h3>Bodu.Text.Encoding</h3>
-  <p>Binary-to-text encoders for <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, and <strong>Base85</strong> with every common variant — RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Flickr / Ripple, Adobe Ascii85, ZeroMQ Z85. Every encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming methods, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</p>
+  <p>Binary-to-text encoders for <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, and <strong>Base85</strong> with every common variant — RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Flickr / Ripple, Adobe Ascii85, ZeroMQ Z85 — plus <strong>Base45</strong> (RFC 9285 QR codes), <strong>Base62</strong> (compact identifiers), and <strong>Bech32 / Bech32m</strong> (BIP 173 / 350 checksummed addresses). The core encodings share the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming methods, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</p>
   <div class="bodu-card-links">
     <a href="docs/text-encoding/index.md">Introduction</a>
     <a href="guides/text-encoding/index.md">Guides</a>
@@ -89,7 +89,7 @@ A family of focused primary libraries — collections and utilities, non-cryptog
 <div class="bodu-card">
   <img src="images/hero-formats.svg" alt="Bodu.Text.Formats" />
   <h3>Bodu.Text.Formats</h3>
-  <p>Self-framing text and binary document formats with strongly-typed value models and span- and stream-friendly codecs. Ships <strong>Bencode</strong> (BitTorrent BEP 3), <strong>Delimited</strong> (RFC 4180 CSV/TSV with a row-oriented parser), <strong>DotEnv</strong> (<code>.env</code> key/value), and <strong>INI</strong> (round-trippable section/comment-preserving documents). Every format exposes the same modern shape: static <code>Encode</code> / <code>Decode</code> / <code>Try*</code> / <code>GetEncodedLength</code>, an immutable value tree, sync and async <code>Stream</code> overloads, and explicit canonicality enforcement.</p>
+  <p>Self-framing text and binary document formats with strongly-typed value models and span- and stream-friendly codecs. Ships <strong>Bencode</strong> (BitTorrent BEP 3), <strong>Delimited</strong> (RFC 4180 CSV/TSV with a row-oriented parser), <strong>DotEnv</strong> (<code>.env</code> key/value), <strong>INI</strong> (round-trippable section/comment-preserving documents), and <strong>TOML</strong> (v1.0.0 / v1.1.0 with tables, arrays, and first-class date-time values). Every format exposes the same modern shape: static <code>Parse</code> / <code>Format</code> / <code>Try*</code> entry points, typed value models, sync and async <code>Stream</code> overloads, and explicit canonicality enforcement.</p>
   <div class="bodu-card-links">
     <a href="docs/formats/index.md">Introduction</a>
     <a href="guides/formats/index.md">Guides</a>

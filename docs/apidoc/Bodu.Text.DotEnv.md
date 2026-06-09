@@ -6,7 +6,7 @@ uid: Bodu.Text.DotEnv
 
 ## Purpose
 
-**Bodu.Text.DotEnv** parses and emits **.env**-style environment files — `KEY=VALUE` lines with optional quoting, escapes, and comments — using a strongly-typed document model and a static codec with `Parse` / `Format` / `Try*` overloads over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`. It is one of four format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.Delimited>, and <xref:Bodu.Text.Ini>.
+**Bodu.Text.DotEnv** parses and emits **.env**-style environment files — `KEY=VALUE` lines with optional quoting, escapes, and comments — using a strongly-typed document model and a static codec with `Parse` / `Format` / `Try*` overloads over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.Ini>, and <xref:Bodu.Text.Toml>.
 
 ## Key types
 

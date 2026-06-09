@@ -162,6 +162,43 @@ catch (BencodeFormatException ex)
 
 `BencodeFormatException` derives from `FormatException` and carries an English-language message that identifies the exact failure mode — *Unterminated bencoded dictionary*, *Bencoded dictionary keys must be unique and sorted by raw byte order*, *The bencoded string length exceeds the available input*, and so on. See [Core concepts](concepts.md#format-exception) for the full list.
 
+### Parse and format TOML
+
+TOML follows a reader/writer shape; the static <xref:Bodu.Text.Toml.Toml> class is the one-line entry point.
+
+```csharp
+using Bodu.Text.Toml;
+
+TomlTable config = Toml.Parse("""
+    title = "Bodu sample"
+
+    [database]
+    ports   = [8000, 8001]
+    enabled = true
+    """);
+
+string title = ((TomlString)config["title"]).Value;            // "Bodu sample"
+var db       = (TomlTable)config["database"];
+bool enabled = ((TomlBoolean)db["enabled"]).Value;             // true
+
+string text = Toml.Format(config);                             // back to canonical TOML
+```
+
+Opt in to TOML v1.1.0 grammar with `TomlReaderOptions`, parse untrusted input with `TryParse`, and stream UTF-8 with `ParseAsync` / `FormatAsync`:
+
+```csharp
+using Bodu.Text.Toml;
+
+var options = new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_1 };
+TomlTable v11 = Toml.Parse(source, options);
+
+if (Toml.TryParse(userInput, out TomlTable? parsed))
+    Use(parsed);
+
+await using FileStream fs = File.OpenRead("config.toml");
+TomlTable doc = await Toml.ParseAsync(fs, cancellationToken);
+```
+
 ## Round-trip example
 
 ```csharp
@@ -193,4 +230,4 @@ The library passes every positive Known Answer Test vector from BEP 3 in both di
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — per-API deep dives.
 - **[Core concepts](concepts.md)** — vocabulary refresher.
 - **[Introduction](index.md)** — type map and scenario index.
-- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini).
+- **API reference** — per-namespace pages: [Bencode](xref:Bodu.Text.Bencode), [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini), [Toml](xref:Bodu.Text.Toml).

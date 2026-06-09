@@ -8,7 +8,7 @@ The `Bodu.Text.Formats` parsers default to **strict** behaviour: anything the gr
 
 ## Common diagnostic surface
 
-Every format-specific exception derives from `TextFormatException`, so a single `catch` block can handle parse failures across Bencode, Delimited, DotEnv, and INI sources:
+Every format-specific exception derives from `TextFormatException`, so a single `catch` block can handle parse failures across Bencode, Delimited, DotEnv, INI, and TOML sources:
 
 ```csharp
 try
@@ -17,14 +17,18 @@ try
 }
 catch (TextFormatException ex)
 {
-    Console.Error.WriteLine($"Parse failed at line {ex.LineNumber}, offset {ex.Offset}: {ex.Message}");
+    Console.Error.WriteLine(
+        $"Parse failed at line {ex.LineNumber}, column {ex.ColumnNumber}, offset {ex.Offset}: {ex.Message}");
 }
 ```
 
 | Property | Meaning |
 |---|---|
 | `LineNumber` | 1-based source line; `0` when the parser cannot identify a line. |
+| `ColumnNumber` | 1-based column within the line; `0` when the column is unknown or the format does not track it. |
 | `Offset` | 0-based byte/character offset from the start of the source; `null` when not tracked. |
+
+The location properties are advisory: each parser populates the fields it can identify. Line-oriented formats report a line (and, where tracked, a column); the byte-offset format (Bencode) reports an offset. TOML reports all three.
 
 ## Delimited
 
@@ -88,6 +92,25 @@ Both `Parse` and `Format` preserve the comment in the resulting document. Set `P
 ## INI
 
 The INI parser has the broadest existing policy surface. See [`DuplicateKeyPolicy`](xref:Bodu.Text.DuplicateKeyPolicy) and [`IniDuplicateSectionBehavior`](xref:Bodu.Text.Ini.IniDuplicateSectionBehavior) for the duplicate-resolution modes, and `IniParseOptions.PreserveComments` for trivia retention.
+
+## TOML
+
+The TOML reader is **strict** and defaults to **TOML v1.0.0**. Its single policy is the specification version, carried by [`TomlReaderOptions.SpecVersion`](xref:Bodu.Text.Toml.TomlReaderOptions.SpecVersion).
+
+| Option | Default | Behaviour |
+|---|---|---|
+| `SpecVersion` | [`TomlSpecVersion.V1_0`](xref:Bodu.Text.Toml.TomlSpecVersion) | Enforce strict TOML v1.0.0. Inline tables must be single-line and free of trailing commas; time values must include seconds; `\e` and `\xHH` escapes are rejected. |
+| | `TomlSpecVersion.V1_1` | Additionally accept the TOML v1.1.0 grammar: `\e` and `\xHH` string escapes, optional seconds in time values, and multi-line / trailing-comma inline tables. |
+
+The version governs **parsing only**. [`TomlWriter`](xref:Bodu.Text.Toml.TomlWriter) always emits output valid under both versions, so a document parsed under v1.1.0 and written back uses only constructs a v1.0.0 reader also accepts.
+
+```csharp
+TomlReaderOptions options = new() { SpecVersion = TomlSpecVersion.V1_1 };
+
+TomlTable document = Toml.Parse(source, options);
+```
+
+[`TomlFormatException`](xref:Bodu.Text.Toml.TomlFormatException) carries the full line, column, and offset of the failure — the column being the diagnostic TOML's character-oriented grammar makes most useful. Beyond the spec version, the reader has no lenient mode: duplicate keys, table redefinition, out-of-range integers, unterminated strings, and unpaired surrogates are always rejected.
 
 ## Migration notes
 
