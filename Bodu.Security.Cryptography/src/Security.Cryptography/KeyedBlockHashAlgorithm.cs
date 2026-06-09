@@ -38,14 +38,14 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Consume through a concrete keyed derivative — Poly1305 needs a 32-byte one-time key.
+/// // Consume through a concrete keyed derivative — Poly1305 needs a 32-byte one-time key.
 /// byte[] key = new byte[32];
 /// RandomNumberGenerator.Fill(key);
 ///
 /// using var mac = new Poly1305 { Key = key };
 /// byte[] tag = mac.ComputeHash("message"u8.ToArray());
 ///
-/// SipHash takes a 16-byte key and is the standard hash-table keyed primitive.
+/// // SipHash takes a 16-byte key and is the standard hash-table keyed primitive.
 /// byte[] sipKey = new byte[16];
 /// RandomNumberGenerator.Fill(sipKey);
 ///

@@ -31,7 +31,7 @@ namespace Bodu.Text.Bencode;
 ///     KeyValuePair.Create(BencodedString.FromUtf8("piece length"), (BencodedValue)new BencodedInteger(262144)),
 /// });
 ///
-/// UTF-8 convenience overload.
+/// // UTF-8 convenience overload.
 /// if (dict.TryGetValue("announce", out BencodedValue url))
 ///     Console.WriteLine(((BencodedString)url).GetUtf8String());
 ///

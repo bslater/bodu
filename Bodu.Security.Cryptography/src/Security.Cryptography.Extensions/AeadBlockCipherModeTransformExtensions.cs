@@ -77,15 +77,15 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// byte[] nonce = RandomNumberGenerator.GetBytes(12);
 /// byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42");
 ///
-/// 1. Encrypt with associated data; receive ciphertext + tag in a single buffer.
+/// // 1. Encrypt with associated data; receive ciphertext + tag in a single buffer.
 /// using IAeadBlockCipherModeTransform enc = new GcmModeTransform(key, nonce);
 /// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
 ///
-/// 2. Decrypt and verify in one call. A tampered tag or header throws CryptographicException.
+/// // 2. Decrypt and verify in one call. A tampered tag or header throws CryptographicException.
 /// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
 /// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 ///
-/// 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
+/// // 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
 /// using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
 /// byte[] sealedAscon = enc2.Encrypt(plaintext);
 ///]]>

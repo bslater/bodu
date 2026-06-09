@@ -35,13 +35,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against an in-memory body.
+/// // Single-call computation against an in-memory body.
 /// char check = Code39Mod43.Compute("CODE39");   // 'W'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Code39Mod43.IsValid("CODE39W");      // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Code39Mod43();
 /// algo.Append("CODE39");
 /// char d = algo.GetCurrentCheckDigit();          // 'W'

@@ -31,7 +31,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Build a deduplicated playlist that can still be reordered by index.
+/// // Build a deduplicated playlist that can still be reordered by index.
 /// var playlist = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
 ///
 /// playlist.Add("Intro");

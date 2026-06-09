@@ -38,15 +38,15 @@ namespace Bodu.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Encode a chunk of UTF-16 text to UTF-8 bytes via the span receiver.
+/// // Encode a chunk of UTF-16 text to UTF-8 bytes via the span receiver.
 /// ReadOnlySpan<char> chars = "héllo".AsSpan();
 /// byte[] utf8 = chars.ToUtf8Bytes();
 ///
-/// Round-trip via the encoding receiver, using the pooled builder for zero unnecessary allocations.
+/// // Round-trip via the encoding receiver, using the pooled builder for zero unnecessary allocations.
 /// using PooledBufferBuilder<byte> pooled = System.Text.Encoding.UTF8.GetBytesPooled(chars);
 /// ReadOnlySpan<byte> encoded = pooled.WrittenSpan;
 ///
-/// Detect a UTF-8 byte-order-mark and decode the remainder.
+/// // Detect a UTF-8 byte-order-mark and decode the remainder.
 /// if (System.Text.Encoding.UTF8.StartsWithPreamble(encoded))
 ///     encoded = System.Text.Encoding.UTF8.StripPreamble(encoded);
 ///

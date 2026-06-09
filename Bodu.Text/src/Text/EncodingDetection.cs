@@ -48,7 +48,7 @@ namespace Bodu.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Read a file's leading bytes and decode using the detected encoding, falling back to UTF-8.
+/// // Read a file's leading bytes and decode using the detected encoding, falling back to UTF-8.
 /// byte[] bytes = File.ReadAllBytes(path);
 ///
 /// System.Text.Encoding encoding =

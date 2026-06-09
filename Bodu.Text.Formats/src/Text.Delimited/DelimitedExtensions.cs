@@ -22,7 +22,7 @@ namespace Bodu.Text.Delimited;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Parse a CSV document and round-trip back to text via the receiver-typed extensions.
+/// // Parse a CSV document and round-trip back to text via the receiver-typed extensions.
 /// DelimitedDocument doc = "name,age\nAda,42".ParseDelimited();
 /// string text = doc.FormatDelimited();
 ///]]>

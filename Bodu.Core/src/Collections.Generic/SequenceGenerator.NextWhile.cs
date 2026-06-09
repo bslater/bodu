@@ -48,10 +48,10 @@ public static partial class SequenceGenerator
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// Halving sequence — terminates when the value drops to zero.
+    /// // Halving sequence — terminates when the value drops to zero.
     /// var halves = SequenceGenerator.NextWhile(64, v => v > 0, v => v / 2); // => 64, 32, 16, 8, 4, 2, 1
     ///
-    /// Empty result when the seed already fails the predicate.
+    /// // Empty result when the seed already fails the predicate.
     /// var none = SequenceGenerator.NextWhile(0, v => v > 0, v => v - 1); // => (empty)
     ///]]>
     /// </code>
@@ -113,7 +113,7 @@ public static partial class SequenceGenerator
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// Triangular numbers up to 100: 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91.
+    /// // Triangular numbers up to 100: 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91.
     /// var triangular = SequenceGenerator.NextWhile(0, v => v <= 100, (v, i) => v + (i + 1));
     ///]]>
     /// </code>
@@ -179,7 +179,7 @@ public static partial class SequenceGenerator
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// Fibonacci numbers below 100, tracked through a (prev, curr) state record.
+    /// // Fibonacci numbers below 100, tracked through a (prev, curr) state record.
     /// var fib = SequenceGenerator.NextWhile(
     ///     initialState: (Prev: 0, Curr: 1),
     ///     conditionHandler: s => s.Curr < 100,

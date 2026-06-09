@@ -91,7 +91,7 @@ public static partial class SequenceGenerator
     /// foreach (int n in SequenceGenerator.Range(10, 1, -3))
     ///     Console.Write($"{n} "); // => 10 7 4 1
     ///
-    /// Step of zero yields an unbounded sequence — bound it with Take.
+    /// // Step of zero yields an unbounded sequence — bound it with Take.
     /// var heartbeat = SequenceGenerator.Range(42, 0, 0).Take(3); // => 42, 42, 42
     ///]]>
     /// </code>

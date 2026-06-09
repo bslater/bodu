@@ -46,7 +46,7 @@ namespace Bodu.Text.Delimited;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Parse a CSV document with a header row (the default).
+/// // Parse a CSV document with a header row (the default).
 /// DelimitedDocument doc = Delimited.Parse("""
 ///     name,age,city
 ///     Ada,42,London
@@ -56,7 +56,7 @@ namespace Bodu.Text.Delimited;
 /// foreach (DelimitedRow row in doc.Rows)
 ///     Console.WriteLine($"{row["name"]} ({row.GetInt32("age")}) — {row["city"]}");
 ///
-/// TSV without a header.
+/// // TSV without a header.
 /// DelimitedDocument tsv = Delimited.Parse(source, new DelimitedParseOptions
 /// {
 ///     Delimiter  = '\t',

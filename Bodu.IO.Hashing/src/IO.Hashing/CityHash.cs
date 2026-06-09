@@ -59,12 +59,12 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// 64-bit fingerprint of a content blob — typical use case.
+/// // 64-bit fingerprint of a content blob — typical use case.
 /// var city = new CityHash64();
 /// byte[] fingerprint = city.ComputeHash(blob);
 ///
-/// Stream-hash a moderately sized file.
-/// Note: CityHash buffers fully — prefer Crc / xxHash for very large streams.
+/// // Stream-hash a moderately sized file.
+/// // Note: CityHash buffers fully — prefer Crc / xxHash for very large streams.
 /// using FileStream fs = File.OpenRead("payload.bin");
 /// byte[] streamDigest = city.ComputeHash(fs);
 ///]]>

@@ -21,7 +21,7 @@ namespace Bodu.Text.DotEnv;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Parse and round-trip via the receiver-typed extensions.
+/// // Parse and round-trip via the receiver-typed extensions.
 /// DotEnvDocument doc = "PORT=8080\nHOST=localhost".ParseDotEnv();
 /// string text = doc.FormatDotEnv();
 ///]]>

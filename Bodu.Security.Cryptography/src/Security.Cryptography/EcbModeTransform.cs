@@ -42,8 +42,8 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// Most callers should reach for SymmetricAlgorithm.Mode = ECB instead of constructing this directly.
-/// Direct use is appropriate only inside larger primitives (e.g. wide-block constructions, KDFs).
+/// // Most callers should reach for SymmetricAlgorithm.Mode = ECB instead of constructing this directly.
+/// // Direct use is appropriate only inside larger primitives (e.g. wide-block constructions, KDFs).
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// IBlockCipherModeTransform ecb = new EcbModeTransform(cipher);
 /// byte[] ciphertext = new byte[plaintext.Length];

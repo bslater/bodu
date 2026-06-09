@@ -23,8 +23,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Consume through a concrete derivative — the shared 32-bit finalization layout
-/// is identical across every Adler32Base subclass.
+/// // Consume through a concrete derivative — the shared 32-bit finalization layout
+/// // is identical across every Adler32Base subclass.
 /// Adler32Base hash = new Adler32();                 // modulus 65521 (the canonical Adler-32)
 /// hash.Append("Wikipedia"u8);
 /// byte[] digest = hash.GetCurrentHash();            // 0x11E60398 in big-endian byte order

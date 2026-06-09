@@ -32,7 +32,7 @@ namespace Bodu.Text.Bencode;
 /// };
 ///
 /// Array.Sort(keys, BencodedStringComparer.Ordinal);
-/// keys is now ordered { announce, comment, info } — bytewise ASCII order.
+/// // keys is now ordered { announce, comment, info } — bytewise ASCII order.
 ///]]>
 /// </example>
 public sealed class BencodedStringComparer

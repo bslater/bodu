@@ -79,7 +79,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// SHA-256 leaves, 4 KiB blocks, fan-out of 4.
+/// // SHA-256 leaves, 4 KiB blocks, fan-out of 4.
 /// using var merkle = new MerkleTreeHash(
 ///     algorithmFactory: () => SHA256.Create(),
 ///     blockSize: 4096,

@@ -25,11 +25,11 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Pick an encoding at runtime from configuration.
+/// // Pick an encoding at runtime from configuration.
 /// string             configured = appConfig["encoding"];                     // e.g. "base64-urlsafe"
 /// IBinaryEncoding    encoding   = BinaryEncodings.Get(configured);
 ///
-/// Use the same call shape regardless of which variant was chosen.
+/// // Use the same call shape regardless of which variant was chosen.
 /// string encoded = encoding.Encode(payload);
 /// byte[] decoded = encoding.Decode(encoded);
 ///

@@ -24,16 +24,16 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Compact lower-case hex (the default Base16 form).
+/// // Compact lower-case hex (the default Base16 form).
 /// string compact = Base16.Encode(data);
 ///
-/// Diagnostic-friendly: upper case, "0x" prefix, single-space byte groups.
+/// // Diagnostic-friendly: upper case, "0x" prefix, single-space byte groups.
 /// string diagnostic = Base16.Encode(data,
 ///     BaseFormattingOptions.UpperCase
 ///     | BaseFormattingOptions.IncludePrefix
 ///     | BaseFormattingOptions.InsertSpacing);
 ///
-/// Padding-free Base64 — produces the same output as Base64Url.Encode.
+/// // Padding-free Base64 — produces the same output as Base64Url.Encode.
 /// string unpadded = Base64.Encode(data, BaseFormattingOptions.OmitPadding);
 ///]]>
 /// </example>

@@ -36,15 +36,15 @@ namespace Bodu.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// Swap byte order for big-endian wire encoding.
+/// // Swap byte order for big-endian wire encoding.
 /// uint host = 0x11_22_33_44u;
 /// uint network = host.ReverseBytes(); // => 0x44_33_22_11
 ///
-/// Bit reversal — useful in CRC and DSP code.
+/// // Bit reversal — useful in CRC and DSP code.
 /// byte mask = 0b1011_0001;
 /// byte mirrored = mask.ReverseBits(); // => 0b1000_1101
 ///
-/// Cyclic bit rotation — common in hashing primitives.
+/// // Cyclic bit rotation — common in hashing primitives.
 /// uint rotated = 0x0000_00FFu.RotateBitsLeft(8); // => 0x0000_FF00
 ///]]>
 /// </code>

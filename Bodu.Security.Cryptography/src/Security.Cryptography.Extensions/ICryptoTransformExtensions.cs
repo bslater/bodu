@@ -74,17 +74,17 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// aes.Key = key;
 /// aes.IV = iv;
 ///
-/// 1. One-shot encrypt of a span into a new byte[].
+/// // 1. One-shot encrypt of a span into a new byte[].
 /// using ICryptoTransform encryptor = aes.CreateEncryptor();
 /// byte[] ciphertext = encryptor.Transform(plaintext.AsSpan());
 ///
-/// 2. Stream-encrypt a large file end to end with a 64 KiB buffer.
+/// // 2. Stream-encrypt a large file end to end with a 64 KiB buffer.
 /// using FileStream src = File.OpenRead("plain.bin");
 /// using FileStream dst = File.Create("cipher.bin");
 /// using ICryptoTransform e2 = aes.CreateEncryptor();
 /// int written = e2.Transform(src, dst, bufferSize: 64 * 1024);
 ///
-/// 3. Cancellable async stream transform, e.g. when piping HTTP content.
+/// // 3. Cancellable async stream transform, e.g. when piping HTTP content.
 /// using ICryptoTransform e3 = aes.CreateEncryptor();
 /// await e3.TransformAsync(networkStream, output, bufferSize: 16 * 1024, cancellationToken);
 ///]]>

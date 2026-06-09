@@ -92,8 +92,8 @@ namespace Bodu.IO.Hashing;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Sketch of a derived block hash. The base class drives buffering and snapshotting; the
-/// derived type only expresses how a single block mutates the accumulator.
+/// // Sketch of a derived block hash. The base class drives buffering and snapshotting; the
+/// // derived type only expresses how a single block mutates the accumulator.
 /// public sealed class MyBlockHash : BlockNonCryptographicHashAlgorithm<MyBlockHash>
 /// {
 ///     private uint _state;

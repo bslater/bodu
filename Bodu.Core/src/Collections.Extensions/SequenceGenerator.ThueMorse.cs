@@ -36,8 +36,8 @@ public static partial class SequenceGenerator
     ///<![CDATA[
     /// var prefix = SequenceGenerator.ThueMorse(16).ToArray(); // => [0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0]
     ///
-    /// Convenient as the schedule for a fair turn-taking algorithm:
-    /// player A goes on 0, player B goes on 1.
+    /// // Convenient as the schedule for a fair turn-taking algorithm:
+    /// // player A goes on 0, player B goes on 1.
     ///]]>
     /// </code>
     /// </example>

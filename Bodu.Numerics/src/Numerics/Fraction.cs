@@ -42,14 +42,14 @@ namespace Bodu.Numerics;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// Construct from components; the value is reduced to canonical form on creation.
+/// // Construct from components; the value is reduced to canonical form on creation.
 /// Fraction<int> oneHalf = new Fraction<int>(2, 4);   // 1/2
 /// Fraction<int> oneThird = new Fraction<int>(1, 3);
 ///
-/// Exact arithmetic through the operators.
+/// // Exact arithmetic through the operators.
 /// Fraction<int> sum = oneHalf + oneThird;            // 5/6
 ///
-/// Parse and format round-trip through the invariant "numerator/denominator" form.
+/// // Parse and format round-trip through the invariant "numerator/denominator" form.
 /// Fraction<int> parsed = Fraction<int>.Parse("3/8");
 /// string text = parsed.ToString();                   // "3/8"
 ///]]>

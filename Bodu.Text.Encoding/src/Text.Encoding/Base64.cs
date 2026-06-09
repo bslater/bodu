@@ -30,16 +30,16 @@ namespace Bodu.Text.Encoding;
 ///<![CDATA[
 /// byte[] data = "hello"u8.ToArray();
 ///
-/// RFC 4648 Standard Base64 (default).
+/// // RFC 4648 Standard Base64 (default).
 /// string standard = Base64.Encode(data);                                       // "aGVsbG8="
 ///
-/// URL-safe alphabet, no padding — the form used by JWT and OAuth tokens.
+/// // URL-safe alphabet, no padding — the form used by JWT and OAuth tokens.
 /// string urlSafe  = Base64.Encode(data, Base64Variant.UrlSafe);                // "aGVsbG8"
 ///
-/// MIME variant — wraps every 76 characters with CRLF.
+/// // MIME variant — wraps every 76 characters with CRLF.
 /// string mime     = Base64.Encode(longerPayload, Base64Variant.Mime);
 ///
-/// Round-trip.
+/// // Round-trip.
 /// byte[] roundtrip = Base64.Decode(standard);
 ///]]>
 /// </example>

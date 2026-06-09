@@ -32,13 +32,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Apple Inc. — country code US, body "US037833100".
+/// // Apple Inc. — country code US, body "US037833100".
 /// char check = Isin.Compute("US037833100");   // '5'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Isin.IsValid("US0378331005");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Isin();
 /// algo.Append("US037833100");
 /// char d = algo.GetCurrentCheckDigit();       // '5'

@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CBC instead of using this directly.
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CBC instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// IBlockCipherModeTransform cbc = new CbcModeTransform(cipher, iv);

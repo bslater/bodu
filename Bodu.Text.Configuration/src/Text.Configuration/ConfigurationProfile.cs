@@ -80,7 +80,7 @@ namespace Bodu.Text.Configuration;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// Start from the profile closest to the desired behaviour, then override only what differs.
+/// // Start from the profile closest to the desired behaviour, then override only what differs.
 /// ConfigurationParseOptions options = ConfigurationParseOptions.For(ConfigurationProfile.Strict);
 /// ConfigurationDocument document = ConfigurationDocument.Parse(text, options);
 ///]]>

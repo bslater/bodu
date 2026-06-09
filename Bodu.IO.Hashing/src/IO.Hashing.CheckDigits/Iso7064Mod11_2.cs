@@ -31,13 +31,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against a decimal body.
+/// // Single-call computation against a decimal body.
 /// char check = Iso7064Mod11_2.Compute("0794");   // '0'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Iso7064Mod11_2.IsValid("07940");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Iso7064Mod11_2();
 /// algo.Append("0794");
 /// char d = algo.GetCurrentCheckDigit();          // '0'

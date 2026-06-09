@@ -47,17 +47,17 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Construct via a concrete derivative — Threefish is the production tweakable cipher family.
+/// // Construct via a concrete derivative — Threefish is the production tweakable cipher family.
 /// using TweakableSymmetricAlgorithm alg = new Threefish256();
 /// alg.GenerateKey();
 /// alg.GenerateIV();
 /// alg.GenerateTweak();      // unique to TweakableSymmetricAlgorithm — supplies the per-message tweak
 ///
-/// CreateEncryptor / CreateDecryptor accept the additional tweak argument.
+/// // CreateEncryptor / CreateDecryptor accept the additional tweak argument.
 /// using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);
 /// using ICryptoTransform decryptor = alg.CreateDecryptor(alg.Key, alg.IV, alg.Tweak);
 ///
-/// The companion try-pattern wrappers gate over user-supplied keying material.
+/// // The companion try-pattern wrappers gate over user-supplied keying material.
 /// if (alg.TryCreateEncryptor(userKey, userIv, userTweak, out ICryptoTransform? safe))
 /// {
 ///     using (safe) { /* encrypt */ }

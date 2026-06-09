@@ -50,7 +50,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// using Bodu.IO.Hashing.Checksums;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// SIMD-friendly Adler variant for high-throughput internal pipelines.
+/// // SIMD-friendly Adler variant for high-throughput internal pipelines.
 /// var adler = new Adler32C();
 /// byte[] checksum = adler.ComputeHash(largeBlock);
 ///]]>

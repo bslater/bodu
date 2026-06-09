@@ -90,18 +90,18 @@ namespace Bodu.IO.Hashing.Checksums;
 /// using Bodu.IO.Hashing.Checksums;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// 1. Standard PKZIP / Ethernet CRC-32 of a buffer.
+/// // 1. Standard PKZIP / Ethernet CRC-32 of a buffer.
 /// var crc32 = new Crc(CrcStandard.CRC32_ISOHDLC);
 /// byte[] digest = crc32.ComputeHash(File.ReadAllBytes("payload.bin"));
 ///
-/// 2. Modbus RTU — different polynomial/init/reflect choices, same engine.
+/// // 2. Modbus RTU — different polynomial/init/reflect choices, same engine.
 /// var modbus = new Crc(CrcStandard.CRC16_MODBUS);
 /// modbus.Append(frameHeader);
 /// modbus.Append(framePayload);
 /// byte[] frameCrc = modbus.GetCurrentHash(); // non-destructive snapshot
 ///
-/// 3. Resumption — fold an appended log segment into yesterday's digest without re-reading
-/// the original bytes.
+/// // 3. Resumption — fold an appended log segment into yesterday's digest without re-reading
+/// // the original bytes.
 /// var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC);
 /// byte[] updated = resumable.ComputeHashFrom(digest, File.ReadAllBytes("payload.appended.bin"));
 ///]]>

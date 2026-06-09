@@ -160,14 +160,14 @@ public static partial class IEnumerableExtensions
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// Input:  Enumerable.Range(1, 10)
-    /// Batch size: 4
-    /// Selector: (x, i) => $"Item {i}: {x}"
+    /// // Input:  Enumerable.Range(1, 10)
+    /// // Batch size: 4
+    /// // Selector: (x, i) => $"Item {i}: {x}"
     ///
-    /// Expected output:
-    /// Batch 1: "Item 0: 1", "Item 1: 2", "Item 2: 3", "Item 3: 4"
-    /// Batch 2: "Item 4: 5", "Item 5: 6", "Item 6: 7", "Item 7: 8"
-    /// Batch 3: "Item 8: 9", "Item 9: 10"
+    /// // Expected output:
+    /// // Batch 1: "Item 0: 1", "Item 1: 2", "Item 2: 3", "Item 3: 4"
+    /// // Batch 2: "Item 4: 5", "Item 5: 6", "Item 6: 7", "Item 7: 8"
+    /// // Batch 3: "Item 8: 9", "Item 9: 10"
     /// var source = Enumerable.Range(1, 10);
     /// foreach (var batch in source.BatchPooled(4, (x, i) => $"Item {i}: {x}"))
     /// {
@@ -246,13 +246,13 @@ public static partial class IEnumerableExtensions
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// Input:  Enumerable.Range(1, 9)
-    /// Batch size: 3
+    /// // Input:  Enumerable.Range(1, 9)
+    /// // Batch size: 3
     ///
-    /// Expected output:
-    /// Batch 1: 1, 2, 3
-    /// Batch 2: 4, 5, 6
-    /// Batch 3: 7, 8, 9
+    /// // Expected output:
+    /// // Batch 1: 1, 2, 3
+    /// // Batch 2: 4, 5, 6
+    /// // Batch 3: 7, 8, 9
     ///
     /// var source = Enumerable.Range(1, 9);
     /// foreach (var batch in source.BatchPooled(3))

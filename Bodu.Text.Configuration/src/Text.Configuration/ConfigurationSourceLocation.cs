@@ -33,7 +33,7 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Construct a location pointing at a specific span on line 12.
+/// // Construct a location pointing at a specific span on line 12.
 /// var loc = new ConfigurationSourceLocation(
 ///     lineNumber:   12,
 ///     linePosition: 5,
@@ -41,7 +41,7 @@ namespace Bodu.Text.Configuration;
 ///     path:         "app.ini");
 /// Console.WriteLine(loc);   // "app.ini(12,5): length 8"
 ///
-/// Surface from a parse exception in editor-style form.
+/// // Surface from a parse exception in editor-style form.
 /// try { ConfigurationDocument.Parse(text); }
 /// catch (ConfigurationParseException ex)
 /// {

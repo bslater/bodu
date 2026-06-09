@@ -31,13 +31,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against the 8-digit body.
+/// // Single-call computation against the 8-digit body.
 /// char check = AbaRoutingNumber.Compute("01100001");   // '5'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = AbaRoutingNumber.IsValid("011000015");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new AbaRoutingNumber();
 /// algo.Append("01100001");
 /// char d = algo.GetCurrentCheckDigit();                // '5'

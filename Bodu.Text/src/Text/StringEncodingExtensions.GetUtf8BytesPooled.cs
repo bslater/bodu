@@ -25,8 +25,8 @@ public static partial class StringEncodingExtensions
     /// </exception>
     /// <example>
     ///<![CDATA[
-    /// Encode a large JSON document to UTF-8 without a permanent allocation, then hand the
-    /// pooled buffer to a network writer before disposal returns the array to the pool.
+    /// // Encode a large JSON document to UTF-8 without a permanent allocation, then hand the
+    /// // pooled buffer to a network writer before disposal returns the array to the pool.
     /// using PooledBufferBuilder<byte> pooled = jsonText.GetUtf8BytesPooled();
     /// await socket.SendAsync(pooled.WrittenMemory, SocketFlags.None);
     ///]]>

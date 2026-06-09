@@ -36,13 +36,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against an in-memory body.
+/// // Single-call computation against an in-memory body.
 /// char check = Crockford32.Compute("16J");   // 'D'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Crockford32.IsValid("16JD");      // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Crockford32();
 /// algo.Append("16J");
 /// char d = algo.GetCurrentCheckDigit();       // 'D'

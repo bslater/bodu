@@ -26,13 +26,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Single-call computation against the 13-digit body.
+/// // Single-call computation against the 13-digit body.
 /// char check = Gtin14.Compute("1061414100041");   // '5'
 ///
-/// Full-sequence validation.
+/// // Full-sequence validation.
 /// bool ok = Gtin14.IsValid("10614141000415");     // true
 ///
-/// Streaming use when the body is built up incrementally.
+/// // Streaming use when the body is built up incrementally.
 /// var algo = new Gtin14();
 /// algo.Append("1061414100041");
 /// char d = algo.GetCurrentCheckDigit();           // '5'

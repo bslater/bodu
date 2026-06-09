@@ -37,7 +37,7 @@ namespace Bodu;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// Reproducible shuffle and sample in a test.
+/// // Reproducible shuffle and sample in a test.
 /// var rng = new XorShiftRandom(seed: 1234);
 /// int    roll  = rng.Next(6) + 1;           // value in [1, 6]
 /// double angle = rng.NextDouble() * Math.Tau;
