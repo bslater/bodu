@@ -9,6 +9,12 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Represents a TOML local time — a time of day without any offset or time-zone relation.
 /// </summary>
+/// <example>
+///<![CDATA[
+/// var time = new TomlLocalTime(new TimeOnly(7, 32, 0));
+/// TimeOnly value = time.Value;                   // 07:32:00
+///]]>
+/// </example>
 public sealed class TomlLocalTime
     : TomlValue
     , IEquatable<TomlLocalTime>

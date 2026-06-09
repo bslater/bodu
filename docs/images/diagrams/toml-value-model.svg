@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-labelledby="tvm-t tvm-d">
+  <title id="tvm-t">TOML value model — ten kinds mapped to .NET types</title>
+  <desc id="tvm-d">Every value in a TOML document derives from TomlValue and reports a TomlValueKind discriminator. The ten kinds fall into three groups. The four scalars are TomlString (backed by string), TomlInteger (long), TomlFloat (double), and TomlBoolean (bool). The four RFC 3339 date-time kinds are TomlOffsetDateTime (DateTimeOffset), TomlLocalDateTime (DateTime with Unspecified kind), TomlLocalDate (DateOnly), and TomlLocalTime (TimeOnly). The two containers are TomlArray (an ordered list of TomlValue) and TomlTable (a key to TomlValue map). Scalar values are immutable; arrays and tables are mutable so a document can be authored programmatically.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sect  { font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; letter-spacing: 0.5px; }
+      .mono  { font: 700 12px/1 "Consolas","Menlo",monospace; fill: #E2E8F0; text-anchor: middle; }
+      .b1    { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .b2    { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .b3    { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .b4    { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .note  { fill: #15212F; stroke: #334155; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="820" height="360"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="340" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">TOML value model — ten kinds mapped to .NET types</text>
+
+    <!-- ============ Row 1 — SCALARS ============ -->
+    <text class="sect" fill="#2DD4BF" x="28" y="50">SCALARS</text>
+
+    <g transform="translate(28 56)">
+      <rect class="b1" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="86" y="30">TomlString</text>
+      <text class="mono" x="86" y="50">"hello"</text>
+      <text class="mut" x="86" y="78">string</text>
+    </g>
+
+    <g transform="translate(220 56)">
+      <rect class="b2" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="86" y="30">TomlInteger</text>
+      <text class="mono" x="86" y="50">42 · 0xFF · 0b101</text>
+      <text class="mut" x="86" y="78">long</text>
+    </g>
+
+    <g transform="translate(412 56)">
+      <rect class="b3" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="86" y="30">TomlFloat</text>
+      <text class="mono" x="86" y="50">3.14 · inf · nan</text>
+      <text class="mut" x="86" y="78">double</text>
+    </g>
+
+    <g transform="translate(604 56)">
+      <rect class="b4" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="86" y="30">TomlBoolean</text>
+      <text class="mono" x="86" y="50">true · false</text>
+      <text class="mut" x="86" y="78">bool</text>
+    </g>
+
+    <!-- ============ Row 2 — DATE & TIME (RFC 3339) ============ -->
+    <text class="sect" fill="#60A5FA" x="28" y="144">DATE &amp; TIME  ·  RFC 3339</text>
+
+    <g transform="translate(28 150)">
+      <rect class="b1" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="86" y="28">TomlOffsetDateTime</text>
+      <text x="86" y="48" class="mono" style="font-size:10.5px">1979-05-27T07:32Z</text>
+      <text class="mut" x="86" y="78">DateTimeOffset</text>
+    </g>
+
+    <g transform="translate(220 150)">
+      <rect class="b2" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="86" y="28">TomlLocalDateTime</text>
+      <text x="86" y="48" class="mono" style="font-size:10.5px">1979-05-27T07:32:00</text>
+      <text class="mut" x="86" y="78">DateTime (Unspecified)</text>
+    </g>
+
+    <g transform="translate(412 150)">
+      <rect class="b3" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="86" y="28">TomlLocalDate</text>
+      <text class="mono" x="86" y="48">1979-05-27</text>
+      <text class="mut" x="86" y="78">DateOnly</text>
+    </g>
+
+    <g transform="translate(604 150)">
+      <rect class="b4" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="86" y="28">TomlLocalTime</text>
+      <text class="mono" x="86" y="48">07:32:00</text>
+      <text class="mut" x="86" y="78">TimeOnly</text>
+    </g>
+
+    <!-- ============ Row 3 — CONTAINERS ============ -->
+    <text class="sect" fill="#A78BFA" x="28" y="238">CONTAINERS  ·  mutable</text>
+
+    <g transform="translate(28 244)">
+      <rect class="b1" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="86" y="30">TomlArray</text>
+      <text class="mono" x="86" y="50">[8000, 8001, 8002]</text>
+      <text class="mut" x="86" y="78">IReadOnlyList&lt;TomlValue&gt;</text>
+    </g>
+
+    <g transform="translate(220 244)">
+      <rect class="b4" width="172" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="86" y="30">TomlTable</text>
+      <text class="mono" x="86" y="50">[owner]  ·  { x = 1 }</text>
+      <text class="mut" x="86" y="78">string key → TomlValue</text>
+    </g>
+
+    <!-- Legend / discriminator note -->
+    <g transform="translate(412 244)">
+      <rect class="note" width="364" height="68" y="8" rx="6"/>
+      <text class="sect" fill="#F8FAFC" x="16" y="30">switch on Kind, or pattern-match a subtype</text>
+      <text class="mut" x="16" y="50" style="text-anchor:start">Every value derives from <tspan fill="#E2E8F0" font-weight="700">TomlValue</tspan> and reports a <tspan fill="#E2E8F0" font-weight="700">TomlValueKind</tspan>.</text>
+      <text class="mut" x="16" y="64" style="text-anchor:start">Scalars and date-times are immutable; containers are mutable.</text>
+    </g>
+
+    <text class="mut" x="400" y="330" style="font-size:9.5px">A [table] header, an inline { } table, dotted keys, and an array-of-tables element all materialize as TomlTable / TomlArray — the model records meaning, not syntax.</text>
+  </g>
+</svg>

@@ -7,8 +7,16 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Represents a TOML local date-time — a date and time without any offset or time-zone relation.
+/// Represents a TOML local date-time — a date and time without any offset or time-zone relation. The wrapped
+/// <see cref="DateTime" /> always has <see cref="DateTimeKind.Unspecified" /> so it carries no spurious time-zone
+/// relation.
 /// </summary>
+/// <example>
+///<![CDATA[
+/// var stamp = new TomlLocalDateTime(new DateTime(1979, 5, 27, 7, 32, 0));
+/// DateTime value = stamp.Value;                  // Kind == Unspecified
+///]]>
+/// </example>
 public sealed class TomlLocalDateTime
     : TomlValue
     , IEquatable<TomlLocalDateTime>

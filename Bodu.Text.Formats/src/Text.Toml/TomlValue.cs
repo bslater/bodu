@@ -12,6 +12,9 @@ namespace Bodu.Text.Toml;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/toml-value-model.svg" alt="The ten TOML value kinds in three groups. The four scalars are TomlString (string), TomlInteger (long), TomlFloat (double), and TomlBoolean (bool). The four RFC 3339 date-time kinds are TomlOffsetDateTime (DateTimeOffset), TomlLocalDateTime (DateTime with Unspecified kind), TomlLocalDate (DateOnly), and TomlLocalTime (TimeOnly). The two containers are TomlArray (an ordered list of TomlValue) and TomlTable (a string-keyed map to TomlValue). Every value derives from TomlValue and reports a TomlValueKind; scalars and date-times are immutable while containers are mutable."/>
+/// </para>
+/// <para>
 /// <see cref="Kind" /> identifies the concrete subclass without forcing a cast, so callers can switch on the kind
 /// before narrowing to a specific type, or pattern-match directly against a concrete subclass such as
 /// <see cref="TomlString" /> or <see cref="TomlTable" />.
@@ -25,6 +28,22 @@ namespace Bodu.Text.Toml;
 /// built-in ones. This guarantees the writer can render every value it is given.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Dispatch on Kind, then narrow to the concrete type to read its Value.
+/// TomlValue value = config["title"];
+/// string title = value.Kind switch
+/// {
+///     TomlValueKind.String  => ((TomlString)value).Value,
+///     TomlValueKind.Integer => ((TomlInteger)value).Value.ToString(),
+///     _                     => value.ToString(),
+/// };
+///
+/// // Or pattern-match directly against a concrete subclass.
+/// if (config["ports"] is TomlArray ports)
+///     Console.WriteLine($"{ports.Count} ports configured");
+///]]>
+/// </example>
 public abstract class TomlValue
 {
     /// <summary>

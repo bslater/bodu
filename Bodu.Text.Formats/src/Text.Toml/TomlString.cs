@@ -7,8 +7,17 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Represents a TOML string value.
+/// Represents a TOML string value. The wrapped text is immutable and compared with ordinal semantics.
 /// </summary>
+/// <example>
+///<![CDATA[
+/// var title = new TomlString("Bodu sample");
+/// string text = title.Value;                  // "Bodu sample"
+///
+/// // Cast a value read from a document back to its concrete kind.
+/// string name = ((TomlString)owner["name"]).Value;
+///]]>
+/// </example>
 public sealed class TomlString
     : TomlValue
     , IEquatable<TomlString>

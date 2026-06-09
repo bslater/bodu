@@ -28,6 +28,24 @@ namespace Bodu.Text.Toml;
 /// text alongside the model.
 /// </para>
 /// </remarks>
+/// <example>
+///<![CDATA[
+/// // Build a table with a collection initializer, the indexer, or Add.
+/// var owner = new TomlTable
+/// {
+///     ["name"] = new TomlString("Tom"),
+///     ["age"]  = new TomlInteger(45),
+/// };
+///
+/// // Safe lookup of an optional key.
+/// if (owner.TryGetValue("name", out TomlValue? name))
+///     Console.WriteLine(((TomlString)name).Value);   // "Tom"
+///
+/// // Enumerates as KeyValuePair<string, TomlValue> in insertion order.
+/// foreach ((string key, TomlValue value) in owner)
+///     Console.WriteLine($"{key} = {value}");
+///]]>
+/// </example>
 public sealed class TomlTable
     : TomlValue
     , IReadOnlyCollection<KeyValuePair<string, TomlValue>>

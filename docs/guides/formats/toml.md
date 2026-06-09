@@ -15,6 +15,8 @@ TOML follows a **reader/writer** shape rather than a single static codec, mirror
 - <xref:Bodu.Text.Toml.TomlWriter> serializes a `TomlTable` back to canonical TOML.
 - <xref:Bodu.Text.Toml.Toml> is a thin static façade over shared, stateless reader and writer singletons — reach for it for one-line `Parse` / `Format`.
 
+![TOML parse/format pipeline — text through TomlReader to a TomlTable model, and a TomlTable model through TomlWriter back to canonical text](../../images/diagrams/toml-pipeline.svg)
+
 For the vocabulary used below (document, value, codec, format exception) see [Core concepts](../../docs/formats/concepts.md); for the spec-version selector and diagnostics, see [Parser policies](../../docs/formats/parser-policies.md).
 
 ## Pattern 1 — parse a configuration document
@@ -81,6 +83,8 @@ if (database.TryGetValue("timeout", out TomlValue? timeout))
 ```
 
 ### The value kinds
+
+![TOML value model — ten value kinds in three groups (scalars, RFC 3339 date-times, containers) each mapped to its .NET backing type](../../images/diagrams/toml-value-model.svg)
 
 | Kind | Type | `Value` backing type |
 |---|---|---|

@@ -11,6 +11,9 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/encoding-special-purpose.svg" alt="Special-purpose encodings. Base45 (RFC 9285) packs each pair of bytes into three characters from the QR-code Alphanumeric-mode alphabet with no padding. Base62 uses the GMP-style alphabet 0-9 A-Z a-z and big-integer division by 62, preserving leading zero bytes as leading zero characters. Bech32 and Bech32m comprise a human-readable part, the 1 separator, 5-bit data groups, and a six-symbol checksum."/>
+/// </para>
+/// <para>
 /// Base62 is a non-power-of-two radix (radix 62) commonly used for compact, URL-safe identifiers and short links.
 /// Because the radix is not a power of two, encoding is performed with big-integer arithmetic rather than the
 /// bit-stream technique used by Base16, Base32, and Base64.

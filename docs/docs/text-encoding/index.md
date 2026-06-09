@@ -60,6 +60,8 @@ For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/t
 `BinaryEncodings` registry: `BinaryEncodings.Base64`, `BinaryEncodings.Base32Crockford`,
 `BinaryEncodings.Z85`, etc.
 
+![Special-purpose encodings — Base45 packs byte pairs into three QR-alphabet characters, Base62 uses big-integer divmod over 0-9 A-Z a-z, and Bech32 frames a human-readable part, separator, 5-bit data, and a six-symbol checksum](../../images/diagrams/encoding-special-purpose.svg)
+
 The **special-purpose** encodings (Base45, Base62, Bech32) share the `Encode` / `Decode` / `TryEncode` / `TryDecode`,
 sizing, and `IsValid` members but omit the `OperationStatus` streaming path — each needs the whole input at once.
 Base45 and Base62 are registered as `BinaryEncodings.Base45` / `BinaryEncodings.Base62`; Bech32 takes a

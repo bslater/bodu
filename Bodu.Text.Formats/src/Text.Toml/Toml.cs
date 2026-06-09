@@ -15,6 +15,9 @@ namespace Bodu.Text.Toml;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/toml-pipeline.svg" alt="The TOML parse/format pipeline runs in both directions. Parsing takes TOML source text, runs TomlReader to tokenize and apply the grammar, validates the spec rules (the v1.0.0 or v1.1.0 version, no duplicate keys, no table redefinition), and returns a strongly typed TomlTable. Formatting takes a TomlTable, runs TomlWriter to walk the model in insertion order, canonicalizes the layout into block-style tables with inline scalars and arrays, and writes canonical TOML text valid under both spec versions."/>
+/// </para>
+/// <para>
 /// These static helpers exist for ergonomic one-liners; the read/write pair (<see cref="TomlReader" /> and
 /// <see cref="TomlWriter" />) is the primary surface, mirroring the relationship between <c>XmlReader</c> /
 /// <c>XmlWriter</c> and their document model.
