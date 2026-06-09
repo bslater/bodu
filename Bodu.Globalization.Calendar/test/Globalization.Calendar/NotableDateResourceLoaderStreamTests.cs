@@ -88,4 +88,12 @@ public class NotableDateResourceLoaderStreamTests
 
         Assert.Contains(d => d.Code == "BODU-CAL-IMPORT-CONCEPT", ex.Diagnostics);
     }
+
+    /// <summary>
+    /// Verifies that loading a document with an import but no resource resolver fails, exercising the default
+    /// no-op resolver.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenImportPresentWithoutResolver_ShouldThrowValidationException() =>
+        Assert.ThrowsExactly<NotableDateValidationException>(() => _ = NotableDateResourceLoader.Load(ImportingXml));
 }
