@@ -76,6 +76,21 @@ public sealed class TomlStreamTests
         Assert.AreEqual(1, ((TomlInteger)document["a"]).Value);
     }
 
+    /// <summary>
+    /// Verifies that a second leading byte-order mark is rejected: the reader strips exactly one leading mark, so a
+    /// doubled mark leaves an unexpected U+FEFF that fails parsing.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenStreamHasDoubledByteOrderMark_ShouldThrowTomlFormatException()
+    {
+        var bom = new byte[] { 0xEF, 0xBB, 0xBF };
+        var bytes = bom.Concat(bom).Concat(System.Text.Encoding.UTF8.GetBytes("a = 1")).ToArray();
+
+        using MemoryStream stream = new(bytes);
+
+        Assert.ThrowsExactly<TomlFormatException>(() => Toml.Parse(stream));
+    }
+
     [TestMethod]
     public void Parse_WhenStreamHasNonAsciiUtf8_ShouldDecodeCorrectly()
     {

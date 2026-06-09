@@ -197,16 +197,19 @@ public partial class TomlReader
     }
 
     /// <summary>
-    /// Decodes the contents of <paramref name="buffer" /> as UTF-8 text, ignoring a leading byte-order mark.
+    /// Decodes the contents of <paramref name="buffer" /> as UTF-8 text.
     /// </summary>
     /// <param name="buffer">The buffered bytes.</param>
     /// <returns>The decoded text.</returns>
     /// <exception cref="TomlFormatException">Thrown when the bytes are not valid UTF-8.</exception>
+    /// <remarks>
+    /// A leading byte-order mark is decoded to U+FEFF and left in place; the parser strips exactly one leading mark, so a
+    /// second or otherwise misplaced mark is preserved here and rejected during parsing. Stripping the mark at the byte
+    /// level as well would silently swallow a second mark and accept a non-conformant document.
+    /// </remarks>
     private static string Decode(MemoryStream buffer)
     {
         ReadOnlySpan<byte> bytes = buffer.GetBuffer().AsSpan(0, (int)buffer.Length);
-        if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
-            bytes = bytes[3..];
 
         try
         {
