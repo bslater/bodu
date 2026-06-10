@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Bencode.Nodes;
+namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Identifies the kind of value a <see cref="BencodeNode" /> represents, mirroring the role of
+/// Identifies the kind of value a Bencode element represents, mirroring the role of
 /// <see cref="System.Text.Json.JsonValueKind" /> for Bencode.
 /// </summary>
 /// <remarks>
@@ -18,22 +18,26 @@ namespace Bodu.Text.Bencode.Nodes;
 public enum BencodeValueKind
 {
     /// <summary>
-    /// A dictionary, represented by a <see cref="BencodeObject" />.
+    /// A dictionary, represented by a <see cref="Nodes.BencodeObject" /> in the mutable model or an object
+    /// <see cref="BencodeElement" /> in the read-only model.
     /// </summary>
     Object,
 
     /// <summary>
-    /// A list, represented by a <see cref="BencodeArray" />.
+    /// A list, represented by a <see cref="Nodes.BencodeArray" /> in the mutable model or an array
+    /// <see cref="BencodeElement" /> in the read-only model.
     /// </summary>
     Array,
 
     /// <summary>
-    /// A byte string, represented by a <see cref="BencodeValue" />.
+    /// A byte string, represented by a <see cref="Nodes.BencodeValue" /> in the mutable model or a byte-string
+    /// <see cref="BencodeElement" /> in the read-only model.
     /// </summary>
     ByteString,
 
     /// <summary>
-    /// An integer, represented by a <see cref="BencodeValue" />.
+    /// An integer, represented by a <see cref="Nodes.BencodeValue" /> in the mutable model or an integer
+    /// <see cref="BencodeElement" /> in the read-only model.
     /// </summary>
     Integer,
 }
