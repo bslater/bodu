@@ -17,7 +17,8 @@ If you are new to Bodu, start with the **library introductions** below to unders
 | **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
 | **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
 | **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0` |
-| **[Bodu.Text.Formats](formats/index.md)** | Self-framing text and binary serialization formats with strongly-typed value models and span- and stream-friendly codecs. Ships four sibling namespaces — **Bencode** (the BitTorrent BEP 3 grammar), **Delimited** (CSV / TSV), **Ini**, and **DotEnv** — each with `Encode` / `Decode` (or `Parse` / `Format`) and `Try*` overloads, an immutable value tree, and strict invariant enforcement on both sides of the pipeline. | `net8.0` |
+| **[Bodu.Text.Formats](formats/index.md)** | Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships four sibling namespaces — **Delimited** (CSV / TSV), **DotEnv**, **Ini**, and **TOML** — each with `Parse` / `Format` (or `Decode` / `Encode`) and `Try*` overloads, a typed value model, and strict invariant enforcement. | `net8.0` |
+| **[Bodu.Text.Bencode](serialization/index.md)** · **[Bodu.Text.Toml](serialization/index.md)** | Two self-contained, `System.Text.Json`-shaped serializers that map your own types to and from a format. Deliberate twins — the same shape, member for member — each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair, with the full converter / attribute / naming-policy surface. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0. | `net8.0` |
 | **[Bodu.Text.Configuration](text-configuration/index.md)** | EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited `ConfigurationView` with typed accessors (`GetInt32`, `GetEnum<T>`, `GetValue<T>`). Profile presets, optional diagnostic collection, and byte-faithful round-trip save. | `net8.0` |
 | **[Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md)** | Bridges `Bodu.Text.Configuration` to `Microsoft.Extensions.Configuration`. Adds `AddBoduConfiguration*` entry points on `IConfigurationBuilder` — mirroring `AddJsonFile` / `AddJsonStream` — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support. | `net8.0` |
 | **[Bodu.Text](text/index.md)** | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` — BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0` |
@@ -88,11 +89,21 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="formats/index.md">Bodu.Text.Formats</a></h3>
-  <p>Self-framing text and binary serialization formats with strongly-typed value trees and span- and stream-friendly codecs. Ships Bencode, Delimited (CSV / TSV), Ini, and DotEnv as sibling namespaces, each with strict invariant enforcement.</p>
+  <p>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships Delimited (CSV / TSV), DotEnv, Ini, and TOML as sibling namespaces, each with strict invariant enforcement.</p>
   <div class="bodu-card-links">
     <a href="formats/index.md">Introduction</a>
     <a href="formats/getting-started.md">Getting started</a>
     <a href="../guides/formats/index.md">Guides</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="serialization/index.md">Bodu.Text.Bencode &amp; Bodu.Text.Toml</a></h3>
+  <p>Two self-contained, <code>System.Text.Json</code>-shaped serializers — POCO ↔ format — for Bencode (BEP 3) and TOML. Deliberate twins, each with a serializer, a mutable and a read-only DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair.</p>
+  <div class="bodu-card-links">
+    <a href="serialization/index.md">Introduction</a>
+    <a href="serialization/getting-started.md">Getting started</a>
+    <a href="../guides/serialization/index.md">Guides</a>
   </div>
 </div>
 

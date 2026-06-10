@@ -4,7 +4,7 @@ title: Using delimited (CSV / TSV)
 
 # Using delimited (CSV / TSV)
 
-`Delimited` is the static codec for [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180) delimited text — comma-separated values, tab-separated values, and the broader family of single-character-delimited tabular formats. The surface mirrors the [Bencode codec](bencode.md): `Parse` / `TryParse` / `Format` over spans and the document model, plus a streaming `DelimitedReader` / `DelimitedWriter` pair for large files where the document model would not fit in memory.
+`Delimited` is the static codec for [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180) delimited text — comma-separated values, tab-separated values, and the broader family of single-character-delimited tabular formats. It exposes the package's common codec shape — `Parse` / `TryParse` / `Format` over spans and the document model — plus a streaming `DelimitedReader` / `DelimitedWriter` pair for large files where the document model would not fit in memory.
 
 For the vocabulary used below (document, row, header, field, parse options vs format options) see [Core concepts](../../docs/formats/concepts.md).
 
@@ -191,6 +191,6 @@ string output         = doc.FormatDelimited();
 
 ## See also
 
-- [Bencode](bencode.md), [DotEnv](dotenv.md), [INI](ini.md) — the other formats in the package.
+- [DotEnv](dotenv.md), [INI](ini.md), [TOML](toml.md) — the other formats in the package.
 - [`Bodu.Text.Delimited` API reference](xref:Bodu.Text.Delimited)
 - [Streams and async I/O](streaming.md) — buffer-lifecycle details for stream-based pipelines.

@@ -20,8 +20,11 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Globalization.Calendar — notable-date resolution](xref:Bodu.Globalization.Calendar)**
   Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources, an observance-adjustment pipeline, and a trust-policy-driven plugin host.
 
-- **[Bodu.Text.Formats — self-framing text and binary document formats](../docs/formats/index.md)**
-  Strongly-typed value models and span- and stream-friendly codecs for self-framing document formats. Ships **Bencode** (BitTorrent BEP 3), **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), and **INI** (round-trippable, section- and comment-preserving) — each exposing the same modern shape: `Encode` / `Decode` / `Try*` / `GetEncodedLength` (or `Parse` / `Format`) over `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, an immutable value tree, and explicit canonicality enforcement on both sides of the pipeline.
+- **[Bodu.Text.Formats — self-framing text document formats](../docs/formats/index.md)**
+  Strongly-typed value models and span- and stream-friendly codecs for self-framing document formats. Ships **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), **INI** (round-trippable, section- and comment-preserving), and **TOML** (v1.0.0 / v1.1.0) — each exposing the same modern shape: `Parse` / `Format` (or `Decode` / `Encode`) and `Try*` over spans and `Stream`, a typed value model, and strict invariant enforcement.
+
+- **[Bodu.Text.Bencode & Bodu.Text.Toml — System.Text.Json-shaped serializers](../docs/serialization/index.md)**
+  Two self-contained, `System.Text.Json`-shaped libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3) and TOML. Deliberate twins, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, a low-level `Utf8…Reader` / `Utf8…Writer` ref-struct pair, and the full converter / attribute / callback / naming-policy surface.
 
 - **[Bodu.Text — encoding detection and text/byte conversion helpers](xref:Bodu.Text)**
   BOM-based `EncodingDetection` plus `EncodingExtensions` and `StringEncodingExtensions` — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of `System.Text.Encoding`. For binary-to-text codecs (Base16/32/58/64/85), see `Bodu.Text.Encoding`.
@@ -38,7 +41,8 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in date-calculation algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), working-day arithmetic, and [data packs](../guides/calendar/data-packs.md).
-- **[Bodu.Text.Formats guides](../guides/formats/index.md)** — the [Bencode](../guides/formats/bencode.md), [Delimited](../guides/formats/delimited.md) (CSV / TSV), [DotEnv](../guides/formats/dotenv.md), and [INI](../guides/formats/ini.md) codecs, the shared [value model](../guides/formats/value-model.md), and [streaming](../guides/formats/streaming.md) support.
+- **[Bodu.Text.Formats guides](../guides/formats/index.md)** — the [Delimited](../guides/formats/delimited.md) (CSV / TSV), [DotEnv](../guides/formats/dotenv.md), [INI](../guides/formats/ini.md), and [TOML](../guides/formats/toml.md) codecs, and [streaming](../guides/formats/streaming.md) support.
+- **[Bodu.Text.Bencode & Bodu.Text.Toml serializer guides](../guides/serialization/index.md)** — [Using TOML](../guides/serialization/toml.md), [Using Bencode](../guides/serialization/bencode.md), and [writing converters](../guides/serialization/converters.md).
 - **[Bodu.Numerics guides](../guides/numerics/index.md)** — [`Fraction<T>`](../guides/numerics/fraction.md), [`Interval<T>`](../guides/numerics/interval.md).
 - **[Bodu.Financial guides](../guides/financial/index.md)** — [`Money<TCurrency>`](../guides/financial/money.md).
 

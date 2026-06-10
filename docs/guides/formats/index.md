@@ -6,19 +6,18 @@ title: Bodu.Text.Formats guides
 
 Recipe-style walk-throughs for **Bodu.Text.Formats**, organized by namespace and concern.
 
-If you are new to the library, start with the [introduction](../../docs/formats/index.md), the [Core concepts](../../docs/formats/concepts.md) glossary, and the [getting-started page](../../docs/formats/getting-started.md). The guides below assume you know the vocabulary (framed format, value tree, byte string, canonical encoding, framing token).
+If you are new to the library, start with the [introduction](../../docs/formats/index.md), the [Core concepts](../../docs/formats/concepts.md) glossary, and the [getting-started page](../../docs/formats/getting-started.md). The guides below assume you know the vocabulary (self-framing format, value model, codec, round-trip rules).
 
 ## How the library works
 
-![Bencode encode/decode pipeline — object tree to canonical bytes and back](../../images/diagrams/formats-bencode-pipeline.svg)
+Each format pairs a typed value model with a codec: parse turns a span or stream of bytes into the model, format writes the model back out. The line- and record-oriented formats (Delimited, DotEnv, INI) also expose forward-only readers and writers for processing one logical unit at a time; TOML adds a richly-typed value tree over the same parse/format shape.
 
-A bencoded document is a single tree of typed values. **`Bencode`** is the static codec — encode walks the tree with a recursive writer, decode runs a forward-only parser that dispatches on the leading framing token. The library enforces BEP 3 canonicality on both sides: encoders always emit the canonical form, parsers reject every non-canonical input.
+> Object-mapping serializers (POCO ↔ format), including **Bencode**, are documented in the standalone <xref:Bodu.Text.Bencode> and <xref:Bodu.Text.Toml> packages — see the [Bodu serializer guides](../serialization/index.md).
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| <xref:Bodu.Text.Bencode> | The `Bencode` codec, the `BencodedValue` model and its four kinds, `BencodedStringComparer`, and `BencodeFormatException`. | [Using Bencode](bencode.md) · [The BencodedValue model](value-model.md) |
 | <xref:Bodu.Text.Delimited> | The `Delimited` codec, `DelimitedDocument` / `DelimitedRow`, the streaming reader / writer, and `DelimitedParseOptions`. | [Using delimited](delimited.md) |
 | <xref:Bodu.Text.DotEnv> | The `DotEnv` codec, `DotEnvDocument` / `DotEnvEntry`, and `DotEnvParseOptions`. | [Using DotEnv](dotenv.md) |
 | <xref:Bodu.Text.Ini> | The `Ini` codec, `IniDocument` / `IniSection` / `IniEntry`, and `IniParseOptions`. | [Using INI](ini.md) |
@@ -29,16 +28,6 @@ A bencoded document is a single tree of typed values. **`Bencode`** is the stati
 ### `Bodu.Text.Formats` — Codec
 
 <div class="bodu-cards">
-
-<div class="bodu-card">
-  <h3><a href="bencode.md">Using Bencode</a></h3>
-  <p>The static <code>Bencode</code> codec — <code>Encode</code>, <code>Decode</code>, <code>TryEncode</code>, <code>TryDecode</code>, <code>GetEncodedLength</code>, and the BEP 3 invariants enforced on both sides of the pipeline.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="value-model.md">The BencodedValue model</a></h3>
-  <p>Walk-through of <code>BencodedInteger</code>, <code>BencodedString</code>, <code>BencodedList</code>, and <code>BencodedDictionary</code> — their construction rules, dispatch via <code>BencodedValueKind</code>, and the ordinal <code>BencodedStringComparer</code> that drives dictionary ordering.</p>
-</div>
 
 <div class="bodu-card">
   <h3><a href="delimited.md">Using delimited (CSV / TSV)</a></h3>

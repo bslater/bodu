@@ -247,11 +247,11 @@ unterminated strings, and unpaired surrogates are always rejected.
 | Section/comment-preserving round-trip, or `IConfiguration` layering | [INI](ini.md) / [`Bodu.Text.Configuration`](../../docs/text-configuration/index.md) |
 | Flat `KEY=VALUE` environment configuration | [DotEnv](dotenv.md) |
 | Tabular rows | [Delimited](delimited.md) |
-| Canonical structured binary, content addressing | [Bencode](bencode.md) |
+| POCO ↔ TOML or Bencode, `System.Text.Json`-style | [Bodu.Text.Toml](xref:Bodu.Text.Toml) / [Bodu.Text.Bencode](xref:Bodu.Text.Bencode) |
 
 ## See also
 
-- [Bencode](bencode.md), [Delimited](delimited.md), [DotEnv](dotenv.md), [INI](ini.md) — the other formats in the package.
+- [Delimited](delimited.md), [DotEnv](dotenv.md), [INI](ini.md) — the other formats in the package.
 - [Streams and async I/O](streaming.md) — the shared stream contract across the codecs.
 - [`Bodu.Text.Toml` API reference](xref:Bodu.Text.Toml)
 - [Parser policies](../../docs/formats/parser-policies.md) — the `SpecVersion` selector and diagnostics.

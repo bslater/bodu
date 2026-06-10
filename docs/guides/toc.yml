@@ -290,10 +290,6 @@
       href: formats/index.md
     - name: Bodu.Text.Formats — Codec
       items:
-        - name: Using Bencode
-          href: formats/bencode.md
-        - name: The BencodedValue model
-          href: formats/value-model.md
         - name: Using delimited (CSV / TSV)
           href: formats/delimited.md
         - name: Using DotEnv
@@ -306,7 +302,7 @@
       items:
         - name: Streams and async I/O
           href: formats/streaming.md
-- name: Bodu.Text.Serialization
+- name: Bodu.Text.Bencode & Bodu.Text.Toml
   items:
     - name: Overview
       href: serialization/index.md

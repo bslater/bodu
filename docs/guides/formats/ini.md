@@ -6,7 +6,7 @@ title: Using INI
 
 `Ini` is the static codec for the INI configuration-file dialect — section-based `[name]` headers with key/value entries, optional global preamble, `#` and `;` comments, and EditorConfig-compatible variants. The codec round-trips comments as trivia on entries and sections, so an `Ini.Parse` → mutate → `Ini.Format` cycle preserves authored structure.
 
-The surface mirrors the [Bencode codec](bencode.md): `Parse` / `TryParse` / `Format` over spans and the document model. Unlike Delimited, there is no streaming reader / writer — INI files are configuration, not data, and don't warrant one.
+It exposes the package's common codec shape: `Parse` / `TryParse` / `Format` over spans and the document model. Unlike Delimited, there is no streaming reader / writer — INI files are configuration, not data, and don't warrant one.
 
 For the vocabulary used below (document, section, entry, comment, parse options) see [Core concepts](../../docs/formats/concepts.md).
 
@@ -98,7 +98,7 @@ string output = Ini.Format(document);
 File.WriteAllText("app.ini", output);
 ```
 
-Unlike `BencodedValue`, `DotEnvDocument`, and `DelimitedDocument`, `IniDocument` is **mutable**: `AddSection`, `RemoveSection`, `GetOrAddSection`, and the per-section `SetEntry` / `RemoveEntry` / `ClearEntries` methods let you compose a configuration programmatically and then write it out. Comments can be set via `AddLeadingComment` / `SetLeadingComments` / `ClearLeadingComments` on either entry or section.
+Unlike `DotEnvDocument` and `DelimitedDocument`, `IniDocument` is **mutable**: `AddSection`, `RemoveSection`, `GetOrAddSection`, and the per-section `SetEntry` / `RemoveEntry` / `ClearEntries` methods let you compose a configuration programmatically and then write it out. Comments can be set via `AddLeadingComment` / `SetLeadingComments` / `ClearLeadingComments` on either entry or section.
 
 ## Pattern 5 — duplicate-section policies
 
@@ -181,6 +181,6 @@ A rough decision tree:
 
 ## See also
 
-- [Bencode](bencode.md), [Delimited](delimited.md), [DotEnv](dotenv.md) — the other formats in the package.
+- [Delimited](delimited.md), [DotEnv](dotenv.md), [TOML](toml.md) — the other formats in the package.
 - [`Bodu.Text.Ini` API reference](xref:Bodu.Text.Ini)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for the resolved / view-projecting / `IConfiguration`-bridging surface built on this codec.

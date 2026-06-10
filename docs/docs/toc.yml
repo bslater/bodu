@@ -93,7 +93,7 @@
       href: formats/getting-started.md
     - name: Parser policies
       href: formats/parser-policies.md
-- name: Bodu.Text.Serialization
+- name: Bodu.Text.Bencode & Bodu.Text.Toml
   items:
     - name: Introduction
       href: serialization/index.md

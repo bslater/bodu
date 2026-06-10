@@ -399,30 +399,69 @@ runtime-pluggable encoding choice.
 
 ## Bodu.Text.Formats
 
-Self-framing binary serialization formats with a strongly-typed value model and a span- and stream-friendly codec.
-The first format the package ships is **Bencode** (the BitTorrent BEP 3 grammar) — full canonicality enforcement
-on both sides of the pipeline.
+Self-framing text document formats with a strongly-typed value model and a span- and stream-friendly codec.
+The package ships four sibling namespaces — Delimited (CSV / TSV), DotEnv, Ini, and TOML — each with strict
+invariant enforcement and `Try*` overloads.
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="formats/index.md">Overview</a></h3>
-  <p>Namespace map, pipeline diagram, and where each guide fits.</p>
+  <p>Namespace map and where each guide fits.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="formats/bencode.md">Using Bencode</a></h3>
-  <p>The static codec — <code>Encode</code>, <code>Decode</code>, <code>TryEncode</code>, <code>TryDecode</code>, <code>GetEncodedLength</code>, and the BEP 3 invariants enforced on both sides.</p>
+  <h3><a href="formats/delimited.md">Using delimited (CSV / TSV)</a></h3>
+  <p>RFC 4180 quoting, delimiter selection, header handling, the streaming <code>DelimitedReader</code> / <code>DelimitedWriter</code>, and the strictness policies on <code>DelimitedParseOptions</code>.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="formats/value-model.md">The BencodedValue model</a></h3>
-  <p><code>BencodedInteger</code>, <code>BencodedString</code>, <code>BencodedList</code>, and <code>BencodedDictionary</code> — construction rules, <code>Kind</code>-based dispatch, and the ordinal <code>BencodedStringComparer</code> that drives dictionary ordering.</p>
+  <h3><a href="formats/dotenv.md">Using DotEnv</a></h3>
+  <p><code>KEY=VALUE</code> parsing, quoting and escape rules, comment preservation, and duplicate-key policies on <code>DotEnvParseOptions</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="formats/ini.md">Using INI</a></h3>
+  <p>Section / entry model, comment trivia, duplicate-section and duplicate-key policies, and programmatic mutation of the round-trippable <code>IniDocument</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="formats/toml.md">Using TOML</a></h3>
+  <p>The <code>TomlReader</code> / <code>TomlWriter</code> pair and the <code>Toml</code> façade — the typed <code>TomlValue</code> model, tables and arrays, first-class date-time kinds, and v1.0.0 / v1.1.0 selection.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="formats/streaming.md">Streams and async I/O</a></h3>
-  <p>Sync and async stream overloads — buffer staging via <code>ArrayPool&lt;byte&gt;</code>, cancellation, lifetime contracts, and when to prefer the span path over <code>Stream</code>.</p>
+  <p>Buffered stream overloads and the forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — cancellation, lifetime contracts, and input-size limits.</p>
+</div>
+
+</div>
+
+## Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
+
+Two self-contained, <code>System.Text.Json</code>-shaped serializers that map your own types to and from a format.
+Deliberate twins — the same shape, member for member — for Bencode (BEP 3) and TOML.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="serialization/index.md">Overview</a></h3>
+  <p>The two libraries, the three tiers (serializer, DOMs, reader/writer), and the <code>System.Text.Json</code> alignment.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="serialization/toml.md">Using TOML</a></h3>
+  <p><code>TomlSerializer</code>, the type mapping, spec-version selection, the mutable and read-only DOMs, and streams.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="serialization/bencode.md">Using Bencode</a></h3>
+  <p><code>BencodeSerializer</code>, byte strings, canonical key ordering, the DOMs, and the kinds Bencode cannot represent.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="serialization/converters.md">Writing converters</a></h3>
+  <p>Custom shapes with <code>BencodeConverter&lt;T&gt;</code> / <code>TomlConverter&lt;T&gt;</code>, factories, and converter resolution order.</p>
 </div>
 
 </div>

@@ -8,12 +8,12 @@ The `Bodu.Text.Formats` parsers default to **strict** behaviour: anything the gr
 
 ## Common diagnostic surface
 
-Every format-specific exception derives from `TextFormatException`, so a single `catch` block can handle parse failures across Bencode, Delimited, DotEnv, INI, and TOML sources:
+Every format-specific exception derives from `TextFormatException`, so a single `catch` block can handle parse failures across Delimited, DotEnv, INI, and TOML sources:
 
 ```csharp
 try
 {
-    BencodedValue value = Bencode.Parse(payload);
+    TomlTable document = Toml.Parse(source);
 }
 catch (TextFormatException ex)
 {
@@ -28,7 +28,7 @@ catch (TextFormatException ex)
 | `ColumnNumber` | 1-based column within the line; `0` when the column is unknown or the format does not track it. |
 | `Offset` | 0-based byte/character offset from the start of the source; `null` when not tracked. |
 
-The location properties are advisory: each parser populates the fields it can identify. Line-oriented formats report a line (and, where tracked, a column); the byte-offset format (Bencode) reports an offset. TOML reports all three.
+The location properties are advisory: each parser populates the fields it can identify. Line-oriented formats report a line (and, where tracked, a column). TOML reports all three.
 
 ## Delimited
 
@@ -52,26 +52,6 @@ DelimitedDocument doc = Delimited.Parse(source.AsSpan(), lenient);
 ```
 
 `FieldCountBehavior` is not enforced when `HasHeader` is `false` because there is no reference field count to compare against.
-
-## Bencode
-
-`BencodeParseOptions` controls two safety-critical behaviours.
-
-| Option | Default | Behaviour |
-|---|---|---|
-| `MaxDepth` | `512` | Throw `BencodeFormatException` once nested lists / dictionaries exceed this depth, before the recursive parser exhausts the call stack on hostile input. |
-| `RequireCompleteDocument` | `false` | When `true`, `TryParse` returns `false` unless the entire source was consumed by exactly one value. Mirrors the contract of `Parse`, which already rejects trailing bytes. |
-
-```csharp
-BencodeParseOptions options = new()
-{
-    MaxDepth = 64,
-    RequireCompleteDocument = true,
-};
-
-if (Bencode.TryParse(source, options, out BencodedValue? value, out int bytesConsumed))
-    Use(value);
-```
 
 ## DotEnv
 
@@ -119,6 +99,5 @@ These defaults changed compared with earlier pre-1.0 builds:
 - A Delimited source with duplicate column names now throws; previously the first occurrence was silently overwritten in the name-based lookup.
 - A Delimited row that has a character between a closing quote and the next delimiter or newline now throws; previously the rest of the row was silently discarded.
 - A Delimited document with a header row whose data rows differ in field count now throws; previously the mismatch produced rows whose `Count` did not match the header.
-- A Bencode document whose nesting depth exceeds 512 now throws; previously the parser could stack-overflow.
 
 Each of these is opt-in to the legacy behaviour through the option flag listed above.

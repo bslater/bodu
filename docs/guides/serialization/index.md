@@ -1,11 +1,11 @@
 ---
-title: Bodu.Text.Serialization — Guides
+title: Bodu serializers — Guides
 ---
 
-# Bodu.Text.Serialization guides
+# Bodu serializer guides
 
-Practical, task-focused walkthroughs for the object-mapping serializers. Start with the [introduction](../../docs/serialization/index.md) and [core concepts](../../docs/serialization/concepts.md) for the mental model.
+Practical, task-focused walkthroughs for the two `System.Text.Json`-shaped serializers, **Bodu.Text.Bencode** and **Bodu.Text.Toml**. Start with the [introduction](../../docs/serialization/index.md) and [core concepts](../../docs/serialization/concepts.md) for the mental model.
 
-- **[Using TOML](toml.md)** — `TomlSerializer`, the type mapping, spec-version selection, and streams.
+- **[Using TOML](toml.md)** — `TomlSerializer`, the type mapping, spec-version selection, the DOMs, and streams.
 - **[Using Bencode](bencode.md)** — `BencodeSerializer`, byte strings, canonical key ordering, and the kinds Bencode cannot represent.
-- **[Writing converters](converters.md)** — customise a type's shape with `FormatConverter<T>`, and understand resolution order.
+- **[Writing converters](converters.md)** — customise a type's shape with `BencodeConverter<T>` / `TomlConverter<T>`, and understand resolution order.
