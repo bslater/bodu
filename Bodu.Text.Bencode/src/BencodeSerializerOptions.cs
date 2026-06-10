@@ -73,6 +73,16 @@ public sealed class BencodeSerializerOptions
     private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
 
     /// <summary>
+    /// The serializer-wide handling for a dictionary key that maps to no member when reading.
+    /// </summary>
+    private BencodeUnmappedMemberHandling _unmappedMemberHandling = BencodeUnmappedMemberHandling.Skip;
+
+    /// <summary>
+    /// The serializer-wide preference for replacing or populating a member's value when reading.
+    /// </summary>
+    private BencodeObjectCreationHandling _preferredObjectCreationHandling = BencodeObjectCreationHandling.Replace;
+
+    /// <summary>
     /// The maximum nesting depth.
     /// </summary>
     private int _maxDepth = DefaultMaxDepth;
@@ -178,6 +188,61 @@ public sealed class BencodeSerializerOptions
                 throw new ArgumentOutOfRangeException(nameof(value), BencodeResourceStrings.Arg_OutOfRange_DefaultIgnoreConditionAlways);
 
             _defaultIgnoreCondition = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
+    /// reading, applied to every type that does not carry its own
+    /// <see cref="Serialization.BencodeUnmappedMemberHandlingAttribute" />. Mirrors
+    /// <see cref="System.Text.Json.JsonSerializerOptions.UnmappedMemberHandling" />.
+    /// </summary>
+    /// <value>The unmapped-member handling; <see cref="BencodeUnmappedMemberHandling.Skip" /> by default.</value>
+    /// <returns>The configured unmapped-member handling.</returns>
+    /// <remarks>
+    /// A type that declares an extension-data member captures unmapped keys into that member, which takes precedence
+    /// over this setting, so a key absorbed by extension data never triggers
+    /// <see cref="BencodeUnmappedMemberHandling.Disallow" />.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public BencodeUnmappedMemberHandling UnmappedMemberHandling
+    {
+        get => _unmappedMemberHandling;
+        set
+        {
+            VerifyMutable();
+            ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+
+            _unmappedMemberHandling = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
+    /// instance or populated when reading, applied to every type and member that does not carry its own
+    /// <see cref="Serialization.BencodeObjectCreationHandlingAttribute" />. Mirrors
+    /// <see cref="System.Text.Json.JsonSerializerOptions.PreferredObjectCreationHandling" />.
+    /// </summary>
+    /// <value>
+    /// The preferred object-creation handling; <see cref="BencodeObjectCreationHandling.Replace" /> by default.
+    /// </value>
+    /// <returns>The configured preferred object-creation handling.</returns>
+    /// <remarks>
+    /// <see cref="BencodeObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
+    /// existing value is non-<see langword="null" />; in every other case the serializer replaces the value.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public BencodeObjectCreationHandling PreferredObjectCreationHandling
+    {
+        get => _preferredObjectCreationHandling;
+        set
+        {
+            VerifyMutable();
+            ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+
+            _preferredObjectCreationHandling = value;
         }
     }
 

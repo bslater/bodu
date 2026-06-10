@@ -468,5 +468,14 @@ namespace Bodu {
                 return ResourceManager.GetString("IO_KeyNotFound_Property", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bencode document contains a key '{0}' that maps to no member of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_UnmappedMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnmappedMember", resourceCulture);
+            }
+        }
     }
 }

@@ -60,6 +60,12 @@ internal sealed class ObjectConverter<T>
                 extensionEntries ??= new Dictionary<string, BencodeNode?>(StringComparer.Ordinal);
                 extensionEntries[name] = BencodeNode.ReadFrom(ref reader);
             }
+            else if ((metadata.UnmappedMemberHandling ?? options.UnmappedMemberHandling) == BencodeUnmappedMemberHandling.Disallow)
+            {
+                throw new BencodeSerializationException(
+                    string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_UnmappedMember, name, typeof(T)),
+                    reader.BytesConsumed);
+            }
             else
             {
                 reader.Skip();
@@ -76,8 +82,11 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        var instance = (T)Construct(metadata, values);
+        var instance = (T)BareConstruct(metadata, values);
+        (instance as IBencodeOnDeserializing)?.OnDeserializing();
+        AssignSettableMembers(metadata, values, instance!, options);
         PopulateExtensionData(metadata, instance, extensionEntries);
+        (instance as IBencodeOnDeserialized)?.OnDeserialized();
         return instance;
     }
 
@@ -88,6 +97,8 @@ internal sealed class ObjectConverter<T>
 
         if (value is null)
             return;
+
+        (value as IBencodeOnSerializing)?.OnSerializing();
 
         TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
         writer.WriteStartDictionary();
@@ -104,6 +115,8 @@ internal sealed class ObjectConverter<T>
         WriteExtensionData(writer, metadata, value);
 
         writer.WriteEndDictionary();
+
+        (value as IBencodeOnSerialized)?.OnSerialized();
     }
 
     /// <summary>
@@ -187,12 +200,19 @@ internal sealed class ObjectConverter<T>
     }
 
     /// <summary>
-    /// Constructs an instance from the read member values, using the type's construction plan.
+    /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
+    /// members are assigned in a separate step so that an <see cref="IBencodeOnDeserializing" /> callback can run
+    /// between construction and member population.
     /// </summary>
     /// <param name="metadata">The type metadata.</param>
-    /// <param name="values">The read member values.</param>
-    /// <returns>The constructed instance.</returns>
-    private static object Construct(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values)
+    /// <param name="values">The read member values, used to bind constructor arguments.</param>
+    /// <returns>The constructed instance, before any settable member is assigned.</returns>
+    /// <remarks>
+    /// For a parameterized constructor the bound arguments are gathered from <paramref name="values" /> (falling back
+    /// to each parameter's default), so an <see cref="IBencodeOnDeserializing" /> callback necessarily observes those
+    /// arguments already applied; for a parameterless constructor the instance is created empty.
+    /// </remarks>
+    private static object BareConstruct(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values)
     {
         if (metadata.UsesParameterizedConstructor)
         {
@@ -205,32 +225,125 @@ internal sealed class ObjectConverter<T>
                     : metadata.GetConstructorDefault(i);
             }
 
-            object instance = metadata.Construct(arguments);
-            AssignSettableMembers(values, instance, skipConstructorBound: true);
-            return instance;
+            return metadata.Construct(arguments);
         }
 
-        object created = metadata.Construct(null);
-        AssignSettableMembers(values, created, skipConstructorBound: false);
-        return created;
+        return metadata.Construct(null);
     }
 
     /// <summary>
-    /// Assigns the read values to the settable members of an instance.
+    /// Assigns the read values to the settable members of a constructed instance, honoring each member's effective
+    /// object-creation handling so that a <see cref="BencodeObjectCreationHandling.Populate" /> member merges its read
+    /// entries into the existing collection or dictionary instead of replacing it.
     /// </summary>
+    /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
     /// <param name="values">The read member values.</param>
     /// <param name="instance">The instance to assign on.</param>
-    /// <param name="skipConstructorBound">Whether members bound to a constructor parameter are skipped.</param>
-    private static void AssignSettableMembers(Dictionary<PropertyMetadata, object?> values, object instance, bool skipConstructorBound)
+    /// <param name="options">The serializer options that supply the default object-creation handling.</param>
+    /// <remarks>
+    /// Members bound to a constructor parameter are skipped when the type is built through a parameterized constructor,
+    /// since their values were already supplied to the constructor. For every other member the effective handling is
+    /// the member's <see cref="PropertyMetadata.CreationHandling" />, then the type's
+    /// <see cref="TypeMetadata.CreationHandling" />, then
+    /// <see cref="BencodeSerializerOptions.PreferredObjectCreationHandling" />;
+    /// <see cref="BencodeObjectCreationHandling.Populate" /> is applied only when the member already holds a
+    /// populatable collection or dictionary, otherwise the value is set through the member's setter.
+    /// </remarks>
+    private static void AssignSettableMembers(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values, object instance, BencodeSerializerOptions options)
     {
+        var skipConstructorBound = metadata.UsesParameterizedConstructor;
         foreach (KeyValuePair<PropertyMetadata, object?> entry in values)
         {
             PropertyMetadata property = entry.Key;
             if (skipConstructorBound && property.ConstructorParameterIndex >= 0)
                 continue;
 
+            BencodeObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? options.PreferredObjectCreationHandling;
+            if (handling == BencodeObjectCreationHandling.Populate && TryPopulate(property, instance, entry.Value))
+                continue;
+
             if (property.CanSet)
                 property.SetValue(instance, entry.Value);
         }
+    }
+
+    /// <summary>
+    /// Attempts to merge a freshly read collection or dictionary value into the instance already held by a member,
+    /// rather than replacing it. This lets a get-only collection or dictionary property round-trip under
+    /// <see cref="BencodeObjectCreationHandling.Populate" />.
+    /// </summary>
+    /// <param name="property">The member whose existing value is populated.</param>
+    /// <param name="instance">The instance that owns the member.</param>
+    /// <param name="bufferedValue">The value read into a new collection or dictionary for the member.</param>
+    /// <returns>
+    /// <see langword="true" /> when the member's existing value was populated from <paramref name="bufferedValue" />;
+    /// otherwise <see langword="false" />, indicating the caller should set the value normally.
+    /// </returns>
+    /// <remarks>
+    /// The existing value must be non-<see langword="null" /> and shaped as a non-generic
+    /// <see cref="System.Collections.IDictionary" /> or <see cref="System.Collections.IList" />, or a closed
+    /// <c>ICollection&lt;T&gt;</c>, and the buffered value must be enumerable. A dictionary copies key/value pairs; a
+    /// list or collection adds elements in order. Any other shape returns <see langword="false" />.
+    /// </remarks>
+    private static bool TryPopulate(PropertyMetadata property, object instance, object? bufferedValue)
+    {
+        object? existing = property.GetValue(instance);
+        if (existing is null || bufferedValue is null)
+            return false;
+
+        if (existing is System.Collections.IDictionary existingDictionary && bufferedValue is System.Collections.IDictionary bufferedDictionary)
+        {
+            foreach (System.Collections.DictionaryEntry pair in bufferedDictionary)
+                existingDictionary[pair.Key] = pair.Value;
+
+            return true;
+        }
+
+        if (bufferedValue is not System.Collections.IEnumerable bufferedItems)
+            return false;
+
+        if (existing is System.Collections.IList existingList)
+        {
+            foreach (object? item in bufferedItems)
+                existingList.Add(item);
+
+            return true;
+        }
+
+        return TryPopulateGenericCollection(existing, bufferedItems);
+    }
+
+    /// <summary>
+    /// Attempts to add the buffered items into an existing value that implements a closed <c>ICollection&lt;T&gt;</c>
+    /// but is not a non-generic <see cref="System.Collections.IList" />, invoking the interface's <c>Add</c> method
+    /// through reflection.
+    /// </summary>
+    /// <param name="existing">The existing collection instance.</param>
+    /// <param name="bufferedItems">The items read for the member.</param>
+    /// <returns>
+    /// <see langword="true" /> when an <c>ICollection&lt;T&gt;</c> was found and the items were added; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool TryPopulateGenericCollection(object existing, System.Collections.IEnumerable bufferedItems)
+    {
+        Type? collectionInterface = Array.Find(
+            existing.GetType().GetInterfaces(),
+            static i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>));
+
+        if (collectionInterface is null)
+            return false;
+
+        System.Reflection.MethodInfo? add = collectionInterface.GetMethod("Add");
+        if (add is null)
+            return false;
+
+        var argument = new object?[1];
+        foreach (object? item in bufferedItems)
+        {
+            argument[0] = item;
+            add.Invoke(existing, argument);
+        }
+
+        return true;
     }
 }

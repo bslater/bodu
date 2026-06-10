@@ -63,4 +63,5 @@
   <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a BencodeObject or IDictionary&lt;string, BencodeNode?&gt;.</value></data>
   <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
+  <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The Bencode document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
 </root>

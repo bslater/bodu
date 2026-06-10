@@ -98,6 +98,22 @@ internal sealed class TypeMetadata
     internal PropertyMetadata? ExtensionData { get; }
 
     /// <summary>
+    /// Gets the type-level handling for a dictionary key that maps to no member, sourced from a
+    /// <see cref="BencodeUnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type
+    /// declares none.
+    /// </summary>
+    /// <returns>The type-level unmapped-member handling, or <see langword="null" />.</returns>
+    internal BencodeUnmappedMemberHandling? UnmappedMemberHandling { get; init; }
+
+    /// <summary>
+    /// Gets the type-level object-creation handling, sourced from a
+    /// <see cref="BencodeObjectCreationHandlingAttribute" /> on the type, or <see langword="null" /> when the type
+    /// declares none.
+    /// </summary>
+    /// <returns>The type-level object-creation handling, or <see langword="null" />.</returns>
+    internal BencodeObjectCreationHandling? CreationHandling { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether the type is constructed through a parameterized constructor.
     /// </summary>
     /// <returns>

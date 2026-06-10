@@ -93,6 +93,14 @@ internal sealed class PropertyMetadata
     internal BencodeIgnoreCondition? ConditionalIgnore { get; }
 
     /// <summary>
+    /// Gets the member-level object-creation handling, sourced from a
+    /// <see cref="BencodeObjectCreationHandlingAttribute" /> on the member, or <see langword="null" /> when the member
+    /// declares none.
+    /// </summary>
+    /// <returns>The member-level object-creation handling, or <see langword="null" />.</returns>
+    internal BencodeObjectCreationHandling? CreationHandling { get; init; }
+
+    /// <summary>
     /// Gets the relative write order of the member.
     /// </summary>
     /// <returns>The order value.</returns>

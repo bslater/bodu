@@ -30,6 +30,9 @@ internal static class MetadataResolver
     /// <returns>The resolved metadata.</returns>
     internal static TypeMetadata Resolve(Type type, BencodeSerializerOptions options)
     {
+        BencodeNamingPolicy? namingPolicy = type.GetCustomAttribute<BencodeNamingPolicyAttribute>(inherit: false)?.NamingPolicy
+            ?? options.PropertyNamingPolicy;
+
         List<Draft> drafts = [];
         PropertyMetadata? extensionData = null;
         var declarationIndex = 0;
@@ -46,6 +49,7 @@ internal static class MetadataResolver
             BencodeConverter converter = ResolvePropertyConverter(property, options);
             var order = property.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             BencodeIgnoreCondition? conditional = ignore?.Condition;
+            BencodeObjectCreationHandling? creationHandling = property.GetCustomAttribute<BencodeObjectCreationHandlingAttribute>(inherit: true)?.Handling;
             var requiredByAttribute = property.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
                 || property.IsDefined(typeof(BencodeRequiredAttribute), inherit: false);
 
@@ -57,15 +61,15 @@ internal static class MetadataResolver
                 if (!IsSupportedExtensionDataType(property.PropertyType))
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExtensionDataType, property.Name, type));
 
-                extensionData = new Draft(property, property.Name, converter, conditional, order, requiredByAttribute, declarationIndex++).ToMetadata();
+                extensionData = new Draft(property, property.Name, converter, conditional, creationHandling, order, requiredByAttribute, declarationIndex++).ToMetadata();
                 continue;
             }
 
             var wireName = property.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
-                ?? options.PropertyNamingPolicy?.ConvertName(property.Name)
+                ?? namingPolicy?.ConvertName(property.Name)
                 ?? property.Name;
 
-            drafts.Add(new Draft(property, wireName, converter, conditional, order, requiredByAttribute, declarationIndex++));
+            drafts.Add(new Draft(property, wireName, converter, conditional, creationHandling, order, requiredByAttribute, declarationIndex++));
         }
 
         ConstructorInfo? constructor = ChooseConstructor(type);
@@ -100,7 +104,14 @@ internal static class MetadataResolver
                 constructorDefaults[i] = parameters[i].HasDefaultValue ? parameters[i].DefaultValue : DefaultOf(parameters[i].ParameterType);
         }
 
-        return new TypeMetadata(type, ordered, byWireName, constructor, constructorParameters, constructorDefaults, extensionData);
+        BencodeUnmappedMemberHandling? unmappedMemberHandling = type.GetCustomAttribute<BencodeUnmappedMemberHandlingAttribute>(inherit: false)?.UnmappedMemberHandling;
+        BencodeObjectCreationHandling? typeCreationHandling = type.GetCustomAttribute<BencodeObjectCreationHandlingAttribute>(inherit: false)?.Handling;
+
+        return new TypeMetadata(type, ordered, byWireName, constructor, constructorParameters, constructorDefaults, extensionData)
+        {
+            UnmappedMemberHandling = unmappedMemberHandling,
+            CreationHandling = typeCreationHandling,
+        };
     }
 
     /// <summary>
@@ -204,6 +215,9 @@ internal static class MetadataResolver
         /// <param name="wireName">The resolved wire name.</param>
         /// <param name="converter">The resolved converter.</param>
         /// <param name="conditionalIgnore">The conditional-ignore setting, or <see langword="null" />.</param>
+        /// <param name="creationHandling">
+        /// The member-level object-creation handling, or <see langword="null" />.
+        /// </param>
         /// <param name="order">The write order.</param>
         /// <param name="requiredByAttribute">Whether the member is marked <see langword="required" />.</param>
         /// <param name="declarationIndex">The declaration order index.</param>
@@ -212,6 +226,7 @@ internal static class MetadataResolver
             string wireName,
             BencodeConverter converter,
             BencodeIgnoreCondition? conditionalIgnore,
+            BencodeObjectCreationHandling? creationHandling,
             int order,
             bool requiredByAttribute,
             int declarationIndex)
@@ -220,6 +235,7 @@ internal static class MetadataResolver
             WireName = wireName;
             Converter = converter;
             ConditionalIgnore = conditionalIgnore;
+            CreationHandling = creationHandling;
             Order = order;
             RequiredByAttribute = requiredByAttribute;
             DeclarationIndex = declarationIndex;
@@ -249,6 +265,12 @@ internal static class MetadataResolver
         /// </summary>
         /// <returns>The conditional-ignore setting.</returns>
         internal BencodeIgnoreCondition? ConditionalIgnore { get; }
+
+        /// <summary>
+        /// Gets the member-level object-creation handling, or <see langword="null" />.
+        /// </summary>
+        /// <returns>The member-level object-creation handling.</returns>
+        internal BencodeObjectCreationHandling? CreationHandling { get; }
 
         /// <summary>
         /// Gets the write order.
@@ -299,6 +321,9 @@ internal static class MetadataResolver
                 Order,
                 ConstructorParameterIndex,
                 RequiredByAttribute || RequiredByConstructor,
-                DefaultValue);
+                DefaultValue)
+            {
+                CreationHandling = CreationHandling,
+            };
     }
 }
