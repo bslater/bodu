@@ -45,4 +45,5 @@
   <data name="Format_Invalid_TomlUnpairedSurrogate" xml:space="preserve"><value>The input contains an unpaired surrogate and is not valid UTF-8 text.</value></data>
   <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve"><value>The string is not terminated.</value></data>
   <data name="Format_Invalid_TomlUnterminatedTable" xml:space="preserve"><value>The table header is not terminated.</value></data>
+  <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
 </root>

@@ -297,5 +297,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Format_Invalid_TomlUnterminatedTable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum write depth of {0} has been exceeded..
+        /// </summary>
+        internal static string Op_Invalid_WriterMaxDepthExceeded {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterMaxDepthExceeded", resourceCulture);
+            }
+        }
     }
 }
