@@ -1,8 +1,10 @@
 #!/bin/bash
 # Installs the .NET SDK 10.0 on session start so the agent can run `dotnet
-# build` and `dotnet test` against bodu.slnx. Only runs in the remote Claude
-# Code on the web environment; on a developer's local machine the SDK is
-# expected to be installed already.
+# build` and `dotnet test` against bodu.slnx, and repairs the dotnet-dnceng
+# Claude Code plugin whose upstream manifest currently fails validation (see
+# repair_dnceng_plugin below). Only runs in the remote Claude Code on the web
+# environment; on a developer's local machine the SDK is expected to be
+# installed already.
 #
 # SDK 10.0 is required because the solution uses C# 14 language features (for
 # example the `field` keyword on semi-auto properties). An older SDK such as
