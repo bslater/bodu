@@ -14,8 +14,8 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </summary>
 /// <remarks>
 /// The resulting provider is read-once and read-only — it attaches no reload-on-change machinery and rejects mutation
-/// through <see cref="IConfigurationProvider" />, because it derives from the read-only
-/// <see cref="Bodu.Text.Toml.TomlReader" />.
+/// through <see cref="IConfigurationProvider" />, because <see cref="TomlConfigurationProvider" /> exposes no mutation
+/// surface.
 /// </remarks>
 /// <example>
 ///<![CDATA[

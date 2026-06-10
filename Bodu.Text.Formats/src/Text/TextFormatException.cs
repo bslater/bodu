@@ -9,14 +9,14 @@ namespace Bodu.Text;
 /// <summary>
 /// Base class for parse-failure exceptions raised by the text-format parsers in <c>Bodu.Text.Formats</c>. Provides the
 /// common diagnostic surface — line, column, and offset — so callers can write a single handler that works across
-/// Delimited, DotEnv, INI, and TOML sources.
+/// Delimited, DotEnv, and INI sources.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The location properties are advisory: each derived parser populates the fields it can identify at the point of
 /// failure. <see cref="LineNumber" /> and <see cref="ColumnNumber" /> use <c>0</c> to mean "unknown" while
 /// <see cref="Offset" /> uses <see langword="null" /> for the same purpose. Line-oriented formats report a line (and,
-/// where tracked, a column); byte-offset-oriented formats report an offset.
+/// where tracked, a column); a parser that tracks an absolute position additionally reports an offset.
 /// </para>
 /// </remarks>
 public abstract class TextFormatException

@@ -1,6 +1,6 @@
 # Bodu.Text.Formats
 
-Parsers and serializers for common text document formats on .NET 8 — delimited text (RFC 4180 CSV / TSV), DotEnv, INI, and TOML. Each format follows the same shape: a static convenience entry point (`Parse` / `Format` / `TryParse`), a low-level `Reader` / `Writer` pair, an immutable document model, and an options struct that controls parsing behaviour and round-trip fidelity.
+Parsers and serializers for common text document formats on .NET 8 — delimited text (RFC 4180 CSV / TSV), DotEnv, and INI. Each format follows the same shape: a static convenience entry point (`Parse` / `Format` / `TryParse`), a low-level `Reader` / `Writer` pair, an immutable document model, and an options struct that controls parsing behaviour and round-trip fidelity.
 
 ## Installation
 
@@ -17,7 +17,6 @@ Targets `net8.0`.
 | Delimited (RFC 4180) | `Bodu.Text.Delimited` | `Delimited` | `DelimitedDocument` / `DelimitedRow` | `DelimitedParseOptions` |
 | DotEnv | `Bodu.Text.DotEnv` | `DotEnv` | `DotEnvDocument` / `DotEnvEntry` | `DotEnvParseOptions` |
 | INI | `Bodu.Text.Ini` | `Ini` | `IniDocument` / `IniSection` / `IniEntry` | `IniParseOptions` |
-| TOML (1.0 / 1.1) | `Bodu.Text.Toml` | `Toml` | `TomlTable` / `TomlValue` | `TomlReaderOptions` |
 
 ## API shape
 
@@ -36,9 +35,9 @@ DelimitedDocument loaded = Delimited.Load(stream);
 - Static `Parse(ReadOnlySpan<char>, options)` / `Format(document)` with `TryParse` companions.
 - Stream `Load` / `Save` with async variants where applicable.
 - Comments and layout are preserved in the document model (`IniComment`, `DotEnvComment`) so parse → serialize round-trips faithfully.
-- Each format reports failures through a dedicated exception (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`, `TomlFormatException`) derived from `TextFormatException`.
+- Each format reports failures through a dedicated exception (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`) derived from `TextFormatException`.
 
-Parse options expose the behavioural knobs each format needs — delimiter / quote / comment characters and duplicate-header and malformed-record policies for delimited text; case sensitivity and duplicate-section/key policies for INI; export-prefix, inline-comment, and interpolation toggles for DotEnv; and spec-version selection for TOML.
+Parse options expose the behavioural knobs each format needs — delimiter / quote / comment characters and duplicate-header and malformed-record policies for delimited text; case sensitivity and duplicate-section/key policies for INI; and export-prefix, inline-comment, and interpolation toggles for DotEnv.
 
 ## Testing
 
