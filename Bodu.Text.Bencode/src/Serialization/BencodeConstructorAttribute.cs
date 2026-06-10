@@ -17,6 +17,6 @@ namespace Bodu.Text.Bencode.Serialization;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
 public sealed class BencodeConstructorAttribute
-    : Attribute
+    : BencodeAttribute
 {
 }

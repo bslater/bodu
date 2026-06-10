@@ -20,7 +20,7 @@ namespace Bodu.Text.Bencode.Serialization;
     AllowMultiple = false,
     Inherited = true)]
 public sealed class BencodeConverterAttribute
-    : Attribute
+    : BencodeAttribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodeConverterAttribute" /> class.

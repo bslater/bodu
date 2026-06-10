@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Serialization.Metadata;
 
 namespace Bodu.Text.Bencode.Serialization.Converters;
@@ -39,6 +40,7 @@ internal sealed class ObjectConverter<T>
             throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_NotSupported_Deserialize, typeof(T)));
 
         Dictionary<PropertyMetadata, object?> values = [];
+        Dictionary<string, BencodeNode?>? extensionEntries = null;
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
         {
             var name = reader.GetString();
@@ -52,6 +54,11 @@ internal sealed class ObjectConverter<T>
                         string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_DuplicateProperty, name),
                         reader.BytesConsumed);
                 }
+            }
+            else if (metadata.ExtensionData is not null)
+            {
+                extensionEntries ??= new Dictionary<string, BencodeNode?>(StringComparer.Ordinal);
+                extensionEntries[name] = BencodeNode.ReadFrom(ref reader);
             }
             else
             {
@@ -69,7 +76,9 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        return (T)Construct(metadata, values);
+        var instance = (T)Construct(metadata, values);
+        PopulateExtensionData(metadata, instance, extensionEntries);
+        return instance;
     }
 
     /// <inheritdoc />
@@ -85,34 +94,96 @@ internal sealed class ObjectConverter<T>
         foreach (PropertyMetadata property in metadata.Properties)
         {
             object? memberValue = property.GetValue(value);
-            if (ShouldSkip(property, memberValue))
+            if (ShouldSkip(property, memberValue, options))
                 continue;
 
             writer.WritePropertyName(property.WireName);
             property.Converter.WriteAsObject(writer, memberValue, options);
         }
 
+        WriteExtensionData(writer, metadata, value);
+
         writer.WriteEndDictionary();
     }
 
     /// <summary>
-    /// Determines whether a member is omitted from the output for the supplied value.
+    /// Writes the entries held by the type's extension-data member, when one is declared and populated. The writer
+    /// re-sorts dictionary keys on close, so the entries merge into canonical key order alongside the type's other
+    /// members.
+    /// </summary>
+    /// <param name="writer">The destination writer, positioned inside the open dictionary.</param>
+    /// <param name="metadata">The type metadata.</param>
+    /// <param name="value">The instance being written.</param>
+    private static void WriteExtensionData(Utf8BencodeWriter writer, TypeMetadata metadata, T value)
+    {
+        if (metadata.ExtensionData is not { } member)
+            return;
+
+        if (member.GetValue(value!) is not IEnumerable<KeyValuePair<string, BencodeNode?>> entries)
+            return;
+
+        foreach (KeyValuePair<string, BencodeNode?> entry in entries)
+        {
+            if (entry.Value is null)
+                continue;
+
+            writer.WritePropertyName(entry.Key);
+            entry.Value.WriteTo(writer);
+        }
+    }
+
+    /// <summary>
+    /// Assigns the captured unmatched entries to the type's extension-data member, materializing the member's declared
+    /// type or adding into a pre-initialized instance when the member is get-only.
+    /// </summary>
+    /// <param name="metadata">The type metadata.</param>
+    /// <param name="instance">The constructed instance.</param>
+    /// <param name="entries">The captured unmatched entries, or <see langword="null" /> when none were read.</param>
+    private static void PopulateExtensionData(TypeMetadata metadata, T instance, Dictionary<string, BencodeNode?>? entries)
+    {
+        if (entries is null || entries.Count == 0 || metadata.ExtensionData is not { } member)
+            return;
+
+        if (member.CanSet)
+        {
+            object materialized = member.PropertyType == typeof(BencodeObject)
+                ? new BencodeObject(entries)
+                : entries;
+            member.SetValue(instance!, materialized);
+            return;
+        }
+
+        if (member.GetValue(instance!) is IDictionary<string, BencodeNode?> existing)
+        {
+            foreach (KeyValuePair<string, BencodeNode?> entry in entries)
+                existing[entry.Key] = entry.Value;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a member is omitted from the output for the supplied value, applying the member's own ignore
+    /// condition when present and otherwise the serializer-wide default.
     /// </summary>
     /// <param name="property">The member metadata.</param>
     /// <param name="value">The member value.</param>
+    /// <param name="options">The serializer options that supply the default ignore condition.</param>
     /// <returns>
     /// <see langword="true" /> when the member should be skipped; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// A <see langword="null" /> value is always skipped because Bencode cannot represent it; the conditional-ignore
-    /// settings refine that for non-null default values.
+    /// A <see langword="null" /> value is always skipped because Bencode cannot represent it. For a non-null value, the
+    /// effective condition is the member's <see cref="PropertyMetadata.ConditionalIgnore" /> when set, otherwise
+    /// <see cref="BencodeSerializerOptions.DefaultIgnoreCondition" />: a value is skipped when the effective condition
+    /// is <see cref="BencodeIgnoreCondition.WhenWritingDefault" /> and the value equals the member's default-type
+    /// value.
     /// </remarks>
-    private static bool ShouldSkip(PropertyMetadata property, object? value)
+    private static bool ShouldSkip(PropertyMetadata property, object? value, BencodeSerializerOptions options)
     {
         if (value is null)
             return true;
 
-        return property.ConditionalIgnore == BencodeIgnoreCondition.WhenWritingDefault && Equals(value, property.DefaultTypeValue);
+        BencodeIgnoreCondition effective = property.ConditionalIgnore ?? options.DefaultIgnoreCondition;
+        return effective == BencodeIgnoreCondition.WhenWritingDefault && Equals(value, property.DefaultTypeValue);
     }
 
     /// <summary>

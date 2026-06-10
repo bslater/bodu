@@ -7,22 +7,29 @@
 namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
-/// Specifies when a member annotated with <see cref="BencodeIgnoreAttribute" /> is excluded from serialization.
+/// Specifies the condition under which a member is excluded from serialization, whether through
+/// <see cref="BencodeIgnoreAttribute" /> on the member or through the serializer-wide default ignore condition. Mirrors
+/// <see cref="System.Text.Json.Serialization.JsonIgnoreCondition" />.
 /// </summary>
 public enum BencodeIgnoreCondition
 {
     /// <summary>
-    /// The member is always ignored, for both reading and writing. This is the default.
+    /// Property is never ignored.
     /// </summary>
-    Always,
+    Never = 0,
 
     /// <summary>
-    /// The member is ignored when writing only if its value is <see langword="null" />.
+    /// Property is always ignored.
     /// </summary>
-    WhenWritingNull,
+    Always = 1,
 
     /// <summary>
-    /// The member is ignored when writing only if its value equals the default value of its type.
+    /// Ignored on write when it equals the default for its type.
     /// </summary>
-    WhenWritingDefault,
+    WhenWritingDefault = 2,
+
+    /// <summary>
+    /// Ignored on write when null.
+    /// </summary>
+    WhenWritingNull = 3,
 }

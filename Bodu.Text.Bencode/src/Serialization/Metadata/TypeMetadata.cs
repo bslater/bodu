@@ -57,13 +57,17 @@ internal sealed class TypeMetadata
     /// </param>
     /// <param name="constructorParameters">The member bound to each constructor parameter by position.</param>
     /// <param name="constructorDefaults">The default value for each constructor parameter.</param>
+    /// <param name="extensionData">
+    /// The member that captures unmatched dictionary entries, or <see langword="null" /> when the type declares none.
+    /// </param>
     internal TypeMetadata(
         Type type,
         PropertyMetadata[] properties,
         Dictionary<string, PropertyMetadata> byWireName,
         ConstructorInfo? constructor,
         PropertyMetadata?[] constructorParameters,
-        object?[] constructorDefaults)
+        object?[] constructorDefaults,
+        PropertyMetadata? extensionData)
     {
         Type = type;
         _properties = properties;
@@ -71,6 +75,7 @@ internal sealed class TypeMetadata
         _constructor = constructor;
         _constructorParameters = constructorParameters;
         _constructorDefaults = constructorDefaults;
+        ExtensionData = extensionData;
     }
 
     /// <summary>
@@ -84,6 +89,13 @@ internal sealed class TypeMetadata
     /// </summary>
     /// <returns>The ordered members.</returns>
     internal IReadOnlyList<PropertyMetadata> Properties => _properties;
+
+    /// <summary>
+    /// Gets the member that captures dictionary entries with no matching property, or <see langword="null" /> when the
+    /// type declares none.
+    /// </summary>
+    /// <returns>The extension-data member, or <see langword="null" />.</returns>
+    internal PropertyMetadata? ExtensionData { get; }
 
     /// <summary>
     /// Gets a value indicating whether the type is constructed through a parameterized constructor.

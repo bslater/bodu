@@ -19,7 +19,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class BencodePropertyOrderAttribute
-    : Attribute
+    : BencodeAttribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodePropertyOrderAttribute" /> class.

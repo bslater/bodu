@@ -236,6 +236,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to BencodeIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
+        /// </summary>
+        internal static string Arg_OutOfRange_DefaultIgnoreConditionAlways {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_DefaultIgnoreConditionAlways", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected end of input while reading a value of type '{0}'..
         /// </summary>
         internal static string Op_Invalid_UnexpectedEndOfInput {
@@ -421,6 +430,24 @@ namespace Bodu {
         internal static string Op_Invalid_ElementKindMismatch {
             get {
                 return ResourceManager.GetString("Op_Invalid_ElementKindMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The extension-data member '{0}' on type '{1}' must be a BencodeObject or IDictionary&lt;string, BencodeNode?&gt;..
+        /// </summary>
+        internal static string Op_Invalid_ExtensionDataType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExtensionDataType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' declares more than one extension-data member..
+        /// </summary>
+        internal static string Op_Invalid_MultipleExtensionData {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MultipleExtensionData", resourceCulture);
             }
         }
 

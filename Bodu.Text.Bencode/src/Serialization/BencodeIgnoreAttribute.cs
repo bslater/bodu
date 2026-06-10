@@ -15,7 +15,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class BencodeIgnoreAttribute
-    : Attribute
+    : BencodeAttribute
 {
     /// <summary>
     /// Gets or sets the condition under which the member is ignored.

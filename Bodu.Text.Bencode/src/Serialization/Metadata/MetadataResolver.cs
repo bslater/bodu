@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Bodu.Text.Bencode.Nodes;
 
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 
@@ -29,24 +31,39 @@ internal static class MetadataResolver
     internal static TypeMetadata Resolve(Type type, BencodeSerializerOptions options)
     {
         List<Draft> drafts = [];
+        PropertyMetadata? extensionData = null;
         var declarationIndex = 0;
         foreach (PropertyInfo property in type.GetProperties(MemberFlags))
         {
-            if (property.GetIndexParameters().Length > 0 || property.GetMethod is null || !property.GetMethod.IsPublic)
+            var included = property.IsDefined(typeof(BencodeIncludeAttribute), inherit: true);
+            if (property.GetIndexParameters().Length > 0 || property.GetMethod is null || (!property.GetMethod.IsPublic && !included))
                 continue;
 
             BencodeIgnoreAttribute? ignore = property.GetCustomAttribute<BencodeIgnoreAttribute>(inherit: true);
             if (ignore is not null && ignore.Condition == BencodeIgnoreCondition.Always)
                 continue;
 
-            var wireName = property.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
-                ?? options.PropertyNamingPolicy?.ConvertName(property.Name)
-                ?? property.Name;
-
             BencodeConverter converter = ResolvePropertyConverter(property, options);
             var order = property.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             BencodeIgnoreCondition? conditional = ignore?.Condition;
-            var requiredByAttribute = property.IsDefined(typeof(RequiredMemberAttribute), inherit: false);
+            var requiredByAttribute = property.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
+                || property.IsDefined(typeof(BencodeRequiredAttribute), inherit: false);
+
+            if (property.IsDefined(typeof(BencodeExtensionDataAttribute), inherit: true))
+            {
+                if (extensionData is not null)
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_MultipleExtensionData, type));
+
+                if (!IsSupportedExtensionDataType(property.PropertyType))
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExtensionDataType, property.Name, type));
+
+                extensionData = new Draft(property, property.Name, converter, conditional, order, requiredByAttribute, declarationIndex++).ToMetadata();
+                continue;
+            }
+
+            var wireName = property.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
+                ?? options.PropertyNamingPolicy?.ConvertName(property.Name)
+                ?? property.Name;
 
             drafts.Add(new Draft(property, wireName, converter, conditional, order, requiredByAttribute, declarationIndex++));
         }
@@ -83,8 +100,22 @@ internal static class MetadataResolver
                 constructorDefaults[i] = parameters[i].HasDefaultValue ? parameters[i].DefaultValue : DefaultOf(parameters[i].ParameterType);
         }
 
-        return new TypeMetadata(type, ordered, byWireName, constructor, constructorParameters, constructorDefaults);
+        return new TypeMetadata(type, ordered, byWireName, constructor, constructorParameters, constructorDefaults, extensionData);
     }
+
+    /// <summary>
+    /// Determines whether a type is a supported extension-data member type.
+    /// </summary>
+    /// <param name="type">The member type to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when the type is <see cref="BencodeObject" />,
+    /// <c>IDictionary&lt;string, BencodeNode?&gt;</c>, or <c>Dictionary&lt;string, BencodeNode?&gt;</c>; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsSupportedExtensionDataType(Type type) =>
+        type == typeof(BencodeObject)
+            || type == typeof(IDictionary<string, BencodeNode?>)
+            || type == typeof(Dictionary<string, BencodeNode?>);
 
     /// <summary>
     /// Resolves the converter for a property, honoring a member-level converter attribute before falling back to the

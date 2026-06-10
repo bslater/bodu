@@ -15,12 +15,19 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming
-/// policy, null handling, and the maximum nesting depth. Mirrors <see cref="System.Text.Json.JsonSerializerOptions" />.
+/// policy, the default ignore condition, and the maximum nesting depth. Mirrors
+/// <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </summary>
 /// <remarks>
+/// <para>
 /// An options instance becomes read-only the first time it is used to serialize or deserialize a value; subsequent
 /// attempts to change a setting throw. Resolved converters and type metadata are cached on the instance, so reusing one
 /// configured options object across many operations is the efficient pattern.
+/// </para>
+/// <para>
+/// <see cref="DefaultIgnoreCondition" /> governs when a member is omitted on write. Because Bencode has no null token,
+/// a member whose value is <see langword="null" /> is omitted regardless of that setting.
+/// </para>
 /// </remarks>
 public sealed class BencodeSerializerOptions
 {
@@ -61,9 +68,9 @@ public sealed class BencodeSerializerOptions
     private bool _caseInsensitive = true;
 
     /// <summary>
-    /// The null-handling policy.
+    /// The serializer-wide default condition under which a member is omitted on write.
     /// </summary>
-    private BencodeNullHandling _nullHandling = BencodeNullHandling.IgnoreOnWrite;
+    private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
 
     /// <summary>
     /// The maximum nesting depth.
@@ -71,10 +78,36 @@ public sealed class BencodeSerializerOptions
     private int _maxDepth = DefaultMaxDepth;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BencodeSerializerOptions" /> class with default settings.
+    /// Initializes a new instance of the <see cref="BencodeSerializerOptions" /> class with default (general-purpose)
+    /// settings.
     /// </summary>
     public BencodeSerializerOptions()
+        : this(BencodeSerializerDefaults.General)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BencodeSerializerOptions" /> class with a base set of defaults
+    /// appropriate for the specified usage scenario. Mirrors the
+    /// <see cref="System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults)" /> constructor.
+    /// </summary>
+    /// <param name="defaults">The base defaults to apply.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="defaults" /> is not a defined <see cref="BencodeSerializerDefaults" /> value.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="BencodeSerializerDefaults.Web" /> selects camel-case property naming and case-insensitive
+    /// property-name matching; <see cref="BencodeSerializerDefaults.General" /> leaves the defaults unchanged.
+    /// </remarks>
+    public BencodeSerializerOptions(BencodeSerializerDefaults defaults)
+    {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(defaults);
+
+        if (defaults == BencodeSerializerDefaults.Web)
+        {
+            _namingPolicy = BencodeNamingPolicy.CamelCase;
+            _caseInsensitive = true;
+        }
     }
 
     /// <summary>
@@ -119,19 +152,32 @@ public sealed class BencodeSerializerOptions
     }
 
     /// <summary>
-    /// Gets or sets how a member whose value is <see langword="null" /> is treated when writing.
+    /// Gets or sets the default condition that determines when a member is omitted on write, applied to every member
+    /// that does not carry its own <see cref="Serialization.BencodeIgnoreAttribute" />.
     /// </summary>
-    /// <value>The null-handling policy; <see cref="BencodeNullHandling.IgnoreOnWrite" /> by default.</value>
-    /// <returns>The configured null-handling policy.</returns>
+    /// <value>The default ignore condition; <see cref="BencodeIgnoreCondition.Never" /> by default.</value>
+    /// <returns>The configured default ignore condition.</returns>
+    /// <remarks>
+    /// Because Bencode has no null token, a member whose value is <see langword="null" /> is omitted from the output
+    /// regardless of this setting, so <see cref="BencodeIgnoreCondition.Never" /> behaves like
+    /// <see cref="BencodeIgnoreCondition.WhenWritingNull" /> for null values specifically.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the value is undefined, or when it is <see cref="BencodeIgnoreCondition.Always" />, which is not a
+    /// valid default.
+    /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public BencodeNullHandling NullHandling
+    public BencodeIgnoreCondition DefaultIgnoreCondition
     {
-        get => _nullHandling;
+        get => _defaultIgnoreCondition;
         set
         {
             VerifyMutable();
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
-            _nullHandling = value;
+            if (value == BencodeIgnoreCondition.Always)
+                throw new ArgumentOutOfRangeException(nameof(value), BencodeResourceStrings.Arg_OutOfRange_DefaultIgnoreConditionAlways);
+
+            _defaultIgnoreCondition = value;
         }
     }
 

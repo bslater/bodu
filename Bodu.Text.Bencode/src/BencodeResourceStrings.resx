@@ -37,6 +37,7 @@
   <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve"><value>Stream does not support writing.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a BencodeConverter.</value></data>
   <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
+  <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>BencodeIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>
   <data name="Op_Invalid_UnexpectedEndOfInput" xml:space="preserve"><value>Unexpected end of input while reading a value of type '{0}'.</value></data>
   <data name="Op_Invalid_MissingRequiredMember" xml:space="preserve"><value>Required member '{0}' was not present in the input for type '{1}'.</value></data>
   <data name="Op_Invalid_DuplicateProperty" xml:space="preserve"><value>The property '{0}' appears more than once.</value></data>
@@ -58,5 +59,7 @@
   <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve"><value>The node already has a parent.</value></data>
   <data name="Op_Invalid_NodeValueConversion" xml:space="preserve"><value>A Bencode value of kind '{1}' cannot be converted to type '{0}'.</value></data>
   <data name="Op_Invalid_ElementKindMismatch" xml:space="preserve"><value>This operation requires a {0} element, but the element is a {1} element.</value></data>
+  <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a BencodeObject or IDictionary&lt;string, BencodeNode?&gt;.</value></data>
+  <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
 </root>
