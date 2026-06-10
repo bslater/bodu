@@ -17,6 +17,39 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
     exit 0
 fi
 
+# ---------------------------------------------------------------------------
+# dotnet-dnceng plugin repair
+#
+# .claude/settings.json registers the dotnet/arcade-skills marketplace and
+# enables its dotnet-dnceng plugin. The upstream plugin manifest currently
+# declares "agents": ["agents/ci-investigator.agent.md"], but Claude Code
+# requires plugin-relative paths to start with "./", so the automatic install
+# at session start fails manifest validation. Patch the cached marketplace
+# clone and install the plugin so its skills load from the next session in
+# this container onward. Idempotent, and a no-op once the manifest is fixed
+# upstream; failures never block session start.
+# ---------------------------------------------------------------------------
+repair_dnceng_plugin() {
+    command -v claude >/dev/null 2>&1 || return 0
+
+    local manifest="$HOME/.claude/plugins/marketplaces/dotnet-arcade-skills/plugins/dotnet-dnceng/plugin.json"
+    [ -f "$manifest" ] || return 0
+
+    if grep -q '"agents/ci-investigator\.agent\.md"' "$manifest"; then
+        sed -i 's#"agents/ci-investigator\.agent\.md"#"./agents/ci-investigator.agent.md"#' "$manifest"
+        echo "[session-start] Patched dotnet-dnceng plugin manifest (agents path lacked ./ prefix)."
+    fi
+
+    if [ ! -d "$HOME/.claude/plugins/cache/dotnet-arcade-skills/dotnet-dnceng" ]; then
+        if claude plugin install dotnet-dnceng@dotnet-arcade-skills >/dev/null 2>&1; then
+            echo "[session-start] Installed dotnet-dnceng plugin; its skills load from the next session."
+        else
+            echo "[session-start] dotnet-dnceng plugin install failed; its skills are unavailable in this container." >&2
+        fi
+    fi
+}
+repair_dnceng_plugin || true
+
 # Fast path: a .NET 10 SDK is already installed. Checking for the 10.x band
 # specifically (rather than merely `dotnet` on PATH) ensures we still upgrade
 # a container image that ships only an older SDK such as 8.0.

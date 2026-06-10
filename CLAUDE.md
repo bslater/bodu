@@ -85,9 +85,11 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 ### SDK Bootstrap (Claude Code on the web)
 
-`.claude/hooks/session-start.sh` installs `dotnet-sdk-8.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when `dotnet` is already on `PATH` it exits immediately, so resume / clear / compact sessions pay no extra cost.
+`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost.
 
-Local developer machines are untouched (the hook short-circuits when `CLAUDE_CODE_REMOTE` is unset), and the hook is registered via `.claude/settings.json`.
+The hook also repairs the `dotnet-dnceng` plugin that `.claude/settings.json` enables from the `dotnet/arcade-skills` marketplace (`extraKnownMarketplaces` / `enabledPlugins`): the upstream plugin manifest currently fails Claude Code's path validation (its `agents` entry lacks the required `./` prefix), so the hook patches the cached marketplace clone and installs the plugin. Its skills then load from the next session in the container. The repair is a no-op once the manifest is fixed upstream and can be removed at that point.
+
+Local developer machines are untouched (the hook short-circuits when `CLAUDE_CODE_REMOTE` is unset), and the hook is registered via `.claude/settings.json`. Note for local use: until the upstream manifest fix lands, the plugin install triggered by the project settings may fail validation on a local machine; sessions still work, just without the plugin's skills.
 
 ## Branching and Commits
 
