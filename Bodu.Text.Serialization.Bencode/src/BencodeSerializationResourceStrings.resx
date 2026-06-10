@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Format_Invalid_UnexpectedEnd" xml:space="preserve">
+    <value>Unexpected end of input while parsing the Bencode document.</value>
+  </data>
+  <data name="Format_Invalid_ExpectedValue" xml:space="preserve">
+    <value>Expected a Bencode value at byte {0}.</value>
+  </data>
+  <data name="Format_Invalid_Integer" xml:space="preserve">
+    <value>Invalid Bencode integer at byte {0}.</value>
+  </data>
+  <data name="Format_Invalid_IntegerOverflow" xml:space="preserve">
+    <value>The Bencode integer at byte {0} is outside the range of a 64-bit signed integer.</value>
+  </data>
+  <data name="Format_Invalid_StringLength" xml:space="preserve">
+    <value>Invalid Bencode byte-string length at byte {0}.</value>
+  </data>
+  <data name="Format_Invalid_StringTooShort" xml:space="preserve">
+    <value>The Bencode byte string at byte {0} extends past the end of input.</value>
+  </data>
+  <data name="Format_Invalid_DictionaryKeyNotString" xml:space="preserve">
+    <value>A Bencode dictionary key must be a byte string at byte {0}.</value>
+  </data>
+  <data name="Format_Invalid_DictionaryUnordered" xml:space="preserve">
+    <value>Bencode dictionary keys must appear in ascending order without duplicates at byte {0}.</value>
+  </data>
+  <data name="Format_Invalid_TrailingData" xml:space="preserve">
+    <value>Unexpected trailing data after the Bencode document at byte {0}.</value>
+  </data>
+  <data name="Format_Invalid_NestingTooDeep" xml:space="preserve">
+    <value>Bencode container nesting exceeds the maximum depth of {0}.</value>
+  </data>
+  <data name="Op_NotSupported_BencodeValueKind" xml:space="preserve">
+    <value>The Bencode format cannot represent a {0} value; register a converter that maps it to an integer or byte string.</value>
+  </data>
+</root>
