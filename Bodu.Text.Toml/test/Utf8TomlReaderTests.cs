@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml;
 /// Verifies the behaviour of <see cref="Utf8TomlReader" />, the forward-only TOML token reader.
 /// </summary>
 [TestClass]
-public sealed class Utf8TomlReaderTests
+public sealed partial class Utf8TomlReaderTests
 {
     /// <summary>
     /// Verifies that a representative document can be read happy-path, producing a table containing a scalar.
@@ -577,6 +577,31 @@ public sealed class Utf8TomlReaderTests
     /// <returns>A reader positioned before the first token.</returns>
     private static Utf8TomlReader Create(string toml) =>
         new(Encoding.UTF8.GetBytes(toml));
+
+    /// <summary>
+    /// Creates a reader over the UTF-8 encoding of <paramref name="toml" /> enforcing the TOML v1.1.0 grammar.
+    /// </summary>
+    /// <param name="toml">The TOML source text.</param>
+    /// <returns>A reader positioned before the first token.</returns>
+    private static Utf8TomlReader CreateV11(string toml) =>
+        new(Encoding.UTF8.GetBytes(toml), new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_1 });
+
+    /// <summary>
+    /// Advances a reader positioned at the document start over <c>StartTable</c> and the single property named
+    /// <c>v</c>, then over the value token, asserting it is of the expected kind.
+    /// </summary>
+    /// <param name="reader">The reader to advance.</param>
+    /// <param name="expected">The expected value token type.</param>
+    /// <remarks>
+    /// The helper supports the many single key/value tests whose source is <c>v = &lt;value&gt;</c>, leaving the reader
+    /// positioned on the decoded value token ready for a typed accessor assertion.
+    /// </remarks>
+    private static void ExpectSingleValue(ref Utf8TomlReader reader, TomlTokenType expected)
+    {
+        ExpectStartTable(ref reader);
+        ExpectProperty(ref reader, "v");
+        ExpectToken(ref reader, expected);
+    }
 
     /// <summary>
     /// Advances the reader and asserts that it landed on a <see cref="TomlTokenType.StartTable" />.
