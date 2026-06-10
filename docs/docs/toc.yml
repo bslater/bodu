@@ -93,3 +93,11 @@
       href: formats/getting-started.md
     - name: Parser policies
       href: formats/parser-policies.md
+- name: Bodu.Text.Serialization
+  items:
+    - name: Introduction
+      href: serialization/index.md
+    - name: Core concepts
+      href: serialization/concepts.md
+    - name: Getting started
+      href: serialization/getting-started.md

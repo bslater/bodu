@@ -306,3 +306,13 @@
       items:
         - name: Streams and async I/O
           href: formats/streaming.md
+- name: Bodu.Text.Serialization
+  items:
+    - name: Overview
+      href: serialization/index.md
+    - name: Using TOML
+      href: serialization/toml.md
+    - name: Using Bencode
+      href: serialization/bencode.md
+    - name: Writing converters
+      href: serialization/converters.md
