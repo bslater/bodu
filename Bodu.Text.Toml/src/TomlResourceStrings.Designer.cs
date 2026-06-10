@@ -639,5 +639,23 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_NodeValueConversion", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This operation requires a {0} element, but the element is a {1} element..
+        /// </summary>
+        internal static string Op_Invalid_ElementKindMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ElementKindMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No property named '{0}' was found..
+        /// </summary>
+        internal static string IO_KeyNotFound_Property {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_Property", resourceCulture);
+            }
+        }
     }
 }
