@@ -58,11 +58,9 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-un.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-zoroastrian.xml" />
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
-      <LogicalName>Bodu.Globalization.Calendar.NotableDates.v2.xsd</LogicalName>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.schema.json">
-      <LogicalName>Bodu.Globalization.Calendar.NotableDates.v2.schema.json</LogicalName>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization.Calendar\Resources\*.xml">

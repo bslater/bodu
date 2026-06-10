@@ -1,8 +1,8 @@
-{
+﻿{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:bodu:globalization:calendar:v2",
-  "title": "Bodu Notable Date Document (v2)",
-  "description": "Companion JSON schema for the revised Bodu calendar document. Mirrors NotableDates.v2.xsd. JSON ingestion is reserved for a later phase; the v1 loader consumes the XML form only.",
+  "$id": "urn:bodu:globalization:calendar:v1",
+  "title": "Bodu Notable Date Document",
+  "description": "Companion JSON schema for the revised Bodu calendar document. Mirrors NotableDates.xsd. JSON ingestion is reserved for a later phase; the v1 loader consumes the XML form only.",
   "type": "object",
   "required": [ "schemaVersion", "resourceId", "notableDates" ],
   "additionalProperties": false,

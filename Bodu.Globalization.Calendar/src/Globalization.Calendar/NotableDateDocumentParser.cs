@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ internal static class NotableDateDocumentParser
     /// <summary>
     /// The manifest resource name of the embedded notable-date document XSD.
     /// </summary>
-    private const string SchemaResourceName = "Bodu.Globalization.Calendar.NotableDates.v2.xsd";
+    private const string SchemaResourceName = "Bodu.Globalization.Calendar.NotableDates.xsd";
 
     /// <summary>
     /// The XML namespace of the notable-date document vocabulary.
