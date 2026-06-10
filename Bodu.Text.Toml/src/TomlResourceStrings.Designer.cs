@@ -306,5 +306,293 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_WriterMaxDepthExceeded", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' specified by a converter attribute is not a TomlConverter..
+        /// </summary>
+        internal static string Arg_Invalid_ConverterAttributeType {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ConverterAttributeType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute..
+        /// </summary>
+        internal static string Arg_Invalid_ConverterNoParameterlessCtor {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ConverterNoParameterlessCtor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TomlIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
+        /// </summary>
+        internal static string Arg_OutOfRange_DefaultIgnoreConditionAlways {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_DefaultIgnoreConditionAlways", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected end of input while reading a value of type '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_UnexpectedEndOfInput {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnexpectedEndOfInput", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Required member '{0}' was not present in the input for type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_MissingRequiredMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MissingRequiredMember", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property '{0}' appears more than once..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateProperty {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateProperty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to '{0}' is not a defined value of enumeration '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_EnumValueNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumValueNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value {0} is outside the representable range of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_IntegerOverflow {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IntegerOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value '{0}' cannot be converted to type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_TypeConversion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TypeConversion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A char value must be a single-character string..
+        /// </summary>
+        internal static string Op_Invalid_CharLength {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CharLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The converter '{0}' cannot convert type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_ConverterCannotConvert {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ConverterCannotConvert", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Serializer options cannot be modified after they have been used to serialize or deserialize a value..
+        /// </summary>
+        internal static string Op_Invalid_OptionsReadOnly {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OptionsReadOnly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected the start of a table but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedTable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected the start of an array but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedArray {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedArray", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a string but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedString {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an integer but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedInteger {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedInteger", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a floating-point value but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedFloat {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedFloat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a Boolean but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedBoolean {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedBoolean", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an offset date-time but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedOffsetDateTime {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedOffsetDateTime", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a local date-time but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedLocalDateTime {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedLocalDateTime", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a local date but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedLocalDate {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedLocalDate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a local time but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedLocalTime {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedLocalTime", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an array of integers or a Base64 string for a byte array but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedByteArray {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedByteArray", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a value but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The element is a '{0}' and does not wrap a scalar value..
+        /// </summary>
+        internal static string Op_Invalid_ElementNotScalar {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ElementNotScalar", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No converter is configured for type '{0}'..
+        /// </summary>
+        internal static string Op_NotSupported_NoConverter {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NoConverter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' cannot be deserialized because it cannot be instantiated..
+        /// </summary>
+        internal static string Op_NotSupported_Deserialize {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_Deserialize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A null collection element cannot be written to TOML..
+        /// </summary>
+        internal static string Op_NotSupported_NullCollectionElement {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullCollectionElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The extension-data member '{0}' on type '{1}' must be a TomlObject or IDictionary&lt;string, TomlElement?&gt;..
+        /// </summary>
+        internal static string Op_Invalid_ExtensionDataType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExtensionDataType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' declares more than one extension-data member..
+        /// </summary>
+        internal static string Op_Invalid_MultipleExtensionData {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MultipleExtensionData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The TOML document contains a key '{0}' that maps to no member of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_UnmappedMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnmappedMember", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The root value of a TOML document must map to a table, but type '{0}' does not..
+        /// </summary>
+        internal static string Op_Invalid_RootNotTable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_RootNotTable", resourceCulture);
+            }
+        }
     }
 }

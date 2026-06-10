@@ -46,4 +46,36 @@
   <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve"><value>The string is not terminated.</value></data>
   <data name="Format_Invalid_TomlUnterminatedTable" xml:space="preserve"><value>The table header is not terminated.</value></data>
   <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a TomlConverter.</value></data>
+  <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
+  <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>TomlIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>
+  <data name="Op_Invalid_UnexpectedEndOfInput" xml:space="preserve"><value>Unexpected end of input while reading a value of type '{0}'.</value></data>
+  <data name="Op_Invalid_MissingRequiredMember" xml:space="preserve"><value>Required member '{0}' was not present in the input for type '{1}'.</value></data>
+  <data name="Op_Invalid_DuplicateProperty" xml:space="preserve"><value>The property '{0}' appears more than once.</value></data>
+  <data name="Op_Invalid_EnumValueNotFound" xml:space="preserve"><value>'{0}' is not a defined value of enumeration '{1}'.</value></data>
+  <data name="Op_Invalid_IntegerOverflow" xml:space="preserve"><value>The value {0} is outside the representable range of type '{1}'.</value></data>
+  <data name="Op_Invalid_TypeConversion" xml:space="preserve"><value>The value '{0}' cannot be converted to type '{1}'.</value></data>
+  <data name="Op_Invalid_CharLength" xml:space="preserve"><value>A char value must be a single-character string.</value></data>
+  <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
+  <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be modified after they have been used to serialize or deserialize a value.</value></data>
+  <data name="Op_Invalid_ExpectedTable" xml:space="preserve"><value>Expected the start of a table but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedArray" xml:space="preserve"><value>Expected the start of an array but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedString" xml:space="preserve"><value>Expected a string but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedFloat" xml:space="preserve"><value>Expected a floating-point value but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedBoolean" xml:space="preserve"><value>Expected a Boolean but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedOffsetDateTime" xml:space="preserve"><value>Expected an offset date-time but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedLocalDateTime" xml:space="preserve"><value>Expected a local date-time but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedLocalDate" xml:space="preserve"><value>Expected a local date but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedLocalTime" xml:space="preserve"><value>Expected a local time but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedByteArray" xml:space="preserve"><value>Expected an array of integers or a Base64 string for a byte array but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedValue" xml:space="preserve"><value>Expected a value but found '{0}'.</value></data>
+  <data name="Op_Invalid_ElementNotScalar" xml:space="preserve"><value>The element is a '{0}' and does not wrap a scalar value.</value></data>
+  <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
+  <data name="Op_NotSupported_Deserialize" xml:space="preserve"><value>Type '{0}' cannot be deserialized because it cannot be instantiated.</value></data>
+  <data name="Op_NotSupported_NullCollectionElement" xml:space="preserve"><value>A null collection element cannot be written to TOML.</value></data>
+  <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a TomlObject or IDictionary&lt;string, TomlElement?&gt;.</value></data>
+  <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
+  <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The TOML document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
+  <data name="Op_Invalid_RootNotTable" xml:space="preserve"><value>The root value of a TOML document must map to a table, but type '{0}' does not.</value></data>
 </root>
