@@ -197,13 +197,30 @@ public abstract class BencodeNode
     /// The underlying reader enforces the canonical grammar — a single root value, ascending unique dictionary keys,
     /// and no trailing bytes — so a successful parse round-trips byte-for-byte through <see cref="ToByteArray" />.
     /// </remarks>
-    public static BencodeNode? Parse(ReadOnlySpan<byte> data)
+    public static BencodeNode? Parse(ReadOnlySpan<byte> data) =>
+        Parse(data, default);
+
+    /// <summary>
+    /// Parses a single Bencode document into a node tree, using the supplied options for every object created while
+    /// parsing.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes.</param>
+    /// <param name="options">The node options controlling property-name case sensitivity.</param>
+    /// <returns>The root node of the parsed tree.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode.
+    /// </exception>
+    /// <remarks>
+    /// Every <see cref="BencodeObject" /> materialized while parsing adopts the comparison selected by
+    /// <paramref name="options" />, so a case-insensitive parse yields a tree whose dictionary lookups ignore case.
+    /// </remarks>
+    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options)
     {
         var reader = new Utf8BencodeReader(data);
         if (!reader.Read())
             throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
 
-        return ReadFrom(ref reader);
+        return ReadFrom(ref reader, options);
     }
 
     /// <summary>
@@ -216,9 +233,27 @@ public abstract class BencodeNode
     /// </exception>
     /// <remarks>
     /// On return the reader is positioned on the value's last token (the scalar token itself, or the container's end
+    /// token), matching the read-positioning contract the serializer's converters observe. Objects are created with the
+    /// default, case-sensitive comparison.
+    /// </remarks>
+    internal static BencodeNode ReadFrom(ref Utf8BencodeReader reader) =>
+        ReadFrom(ref reader, default);
+
+    /// <summary>
+    /// Reads a node from the reader, which must be positioned on the first token of the value to read, materializing
+    /// every object with the comparison selected by the supplied options.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the value's first token.</param>
+    /// <param name="options">The node options controlling property-name case sensitivity.</param>
+    /// <returns>The node read from the reader.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the reader is positioned on an unexpected token.
+    /// </exception>
+    /// <remarks>
+    /// On return the reader is positioned on the value's last token (the scalar token itself, or the container's end
     /// token), matching the read-positioning contract the serializer's converters observe.
     /// </remarks>
-    internal static BencodeNode ReadFrom(ref Utf8BencodeReader reader)
+    internal static BencodeNode ReadFrom(ref Utf8BencodeReader reader, BencodeNodeOptions options)
     {
         switch (reader.TokenType)
         {
@@ -232,19 +267,19 @@ public abstract class BencodeNode
             {
                 var array = new BencodeArray();
                 while (reader.Read() && reader.TokenType != BencodeTokenType.EndList)
-                    array.Add(ReadFrom(ref reader));
+                    array.Add(ReadFrom(ref reader, options));
 
                 return array;
             }
 
             case BencodeTokenType.StartDictionary:
             {
-                var obj = new BencodeObject();
+                var obj = new BencodeObject(options);
                 while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
                 {
                     string key = reader.GetString();
                     reader.Read();
-                    obj[key] = ReadFrom(ref reader);
+                    obj[key] = ReadFrom(ref reader, options);
                 }
 
                 return obj;

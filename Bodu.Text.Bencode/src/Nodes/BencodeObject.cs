@@ -37,6 +37,22 @@ public sealed class BencodeObject
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="BencodeObject" /> class that is empty, using the supplied options
+    /// to select the property-name comparison.
+    /// </summary>
+    /// <param name="options">The node options controlling property-name case sensitivity.</param>
+    /// <remarks>
+    /// When <see cref="BencodeNodeOptions.PropertyNameCaseInsensitive" /> is <see langword="true" />, in-memory
+    /// property-name lookups use <see cref="StringComparer.OrdinalIgnoreCase" />; otherwise they use
+    /// <see cref="StringComparer.Ordinal" />. The option does not affect serialization.
+    /// </remarks>
+    public BencodeObject(BencodeNodeOptions options)
+    {
+        _properties = new Dictionary<string, BencodeNode?>(
+            options.PropertyNameCaseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BencodeObject" /> class containing the supplied entries.
     /// </summary>
     /// <param name="items">The initial entries.</param>

@@ -85,6 +85,20 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8BencodeReader" /> struct over the supplied bytes using the
+    /// supplied options.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes.</param>
+    /// <param name="options">The reader options controlling the maximum nesting depth.</param>
+    /// <remarks>
+    /// A <see cref="BencodeReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// </remarks>
+    public Utf8BencodeReader(ReadOnlySpan<byte> data, BencodeReaderOptions options)
+        : this(data, options.MaxDepth <= 0 ? 256 : options.MaxDepth)
+    {
+    }
+
+    /// <summary>
     /// Gets the kind of the current token.
     /// </summary>
     /// <returns>The current token kind.</returns>

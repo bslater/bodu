@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Text.Bencode;
@@ -34,6 +35,18 @@ public ref struct Utf8BencodeWriter
     private readonly List<Frame> _frames;
 
     /// <summary>
+    /// The maximum permitted container nesting depth.
+    /// </summary>
+    /// <remarks>
+    /// The field is <see langword="readonly" /> and assigned once at construction. The writer is a
+    /// <see langword="ref struct" /> passed by value with its mutable state held in the shared managed
+    /// <see cref="_frames" /> and <see cref="_output" />; a <see langword="readonly" /> field set at construction is
+    /// therefore identical across every by-value copy, whereas a mutable value field would not propagate through
+    /// copies.
+    /// </remarks>
+    private readonly int _maxDepth;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Utf8BencodeWriter" /> struct.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
@@ -46,12 +59,42 @@ public ref struct Utf8BencodeWriter
 
         _output = output;
         _frames = [];
+        _maxDepth = 256;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8BencodeWriter" /> struct using the supplied options.
+    /// </summary>
+    /// <param name="output">The destination buffer writer.</param>
+    /// <param name="options">The writer options controlling the maximum nesting depth.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="output" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// A <see cref="BencodeWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// </remarks>
+    public Utf8BencodeWriter(IBufferWriter<byte> output, BencodeWriterOptions options)
+    {
+        ThrowHelper.ThrowIfNull(output);
+
+        _output = output;
+        _frames = [];
+        _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
     }
 
     /// <summary>
     /// Writes the start of a list.
     /// </summary>
-    public readonly void WriteStartList() => _frames.Add(new ListFrame());
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when opening the list would exceed the configured maximum nesting depth.
+    /// </exception>
+    public readonly void WriteStartList()
+    {
+        if (_frames.Count >= _maxDepth)
+            throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
+
+        _frames.Add(new ListFrame());
+    }
 
     /// <summary>
     /// Writes the end of the current list.
@@ -71,7 +114,16 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Writes the start of a dictionary.
     /// </summary>
-    public readonly void WriteStartDictionary() => _frames.Add(new DictionaryFrame());
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when opening the dictionary would exceed the configured maximum nesting depth.
+    /// </exception>
+    public readonly void WriteStartDictionary()
+    {
+        if (_frames.Count >= _maxDepth)
+            throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
+
+        _frames.Add(new DictionaryFrame());
+    }
 
     /// <summary>
     /// Writes the end of the current dictionary, emitting its entries in ascending bytewise key order.

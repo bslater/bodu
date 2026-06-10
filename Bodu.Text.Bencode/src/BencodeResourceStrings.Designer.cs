@@ -308,6 +308,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The maximum write depth of {0} has been exceeded..
+        /// </summary>
+        internal static string Op_Invalid_WriterMaxDepthExceeded {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterMaxDepthExceeded", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Expected the start of a dictionary but found '{0}'..
         /// </summary>
         internal static string Op_Invalid_ExpectedDictionary {
