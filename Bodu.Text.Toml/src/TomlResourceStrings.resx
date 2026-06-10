@@ -70,12 +70,17 @@
   <data name="Op_Invalid_ExpectedLocalTime" xml:space="preserve"><value>Expected a local time but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedByteArray" xml:space="preserve"><value>Expected an array of integers or a Base64 string for a byte array but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedValue" xml:space="preserve"><value>Expected a value but found '{0}'.</value></data>
-  <data name="Op_Invalid_ElementNotScalar" xml:space="preserve"><value>The element is a '{0}' and does not wrap a scalar value.</value></data>
   <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
   <data name="Op_NotSupported_Deserialize" xml:space="preserve"><value>Type '{0}' cannot be deserialized because it cannot be instantiated.</value></data>
   <data name="Op_NotSupported_NullCollectionElement" xml:space="preserve"><value>A null collection element cannot be written to TOML.</value></data>
-  <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a TomlObject or IDictionary&lt;string, TomlElement?&gt;.</value></data>
+  <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a TomlObject or IDictionary&lt;string, TomlNode?&gt;.</value></data>
   <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
   <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The TOML document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
   <data name="Op_Invalid_RootNotTable" xml:space="preserve"><value>The root value of a TOML document must map to a table, but type '{0}' does not.</value></data>
+  <data name="Op_NotSupported_NullNode" xml:space="preserve"><value>A null node cannot be written to TOML.</value></data>
+  <data name="Op_Invalid_NodeNotObject" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a TOML table.</value></data>
+  <data name="Op_Invalid_NodeNotArray" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a TOML array.</value></data>
+  <data name="Op_Invalid_NodeNotValue" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a TOML value.</value></data>
+  <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve"><value>The node already has a parent.</value></data>
+  <data name="Op_Invalid_NodeValueConversion" xml:space="preserve"><value>A TOML value of kind '{1}' cannot be converted to type '{0}'.</value></data>
 </root>

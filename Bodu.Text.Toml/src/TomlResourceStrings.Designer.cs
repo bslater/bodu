@@ -524,15 +524,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The element is a '{0}' and does not wrap a scalar value..
-        /// </summary>
-        internal static string Op_Invalid_ElementNotScalar {
-            get {
-                return ResourceManager.GetString("Op_Invalid_ElementNotScalar", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to No converter is configured for type '{0}'..
         /// </summary>
         internal static string Op_NotSupported_NoConverter {
@@ -560,7 +551,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The extension-data member '{0}' on type '{1}' must be a TomlObject or IDictionary&lt;string, TomlElement?&gt;..
+        ///   Looks up a localized string similar to The extension-data member '{0}' on type '{1}' must be a TomlObject or IDictionary&lt;string, TomlNode?&gt;..
         /// </summary>
         internal static string Op_Invalid_ExtensionDataType {
             get {
@@ -592,6 +583,60 @@ namespace Bodu {
         internal static string Op_Invalid_RootNotTable {
             get {
                 return ResourceManager.GetString("Op_Invalid_RootNotTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A null node cannot be written to TOML..
+        /// </summary>
+        internal static string Op_NotSupported_NullNode {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullNode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a TOML table..
+        /// </summary>
+        internal static string Op_Invalid_NodeNotObject {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeNotObject", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a TOML array..
+        /// </summary>
+        internal static string Op_Invalid_NodeNotArray {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeNotArray", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a TOML value..
+        /// </summary>
+        internal static string Op_Invalid_NodeNotValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeNotValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node already has a parent..
+        /// </summary>
+        internal static string Op_Invalid_NodeAlreadyHasParent {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeAlreadyHasParent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A TOML value of kind '{1}' cannot be converted to type '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_NodeValueConversion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeValueConversion", resourceCulture);
             }
         }
     }

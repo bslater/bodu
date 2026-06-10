@@ -366,10 +366,15 @@ public sealed class TomlSerializerOptions
     /// </returns>
     /// <remarks>
     /// The classification resolves the type's converter and inspects its kind, so a user converter that produces a
-    /// table is accepted at the root and a scalar, array, or enumeration converter is rejected.
+    /// table is accepted at the root and a scalar, array, or enumeration converter is rejected. A
+    /// <see cref="Nodes.TomlNode" /> root is also accepted, deferring the table-root check to the node, which enforces
+    /// it when written.
     /// </remarks>
     internal bool RootMapsToTable(Type type)
     {
+        if (typeof(Nodes.TomlNode).IsAssignableFrom(type))
+            return true;
+
         TomlConverter converter = GetConverter(type);
         Type converterType = converter.GetType();
         if (!converterType.IsGenericType)

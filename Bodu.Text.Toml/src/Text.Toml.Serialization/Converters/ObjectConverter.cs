@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Serialization.Metadata;
 using Bodu.Text.Toml.Writer;
@@ -40,7 +41,7 @@ internal sealed class ObjectConverter<T>
             throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_NotSupported_Deserialize, typeof(T)));
 
         Dictionary<PropertyMetadata, object?> values = [];
-        Dictionary<string, TomlElement?>? extensionEntries = null;
+        Dictionary<string, TomlNode?>? extensionEntries = null;
         while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
         {
             var name = reader.GetString();
@@ -56,8 +57,8 @@ internal sealed class ObjectConverter<T>
             }
             else if (metadata.ExtensionData is not null)
             {
-                extensionEntries ??= new Dictionary<string, TomlElement?>(StringComparer.Ordinal);
-                extensionEntries[name] = TomlElement.ReadFrom(ref reader);
+                extensionEntries ??= new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
+                extensionEntries[name] = TomlNode.ReadFrom(ref reader);
             }
             else if ((metadata.UnmappedMemberHandling ?? options.UnmappedMemberHandling) == TomlUnmappedMemberHandling.Disallow)
             {
@@ -127,10 +128,10 @@ internal sealed class ObjectConverter<T>
         if (metadata.ExtensionData is not { } member)
             return;
 
-        if (member.GetValue(value!) is not IEnumerable<KeyValuePair<string, TomlElement?>> entries)
+        if (member.GetValue(value!) is not IEnumerable<KeyValuePair<string, TomlNode?>> entries)
             return;
 
-        foreach (KeyValuePair<string, TomlElement?> entry in entries)
+        foreach (KeyValuePair<string, TomlNode?> entry in entries)
         {
             if (entry.Value is null)
                 continue;
@@ -147,7 +148,7 @@ internal sealed class ObjectConverter<T>
     /// <param name="metadata">The type metadata.</param>
     /// <param name="instance">The constructed instance.</param>
     /// <param name="entries">The captured unmatched entries, or <see langword="null" /> when none were read.</param>
-    private static void PopulateExtensionData(TypeMetadata metadata, T instance, Dictionary<string, TomlElement?>? entries)
+    private static void PopulateExtensionData(TypeMetadata metadata, T instance, Dictionary<string, TomlNode?>? entries)
     {
         if (entries is null || entries.Count == 0 || metadata.ExtensionData is not { } member)
             return;
@@ -161,9 +162,9 @@ internal sealed class ObjectConverter<T>
             return;
         }
 
-        if (member.GetValue(instance!) is IDictionary<string, TomlElement?> existing)
+        if (member.GetValue(instance!) is IDictionary<string, TomlNode?> existing)
         {
-            foreach (KeyValuePair<string, TomlElement?> entry in entries)
+            foreach (KeyValuePair<string, TomlNode?> entry in entries)
                 existing[entry.Key] = entry.Value;
         }
     }

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -137,8 +138,8 @@ public class TomlSerializerAlignmentTests
             Name = "test",
             Extra = new TomlObject
             {
-                ["a"] = TomlElement.Create(1),
-                ["z"] = TomlElement.Create(9),
+                ["a"] = TomlValue.Create(1),
+                ["z"] = TomlValue.Create(9),
             },
         };
 

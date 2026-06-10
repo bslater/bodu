@@ -86,7 +86,7 @@ public static class TomlSerializer
         ThrowHelper.ThrowIfNull(destination);
 
         TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
-        RequireRootIsTable<T>(effective);
+        RequireRootIsTable(value, effective);
 
         var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
         TomlSerializerEngine.Serialize(writer, value, effective);
@@ -213,19 +213,31 @@ public static class TomlSerializer
     }
 
     /// <summary>
-    /// Verifies that the document root type maps to a TOML table, throwing when it does not.
+    /// Verifies that the document root maps to a TOML table, throwing when it does not.
     /// </summary>
     /// <typeparam name="T">The document root type.</typeparam>
+    /// <param name="value">The value being serialized at the document root.</param>
     /// <param name="options">The serializer options used to classify the type.</param>
     /// <exception cref="TomlSerializationException">
     /// Thrown when <typeparamref name="T" /> does not map to a table at the document root.
     /// </exception>
-    private static void RequireRootIsTable<T>(TomlSerializerOptions options)
+    /// <remarks>
+    /// A document object model node passes the static type gate as a <see cref="Nodes.TomlNode" />, so its actual kind
+    /// is checked here against the runtime value: a node whose root is a scalar or array is rejected, because a TOML
+    /// document has no top-level scalar or array form.
+    /// </remarks>
+    private static void RequireRootIsTable<T>(T value, TomlSerializerOptions options)
     {
         if (!options.RootMapsToTable(typeof(T)))
         {
             throw new TomlSerializationException(
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_RootNotTable, typeof(T)));
+        }
+
+        if (value is Nodes.TomlNode node && node.GetValueKind() != TomlValueKind.Table)
+        {
+            throw new TomlSerializationException(
+                string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_RootNotTable, node.GetType()));
         }
     }
 }

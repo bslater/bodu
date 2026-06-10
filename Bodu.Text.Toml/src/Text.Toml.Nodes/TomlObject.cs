@@ -1,0 +1,212 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="TomlObject.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Collections;
+using System.Text;
+using Bodu.Text.Toml.Writer;
+
+namespace Bodu.Text.Toml.Nodes;
+
+/// <summary>
+/// Represents a mutable TOML table as a string-keyed collection of child nodes. Mirrors the role of
+/// <see cref="System.Text.Json.Nodes.JsonObject" /> for TOML.
+/// </summary>
+/// <remarks>
+/// Entries are kept in insertion order, which is also the order in which they are serialized: the TOML writer emits a
+/// table's members in document order rather than re-sorting them. A value may be <see langword="null" /> in memory, but
+/// a table containing a <see langword="null" /> value cannot be written because TOML has no null token. Adding a node
+/// that already belongs to another container throws an <see cref="InvalidOperationException" />.
+/// </remarks>
+public sealed class TomlObject
+    : TomlNode, IDictionary<string, TomlNode?>
+{
+    /// <summary>
+    /// The backing map of property names to child nodes, which preserves insertion order under add-and-overwrite use.
+    /// </summary>
+    private readonly Dictionary<string, TomlNode?> _properties;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlObject" /> class that is empty.
+    /// </summary>
+    public TomlObject()
+    {
+        _properties = new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlObject" /> class that is empty, using the supplied options to
+    /// select the property-name comparison.
+    /// </summary>
+    /// <param name="options">The node options controlling property-name case sensitivity.</param>
+    /// <remarks>
+    /// When <see cref="TomlNodeOptions.PropertyNameCaseInsensitive" /> is <see langword="true" />, in-memory
+    /// property-name lookups use <see cref="StringComparer.OrdinalIgnoreCase" />; otherwise they use
+    /// <see cref="StringComparer.Ordinal" />. The option does not affect serialization.
+    /// </remarks>
+    public TomlObject(TomlNodeOptions options)
+    {
+        _properties = new Dictionary<string, TomlNode?>(
+            options.PropertyNameCaseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlObject" /> class containing the supplied entries.
+    /// </summary>
+    /// <param name="items">The initial entries.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="items" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a value already belongs to another container.
+    /// </exception>
+    public TomlObject(IEnumerable<KeyValuePair<string, TomlNode?>> items)
+    {
+        ThrowHelper.ThrowIfNull(items);
+
+        _properties = new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
+        foreach (KeyValuePair<string, TomlNode?> item in items)
+            Add(item.Key, item.Value);
+    }
+
+    /// <inheritdoc />
+    public ICollection<string> Keys =>
+        _properties.Keys;
+
+    /// <inheritdoc />
+    public ICollection<TomlNode?> Values =>
+        _properties.Values;
+
+    /// <inheritdoc />
+    public int Count =>
+        _properties.Count;
+
+    /// <inheritdoc />
+    public bool IsReadOnly =>
+        false;
+
+    /// <summary>
+    /// Gets or sets the value associated with the specified property name.
+    /// </summary>
+    /// <param name="key">The property name.</param>
+    /// <value>The value associated with <paramref name="key" />.</value>
+    /// <returns>The value associated with <paramref name="key" />, which may be <see langword="null" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown by the getter when <paramref name="key" /> is not present.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the assigned node already belongs to another container.
+    /// </exception>
+    public new TomlNode? this[string key]
+    {
+        get => _properties[key];
+        set
+        {
+            ThrowHelper.ThrowIfNull(key);
+            value?.AssignParent(this);
+            _properties[key] = value;
+        }
+    }
+
+    /// <inheritdoc />
+    public override TomlValueKind GetValueKind() =>
+        TomlValueKind.Table;
+
+    /// <inheritdoc />
+    public void Add(string key, TomlNode? value)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        value?.AssignParent(this);
+        _properties.Add(key, value);
+    }
+
+    /// <inheritdoc />
+    public void Add(KeyValuePair<string, TomlNode?> item) =>
+        Add(item.Key, item.Value);
+
+    /// <inheritdoc />
+    public void Clear() =>
+        _properties.Clear();
+
+    /// <inheritdoc />
+    public bool Contains(KeyValuePair<string, TomlNode?> item) =>
+        ((ICollection<KeyValuePair<string, TomlNode?>>)_properties).Contains(item);
+
+    /// <inheritdoc />
+    public bool ContainsKey(string key) =>
+        _properties.ContainsKey(key);
+
+    /// <inheritdoc />
+    public void CopyTo(KeyValuePair<string, TomlNode?>[] array, int arrayIndex) =>
+        ((ICollection<KeyValuePair<string, TomlNode?>>)_properties).CopyTo(array, arrayIndex);
+
+    /// <inheritdoc />
+    public IEnumerator<KeyValuePair<string, TomlNode?>> GetEnumerator() =>
+        _properties.GetEnumerator();
+
+    /// <inheritdoc />
+    public bool Remove(string key) =>
+        _properties.Remove(key);
+
+    /// <inheritdoc />
+    public bool Remove(KeyValuePair<string, TomlNode?> item) =>
+        ((ICollection<KeyValuePair<string, TomlNode?>>)_properties).Remove(item);
+
+    /// <inheritdoc />
+    public bool TryGetValue(string key, out TomlNode? value) =>
+        _properties.TryGetValue(key, out value);
+
+    /// <summary>
+    /// Attempts to get the value associated with the specified property name.
+    /// </summary>
+    /// <param name="propertyName">The property name to look up.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the value associated with <paramref name="propertyName" />;
+    /// otherwise <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when a value is associated with <paramref name="propertyName" />; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    public bool TryGetPropertyValue(string propertyName, out TomlNode? value) =>
+        _properties.TryGetValue(propertyName, out value);
+
+    /// <inheritdoc />
+    public override void WriteTo(Utf8TomlWriter writer)
+    {
+        writer.WriteStartTable();
+        foreach (KeyValuePair<string, TomlNode?> entry in _properties)
+        {
+            if (entry.Value is null)
+                throw new TomlSerializationException(TomlResourceStrings.Op_NotSupported_NullNode);
+
+            writer.WritePropertyName(entry.Key);
+            entry.Value.WriteTo(writer);
+        }
+
+        writer.WriteEndTable();
+    }
+
+    /// <inheritdoc />
+    public override TomlNode DeepClone()
+    {
+        var clone = new TomlObject();
+        foreach (KeyValuePair<string, TomlNode?> entry in _properties)
+            clone[entry.Key] = entry.Value?.DeepClone();
+
+        return clone;
+    }
+
+    /// <inheritdoc />
+    public override string ToString() =>
+        Encoding.UTF8.GetString(ToUtf8Bytes());
+
+    /// <inheritdoc />
+    IEnumerator IEnumerable.GetEnumerator() =>
+        GetEnumerator();
+}

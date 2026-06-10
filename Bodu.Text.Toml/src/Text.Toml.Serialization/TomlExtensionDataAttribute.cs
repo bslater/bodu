@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Toml.Nodes;
+
 namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
@@ -16,7 +18,7 @@ namespace Bodu.Text.Toml.Serialization;
 /// The member must be of type <see cref="TomlObject" />,
 /// <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" />, or
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> with a key of <see cref="string" /> and a value
-/// of <see cref="TomlElement" />. A type may declare at most one extension-data member.
+/// of <see cref="TomlNode" />. A type may declare at most one extension-data member.
 /// </para>
 /// <para>
 /// On serialization the captured entries are written alongside the type's other members in document order.

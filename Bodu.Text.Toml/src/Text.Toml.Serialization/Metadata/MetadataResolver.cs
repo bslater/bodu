@@ -7,6 +7,7 @@
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Bodu.Text.Toml.Nodes;
 
 namespace Bodu.Text.Toml.Serialization.Metadata;
 
@@ -118,14 +119,13 @@ internal static class MetadataResolver
     /// </summary>
     /// <param name="type">The member type to test.</param>
     /// <returns>
-    /// <see langword="true" /> when the type is <see cref="TomlObject" />,
-    /// <c>IDictionary&lt;string, TomlElement?&gt;</c>, or <c>Dictionary&lt;string, TomlElement?&gt;</c>; otherwise
-    /// <see langword="false" />.
+    /// <see langword="true" /> when the type is <see cref="TomlObject" />, <c>IDictionary&lt;string, TomlNode?&gt;</c>,
+    /// or <c>Dictionary&lt;string, TomlNode?&gt;</c>; otherwise <see langword="false" />.
     /// </returns>
     private static bool IsSupportedExtensionDataType(Type type) =>
         type == typeof(TomlObject)
-            || type == typeof(IDictionary<string, TomlElement?>)
-            || type == typeof(Dictionary<string, TomlElement?>);
+            || type == typeof(IDictionary<string, TomlNode?>)
+            || type == typeof(Dictionary<string, TomlNode?>);
 
     /// <summary>
     /// Resolves the converter for a property, honoring a member-level converter attribute before falling back to the
