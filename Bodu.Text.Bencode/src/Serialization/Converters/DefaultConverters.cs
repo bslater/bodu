@@ -12,9 +12,11 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Order is significant: the string and byte-string converters precede the factories, the byte-string converter
-/// precedes the collection factory so a <see cref="byte" /> array is treated as a byte string rather than as a
-/// sequence, the dictionary factory precedes the collection factory, and the object factory is last as the catch-all.
+/// Order is significant: the node converter leads the list so a <see cref="Nodes.BencodeNode" /> tree is always handled
+/// by the document object model bridge and never captured by the dictionary or object factories, the string and
+/// byte-string converters precede the factories, the byte-string converter precedes the collection factory so a
+/// <see cref="byte" /> array is treated as a byte string rather than as a sequence, the dictionary factory precedes the
+/// collection factory, and the object factory is last as the catch-all.
 /// </para>
 /// <para>
 /// Bencode represents only integers and byte strings as scalars, so the built-in set omits converters for Boolean,
@@ -30,6 +32,7 @@ internal static class DefaultConverters
     /// </summary>
     private static readonly BencodeConverter[] s_builtIn =
     [
+        new BencodeNodeConverter(),
         new StringConverter(),
         new ByteArrayConverter(),
         new IntegerConverterFactory(),

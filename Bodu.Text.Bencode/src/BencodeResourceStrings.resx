@@ -51,4 +51,10 @@
   <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
   <data name="Op_NotSupported_Deserialize" xml:space="preserve"><value>Type '{0}' cannot be deserialized because it cannot be instantiated.</value></data>
   <data name="Op_NotSupported_NullCollectionElement" xml:space="preserve"><value>A null collection element cannot be written to Bencode.</value></data>
+  <data name="Op_NotSupported_NullNode" xml:space="preserve"><value>A null node cannot be written to Bencode.</value></data>
+  <data name="Op_Invalid_NodeNotObject" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a Bencode object.</value></data>
+  <data name="Op_Invalid_NodeNotArray" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a Bencode array.</value></data>
+  <data name="Op_Invalid_NodeNotValue" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a Bencode value.</value></data>
+  <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve"><value>The node already has a parent.</value></data>
+  <data name="Op_Invalid_NodeValueConversion" xml:space="preserve"><value>A Bencode value of kind '{1}' cannot be converted to type '{0}'.</value></data>
 </root>

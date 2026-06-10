@@ -360,5 +360,59 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_NullCollectionElement", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A null node cannot be written to Bencode..
+        /// </summary>
+        internal static string Op_NotSupported_NullNode {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullNode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a Bencode object..
+        /// </summary>
+        internal static string Op_Invalid_NodeNotObject {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeNotObject", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a Bencode array..
+        /// </summary>
+        internal static string Op_Invalid_NodeNotArray {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeNotArray", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a Bencode value..
+        /// </summary>
+        internal static string Op_Invalid_NodeNotValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeNotValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node already has a parent..
+        /// </summary>
+        internal static string Op_Invalid_NodeAlreadyHasParent {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeAlreadyHasParent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A Bencode value of kind '{1}' cannot be converted to type '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_NodeValueConversion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeValueConversion", resourceCulture);
+            }
+        }
     }
 }
