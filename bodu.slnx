@@ -17,12 +17,6 @@
   <Folder Name="/Solution Items/">
     <File Path="bld\Bodu.props" />
   </Folder>
-  <Folder Name="/Bodu.Text.Serialization/">
-    <Project Path="Bodu.Text.Serialization\src\Bodu.Text.Serialization.csproj" />
-    <Project Path="Bodu.Text.Serialization\test\Bodu.Text.Serialization.Test.csproj" />
-    <Project Path="Bodu.Text.Serialization.Toml\src\Bodu.Text.Serialization.Toml.csproj" />
-    <Project Path="Bodu.Text.Serialization.Toml\test\Bodu.Text.Serialization.Toml.Test.csproj" />
-  </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
     <Project Path="Bodu.Core\test\Bodu.Core.Test.csproj" />
