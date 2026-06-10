@@ -6,6 +6,8 @@
 
 using System.Buffers;
 using System.Text;
+using Bodu.Text.Bencode.Reader;
+using Bodu.Text.Bencode.Writer;
 
 namespace Bodu.Text.Bencode;
 
