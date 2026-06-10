@@ -288,5 +288,149 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_StreamNotWritable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' specified by a converter attribute is not a BencodeConverter..
+        /// </summary>
+        internal static string Arg_Invalid_ConverterAttributeType {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ConverterAttributeType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute..
+        /// </summary>
+        internal static string Arg_Invalid_ConverterNoParameterlessCtor {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ConverterNoParameterlessCtor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected end of input while reading a value of type '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_UnexpectedEndOfInput {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnexpectedEndOfInput", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Required member '{0}' was not present in the input for type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_MissingRequiredMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MissingRequiredMember", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property '{0}' appears more than once..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateProperty {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateProperty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to '{0}' is not a defined value of enumeration '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_EnumValueNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumValueNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value {0} is outside the representable range of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_IntegerOverflow {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IntegerOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The converter '{0}' cannot convert type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_ConverterCannotConvert {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ConverterCannotConvert", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Serializer options cannot be modified after they have been used to serialize or deserialize a value..
+        /// </summary>
+        internal static string Op_Invalid_OptionsReadOnly {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OptionsReadOnly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected the start of a dictionary but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedDictionary {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedDictionary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected the start of a list but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedList {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedList", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a byte string but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedByteString {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedByteString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an integer but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedInteger {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedInteger", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No converter is configured for type '{0}'..
+        /// </summary>
+        internal static string Op_NotSupported_NoConverter {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NoConverter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' cannot be deserialized because it cannot be instantiated..
+        /// </summary>
+        internal static string Op_NotSupported_Deserialize {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_Deserialize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A null collection element cannot be written to Bencode..
+        /// </summary>
+        internal static string Op_NotSupported_NullCollectionElement {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullCollectionElement", resourceCulture);
+            }
+        }
     }
 }

@@ -230,6 +230,18 @@ public ref struct Utf8BencodeReader
             : throw new InvalidOperationException();
 
     /// <summary>
+    /// Copies the current byte-string or property-name token's content to a new array.
+    /// </summary>
+    /// <returns>The byte-string content.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a byte string or property name.
+    /// </exception>
+    public readonly byte[] GetBytes() =>
+        _tokenType is BencodeTokenType.ByteString or BencodeTokenType.PropertyName
+            ? ValueSpan.ToArray()
+            : throw new InvalidOperationException();
+
+    /// <summary>
     /// Skips the current value, including the entire subtree when the reader is on a container start.
     /// </summary>
     public void Skip()
