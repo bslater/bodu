@@ -10,6 +10,10 @@
     <Project Path="Bodu.Text.Bencode/src/Bodu.Text.Bencode.csproj" />
     <Project Path="Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Toml/">
+    <Project Path="Bodu.Text.Toml/src/Bodu.Text.Toml.csproj" />
+    <Project Path="Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="bld\Bodu.props" />
   </Folder>
