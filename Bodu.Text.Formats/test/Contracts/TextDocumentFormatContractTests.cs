@@ -7,8 +7,8 @@
 namespace Bodu.Text.Formats.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for a text-document format with a parse/format pair (Bencode,
-/// Delimited, DotEnv, INI, etc.). Concrete subclasses override <see cref="Parse" />, <see cref="Format" />,
+/// Reusable behavioural contract test base for a text-document format with a parse/format pair (Delimited,
+/// DotEnv, INI, etc.). Concrete subclasses override <see cref="Parse" />, <see cref="Format" />,
 /// <see cref="ValidCases" />, and <see cref="InvalidCases" /> to plug the format into the inherited tests.
 /// </summary>
 /// <typeparam name="TDocument">The parsed document type.</typeparam>

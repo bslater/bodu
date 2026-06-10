@@ -60,14 +60,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
-        /// </summary>
-        internal static string Arg_Invalid_DuplicateDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The table already contains the key '{0}'..
@@ -141,23 +133,7 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain null keys..
-        /// </summary>
-        internal static string Arg_Invalid_NullDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullDictionaryKey", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain null values..
-        /// </summary>
-        internal static string Arg_Invalid_NullDictionaryValue {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullDictionaryValue", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The list cannot contain null values..
@@ -186,176 +162,24 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported bencoded value type..
-        /// </summary>
-        internal static string Arg_OutOfRange_UnsupportedBencodedValueType {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_UnsupportedBencodedValueType", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
-        /// </summary>
-        internal static string Format_Invalid_BencodeIntegerOutOfRange {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeIntegerOutOfRange", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid bencoded integer..
-        /// </summary>
-        internal static string Format_Invalid_BencodeInvalidInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeInvalidInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded integers cannot contain leading zeros..
-        /// </summary>
-        internal static string Format_Invalid_BencodeLeadingZerosInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeLeadingZerosInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Negative zero is not a valid bencoded integer..
-        /// </summary>
-        internal static string Format_Invalid_BencodeNegativeZeroInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeNegativeZeroInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded dictionary keys must be byte strings..
-        /// </summary>
-        internal static string Format_Invalid_BencodeNonStringDictionaryKey {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeNonStringDictionaryKey", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded string length exceeds the available input..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthExceedsInput {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExceedsInput", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a bencoded string length..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthExpected {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExpected", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded string lengths cannot contain leading zeros..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthLeadingZeros {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthLeadingZeros", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded string length exceeds Int32.MaxValue..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthTooLarge {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthTooLarge", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Expected ':' after bencoded string length..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringMissingSeparator {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringMissingSeparator", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded value contains trailing data..
-        /// </summary>
-        internal static string Format_Invalid_BencodeTrailingData {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeTrailingData", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected end of bencoded data..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnexpectedEndOfData {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnexpectedEndOfData", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected bencode token '{0}' at offset {1}..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnexpectedToken {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnexpectedToken", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded dictionary keys must be unique and sorted by raw byte order..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnorderedDictionaryKeys {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnorderedDictionaryKeys", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded value nesting exceeds the maximum permitted depth of {0}..
-        /// </summary>
-        internal static string Format_Invalid_BencodeNestingTooDeep {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeNestingTooDeep", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded dictionary..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedDictionary {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedDictionary", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded integer..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded list..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedList {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedList", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Duplicate header &apos;{0}&apos; on line {1}..
@@ -753,23 +577,7 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The integer value could not be formatted..
-        /// </summary>
-        internal static string Op_Invalid_IntegerFormatFailed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_IntegerFormatFailed", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The string length could not be formatted..
-        /// </summary>
-        internal static string Op_Invalid_StringLengthFormatFailed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_StringLengthFormatFailed", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The document graph contains a cycle at &apos;{0}&apos;..

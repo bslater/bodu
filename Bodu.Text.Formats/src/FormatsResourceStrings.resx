@@ -120,9 +120,6 @@
   <data name="Arg_Invalid_DotEnvCommentPrefix" xml:space="preserve">
     <value>DotEnv comment prefix must be '#'.</value>
   </data>
-  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
-    <value>The dictionary cannot contain duplicate keys.</value>
-  </data>
   <data name="Arg_Invalid_IniCommentPrefix" xml:space="preserve">
     <value>Comment prefix must be '#' or ';'.</value>
   </data>
@@ -144,12 +141,6 @@
   <data name="Arg_Invalid_TomlDuplicateKey" xml:space="preserve">
     <value>The table already contains the key '{0}'.</value>
   </data>
-  <data name="Arg_Invalid_NullDictionaryKey" xml:space="preserve">
-    <value>The dictionary cannot contain null keys.</value>
-  </data>
-  <data name="Arg_Invalid_NullDictionaryValue" xml:space="preserve">
-    <value>The dictionary cannot contain null values.</value>
-  </data>
   <data name="Arg_Invalid_NullListElement" xml:space="preserve">
     <value>The list cannot contain null values.</value>
   </data>
@@ -158,63 +149,6 @@
   </data>
   <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve">
     <value>Stream does not support writing.</value>
-  </data>
-  <data name="Arg_OutOfRange_UnsupportedBencodedValueType" xml:space="preserve">
-    <value>Unsupported bencoded value type.</value>
-  </data>
-  <data name="Format_Invalid_BencodeIntegerOutOfRange" xml:space="preserve">
-    <value>The bencoded integer is outside the supported Int64 range.</value>
-  </data>
-  <data name="Format_Invalid_BencodeInvalidInteger" xml:space="preserve">
-    <value>Invalid bencoded integer.</value>
-  </data>
-  <data name="Format_Invalid_BencodeLeadingZerosInteger" xml:space="preserve">
-    <value>Bencoded integers cannot contain leading zeros.</value>
-  </data>
-  <data name="Format_Invalid_BencodeNegativeZeroInteger" xml:space="preserve">
-    <value>Negative zero is not a valid bencoded integer.</value>
-  </data>
-  <data name="Format_Invalid_BencodeNonStringDictionaryKey" xml:space="preserve">
-    <value>Bencoded dictionary keys must be byte strings.</value>
-  </data>
-  <data name="Format_Invalid_BencodeStringLengthExceedsInput" xml:space="preserve">
-    <value>The bencoded string length exceeds the available input.</value>
-  </data>
-  <data name="Format_Invalid_BencodeStringLengthExpected" xml:space="preserve">
-    <value>Expected a bencoded string length.</value>
-  </data>
-  <data name="Format_Invalid_BencodeStringLengthLeadingZeros" xml:space="preserve">
-    <value>Bencoded string lengths cannot contain leading zeros.</value>
-  </data>
-  <data name="Format_Invalid_BencodeStringLengthTooLarge" xml:space="preserve">
-    <value>The bencoded string length exceeds Int32.MaxValue.</value>
-  </data>
-  <data name="Format_Invalid_BencodeStringMissingSeparator" xml:space="preserve">
-    <value>Expected ':' after bencoded string length.</value>
-  </data>
-  <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve">
-    <value>The bencoded value contains trailing data.</value>
-  </data>
-  <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve">
-    <value>Unexpected end of bencoded data.</value>
-  </data>
-  <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve">
-    <value>Unexpected bencode token '{0}' at offset {1}.</value>
-  </data>
-  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve">
-    <value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value>
-  </data>
-  <data name="Format_Invalid_BencodeNestingTooDeep" xml:space="preserve">
-    <value>Bencoded value nesting exceeds the maximum permitted depth of {0}.</value>
-  </data>
-  <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve">
-    <value>Unterminated bencoded dictionary.</value>
-  </data>
-  <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve">
-    <value>Unterminated bencoded integer.</value>
-  </data>
-  <data name="Format_Invalid_BencodeUnterminatedList" xml:space="preserve">
-    <value>Unterminated bencoded list.</value>
   </data>
   <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
     <value>Duplicate header '{0}' on line {1}.</value>
@@ -347,12 +281,6 @@
   </data>
   <data name="Op_Invalid_IniSectionKeyNotFound" xml:space="preserve">
     <value>The key '{0}' was not found in the section.</value>
-  </data>
-  <data name="Op_Invalid_IntegerFormatFailed" xml:space="preserve">
-    <value>The integer value could not be formatted.</value>
-  </data>
-  <data name="Op_Invalid_StringLengthFormatFailed" xml:space="preserve">
-    <value>The string length could not be formatted.</value>
   </data>
   <data name="Op_Invalid_TomlCycle" xml:space="preserve">
     <value>The document graph contains a cycle at '{0}'.</value>
