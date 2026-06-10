@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml;
 /// <example>
 ///<![CDATA[
 /// var time = new TomlLocalTime(new TimeOnly(7, 32, 0));
-/// TimeOnly value = time.Value;                   // 07:32:00
+/// TimeOnly value = time.Value;           // 07:32:00
 ///]]>
 /// </example>
 public sealed class TomlLocalTime

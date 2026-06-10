@@ -293,7 +293,7 @@ public sealed class IniSectionTests
     [TestMethod]
     public void Constructor_WhenEntriesContainDuplicateKey_ShouldKeepLastWins()
     {
-        IniSection section = new("s", new[] { new IniEntry("k", "1"), new IniEntry("k", "2") });
+        IniSection section = new("s", [new IniEntry("k", "1"), new IniEntry("k", "2")]);
 
         Assert.AreEqual((1, "2"), (section.Entries.Count, section["k"]));
     }
@@ -305,7 +305,7 @@ public sealed class IniSectionTests
     [TestMethod]
     public void Constructor_WhenEntriesContainNull_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniSection("s", new IniEntry[] { null! }));
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniSection("s", [null!]));
 
         Assert.AreEqual("entries", ex.ParamName);
     }
@@ -318,7 +318,7 @@ public sealed class IniSectionTests
     [TestMethod]
     public void TryGetEntry_WhenKeyPresent_ShouldReturnTrueAndEntry()
     {
-        IniSection section = new("s", new[] { new IniEntry("host", "local") });
+        IniSection section = new("s", [new IniEntry("host", "local")]);
 
         Assert.IsTrue(section.TryGetEntry("host", out IniEntry? entry));
         Assert.AreEqual("local", entry!.Value);
@@ -343,7 +343,7 @@ public sealed class IniSectionTests
     [TestMethod]
     public void AddEntry_WhenKeyExists_ShouldReplaceInPlace()
     {
-        IniSection section = new("s", new[] { new IniEntry("k", "1") });
+        IniSection section = new("s", [new IniEntry("k", "1")]);
 
         section.AddEntry(new IniEntry("k", "2"));
 
@@ -367,7 +367,7 @@ public sealed class IniSectionTests
     [TestMethod]
     public void ClearEntries_ShouldRemoveAllEntries()
     {
-        IniSection section = new("s", new[] { new IniEntry("a", "1"), new IniEntry("b", "2") });
+        IniSection section = new("s", [new IniEntry("a", "1"), new IniEntry("b", "2")]);
 
         section.ClearEntries();
 

@@ -224,7 +224,7 @@ public sealed class TomlConformanceTests
     [TestMethod]
     public void Manifest_WhenLoaded_ShouldClassifyEveryCorpusCase()
     {
-        foreach (object[] row in ValidCases())
+        foreach (var row in ValidCases())
         {
             var name = ((ConformanceCase)row[0]).Name;
             Assert.IsTrue(
@@ -232,7 +232,7 @@ public sealed class TomlConformanceTests
                 $"Valid corpus case '{name}' is not listed in any toml-test version manifest.");
         }
 
-        foreach (object[] row in LoadCases("toml-test-invalid.json", includeExpected: false))
+        foreach (var row in LoadCases("toml-test-invalid.json", includeExpected: false))
         {
             var name = ((ConformanceCase)row[0]).Name;
             Assert.IsTrue(

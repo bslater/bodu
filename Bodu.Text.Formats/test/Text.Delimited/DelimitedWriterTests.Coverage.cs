@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedWriterTests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class DelimitedWriterTests
         StringWriter sink = new();
 
         using (DelimitedWriter writer = new(sink, new DelimitedParseOptions { HasHeader = false }))
-            writer.WriteRow(new[] { "a\"b" });
+            writer.WriteRow(["a\"b"]);
 
         Assert.Contains("\"a\"\"b\"", sink.ToString());
     }

@@ -28,7 +28,7 @@ namespace Bodu.Text.Toml;
 /// ports.Add(new TomlInteger(8002));
 ///
 /// long first = ((TomlInteger)ports[0]).Value;   // 8000
-/// int count  = ports.Count;                      // 3
+/// int count  = ports.Count;                     // 3
 ///]]>
 /// </example>
 public sealed class TomlArray

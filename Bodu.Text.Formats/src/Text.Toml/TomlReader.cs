@@ -37,6 +37,7 @@ namespace Bodu.Text.Toml;
 ///<![CDATA[
 /// var reader = new TomlReader();
 /// TomlTable document = reader.Read("title = \"example\"\n[owner]\nname = \"Tom\"");
+///
 /// using var stream = File.OpenRead("config.toml");
 /// TomlTable fromFile = reader.Read(stream);
 ///]]>

@@ -9,13 +9,13 @@ using System.Globalization;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Represents a TOML float value, stored as an IEEE 754 binary64 floating-point number. The special values
-/// <c>inf</c>, <c>-inf</c>, and <c>nan</c> are carried as the corresponding <see cref="double" /> values.
+/// Represents a TOML float value, stored as an IEEE 754 binary64 floating-point number. The special values <c>inf</c>,
+/// <c>-inf</c>, and <c>nan</c> are carried as the corresponding <see cref="double" /> values.
 /// </summary>
 /// <example>
 ///<![CDATA[
 /// var ratio = new TomlFloat(3.14);
-/// double value = ratio.Value;                    // 3.14
+/// double value = ratio.Value;                              // 3.14
 ///
 /// var infinity = new TomlFloat(double.PositiveInfinity);   // serializes as "inf"
 ///]]>

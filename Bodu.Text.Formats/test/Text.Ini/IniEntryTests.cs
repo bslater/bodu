@@ -172,7 +172,7 @@ public sealed class IniEntryTests
         IniEntry entry = new("k", "v");
         entry.AddLeadingComment(new IniComment('#', " old"));
 
-        entry.SetLeadingComments(new[] { new IniComment(';', " a"), new IniComment('#', " b") });
+        entry.SetLeadingComments([new IniComment(';', " a"), new IniComment('#', " b")]);
 
         Assert.AreEqual(2, entry.LeadingComments.Count);
     }

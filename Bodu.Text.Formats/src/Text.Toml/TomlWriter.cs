@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,6 +30,7 @@ namespace Bodu.Text.Toml;
 ///<![CDATA[
 /// var writer = new TomlWriter();
 /// string text = writer.Write(document);
+///
 /// writer.Write(document, File.Create("out.toml"));
 ///]]>
 /// </example>
@@ -380,7 +381,7 @@ public sealed class TomlWriter
 
         foreach (var c in key)
         {
-            if (!((c is >= 'A' and <= 'Z') || (c is >= 'a' and <= 'z') || (c is >= '0' and <= '9') || c == '_' || c == '-'))
+            if (c is not (>= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or '_' or '-'))
                 return false;
         }
 
@@ -424,7 +425,7 @@ public sealed class TomlWriter
                 case '\f': builder.Append("\\f"); break;
                 case '\r': builder.Append("\\r"); break;
                 default:
-                    if (c < 0x20 || c == 0x7F)
+                    if (c is < (char)0x20 or (char)0x7F)
                         builder.Append("\\u").Append(((int)c).ToString("X4", CultureInfo.InvariantCulture));
                     else
                         builder.Append(c);

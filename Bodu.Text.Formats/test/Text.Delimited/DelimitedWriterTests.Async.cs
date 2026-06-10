@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedWriterTests.Async.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,15 +18,15 @@ public sealed partial class DelimitedWriterTests
         StringWriter sync = new();
         using (DelimitedWriter w = new(sync))
         {
-            w.WriteHeader(new[] { "name", "note" });
-            w.WriteRow(new[] { "Alice", "a,b" });
+            w.WriteHeader(["name", "note"]);
+            w.WriteRow(["Alice", "a,b"]);
         }
 
         StringWriter async = new();
         using (DelimitedWriter w = new(async))
         {
-            await w.WriteHeaderAsync(new[] { "name", "note" });
-            await w.WriteRowAsync(new[] { "Alice", "a,b" });
+            await w.WriteHeaderAsync(["name", "note"]);
+            await w.WriteRowAsync(["Alice", "a,b"]);
         }
 
         Assert.AreEqual(sync.ToString(), async.ToString());
@@ -42,8 +42,8 @@ public sealed partial class DelimitedWriterTests
         StringWriter sw = new();
         using DelimitedWriter writer = new(sw);
 
-        await writer.WriteRowAsync(new[] { "a" });
-        await writer.WriteRowAsync(new[] { "b" });
+        await writer.WriteRowAsync(["a"]);
+        await writer.WriteRowAsync(["b"]);
 
         Assert.AreEqual(2, writer.RowsWritten);
     }
@@ -59,7 +59,7 @@ public sealed partial class DelimitedWriterTests
 
         await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
-            await writer.WriteRowAsync(new[] { "ok", null! });
+            await writer.WriteRowAsync(["ok", null!]);
         });
     }
 }

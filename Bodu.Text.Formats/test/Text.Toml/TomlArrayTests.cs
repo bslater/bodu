@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlArrayTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -72,7 +72,7 @@ public sealed class TomlArrayTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new TomlArray(new TomlValue[] { new TomlInteger(1), null! });
+            _ = new TomlArray([new TomlInteger(1), null!]);
         });
     }
 }

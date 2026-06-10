@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeReaderWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,14 +16,14 @@ public sealed class BencodeReaderWriterTests
     /// <summary>
     /// Canonical encoded form of the list <c>[42, "spam"]</c> (<c>li42e4:spame</c>).
     /// </summary>
-    private static readonly byte[] CanonicalListBytes = System.Text.Encoding.ASCII.GetBytes("li42e4:spame");
+    private static readonly byte[] s_canonicalListBytes = System.Text.Encoding.ASCII.GetBytes("li42e4:spame");
 
     /// <summary>
-    /// Builds the <c>[42, "spam"]</c> list value that <see cref="CanonicalListBytes" /> encodes.
+    /// Builds the <c>[42, "spam"]</c> list value that <see cref="s_canonicalListBytes" /> encodes.
     /// </summary>
     /// <returns>The decoded list value.</returns>
     private static BencodedList SampleList() =>
-        new(new BencodedValue[] { new BencodedInteger(42), BencodedString.FromUtf8("spam") });
+        new([new BencodedInteger(42), BencodedString.FromUtf8("spam")]);
 
     /// <summary>
     /// Asserts that <paramref name="value" /> is the <c>[42, "spam"]</c> list. Used in place of value equality because
@@ -45,7 +45,7 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void Reader_WhenReadSpan_ShouldDecode()
     {
-        BencodedValue document = new BencodeReader().Read(CanonicalListBytes);
+        BencodedValue document = new BencodeReader().Read(s_canonicalListBytes);
 
         AssertSampleList(document);
     }
@@ -56,7 +56,7 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void Reader_WhenReadByteArray_ShouldDecode()
     {
-        BencodedValue document = new BencodeReader().Read(CanonicalListBytes);
+        BencodedValue document = new BencodeReader().Read(s_canonicalListBytes);
 
         AssertSampleList(document);
     }
@@ -67,7 +67,7 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void Reader_WhenReadStream_ShouldDecode()
     {
-        using var stream = new MemoryStream(CanonicalListBytes);
+        using var stream = new MemoryStream(s_canonicalListBytes);
         BencodedValue document = new BencodeReader().Read(stream);
 
         AssertSampleList(document);
@@ -79,7 +79,7 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public async Task Reader_WhenReadAsyncStream_ShouldDecode()
     {
-        using var stream = new MemoryStream(CanonicalListBytes);
+        using var stream = new MemoryStream(s_canonicalListBytes);
         BencodedValue document = await new BencodeReader().ReadAsync(stream);
 
         AssertSampleList(document);
@@ -94,11 +94,11 @@ public sealed class BencodeReaderWriterTests
     {
         var reader = new BencodeReader();
 
-        Assert.IsTrue(reader.TryRead(CanonicalListBytes, out BencodedValue? document, out int consumed));
+        Assert.IsTrue(reader.TryRead(s_canonicalListBytes, out BencodedValue? document, out var consumed));
         AssertSampleList(document);
-        Assert.AreEqual(CanonicalListBytes.Length, consumed);
+        Assert.AreEqual(s_canonicalListBytes.Length, consumed);
 
-        Assert.IsFalse(reader.TryRead(System.Text.Encoding.ASCII.GetBytes("i42"), out BencodedValue? failed, out int failedConsumed));
+        Assert.IsFalse(reader.TryRead(System.Text.Encoding.ASCII.GetBytes("i42"), out BencodedValue? failed, out var failedConsumed));
         Assert.IsNull(failed);
         Assert.AreEqual(0, failedConsumed);
     }
@@ -134,7 +134,7 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void Reader_WhenNestingExceedsMaxDepth_ShouldThrowExactly()
     {
-        byte[] nested = System.Text.Encoding.ASCII.GetBytes("llleee");
+        var nested = System.Text.Encoding.ASCII.GetBytes("llleee");
         var options = new BencodeParseOptions { MaxDepth = 2 };
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
@@ -151,9 +151,9 @@ public sealed class BencodeReaderWriterTests
     public void Reader_WhenTryReadWithRequireCompleteDocument_ShouldHonourTrailingBytes()
     {
         var reader = new BencodeReader();
-        byte[] trailing = System.Text.Encoding.ASCII.GetBytes("i42ei7e");
+        var trailing = System.Text.Encoding.ASCII.GetBytes("i42ei7e");
 
-        Assert.IsTrue(reader.TryRead(trailing, BencodeParseOptions.Default, out BencodedValue? lenient, out int consumed));
+        Assert.IsTrue(reader.TryRead(trailing, BencodeParseOptions.Default, out BencodedValue? lenient, out var consumed));
         Assert.AreEqual(new BencodedInteger(42), lenient);
         Assert.AreEqual(4, consumed);
 
@@ -168,9 +168,9 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void Writer_WhenWrite_ShouldEncode()
     {
-        byte[] encoded = new BencodeWriter().Write(SampleList());
+        var encoded = new BencodeWriter().Write(SampleList());
 
-        CollectionAssert.AreEqual(CanonicalListBytes, encoded);
+        CollectionAssert.AreEqual(s_canonicalListBytes, encoded);
     }
 
     /// <summary>
@@ -183,12 +183,12 @@ public sealed class BencodeReaderWriterTests
         var writer = new BencodeWriter();
         BencodedList value = SampleList();
 
-        var destination = new byte[CanonicalListBytes.Length];
-        Assert.IsTrue(writer.TryWrite(value, destination, out int written));
-        Assert.AreEqual(CanonicalListBytes.Length, written);
-        CollectionAssert.AreEqual(CanonicalListBytes, destination);
+        var destination = new byte[s_canonicalListBytes.Length];
+        Assert.IsTrue(writer.TryWrite(value, destination, out var written));
+        Assert.AreEqual(s_canonicalListBytes.Length, written);
+        CollectionAssert.AreEqual(s_canonicalListBytes, destination);
 
-        Assert.IsFalse(writer.TryWrite(value, new byte[CanonicalListBytes.Length - 1], out int shortWritten));
+        Assert.IsFalse(writer.TryWrite(value, new byte[s_canonicalListBytes.Length - 1], out var shortWritten));
         Assert.AreEqual(0, shortWritten);
     }
 
@@ -198,7 +198,8 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void Writer_WhenGetWrittenLength_ShouldReturnExactLength()
     {
-        Assert.AreEqual(CanonicalListBytes.Length, new BencodeWriter().GetWrittenLength(SampleList()));
+        var length = BencodeWriter.GetWrittenLength(SampleList());
+        Assert.AreEqual(s_canonicalListBytes.Length, length);
     }
 
     /// <summary>
@@ -210,7 +211,7 @@ public sealed class BencodeReaderWriterTests
         using var stream = new MemoryStream();
         new BencodeWriter().Write(SampleList(), stream);
 
-        CollectionAssert.AreEqual(CanonicalListBytes, stream.ToArray());
+        CollectionAssert.AreEqual(s_canonicalListBytes, stream.ToArray());
     }
 
     /// <summary>
@@ -223,7 +224,7 @@ public sealed class BencodeReaderWriterTests
         using var stream = new MemoryStream();
         await new BencodeWriter().WriteAsync(SampleList(), stream);
 
-        CollectionAssert.AreEqual(CanonicalListBytes, stream.ToArray());
+        CollectionAssert.AreEqual(s_canonicalListBytes, stream.ToArray());
     }
 
     /// <summary>
@@ -245,8 +246,8 @@ public sealed class BencodeReaderWriterTests
     [TestMethod]
     public void ReaderAndFacade_WhenSameInput_ShouldYieldEqualResult()
     {
-        BencodedValue viaReader = new BencodeReader().Read(CanonicalListBytes);
-        BencodedValue viaFacade = Bencode.Parse(CanonicalListBytes);
+        BencodedValue viaReader = new BencodeReader().Read(s_canonicalListBytes);
+        BencodedValue viaFacade = Bencode.Parse(s_canonicalListBytes);
 
         var writer = new BencodeWriter();
         CollectionAssert.AreEqual(writer.Write(viaReader), writer.Write(viaFacade));
@@ -262,10 +263,10 @@ public sealed class BencodeReaderWriterTests
         var reader = new BencodeReader();
         var writer = new BencodeWriter();
 
-        byte[] once = writer.Write(reader.Read(CanonicalListBytes));
-        byte[] twice = writer.Write(reader.Read(once));
+        var once = writer.Write(reader.Read(s_canonicalListBytes));
+        var twice = writer.Write(reader.Read(once));
 
         CollectionAssert.AreEqual(once, twice);
-        CollectionAssert.AreEqual(CanonicalListBytes, once);
+        CollectionAssert.AreEqual(s_canonicalListBytes, once);
     }
 }

@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml;
 /// <example>
 ///<![CDATA[
 /// var date = new TomlLocalDate(new DateOnly(1979, 5, 27));
-/// DateOnly value = date.Value;                   // 1979-05-27
+/// DateOnly value = date.Value;            / 1979-05-27
 ///]]>
 /// </example>
 public sealed class TomlLocalDate

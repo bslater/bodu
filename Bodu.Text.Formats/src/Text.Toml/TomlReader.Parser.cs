@@ -200,7 +200,7 @@ public partial class TomlReader
                 var c = Current;
                 if (c == '\r')
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlControlCharacter);
-                if (c == 0x7F || (c < 0x20 && c != 0x09))
+                if (c is (char)0x7F or < (char)0x20 and not (char)0x09)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlControlCharacter);
                 Advance();
             }
@@ -242,7 +242,7 @@ public partial class TomlReader
         {
             while (!Eof)
             {
-                if (Current == ' ' || Current == '\t')
+                if (Current is ' ' or '\t')
                 {
                     Advance();
                 }
@@ -389,7 +389,7 @@ public partial class TomlReader
         /// <param name="c">The character.</param>
         /// <returns><see langword="true" /> when the character is in <c>A-Za-z0-9_-</c>.</returns>
         private static bool IsBareKeyChar(char c) =>
-            (c is >= 'A' and <= 'Z') || (c is >= 'a' and <= 'z') || (c is >= '0' and <= '9') || c == '_' || c == '-';
+c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or '_' or '-';
 
         /// <summary>
         /// Parses a value of any TOML type at the cursor.
@@ -485,7 +485,7 @@ public partial class TomlReader
                     continue;
                 }
 
-                if (c == 0x7F || (c < 0x20 && c != 0x09))
+                if (c is (char)0x7F or < (char)0x20 and not (char)0x09)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlControlCharacter);
 
                 sb.Append(c);
@@ -514,7 +514,7 @@ public partial class TomlReader
                     return text;
                 }
 
-                if (c == 0x7F || (c < 0x20 && c != 0x09))
+                if (c is (char)0x7F or < (char)0x20 and not (char)0x09)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlControlCharacter);
 
                 Advance();
@@ -576,7 +576,7 @@ public partial class TomlReader
                     continue;
                 }
 
-                if (c == 0x7F || (c < 0x20 && c != 0x09))
+                if (c is (char)0x7F or < (char)0x20 and not (char)0x09)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlControlCharacter);
 
                 sb.Append(c);
@@ -626,7 +626,7 @@ public partial class TomlReader
                     continue;
                 }
 
-                if (c == 0x7F || (c < 0x20 && c != 0x09))
+                if (c is (char)0x7F or < (char)0x20 and not (char)0x09)
                     throw Error(FormatsResourceStrings.Format_Invalid_TomlControlCharacter);
 
                 sb.Append(c);
@@ -731,7 +731,7 @@ public partial class TomlReader
 
             _pos += digits;
 
-            if (value > 0x10FFFF || (value >= 0xD800 && value <= 0xDFFF))
+            if (value is > 0x10FFFF or >= 0xD800 and <= 0xDFFF)
                 throw Error(FormatsResourceStrings.Format_Invalid_TomlInvalidEscape);
 
             sb.Append(char.ConvertFromUtf32((int)value));
@@ -916,7 +916,7 @@ public partial class TomlReader
         {
             var i = 0;
             var negative = false;
-            if (token[0] == '+' || token[0] == '-')
+            if (token[0] is '+' or '-')
             {
                 negative = token[0] == '-';
                 i = 1;
@@ -1148,7 +1148,7 @@ public partial class TomlReader
         /// <returns>The offset.</returns>
         private TimeSpan ReadTimeOffset()
         {
-            if (Current == 'Z' || Current == 'z')
+            if (Current is 'Z' or 'z')
             {
                 Advance();
                 return TimeSpan.Zero;

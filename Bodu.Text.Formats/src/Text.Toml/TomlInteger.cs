@@ -9,8 +9,8 @@ using System.Globalization;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Represents a TOML integer value, stored as a 64-bit signed integer. Decimal, hexadecimal, octal, and binary
-/// literals all parse to the same numeric value.
+/// Represents a TOML integer value, stored as a 64-bit signed integer. Decimal, hexadecimal, octal, and binary literals
+/// all parse to the same numeric value.
 /// </summary>
 /// <example>
 ///<![CDATA[

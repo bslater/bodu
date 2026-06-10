@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml;
 /// <example>
 ///<![CDATA[
 /// var dob = new TomlOffsetDateTime(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero));
-/// DateTimeOffset value = dob.Value;              // 1979-05-27T07:32:00+00:00
+/// DateTimeOffset value = dob.Value;                // 1979-05-27T07:32:00+00:00
 ///]]>
 /// </example>
 public sealed class TomlOffsetDateTime

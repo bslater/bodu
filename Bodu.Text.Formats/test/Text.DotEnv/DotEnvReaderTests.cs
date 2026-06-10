@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvReaderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed class DotEnvReaderTests
     /// newline. Each is used to assert reader/parser parity.
     /// </summary>
     private static readonly string[] ParitySources =
-    {
+    [
         "A=1\nB=2\n",
         "A=1\nB=2",
         "# comment\nKEY=value\n\n# trailing\nOTHER=x\n",
@@ -28,7 +28,7 @@ public sealed class DotEnvReaderTests
         "EMPTY=\nFILLED=x\n",
         "INLINE=value # trailing comment\n",
         "DOLLAR=\"price \\$5\"\n",
-    };
+    ];
 
     /// <summary>
     /// Enumerates each parity source paired with a range of buffer sizes (including buffers far smaller than any
