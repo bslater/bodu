@@ -89,6 +89,13 @@ namespace Bodu.IO.Hashing;
 /// <see cref="System.Security.Cryptography.HashAlgorithm" /> hierarchy instead. Instances are not thread-safe; share
 /// behind explicit synchronization.
 /// </para>
+/// <para>
+/// <strong>Related family.</strong> For error detection over a constrained ASCII text domain — card numbers, account
+/// identifiers, and serial codes — see the separate check-digit family rooted at
+/// <see cref="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm" />. It is intentionally <em>not</em> part of the
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm" /> hierarchy: it consumes <see cref="char" /> sequences
+/// and emits a <see cref="char" />/<see cref="string" /> check value rather than a byte digest.
+/// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[
@@ -126,6 +133,7 @@ namespace Bodu.IO.Hashing;
 ///]]>
 /// </example>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="IResumableHashAlgorithm"/>
+/// <seealso cref="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm"/>
 public abstract class BlockNonCryptographicHashAlgorithm<T>
     : NonCryptographicHashAlgorithm
     where T : BlockNonCryptographicHashAlgorithm<T>, new()
