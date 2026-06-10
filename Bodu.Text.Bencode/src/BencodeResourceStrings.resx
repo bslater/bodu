@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve"><value>The dictionary cannot contain duplicate keys.</value></data>
+  <data name="Arg_Invalid_NullDictionaryKey" xml:space="preserve"><value>The dictionary cannot contain null keys.</value></data>
+  <data name="Arg_Invalid_NullDictionaryValue" xml:space="preserve"><value>The dictionary cannot contain null values.</value></data>
+  <data name="Arg_Invalid_NullListElement" xml:space="preserve"><value>The list cannot contain null values.</value></data>
+  <data name="Arg_OutOfRange_UnsupportedBencodedValueType" xml:space="preserve"><value>Unsupported bencoded value type.</value></data>
+  <data name="Format_Invalid_BencodeIntegerOutOfRange" xml:space="preserve"><value>The bencoded integer is outside the supported Int64 range.</value></data>
+  <data name="Format_Invalid_BencodeInvalidInteger" xml:space="preserve"><value>Invalid bencoded integer.</value></data>
+  <data name="Format_Invalid_BencodeLeadingZerosInteger" xml:space="preserve"><value>Bencoded integers cannot contain leading zeros.</value></data>
+  <data name="Format_Invalid_BencodeNegativeZeroInteger" xml:space="preserve"><value>Negative zero is not a valid bencoded integer.</value></data>
+  <data name="Format_Invalid_BencodeNestingTooDeep" xml:space="preserve"><value>Bencoded value nesting exceeds the maximum permitted depth of {0}.</value></data>
+  <data name="Format_Invalid_BencodeNonStringDictionaryKey" xml:space="preserve"><value>Bencoded dictionary keys must be byte strings.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthExceedsInput" xml:space="preserve"><value>The bencoded string length exceeds the available input.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthExpected" xml:space="preserve"><value>Expected a bencoded string length.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthLeadingZeros" xml:space="preserve"><value>Bencoded string lengths cannot contain leading zeros.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthTooLarge" xml:space="preserve"><value>The bencoded string length exceeds Int32.MaxValue.</value></data>
+  <data name="Format_Invalid_BencodeStringMissingSeparator" xml:space="preserve"><value>Expected ':' after bencoded string length.</value></data>
+  <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve"><value>The bencoded value contains trailing data.</value></data>
+  <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve"><value>Unexpected end of bencoded data.</value></data>
+  <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve"><value>Unexpected bencode token '{0}' at offset {1}.</value></data>
+  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value></data>
+  <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve"><value>Unterminated bencoded dictionary.</value></data>
+  <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve"><value>Unterminated bencoded integer.</value></data>
+  <data name="Format_Invalid_BencodeUnterminatedList" xml:space="preserve"><value>Unterminated bencoded list.</value></data>
+  <data name="Op_Invalid_IntegerFormatFailed" xml:space="preserve"><value>The integer value could not be formatted.</value></data>
+  <data name="Op_Invalid_StringLengthFormatFailed" xml:space="preserve"><value>The string length could not be formatted.</value></data>
+  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>
+  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve"><value>Stream does not support writing.</value></data>
+</root>
