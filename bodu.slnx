@@ -14,6 +14,8 @@
     <Project Path="Bodu.Text.Serialization\test\Bodu.Text.Serialization.Test.csproj" />
     <Project Path="Bodu.Text.Serialization.Bencode\src\Bodu.Text.Serialization.Bencode.csproj" />
     <Project Path="Bodu.Text.Serialization.Bencode\test\Bodu.Text.Serialization.Bencode.Test.csproj" />
+    <Project Path="Bodu.Text.Serialization.Toml\src\Bodu.Text.Serialization.Toml.csproj" />
+    <Project Path="Bodu.Text.Serialization.Toml\test\Bodu.Text.Serialization.Toml.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
