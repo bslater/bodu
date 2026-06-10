@@ -46,50 +46,10 @@ namespace Bodu {
             set { resourceCulture = value; }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
-        /// </summary>
-        internal static string Arg_Invalid_DuplicateDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain null keys..
-        /// </summary>
-        internal static string Arg_Invalid_NullDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullDictionaryKey", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain null values..
-        /// </summary>
-        internal static string Arg_Invalid_NullDictionaryValue {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullDictionaryValue", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The list cannot contain null values..
-        /// </summary>
-        internal static string Arg_Invalid_NullListElement {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullListElement", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported bencoded value type..
-        /// </summary>
-        internal static string Arg_OutOfRange_UnsupportedBencodedValueType {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_UnsupportedBencodedValueType", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
@@ -154,14 +114,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a bencoded string length..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthExpected {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExpected", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Bencoded string lengths cannot contain leading zeros..
@@ -244,32 +196,8 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded list..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedList {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedList", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The integer value could not be formatted..
-        /// </summary>
-        internal static string Op_Invalid_IntegerFormatFailed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_IntegerFormatFailed", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The string length could not be formatted..
-        /// </summary>
-        internal static string Op_Invalid_StringLengthFormatFailed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_StringLengthFormatFailed", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Stream does not support reading..

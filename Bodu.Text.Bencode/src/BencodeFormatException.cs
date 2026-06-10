@@ -11,17 +11,18 @@ namespace Bodu.Text.Bencode;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Raised by <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> when the input cannot be interpreted as a valid bencoded
-/// document — for example, when an unexpected prefix byte is encountered, an integer is missing its terminating
-/// <c>e</c>, a string's length prefix does not fit the remaining bytes, a dictionary's keys are not in lexicographic
-/// order, or the document contains trailing bytes after a complete value.
+/// Raised by <see cref="Utf8BencodeReader.Read" /> — and therefore surfaced by <see cref="BencodeSerializer" /> while
+/// deserializing — when the input cannot be interpreted as a valid bencoded document: for example, when an unexpected
+/// prefix byte is encountered, an integer is missing its terminating <c>e</c>, a string's length prefix does not fit
+/// the remaining bytes, a dictionary's keys are not in lexicographic order, or the document contains trailing bytes
+/// after a complete value.
 /// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[
 /// try
 /// {
-///     BencodedValue root = Bencode.Parse(payload);
+///     TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 /// }
 /// catch (BencodeFormatException ex)
 /// {
