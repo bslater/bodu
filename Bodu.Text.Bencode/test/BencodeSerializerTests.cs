@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Kat;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Serialization;
 using Bodu.Text.Bencode.Writer;
@@ -16,7 +17,7 @@ namespace Bodu.Text.Bencode;
 /// attribute and naming-policy handling, custom converters, unsupported-type behavior, and null-member omission.
 /// </summary>
 [TestClass]
-public class BencodeSerializerTests
+public partial class BencodeSerializerTests
 {
     /// <summary>
     /// Verifies that a POCO with a string, an int, a long, a byte array, an int list, a nested POCO, and a
