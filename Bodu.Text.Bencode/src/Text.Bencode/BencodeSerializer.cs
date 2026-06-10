@@ -48,7 +48,7 @@ public static class BencodeSerializer
         BencodeSerializerOptions effective = options ?? new BencodeSerializerOptions();
 
         var buffer = new ArrayBufferWriter<byte>();
-        var writer = new Utf8BencodeWriter(buffer);
+        var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = effective.MaxDepth });
         BencodeSerializerEngine.Serialize(writer, value, effective);
         return buffer.WrittenSpan.ToArray();
     }

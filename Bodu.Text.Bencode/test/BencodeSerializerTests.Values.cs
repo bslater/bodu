@@ -112,6 +112,8 @@ public partial class BencodeSerializerTests
     [DynamicData(nameof(IntegerCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void SerializeDeserialize_WhenIntegerValue_ShouldRoundTripToCanonicalBytes(BinaryKat<object, string> kat)
     {
+        ArgumentNullException.ThrowIfNull(kat);
+
         // Each row carries the boxed model and its expected canonical encoding; the helper round-trips by runtime type.
         byte[] bytes = SerializeBoxed(kat.Input);
         Assert.AreEqual(kat.Expected, Encoding.Latin1.GetString(bytes));

@@ -84,12 +84,14 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        var instance = (T)BareConstruct(metadata, values);
+        // Keep the instance boxed for the whole assignment phase. For a value type each member assignment must target
+        // the same box, so unboxing to T before assignment would mutate a throwaway copy and lose the values.
+        object instance = BareConstruct(metadata, values);
         (instance as IBencodeOnDeserializing)?.OnDeserializing();
-        AssignSettableMembers(metadata, values, instance!, options);
+        AssignSettableMembers(metadata, values, instance, options);
         PopulateExtensionData(metadata, instance, extensionEntries);
         (instance as IBencodeOnDeserialized)?.OnDeserialized();
-        return instance;
+        return (T)instance;
     }
 
     /// <inheritdoc />
@@ -152,9 +154,9 @@ internal sealed class ObjectConverter<T>
     /// type or adding into a pre-initialized instance when the member is get-only.
     /// </summary>
     /// <param name="metadata">The type metadata.</param>
-    /// <param name="instance">The constructed instance.</param>
+    /// <param name="instance">The constructed instance, boxed.</param>
     /// <param name="entries">The captured unmatched entries, or <see langword="null" /> when none were read.</param>
-    private static void PopulateExtensionData(TypeMetadata metadata, T instance, Dictionary<string, BencodeNode?>? entries)
+    private static void PopulateExtensionData(TypeMetadata metadata, object instance, Dictionary<string, BencodeNode?>? entries)
     {
         if (entries is null || entries.Count == 0 || metadata.ExtensionData is not { } member)
             return;
@@ -164,11 +166,11 @@ internal sealed class ObjectConverter<T>
             object materialized = member.PropertyType == typeof(BencodeObject)
                 ? new BencodeObject(entries)
                 : entries;
-            member.SetValue(instance!, materialized);
+            member.SetValue(instance, materialized);
             return;
         }
 
-        if (member.GetValue(instance!) is IDictionary<string, BencodeNode?> existing)
+        if (member.GetValue(instance) is IDictionary<string, BencodeNode?> existing)
         {
             foreach (KeyValuePair<string, BencodeNode?> entry in entries)
                 existing[entry.Key] = entry.Value;

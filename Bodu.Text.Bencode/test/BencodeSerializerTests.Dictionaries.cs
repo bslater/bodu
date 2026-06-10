@@ -146,6 +146,8 @@ public partial class BencodeSerializerTests
     [DynamicData(nameof(DictionaryShapeCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void SerializeDeserialize_WhenDictionaryShape_ShouldRoundTripAndMaterializeExpectedType(DictionaryShapeKat kat)
     {
+        ArgumentNullException.ThrowIfNull(kat);
+
         byte[] bytes = kat.Serialize();
         Assert.AreEqual("d1:ai1e1:bi2ee", Encoding.Latin1.GetString(bytes));
 
