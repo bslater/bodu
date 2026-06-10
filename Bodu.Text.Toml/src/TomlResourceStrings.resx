@@ -19,4 +19,30 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>
   <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve"><value>Stream does not support writing.</value></data>
+  <data name="Format_Invalid_TomlAppendToStaticArray" xml:space="preserve"><value>Cannot append a table to a statically defined array.</value></data>
+  <data name="Format_Invalid_TomlArrayTableConflict" xml:space="preserve"><value>The key conflicts with an existing array of tables.</value></data>
+  <data name="Format_Invalid_TomlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>
+  <data name="Format_Invalid_TomlDuplicateKey" xml:space="preserve"><value>The key is already defined.</value></data>
+  <data name="Format_Invalid_TomlDuplicateTable" xml:space="preserve"><value>The table is already defined.</value></data>
+  <data name="Format_Invalid_TomlExpectedEquals" xml:space="preserve"><value>Expected an equals sign after the key.</value></data>
+  <data name="Format_Invalid_TomlExpectedKey" xml:space="preserve"><value>Expected a key.</value></data>
+  <data name="Format_Invalid_TomlExpectedNewline" xml:space="preserve"><value>Expected a newline or end of file after the expression.</value></data>
+  <data name="Format_Invalid_TomlExpectedValue" xml:space="preserve"><value>Expected a value.</value></data>
+  <data name="Format_Invalid_TomlExtendInlineTable" xml:space="preserve"><value>Cannot extend an inline table after it has been defined.</value></data>
+  <data name="Format_Invalid_TomlInlineTableTrailingComma" xml:space="preserve"><value>A trailing comma is not permitted in an inline table.</value></data>
+  <data name="Format_Invalid_TomlIntegerOutOfRange" xml:space="preserve"><value>The integer value is outside the range of a 64-bit signed integer.</value></data>
+  <data name="Format_Invalid_TomlInvalidArray" xml:space="preserve"><value>Expected a comma or closing bracket in the array.</value></data>
+  <data name="Format_Invalid_TomlInvalidDateTime" xml:space="preserve"><value>The date-time value is not valid.</value></data>
+  <data name="Format_Invalid_TomlInvalidEscape" xml:space="preserve"><value>The escape sequence is not valid.</value></data>
+  <data name="Format_Invalid_TomlInvalidInlineTable" xml:space="preserve"><value>Expected a comma or closing brace in the inline table.</value></data>
+  <data name="Format_Invalid_TomlInvalidNumber" xml:space="preserve"><value>The numeric value is not valid.</value></data>
+  <data name="Format_Invalid_TomlInvalidUtf8" xml:space="preserve"><value>The input does not contain valid UTF-8 text.</value></data>
+  <data name="Format_Invalid_TomlKeyOnValue" xml:space="preserve"><value>Cannot define a dotted key under a value that is not a table.</value></data>
+  <data name="Format_Invalid_TomlLeapSecond" xml:space="preserve"><value>Leap seconds are not supported.</value></data>
+  <data name="Format_Invalid_TomlMultilineKey" xml:space="preserve"><value>A multi-line string cannot be used as a key.</value></data>
+  <data name="Format_Invalid_TomlNestingTooDeep" xml:space="preserve"><value>TOML value nesting exceeds the maximum permitted depth of {0}.</value></data>
+  <data name="Format_Invalid_TomlSecondsRequired" xml:space="preserve"><value>A time value must include seconds.</value></data>
+  <data name="Format_Invalid_TomlUnpairedSurrogate" xml:space="preserve"><value>The input contains an unpaired surrogate and is not valid UTF-8 text.</value></data>
+  <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve"><value>The string is not terminated.</value></data>
+  <data name="Format_Invalid_TomlUnterminatedTable" xml:space="preserve"><value>The table header is not terminated.</value></data>
 </root>
