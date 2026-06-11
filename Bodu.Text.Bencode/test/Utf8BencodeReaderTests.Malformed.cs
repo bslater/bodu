@@ -34,7 +34,9 @@ public partial class Utf8BencodeReaderTests
     [DataRow("plus sign", "i+1e")]
     [DataRow("unterminated integer", "i12")]
     [DataRow("integer overflow", "i99999999999999999999e")]
+    [DataRow("integer beyond UInt64 by one", "i18446744073709551616e")]
     [DataRow("integer underflow", "i-99999999999999999999e")]
+    [DataRow("integer below Int64 by one", "i-9223372036854775809e")]
     [DataRow("non-digit in integer", "i1a2e")]
 
     // Byte-string grammar.

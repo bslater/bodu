@@ -126,8 +126,8 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="ulong" /> value within the signed 64-bit range round-trips, confirming the unsigned
-    /// 64-bit type is supported up to the limit Bencode's signed integer surface can store.
+    /// Verifies that a <see cref="ulong" /> value within the signed 64-bit range round-trips through the same wire
+    /// form a <see cref="long" /> of equal value produces.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenUInt64WithinInt64Range_ShouldRoundTrip()
@@ -142,18 +142,41 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing a <see cref="ulong" /> larger than <see cref="long.MaxValue" /> throws
-    /// <see cref="BencodeSerializationException" />, because Bencode's integer surface is signed 64-bit and cannot
-    /// represent the value.
+    /// Verifies that a <see cref="ulong" /> larger than <see cref="long.MaxValue" /> round-trips losslessly, because
+    /// Bencode integers are arbitrary-precision in BEP 3 and the serializer reads and writes the full unsigned 64-bit
+    /// range.
+    /// </summary>
+    /// <param name="name">The scenario label.</param>
+    /// <param name="value">The unsigned value to round-trip.</param>
+    /// <param name="encoded">The expected canonical Bencode document.</param>
+    [TestMethod]
+    [DataRow("ulong max", ulong.MaxValue, "d5:Valuei18446744073709551615ee")]
+    [DataRow("long max plus one", 9223372036854775808UL, "d5:Valuei9223372036854775808ee")]
+    public void SerializeDeserialize_WhenUInt64ExceedsInt64Range_ShouldRoundTrip(string name, ulong value, string encoded)
+    {
+        _ = name;
+        var model = new ULongModel { Value = value };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+        Assert.AreEqual(encoded, Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<ULongModel>(bytes);
+        Assert.AreEqual(value, roundTripped.Value);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a negative Bencode integer into a <see cref="ulong" /> member throws
+    /// <see cref="BencodeSerializationException" />, matching the overflow contract of the other fixed-width integer
+    /// types.
     /// </summary>
     [TestMethod]
-    public void Serialize_WhenUInt64ExceedsInt64Range_ShouldThrowBencodeSerializationException()
+    public void Deserialize_WhenNegativeIntegerIntoUInt64_ShouldThrowBencodeSerializationException()
     {
-        var model = new ULongModel { Value = ulong.MaxValue };
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
-            _ = BencodeSerializer.Serialize(model);
+            _ = BencodeSerializer.Deserialize<ULongModel>(bytes);
         });
     }
 
@@ -179,13 +202,29 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that deserializing a Bencode integer that exceeds the signed 64-bit range Bencode can store throws
+    /// Verifies that deserializing a Bencode integer beyond <see cref="long.MaxValue" /> into a signed
+    /// <see cref="long" /> member throws <see cref="BencodeFormatException" />, because the value is readable only
+    /// through the unsigned surface.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerExceedsInt64RangeIntoInt64_ShouldThrowBencodeFormatException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551615ee");
+
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<LongModel>(bytes);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a Bencode integer literal beyond <see cref="ulong.MaxValue" /> throws
     /// <see cref="BencodeFormatException" />, surfacing at the reader before the converter is consulted.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenIntegerExceedsInt64Range_ShouldThrowBencodeFormatException()
+    public void Deserialize_WhenIntegerExceedsUInt64Range_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551615ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551616ee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -341,6 +380,7 @@ public partial class BencodeSerializerTests
         yield return Row(new LongModel { Value = 0 }, "d5:Valuei0ee", "long zero");
         yield return Row(new ULongModel { Value = 0 }, "d5:Valuei0ee", "ulong zero");
         yield return Row(new ULongModel { Value = (ulong)long.MaxValue }, "d5:Valuei9223372036854775807ee", "ulong int64-max");
+        yield return Row(new ULongModel { Value = ulong.MaxValue }, "d5:Valuei18446744073709551615ee", "ulong max");
 
         static object[] Row(object model, string expected, string name) =>
             [new BinaryKat<object, string>(name, model, expected)];

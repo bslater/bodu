@@ -8,8 +8,14 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
 /// Produces a <see cref="CollectionConverter{TCollection, TElement}" /> for single-dimensional arrays, for
-/// <see cref="System.Collections.Generic.List{T}" /> and the interfaces it satisfies, and for concrete collection types
-/// that implement <see cref="System.Collections.Generic.ICollection{T}" /> with a public parameterless constructor.
+/// <see cref="System.Collections.Generic.List{T}" /> and the interfaces it satisfies, for concrete collection types
+/// that implement <see cref="System.Collections.Generic.ICollection{T}" /> with a public parameterless constructor, and
+/// for the queue-, stack-, and bag-shaped collections <see cref="Queue{T}" />, <see cref="Stack{T}" />,
+/// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" />,
+/// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" />, and
+/// <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> (including subclasses with a public parameterless
+/// constructor), which do not implement <see cref="System.Collections.Generic.ICollection{T}" /> and are materialized
+/// through <c>Enqueue</c>, <c>Push</c>, or <c>Add</c> instead.
 /// </summary>
 internal sealed class CollectionConverterFactory
     : BencodeConverterFactory
@@ -60,6 +66,9 @@ internal sealed class CollectionConverterFactory
             return true;
         }
 
+        if (TryGetQueueLikeInfo(type, out elementType, out strategy))
+            return true;
+
         Type? enumerable = FindEnumerableInterface(type);
         if (enumerable is null)
             return false;
@@ -77,6 +86,52 @@ internal sealed class CollectionConverterFactory
         if (!type.IsAbstract && !type.IsInterface && collectionType.IsAssignableFrom(type) && type.GetConstructor(Type.EmptyTypes) is not null)
         {
             strategy = CollectionStrategy.ConcreteCollection;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether a type is one of the queue-, stack-, or bag-shaped collections that are materialized through
+    /// their own mutation method rather than <see cref="System.Collections.Generic.ICollection{T}" />.
+    /// </summary>
+    /// <param name="type">The candidate collection type.</param>
+    /// <param name="elementType">When this method returns <see langword="true" />, the element type.</param>
+    /// <param name="strategy">When this method returns <see langword="true" />, the materialization strategy.</param>
+    /// <returns>
+    /// <see langword="true" /> when the type is <see cref="Queue{T}" />, <see cref="Stack{T}" />,
+    /// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" />,
+    /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" />, or
+    /// <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> — or a subclass of one of them — with a public
+    /// parameterless constructor; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool TryGetQueueLikeInfo(Type type, out Type? elementType, out CollectionStrategy strategy)
+    {
+        elementType = null;
+        strategy = CollectionStrategy.ListAssignable;
+
+        for (Type? current = type; current is not null; current = current.BaseType)
+        {
+            if (!current.IsGenericType)
+                continue;
+
+            Type definition = current.GetGenericTypeDefinition();
+            CollectionStrategy? matched = definition == typeof(Queue<>) ? CollectionStrategy.Queue
+                : definition == typeof(Stack<>) ? CollectionStrategy.Stack
+                : definition == typeof(System.Collections.Concurrent.ConcurrentQueue<>) ? CollectionStrategy.ConcurrentQueue
+                : definition == typeof(System.Collections.Concurrent.ConcurrentStack<>) ? CollectionStrategy.ConcurrentStack
+                : definition == typeof(System.Collections.Concurrent.ConcurrentBag<>) ? CollectionStrategy.ConcurrentBag
+                : null;
+
+            if (matched is null)
+                continue;
+
+            if (type.IsAbstract || type.GetConstructor(Type.EmptyTypes) is null)
+                return false;
+
+            elementType = current.GetGenericArguments()[0];
+            strategy = matched.Value;
             return true;
         }
 

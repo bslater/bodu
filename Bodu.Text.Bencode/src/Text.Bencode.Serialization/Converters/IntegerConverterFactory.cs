@@ -7,7 +7,8 @@
 namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
-/// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width integer types.
+/// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width integer types, and the dedicated
+/// <see cref="UInt64Converter" /> for <see cref="ulong" /> so the full unsigned 64-bit range round-trips.
 /// </summary>
 internal sealed class IntegerConverterFactory
     : BencodeConverterFactory
@@ -37,6 +38,9 @@ internal sealed class IntegerConverterFactory
     public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
+
+        if (typeToConvert == typeof(ulong))
+            return new UInt64Converter();
 
         Type converterType = typeof(IntegerConverter<>).MakeGenericType(typeToConvert);
         return (BencodeConverter)Activator.CreateInstance(converterType) !;

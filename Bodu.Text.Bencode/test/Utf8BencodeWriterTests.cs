@@ -60,6 +60,25 @@ public class Utf8BencodeWriterTests
     }
 
     /// <summary>
+    /// Verifies that the unsigned <see cref="ulong" /> overload formats values canonically across the full unsigned
+    /// 64-bit range, including values beyond <see cref="long.MaxValue" /> that the signed overload cannot represent.
+    /// </summary>
+    /// <param name="value">The unsigned integer value to write.</param>
+    /// <param name="expected">The expected canonical encoding.</param>
+    [TestMethod]
+    [DataRow(0UL, "i0e")]
+    [DataRow(42UL, "i42e")]
+    [DataRow(9223372036854775807UL, "i9223372036854775807e")]
+    [DataRow(9223372036854775808UL, "i9223372036854775808e")]
+    [DataRow(ulong.MaxValue, "i18446744073709551615e")]
+    public void WriteInteger_WhenUnsignedValueGiven_ShouldEmitCanonicalEncoding(ulong value, string expected)
+    {
+        var actual = Write(w => w.WriteInteger(value));
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
     /// Verifies that an empty byte string is emitted as <c>0:</c>.
     /// </summary>
     [TestMethod]

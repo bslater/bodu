@@ -13,8 +13,9 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
 /// Converts any fixed-width integer type to and from a Bencode integer, using checked conversions so a value outside
-/// the target type's range — or outside the signed 64-bit range Bencode can store — surfaces as a serialization error
-/// rather than silently wrapping.
+/// the target type's range — or outside the signed 64-bit surface this converter reads and writes through — surfaces as
+/// a serialization error rather than silently wrapping. <see cref="ulong" /> is handled by the dedicated
+/// <see cref="UInt64Converter" /> instead, which spans the full unsigned range.
 /// </summary>
 /// <typeparam name="T">The integer type, constrained to <see cref="IBinaryInteger{TSelf}" />.</typeparam>
 internal sealed class IntegerConverter<T>

@@ -64,4 +64,6 @@
   <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
   <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The Bencode document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
+  <data name="Format_Invalid_BencodeIntegerNegativeUnsigned" xml:space="preserve"><value>The bencoded integer is negative and cannot be read as UInt64.</value></data>
+  <data name="Op_Invalid_DictionaryKeyParse" xml:space="preserve"><value>The dictionary key '{0}' cannot be converted to type '{1}'.</value></data>
 </root>

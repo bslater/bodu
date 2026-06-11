@@ -10,9 +10,11 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies how <see cref="BencodeSerializer" /> maps string-keyed dictionaries to and from a Bencode dictionary:
-/// canonical key ordering, the supported dictionary shapes and their materialized concrete types, empty and nested
-/// dictionaries, null-value omission, and the treatment of dictionaries whose key is not a <see cref="string" />.
+/// Verifies how <see cref="BencodeSerializer" /> maps dictionaries to and from a Bencode dictionary: canonical key
+/// ordering, the supported dictionary shapes and their materialized concrete types, empty and nested dictionaries,
+/// null-value omission, the stringified round-trip of the supported non-string key types (the integer family,
+/// enumerations, <see cref="Guid" />, <see cref="bool" />, and <see cref="char" />), and the fall-through treatment
+/// of dictionaries keyed by an unsupported type.
 /// </summary>
 public partial class BencodeSerializerTests
 {
@@ -165,37 +167,215 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a dictionary whose key is not a <see cref="string" /> is not mapped to a Bencode dictionary but is
-    /// instead treated as a sequence of key/value pairs, producing a Bencode list of two-entry dictionaries.
+    /// Verifies that an <see cref="int" />-keyed dictionary serializes to a Bencode dictionary whose keys are the
+    /// invariant decimal text of the integers and round-trips to an equivalent dictionary.
     /// </summary>
-    /// <remarks>
-    /// Bencode dictionary keys are byte strings, so only string-keyed dictionaries map to a Bencode dictionary. A
-    /// dictionary with a non-string key falls through to the collection path because it implements
-    /// <see cref="IEnumerable{T}" /> over <see cref="KeyValuePair{TKey, TValue}" />.
-    /// </remarks>
     [TestMethod]
-    public void Serialize_WhenDictionaryKeyIsNotString_ShouldEmitListOfKeyValuePairs()
+    public void SerializeDeserialize_WhenInt32KeyedDictionary_ShouldRoundTripToBencodeDictionary()
     {
         var value = new Dictionary<int, int> { [1] = 2 };
 
         byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d1:1i2ee", Encoding.Latin1.GetString(bytes));
 
-        Assert.AreEqual("ld3:Keyi1e5:Valuei2eee", Encoding.Latin1.GetString(bytes));
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<int, int>>(bytes);
+        CollectionAssert.AreEquivalent(value, roundTripped);
     }
 
     /// <summary>
-    /// Verifies that deserializing a Bencode dictionary into a non-string-keyed dictionary throws
+    /// Verifies that integer keys are canonically sorted by their stringified form rather than their numeric value,
+    /// so the key <c>10</c> precedes the key <c>2</c> in the output's bytewise order.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenInt32KeysStringify_ShouldEmitBytewiseSortedTextKeys()
+    {
+        var value = new Dictionary<int, int> { [2] = 20, [10] = 100 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        Assert.AreEqual("d2:10i100e1:2i20ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="ulong" />-keyed dictionary round-trips <see cref="ulong.MaxValue" /> as a key,
+    /// confirming key stringification spans the full unsigned 64-bit range.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenUInt64KeyedDictionary_ShouldRoundTripMaxValue()
+    {
+        var value = new Dictionary<ulong, int> { [ulong.MaxValue] = 1 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d20:18446744073709551615i1ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<ulong, int>>(bytes);
+        Assert.AreEqual(1, roundTripped[ulong.MaxValue]);
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration-keyed dictionary uses the member names as keys, sorted canonically, and
+    /// round-trips by case-insensitive name matching.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenEnumKeyedDictionary_ShouldUseMemberNames()
+    {
+        var value = new Dictionary<Color, int> { [Color.Red] = 1, [Color.Blue] = 2 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d4:Bluei2e3:Redi1ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<Color, int>>(bytes);
+        Assert.AreEqual(1, roundTripped[Color.Red]);
+        Assert.AreEqual(2, roundTripped[Color.Blue]);
+    }
+
+    /// <summary>
+    /// Verifies that a combined-flags enumeration key uses the comma-separated member-name form produced by
+    /// <see cref="Enum.ToString()" /> and round-trips back to the combined value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenFlagsEnumKeyCombined_ShouldUseCommaSeparatedNames()
+    {
+        var value = new Dictionary<Permissions, int> { [Permissions.Read | Permissions.Write] = 1 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d11:Read, Writei1ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<Permissions, int>>(bytes);
+        Assert.AreEqual(1, roundTripped[Permissions.Read | Permissions.Write]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Guid" />-keyed dictionary uses the 32-digit hyphenated ("D") format as the key and
+    /// round-trips exactly.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenGuidKeyedDictionary_ShouldUseHyphenatedFormat()
+    {
+        var key = new Guid("08314FA2-B1FE-4792-BCD1-6E62338AC7F3");
+        var value = new Dictionary<Guid, int> { [key] = 1 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d36:08314fa2-b1fe-4792-bcd1-6e62338ac7f3i1ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<Guid, int>>(bytes);
+        Assert.AreEqual(1, roundTripped[key]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="bool" />-keyed dictionary uses <c>True</c> and <c>False</c> as keys and round-trips
+    /// case-insensitively.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenBoolKeyedDictionary_ShouldUseTrueFalseText()
+    {
+        var value = new Dictionary<bool, int> { [true] = 1, [false] = 2 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d5:Falsei2e4:Truei1ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<bool, int>>(bytes);
+        Assert.AreEqual(1, roundTripped[true]);
+        Assert.AreEqual(2, roundTripped[false]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="char" />-keyed dictionary uses single-character keys and round-trips.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenCharKeyedDictionary_ShouldUseSingleCharacterKeys()
+    {
+        var value = new Dictionary<char, int> { ['b'] = 2, ['a'] = 1 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("d1:ai1e1:bi2ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Dictionary<char, int>>(bytes);
+        Assert.AreEqual(1, roundTripped['a']);
+        Assert.AreEqual(2, roundTripped['b']);
+    }
+
+    /// <summary>
+    /// Verifies that a non-string-keyed dictionary declared through <see cref="IDictionary{TKey, TValue}" />
+    /// materializes to <see cref="Dictionary{TKey, TValue}" /> on read, matching the string-keyed interface behavior.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenInt32KeyedIDictionary_ShouldMaterializeDictionary()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d1:1i2ee");
+
+        IDictionary<int, int> roundTripped = BencodeSerializer.Deserialize<IDictionary<int, int>>(bytes);
+
+        Assert.IsInstanceOfType<Dictionary<int, int>>(roundTripped);
+        Assert.AreEqual(2, roundTripped[1]);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a dictionary key whose text is not a valid integer into an <see cref="int" />-keyed
+    /// dictionary throws <see cref="BencodeSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerKeyTextInvalid_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d1:xi1ee");
+
+        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<int, int>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'x'", StringComparison.Ordinal));
+        Assert.IsNotNull(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a <see cref="Guid" /> key written in a non-hyphenated format throws
+    /// <see cref="BencodeSerializationException" />, because keys round-trip only through the exact "D" format.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenGuidKeyTextNotHyphenatedFormat_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d38:{00000000-0000-0000-0000-000000000000}i1ee");
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<Guid, int>>(bytes);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary keyed by an unsupported type (a plain object) is not mapped to a Bencode dictionary
+    /// but falls through to the collection path, producing a Bencode list of two-entry key/value dictionaries.
+    /// </summary>
+    /// <remarks>
+    /// Supported key types are <see cref="string" />, the integer family, enumerations, <see cref="Guid" />,
+    /// <see cref="bool" />, and <see cref="char" />. Any other key type has no round-trippable byte-string form, so
+    /// the dictionary binds through <see cref="IEnumerable{T}" /> over <see cref="KeyValuePair{TKey, TValue}" />
+    /// instead.
+    /// </remarks>
+    [TestMethod]
+    public void Serialize_WhenDictionaryKeyIsUnsupportedType_ShouldEmitListOfKeyValuePairs()
+    {
+        var value = new Dictionary<Item, int> { [new Item { Id = 1, Label = "a" }] = 2 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        Assert.AreEqual("ld3:Keyd2:Idi1e5:Label1:ae5:Valuei2eee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a Bencode dictionary into a dictionary keyed by an unsupported type throws
     /// <see cref="BencodeSerializationException" />, because such a type is bound through the collection path and a
     /// dictionary token is not a list.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenDictionaryKeyIsNotString_ShouldThrowBencodeSerializationException()
+    public void Deserialize_WhenDictionaryKeyIsUnsupportedType_ShouldThrowBencodeSerializationException()
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d1:1i2ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
-            _ = BencodeSerializer.Deserialize<Dictionary<int, int>>(bytes);
+            _ = BencodeSerializer.Deserialize<Dictionary<Item, int>>(bytes);
         });
     }
 

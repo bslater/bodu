@@ -12,8 +12,10 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies how <see cref="BencodeSerializer" /> maps collection types to and from a Bencode list: the supported
-/// collection shapes, element ordering, empty and nested collections, the concrete type that each collection interface
-/// materializes to on read, the element types Bencode can carry, and the rejection of null elements.
+/// collection shapes (including the queue-, stack-, and bag-shaped collections that do not implement
+/// <see cref="ICollection{T}" />), element ordering and the stack-reversing round-trip, empty and nested collections,
+/// the concrete type that each collection interface materializes to on read, the element types Bencode can carry, and
+/// the rejection of null elements.
 /// </summary>
 public partial class BencodeSerializerTests
 {
@@ -221,34 +223,129 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that deserializing a Bencode list into a <see cref="Queue{T}" /> throws
-    /// <see cref="BencodeSerializationException" />, confirming queues and stacks are not recognized as Bencode lists
-    /// because they do not implement <see cref="ICollection{T}" />.
+    /// Verifies that a <see cref="Queue{T}" /> serializes to a Bencode list in dequeue (first-in) order and
+    /// round-trips to a queue that dequeues the same sequence.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenTargetIsQueue_ShouldThrowBencodeSerializationException()
+    public void SerializeDeserialize_WhenQueue_ShouldRoundTripInDequeueOrder()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("li1ei2ee");
+        var value = new Queue<int>();
+        value.Enqueue(1);
+        value.Enqueue(2);
+        value.Enqueue(3);
 
-        Assert.ThrowsExactly<BencodeSerializationException>(() =>
-        {
-            _ = BencodeSerializer.Deserialize<Queue<int>>(bytes);
-        });
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("li1ei2ei3ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<Queue<int>>(bytes);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.ToArray());
+        Assert.AreEqual(1, roundTripped.Dequeue());
     }
 
     /// <summary>
-    /// Verifies that deserializing a Bencode list into a <see cref="Stack{T}" /> throws
-    /// <see cref="BencodeSerializationException" />, confirming stacks are not recognized as Bencode lists.
+    /// Verifies that a <see cref="Stack{T}" /> serializes to a Bencode list in pop order (most recently pushed
+    /// first), the stack's natural enumeration order.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenTargetIsStack_ShouldThrowBencodeSerializationException()
+    public void Serialize_WhenStack_ShouldWriteElementsInPopOrder()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("li1ei2ee");
+        var value = new Stack<int>();
+        value.Push(1);
+        value.Push(2);
+        value.Push(3);
 
-        Assert.ThrowsExactly<BencodeSerializationException>(() =>
-        {
-            _ = BencodeSerializer.Deserialize<Stack<int>>(bytes);
-        });
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        Assert.AreEqual("li3ei2ei1ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a Bencode list into a <see cref="Stack{T}" /> pushes the elements in document
+    /// order, so the last document element becomes the top of the stack.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStack_ShouldPushElementsInDocumentOrder()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("li1ei2ei3ee");
+
+        var stack = BencodeSerializer.Deserialize<Stack<int>>(bytes);
+
+        Assert.AreEqual(3, stack.Count);
+        Assert.AreEqual(3, stack.Pop());
+        Assert.AreEqual(2, stack.Pop());
+        Assert.AreEqual(1, stack.Pop());
+    }
+
+    /// <summary>
+    /// Verifies that a serialize/deserialize round-trip reverses a <see cref="Stack{T}" />: the writer enumerates pop
+    /// order while the reader pushes in document order, mirroring the behavior of
+    /// <see cref="System.Text.Json.JsonSerializer" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStack_ShouldReverseElementOrder()
+    {
+        var value = new Stack<int>(new[] { 1, 2 });
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        var roundTripped = BencodeSerializer.Deserialize<Stack<int>>(bytes);
+
+        CollectionAssert.AreEqual(value.Reverse().ToArray(), roundTripped.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> serializes to a Bencode list
+    /// in dequeue order and round-trips to a queue yielding the same sequence.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenConcurrentQueue_ShouldRoundTripInDequeueOrder()
+    {
+        var value = new System.Collections.Concurrent.ConcurrentQueue<int>();
+        value.Enqueue(1);
+        value.Enqueue(2);
+        value.Enqueue(3);
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("li1ei2ei3ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<System.Collections.Concurrent.ConcurrentQueue<int>>(bytes);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.ToArray());
+        Assert.IsTrue(roundTripped.TryPeek(out var head));
+        Assert.AreEqual(1, head);
+    }
+
+    /// <summary>
+    /// Verifies that a serialize/deserialize round-trip reverses a
+    /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" />, matching the <see cref="Stack{T}" />
+    /// semantics: the writer enumerates pop order while the reader pushes in document order.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenConcurrentStack_ShouldReverseElementOrder()
+    {
+        var value = new System.Collections.Concurrent.ConcurrentStack<int>();
+        value.Push(1);
+        value.Push(2);
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+        Assert.AreEqual("li2ei1ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<System.Collections.Concurrent.ConcurrentStack<int>>(bytes);
+        Assert.IsTrue(roundTripped.TryPeek(out var top));
+        Assert.AreEqual(1, top);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> serializes to a Bencode list and
+    /// round-trips to a bag holding an equivalent set of elements, with no enumeration-order guarantee.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenConcurrentBag_ShouldRoundTripToEquivalentElements()
+    {
+        var value = new System.Collections.Concurrent.ConcurrentBag<int> { 1, 2, 3 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        var roundTripped = BencodeSerializer.Deserialize<System.Collections.Concurrent.ConcurrentBag<int>>(bytes);
+        CollectionAssert.AreEquivalent(value.ToList(), roundTripped.ToList());
     }
 
     /// <summary>
@@ -270,6 +367,15 @@ public partial class BencodeSerializerTests
         yield return Row<Collection<int>>("Collection<int>", new Collection<int> { 1, 2, 3 }, typeof(Collection<int>));
         yield return Row<ObservableCollection<int>>("ObservableCollection<int>", new ObservableCollection<int> { 1, 2, 3 }, typeof(ObservableCollection<int>));
         yield return Row<LinkedList<int>>("LinkedList<int>", new LinkedList<int>(new[] { 1, 2, 3 }), typeof(LinkedList<int>));
+
+        // Queue shapes enumerate in dequeue order, so they fit the shared exact-sequence assertion. Stack and
+        // ConcurrentStack reverse on round-trip and ConcurrentBag is unordered, so those are covered by dedicated
+        // tests above instead.
+        yield return Row<Queue<int>>("Queue<int>", new Queue<int>(new[] { 1, 2, 3 }), typeof(Queue<int>));
+        yield return Row<System.Collections.Concurrent.ConcurrentQueue<int>>(
+            "ConcurrentQueue<int>",
+            new System.Collections.Concurrent.ConcurrentQueue<int>(new[] { 1, 2, 3 }),
+            typeof(System.Collections.Concurrent.ConcurrentQueue<int>));
 
         static object[] Row<T>(string name, T value, Type expectedConcreteType)
             where T : class =>

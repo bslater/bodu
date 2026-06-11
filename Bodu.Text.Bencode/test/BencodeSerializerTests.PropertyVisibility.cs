@@ -10,12 +10,13 @@ using Bodu.Text.Bencode.Serialization;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies which members the <see cref="BencodeSerializer" /> surfaces and how it binds them: read/write properties,
-/// init-only properties, get-only properties, properties with non-public accessors, and the
-/// <see cref="BencodeIncludeAttribute" /> opt-in. It also pins two Bencode-specific shapes that differ from the most
+/// Verifies which property members the <see cref="BencodeSerializer" /> surfaces and how it binds them: read/write
+/// properties, init-only properties, get-only properties, properties with non-public accessors, and the
+/// <see cref="BencodeIncludeAttribute" /> opt-in. It also pins a Bencode-specific shape that differs from the most
 /// permissive <see cref="System.Text.Json.JsonSerializer" /> configuration: a get-only scalar property is written but
-/// cannot be set on read, and a public field is not surfaced as a member even with <see cref="BencodeIncludeAttribute" />,
-/// because the serializer maps only properties.
+/// cannot be set on read. Field serialization — opt-in through
+/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="BencodeIncludeAttribute" /> — is covered by
+/// the <c>Fields</c> partial.
 /// </summary>
 public partial class BencodeSerializerTests
 {
@@ -119,31 +120,6 @@ public partial class BencodeSerializerTests
 
         var roundTripped = BencodeSerializer.Deserialize<IncludedPrivateSetterModel>(bytes);
         Assert.AreEqual(5, roundTripped.Value);
-    }
-
-    /// <summary>
-    /// Verifies that a public field is not surfaced as a serializable member, so only the type's properties are
-    /// written; this records the Bencode serializer's property-only mapping, which is narrower than the field support
-    /// of <see cref="System.Text.Json.JsonSerializer" />.
-    /// </summary>
-    [TestMethod]
-    public void Serialize_WhenPublicField_ShouldNotWriteField()
-    {
-        byte[] bytes = BencodeSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 });
-
-        Assert.AreEqual("d8:Propertyi6ee", Encoding.Latin1.GetString(bytes));
-    }
-
-    /// <summary>
-    /// Verifies that a public field annotated with <see cref="BencodeIncludeAttribute" /> is still not surfaced as a
-    /// member, confirming the attribute opts non-public property accessors in but does not extend the mapping to fields.
-    /// </summary>
-    [TestMethod]
-    public void Serialize_WhenIncludedField_ShouldNotWriteField()
-    {
-        byte[] bytes = BencodeSerializer.Serialize(new IncludedFieldModel { Field = 5 });
-
-        Assert.AreEqual("de", Encoding.Latin1.GetString(bytes));
     }
 
     /// <summary>
@@ -256,33 +232,4 @@ public partial class BencodeSerializerTests
         public int Value { get; private set; }
     }
 
-    /// <summary>
-    /// A model with both a public field and a public property, used to confirm only the property is mapped.
-    /// </summary>
-    private sealed class FieldAndPropertyModel
-    {
-        /// <summary>
-        /// The public field, which the serializer does not surface as a member.
-        /// </summary>
-        public int Field;
-
-        /// <summary>
-        /// Gets or sets the public property, which the serializer surfaces as a member.
-        /// </summary>
-        /// <returns>The property value.</returns>
-        public int Property { get; set; }
-    }
-
-    /// <summary>
-    /// A model whose only candidate member is a public field annotated with <see cref="BencodeIncludeAttribute" />,
-    /// which the serializer still does not surface.
-    /// </summary>
-    private sealed class IncludedFieldModel
-    {
-        /// <summary>
-        /// The public field annotated for inclusion, which the serializer nonetheless does not surface as a member.
-        /// </summary>
-        [BencodeInclude]
-        public int Field;
-    }
 }

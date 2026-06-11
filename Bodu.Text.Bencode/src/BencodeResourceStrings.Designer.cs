@@ -52,6 +52,24 @@ namespace Bodu {
 
 
         /// <summary>
+        ///   Looks up a localized string similar to The bencoded integer is negative and cannot be read as UInt64..
+        /// </summary>
+        internal static string Format_Invalid_BencodeIntegerNegativeUnsigned {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeIntegerNegativeUnsigned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary key &apos;{0}&apos; cannot be converted to type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_DictionaryKeyParse {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DictionaryKeyParse", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
         /// </summary>
         internal static string Format_Invalid_BencodeIntegerOutOfRange {

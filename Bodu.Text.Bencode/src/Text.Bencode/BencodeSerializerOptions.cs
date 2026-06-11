@@ -68,6 +68,11 @@ public sealed class BencodeSerializerOptions
     private bool _caseInsensitive = true;
 
     /// <summary>
+    /// Whether public fields are surfaced as serializable members.
+    /// </summary>
+    private bool _includeFields;
+
+    /// <summary>
     /// The serializer-wide default condition under which a member is omitted on write.
     /// </summary>
     private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
@@ -158,6 +163,33 @@ public sealed class BencodeSerializerOptions
         {
             VerifyMutable();
             _caseInsensitive = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.
+    /// Mirrors <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" />.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to serialize and deserialize public fields; otherwise <see langword="false" />. The
+    /// default is <see langword="false" />.
+    /// </value>
+    /// <returns>Whether public fields participate in serialization.</returns>
+    /// <remarks>
+    /// A public field annotated with <see cref="Serialization.BencodeIncludeAttribute" /> participates regardless of
+    /// this setting, mirroring how <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" /> opts an
+    /// individual field in. Fields honor the property naming policy, name and order attributes, ignore conditions, and
+    /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
+    /// assigned on read.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public bool IncludeFields
+    {
+        get => _includeFields;
+        set
+        {
+            VerifyMutable();
+            _includeFields = value;
         }
     }
 

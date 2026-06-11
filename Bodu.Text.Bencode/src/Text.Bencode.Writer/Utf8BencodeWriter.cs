@@ -179,6 +179,25 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
+    /// Writes an unsigned integer value, permitting the full <see cref="ulong" /> range.
+    /// </summary>
+    /// <param name="value">The unsigned integer value.</param>
+    /// <remarks>
+    /// Bencode integers are arbitrary-precision in BEP 3, so values between <see cref="long.MaxValue" /> and
+    /// <see cref="ulong.MaxValue" /> are valid documents even though they exceed the writer's signed 64-bit overload. A
+    /// reader consuming such a value must use <see cref="Reader.Utf8BencodeReader.GetUInt64" /> rather than
+    /// <see cref="Reader.Utf8BencodeReader.GetInt64" />.
+    /// </remarks>
+    public readonly void WriteInteger(ulong value)
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        buffer.Write("i"u8);
+        WriteAsciiUInt64(buffer, value);
+        buffer.Write("e"u8);
+        Emit(buffer.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
     /// Writes a byte-string value.
     /// </summary>
     /// <param name="value">The byte-string content.</param>
@@ -220,6 +239,18 @@ public ref struct Utf8BencodeWriter
     /// <param name="buffer">The destination buffer.</param>
     /// <param name="value">The value to write.</param>
     private static void WriteAsciiInt64(IBufferWriter<byte> buffer, long value)
+    {
+        Span<byte> digits = stackalloc byte[20];
+        _ = Utf8Formatter.TryFormat(value, digits, out var written);
+        buffer.Write(digits[..written]);
+    }
+
+    /// <summary>
+    /// Writes the base-ten ASCII representation of an unsigned integer.
+    /// </summary>
+    /// <param name="buffer">The destination buffer.</param>
+    /// <param name="value">The value to write.</param>
+    private static void WriteAsciiUInt64(IBufferWriter<byte> buffer, ulong value)
     {
         Span<byte> digits = stackalloc byte[20];
         _ = Utf8Formatter.TryFormat(value, digits, out var written);

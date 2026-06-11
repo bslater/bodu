@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyMetadata.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,9 @@ using System.Reflection;
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 
 /// <summary>
-/// Describes a single serializable member (property or field surfaced as a property) of a type: its wire name, the
-/// converter that handles its value, how it is read and written, and how it binds to a constructor parameter.
+/// Describes a single serializable member (a property, or a public field surfaced through
+/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="BencodeIncludeAttribute" />) of a type: its wire
+/// name, the converter that handles its value, how it is read and written, and how it binds to a constructor parameter.
 /// </summary>
 /// <remarks>
 /// Instances are produced by <see cref="MetadataResolver" /> and cached on the serializer options, so the reflection
@@ -19,9 +20,16 @@ namespace Bodu.Text.Bencode.Serialization.Metadata;
 internal sealed class PropertyMetadata
 {
     /// <summary>
-    /// The reflected property used to read and write the member value.
+    /// The reflected property used to read and write the member value, or <see langword="null" /> when the member is a
+    /// field.
     /// </summary>
-    private readonly PropertyInfo _property;
+    private readonly PropertyInfo? _property;
+
+    /// <summary>
+    /// The reflected field used to read and write the member value, or <see langword="null" /> when the member is a
+    /// property.
+    /// </summary>
+    private readonly FieldInfo? _field;
 
     /// <summary>
     /// Whether the member is opted into binding through non-public accessors by <see cref="BencodeIncludeAttribute" />.
@@ -31,7 +39,7 @@ internal sealed class PropertyMetadata
     /// <summary>
     /// Initializes a new instance of the <see cref="PropertyMetadata" /> class.
     /// </summary>
-    /// <param name="property">The reflected property.</param>
+    /// <param name="member">The reflected member, a <see cref="PropertyInfo" /> or a <see cref="FieldInfo" />.</param>
     /// <param name="wireName">The name used for the member in serialized output.</param>
     /// <param name="converter">The converter that handles the member value.</param>
     /// <param name="conditionalIgnore">
@@ -49,7 +57,7 @@ internal sealed class PropertyMetadata
     /// Whether the member is opted into binding through non-public accessors by <see cref="BencodeIncludeAttribute" />.
     /// </param>
     internal PropertyMetadata(
-        PropertyInfo property,
+        MemberInfo member,
         string wireName,
         BencodeConverter converter,
         BencodeIgnoreCondition? conditionalIgnore,
@@ -59,7 +67,8 @@ internal sealed class PropertyMetadata
         object? defaultValue,
         bool included)
     {
-        _property = property;
+        _property = member as PropertyInfo;
+        _field = member as FieldInfo;
         _included = included;
         WireName = wireName;
         Converter = converter;
@@ -68,20 +77,20 @@ internal sealed class PropertyMetadata
         ConstructorParameterIndex = constructorParameterIndex;
         IsRequired = isRequired;
         DefaultValue = defaultValue;
-        DefaultTypeValue = property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
+        DefaultTypeValue = PropertyType.IsValueType ? Activator.CreateInstance(PropertyType) : null;
     }
 
     /// <summary>
     /// Gets the CLR name of the member.
     /// </summary>
     /// <returns>The declared member name.</returns>
-    internal string ClrName => _property.Name;
+    internal string ClrName => _property?.Name ?? _field!.Name;
 
     /// <summary>
     /// Gets the declared type of the member.
     /// </summary>
     /// <returns>The member type.</returns>
-    internal Type PropertyType => _property.PropertyType;
+    internal Type PropertyType => _property?.PropertyType ?? _field!.FieldType;
 
     /// <summary>
     /// Gets the name used for the member in serialized output.
@@ -143,14 +152,18 @@ internal sealed class PropertyMetadata
     internal object? DefaultTypeValue { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the member can be assigned during deserialization through its setter.
+    /// Gets a value indicating whether the member can be assigned during deserialization.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when the member has a public setter (which includes an init-only setter) or a non-public
-    /// setter opted in by <see cref="BencodeIncludeAttribute" />; otherwise <see langword="false" />. A property
-    /// exposed only through a non-public setter is therefore not assigned on read unless it carries that attribute.
+    /// For a property, <see langword="true" /> when it has a public setter (which includes an init-only setter) or a
+    /// non-public setter opted in by <see cref="BencodeIncludeAttribute" />; a property exposed only through a
+    /// non-public setter is therefore not assigned on read unless it carries that attribute. For a field,
+    /// <see langword="true" /> unless the field is <see langword="readonly" />.
     /// </returns>
-    internal bool CanSet => _property.SetMethod is not null && (_property.SetMethod.IsPublic || _included);
+    internal bool CanSet =>
+        _property is not null
+            ? _property.SetMethod is not null && (_property.SetMethod.IsPublic || _included)
+            : !_field!.IsInitOnly;
 
     /// <summary>
     /// Reads the member value from the specified target.
@@ -158,13 +171,18 @@ internal sealed class PropertyMetadata
     /// <param name="target">The object to read from.</param>
     /// <returns>The member value.</returns>
     internal object? GetValue(object target) =>
-        _property.GetValue(target);
+        _property is not null ? _property.GetValue(target) : _field!.GetValue(target);
 
     /// <summary>
-    /// Assigns the member value on the specified target through its setter.
+    /// Assigns the member value on the specified target.
     /// </summary>
     /// <param name="target">The object to assign on.</param>
     /// <param name="value">The value to assign.</param>
-    internal void SetValue(object target, object? value) =>
-        _property.SetValue(target, value);
+    internal void SetValue(object target, object? value)
+    {
+        if (_property is not null)
+            _property.SetValue(target, value);
+        else
+            _field!.SetValue(target, value);
+    }
 }

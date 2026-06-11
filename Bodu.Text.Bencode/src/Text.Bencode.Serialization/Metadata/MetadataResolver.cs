@@ -12,13 +12,14 @@ using Bodu.Text.Bencode.Nodes;
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 
 /// <summary>
-/// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties and constructors and
-/// applying the serializer's naming policy, attributes, and converter resolution rules.
+/// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties, its public fields (when
+/// surfaced by <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="BencodeIncludeAttribute" />), and
+/// its constructors, applying the serializer's naming policy, attributes, and converter resolution rules.
 /// </summary>
 internal static class MetadataResolver
 {
     /// <summary>
-    /// The binding flags used to discover serializable instance properties.
+    /// The binding flags used to discover serializable instance members.
     /// </summary>
     private const BindingFlags MemberFlags = BindingFlags.Public | BindingFlags.Instance;
 
@@ -46,7 +47,7 @@ internal static class MetadataResolver
             if (ignore is not null && ignore.Condition == BencodeIgnoreCondition.Always)
                 continue;
 
-            BencodeConverter converter = ResolvePropertyConverter(property, options);
+            BencodeConverter converter = ResolveMemberConverter(property, property.PropertyType, options);
             var order = property.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             BencodeIgnoreCondition? conditional = ignore?.Condition;
             BencodeObjectCreationHandling? creationHandling = property.GetCustomAttribute<BencodeObjectCreationHandlingAttribute>(inherit: true)?.Handling;
@@ -70,6 +71,42 @@ internal static class MetadataResolver
                 ?? property.Name;
 
             drafts.Add(new Draft(property, wireName, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++));
+        }
+
+        foreach (FieldInfo field in type.GetFields(MemberFlags))
+        {
+            var included = field.IsDefined(typeof(BencodeIncludeAttribute), inherit: true);
+            if (!options.IncludeFields && !included)
+                continue;
+
+            BencodeIgnoreAttribute? ignore = field.GetCustomAttribute<BencodeIgnoreAttribute>(inherit: true);
+            if (ignore is not null && ignore.Condition == BencodeIgnoreCondition.Always)
+                continue;
+
+            BencodeConverter converter = ResolveMemberConverter(field, field.FieldType, options);
+            var order = field.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
+            BencodeIgnoreCondition? conditional = ignore?.Condition;
+            BencodeObjectCreationHandling? creationHandling = field.GetCustomAttribute<BencodeObjectCreationHandlingAttribute>(inherit: true)?.Handling;
+            var requiredByAttribute = field.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
+                || field.IsDefined(typeof(BencodeRequiredAttribute), inherit: false);
+
+            if (field.IsDefined(typeof(BencodeExtensionDataAttribute), inherit: true))
+            {
+                if (extensionData is not null)
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_MultipleExtensionData, type));
+
+                if (!IsSupportedExtensionDataType(field.FieldType))
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExtensionDataType, field.Name, type));
+
+                extensionData = new Draft(field, field.Name, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++).ToMetadata();
+                continue;
+            }
+
+            var wireName = field.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
+                ?? namingPolicy?.ConvertName(field.Name)
+                ?? field.Name;
+
+            drafts.Add(new Draft(field, wireName, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++));
         }
 
         ConstructorInfo? constructor = ChooseConstructor(type);
@@ -129,18 +166,19 @@ internal static class MetadataResolver
             || type == typeof(Dictionary<string, BencodeNode?>);
 
     /// <summary>
-    /// Resolves the converter for a property, honoring a member-level converter attribute before falling back to the
+    /// Resolves the converter for a member, honoring a member-level converter attribute before falling back to the
     /// options' converter resolution.
     /// </summary>
-    /// <param name="property">The property whose converter is resolved.</param>
+    /// <param name="member">The property or field whose converter is resolved.</param>
+    /// <param name="memberType">The declared type of the member.</param>
     /// <param name="options">The serializer options.</param>
-    /// <returns>The converter for the property's value.</returns>
-    private static BencodeConverter ResolvePropertyConverter(PropertyInfo property, BencodeSerializerOptions options)
+    /// <returns>The converter for the member's value.</returns>
+    private static BencodeConverter ResolveMemberConverter(MemberInfo member, Type memberType, BencodeSerializerOptions options)
     {
-        BencodeConverterAttribute? attribute = property.GetCustomAttribute<BencodeConverterAttribute>(inherit: true);
+        BencodeConverterAttribute? attribute = member.GetCustomAttribute<BencodeConverterAttribute>(inherit: true);
         return attribute is not null
-            ? options.InstantiateConverter(attribute.ConverterType, property.PropertyType)
-            : options.GetConverter(property.PropertyType);
+            ? options.InstantiateConverter(attribute.ConverterType, memberType)
+            : options.GetConverter(memberType);
     }
 
     /// <summary>
@@ -184,7 +222,7 @@ internal static class MetadataResolver
         for (var i = 0; i < parameters.Length; i++)
         {
             ParameterInfo parameter = parameters[i];
-            Draft? match = drafts.Find(draft => string.Equals(draft.Property.Name, parameter.Name, StringComparison.OrdinalIgnoreCase));
+            Draft? match = drafts.Find(draft => string.Equals(draft.Member.Name, parameter.Name, StringComparison.OrdinalIgnoreCase));
             if (match is null)
                 continue;
 
@@ -211,7 +249,7 @@ internal static class MetadataResolver
         /// <summary>
         /// Initializes a new instance of the <see cref="Draft" /> class.
         /// </summary>
-        /// <param name="property">The reflected property.</param>
+        /// <param name="member">The reflected property or field.</param>
         /// <param name="wireName">The resolved wire name.</param>
         /// <param name="converter">The resolved converter.</param>
         /// <param name="conditionalIgnore">The conditional-ignore setting, or <see langword="null" />.</param>
@@ -226,7 +264,7 @@ internal static class MetadataResolver
         /// </param>
         /// <param name="declarationIndex">The declaration order index.</param>
         internal Draft(
-            PropertyInfo property,
+            MemberInfo member,
             string wireName,
             BencodeConverter converter,
             BencodeIgnoreCondition? conditionalIgnore,
@@ -236,7 +274,7 @@ internal static class MetadataResolver
             bool included,
             int declarationIndex)
         {
-            Property = property;
+            Member = member;
             WireName = wireName;
             Converter = converter;
             ConditionalIgnore = conditionalIgnore;
@@ -249,10 +287,10 @@ internal static class MetadataResolver
         }
 
         /// <summary>
-        /// Gets the reflected property.
+        /// Gets the reflected property or field.
         /// </summary>
-        /// <returns>The property.</returns>
-        internal PropertyInfo Property { get; }
+        /// <returns>The member.</returns>
+        internal MemberInfo Member { get; }
 
         /// <summary>
         /// Gets the resolved wire name.
@@ -327,7 +365,7 @@ internal static class MetadataResolver
         /// <returns>The resolved member metadata.</returns>
         internal PropertyMetadata ToMetadata() =>
             new(
-                Property,
+                Member,
                 WireName,
                 Converter,
                 ConditionalIgnore,

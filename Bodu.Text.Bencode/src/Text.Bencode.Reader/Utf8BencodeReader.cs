@@ -17,11 +17,14 @@ namespace Bodu.Text.Bencode.Reader;
 /// </summary>
 /// <remarks>
 /// A call to <see cref="Read" /> advances to the next token and reports it through <see cref="TokenType" />. Integer
-/// and byte-string values are decoded on demand through <see cref="GetInt64" />, <see cref="ValueSpan" />, and
-/// <see cref="GetString" />. The reader enforces the canonical Bencode grammar — integers without leading zeros or
-/// negative zero, byte-string lengths without leading zeros, dictionary keys that are byte strings in strictly
-/// ascending bytewise order, balanced containers, and a single root value with no trailing bytes — raising
-/// <see cref="BencodeFormatException" /> on any departure from that canonical form.
+/// and byte-string values are decoded on demand through <see cref="GetInt64" />, <see cref="GetUInt64" />,
+/// <see cref="ValueSpan" />, and <see cref="GetString" />. Integer tokens span the union of the signed and unsigned
+/// 64-bit ranges [<see cref="long.MinValue" />, <see cref="ulong.MaxValue" />]; values above
+/// <see cref="long.MaxValue" /> are readable only through <see cref="GetUInt64" />. The reader enforces the canonical
+/// Bencode grammar — integers without leading zeros or negative zero, byte-string lengths without leading zeros,
+/// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and a single root
+/// value with no trailing bytes — raising <see cref="BencodeFormatException" /> on any departure from that canonical
+/// form.
 /// </remarks>
 public ref struct Utf8BencodeReader
 {
@@ -51,9 +54,26 @@ public ref struct Utf8BencodeReader
     private BencodeTokenType _tokenType;
 
     /// <summary>
-    /// The decoded value of the current integer token.
+    /// The decoded value of the current integer token, when it fits the signed 64-bit range.
     /// </summary>
     private long _intValue;
+
+    /// <summary>
+    /// The decoded value of the current integer token, when it is non-negative. Valid alongside
+    /// <see cref="_intValue" /> so both accessors can serve the same token.
+    /// </summary>
+    private ulong _uintValue;
+
+    /// <summary>
+    /// Whether the current integer token exceeds <see cref="long.MaxValue" /> and is therefore representable only
+    /// through <see cref="GetUInt64" />.
+    /// </summary>
+    private bool _intExceedsInt64;
+
+    /// <summary>
+    /// The start offset of the current integer token, used to report range errors at the token position.
+    /// </summary>
+    private int _intTokenStart;
 
     /// <summary>
     /// The start offset of the current byte-string token's content.
@@ -226,10 +246,67 @@ public ref struct Utf8BencodeReader
     /// </summary>
     /// <returns>The integer value.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
-    public readonly long GetInt64() =>
-        _tokenType == BencodeTokenType.Integer
-            ? _intValue
-            : throw new InvalidOperationException();
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer token's value exceeds <see cref="long.MaxValue" />; use <see cref="GetUInt64" /> to read
+    /// values in the upper unsigned 64-bit range.
+    /// </exception>
+    public readonly long GetInt64()
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+        if (_intExceedsInt64)
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, _intTokenStart);
+
+        return _intValue;
+    }
+
+    /// <summary>
+    /// Reads the current integer token as a 64-bit unsigned integer, accepting any value in [0,
+    /// <see cref="ulong.MaxValue" />].
+    /// </summary>
+    /// <returns>The unsigned integer value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the integer token's value is negative.</exception>
+    /// <remarks>
+    /// Bencode integers are arbitrary-precision per BEP 3, so a document may carry a value between
+    /// <see cref="long.MaxValue" /> and <see cref="ulong.MaxValue" /> that <see cref="GetInt64" /> cannot represent;
+    /// this accessor reads such values without loss.
+    /// </remarks>
+    public readonly ulong GetUInt64()
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+        if (!_intExceedsInt64 && _intValue < 0)
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, _intTokenStart);
+
+        return _uintValue;
+    }
+
+    /// <summary>
+    /// Attempts to read the current integer token as a 64-bit unsigned integer.
+    /// </summary>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the unsigned integer value; otherwise zero.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the current integer token is non-negative; <see langword="false" /> when it is
+    /// negative and therefore not representable as <see cref="ulong" />.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    public readonly bool TryGetUInt64(out ulong value)
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+
+        if (!_intExceedsInt64 && _intValue < 0)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = _uintValue;
+        return true;
+    }
 
     /// <summary>
     /// Decodes the current byte-string or property-name token as UTF-8 text.
@@ -321,11 +398,30 @@ public ref struct Utf8BencodeReader
             throw Error(BencodeResourceStrings.Format_Invalid_BencodeNegativeZeroInteger, start);
 
         ReadOnlySpan<byte> number = _data[signStart.._position];
-        if (!Utf8Parser.TryParse(number, out long value, out var consumed) || consumed != number.Length)
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+        if (negative)
+        {
+            // A negative literal must fit the signed 64-bit range; there is no wider negative representation.
+            if (!Utf8Parser.TryParse(number, out long value, out var consumed) || consumed != number.Length)
+                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+
+            _intValue = value;
+            _uintValue = 0;
+            _intExceedsInt64 = false;
+        }
+        else
+        {
+            // Bencode integers are arbitrary-precision per BEP 3; the reader accepts the full unsigned 64-bit range
+            // and defers the signed-range check to GetInt64 so GetUInt64 can serve the wider values.
+            if (!Utf8Parser.TryParse(number, out ulong value, out var consumed) || consumed != number.Length)
+                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+
+            _uintValue = value;
+            _intExceedsInt64 = value > long.MaxValue;
+            _intValue = _intExceedsInt64 ? 0 : (long)value;
+        }
 
         _position++;
-        _intValue = value;
+        _intTokenStart = start;
         _tokenType = BencodeTokenType.Integer;
     }
 
