@@ -121,8 +121,27 @@ internal static class MetadataResolver
 
         StringComparer comparer = options.PropertyNameCaseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
         Dictionary<string, PropertyMetadata> byWireName = new(comparer);
+
+        // Collision detection is always ordinal: two members on the same exact wire key can never be written as a
+        // canonical dictionary, so the type fails fast here (mirroring System.Text.Json's metadata-time check).
+        // Members whose wire names differ only by case remain distinct keys on the wire; under a case-insensitive
+        // read comparer the later member shadows the earlier one for lookups, which the indexer assignment preserves.
+        Dictionary<string, PropertyMetadata> byOrdinalWireName = new(StringComparer.Ordinal);
         foreach (PropertyMetadata property in ordered)
+        {
+            if (!byOrdinalWireName.TryAdd(property.WireName, property))
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    BencodeResourceStrings.Op_Invalid_DuplicateWireName,
+                    type,
+                    byOrdinalWireName[property.WireName].ClrName,
+                    property.ClrName,
+                    property.WireName));
+            }
+
             byWireName[property.WireName] = property;
+        }
 
         var constructorParameters = new PropertyMetadata?[parameters.Length];
         var constructorDefaults = new object?[parameters.Length];

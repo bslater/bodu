@@ -70,6 +70,7 @@
   <data name="Op_Invalid_ElementKindMismatch" xml:space="preserve"><value>This operation requires a {0} element, but the element is a {1} element.</value></data>
   <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a BencodeObject or IDictionary&lt;string, BencodeNode?&gt;.</value></data>
   <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
+  <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The members '{1}' and '{2}' of type '{0}' both map to the Bencode key '{3}'.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
   <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The Bencode document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
   <data name="Format_Invalid_BencodeIntegerNegativeUnsigned" xml:space="preserve"><value>The bencoded integer is negative and cannot be read as UInt64.</value></data>

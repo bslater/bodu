@@ -551,6 +551,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The members &apos;{1}&apos; and &apos;{2}&apos; of type &apos;{0}&apos; both map to the Bencode key &apos;{3}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateWireName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateWireName", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No property named '{0}' was found..
         /// </summary>
         internal static string IO_KeyNotFound_Property {
