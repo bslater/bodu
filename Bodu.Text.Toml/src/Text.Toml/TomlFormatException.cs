@@ -18,8 +18,8 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// Because TOML is a line-oriented format, the exception records its position as a <see cref="LineNumber" /> and
-/// <see cref="ColumnNumber" /> in addition to the absolute byte <see cref="Offset" />. Each is <see langword="null" />
-/// when the error is not associated with a specific location.
+/// <see cref="ColumnNumber" /> in addition to the absolute character <see cref="Offset" />. Each is
+/// <see langword="null" /> when the error is not associated with a specific location.
 /// </para>
 /// </remarks>
 /// <example>
@@ -92,9 +92,13 @@ public sealed class TomlFormatException
     public int? ColumnNumber { get; }
 
     /// <summary>
-    /// Gets the zero-based byte offset from the start of the source at which the parse error was detected, when
-    /// available.
+    /// Gets the zero-based character offset from the start of the decoded source text at which the parse error was
+    /// detected, when available.
     /// </summary>
-    /// <returns>The byte offset, or <see langword="null" /> when no position is associated with the error.</returns>
+    /// <returns>The character offset, or <see langword="null" /> when no position is associated with the error.</returns>
+    /// <remarks>
+    /// The offset counts UTF-16 characters of the decoded document, not UTF-8 bytes; for ASCII-only documents the two
+    /// coincide.
+    /// </remarks>
     public int? Offset { get; }
 }

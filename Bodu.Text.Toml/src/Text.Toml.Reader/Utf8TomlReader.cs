@@ -9,9 +9,10 @@ using System.Text;
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Provides a high-performance, forward-only reader for UTF-8 TOML bytes, mirroring the role of
-/// <see cref="System.Text.Json.Utf8JsonReader" />. The reader is a <see langword="ref struct" />, so it lives on the
-/// stack and cannot be boxed or captured; pass it by <see langword="ref" /> to thread it through a converter.
+/// Provides a forward-only token reader for UTF-8 TOML bytes, mirroring the API shape of
+/// <see cref="System.Text.Json.Utf8JsonReader" /> over a document that is parsed in full by the constructor. The
+/// reader is a <see langword="ref struct" />, so it cannot be boxed or captured; pass it by <see langword="ref" /> to
+/// thread it through a converter.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -31,6 +32,13 @@ namespace Bodu.Text.Toml.Reader;
 /// <para>
 /// Because parsing happens in the constructor, a malformed document raises <see cref="TomlFormatException" /> from the
 /// constructor rather than from <see cref="Read" />.
+/// </para>
+/// <para>
+/// Date-time values map onto the CLR date and time types, which imposes three deliberate deviations from the RFC 3339
+/// grammar that TOML incorporates by reference: a leap second (<c>23:59:60</c>) is rejected because
+/// <see cref="DateTime" /> and <see cref="TimeOnly" /> cannot represent second 60; year <c>0000</c> is rejected
+/// because the CLR calendar begins at year 1; and offsets beyond ±14:00 are rejected by
+/// <see cref="DateTimeOffset" />. Each surfaces as a <see cref="TomlFormatException" />.
 /// </para>
 /// </remarks>
 public ref struct Utf8TomlReader
@@ -247,12 +255,17 @@ public ref struct Utf8TomlReader
     /// <see cref="TomlTokenType.StartTable" /> or <see cref="TomlTokenType.StartArray" />.
     /// </summary>
     /// <remarks>
-    /// When the reader is positioned on a scalar or property-name token, the call has no effect. When it is positioned
-    /// on a container start, the reader advances to the matching <see cref="TomlTokenType.EndTable" /> or
-    /// <see cref="TomlTokenType.EndArray" /> at the same depth.
+    /// When the reader is positioned on a <see cref="TomlTokenType.PropertyName" />, it advances to the property's
+    /// value and then skips it, mirroring <see cref="System.Text.Json.Utf8JsonReader.Skip" />. When it is positioned on
+    /// a container start, the reader advances to the matching <see cref="TomlTokenType.EndTable" /> or
+    /// <see cref="TomlTokenType.EndArray" /> at the same depth. When it is positioned on a scalar value, the call has
+    /// no effect.
     /// </remarks>
     public void Skip()
     {
+        if (TokenType == TomlTokenType.PropertyName)
+            _ = Read();
+
         if (TokenType is not(TomlTokenType.StartTable or TomlTokenType.StartArray))
             return;
 

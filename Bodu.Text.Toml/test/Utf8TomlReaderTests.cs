@@ -329,6 +329,26 @@ public sealed partial class Utf8TomlReaderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Utf8TomlReader.Skip" /> over a property name advances past the property's value,
+    /// matching the <c>Utf8JsonReader.Skip</c> contract.
+    /// </summary>
+    [TestMethod]
+    public void Skip_WhenPositionedOnPropertyName_ShouldSkipPropertyValue()
+    {
+        Utf8TomlReader reader = Create("v = [1, 2, 3]\nw = 5\n");
+
+        ExpectStartTable(ref reader);
+        ExpectProperty(ref reader, "v");
+
+        reader.Skip();
+        Assert.AreEqual(TomlTokenType.EndArray, reader.TokenType);
+
+        ExpectProperty(ref reader, "w");
+        ExpectToken(ref reader, TomlTokenType.Integer);
+        Assert.AreEqual(5L, reader.GetInt64());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Utf8TomlReader.Skip" /> is a no-op when the reader is on a scalar token.
     /// </summary>
     [TestMethod]

@@ -15,8 +15,8 @@ namespace Bodu.Text.Toml.Nodes;
 /// <see cref="System.Text.Json.Nodes.JsonObject" /> for TOML.
 /// </summary>
 /// <remarks>
-/// Entries are kept in insertion order, which is also the order in which they are serialized: the TOML writer emits a
-/// table's members in document order rather than re-sorting them. A value may be <see langword="null" /> in memory, but
+/// Entries are kept in insertion order — including across removals — which is also the order in which they are
+/// serialized: the TOML writer emits a table's members in document order rather than re-sorting them. A value may be <see langword="null" /> in memory, but
 /// a table containing a <see langword="null" /> value cannot be written because TOML has no null token. Adding a node
 /// that already belongs to another container throws an <see cref="InvalidOperationException" />; removing or replacing
 /// a value detaches it, clearing its <see cref="TomlNode.Parent" /> so it can be added to another container.
@@ -25,16 +25,29 @@ public sealed class TomlObject
     : TomlNode, IDictionary<string, TomlNode?>
 {
     /// <summary>
-    /// The backing map of property names to child nodes, which preserves insertion order under add-and-overwrite use.
+    /// The backing map of property names to child nodes.
     /// </summary>
     private readonly Dictionary<string, TomlNode?> _properties;
+
+    /// <summary>
+    /// The property names in insertion order, kept consistent across removals so that enumeration and serialization
+    /// order is deterministic.
+    /// </summary>
+    private readonly List<string> _order;
+
+    /// <summary>
+    /// The comparer used for property-name equality, shared by the map and the order list.
+    /// </summary>
+    private readonly StringComparer _comparer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlObject" /> class that is empty.
     /// </summary>
     public TomlObject()
     {
-        _properties = new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
+        _comparer = StringComparer.Ordinal;
+        _properties = new Dictionary<string, TomlNode?>(_comparer);
+        _order = [];
     }
 
     /// <summary>
@@ -49,8 +62,9 @@ public sealed class TomlObject
     /// </remarks>
     public TomlObject(TomlNodeOptions options)
     {
-        _properties = new Dictionary<string, TomlNode?>(
-            options.PropertyNameCaseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+        _comparer = options.PropertyNameCaseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        _properties = new Dictionary<string, TomlNode?>(_comparer);
+        _order = [];
     }
 
     /// <summary>
@@ -67,18 +81,22 @@ public sealed class TomlObject
     {
         ThrowHelper.ThrowIfNull(items);
 
-        _properties = new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
+        _comparer = StringComparer.Ordinal;
+        _properties = new Dictionary<string, TomlNode?>(_comparer);
+        _order = [];
         foreach (KeyValuePair<string, TomlNode?> item in items)
             Add(item.Key, item.Value);
     }
 
     /// <inheritdoc />
+    /// <remarks>The collection is a read-only snapshot in insertion order.</remarks>
     public ICollection<string> Keys =>
-        _properties.Keys;
+        _order.AsReadOnly();
 
     /// <inheritdoc />
+    /// <remarks>The collection is a read-only snapshot in insertion order.</remarks>
     public ICollection<TomlNode?> Values =>
-        _properties.Values;
+        _order.Select(key => _properties[key]).ToList().AsReadOnly();
 
     /// <inheritdoc />
     public int Count =>
@@ -114,8 +132,15 @@ public sealed class TomlObject
             ThrowHelper.ThrowIfNull(key);
             value?.AssignParent(this);
 
-            if (_properties.TryGetValue(key, out TomlNode? existing) && existing is not null && !ReferenceEquals(existing, value))
-                existing.Parent = null;
+            if (_properties.TryGetValue(key, out TomlNode? existing))
+            {
+                if (existing is not null && !ReferenceEquals(existing, value))
+                    existing.Parent = null;
+            }
+            else
+            {
+                _order.Add(key);
+            }
 
             _properties[key] = value;
         }
@@ -131,6 +156,7 @@ public sealed class TomlObject
         ThrowHelper.ThrowIfNull(key);
         value?.AssignParent(this);
         _properties.Add(key, value);
+        _order.Add(key);
     }
 
     /// <inheritdoc />
@@ -147,6 +173,7 @@ public sealed class TomlObject
         }
 
         _properties.Clear();
+        _order.Clear();
     }
 
     /// <inheritdoc />
@@ -158,12 +185,21 @@ public sealed class TomlObject
         _properties.ContainsKey(key);
 
     /// <inheritdoc />
-    public void CopyTo(KeyValuePair<string, TomlNode?>[] array, int arrayIndex) =>
-        ((ICollection<KeyValuePair<string, TomlNode?>>)_properties).CopyTo(array, arrayIndex);
+    public void CopyTo(KeyValuePair<string, TomlNode?>[] array, int arrayIndex)
+    {
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
+
+        foreach (KeyValuePair<string, TomlNode?> entry in this)
+            array[arrayIndex++] = entry;
+    }
 
     /// <inheritdoc />
-    public IEnumerator<KeyValuePair<string, TomlNode?>> GetEnumerator() =>
-        _properties.GetEnumerator();
+    /// <remarks>Entries are enumerated in insertion order.</remarks>
+    public IEnumerator<KeyValuePair<string, TomlNode?>> GetEnumerator()
+    {
+        foreach (string key in _order)
+            yield return new KeyValuePair<string, TomlNode?>(key, _properties[key]);
+    }
 
     /// <inheritdoc />
     public bool Remove(string key)
@@ -171,6 +207,7 @@ public sealed class TomlObject
         if (!_properties.Remove(key, out TomlNode? removed))
             return false;
 
+        RemoveFromOrder(key);
         if (removed is not null)
             removed.Parent = null;
 
@@ -183,10 +220,22 @@ public sealed class TomlObject
         if (!((ICollection<KeyValuePair<string, TomlNode?>>)_properties).Remove(item))
             return false;
 
+        RemoveFromOrder(item.Key);
         if (item.Value is not null)
             item.Value.Parent = null;
 
         return true;
+    }
+
+    /// <summary>
+    /// Removes <paramref name="key" /> from the insertion-order list using the object's property-name comparer.
+    /// </summary>
+    /// <param name="key">The property name to remove.</param>
+    private void RemoveFromOrder(string key)
+    {
+        int index = _order.FindIndex(entry => _comparer.Equals(entry, key));
+        if (index >= 0)
+            _order.RemoveAt(index);
     }
 
     /// <inheritdoc />
@@ -212,7 +261,7 @@ public sealed class TomlObject
     public override void WriteTo(Utf8TomlWriter writer)
     {
         writer.WriteStartTable();
-        foreach (KeyValuePair<string, TomlNode?> entry in _properties)
+        foreach (KeyValuePair<string, TomlNode?> entry in this)
         {
             if (entry.Value is null)
                 throw new TomlSerializationException(TomlResourceStrings.Op_NotSupported_NullNode);
@@ -228,7 +277,7 @@ public sealed class TomlObject
     public override TomlNode DeepClone()
     {
         var clone = new TomlObject();
-        foreach (KeyValuePair<string, TomlNode?> entry in _properties)
+        foreach (KeyValuePair<string, TomlNode?> entry in this)
             clone[entry.Key] = entry.Value?.DeepClone();
 
         return clone;
