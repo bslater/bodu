@@ -61,6 +61,7 @@ internal static class DefaultConverters
         new NullableConverterFactory(),
         new DictionaryConverterFactory(),
         new CollectionConverterFactory(),
+        new ObjectTypeConverter(),
         new ObjectConverterFactory(),
     ];
 
