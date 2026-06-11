@@ -30,4 +30,9 @@
     <ProjectReference Include="..\src\Bodu.Text.Toml.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The vendored toml-lang/toml-test conformance corpus, copied to the output for the Regression-tier suite. -->
+    <None Include="TomlTestCorpus\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
