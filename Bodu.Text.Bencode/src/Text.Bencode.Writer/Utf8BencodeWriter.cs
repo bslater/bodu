@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ namespace Bodu.Text.Bencode.Writer;
 /// Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an <see cref="IBufferWriter{T}" />,
 /// mirroring the role of <see cref="System.Text.Json.Utf8JsonWriter" />. Because the grammar requires dictionary keys
 /// in ascending bytewise order, the writer buffers each dictionary's entries and sorts them when the dictionary is
-/// closed.
+/// closed; values at the root and inside lists stream directly to the destination.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,6 +28,11 @@ namespace Bodu.Text.Bencode.Writer;
 /// an open dictionary, every dictionary value must follow a property name, container ends must match the open
 /// container kind, and a dictionary containing duplicate keys is rejected when it is closed.
 /// </para>
+/// <para>
+/// Scalars and lists written outside any dictionary are emitted to the destination as they are written; bytes that
+/// belong to an open dictionary are held in that dictionary's buffer until it closes, because the canonical key order
+/// is only known at that point.
+/// </para>
 /// </remarks>
 public ref struct Utf8BencodeWriter
 {
@@ -37,7 +42,7 @@ public ref struct Utf8BencodeWriter
     private readonly IBufferWriter<byte> _output;
 
     /// <summary>
-    /// The stack of open containers, innermost last.
+    /// The shared mutable state — the container stack — that survives by-value copies of the writer.
     /// </summary>
     private readonly List<Frame> _frames;
 
@@ -104,7 +109,9 @@ public ref struct Utf8BencodeWriter
         if (_frames.Count >= _maxDepth)
             throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
 
-        _frames.Add(new ListFrame());
+        IBufferWriter<byte> sink = CurrentSink();
+        sink.Write("l"u8);
+        _frames.Add(new ListFrame(sink));
     }
 
     /// <summary>
@@ -121,13 +128,8 @@ public ref struct Utf8BencodeWriter
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterEndContainerMismatch);
 
         _frames.RemoveAt(_frames.Count - 1);
-
-        var buffer = new ArrayBufferWriter<byte>();
-        buffer.Write("l"u8);
-        foreach (var item in frame.Items)
-            buffer.Write(item);
-        buffer.Write("e"u8);
-        Emit(buffer.WrittenSpan.ToArray());
+        frame.ContentSink.Write("e"u8);
+        CompleteValue();
     }
 
     /// <summary>
@@ -139,13 +141,17 @@ public ref struct Utf8BencodeWriter
     /// <exception cref="BencodeSerializationException">
     /// Thrown when opening the dictionary would exceed the configured maximum nesting depth.
     /// </exception>
+    /// <remarks>
+    /// No bytes are emitted until the dictionary closes: entries must be reordered into ascending bytewise key order,
+    /// so the dictionary's content accumulates in a private buffer that <see cref="WriteEndDictionary" /> flushes.
+    /// </remarks>
     public readonly void WriteStartDictionary()
     {
         EnsureValueAllowed();
         if (_frames.Count >= _maxDepth)
             throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
 
-        _frames.Add(new DictionaryFrame());
+        _frames.Add(new DictionaryFrame(CurrentSink()));
     }
 
     /// <summary>
@@ -170,22 +176,23 @@ public ref struct Utf8BencodeWriter
         _frames.RemoveAt(_frames.Count - 1);
         frame.Entries.Sort(static (left, right) => left.Key.AsSpan().SequenceCompareTo(right.Key));
 
-        var buffer = new ArrayBufferWriter<byte>();
-        buffer.Write("d"u8);
+        IBufferWriter<byte> sink = frame.Sink;
+        ReadOnlySpan<byte> values = frame.Buffer.WrittenSpan;
+        sink.Write("d"u8);
         byte[]? previousKey = null;
-        foreach (var (key, value) in frame.Entries)
+        foreach (DictionaryEntry entry in frame.Entries)
         {
             // Equal keys are adjacent after the canonical sort, so a single neighbour comparison detects duplicates.
-            if (previousKey is not null && previousKey.AsSpan().SequenceEqual(key))
-                throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterDuplicateDictionaryKey, Encoding.UTF8.GetString(key)));
+            if (previousKey is not null && previousKey.AsSpan().SequenceEqual(entry.Key))
+                throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterDuplicateDictionaryKey, Encoding.UTF8.GetString(entry.Key)));
 
-            previousKey = key;
-            WriteByteStringTo(buffer, key);
-            buffer.Write(value);
+            previousKey = entry.Key;
+            WriteByteStringTo(sink, entry.Key);
+            sink.Write(values.Slice(entry.ValueStart, entry.ValueLength));
         }
 
-        buffer.Write("e"u8);
-        Emit(buffer.WrittenSpan.ToArray());
+        sink.Write("e"u8);
+        CompleteValue();
     }
 
     /// <summary>
@@ -204,6 +211,7 @@ public ref struct Utf8BencodeWriter
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNamePending);
 
         frame.PendingKey = name.ToArray();
+        frame.PendingValueStart = frame.Buffer.WrittenCount;
     }
 
     /// <summary>
@@ -234,11 +242,11 @@ public ref struct Utf8BencodeWriter
     {
         EnsureValueAllowed();
 
-        var buffer = new ArrayBufferWriter<byte>();
-        buffer.Write("i"u8);
-        WriteAsciiInt64(buffer, value);
-        buffer.Write("e"u8);
-        Emit(buffer.WrittenSpan.ToArray());
+        IBufferWriter<byte> sink = CurrentSink();
+        sink.Write("i"u8);
+        WriteAsciiInt64(sink, value);
+        sink.Write("e"u8);
+        CompleteValue();
     }
 
     /// <summary>
@@ -258,11 +266,11 @@ public ref struct Utf8BencodeWriter
     {
         EnsureValueAllowed();
 
-        var buffer = new ArrayBufferWriter<byte>();
-        buffer.Write("i"u8);
-        WriteAsciiUInt64(buffer, value);
-        buffer.Write("e"u8);
-        Emit(buffer.WrittenSpan.ToArray());
+        IBufferWriter<byte> sink = CurrentSink();
+        sink.Write("i"u8);
+        WriteAsciiUInt64(sink, value);
+        sink.Write("e"u8);
+        CompleteValue();
     }
 
     /// <summary>
@@ -276,9 +284,8 @@ public ref struct Utf8BencodeWriter
     {
         EnsureValueAllowed();
 
-        var buffer = new ArrayBufferWriter<byte>();
-        WriteByteStringTo(buffer, value);
-        Emit(buffer.WrittenSpan.ToArray());
+        WriteByteStringTo(CurrentSink(), value);
+        CompleteValue();
     }
 
     /// <summary>
@@ -334,6 +341,18 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
+    /// Resolves the buffer the next value's bytes are written to: the innermost open dictionary's entry buffer, a
+    /// list's captured sink, or the destination output at the root.
+    /// </summary>
+    /// <returns>The buffer writer that receives the next value's bytes.</returns>
+    private readonly IBufferWriter<byte> CurrentSink() =>
+        _frames.Count == 0
+            ? _output
+            : _frames[^1] is DictionaryFrame dictionary
+                ? dictionary.Buffer
+                : ((ListFrame)_frames[^1]).ContentSink;
+
+    /// <summary>
     /// Enforces that a value may begin at the current position, rejecting a value written directly inside a
     /// dictionary before its property name.
     /// </summary>
@@ -347,15 +366,16 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// Emits a completed value to the enclosing container, or writes it to the output at the top level.
+    /// Records the completion of a value: when the enclosing container is a dictionary, the pending key and the byte
+    /// range the value occupies in the dictionary's buffer become a finished entry.
     /// </summary>
-    /// <param name="encoded">The encoded value bytes.</param>
-    private readonly void Emit(byte[] encoded)
+    private readonly void CompleteValue()
     {
-        if (_frames.Count == 0)
-            _output.Write(encoded);
-        else
-            _frames[^1].AddValue(encoded);
+        if (_frames.Count > 0 && _frames[^1] is DictionaryFrame { PendingKey: not null } frame)
+        {
+            frame.Entries.Add(new DictionaryEntry(frame.PendingKey, frame.PendingValueStart, frame.Buffer.WrittenCount - frame.PendingValueStart));
+            frame.PendingKey = null;
+        }
     }
 
     /// <summary>
@@ -363,40 +383,66 @@ public ref struct Utf8BencodeWriter
     /// </summary>
     private abstract class Frame
     {
-        /// <summary>
-        /// Adds an encoded value to the frame.
-        /// </summary>
-        /// <param name="encoded">The encoded value bytes.</param>
-        internal abstract void AddValue(byte[] encoded);
     }
 
     /// <summary>
-    /// An open list frame collecting its encoded elements.
+    /// An open list frame. Lists need no reordering, so their content streams straight through to the sink captured
+    /// when the list was opened.
     /// </summary>
     private sealed class ListFrame
         : Frame
     {
         /// <summary>
-        /// Gets the encoded elements, in order.
+        /// Initializes a new instance of the <see cref="ListFrame" /> class.
         /// </summary>
-        /// <returns>The encoded elements.</returns>
-        internal List<byte[]> Items { get; } = [];
+        /// <param name="contentSink">The buffer that receives the list's bytes.</param>
+        internal ListFrame(IBufferWriter<byte> contentSink)
+        {
+            ContentSink = contentSink;
+        }
 
-        /// <inheritdoc />
-        internal override void AddValue(byte[] encoded) => Items.Add(encoded);
+        /// <summary>
+        /// Gets the buffer that receives the list's bytes — the innermost enclosing dictionary's buffer, or the
+        /// destination output when no dictionary is open above the list.
+        /// </summary>
+        /// <returns>The list's content sink.</returns>
+        internal IBufferWriter<byte> ContentSink { get; }
     }
 
     /// <summary>
-    /// An open dictionary frame collecting its entries and the pending key.
+    /// An open dictionary frame. Entry values accumulate in a single buffer with an offset table so the entries can be
+    /// emitted in canonical key order when the dictionary closes, without re-copying each value separately.
     /// </summary>
     private sealed class DictionaryFrame
         : Frame
     {
         /// <summary>
-        /// Gets the entries, each pairing a raw key with its encoded value.
+        /// Initializes a new instance of the <see cref="DictionaryFrame" /> class.
         /// </summary>
-        /// <returns>The entries.</returns>
-        internal List<(byte[] Key, byte[] Value)> Entries { get; } = [];
+        /// <param name="sink">The buffer that receives the dictionary's emission when it closes.</param>
+        internal DictionaryFrame(IBufferWriter<byte> sink)
+        {
+            Sink = sink;
+        }
+
+        /// <summary>
+        /// Gets the buffer that receives the dictionary's emission when it closes.
+        /// </summary>
+        /// <returns>The dictionary's destination sink.</returns>
+        internal IBufferWriter<byte> Sink { get; }
+
+        /// <summary>
+        /// Gets the buffer holding the encoded bytes of every entry value, in write order.
+        /// </summary>
+        /// <returns>The dictionary's value buffer.</returns>
+        internal ArrayBufferWriter<byte> Buffer { get; } = new();
+
+        /// <summary>
+        /// Gets the completed entries, each pairing a raw key with the byte range its value occupies in
+        /// <see cref="Buffer" />.
+        /// </summary>
+        /// <returns>The completed entries.</returns>
+        internal List<DictionaryEntry> Entries { get; } = [];
 
         /// <summary>
         /// Gets or sets the raw bytes of the key awaiting its value.
@@ -404,11 +450,48 @@ public ref struct Utf8BencodeWriter
         /// <returns>The pending key, or <see langword="null" /> when none is pending.</returns>
         internal byte[]? PendingKey { get; set; }
 
-        /// <inheritdoc />
-        internal override void AddValue(byte[] encoded)
+        /// <summary>
+        /// Gets or sets the offset within <see cref="Buffer" /> where the pending key's value begins.
+        /// </summary>
+        /// <returns>The pending value's start offset.</returns>
+        internal int PendingValueStart { get; set; }
+    }
+
+    /// <summary>
+    /// A completed dictionary entry: a raw key and the byte range its encoded value occupies in the owning dictionary
+    /// frame's buffer.
+    /// </summary>
+    private readonly struct DictionaryEntry
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryEntry" /> struct.
+        /// </summary>
+        /// <param name="key">The raw key bytes.</param>
+        /// <param name="valueStart">The value's start offset within the dictionary frame's buffer.</param>
+        /// <param name="valueLength">The value's byte length.</param>
+        internal DictionaryEntry(byte[] key, int valueStart, int valueLength)
         {
-            Entries.Add((PendingKey!, encoded));
-            PendingKey = null;
+            Key = key;
+            ValueStart = valueStart;
+            ValueLength = valueLength;
         }
+
+        /// <summary>
+        /// Gets the raw key bytes.
+        /// </summary>
+        /// <returns>The key bytes.</returns>
+        internal byte[] Key { get; }
+
+        /// <summary>
+        /// Gets the value's start offset within the dictionary frame's buffer.
+        /// </summary>
+        /// <returns>The value's start offset.</returns>
+        internal int ValueStart { get; }
+
+        /// <summary>
+        /// Gets the value's byte length.
+        /// </summary>
+        /// <returns>The value's byte length.</returns>
+        internal int ValueLength { get; }
     }
 }
