@@ -153,27 +153,24 @@ For lenient parsing (whitespace, `0x` prefix, missing padding), `OperationStatus
 
 ## Bodu.Text.Formats
 
-**Bodu.Text.Formats** parses and emits self-framing serialization formats — Delimited (CSV / TSV), DotEnv, Ini, and TOML — each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
+**Bodu.Text.Formats** parses and emits self-framing serialization formats — Delimited (CSV / TSV), DotEnv, and Ini — each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
 
 ```csharp
-using Bodu.Text.Toml;
+using Bodu.Text.Ini;
 
-TomlTable config = Toml.Parse("""
-    title = "Bodu sample"
-
+IniDocument config = Ini.Parse("""
+    ; connection settings
     [database]
-    ports   = [8000, 8001]
-    enabled = true
+    host = localhost
+    port = 5432
     """);
 
-string title = ((TomlString)config["title"]).Value;   // "Bodu sample"
-var db       = (TomlTable)config["database"];
-bool enabled = ((TomlBoolean)db["enabled"]).Value;     // true
+config.GetOrAddSection("database").SetEntry("port", "5433");
 
-string text = Toml.Format(config);                     // back to canonical TOML
+string text = Ini.Format(config);   // comments, ordering, and whitespace preserved
 ```
 
-A parsed value is dynamically typed, so the consumer projects each leaf to its expected subtype, or dispatches on `value.Kind`. The Delimited, Ini, and DotEnv namespaces follow the same `Parse` / `Format` shape.
+The parsed model retains comments, ordering, and whitespace, so a `Parse` → mutate → `Format` cycle round-trips the source. The Delimited and DotEnv namespaces follow the same `Parse` / `Format` shape.
 
 → **[Introduction](formats/index.md)** · **[Getting started](formats/getting-started.md)** · **[Guides](../guides/formats/index.md)**
 

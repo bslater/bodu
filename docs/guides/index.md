@@ -400,7 +400,7 @@ runtime-pluggable encoding choice.
 ## Bodu.Text.Formats
 
 Self-framing text document formats with a strongly-typed value model and a span- and stream-friendly codec.
-The package ships four sibling namespaces — Delimited (CSV / TSV), DotEnv, Ini, and TOML — each with strict
+The package ships three sibling namespaces — Delimited (CSV / TSV), DotEnv, and Ini — each with strict
 invariant enforcement and `Try*` overloads.
 
 <div class="bodu-cards">
@@ -426,13 +426,8 @@ invariant enforcement and `Try*` overloads.
 </div>
 
 <div class="bodu-card">
-  <h3><a href="formats/toml.md">Using TOML</a></h3>
-  <p>The <code>TomlReader</code> / <code>TomlWriter</code> pair and the <code>Toml</code> façade — the typed <code>TomlValue</code> model, tables and arrays, first-class date-time kinds, and v1.0.0 / v1.1.0 selection.</p>
-</div>
-
-<div class="bodu-card">
   <h3><a href="formats/streaming.md">Streams and async I/O</a></h3>
-  <p>Buffered stream overloads and the forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — cancellation, lifetime contracts, and input-size limits.</p>
+  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — sync and async reads and writes, cancellation, lifetime contracts, and input-size limits.</p>
 </div>
 
 </div>

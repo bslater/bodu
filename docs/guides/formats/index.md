@@ -10,9 +10,9 @@ If you are new to the library, start with the [introduction](../../docs/formats/
 
 ## How the library works
 
-Each format pairs a typed value model with a codec: parse turns a span or stream of bytes into the model, format writes the model back out. The line- and record-oriented formats (Delimited, DotEnv, INI) also expose forward-only readers and writers for processing one logical unit at a time; TOML adds a richly-typed value tree over the same parse/format shape.
+Each format pairs a typed value model with a codec: parse turns a span of text into the model, format writes the model back out. Every format — Delimited, DotEnv, and INI — also exposes forward-only readers and writers for processing one logical unit at a time.
 
-> Object-mapping serializers (POCO ↔ format), including **Bencode**, are documented in the standalone <xref:Bodu.Text.Bencode> and <xref:Bodu.Text.Toml> packages — see the [Bodu serializer guides](../serialization/index.md).
+> **TOML** and **Bencode** object-mapping serializers (POCO ↔ format) are documented in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializer guides](../serialization/index.md).
 
 ## Namespace map
 
@@ -21,7 +21,6 @@ Each format pairs a typed value model with a codec: parse turns a span or stream
 | <xref:Bodu.Text.Delimited> | The `Delimited` codec, `DelimitedDocument` / `DelimitedRow`, the streaming reader / writer, and `DelimitedParseOptions`. | [Using delimited](delimited.md) |
 | <xref:Bodu.Text.DotEnv> | The `DotEnv` codec, `DotEnvDocument` / `DotEnvEntry`, and `DotEnvParseOptions`. | [Using DotEnv](dotenv.md) |
 | <xref:Bodu.Text.Ini> | The `Ini` codec, `IniDocument` / `IniSection` / `IniEntry`, and `IniParseOptions`. | [Using INI](ini.md) |
-| <xref:Bodu.Text.Toml> | The `Toml` façade, the `TomlReader` / `TomlWriter` pair, the `TomlValue` model, `TomlReaderOptions`, and `TomlFormatException`. | [Using TOML](toml.md) |
 
 ## Guides
 
@@ -44,11 +43,6 @@ Each format pairs a typed value model with a codec: parse turns a span or stream
   <p>The <code>Ini</code> codec — section / entry model, comment trivia, duplicate-section and duplicate-key policies, and programmatic mutation of the round-trippable <code>IniDocument</code>.</p>
 </div>
 
-<div class="bodu-card">
-  <h3><a href="toml.md">Using TOML</a></h3>
-  <p>The <code>TomlReader</code> / <code>TomlWriter</code> pair and the <code>Toml</code> façade — the typed <code>TomlValue</code> model, tables and arrays, first-class date-time kinds, TOML v1.0.0 / v1.1.0 selection, and stream support.</p>
-</div>
-
 </div>
 
 ### `Bodu.Text.Formats` — I/O
@@ -57,7 +51,7 @@ Each format pairs a typed value model with a codec: parse turns a span or stream
 
 <div class="bodu-card">
   <h3><a href="streaming.md">Streams and async I/O</a></h3>
-  <p>Sync and async stream overloads — buffer staging via <code>ArrayPool&lt;byte&gt;</code>, cancellation, lifetime contracts, and when to prefer the span path over <code>Stream</code>.</p>
+  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — sync and async reads and writes, cancellation, lifetime contracts, and input-size limits.</p>
 </div>
 
 </div>

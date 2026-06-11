@@ -181,6 +181,6 @@ A rough decision tree:
 
 ## See also
 
-- [Delimited](delimited.md), [DotEnv](dotenv.md), [TOML](toml.md) — the other formats in the package.
+- [Delimited](delimited.md), [DotEnv](dotenv.md) — the other formats in the package.
 - [`Bodu.Text.Ini` API reference](xref:Bodu.Text.Ini)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for the resolved / view-projecting / `IConfiguration`-bridging surface built on this codec.

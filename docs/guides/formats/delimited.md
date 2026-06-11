@@ -191,6 +191,6 @@ string output         = doc.FormatDelimited();
 
 ## See also
 
-- [DotEnv](dotenv.md), [INI](ini.md), [TOML](toml.md) — the other formats in the package.
+- [DotEnv](dotenv.md), [INI](ini.md) — the other formats in the package.
 - [`Bodu.Text.Delimited` API reference](xref:Bodu.Text.Delimited)
 - [Streams and async I/O](streaming.md) — buffer-lifecycle details for stream-based pipelines.
