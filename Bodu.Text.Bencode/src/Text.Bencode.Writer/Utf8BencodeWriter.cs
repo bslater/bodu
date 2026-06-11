@@ -24,9 +24,10 @@ namespace Bodu.Text.Bencode.Writer;
 /// representation and must be reduced to an integer or byte string by a converter before they are written.
 /// </para>
 /// <para>
-/// The writer validates the call sequence against the canonical grammar: a property name may only be written inside
-/// an open dictionary, every dictionary value must follow a property name, container ends must match the open
-/// container kind, and a dictionary containing duplicate keys is rejected when it is closed.
+/// The writer validates the call sequence against the canonical grammar: a property name may only be written inside an
+/// open dictionary, every dictionary value must follow a property name, container ends must match the open container
+/// kind, a dictionary containing duplicate keys is rejected when it is closed, and a second root value is rejected
+/// unless <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is set.
 /// </para>
 /// <para>
 /// Scalars and lists written outside any dictionary are emitted to the destination as they are written; bytes that
@@ -59,6 +60,17 @@ public ref struct Utf8BencodeWriter
     private readonly int _maxDepth;
 
     /// <summary>
+    /// Whether the writer accepts more than one value at the top level.
+    /// </summary>
+    private readonly bool _allowMultipleRootValues;
+
+    /// <summary>
+    /// The shared root-completion flag, held on the heap so by-value copies of the writer observe the same document
+    /// state.
+    /// </summary>
+    private readonly RootState _root;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Utf8BencodeWriter" /> struct.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
@@ -72,13 +84,15 @@ public ref struct Utf8BencodeWriter
         _output = output;
         _frames = [];
         _maxDepth = 256;
+        _allowMultipleRootValues = false;
+        _root = new RootState();
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8BencodeWriter" /> struct using the supplied options.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
-    /// <param name="options">The writer options controlling the maximum nesting depth.</param>
+    /// <param name="options">The writer options controlling the maximum nesting depth and root-value policy.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
@@ -92,13 +106,17 @@ public ref struct Utf8BencodeWriter
         _output = output;
         _frames = [];
         _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        _allowMultipleRootValues = options.AllowMultipleRootValues;
+        _root = new RootState();
     }
 
     /// <summary>
     /// Writes the start of a list.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the list is opened directly inside a dictionary before a property name has been written.
+    /// Thrown when the list is opened directly inside a dictionary before a property name has been written, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when opening the list would exceed the configured maximum nesting depth.
@@ -136,7 +154,9 @@ public ref struct Utf8BencodeWriter
     /// Writes the start of a dictionary.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the dictionary is opened directly inside a dictionary before a property name has been written.
+    /// Thrown when the dictionary is opened directly inside a dictionary before a property name has been written, or
+    /// when a complete root value has already been written and
+    /// <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is not set.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when opening the dictionary would exceed the configured maximum nesting depth.
@@ -158,8 +178,8 @@ public ref struct Utf8BencodeWriter
     /// Writes the end of the current dictionary, emitting its entries in ascending bytewise key order.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when no container is open, when the currently open container is not a dictionary, or when a property
-    /// name is still awaiting its value.
+    /// Thrown when no container is open, when the currently open container is not a dictionary, or when a property name
+    /// is still awaiting its value.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when the dictionary contains more than one entry for the same key, which canonical Bencode forbids.
@@ -236,7 +256,9 @@ public ref struct Utf8BencodeWriter
     /// </summary>
     /// <param name="value">The integer value.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
     /// </exception>
     public readonly void WriteInteger(long value)
     {
@@ -260,7 +282,9 @@ public ref struct Utf8BencodeWriter
     /// <see cref="Reader.Utf8BencodeReader.GetInt64" />.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
     /// </exception>
     public readonly void WriteInteger(ulong value)
     {
@@ -278,7 +302,9 @@ public ref struct Utf8BencodeWriter
     /// </summary>
     /// <param name="value">The byte-string content.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
     /// </exception>
     public readonly void WriteByteString(ReadOnlySpan<byte> value)
     {
@@ -296,7 +322,9 @@ public ref struct Utf8BencodeWriter
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
     /// </exception>
     public readonly void WriteString(string value)
     {
@@ -353,15 +381,27 @@ public ref struct Utf8BencodeWriter
                 : ((ListFrame)_frames[^1]).ContentSink;
 
     /// <summary>
-    /// Enforces that a value may begin at the current position, rejecting a value written directly inside a
-    /// dictionary before its property name.
+    /// Enforces that a value may begin at the current position, rejecting a value written directly inside a dictionary
+    /// before its property name and a second root value when multiple roots are not permitted; a value beginning at the
+    /// root marks the document's single root as written.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the currently open container is a dictionary with no property name awaiting a value.
+    /// Thrown when the currently open container is a dictionary with no property name awaiting a value, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
     /// </exception>
     private readonly void EnsureValueAllowed()
     {
-        if (_frames.Count > 0 && _frames[^1] is DictionaryFrame { PendingKey: null })
+        if (_frames.Count == 0)
+        {
+            if (_root.HasRootValue && !_allowMultipleRootValues)
+                throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterMultipleRootValues);
+
+            _root.HasRootValue = true;
+            return;
+        }
+
+        if (_frames[^1] is DictionaryFrame { PendingKey: null })
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterValueWithoutPropertyName);
     }
 
@@ -376,6 +416,18 @@ public ref struct Utf8BencodeWriter
             frame.Entries.Add(new DictionaryEntry(frame.PendingKey, frame.PendingValueStart, frame.Buffer.WrittenCount - frame.PendingValueStart));
             frame.PendingKey = null;
         }
+    }
+
+    /// <summary>
+    /// Holds the document-level state shared by every by-value copy of the writer.
+    /// </summary>
+    private sealed class RootState
+    {
+        /// <summary>
+        /// Gets or sets a value indicating whether a root value has been started or completed.
+        /// </summary>
+        /// <returns><see langword="true" /> once the document's root value has begun.</returns>
+        internal bool HasRootValue { get; set; }
     }
 
     /// <summary>

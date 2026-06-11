@@ -13,7 +13,7 @@ namespace Bodu.Text.Bencode.Writer;
 /// <remarks>
 /// Bencode output is always canonical — dictionary keys are emitted in ascending bytewise order and there is no
 /// insignificant whitespace — so, unlike <see cref="System.Text.Json.JsonWriterOptions" />, there is no indentation or
-/// encoder option; <see cref="MaxDepth" /> is the only configurable member.
+/// encoder option.
 /// </remarks>
 public struct BencodeWriterOptions
 {
@@ -23,4 +23,20 @@ public struct BencodeWriterOptions
     /// <value>The maximum container nesting depth; <c>0</c> selects the default of 256.</value>
     /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 256.</returns>
     public int MaxDepth { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the writer accepts more than one value at the top level, concatenating
+    /// the values in the output.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to permit multiple root values; the default of <see langword="false" /> rejects a second
+    /// root value with <see cref="InvalidOperationException" />.
+    /// </value>
+    /// <returns><see langword="true" /> when multiple root values are permitted.</returns>
+    /// <remarks>
+    /// A BEP 3 document is a single value, and the reader rejects trailing bytes after the root, so output produced
+    /// with this option set cannot be re-read as one document. Enable it only for protocol framings that concatenate
+    /// independent Bencode values on one stream.
+    /// </remarks>
+    public bool AllowMultipleRootValues { get; set; }
 }

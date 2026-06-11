@@ -381,19 +381,56 @@ public partial class Utf8BencodeWriterTests
     }
 
     /// <summary>
-    /// Verifies that the top level accepts more than one value and emits them in sequence, mirroring the writer's
-    /// trust in the caller to produce a single root.
+    /// Verifies that a second top-level value throws <see cref="InvalidOperationException" />, because a BEP 3
+    /// document is a single value and the reader rejects trailing bytes after the root.
     /// </summary>
     [TestMethod]
-    public void WriteInteger_WhenWrittenTwiceAtTopLevel_ShouldConcatenateValues()
+    public void WriteInteger_WhenWrittenTwiceAtTopLevel_ShouldThrowInvalidOperationException()
     {
-        var actual = Write(w =>
-        {
-            w.WriteInteger(1);
-            w.WriteInteger(2);
-        });
+        var buffer = new ArrayBufferWriter<byte>();
 
-        Assert.AreEqual("i1ei2e", actual);
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            var writer = new Utf8BencodeWriter(buffer);
+            writer.WriteInteger(1);
+            writer.WriteInteger(2);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that opening a container after a complete root value throws
+    /// <see cref="InvalidOperationException" />, confirming the single-root rule applies to containers as well as
+    /// scalars.
+    /// </summary>
+    [TestMethod]
+    public void WriteStartList_WhenRootValueAlreadyComplete_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            var writer = new Utf8BencodeWriter(buffer);
+            writer.WriteStartDictionary();
+            writer.WriteEndDictionary();
+            writer.WriteStartList();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the top level accepts more than one value and emits them in sequence when
+    /// <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is set, the explicit opt-in for concatenated
+    /// value framings.
+    /// </summary>
+    [TestMethod]
+    public void WriteInteger_WhenWrittenTwiceAtTopLevelWithMultipleRootsAllowed_ShouldConcatenateValues()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { AllowMultipleRootValues = true });
+
+        writer.WriteInteger(1);
+        writer.WriteInteger(2);
+
+        Assert.AreEqual("i1ei2e", Encoding.Latin1.GetString(buffer.WrittenSpan));
     }
 
     /// <summary>

@@ -398,6 +398,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A complete root value has already been written; a Bencode document is single-valued unless AllowMultipleRootValues is set..
+        /// </summary>
+        internal static string Op_Invalid_WriterMultipleRootValues {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterMultipleRootValues", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Expected the start of a dictionary but found '{0}'..
         /// </summary>
         internal static string Op_Invalid_ExpectedDictionary {
