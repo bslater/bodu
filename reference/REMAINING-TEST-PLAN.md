@@ -24,6 +24,7 @@ We are mirroring the S.T.J test suite across both self-contained libraries — `
 | **T2b** | TOML serializer features: PropertyName, NamingPolicy, PropertyVisibility, PropertyOrder (**order IS honored** — reverses output lines), Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters (+ src fix mirroring B2b‑p2: non-public setter assigned on read only with `[TomlInclude]` — `PropertyMetadata.CanSet`) | `6a2f01d8` | BVT 516 / Reg 660 |
 | **T3** | TOML DOMs + exceptions: `TomlDocument`/`TomlElement` (malformed sweeps with line/column/offset, 10-kind value sweep, accessor×kind mismatch matrix, enumerators, MaxDepth boundary at 256, disposal), `TomlNode`/`Object`/`Array`/`Value` (collection surfaces, all-kind scalar conversions, DeepEquals/DeepClone, insertion-order serialization), exception ctor surfaces (+ src fix, twin of B3: `TomlObject`/`TomlArray` detach a removed/replaced child's `Parent`) | `3a9eb137` | BVT 699 / Reg 1037 |
 | **RICH** | Parity features + tests, both libs: Queue/Stack/Concurrent collections → list/array (S.T.J stack-reversal semantics); non-string dictionary keys (integer family, enum, Guid, bool, char — Bencode sorts stringified keys, TOML preserves insertion order and quotes non-bare keys; supported-key dicts valid at TOML root); `ulong` → full unsigned range (Bencode only — TOML spec-bound to signed 64); `IncludeFields` + `[BencodeInclude]`/`[TomlInclude]` field serialization | `e92b8596` (Bencode), `1fafec8f` (TOML) | Bencode BVT 513 / Reg 730 · TOML BVT 733 / Reg 1071 |
+| **GUARD** | Public-API parameter validation (exact exception type + `ParamName` via `ExceptionAssert.ThrowsExactlyWithParamName`) over serializer statics, options, writers/readers, naming policies, attribute ctors, enum-converter factories, and DOM guards (55 new tests, 51 upgraded in place); stream-overload happy paths (`*SerializerTests.Streams.cs`); src fix: element indexer now reports its documented `index` ParamName | `8b2cd90c` (Bencode), `ea79f958` (TOML) | Bencode BVT 542 / Reg 759 · TOML BVT 765 / Reg 1103 |
 
 Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guards on the B2a KAT methods, and three src fixes (see §4).
 
@@ -32,7 +33,7 @@ Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guar
 | Pass | Scope | Est. new tests |
 |---|---|---|
 
-**All planned passes are complete.** A follow-on **GUARD** pass (comprehensive public-API parameter validation with `ParamName` assertions via `ExceptionAssert.ThrowsExactlyWithParamName`) was added at user request — see §0 once committed. The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
+**All passes are complete**, including the user-requested GUARD pass. The S.T.J → Bodu translation is documented in [`STJ-TRACEABILITY.md`](STJ-TRACEABILITY.md). The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
 
 ---
 
