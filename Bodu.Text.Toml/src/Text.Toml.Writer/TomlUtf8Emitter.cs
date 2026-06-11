@@ -41,6 +41,11 @@ internal ref struct TomlUtf8Emitter
     private bool _hasContent;
 
     /// <summary>
+    /// The total number of bytes emitted.
+    /// </summary>
+    private long _bytesWritten;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="TomlUtf8Emitter" /> struct over the destination writer.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
@@ -57,6 +62,12 @@ internal ref struct TomlUtf8Emitter
     internal readonly bool HasContent => _hasContent;
 
     /// <summary>
+    /// Gets the total number of bytes emitted, for the writer's committed/pending accounting.
+    /// </summary>
+    /// <returns>The byte count.</returns>
+    internal readonly long BytesWritten => _bytesWritten;
+
+    /// <summary>
     /// Appends a single byte.
     /// </summary>
     /// <param name="value">The byte to append.</param>
@@ -64,6 +75,7 @@ internal ref struct TomlUtf8Emitter
     {
         Reserve(1)[0] = value;
         _pos++;
+        _bytesWritten++;
         _hasContent = true;
     }
 
@@ -78,6 +90,7 @@ internal ref struct TomlUtf8Emitter
 
         bytes.CopyTo(Reserve(bytes.Length));
         _pos += bytes.Length;
+        _bytesWritten += bytes.Length;
         _hasContent = true;
     }
 
@@ -95,6 +108,7 @@ internal ref struct TomlUtf8Emitter
             span[i] = (byte)chars[i];
 
         _pos += chars.Length;
+        _bytesWritten += chars.Length;
         _hasContent = true;
     }
 
@@ -104,7 +118,9 @@ internal ref struct TomlUtf8Emitter
     /// <param name="rune">The scalar value to append.</param>
     internal void Append(Rune rune)
     {
-        _pos += rune.EncodeToUtf8(Reserve(4));
+        var written = rune.EncodeToUtf8(Reserve(4));
+        _pos += written;
+        _bytesWritten += written;
         _hasContent = true;
     }
 

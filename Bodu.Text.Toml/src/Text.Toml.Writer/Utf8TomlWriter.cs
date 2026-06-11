@@ -67,6 +67,23 @@ public ref partial struct Utf8TomlWriter
     private readonly int _maxDepth;
 
     /// <summary>
+    /// The destination stream when the writer was constructed over a <see cref="Stream" />, with the buffered output
+    /// awaiting <see cref="Flush" />; otherwise <see langword="null" />.
+    /// </summary>
+    private readonly Stream? _stream;
+
+    /// <summary>
+    /// The intermediate buffer that receives rendered bytes in stream mode until they are flushed.
+    /// </summary>
+    private readonly ArrayBufferWriter<byte>? _streamBuffer;
+
+    /// <summary>
+    /// The shared committed/pending byte counters (committed at index 0, pending at index 1), held in an array so the
+    /// counts survive a by-value copy of the writer.
+    /// </summary>
+    private readonly long[] _byteCounts;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Utf8TomlWriter" /> struct.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
@@ -81,6 +98,7 @@ public ref partial struct Utf8TomlWriter
         _frames = [];
         _root = new TomlWriterNode?[1];
         _maxDepth = 256;
+        _byteCounts = new long[2];
     }
 
     /// <summary>
@@ -104,6 +122,7 @@ public ref partial struct Utf8TomlWriter
         _frames = [];
         _root = new TomlWriterNode?[1];
         _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        _byteCounts = new long[2];
     }
 
     /// <summary>
@@ -370,6 +389,12 @@ public ref partial struct Utf8TomlWriter
         var emitter = new TomlUtf8Emitter(_output);
         TomlCanonicalWriter.WriteTableBody(ref emitter, root, []);
         emitter.Complete();
+
+        // In buffer-writer mode the bytes were delivered to the caller's writer; in stream mode they await Flush.
+        if (_stream is null)
+            _byteCounts[0] += emitter.BytesWritten;
+        else
+            _byteCounts[1] += emitter.BytesWritten;
     }
 
     /// <summary>

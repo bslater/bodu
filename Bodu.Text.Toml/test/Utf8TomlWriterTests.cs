@@ -528,7 +528,7 @@ public sealed partial class Utf8TomlWriterTests
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = new Utf8TomlWriter(null!);
+            _ = new Utf8TomlWriter((System.Buffers.IBufferWriter<byte>)null!);
         }, "output");
     }
 
@@ -541,7 +541,7 @@ public sealed partial class Utf8TomlWriterTests
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = new Utf8TomlWriter(null!, new TomlWriterOptions { MaxDepth = 4 });
+            _ = new Utf8TomlWriter((System.Buffers.IBufferWriter<byte>)null!, new TomlWriterOptions { MaxDepth = 4 });
         }, "output");
     }
 
