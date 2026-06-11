@@ -22,6 +22,7 @@ We are mirroring the S.T.J test suite across both self-contained libraries — `
 | **T2a** | TOML serializer values/collections/dictionaries/nullables | `5e297e68` | BVT 400 / Reg 529 |
 | **B3** | Bencode DOMs + exceptions: `BencodeDocument`/`BencodeElement` (Parse grammar/depth, accessor kind-matrix, enumerators, disposal), `BencodeNode`/`Object`/`Array`/`Value` (full collection surfaces, conversions, DeepEquals/DeepClone), exception ctor surfaces (+ src fixes: `BencodeNode.Parse` now rejects trailing bytes per its documented contract; `BencodeObject`/`BencodeArray` detach a removed/replaced child's `Parent`) | `23d8390e` | BVT 468 / Reg 680 |
 | **T2b** | TOML serializer features: PropertyName, NamingPolicy, PropertyVisibility, PropertyOrder (**order IS honored** — reverses output lines), Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters (+ src fix mirroring B2b‑p2: non-public setter assigned on read only with `[TomlInclude]` — `PropertyMetadata.CanSet`) | `6a2f01d8` | BVT 516 / Reg 660 |
+| **T3** | TOML DOMs + exceptions: `TomlDocument`/`TomlElement` (malformed sweeps with line/column/offset, 10-kind value sweep, accessor×kind mismatch matrix, enumerators, MaxDepth boundary at 256, disposal), `TomlNode`/`Object`/`Array`/`Value` (collection surfaces, all-kind scalar conversions, DeepEquals/DeepClone, insertion-order serialization), exception ctor surfaces (+ src fix, twin of B3: `TomlObject`/`TomlArray` detach a removed/replaced child's `Parent`) | `3a9eb137` | BVT 699 / Reg 1037 |
 
 Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guards on the B2a KAT methods, and three src fixes (see §4).
 
@@ -29,10 +30,9 @@ Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guar
 
 | Pass | Scope | Est. new tests |
 |---|---|---|
-| **T3** | TOML DOMs + exceptions (mirror B3) | ~90–120 |
 | **RICH** | Richness/parity enhancements (implementation + tests): Queue/Stack/Concurrent collections, non-string dictionary keys, `ulong`>`Int64`, field serialization | ~40–60 |
 
-**Suggested order:** T3 → RICH. (B3 ✅ finished Bencode; T2b ✅ done; T3 finishes TOML; RICH last so tests pin current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
+**Suggested order:** RICH only. (B3/T2b/T3 ✅ — both libraries' structural suites are complete; RICH last so tests pinned current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
 
 ---
 
@@ -319,7 +319,10 @@ Same dimension set as B2b (all of §5.1) **plus** the B2b‑p1 dimensions (Prope
 - TOML has native `bool`/`float`/date-times, so those are **not** "unsupported" here (unlike Bencode) — the unsupported set is `decimal`/`TimeSpan`.
 - Extension data, unmapped handling, populate, callbacks, required, constructor binding, converter resolution, enum converters (`TomlStringEnumConverter`/`TomlNumberEnumConverter`/`TomlStringEnumMemberNameAttribute`), MaxDepth — same scenario catalogs as §5.1, with TOML wire text. Files: `TomlSerializerTests.{PropertyName,NamingPolicy,PropertyVisibility,PropertyOrder,Constructor,Required,ExtensionData,UnmappedMembers,ObjectCreation,Callbacks,ConverterResolution,MaxDepth,EnumConverters}.cs`.
 
-### 5.5 T3 — TOML DOMs + exceptions (mirror B3)
+### 5.5 T3 — TOML DOMs + exceptions (mirror B3) — ✅ DONE (`3a9eb137`)
+
+> Completed and committed (BVT 699 / Reg 1037). Probed contracts: empty/comment-only input parses to an empty root table in both DOMs; document `MaxDepth` counts inline-value nesting only (root table free; default boundary exactly 256 OK / 257 throws); `TomlElement.ToString` uses the "O" round-trip format for date-times and invariant `double.ToString` for floats (`Infinity`/`NaN`), while `TomlValue.ToString` uses "s" for local date-times; node serialization emits seconds-precision date-times with `Z` for zero offset and `inf`/`-inf`/`nan` literals; `\e` is v1.1-gated via `TomlDocumentOptions.SpecVersion`. Src fix folded in (twin of B3): `TomlObject`/`TomlArray` detach a removed/replaced child's `Parent`. The trailing-bytes twin bug does **not** apply — `Utf8TomlReader` parses the whole document eagerly and rejects trailing junk itself.
+
 
 `TomlDocumentTests`/`TomlElementTests` (read-only) and `TomlNodeTests`/`TomlObjectTests`/`TomlArrayTests`/`TomlValueTests` (mutable) — same S.T.J `JsonDocument`/`JsonNode/*` scenario catalog as §5.2, with TOML's richer value model (native float/bool/the four date-times; `TomlValueKind`). **Existing:** `TomlDocumentTests` (19), `TomlNodeTests` (30) — extend. Assert **document-order** preservation (not key-sorted). Exceptions: `TomlFormatException` (line/column/offset), `TomlSerializationException`. Regression-tag malformed/grammar sweeps.
 

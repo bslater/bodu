@@ -10,7 +10,6 @@
 ## Remaining passes (in order)
 | Pass | Scope | Spec |
 |---|---|---|
-| **T3** | TOML DOMs (`TomlDocument`/`Element`, `TomlNode`/`Object`/`Array`/`Value`) + exceptions | plan §5.5 |
 | **RICH** | Parity *features* + tests: Queue/Stack/Concurrent collections, non-string dict keys, `ulong`>`Int64`, fields | plan §5.6 |
 
 ## Per-pass workflow (do this every time)
@@ -29,10 +28,10 @@ dotnet build Bodu.Text.<Lib>/test/Bodu.Text.<Lib>.Test.csproj -v q --nologo --no
 5. Commit scoped to the one project; push `git push -u origin claude/relaxed-rubin-m62s2x` (backoff retry). Update the plan §0 status table.
 
 ## Where we are now
-Committed & green: B1, B2a, T1, B2b (p1+p2), T2a, B3, T2b.
-- Bencode: **BVT 468 / Regression 680** (complete — all passes done).
-- TOML: **BVT 516 / Regression 660**.
-Remaining: T3, RICH.
+Committed & green: B1, B2a, T1, B2b (p1+p2), T2a, B3, T2b, T3.
+- Bencode: **BVT 468 / Regression 680** (complete).
+- TOML: **BVT 699 / Regression 1037** (complete).
+Remaining: RICH only.
 
 ## Watch-outs (full detail in plan §1)
 - **Incremental builds hide analyzer warnings** — always do the final check with `--no-incremental`.
