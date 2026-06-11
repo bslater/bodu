@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using Bodu.Text.Bencode.Document;
+using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Serialization;
 using Bodu.Text.Bencode.Writer;
@@ -74,6 +76,94 @@ public static class BencodeSerializer
         ThrowHelper.ThrowIfNull(destination);
 
         destination.Write(Serialize(value, options));
+    }
+
+    /// <summary>
+    /// Serializes the specified value as Bencode to the supplied stream.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to serialize.</typeparam>
+    /// <param name="destination">The stream that receives the Bencode bytes.</param>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when no converter is configured for a type that is encountered.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when a value cannot be represented in Bencode.
+    /// </exception>
+    public static void Serialize<T>(Stream destination, T value, BencodeSerializerOptions? options = null)
+    {
+        ThrowHelper.ThrowIfNull(destination);
+        BencodeThrowHelper.ThrowIfStreamNotWritable(destination);
+
+        byte[] bytes = Serialize(value, options);
+        destination.Write(bytes, 0, bytes.Length);
+    }
+
+    /// <summary>
+    /// Serializes the specified value into a mutable <see cref="BencodeNode" /> tree, mirroring the
+    /// <c>SerializeToNode</c> member of <see cref="System.Text.Json.JsonSerializer" />.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to serialize.</typeparam>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
+    /// <returns>The root node of the serialized value.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when no converter is configured for a type that is encountered.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when a value cannot be represented in Bencode.
+    /// </exception>
+    public static BencodeNode? SerializeToNode<T>(T value, BencodeSerializerOptions? options = null) =>
+        BencodeNode.Parse(Serialize(value, options));
+
+    /// <summary>
+    /// Serializes the specified value into a read-only <see cref="BencodeDocument" />, mirroring the
+    /// <c>SerializeToDocument</c> member of <see cref="System.Text.Json.JsonSerializer" />.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to serialize.</typeparam>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
+    /// <returns>A document over the serialized value; dispose it when finished.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when no converter is configured for a type that is encountered.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when a value cannot be represented in Bencode.
+    /// </exception>
+    public static BencodeDocument SerializeToDocument<T>(T value, BencodeSerializerOptions? options = null) =>
+        BencodeDocument.Parse(Serialize(value, options));
+
+    /// <summary>
+    /// Deserializes a value of type <typeparamref name="T" /> from the supplied node tree, mirroring the
+    /// <see cref="System.Text.Json.Nodes.JsonNode" />-accepting <c>Deserialize</c> member of
+    /// <see cref="System.Text.Json.JsonSerializer" />.
+    /// </summary>
+    /// <typeparam name="T">The type to deserialize.</typeparam>
+    /// <param name="node">The node tree to bind.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
+    /// <returns>The deserialized value.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="node" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when the node tree cannot be bound to <typeparamref name="T" />, or contains a <see langword="null" />
+    /// entry, which has no Bencode representation.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when no converter is configured for a type that is encountered.
+    /// </exception>
+    public static T Deserialize<T>(BencodeNode node, BencodeSerializerOptions? options = null)
+    {
+        ThrowHelper.ThrowIfNull(node);
+
+        return Deserialize<T>(node.ToByteArray(), options);
     }
 
     /// <summary>
