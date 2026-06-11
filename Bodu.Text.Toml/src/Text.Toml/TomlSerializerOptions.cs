@@ -103,6 +103,11 @@ public sealed class TomlSerializerOptions
     private TomlByteArrayHandling _byteArrayHandling = TomlByteArrayHandling.IntegerArray;
 
     /// <summary>
+    /// The representation used when writing a decimal value.
+    /// </summary>
+    private TomlDecimalHandling _decimalHandling = TomlDecimalHandling.Float;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="TomlSerializerOptions" /> class with default (general-purpose)
     /// settings.
     /// </summary>
@@ -346,6 +351,30 @@ public sealed class TomlSerializerOptions
             VerifyMutable();
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
             _byteArrayHandling = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the representation used when writing a <see cref="decimal" /> value.
+    /// </summary>
+    /// <value>The decimal handling; <see cref="TomlDecimalHandling.Float" /> by default.</value>
+    /// <returns>The configured decimal handling.</returns>
+    /// <remarks>
+    /// The setting controls only how a decimal is written; on read the serializer accepts a TOML float, integer, or
+    /// string regardless of this value. <see cref="TomlDecimalHandling.Float" /> maps to TOML's native float form but
+    /// loses precision beyond what an IEEE 754 binary64 value can hold; <see cref="TomlDecimalHandling.String" />
+    /// preserves the value exactly at the cost of a quoted representation.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public TomlDecimalHandling DecimalHandling
+    {
+        get => _decimalHandling;
+        set
+        {
+            VerifyMutable();
+            ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+            _decimalHandling = value;
         }
     }
 

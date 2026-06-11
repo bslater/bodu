@@ -98,6 +98,54 @@ public class TomlSerializerOptionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="TomlSerializerOptions.DecimalHandling" /> defaults to
+    /// <see cref="TomlDecimalHandling.Float" /> and round-trips an assigned value while the options are mutable.
+    /// </summary>
+    [TestMethod]
+    public void DecimalHandling_WhenUnset_ShouldDefaultToFloatAndRoundTripAssignment()
+    {
+        var options = new TomlSerializerOptions();
+
+        Assert.AreEqual(TomlDecimalHandling.Float, options.DecimalHandling);
+
+        options.DecimalHandling = TomlDecimalHandling.String;
+
+        Assert.AreEqual(TomlDecimalHandling.String, options.DecimalHandling);
+    }
+
+    /// <summary>
+    /// Verifies that setting <see cref="TomlSerializerOptions.DecimalHandling" /> to an undefined
+    /// <see cref="TomlDecimalHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>value</c>.
+    /// </summary>
+    [TestMethod]
+    public void DecimalHandling_WhenSetToUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        var options = new TomlSerializerOptions();
+
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
+        {
+            options.DecimalHandling = (TomlDecimalHandling)99;
+        }, "value");
+    }
+
+    /// <summary>
+    /// Verifies that setting <see cref="TomlSerializerOptions.DecimalHandling" /> after the options have become
+    /// read-only throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void DecimalHandling_WhenSetAfterOptionsReadOnly_ShouldThrowInvalidOperationException()
+    {
+        var options = new TomlSerializerOptions();
+        options.MakeReadOnly();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            options.DecimalHandling = TomlDecimalHandling.String;
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="TomlSerializerOptions.GetConverter(Type)" /> throws
     /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>typeToConvert</c> when the type is
     /// <see langword="null" />.
