@@ -46,6 +46,7 @@ internal static class DefaultConverters
         new DoubleConverter(),
         new SingleConverter(),
         new HalfConverter(),
+        new DecimalConverter(),
         new DateTimeOffsetConverter(),
         new DateTimeConverter(),
         new DateOnlyConverter(),

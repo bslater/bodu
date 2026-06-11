@@ -16,8 +16,8 @@ namespace Bodu.Text.Toml;
 /// Verifies the native scalar value model of <see cref="TomlSerializer" />: integers (including the range-checked
 /// boundaries and overflow on read), floats (fractional, exponent, and the <c>inf</c>/<c>-inf</c>/<c>nan</c>
 /// sentinels), the four date-time kinds, Booleans, strings with escaping, characters, <see cref="Guid" />,
-/// <see cref="Uri" />, <see cref="Version" />, <see cref="TimeSpan" />, <see cref="Half" />, byte arrays under both
-/// handlings, and the types TOML cannot natively represent.
+/// <see cref="Uri" />, <see cref="Version" />, <see cref="TimeSpan" />, <see cref="Half" />, the 128-bit integers,
+/// byte arrays and memory-of-byte under both handlings, and the precedence of a registered converter over a built-in.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -731,34 +731,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing a <see cref="decimal" /> with no registered converter throws
-    /// <see cref="NotSupportedException" />, because TOML has no native form for it.
-    /// </summary>
-    [TestMethod]
-    public void Serialize_WhenDecimalAndNoConverter_ShouldThrowNotSupportedException()
-    {
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            _ = Serialize(1.5m);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that deserializing a <see cref="decimal" /> with no registered converter throws
-    /// <see cref="NotSupportedException" />, because TOML has no native form for it.
-    /// </summary>
-    [TestMethod]
-    public void Deserialize_WhenDecimalAndNoConverter_ShouldThrowNotSupportedException()
-    {
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            _ = TomlSerializer.Deserialize<ValueModel<decimal>>("Value = 1.5\n");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a custom converter registered for <see cref="decimal" /> supplies the otherwise-absent native form,
-    /// proving the escape hatch for a type TOML cannot represent.
+    /// Verifies that a custom converter registered for <see cref="decimal" /> takes precedence over the built-in
+    /// decimal converter, supplying its own string representation on both write and read.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenDecimalConverterRegistered_ShouldRoundTrip()

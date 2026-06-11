@@ -479,6 +479,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Expected a float, integer, or string for a decimal value but found &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedDecimal {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedDecimal", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The property '{0}' appears more than once..
         /// </summary>
         internal static string Op_Invalid_DuplicateProperty {
