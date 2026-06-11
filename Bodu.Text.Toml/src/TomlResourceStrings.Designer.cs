@@ -308,6 +308,114 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' has already been written to the current table..
+        /// </summary>
+        internal static string Op_Invalid_WriterDuplicateKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A value cannot be written to a table before a property name is written..
+        /// </summary>
+        internal static string Op_Invalid_WriterValueWithoutKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterValueWithoutKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A property name can only be written when the current container is a table..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameOutsideTable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameOutsideTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A property name is already pending; write its value before writing another property name..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNamePending {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNamePending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The current table has a pending property name without a value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameWithoutValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameWithoutValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The root of a TOML document must be a table..
+        /// </summary>
+        internal static string Op_Invalid_WriterRootMustBeTable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterRootMustBeTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The TOML document is complete; no further writes are permitted..
+        /// </summary>
+        internal static string Op_Invalid_WriterDocumentComplete {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterDocumentComplete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The end call does not match the innermost open container..
+        /// </summary>
+        internal static string Op_Invalid_WriterEndMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterEndMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to There is no open container to close..
+        /// </summary>
+        internal static string Op_Invalid_WriterNoOpenContainer {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterNoOpenContainer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value contains an unpaired surrogate and cannot be encoded as UTF-8 TOML..
+        /// </summary>
+        internal static string Arg_Invalid_TomlUnpairedSurrogate {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_TomlUnpairedSurrogate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' maps more than one member to the TOML key '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateWireName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateWireName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The extension-data key '{0}' collides with a key already written for type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_ExtensionDataKeyCollision {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExtensionDataKeyCollision", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The type '{0}' specified by a converter attribute is not a TomlConverter..
         /// </summary>
         internal static string Arg_Invalid_ConverterAttributeType {
