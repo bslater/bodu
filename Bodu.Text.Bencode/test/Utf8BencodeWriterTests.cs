@@ -16,7 +16,7 @@ namespace Bodu.Text.Bencode;
 /// sorts dictionary keys into ascending bytewise order, and reports lifecycle misuse.
 /// </summary>
 [TestClass]
-public class Utf8BencodeWriterTests
+public partial class Utf8BencodeWriterTests
 {
     /// <summary>
     /// Encapsulates a program that drives a <see cref="Utf8BencodeWriter" />, expressed as a named delegate because

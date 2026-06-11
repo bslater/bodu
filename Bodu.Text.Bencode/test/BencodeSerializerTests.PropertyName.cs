@@ -124,6 +124,22 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing a type whose members resolve to the same wire name throws
+    /// <see cref="BencodeSerializationException" /> rather than emitting a dictionary with duplicate keys, which
+    /// canonical Bencode (BEP 3) forbids.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMembersCollideOnWireName_ShouldThrowBencodeSerializationException()
+    {
+        var model = new CollidingWireNameModel { First = 1, Second = 2 };
+
+        _ = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model);
+        });
+    }
+
+    /// <summary>
     /// A model with a single integer member used to exercise case-sensitive and case-insensitive key matching.
     /// </summary>
     private sealed class CaseInsensitiveModel
@@ -153,6 +169,26 @@ public partial class BencodeSerializerTests
         /// <returns>The last name.</returns>
         [BencodePropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model whose two members carry the same explicit wire name, producing a duplicate-key collision on write.
+    /// </summary>
+    private sealed class CollidingWireNameModel
+    {
+        /// <summary>
+        /// Gets or sets the first value, keyed under the wire name <c>id</c>.
+        /// </summary>
+        /// <returns>The first value.</returns>
+        [BencodePropertyName("id")]
+        public int First { get; set; }
+
+        /// <summary>
+        /// Gets or sets the second value, also keyed under the wire name <c>id</c>.
+        /// </summary>
+        /// <returns>The second value.</returns>
+        [BencodePropertyName("id")]
+        public int Second { get; set; }
     }
 
     /// <summary>
