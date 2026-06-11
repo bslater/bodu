@@ -27,8 +27,9 @@ namespace Bodu.Text.Toml.Document;
 /// belonging to the document throws <see cref="ObjectDisposedException" />.
 /// </para>
 /// <para>
-/// The root value of a TOML document is always a table, so <see cref="RootElement" /> always reports
-/// <see cref="TomlValueKind.Table" />.
+/// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" />
+/// or its overloads <see cref="RootElement" /> always reports <see cref="TomlValueKind.Table" />. A document produced
+/// internally over a single value subtree may root any value kind.
 /// </para>
 /// </remarks>
 public sealed partial class TomlDocument
@@ -64,8 +65,9 @@ public sealed partial class TomlDocument
     /// Gets the root element of the document.
     /// </summary>
     /// <returns>
-    /// A <see cref="TomlElement" /> positioned on the document's root table, whose <see cref="TomlElement.ValueKind" />
-    /// is always <see cref="TomlValueKind.Table" />.
+    /// A <see cref="TomlElement" /> positioned on the document's root value. For a document produced by
+    /// <see cref="Parse(string)" /> or its overloads the root is always a table, so its
+    /// <see cref="TomlElement.ValueKind" /> is <see cref="TomlValueKind.Table" />.
     /// </returns>
     public TomlElement RootElement =>
         new(this, 0);
@@ -153,6 +155,26 @@ public sealed partial class TomlDocument
         ThrowHelper.ThrowIfNull(toml);
 
         return Parse(s_utf8.GetBytes(toml).AsSpan(), options);
+    }
+
+    /// <summary>
+    /// Reads the single complete value at the reader's current token into a <see cref="TomlDocument" /> whose root is
+    /// that value.
+    /// </summary>
+    /// <param name="reader">The reader, positioned on the value's first token.</param>
+    /// <returns>A document over the value's subtree, which may root any value kind.</returns>
+    /// <exception cref="TomlFormatException">Thrown when the reader is positioned on an unexpected token.</exception>
+    /// <remarks>
+    /// On return the reader is positioned on the value's last token, matching the converter read contract. The
+    /// serializer uses this entry point to materialize a <see cref="TomlElement" /> for an element-typed or
+    /// <see cref="object" />-typed member.
+    /// </remarks>
+    internal static TomlDocument ParseValue(ref TomlDocumentReader reader)
+    {
+        List<Row> rows = [];
+        ReadValue(ref reader, rows);
+
+        return new TomlDocument(rows.ToArray());
     }
 
     /// <summary>

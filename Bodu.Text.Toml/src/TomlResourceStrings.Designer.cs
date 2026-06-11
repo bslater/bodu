@@ -488,6 +488,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The operation is not valid on a default TomlElement that belongs to no document..
+        /// </summary>
+        internal static string Op_Invalid_DefaultElement {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A null document cannot be written to TOML..
+        /// </summary>
+        internal static string Op_NotSupported_NullDocument {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullDocument", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The property '{0}' appears more than once..
         /// </summary>
         internal static string Op_Invalid_DuplicateProperty {

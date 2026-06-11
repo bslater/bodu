@@ -36,6 +36,8 @@ internal static class DefaultConverters
     private static readonly TomlConverter[] s_builtIn =
     [
         new TomlNodeConverter(),
+        new TomlElementConverter(),
+        new TomlDocumentConverter(),
         new StringConverter(),
         new BooleanConverter(),
         new CharConverter(),
