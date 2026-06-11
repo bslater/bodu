@@ -23,6 +23,7 @@ We are mirroring the S.T.J test suite across both self-contained libraries — `
 | **B3** | Bencode DOMs + exceptions: `BencodeDocument`/`BencodeElement` (Parse grammar/depth, accessor kind-matrix, enumerators, disposal), `BencodeNode`/`Object`/`Array`/`Value` (full collection surfaces, conversions, DeepEquals/DeepClone), exception ctor surfaces (+ src fixes: `BencodeNode.Parse` now rejects trailing bytes per its documented contract; `BencodeObject`/`BencodeArray` detach a removed/replaced child's `Parent`) | `23d8390e` | BVT 468 / Reg 680 |
 | **T2b** | TOML serializer features: PropertyName, NamingPolicy, PropertyVisibility, PropertyOrder (**order IS honored** — reverses output lines), Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters (+ src fix mirroring B2b‑p2: non-public setter assigned on read only with `[TomlInclude]` — `PropertyMetadata.CanSet`) | `6a2f01d8` | BVT 516 / Reg 660 |
 | **T3** | TOML DOMs + exceptions: `TomlDocument`/`TomlElement` (malformed sweeps with line/column/offset, 10-kind value sweep, accessor×kind mismatch matrix, enumerators, MaxDepth boundary at 256, disposal), `TomlNode`/`Object`/`Array`/`Value` (collection surfaces, all-kind scalar conversions, DeepEquals/DeepClone, insertion-order serialization), exception ctor surfaces (+ src fix, twin of B3: `TomlObject`/`TomlArray` detach a removed/replaced child's `Parent`) | `3a9eb137` | BVT 699 / Reg 1037 |
+| **RICH** | Parity features + tests, both libs: Queue/Stack/Concurrent collections → list/array (S.T.J stack-reversal semantics); non-string dictionary keys (integer family, enum, Guid, bool, char — Bencode sorts stringified keys, TOML preserves insertion order and quotes non-bare keys; supported-key dicts valid at TOML root); `ulong` → full unsigned range (Bencode only — TOML spec-bound to signed 64); `IncludeFields` + `[BencodeInclude]`/`[TomlInclude]` field serialization | `e92b8596` (Bencode), `1fafec8f` (TOML) | Bencode BVT 513 / Reg 730 · TOML BVT 733 / Reg 1071 |
 
 Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guards on the B2a KAT methods, and three src fixes (see §4).
 
@@ -30,9 +31,8 @@ Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guar
 
 | Pass | Scope | Est. new tests |
 |---|---|---|
-| **RICH** | Richness/parity enhancements (implementation + tests): Queue/Stack/Concurrent collections, non-string dictionary keys, `ulong`>`Int64`, field serialization | ~40–60 |
 
-**Suggested order:** RICH only. (B3/T2b/T3 ✅ — both libraries' structural suites are complete; RICH last so tests pinned current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
+**All planned passes are complete.** A follow-on **GUARD** pass (comprehensive public-API parameter validation with `ParamName` assertions via `ExceptionAssert.ThrowsExactlyWithParamName`) was added at user request — see §0 once committed. The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
 
 ---
 

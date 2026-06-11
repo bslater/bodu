@@ -10,7 +10,6 @@
 ## Remaining passes (in order)
 | Pass | Scope | Spec |
 |---|---|---|
-| **RICH** | Parity *features* + tests: Queue/Stack/Concurrent collections, non-string dict keys, `ulong`>`Int64`, fields | plan §5.6 |
 
 ## Per-pass workflow (do this every time)
 ```bash
@@ -28,10 +27,10 @@ dotnet build Bodu.Text.<Lib>/test/Bodu.Text.<Lib>.Test.csproj -v q --nologo --no
 5. Commit scoped to the one project; push `git push -u origin claude/relaxed-rubin-m62s2x` (backoff retry). Update the plan §0 status table.
 
 ## Where we are now
-Committed & green: B1, B2a, T1, B2b (p1+p2), T2a, B3, T2b, T3.
-- Bencode: **BVT 468 / Regression 680** (complete).
-- TOML: **BVT 699 / Regression 1037** (complete).
-Remaining: RICH only.
+Committed & green: B1, B2a, T1, B2b (p1+p2), T2a, B3, T2b, T3, RICH.
+- Bencode: **BVT 513 / Regression 730** (complete, incl. parity features).
+- TOML: **BVT 733 / Regression 1071** (complete, incl. parity features).
+All planned passes are done. In progress: GUARD (parameter/ParamName matrix, user-requested).
 
 ## Watch-outs (full detail in plan §1)
 - **Incremental builds hide analyzer warnings** — always do the final check with `--no-incremental`.
