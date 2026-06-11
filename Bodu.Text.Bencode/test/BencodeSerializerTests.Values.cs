@@ -233,6 +233,46 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Memory{T}" /> and <see cref="ReadOnlyMemory{T}" /> of <see cref="byte" /> serialize to
+    /// the native length-prefixed byte string and round-trip losslessly, including binary payloads and the empty
+    /// memory.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemoryOfByte_ShouldRoundTripAsByteString()
+    {
+        Memory<byte> payload = new byte[] { 0x00, 0x61, 0xff };
+
+        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<Memory<byte>> { Value = payload });
+        byte[] expected = [.. Encoding.Latin1.GetBytes("d5:Value3:"), 0x00, 0x61, 0xff, (byte)'e'];
+        CollectionAssert.AreEqual(expected, bytes);
+
+        Memory<byte> roundTripped = BencodeSerializer.Deserialize<SingleValueModel<Memory<byte>>>(bytes).Value;
+        CollectionAssert.AreEqual(payload.ToArray(), roundTripped.ToArray());
+
+        byte[] readOnly = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = payload });
+        CollectionAssert.AreEqual(expected, readOnly);
+
+        byte[] empty = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = ReadOnlyMemory<byte>.Empty });
+        Assert.AreEqual("d5:Value0:e", Encoding.Latin1.GetString(empty));
+        Assert.AreEqual(0, BencodeSerializer.Deserialize<SingleValueModel<ReadOnlyMemory<byte>>>(empty).Value.Length);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a non-byte-string token into a memory-of-byte member throws
+    /// <see cref="BencodeSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerIntoMemoryOfByte_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei5ee");
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<SingleValueModel<Memory<byte>>>(bytes);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Int128" /> values within the signed 64-bit surface and <see cref="UInt128" /> values
     /// within the unsigned 64-bit surface round-trip to the canonical <c>i…e</c> form, including at the boundaries.
     /// </summary>

@@ -35,6 +35,8 @@ internal static class DefaultConverters
         new BencodeNodeConverter(),
         new StringConverter(),
         new ByteArrayConverter(),
+        new MemoryByteConverter(),
+        new ReadOnlyMemoryByteConverter(),
         new IntegerConverterFactory(),
         new EnumConverterFactory(),
         new NullableConverterFactory(),
