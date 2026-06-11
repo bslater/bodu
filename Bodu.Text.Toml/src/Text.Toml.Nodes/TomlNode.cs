@@ -13,16 +13,15 @@ namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
 /// Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node
-/// kinds — <see cref="TomlObject" />, <see cref="TomlArray" />, and <see cref="TomlValue" />. Mirrors the role of
-/// <see cref="System.Text.Json.Nodes.JsonNode" /> for TOML.
+/// kinds — <see cref="TomlObject" />, <see cref="TomlArray" />, and <see cref="TomlValue" />.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
 /// and any node can be re-serialized to canonical TOML through <see cref="WriteTo" /> or <see cref="ToUtf8Bytes" />.
 /// TOML defines eight scalar value kinds — a string, a 64-bit integer, a float, a Boolean, and the four date-time kinds
-/// — so the model omits the null node that <see cref="System.Text.Json.Nodes.JsonNode" /> carries; a tree that still
-/// contains a <see langword="null" /> entry cannot be written.
+/// — and has no null token, so the model defines no null node; a tree that still contains a <see langword="null" />
+/// entry cannot be written.
 /// </para>
 /// <para>
 /// A TOML document's root is always a table, so a document cannot be a bare scalar or array.
@@ -31,8 +30,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// </para>
 /// <para>
 /// Each node has at most one parent. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />, matching the single-parent rule of
-/// <see cref="System.Text.Json.Nodes.JsonNode" />.
+/// <see cref="InvalidOperationException" />.
 /// </para>
 /// </remarks>
 public abstract class TomlNode

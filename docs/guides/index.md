@@ -434,14 +434,14 @@ invariant enforcement and `Try*` overloads.
 
 ## Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
 
-Two self-contained, <code>System.Text.Json</code>-shaped serializers that map your own types to and from a format.
+Two self-contained serializers that map your own types to and from a format.
 Deliberate twins — the same shape, member for member — for Bencode (BEP 3) and TOML.
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="serialization/index.md">Overview</a></h3>
-  <p>The two libraries, the three tiers (serializer, DOMs, reader/writer), and the <code>System.Text.Json</code> alignment.</p>
+  <p>The two libraries and the three tiers (serializer, DOMs, reader/writer).</p>
 </div>
 
 <div class="bodu-card">

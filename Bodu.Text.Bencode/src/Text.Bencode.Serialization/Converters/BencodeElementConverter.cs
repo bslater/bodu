@@ -12,8 +12,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="BencodeElement" /> to and from Bencode, bridging the read-only document object model to the
-/// serializer the way <see cref="System.Text.Json.JsonElement" /> participates in
-/// <see cref="System.Text.Json.JsonSerializer" />.
+/// serializer.
 /// </summary>
 /// <remarks>
 /// On read the value's raw encoded bytes are captured and parsed into a non-pooled internal

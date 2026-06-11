@@ -9,8 +9,7 @@ using Bodu.Text.Bencode.Reader;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Identifies the kind of token a <see cref="Utf8BencodeReader" /> is positioned on, mirroring the role of
-/// <see cref="System.Text.Json.JsonTokenType" /> for Bencode.
+/// Identifies the kind of token a <see cref="Utf8BencodeReader" /> is positioned on.
 /// </summary>
 public enum BencodeTokenType
 {

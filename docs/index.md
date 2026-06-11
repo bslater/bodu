@@ -144,7 +144,7 @@ A family of focused primary libraries — collections and utilities, non-cryptog
 <div class="bodu-card">
   <img src="images/hero-text.svg" alt="Bodu.Text" />
   <h3>Bodu.Text</h3>
-  <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation.</p>
+  <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. Ships in the <code>Bodu.Core</code> package.</p>
   <div class="bodu-card-links">
     <a href="docs/text/index.md">Introduction</a>
     <a href="xref:Bodu.Text">API reference</a>
@@ -166,7 +166,6 @@ dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
-dotnet add package Bodu.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 ```

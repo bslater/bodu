@@ -12,14 +12,13 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="TomlElement" /> to and from TOML, bridging the read-only document object model to the
-/// serializer the way <see cref="System.Text.Json.JsonElement" /> participates in
-/// <see cref="System.Text.Json.JsonSerializer" />.
+/// serializer.
 /// </summary>
 /// <remarks>
 /// On read the value's subtree is parsed into an internal <see cref="TomlDocument" /> that backs the returned element.
-/// That document is never disposed; it is reclaimed by garbage collection together with the element, the same lifetime
-/// a cloned <see cref="System.Text.Json.JsonElement" /> has. Were <see cref="TomlDocument" /> ever to move to pooled
-/// storage, this converter would need to clone into unpooled memory instead.
+/// That document is never disposed; it is reclaimed by garbage collection together with the element, so the element
+/// never requires disposal. Were <see cref="TomlDocument" /> ever to move to pooled storage, this converter would need
+/// to clone into unpooled memory instead.
 /// </remarks>
 internal sealed class TomlElementConverter
     : TomlConverter<TomlElement>

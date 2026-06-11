@@ -10,9 +10,9 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Writer;
 
 /// <summary>
-/// Provides a forward-only writer that emits canonical TOML bytes to an <see cref="IBufferWriter{T}" />, mirroring the
-/// role of <see cref="System.Text.Json.Utf8JsonWriter" />. Because TOML's surface layout is a whole-document property,
-/// the writer buffers every value into an in-memory tree and serializes it when the root table is closed.
+/// Provides a forward-only writer that emits canonical TOML bytes to an <see cref="IBufferWriter{T}" />. Because TOML's
+/// surface layout is a whole-document property, the writer buffers every value into an in-memory tree and serializes it
+/// when the root table is closed.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -11,8 +11,7 @@ namespace Bodu.Text.Bencode.Document;
 public readonly partial struct BencodeElement
 {
     /// <summary>
-    /// Enumerates the elements of an array <see cref="BencodeElement" /> in order, mirroring the role of
-    /// <see cref="System.Text.Json.JsonElement.ArrayEnumerator" />.
+    /// Enumerates the elements of an array <see cref="BencodeElement" /> in order.
     /// </summary>
     /// <remarks>
     /// The enumerator walks the array's contiguous subtree rows, advancing past each element's whole subtree so that

@@ -22,7 +22,6 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Bencode serializer** | `Bodu.Text.Bencode` | **Preview** | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
 | **Text configuration** | `Bodu.Text.Configuration` | Stable | `Bodu.Core`, `Bodu.Text.Formats` | [Bodu.Text.Configuration](text-configuration/index.md) | [Get started](text-configuration/getting-started.md) |
 | **Configuration bridge** | `Bodu.Extensions.Configuration.Text` | Stable | `Bodu.Text.Configuration`, `Microsoft.Extensions.Configuration` | [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) | [Get started](extensions-configuration-text/getting-started.md) |
-| **Text encoding helpers** | `Bodu.Text` | Stable | `Bodu.Core` | [Bodu.Text](text/index.md) | [Get started](getting-started.md#bodutext) |
 | **Numerics** | `Bodu.Numerics` | **Preview** | `Bodu.Core` | [Bodu.Numerics](numerics/index.md) | [Get started](numerics/getting-started.md) |
 | **Financial** | `Bodu.Financial` | **Preview** | `Bodu.Numerics`, `Bodu.Core` | [Bodu.Financial](financial/index.md) | [Get started](financial/getting-started.md) |
 
@@ -74,7 +73,6 @@ dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
-dotnet add package Bodu.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 

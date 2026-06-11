@@ -11,16 +11,28 @@ namespace Bodu.Text.Toml.Serialization;
 /// <summary>
 /// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a TOML string holding its
 /// member name, applying an optional naming policy and honoring <see cref="TomlStringEnumMemberNameAttribute" /> on
-/// individual members. Mirrors the generic <see cref="System.Text.Json.Serialization.JsonStringEnumConverter{TEnum}" />
-/// .
+/// individual members.
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
 /// Unlike the non-generic <see cref="TomlStringEnumConverter" />, this strongly typed factory can be referenced from a
 /// <see cref="TomlConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
-/// parameterless constructor and applies to a single enumeration type. The two constructors mirror those of
-/// <see cref="System.Text.Json.Serialization.JsonStringEnumConverter{TEnum}" />.
+/// parameterless constructor and applies to a single enumeration type.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [TomlConverter(typeof(TomlStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the TOML string "OnHold".
+///]]>
+/// </code>
+/// </example>
 public sealed class TomlStringEnumConverter<TEnum>
     : TomlConverterFactory
     where TEnum : struct, Enum

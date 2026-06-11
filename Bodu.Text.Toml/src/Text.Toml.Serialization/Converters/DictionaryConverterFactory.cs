@@ -15,11 +15,11 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// Supported key types are <see cref="string" />, the fixed-width integer family (<see cref="sbyte" />,
 /// <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />,
 /// <see cref="long" />, <see cref="ulong" />), enumerations, <see cref="Guid" />, <see cref="bool" />, and
-/// <see cref="char" /> — the subset of <see cref="System.Text.Json.JsonSerializer" /> key support whose text form
-/// round-trips cleanly through a TOML table key. The newer scalar converters (<see cref="Version" />,
-/// <see cref="System.TimeSpan" />, <see cref="decimal" />, <see cref="Half" />, the 128-bit integers) are a deliberate
-/// scope cut as key types: each would need its own key-conversion kind and parse plumbing for marginal value. A
-/// dictionary with any other key type is not claimed by this factory and falls through to the later converters.
+/// <see cref="char" /> — the key types whose text form round-trips cleanly through a TOML table key. The newer scalar
+/// converters (<see cref="Version" />, <see cref="System.TimeSpan" />, <see cref="decimal" />, <see cref="Half" />,
+/// the 128-bit integers) are a deliberate scope cut as key types: each would need its own key-conversion kind and
+/// parse plumbing for marginal value. A dictionary with any other key type is not claimed by this factory and falls
+/// through to the later converters.
 /// </remarks>
 internal sealed class DictionaryConverterFactory
     : TomlConverterFactory

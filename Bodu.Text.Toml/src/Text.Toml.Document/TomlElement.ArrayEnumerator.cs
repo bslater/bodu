@@ -11,8 +11,7 @@ namespace Bodu.Text.Toml.Document;
 public readonly partial struct TomlElement
 {
     /// <summary>
-    /// Enumerates the elements of an array <see cref="TomlElement" /> in order, mirroring the role of
-    /// <see cref="System.Text.Json.JsonElement.ArrayEnumerator" />.
+    /// Enumerates the elements of an array <see cref="TomlElement" /> in order.
     /// </summary>
     /// <remarks>
     /// The enumerator walks the array's contiguous subtree rows, advancing past each element's whole subtree so that

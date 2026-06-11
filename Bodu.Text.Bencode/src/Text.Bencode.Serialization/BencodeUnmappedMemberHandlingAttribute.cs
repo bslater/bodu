@@ -9,13 +9,25 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Specifies, for the annotated type, how the serializer treats a dictionary key that maps to no member during
 /// deserialization, overriding the serializer-wide <see cref="BencodeSerializerOptions.UnmappedMemberHandling" />.
-/// Mirrors <see cref="System.Text.Json.Serialization.JsonUnmappedMemberHandlingAttribute" />.
 /// </summary>
 /// <remarks>
 /// When a type carries this attribute, its <see cref="UnmappedMemberHandling" /> is used in place of the options-level
 /// default for that type. A type with an extension-data member still captures unmapped keys into that member regardless
 /// of this setting.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeUnmappedMemberHandling(BencodeUnmappedMemberHandling.Disallow)]
+/// public sealed class StrictConfig
+/// {
+///     public int Port { get; set; }
+/// }
+///
+/// // Input containing a key that maps to no member throws BencodeSerializationException.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class BencodeUnmappedMemberHandlingAttribute
     : BencodeAttribute

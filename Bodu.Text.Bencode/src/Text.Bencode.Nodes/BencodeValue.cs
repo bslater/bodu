@@ -11,8 +11,7 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>
-/// Represents a scalar Bencode (BEP 3) value — either an integer or a byte string — within a node tree. Mirrors the
-/// role of <see cref="System.Text.Json.Nodes.JsonValue" /> for Bencode.
+/// Represents a scalar Bencode (BEP 3) value — either an integer or a byte string — within a node tree.
 /// </summary>
 /// <remarks>
 /// Because Bencode has only two scalar kinds, a <see cref="BencodeValue" /> stores either a 64-bit integer or a byte

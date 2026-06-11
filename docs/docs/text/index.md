@@ -4,7 +4,7 @@ title: Bodu.Text — Introduction
 
 # Bodu.Text
 
-**Bodu.Text** is the text-encoding helpers package of the Bodu suite. It sits directly on top of the BCL <xref:System.Text.Encoding?displayProperty=nameWithType> contract and adds the ergonomic, allocation-aware surface the BCL leaves out: byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, pooled-buffer conversions, and validation.
+**Bodu.Text** is the text-encoding helpers namespace of the Bodu suite, shipped in the `Bodu.Core` package. It sits directly on top of the BCL <xref:System.Text.Encoding?displayProperty=nameWithType> contract and adds the ergonomic, allocation-aware surface the BCL leaves out: byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, pooled-buffer conversions, and validation.
 
 Unlike [Bodu.Text.Encoding](../text-encoding/index.md) — which implements binary-to-text codecs such as Base16/32/64/85 — `Bodu.Text` is concerned with character encodings: turning bytes into text and back through `System.Text.Encoding`, correctly and efficiently.
 

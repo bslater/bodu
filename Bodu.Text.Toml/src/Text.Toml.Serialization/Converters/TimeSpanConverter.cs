@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="TimeSpan" /> value to and from a TOML string in the invariant, round-trippable constant
-/// (<c>"c"</c>) format, mirroring the representation used by <see cref="System.Text.Json.JsonSerializer" />.
+/// (<c>"c"</c>) format.
 /// </summary>
 /// <remarks>
 /// TOML has no native duration type, so the value maps to a basic string such as <c>"1.02:03:04.5670000"</c>. On read

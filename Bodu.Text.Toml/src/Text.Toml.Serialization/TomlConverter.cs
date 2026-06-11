@@ -24,8 +24,6 @@ namespace Bodu.Text.Toml.Serialization;
 /// <para>
 /// The constructor is inaccessible outside this assembly, so external code extends the model through
 /// <see cref="TomlConverter{T}" /> or <see cref="TomlConverterFactory" /> rather than deriving from this type directly.
-/// This mirrors the relationship between <see cref="System.Text.Json.Serialization.JsonConverter" /> and its generic
-/// and factory subclasses.
 /// </para>
 /// </remarks>
 public abstract class TomlConverter

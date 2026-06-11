@@ -4,18 +4,18 @@ title: Bodu serializers — Core concepts
 
 # Core concepts
 
-Both **Bodu.Text.Bencode** and **Bodu.Text.Toml** are modelled on [`System.Text.Json`](https://learn.microsoft.com/dotnet/api/system.text.json), so the vocabulary is the same as the BCL serializer — only the `Json` prefix changes to `Bencode` or `Toml`. This page uses the neutral `…` placeholder to describe a concept once for both libraries.
+**Bodu.Text.Bencode** and **Bodu.Text.Toml** share the same vocabulary and member-for-member shape — only the `Bencode` / `Toml` prefix changes between them. This page uses the neutral `…` placeholder to describe a concept once for both libraries.
 
 ## The serializer
 
-The static `…Serializer` (<xref:Bodu.Text.Bencode.BencodeSerializer>, <xref:Bodu.Text.Toml.TomlSerializer>) is the high-level entry point — the analogue of `JsonSerializer`. `Serialize<T>` writes an object graph to the format; `Deserialize<T>` binds the format back to a type. Each has overloads over the format's natural surfaces:
+The static `…Serializer` (<xref:Bodu.Text.Bencode.BencodeSerializer>, <xref:Bodu.Text.Toml.TomlSerializer>) is the high-level entry point. `Serialize<T>` writes an object graph to the format; `Deserialize<T>` binds the format back to a type. Each has overloads over the format's natural surfaces:
 
 - **Bencode** — `Serialize` to `byte[]` / `IBufferWriter<byte>` / `Stream`; `Deserialize<T>` from `ReadOnlySpan<byte>` / `byte[]` / `Stream`. Async stream variants are provided.
 - **TOML** — `Serialize` to `string` / `IBufferWriter<byte>` (UTF-8) / `Stream`; `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream`. Async stream variants are provided.
 
 ## Options
 
-`…SerializerOptions` (<xref:Bodu.Text.Bencode.BencodeSerializerOptions>, <xref:Bodu.Text.Toml.TomlSerializerOptions>) is the `JsonSerializerOptions` analogue. It holds the converter list (`Converters`), the property naming policy (`PropertyNamingPolicy`), the `DefaultIgnoreCondition`, the unmapped-member policy, and the maximum depth (`MaxDepth`, default 64). Construct one from a `…SerializerDefaults` value (for example the `Web` preset) to start from a scenario's conventions.
+`…SerializerOptions` (<xref:Bodu.Text.Bencode.BencodeSerializerOptions>, <xref:Bodu.Text.Toml.TomlSerializerOptions>) configures the serializer. It holds the converter list (`Converters`), the property naming policy (`PropertyNamingPolicy`), the `DefaultIgnoreCondition`, the unmapped-member policy, and the maximum depth (`MaxDepth`, default 64). Construct one from a `…SerializerDefaults` value (for example the `Web` preset) to start from a scenario's conventions.
 
 An options instance becomes read-only the first time it is used — or eagerly via `MakeReadOnly()` — and then caches its resolved converters and type metadata. Configure one options object and reuse it across many operations.
 
@@ -34,7 +34,7 @@ The first match wins, and the result is cached on the options.
 
 ## Attributes, callbacks, and naming policies
 
-Both libraries ship the full `System.Text.Json` alignment surface in the `Bodu.Text.<Format>.Serialization` namespace:
+Both libraries ship the full serialization surface in the `Bodu.Text.<Format>.Serialization` namespace:
 
 - **Attributes** — `[…PropertyName]`, `[…Ignore]`, `[…Converter]`, `[…PropertyOrder]`, `[…Constructor]`, `[…Required]`, `[…Include]`, `[…ExtensionData]`, `[…NamingPolicy]`, `[…UnmappedMemberHandling]`, `[…ObjectCreationHandling]`, `[…StringEnumMemberName]`.
 - **Callbacks** — the `I…OnSerializing` / `I…OnSerialized` / `I…OnDeserializing` / `I…OnDeserialized` interfaces, run at the matching point in the pipeline.
@@ -43,14 +43,14 @@ Both libraries ship the full `System.Text.Json` alignment surface in the `Bodu.T
 
 ## The document object models
 
-When you do not want a model, each library offers two DOMs that mirror the `System.Text.Json` pair:
+When you do not want a model, each library offers two DOMs:
 
-- **Mutable** — `…Node` / `…Object` / `…Array` / `…Value` (<xref:Bodu.Text.Bencode.Nodes.BencodeNode>, <xref:Bodu.Text.Toml.Nodes.TomlNode>), the `JsonNode` analogue. `Parse` a document, index into it, mutate values, and write it back (`ToUtf8Bytes()` for Bencode / TOML).
-- **Read-only** — `…Document` / `…Element` / `…Property` (<xref:Bodu.Text.Bencode.Document.BencodeDocument>, <xref:Bodu.Text.Toml.Document.TomlDocument>), the `JsonDocument` analogue. A low-allocation view over a parsed buffer, walked through `RootElement`.
+- **Mutable** — `…Node` / `…Object` / `…Array` / `…Value` (<xref:Bodu.Text.Bencode.Nodes.BencodeNode>, <xref:Bodu.Text.Toml.Nodes.TomlNode>). `Parse` a document, index into it, mutate values, and write it back (`ToUtf8Bytes()` for Bencode / TOML).
+- **Read-only** — `…Document` / `…Element` / `…Property` (<xref:Bodu.Text.Bencode.Document.BencodeDocument>, <xref:Bodu.Text.Toml.Document.TomlDocument>). A low-allocation view over a parsed buffer, walked through `RootElement`.
 
 ## The low-level reader and writer
 
-`Utf8…Reader` and `Utf8…Writer` (<xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader>, <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter>, <xref:Bodu.Text.Toml.Reader.Utf8TomlReader>, <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter>) are forward-only, allocation-free `ref struct` token machines — the `Utf8JsonReader` / `Utf8JsonWriter` analogues. The reader exposes the current token through a `…TokenType`; the serializer and every converter are built on this pair. Reach for it directly when you want to process tokens without binding to a model.
+`Utf8…Reader` and `Utf8…Writer` (<xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader>, <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter>, <xref:Bodu.Text.Toml.Reader.Utf8TomlReader>, <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter>) are forward-only, allocation-free `ref struct` token machines. The reader exposes the current token through a `…TokenType`; the serializer and every converter are built on this pair. Reach for it directly when you want to process tokens without binding to a model.
 
 ## Value mapping
 

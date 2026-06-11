@@ -10,9 +10,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// Specifies the dictionary key used for a property or field when it is serialized to TOML, overriding the member's CLR
 /// name and any configured naming policy.
 /// </summary>
-/// <remarks>
-/// This attribute mirrors the role of <see cref="System.Text.Json.Serialization.JsonPropertyNameAttribute" />.
-/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Profile
+/// {
+///     [TomlPropertyName("display-name")]
+///     public string DisplayName { get; set; } = "Ada";
+/// }
+///
+/// // Serializes as: display-name = "Ada"
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class TomlPropertyNameAttribute
     : TomlAttribute

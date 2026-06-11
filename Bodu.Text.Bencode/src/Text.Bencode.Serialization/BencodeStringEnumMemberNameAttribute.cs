@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Specifies the byte-string name used for an individual enumeration member when the enumeration is serialized to
-/// Bencode by name, overriding both the member's CLR name and any naming policy applied to the enumeration. Mirrors
-/// <c>System.Text.Json.Serialization.JsonStringEnumMemberNameAttribute</c>.
+/// Bencode by name, overriding both the member's CLR name and any naming policy applied to the enumeration.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,11 +17,26 @@ namespace Bodu.Text.Bencode.Serialization;
 /// the enumeration is written as an integer.
 /// </para>
 /// <para>
-/// Where <c>System.Text.Json.Serialization.JsonStringEnumMemberNameAttribute</c> derives directly from
-/// <see cref="Attribute" />, this attribute derives from <see cref="BencodeAttribute" /> so that it is discoverable
-/// alongside the rest of the Bencode serialization attribute family.
+/// This attribute derives from <see cref="BencodeAttribute" /> so that it is discoverable alongside the rest of the
+/// Bencode serialization attribute family.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///
+///     [BencodeStringEnumMemberName("on-hold")]
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the byte string 7:on-hold.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeStringEnumMemberNameAttribute
     : BencodeAttribute

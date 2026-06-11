@@ -10,8 +10,7 @@ namespace Bodu.Text.Toml.Document;
 
 /// <summary>
 /// Provides the <see cref="WriteTo" /> surface of <see cref="TomlElement" />, which re-serializes an element's value
-/// to a <see cref="Utf8TomlWriter" /> the way <see cref="System.Text.Json.JsonElement.WriteTo" /> writes to a
-/// <see cref="System.Text.Json.Utf8JsonWriter" />.
+/// to a <see cref="Utf8TomlWriter" />.
 /// </summary>
 public readonly partial struct TomlElement
 {

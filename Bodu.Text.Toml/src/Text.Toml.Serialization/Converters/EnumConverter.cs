@@ -13,8 +13,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts an enumeration value to and from a TOML string holding its member name, honoring a naming policy and any
-/// per-member <see cref="TomlStringEnumMemberNameAttribute" />, and optionally accepting an integer on read. Mirrors
-/// the by-name behavior of <see cref="System.Text.Json.Serialization.JsonStringEnumConverter{TEnum}" />.
+/// per-member <see cref="TomlStringEnumMemberNameAttribute" />, and optionally accepting an integer on read.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>

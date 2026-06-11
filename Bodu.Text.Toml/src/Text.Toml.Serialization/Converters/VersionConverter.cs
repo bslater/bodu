@@ -11,13 +11,11 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
-/// Converts a <see cref="Version" /> value to and from a TOML string holding its component form, mirroring the way
-/// <see cref="System.Text.Json.JsonSerializer" /> represents a version as a JSON string.
+/// Converts a <see cref="Version" /> value to and from a TOML string holding its component form.
 /// </summary>
 /// <remarks>
-/// On read the string must contain the version text with no leading or trailing whitespace, matching the strictness of
-/// the <see cref="System.Text.Json" /> converter; a padded or otherwise unparsable string surfaces as a serialization
-/// error.
+/// On read the string must contain the version text with no leading or trailing whitespace; a padded or otherwise
+/// unparsable string surfaces as a serialization error.
 /// </remarks>
 internal sealed class VersionConverter
     : TomlConverter<Version>

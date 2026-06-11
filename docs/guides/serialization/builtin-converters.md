@@ -6,7 +6,7 @@ title: Built-in converter catalog
 
 Every type the serializers handle without a user converter is served by a **built-in converter**. This page catalogs that set for each library — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in [Writing converters](converters.md).
 
-Both libraries follow the same `System.Text.Json`-shaped design: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.
+Both libraries follow the same design: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.
 
 ## TOML (`Bodu.Text.Toml`)
 
@@ -19,8 +19,8 @@ Both libraries follow the same `System.Text.Json`-shaped design: exact-type scal
 | `char` | single-character string | single-character string | Multi-character strings are rejected. |
 | `Guid` | string, canonical 36-character `D` format | `D`-format string | |
 | `Uri` | string, the original URI text | string | Relative and absolute URIs round-trip. |
-| `Version` | string, the component form (`"1.2.3.4"`) | version string | Leading/trailing whitespace is rejected, matching `System.Text.Json`. |
-| `TimeSpan` | string, invariant constant format (`"1.02:03:04.5670000"`) | `"c"`-format string | Exact `System.Text.Json` parity. |
+| `Version` | string, the component form (`"1.2.3.4"`) | version string | Leading/trailing whitespace is rejected. |
+| `TimeSpan` | string, invariant constant format (`"1.02:03:04.5670000"`) | `"c"`-format string | The round-trippable constant format. |
 | `double` | float (including `inf` / `-inf` / `nan`) | float | |
 | `float` | float | float | Widens to binary64 on write; narrows on read. |
 | `Half` | float | float | Exact widening on write; **saturating** IEEE 754 narrow on read — an out-of-range finite float reads back as ±infinity. |
@@ -45,17 +45,17 @@ Both libraries follow the same `System.Text.Json`-shaped design: exact-type scal
 | .NET type | TOML representation | Notes |
 |---|---|---|
 | `Nullable<T>` | underlying type's form | TOML has no null; a null member is omitted before any converter runs. |
-| arrays, `List<T>`, list interfaces, concrete `ICollection<T>`, `Queue<T>` / `Stack<T>` / `ConcurrentQueue<T>` / `ConcurrentStack<T>` / `ConcurrentBag<T>` | array | A `Stack<T>` round-trip reverses, matching `System.Text.Json`. |
+| arrays, `List<T>`, list interfaces, concrete `ICollection<T>`, `Queue<T>` / `Stack<T>` / `ConcurrentQueue<T>` / `ConcurrentStack<T>` / `ConcurrentBag<T>` | array | A `Stack<T>` round-trip reverses: the writer emits pop order. |
 | dictionaries with `string`, integer, `enum`, `Guid`, `bool`, or `char` keys | table | Non-string keys are written in invariant text. The newer scalars (`Version`, `TimeSpan`, `decimal`, `Half`, 128-bit integers) are deliberately not key types. |
 | plain classes and structs | table | The catch-all object converter, consulted last. |
-| `object`-typed members | runtime type's form on write; <xref:Bodu.Text.Toml.Document.TomlElement> on read | A bare `new object()` writes an empty table; null members are omitted. Mirrors `System.Text.Json`'s `JsonElement` behavior for `object` targets. |
+| `object`-typed members | runtime type's form on write; <xref:Bodu.Text.Toml.Document.TomlElement> on read | A bare `new object()` writes an empty table; null members are omitted. |
 | <xref:Bodu.Text.Toml.Nodes.TomlNode> (and `TomlObject` / `TomlArray` / `TomlValue`) | the node's own kind | Mutable DOM bridge. |
 | <xref:Bodu.Text.Toml.Document.TomlElement> | the element's own kind | Read produces an element backed by an internal, garbage-collected document — no disposal needed. |
-| <xref:Bodu.Text.Toml.Document.TomlDocument> | the document's root | A deserialized document is **caller-owned**: dispose it, as with `JsonDocument`. |
+| <xref:Bodu.Text.Toml.Document.TomlDocument> | the document's root | A deserialized document is **caller-owned**: dispose it when finished. |
 
 ### Public enum converters
 
-Registered on the options or referenced from a `[TomlConverter(...)]` attribute, mirroring `JsonStringEnumConverter` / `JsonNumberEnumConverter<TEnum>`:
+Registered on the options or referenced from a `[TomlConverter(...)]` attribute:
 
 - <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> / `TomlStringEnumConverter<TEnum>` — member-name strings with an optional naming policy and integer-on-read flag.
 - `TomlNumberEnumConverter<TEnum>` — the underlying numeric value as a TOML integer.
@@ -82,7 +82,7 @@ Bencode (BEP 3) has exactly two scalar forms — integers and byte strings — a
 | .NET type | Bencode representation | Notes |
 |---|---|---|
 | `Nullable<T>` | underlying type's form | Bencode has no null; a null member is omitted before any converter runs. |
-| arrays, `List<T>`, list interfaces, `Queue<T>` / `Stack<T>` / concurrent collections | list (`l…e`) | A `Stack<T>` round-trip reverses, matching `System.Text.Json`. |
+| arrays, `List<T>`, list interfaces, `Queue<T>` / `Stack<T>` / concurrent collections | list (`l…e`) | A `Stack<T>` round-trip reverses: the writer emits pop order. |
 | dictionaries with `string`, integer, `enum`, `Guid`, `bool`, or `char` keys | dictionary (`d…e`) | Keys are emitted in canonical bytewise order. |
 | plain classes and structs | dictionary | The catch-all object converter, consulted last. |
 | `object`-typed members | runtime type's form on write; <xref:Bodu.Text.Bencode.Document.BencodeElement> on read | A bare `new object()` writes an empty dictionary; null members are omitted. |

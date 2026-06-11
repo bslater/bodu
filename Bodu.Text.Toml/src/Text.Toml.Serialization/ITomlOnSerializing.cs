@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Defines a callback that the serializer invokes on a value immediately before its members are written to TOML,
-/// letting the value prepare its state for serialization. Mirrors
-/// <see cref="System.Text.Json.Serialization.IJsonOnSerializing" />.
+/// letting the value prepare its state for serialization.
 /// </summary>
 /// <remarks>
 /// <see cref="OnSerializing" /> is called after a non-<see langword="null" /> value has been selected for writing and

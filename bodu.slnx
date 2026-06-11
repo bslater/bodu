@@ -82,10 +82,6 @@
     <Project Path="Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
     <Project Path="Bodu.Text.Encoding\test\Bodu.Text.Encoding.Test.csproj" />
   </Folder>
-  <Folder Name="/Bodu.Text/">
-    <Project Path="Bodu.Text\src\Bodu.Text.csproj" />
-    <Project Path="Bodu.Text\test\Bodu.Text.Test.csproj" />
-  </Folder>
   <Folder Name="/Bodu.Text.Configuration/">
     <Project Path="Bodu.Text.Configuration/bench/Bodu.Text.Configuration.Benchmarks.csproj">
       <Build Solution="Debug|*" Project="false" />
@@ -100,8 +96,6 @@
     <Project Path="Bodu.Extensions.Configuration.Text\src\Bodu.Extensions.Configuration.Text.csproj" />
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
-  <Project Path="bc-csharp\crypto\src\BouncyCastle.Crypto.csproj" />
   <Project Path="Bodu.Test\test\Bodu.Test.csproj" />
-  <Project Path="ConsoleApp2\ConsoleApp2.csproj" />
   <Project Path="docs\doc.csproj" />
 </Solution>

@@ -9,8 +9,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Forces a member to participate in serialization: a property's non-public accessors are bound (allowing members such
 /// as <c>{ get; private set; }</c> or <c>{ get; init; }</c> with a non-public setter to be read and written), and a
-/// public field is surfaced even when <see cref="BencodeSerializerOptions.IncludeFields" /> is disabled. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" />.
+/// public field is surfaced even when <see cref="BencodeSerializerOptions.IncludeFields" /> is disabled.
 /// </summary>
 /// <remarks>
 /// Without this attribute a property is included only when it exposes a public getter, and is assigned only through a
@@ -18,6 +17,22 @@ namespace Bodu.Text.Bencode.Serialization;
 /// visibility. Public fields participate only when this attribute is applied or
 /// <see cref="BencodeSerializerOptions.IncludeFields" /> is enabled; non-public fields are never surfaced.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Counter
+/// {
+///     [BencodeInclude]
+///     public int Total { get; private set; }
+///
+///     [BencodeInclude]
+///     public int Retries;
+/// }
+///
+/// // Both members round-trip, despite the non-public setter and the field.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeIncludeAttribute
     : BencodeAttribute

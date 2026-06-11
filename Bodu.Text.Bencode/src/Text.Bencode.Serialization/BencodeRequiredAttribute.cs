@@ -8,13 +8,25 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Marks a property or field as required, so deserialization fails when the corresponding key is absent from the input.
-/// Mirrors <see cref="System.Text.Json.Serialization.JsonRequiredAttribute" />.
 /// </summary>
 /// <remarks>
 /// Applying this attribute has the same effect as declaring the member with the <see langword="required" /> keyword:
 /// the member must appear in the Bencode dictionary being read, otherwise a
 /// <see cref="BencodeSerializationException" /> is thrown.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig
+/// {
+///     [BencodeRequired]
+///     public string Host { get; set; } = string.Empty;
+/// }
+///
+/// // Deserializing input without a "Host" key throws BencodeSerializationException.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeRequiredAttribute
     : BencodeAttribute

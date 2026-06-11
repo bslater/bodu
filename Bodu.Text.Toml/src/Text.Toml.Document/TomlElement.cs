@@ -9,9 +9,8 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Represents a single read-only value within a <see cref="TomlDocument" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonElement" />. The element is a lightweight view — a pair of the owning document and a
-/// row index — so copying it is cheap and never materializes a node.
+/// Represents a single read-only value within a <see cref="TomlDocument" />. The element is a lightweight view — a pair
+/// of the owning document and a row index — so copying it is cheap and never materializes a node.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -264,9 +263,8 @@ public readonly partial struct TomlElement
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     /// <remarks>
-    /// Unlike <see cref="System.Text.Json.JsonElement.ToString" />, container values are not re-serialized; the kind
-    /// name is returned instead to keep the operation allocation-light. Scalar values are formatted with the invariant
-    /// culture.
+    /// Container values are not re-serialized; the kind name is returned instead to keep the operation
+    /// allocation-light. Scalar values are formatted with the invariant culture.
     /// </remarks>
     public override string ToString() =>
         ValueKind switch

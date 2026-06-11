@@ -8,9 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Specifies the <see cref="BencodeNamingPolicy" /> applied to the annotated type's members, overriding the
-/// serializer-wide <see cref="BencodeSerializerOptions.PropertyNamingPolicy" /> for that type. Mirrors the
-/// <c>System.Text.Json.Serialization.JsonNamingPolicyAttribute</c> in its
-/// <see cref="System.Text.Json.Serialization.JsonKnownNamingPolicy" /> form.
+/// serializer-wide <see cref="BencodeSerializerOptions.PropertyNamingPolicy" /> for that type.
 /// </summary>
 /// <remarks>
 /// The policy is chosen from the <see cref="BencodeKnownNamingPolicy" /> values, each of which maps to a static
@@ -18,6 +16,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <see cref="BencodePropertyNameAttribute" /> is unaffected, since that attribute always takes precedence over any
 /// naming policy.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeNamingPolicy(BencodeKnownNamingPolicy.SnakeCaseLower)]
+/// public sealed class RetryPolicy
+/// {
+///     public int MaxRetryCount { get; set; } = 5;
+/// }
+///
+/// // Serializes under the key "max_retry_count": d15:max_retry_counti5ee
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class BencodeNamingPolicyAttribute
     : BencodeAttribute

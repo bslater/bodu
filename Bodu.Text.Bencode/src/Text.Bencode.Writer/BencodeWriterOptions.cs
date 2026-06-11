@@ -7,13 +7,11 @@
 namespace Bodu.Text.Bencode.Writer;
 
 /// <summary>
-/// Defines the customizations applied when creating a <see cref="Utf8BencodeWriter" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonWriterOptions" /> for Bencode.
+/// Defines the customizations applied when creating a <see cref="Utf8BencodeWriter" />.
 /// </summary>
 /// <remarks>
 /// Bencode output is always canonical — dictionary keys are emitted in ascending bytewise order and there is no
-/// insignificant whitespace — so, unlike <see cref="System.Text.Json.JsonWriterOptions" />, there is no indentation or
-/// encoder option.
+/// insignificant whitespace — so the options define no indentation or encoder settings.
 /// </remarks>
 public struct BencodeWriterOptions
 {

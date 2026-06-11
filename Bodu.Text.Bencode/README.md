@@ -1,6 +1,6 @@
 # Bodu.Text.Bencode
 
-A Bencode (BEP 3) serializer for .NET 8, shaped after `System.Text.Json`. It maps plain CLR objects to and from Bencode through a configurable converter model, over a low-level, forward-only token reader and writer.
+A Bencode (BEP 3) serializer for .NET 8. It maps plain CLR objects to and from Bencode through a configurable converter model, over a low-level, forward-only token reader and writer.
 
 ## Installation
 
@@ -12,19 +12,19 @@ Targets `net8.0`.
 
 ## API shape
 
-The public surface mirrors `System.Text.Json`, so the patterns are familiar:
+The public surface layers a high-level serializer, two document object models, and a low-level token reader/writer pair:
 
-| System.Text.Json | Bodu.Text.Bencode | Namespace |
+| Type(s) | Namespace | Role |
 |---|---|---|
-| `JsonSerializer` | `BencodeSerializer` | `Bodu.Text.Bencode` |
-| `JsonSerializerOptions` | `BencodeSerializerOptions` | `Bodu.Text.Bencode` |
-| `Utf8JsonReader` / `Utf8JsonWriter` | `Utf8BencodeReader` / `Utf8BencodeWriter` | `Bodu.Text.Bencode` |
-| `JsonTokenType` | `BencodeTokenType` | `Bodu.Text.Bencode` |
-| `JsonNamingPolicy` | `BencodeNamingPolicy` | `Bodu.Text.Bencode` |
-| `JsonConverter<T>` / `JsonConverterFactory` | `BencodeConverter<T>` / `BencodeConverterFactory` | `Bodu.Text.Bencode.Serialization` |
-| `[JsonPropertyName]` / `[JsonIgnore]` | `[BencodePropertyName]` / `[BencodeIgnore]` | `Bodu.Text.Bencode.Serialization` |
-| `JsonDocument` / `JsonElement` | `BencodeDocument` / `BencodeElement` | `Bodu.Text.Bencode.Document` |
-| `JsonNode` / `JsonObject` / `JsonArray` / `JsonValue` | `BencodeNode` / `BencodeObject` / `BencodeArray` / `BencodeValue` | `Bodu.Text.Bencode.Nodes` |
+| `BencodeSerializer` | `Bodu.Text.Bencode` | Static entry point: `Serialize` / `Deserialize` between CLR objects and Bencode. |
+| `BencodeSerializerOptions` | `Bodu.Text.Bencode` | Serializer configuration: converters, naming policy, ignore conditions, depth. |
+| `Utf8BencodeReader` / `Utf8BencodeWriter` | `Bodu.Text.Bencode` | Forward-only, allocation-free `ref struct` token reader and writer. |
+| `BencodeTokenType` | `Bodu.Text.Bencode` | Classifies the token the reader is positioned on. |
+| `BencodeNamingPolicy` | `Bodu.Text.Bencode` | Converts member names to wire keys (for example camel case). |
+| `BencodeConverter<T>` / `BencodeConverterFactory` | `Bodu.Text.Bencode.Serialization` | Custom per-type read/write logic plugged into the serializer. |
+| `[BencodePropertyName]` / `[BencodeIgnore]` | `Bodu.Text.Bencode.Serialization` | Per-member attributes controlling wire names and inclusion. |
+| `BencodeDocument` / `BencodeElement` | `Bodu.Text.Bencode.Document` | Read-only, low-allocation document object model. |
+| `BencodeNode` / `BencodeObject` / `BencodeArray` / `BencodeValue` | `Bodu.Text.Bencode.Nodes` | Mutable document object model: parse, edit, write back. |
 
 ```csharp
 using Bodu.Text.Bencode;
@@ -51,9 +51,9 @@ TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 
 **Lenient reading of real-world documents.** Older encoders occasionally emit unsorted or duplicate dictionary keys. `AllowUnsortedKeys` and `AllowDuplicateKeys` — available on `BencodeReaderOptions`, `BencodeDocumentOptions`, and `BencodeSerializerOptions` — relax those two rules independently while everything else stays strict. With duplicates permitted, the document model returns the first occurrence from name lookups (enumeration shows every pair), while the node tree and the serializer bind last-wins. Writing is always strict.
 
-**Exceptions.** Unlike `System.Text.Json`, which funnels everything through `JsonException`, failures are split by cause: `BencodeFormatException` (a `FormatException`, carrying the byte `Offset`) reports malformed input, and `BencodeSerializationException` reports values or documents that cannot be mapped. Catch both when handling should not distinguish the cause.
+**Exceptions.** Failures are split by cause: `BencodeFormatException` (a `FormatException`, carrying the byte `Offset`) reports malformed input, and `BencodeSerializationException` reports values or documents that cannot be mapped. Catch both when handling should not distinguish the cause.
 
-**Property-name matching.** `BencodeSerializerOptions.PropertyNameCaseInsensitive` defaults to `true` (lenient reads), a deliberate divergence from `System.Text.Json`'s general default. Wire keys themselves are raw bytes and case-sensitive; output never changes case.
+**Property-name matching.** `BencodeSerializerOptions.PropertyNameCaseInsensitive` defaults to `true`, so reads bind wire keys to members leniently. Wire keys themselves are raw bytes and case-sensitive; output never changes case.
 
 ## Testing
 

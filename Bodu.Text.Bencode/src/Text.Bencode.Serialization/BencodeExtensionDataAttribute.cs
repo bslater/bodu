@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Designates a property or field that captures dictionary entries which do not map to any other member during
-/// deserialization, and whose entries are written back out during serialization. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonExtensionDataAttribute" />.
+/// deserialization, and whose entries are written back out during serialization.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,6 +23,21 @@ namespace Bodu.Text.Bencode.Serialization;
 /// position automatically.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig
+/// {
+///     public int Port { get; set; }
+///
+///     [BencodeExtensionData]
+///     public Dictionary<string, BencodeNode>? Extra { get; set; }
+/// }
+///
+/// // Keys that map to no member land in Extra and are written back on serialization.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeExtensionDataAttribute
     : BencodeAttribute

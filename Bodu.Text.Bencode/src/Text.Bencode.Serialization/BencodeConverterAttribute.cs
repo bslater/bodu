@@ -13,8 +13,20 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <remarks>
 /// The referenced type must derive from <see cref="BencodeConverter" /> and declare a public parameterless constructor.
 /// Applied to a member, the converter governs that member only; applied to a type, it governs every use of the type.
-/// This mirrors <see cref="System.Text.Json.Serialization.JsonConverterAttribute" />.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Package
+/// {
+///     [BencodeConverter(typeof(VersionConverter))]
+///     public Version Version { get; set; } = new(1, 2, 3);
+/// }
+///
+/// // VersionConverter governs the member, writing the byte string 5:1.2.3.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(
     AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum,
     AllowMultiple = false,

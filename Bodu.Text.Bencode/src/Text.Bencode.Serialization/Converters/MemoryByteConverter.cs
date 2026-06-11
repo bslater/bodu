@@ -12,8 +12,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="Memory{T}" /> of <see cref="byte" /> to and from a Bencode byte string, using the format's
-/// native byte-string representation directly, the way <see cref="System.Text.Json.JsonSerializer" /> supports
-/// memory-of-byte alongside <see cref="byte" /> arrays.
+/// native byte-string representation directly.
 /// </summary>
 internal sealed class MemoryByteConverter
     : BencodeConverter<Memory<byte>>

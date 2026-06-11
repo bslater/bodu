@@ -11,15 +11,13 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
-/// Converts a <see cref="BencodeDocument" /> to and from Bencode, mirroring the way
-/// <see cref="System.Text.Json.JsonDocument" /> participates in <see cref="System.Text.Json.JsonSerializer" />.
+/// Converts a <see cref="BencodeDocument" /> to and from Bencode, bridging the read-only document object model to the
+/// serializer.
 /// </summary>
 /// <remarks>
-/// A document produced by deserialization is owned by the caller, who is responsible for disposing it — the same
-/// contract <see cref="System.Text.Json.JsonSerializer" /> applies to a deserialized
-/// <see cref="System.Text.Json.JsonDocument" />. The value's subtree is re-parsed under the serializer's
-/// dictionary-key leniency, so a document the serializer accepts is also accepted here. Writing a disposed document
-/// surfaces the document's own <see cref="ObjectDisposedException" />.
+/// A document produced by deserialization is owned by the caller, who is responsible for disposing it. The value's
+/// subtree is re-parsed under the serializer's dictionary-key leniency, so a document the serializer accepts is also
+/// accepted here. Writing a disposed document surfaces the document's own <see cref="ObjectDisposedException" />.
 /// </remarks>
 internal sealed class BencodeDocumentConverter
     : BencodeConverter<BencodeDocument>

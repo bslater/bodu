@@ -308,6 +308,8 @@
       href: serialization/toml.md
     - name: Using Bencode
       href: serialization/bencode.md
+    - name: Mapping attributes
+      href: serialization/attributes.md
     - name: Writing converters
       href: serialization/converters.md
     - name: Built-in converter catalog

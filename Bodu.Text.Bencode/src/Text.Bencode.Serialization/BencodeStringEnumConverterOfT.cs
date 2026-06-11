@@ -11,16 +11,28 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a Bencode byte string holding
 /// its member name, applying an optional naming policy and honoring <see cref="BencodeStringEnumMemberNameAttribute" />
-/// on individual members. Mirrors the generic
-/// <see cref="System.Text.Json.Serialization.JsonStringEnumConverter{TEnum}" />.
+/// on individual members.
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
 /// Unlike the non-generic <see cref="BencodeStringEnumConverter" />, this strongly typed factory can be referenced from
 /// a <see cref="BencodeConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a
-/// public parameterless constructor and applies to a single enumeration type. The two constructors mirror those of
-/// <see cref="System.Text.Json.Serialization.JsonStringEnumConverter{TEnum}" />.
+/// public parameterless constructor and applies to a single enumeration type.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the byte string 6:OnHold.
+///]]>
+/// </code>
+/// </example>
 public sealed class BencodeStringEnumConverter<TEnum>
     : BencodeConverterFactory
     where TEnum : struct, Enum

@@ -11,21 +11,22 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Converts a value of type <typeparamref name="T" /> to and from the TOML reader and writer. This is the base authors
-/// derive to customize how a specific type is serialized, mirroring
-/// <see cref="System.Text.Json.Serialization.JsonConverter{T}" />.
+/// derive to customize how a specific type is serialized.
 /// </summary>
 /// <typeparam name="T">The type the converter handles.</typeparam>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
-/// public sealed class BooleanConverter : TomlConverter<bool>
+/// public sealed class VersionConverter : TomlConverter<Version>
 /// {
-///     public override bool Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
-///         reader.GetInt64() != 0;
+///     public override Version Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+///         Version.Parse(reader.GetString());
 ///
-///     public override void Write(Utf8TomlWriter writer, bool value, TomlSerializerOptions options) =>
-///         writer.WriteInteger(value ? 1 : 0);
+///     public override void Write(Utf8TomlWriter writer, Version value, TomlSerializerOptions options) =>
+///         writer.WriteString(value.ToString());
 /// }
 ///]]>
+/// </code>
 /// </example>
 public abstract class TomlConverter<T>
     : TomlConverter

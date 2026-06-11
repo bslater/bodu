@@ -7,8 +7,8 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Identifies the concrete type of a TOML value, mirroring the role of <see cref="System.Text.Json.JsonValueKind" />
-/// for TOML. The members correspond to the value types defined by the TOML specification.
+/// Identifies the concrete type of a TOML value. The members correspond to the value types defined by the TOML
+/// specification.
 /// </summary>
 public enum TomlValueKind
 {

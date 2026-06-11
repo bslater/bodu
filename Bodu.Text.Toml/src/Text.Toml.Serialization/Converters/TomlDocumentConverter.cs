@@ -11,14 +11,12 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
-/// Converts a <see cref="TomlDocument" /> to and from TOML, mirroring the way
-/// <see cref="System.Text.Json.JsonDocument" /> participates in <see cref="System.Text.Json.JsonSerializer" />.
+/// Converts a <see cref="TomlDocument" /> to and from TOML, bridging the read-only document object model to the
+/// serializer.
 /// </summary>
 /// <remarks>
-/// A document produced by deserialization is owned by the caller, who is responsible for disposing it — the same
-/// contract <see cref="System.Text.Json.JsonSerializer" /> applies to a deserialized
-/// <see cref="System.Text.Json.JsonDocument" />. Writing a disposed document surfaces the document's own
-/// <see cref="ObjectDisposedException" />.
+/// A document produced by deserialization is owned by the caller, who is responsible for disposing it. Writing a
+/// disposed document surfaces the document's own <see cref="ObjectDisposedException" />.
 /// </remarks>
 internal sealed class TomlDocumentConverter
     : TomlConverter<TomlDocument>

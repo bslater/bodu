@@ -1,6 +1,6 @@
 # Bodu.Core
 
-Foundational building blocks for the Bodu solution and for general .NET 8 use: specialized generic collections, pooled buffers, a broad extension-method surface, the `WeekPattern` value type, and the `ThrowHelper` argument-validation catalogue that the rest of the solution validates against. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code.
+Foundational building blocks for the Bodu solution and for general .NET 8 use: specialized generic collections, pooled buffers, a broad extension-method surface, text-encoding utilities, the `WeekPattern` value type, and the `ThrowHelper` argument-validation catalogue that the rest of the solution validates against. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code.
 
 ## Installation
 
@@ -45,6 +45,25 @@ The `Bodu.Extensions` and `Bodu.Collections.*.Extensions` namespaces add focused
 - **Sequences** — `SequenceGenerator` (Fibonacci, Look-and-Say, Farey, Leibniz, Thue–Morse) and `RecursiveSelect`.
 - **Randomness** — `IRandomGenerator` with `XorShiftRandom` and a `SystemRandomAdapter`.
 - **XML** — `XmlNamespaceResolver` (`Bodu.Xml.Linq`) for namespace-qualified `XElement` / `XName` lookups.
+
+## Text encoding
+
+The `Bodu.Text` namespace covers byte-order-mark detection and a span- and UTF-8-friendly extension surface over `System.Text.Encoding`, `ReadOnlySpan<char>`, `ReadOnlySpan<byte>`, and `string` — filling the gaps the BCL leaves around preamble handling, allocation-free transcoding, exact-length `GetBytes`/`GetChars`, and encoding classification.
+
+- `EncodingDetection.TryDetectByPreamble(ReadOnlySpan<byte>, out Encoding?)` identifies UTF-8, UTF-16 (LE/BE), and UTF-32 (LE/BE) from a leading byte-order mark.
+- `EncodingExtensions` (on `Encoding` and spans) and `StringEncodingExtensions` (on `string`) group their helpers by concern:
+
+| Concern | Representative members |
+|---|---|
+| UTF-8 fast paths | `ToUtf8Bytes`, `GetUtf8ByteCount`, `EncodeUtf8To`, `TryEncodeUtf8To`, `FromUtf8`, `DecodeUtf8To` |
+| Preamble handling | `HasPreamble`, `GetPreambleLength`, `TryWritePreamble`, `StripPreamble`, `GetBytesWithPreamble`, `GetStringSkippingPreamble` |
+| Transcoding | `Transcode`, `TranscodeTo`, `TryTranscodeTo` |
+| Exact / try conversions | `GetBytesExactly`, `GetCharsExactly`, `TryGetBytes`, `TryGetChars` |
+| Classification | `IsUtf8`, `IsUtf16LittleEndian`, `IsUtf32BigEndian`, `IsAnyUtf`, `IsAscii`, `GetDisplayName` |
+| Fallback control | `WithExceptionFallbacks`, `WithReplacementFallbacks`, `UsesExceptionFallbacks` |
+| Buffer writers | `WriteBytes`, `WriteChars`, `WritePreamble`, `WriteBytesWithPreamble` (on `IBufferWriter<>`) |
+
+> Base-N binary encodings (Base16/32/58/64/85, …) live in the sibling `Bodu.Text.Encoding` package; document formats (CSV, INI, .env, Bencode, TOML) live in `Bodu.Text.Formats`.
 
 ## `ThrowHelper`
 

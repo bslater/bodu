@@ -7,8 +7,7 @@
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
-/// Defines the customizations applied to a mutable TOML node tree, mirroring the role of
-/// <see cref="System.Text.Json.Nodes.JsonNodeOptions" /> for TOML.
+/// Defines the customizations applied to a mutable TOML node tree.
 /// </summary>
 /// <remarks>
 /// The options govern in-memory behaviour only; they do not affect serialization, which always emits canonical TOML

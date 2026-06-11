@@ -11,8 +11,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="Memory{T}" /> of <see cref="byte" /> to and from TOML using the byte-array representation
-/// selected by <see cref="TomlSerializerOptions.ByteArrayHandling" />, mirroring the way
-/// <see cref="System.Text.Json.JsonSerializer" /> maps memory-of-byte to a Base64 string.
+/// selected by <see cref="TomlSerializerOptions.ByteArrayHandling" />.
 /// </summary>
 /// <remarks>
 /// The converter shares its read and write logic with the <see cref="byte" />-array converter, so both the Base64

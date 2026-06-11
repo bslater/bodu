@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Identifies one of the built-in <see cref="BencodeNamingPolicy" /> singletons by name, so a type can select a naming
-/// policy declaratively through <see cref="BencodeNamingPolicyAttribute" />. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonKnownNamingPolicy" />.
+/// policy declaratively through <see cref="BencodeNamingPolicyAttribute" />.
 /// </summary>
 /// <remarks>
 /// Each named value other than <see cref="Unspecified" /> corresponds to the like-named static property on

@@ -26,10 +26,10 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// <see cref="Enum.ToString()" /> (decimal or comma-separated fallback for undefined or combined values, matched
 /// case-insensitively on read), <see cref="Guid" /> uses the hyphenated "D" format, <see cref="bool" /> uses
 /// <c>True</c>/<c>False</c>, and <see cref="char" /> uses a single-character string. Key stringification ignores naming
-/// policies and <see cref="BencodeStringEnumMemberNameAttribute" />, mirroring how
-/// <see cref="System.Text.Json.JsonSerializer" /> treats dictionary keys independently of value converters. The
-/// writer's canonical ordering applies to the stringified keys, so entries are emitted in ascending bytewise order of
-/// their text form. A key that cannot be parsed back surfaces as a <see cref="BencodeSerializationException" />.
+/// policies and <see cref="BencodeStringEnumMemberNameAttribute" />; dictionary keys are treated independently of value
+/// converters. The writer's canonical ordering applies to the stringified keys, so entries are emitted in ascending
+/// bytewise order of their text form. A key that cannot be parsed back surfaces as a
+/// <see cref="BencodeSerializationException" />.
 /// </para>
 /// <para>
 /// Bencode has no null token, so an entry whose value is <see langword="null" /> is omitted from the output rather than

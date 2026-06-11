@@ -11,8 +11,7 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>
-/// Represents a mutable Bencode (BEP 3) dictionary as a string-keyed collection of child nodes. Mirrors the role of
-/// <see cref="System.Text.Json.Nodes.JsonObject" /> for Bencode.
+/// Represents a mutable Bencode (BEP 3) dictionary as a string-keyed collection of child nodes.
 /// </summary>
 /// <remarks>
 /// Keys are CLR strings encoded as UTF-8 byte strings on the wire. In-memory ordering is not contractual: the writer

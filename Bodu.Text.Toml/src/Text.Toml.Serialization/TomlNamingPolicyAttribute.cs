@@ -8,15 +8,26 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Specifies the <see cref="TomlNamingPolicy" /> applied to the annotated type's members, overriding the
-/// serializer-wide <see cref="TomlSerializerOptions.PropertyNamingPolicy" /> for that type. Mirrors the
-/// <c>System.Text.Json.Serialization.JsonNamingPolicyAttribute</c> in its
-/// <see cref="System.Text.Json.Serialization.JsonKnownNamingPolicy" /> form.
+/// serializer-wide <see cref="TomlSerializerOptions.PropertyNamingPolicy" /> for that type.
 /// </summary>
 /// <remarks>
 /// The policy is chosen from the <see cref="TomlKnownNamingPolicy" /> values, each of which maps to a static singleton
 /// on <see cref="TomlNamingPolicy" />. A member that carries an explicit <see cref="TomlPropertyNameAttribute" /> is
 /// unaffected, since that attribute always takes precedence over any naming policy.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [TomlNamingPolicy(TomlKnownNamingPolicy.SnakeCaseLower)]
+/// public sealed class RetryPolicy
+/// {
+///     public int MaxRetryCount { get; set; } = 5;
+/// }
+///
+/// // Serializes as: max_retry_count = 5
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class TomlNamingPolicyAttribute
     : TomlAttribute

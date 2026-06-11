@@ -11,21 +11,22 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Converts a value of type <typeparamref name="T" /> to and from the Bencode reader and writer. This is the base
-/// authors derive to customize how a specific type is serialized, mirroring
-/// <see cref="System.Text.Json.Serialization.JsonConverter{T}" />.
+/// authors derive to customize how a specific type is serialized.
 /// </summary>
 /// <typeparam name="T">The type the converter handles.</typeparam>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
-/// public sealed class BooleanConverter : BencodeConverter<bool>
+/// public sealed class VersionConverter : BencodeConverter<Version>
 /// {
-///     public override bool Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options) =>
-///         reader.GetInt64() != 0;
+///     public override Version Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options) =>
+///         Version.Parse(reader.GetString());
 ///
-///     public override void Write(Utf8BencodeWriter writer, bool value, BencodeSerializerOptions options) =>
-///         writer.WriteInteger(value ? 1 : 0);
+///     public override void Write(Utf8BencodeWriter writer, Version value, BencodeSerializerOptions options) =>
+///         writer.WriteString(value.ToString());
 /// }
 ///]]>
+/// </code>
 /// </example>
 public abstract class BencodeConverter<T>
     : BencodeConverter

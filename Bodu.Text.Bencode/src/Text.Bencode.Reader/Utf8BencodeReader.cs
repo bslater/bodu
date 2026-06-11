@@ -12,9 +12,9 @@ using System.Text;
 namespace Bodu.Text.Bencode.Reader;
 
 /// <summary>
-/// Provides a high-performance, forward-only, allocation-light reader for Bencode (BEP 3) bytes, mirroring the role of
-/// <see cref="System.Text.Json.Utf8JsonReader" />. The reader is a <see langword="ref struct" />, so it lives on the
-/// stack and cannot be boxed or captured; pass it by <see langword="ref" /> to thread it through a converter.
+/// Provides a high-performance, forward-only, allocation-light reader for Bencode (BEP 3) bytes. The reader is a
+/// <see langword="ref struct" />, so it lives on the stack and cannot be boxed or captured; pass it by
+/// <see langword="ref" /> to thread it through a converter.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -157,9 +157,8 @@ public ref struct Utf8BencodeReader
     public readonly int BytesConsumed => _position;
 
     /// <summary>
-    /// Gets the byte offset within the source where the current token begins, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.TokenStartIndex" />. For a byte string or property name the offset
-    /// addresses the length prefix, not the content.
+    /// Gets the byte offset within the source where the current token begins. For a byte string or property name the
+    /// offset addresses the length prefix, not the content.
     /// </summary>
     /// <returns>The current token's start offset, or zero before the first token has been read.</returns>
     public readonly int TokenStartIndex => _tokenStart;
@@ -189,8 +188,7 @@ public ref struct Utf8BencodeReader
     /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
     public bool Read()
     {
-        // Once the root value has completed, the document is closed: no trailing bytes are permitted (mirrors the
-        // single-document default of Utf8JsonReader).
+        // Once the root value has completed, the document is closed: no trailing bytes are permitted.
         if (_frames.Count == 0 && _tokenType != BencodeTokenType.None)
         {
             if (_position < _data.Length)
@@ -344,8 +342,7 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Attempts to read the current integer token as a 64-bit signed integer, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.TryGetInt64(out long)" />.
+    /// Attempts to read the current integer token as a 64-bit signed integer.
     /// </summary>
     /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
     /// <returns>
@@ -369,8 +366,7 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Reads the current integer token as a 32-bit signed integer, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.GetInt32" />.
+    /// Reads the current integer token as a 32-bit signed integer.
     /// </summary>
     /// <returns>The integer value.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
@@ -386,8 +382,7 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Attempts to read the current integer token as a 32-bit signed integer, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.TryGetInt32(out int)" />.
+    /// Attempts to read the current integer token as a 32-bit signed integer.
     /// </summary>
     /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
     /// <returns>
@@ -436,7 +431,7 @@ public ref struct Utf8BencodeReader
 
     /// <summary>
     /// Compares the current byte-string or property-name token's content to the supplied UTF-8 bytes without
-    /// allocating, mirroring <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(ReadOnlySpan{byte})" />.
+    /// allocating.
     /// </summary>
     /// <param name="utf8Text">The UTF-8 bytes to compare against.</param>
     /// <returns>
@@ -453,7 +448,7 @@ public ref struct Utf8BencodeReader
 
     /// <summary>
     /// Compares the current byte-string or property-name token's content to the UTF-8 encoding of the supplied
-    /// characters, mirroring <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(ReadOnlySpan{char})" />.
+    /// characters.
     /// </summary>
     /// <param name="text">The characters to compare against.</param>
     /// <returns>
@@ -496,15 +491,13 @@ public ref struct Utf8BencodeReader
     /// Thrown when the current token is not a byte string or property name.
     /// </exception>
     /// <remarks>
-    /// A <see langword="null" /> argument behaves as the empty string and therefore matches an empty byte string,
-    /// matching <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(string?)" />.
+    /// A <see langword="null" /> argument behaves as the empty string and therefore matches an empty byte string.
     /// </remarks>
     public readonly bool ValueTextEquals(string? text) =>
         ValueTextEquals(text.AsSpan());
 
     /// <summary>
-    /// Copies the current byte-string or property-name token's raw content into the supplied destination, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.CopyString(Span{byte})" />.
+    /// Copies the current byte-string or property-name token's raw content into the supplied destination.
     /// </summary>
     /// <param name="destination">The buffer that receives the raw content bytes.</param>
     /// <returns>The number of bytes written to <paramref name="destination" />.</returns>
@@ -525,8 +518,7 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Decodes the current byte-string or property-name token's content as UTF-8 text into the supplied destination,
-    /// mirroring <see cref="System.Text.Json.Utf8JsonReader.CopyString(Span{char})" />.
+    /// Decodes the current byte-string or property-name token's content as UTF-8 text into the supplied destination.
     /// </summary>
     /// <param name="destination">The buffer that receives the decoded characters.</param>
     /// <returns>The number of characters written to <paramref name="destination" />.</returns>
@@ -553,8 +545,7 @@ public ref struct Utf8BencodeReader
 
     /// <summary>
     /// Skips the current value, including the entire subtree when the reader is on a container start. On a property
-    /// name the reader first advances to the property's value and then skips it, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.Skip" />.
+    /// name the reader first advances to the property's value and then skips it.
     /// </summary>
     /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
     public void Skip()
@@ -573,14 +564,14 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Attempts to skip the current value, mirroring <see cref="System.Text.Json.Utf8JsonReader.TrySkip" />.
+    /// Attempts to skip the current value.
     /// </summary>
     /// <returns><see langword="true" /> always, because the reader operates over a complete buffer.</returns>
     /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
     /// <remarks>
-    /// <see cref="System.Text.Json.Utf8JsonReader.TrySkip" /> returns <see langword="false" /> only when a non-final
-    /// streaming block ends before the value completes. This reader has no streaming mode, so the method is equivalent
-    /// to <see cref="Skip" /> and exists for source compatibility with code ported from the JSON reader.
+    /// This reader has no streaming mode in which a value could end partway through a buffer, so the method is
+    /// equivalent to <see cref="Skip" /> and exists for source compatibility with callers written against a try-pattern
+    /// surface.
     /// </remarks>
     public bool TrySkip()
     {

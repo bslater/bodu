@@ -15,8 +15,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Provides static methods for serializing values to Bencode (BEP 3) bytes and deserializing Bencode bytes back into
-/// values, mapping plain CLR objects to and from the format through configurable converters. Mirrors the role of
-/// <see cref="System.Text.Json.JsonSerializer" />.
+/// values, mapping plain CLR objects to and from the format through configurable converters.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -107,8 +106,7 @@ public static class BencodeSerializer
     }
 
     /// <summary>
-    /// Serializes the specified value into a mutable <see cref="BencodeNode" /> tree, mirroring the
-    /// <c>SerializeToNode</c> member of <see cref="System.Text.Json.JsonSerializer" />.
+    /// Serializes the specified value into a mutable <see cref="BencodeNode" /> tree.
     /// </summary>
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
     /// <param name="value">The value to serialize.</param>
@@ -124,8 +122,7 @@ public static class BencodeSerializer
         BencodeNode.Parse(Serialize(value, options));
 
     /// <summary>
-    /// Serializes the specified value into a read-only <see cref="BencodeDocument" />, mirroring the
-    /// <c>SerializeToDocument</c> member of <see cref="System.Text.Json.JsonSerializer" />.
+    /// Serializes the specified value into a read-only <see cref="BencodeDocument" />.
     /// </summary>
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
     /// <param name="value">The value to serialize.</param>
@@ -141,9 +138,7 @@ public static class BencodeSerializer
         BencodeDocument.Parse(Serialize(value, options));
 
     /// <summary>
-    /// Deserializes a value of type <typeparamref name="T" /> from the supplied node tree, mirroring the
-    /// <see cref="System.Text.Json.Nodes.JsonNode" /> -accepting <c>Deserialize</c> member of
-    /// <see cref="System.Text.Json.JsonSerializer" />.
+    /// Deserializes a value of type <typeparamref name="T" /> from the supplied node tree.
     /// </summary>
     /// <typeparam name="T">The type to deserialize.</typeparam>
     /// <param name="node">The node tree to bind.</param>

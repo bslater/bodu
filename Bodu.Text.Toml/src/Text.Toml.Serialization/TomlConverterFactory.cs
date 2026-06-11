@@ -12,13 +12,28 @@ namespace Bodu.Text.Toml.Serialization;
 /// <summary>
 /// Produces a <see cref="TomlConverter" /> for a family of types that cannot be served by a single
 /// <see cref="TomlConverter{T}" /> — for example every <see cref="Nullable{T}" />, every enumeration, or every
-/// collection. Mirrors <see cref="System.Text.Json.Serialization.JsonConverterFactory" />.
+/// collection.
 /// </summary>
 /// <remarks>
 /// The serializer calls <see cref="TomlConverter.CanConvert(Type)" /> to decide whether the factory applies, then
 /// <see cref="CreateConverter" /> to obtain the converter for the specific closed type being serialized. A factory is
 /// never asked to read or write a value itself.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class StackConverterFactory : TomlConverterFactory
+/// {
+///     public override bool CanConvert(Type typeToConvert) =>
+///         typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(Stack<>);
+///
+///     public override TomlConverter CreateConverter(Type typeToConvert, TomlSerializerOptions options) =>
+///         (TomlConverter)Activator.CreateInstance(
+///             typeof(StackConverter<>).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+/// }
+///]]>
+/// </code>
+/// </example>
 public abstract class TomlConverterFactory
     : TomlConverter
 {

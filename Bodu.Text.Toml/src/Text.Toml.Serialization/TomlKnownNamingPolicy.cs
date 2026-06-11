@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Identifies one of the built-in <see cref="TomlNamingPolicy" /> singletons by name, so a type can select a naming
-/// policy declaratively through <see cref="TomlNamingPolicyAttribute" />. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonKnownNamingPolicy" />.
+/// policy declaratively through <see cref="TomlNamingPolicyAttribute" />.
 /// </summary>
 /// <remarks>
 /// Each named value other than <see cref="Unspecified" /> corresponds to the like-named static property on

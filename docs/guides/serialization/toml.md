@@ -4,7 +4,7 @@ title: Using TOML
 
 # Using TOML
 
-<xref:Bodu.Text.Toml.TomlSerializer> maps your types to and from [TOML](https://toml.io/) (v1.0.0 / v1.1.0), shaped after `System.Text.Json`. The document root must map to a table, so the type you serialize at the root maps to an object — a top-level scalar or array throws.
+<xref:Bodu.Text.Toml.TomlSerializer> maps your types to and from [TOML](https://toml.io/) (v1.0.0 / v1.1.0). The document root must map to a table, so the type you serialize at the root maps to an object — a top-level scalar or array throws.
 
 ## Pattern 1 — Round-trip a configuration type
 
@@ -37,7 +37,7 @@ ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 | `object` members | runtime type on write, `TomlElement` on read |
 | `TomlNode` / `TomlElement` / `TomlDocument` | the value's own kind |
 
-TOML has no null: a null member is omitted by default. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
+TOML has no null: a null member is omitted by default. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
 
 Choose the `byte[]` form with <xref:Bodu.Text.Toml.TomlByteArrayHandling> and the `decimal` form with <xref:Bodu.Text.Toml.TomlDecimalHandling> on the options:
 
@@ -60,7 +60,7 @@ var options = new TomlSerializerOptions
 
 Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[TomlPropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`).
 
-Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines.
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
 ## Pattern 4 — Select the spec version
 
@@ -75,7 +75,7 @@ The default is strict **v1.0.0**. Opting in to **v1.1.0** additionally accepts t
 
 When you do not want a POCO, parse to one of the two DOMs.
 
-Mutable (`JsonNode`-style) — parse, edit, and write back:
+Mutable DOM — parse, edit, and write back:
 
 ```csharp
 using Bodu.Text.Toml.Nodes;
@@ -85,7 +85,7 @@ node["server"]!["port"] = 9090;
 byte[] back = node.ToUtf8Bytes();
 ```
 
-Read-only (`JsonDocument`-style) — a low-allocation view walked through `RootElement`:
+Read-only DOM — a low-allocation view walked through `RootElement`:
 
 ```csharp
 using Bodu.Text.Toml.Document;
@@ -96,6 +96,6 @@ TomlElement port = doc.RootElement.GetProperty("server").GetProperty("port");
 
 ## Pattern 6 — Process tokens by hand
 
-For full control with no allocations, drive the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> ref-struct pair directly — the `Utf8JsonReader` / `Utf8JsonWriter` analogues. This is the same surface a [converter](converters.md) receives.
+For full control with no allocations, drive the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> ref-struct pair directly. This is the same surface a [converter](converters.md) receives.
 
 Malformed input raises <xref:Bodu.Text.Toml.TomlFormatException> with the line, column, and offset; a value that cannot bind raises <xref:Bodu.Text.Toml.TomlSerializationException>.

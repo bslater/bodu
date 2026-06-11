@@ -15,8 +15,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming
-/// policy, the default ignore condition, and the maximum nesting depth. Mirrors
-/// <see cref="System.Text.Json.JsonSerializerOptions" />.
+/// policy, the default ignore condition, and the maximum nesting depth.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -113,8 +112,7 @@ public sealed class BencodeSerializerOptions
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodeSerializerOptions" /> class with a base set of defaults
-    /// appropriate for the specified usage scenario. Mirrors the
-    /// <see cref="System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults)" /> constructor.
+    /// appropriate for the specified usage scenario.
     /// </summary>
     /// <param name="defaults">The base defaults to apply.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -166,11 +164,9 @@ public sealed class BencodeSerializerOptions
     /// </value>
     /// <returns>Whether property-name matching ignores case.</returns>
     /// <remarks>
-    /// The lenient default is a deliberate divergence from
-    /// <see cref="System.Text.Json.JsonSerializerOptions.PropertyNameCaseInsensitive" />, whose general default is
-    /// <see langword="false" />: Bencode wire keys are raw bytes with no prescribed casing convention, so reads
-    /// tolerate casing variation by default. The option affects reading only; written keys always use the resolved wire
-    /// name unchanged.
+    /// The default is deliberately lenient: Bencode wire keys are raw bytes with no prescribed casing convention, so
+    /// reads tolerate casing variation by default. The option affects reading only; written keys always use the
+    /// resolved wire name unchanged.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public bool PropertyNameCaseInsensitive
@@ -234,7 +230,6 @@ public sealed class BencodeSerializerOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.
-    /// Mirrors <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" />.
     /// </summary>
     /// <value>
     /// <see langword="true" /> to serialize and deserialize public fields; otherwise <see langword="false" />. The
@@ -243,8 +238,7 @@ public sealed class BencodeSerializerOptions
     /// <returns>Whether public fields participate in serialization.</returns>
     /// <remarks>
     /// A public field annotated with <see cref="Serialization.BencodeIncludeAttribute" /> participates regardless of
-    /// this setting, mirroring how <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" /> opts an
-    /// individual field in. Fields honor the property naming policy, name and order attributes, ignore conditions, and
+    /// this setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
     /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
     /// assigned on read.
     /// </remarks>
@@ -292,8 +286,7 @@ public sealed class BencodeSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
     /// reading, applied to every type that does not carry its own
-    /// <see cref="Serialization.BencodeUnmappedMemberHandlingAttribute" />. Mirrors
-    /// <see cref="System.Text.Json.JsonSerializerOptions.UnmappedMemberHandling" />.
+    /// <see cref="Serialization.BencodeUnmappedMemberHandlingAttribute" />.
     /// </summary>
     /// <value>The unmapped-member handling; <see cref="BencodeUnmappedMemberHandling.Skip" /> by default.</value>
     /// <returns>The configured unmapped-member handling.</returns>
@@ -319,8 +312,7 @@ public sealed class BencodeSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
     /// instance or populated when reading, applied to every type and member that does not carry its own
-    /// <see cref="Serialization.BencodeObjectCreationHandlingAttribute" />. Mirrors
-    /// <see cref="System.Text.Json.JsonSerializerOptions.PreferredObjectCreationHandling" />.
+    /// <see cref="Serialization.BencodeObjectCreationHandlingAttribute" />.
     /// </summary>
     /// <value>
     /// The preferred object-creation handling; <see cref="BencodeObjectCreationHandling.Replace" /> by default.
@@ -350,9 +342,8 @@ public sealed class BencodeSerializerOptions
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
     /// <returns>The configured maximum depth.</returns>
     /// <remarks>
-    /// The default of <see cref="DefaultMaxDepth" /> (64) matches
-    /// <see cref="System.Text.Json.JsonSerializerOptions.MaxDepth" /> and is deliberately tighter than the default of
-    /// 256 used by <see cref="Reader.Utf8BencodeReader" />, <see cref="Writer.Utf8BencodeWriter" />, and
+    /// The default of <see cref="DefaultMaxDepth" /> (64) is deliberately tighter than the default of 256 used by
+    /// <see cref="Reader.Utf8BencodeReader" />, <see cref="Writer.Utf8BencodeWriter" />, and
     /// <see cref="Document.BencodeDocument" />: the serializer is the typical entry point for untrusted input, while
     /// the lower-level surfaces favour permissiveness for callers that manage their own limits.
     /// </remarks>

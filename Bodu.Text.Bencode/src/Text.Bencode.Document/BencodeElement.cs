@@ -9,9 +9,8 @@ using System.Globalization;
 namespace Bodu.Text.Bencode.Document;
 
 /// <summary>
-/// Represents a single read-only value within a <see cref="BencodeDocument" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonElement" />. The element is a lightweight view — a pair of the owning document and a
-/// row index — so copying it is cheap and never materializes a node.
+/// Represents a single read-only value within a <see cref="BencodeDocument" />. The element is a lightweight view — a
+/// pair of the owning document and a row index — so copying it is cheap and never materializes a node.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -158,10 +157,8 @@ public readonly partial struct BencodeElement
         _document.GetBytes(_index);
 
     /// <summary>
-    /// Copies the complete encoded form of this element to a new array, mirroring
-    /// <see cref="System.Text.Json.JsonElement.GetRawText" /> for a binary format. For a byte string the result
-    /// includes the length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every
-    /// child.
+    /// Copies the complete encoded form of this element to a new array. For a byte string the result includes the
+    /// length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every child.
     /// </summary>
     /// <returns>The raw encoded bytes of this element.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
@@ -174,8 +171,7 @@ public readonly partial struct BencodeElement
         _document.GetRawSpan(_index).ToArray();
 
     /// <summary>
-    /// Writes the complete encoded form of this element to the supplied writer, mirroring
-    /// <see cref="System.Text.Json.JsonElement.WriteTo" />.
+    /// Writes the complete encoded form of this element to the supplied writer.
     /// </summary>
     /// <param name="writer">The destination writer.</param>
     /// <exception cref="InvalidOperationException">
@@ -196,8 +192,7 @@ public readonly partial struct BencodeElement
     }
 
     /// <summary>
-    /// Creates an independent copy of this element whose lifetime is not tied to the owning document, mirroring
-    /// <see cref="System.Text.Json.JsonElement.Clone" />.
+    /// Creates an independent copy of this element whose lifetime is not tied to the owning document.
     /// </summary>
     /// <returns>A <see cref="BencodeElement" /> backed by a private document that does not require disposal.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
@@ -323,8 +318,8 @@ public readonly partial struct BencodeElement
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     /// <remarks>
-    /// Unlike <see cref="System.Text.Json.JsonElement.ToString" />, container values are not re-serialized; the kind
-    /// name is returned instead to keep the operation allocation-light.
+    /// Container values are not re-serialized; the kind name is returned instead to keep the operation
+    /// allocation-light.
     /// </remarks>
     public override string ToString() =>
         _document.GetKind(_index) switch
