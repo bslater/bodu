@@ -26,7 +26,6 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Globalization.Calendar.DependencyInjection` | `…Calendar.DependencyInjection/` | `IServiceCollection` extensions for registering calendar services. |
 | `Bodu.Financial` | `Bodu.Financial/` | Money and currency primitives: `Money` / `Money<TCurrency>`, the ISO 4217 `CurrencyCode` catalogue and per-currency `ICurrency` types, exchange rates (`ExchangeRate` / `ExchangeRate<TBase, TQuote>`, rate series and providers), allocation and rounding policies, and JSON converters. |
 | `Bodu.Financial.DependencyInjection` | `Bodu.Financial.DependencyInjection/` | `IServiceCollection` extensions for registering financial services (`IFinancialServiceBuilder`, named monetary contexts, `FinancialOptions`). |
-| `BouncyCastle.Crypto` | `bc-csharp/crypto/src/` | Third-party vendor reference (used by Cryptography tests for reference vectors). |
 | `docs` | `docs/` | DocFX documentation project. |
 
 A separate solution **`Bodu.CodeStyle/Bodu.CodeStyle.sln`** holds the Bodu code-style analyzers, code fixes, and XML-doc formatter (`Bodu.CodeStyle.XmlDocumentation.{Analyzers,CodeFixes,Core}` plus `Bodu.CodeStyle.Test.Common`). It is **not** referenced by `bodu.slnx` — treat it as an independent unit.
@@ -42,6 +41,8 @@ Each project has the layout:
 ### Target Frameworks
 
 All projects target `net8.0`.
+
+Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
 
 Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled across all projects, including `Bodu.Core`. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
 
@@ -83,7 +84,7 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 ### SDK Bootstrap (Claude Code on the web)
 
-`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost.
+`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost. The repository-root `global.json` pins SDK resolution to the 10.0.1xx band, so once the hook has run, `dotnet build` / `dotnet test` pick up the installed SDK 10 automatically.
 
 The hook also repairs the `dotnet-dnceng` plugin that `.claude/settings.json` enables from the `dotnet/arcade-skills` marketplace (`extraKnownMarketplaces` / `enabledPlugins`): the upstream plugin manifest currently fails Claude Code's path validation (its `agents` entry lacks the required `./` prefix), so the hook patches the cached marketplace clone and installs the plugin. Its skills then load from the next session in the container. The repair is a no-op once the manifest is fixed upstream and can be removed at that point.
 
