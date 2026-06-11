@@ -99,6 +99,11 @@ internal sealed class ObjectConverter<T>
         (value as ITomlOnSerializing)?.OnSerializing();
 
         TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
+
+        // Track emitted keys only when extension data may follow, so a colliding overflow entry is rejected as a
+        // serialization error rather than surfacing as a writer-level duplicate-key failure.
+        HashSet<string>? emittedKeys = metadata.ExtensionData is null ? null : new HashSet<string>(StringComparer.Ordinal);
+
         writer.WriteStartTable();
         foreach (PropertyMetadata property in metadata.Properties)
         {
@@ -108,9 +113,10 @@ internal sealed class ObjectConverter<T>
 
             writer.WritePropertyName(property.WireName);
             property.Converter.WriteAsObject(writer, memberValue, options);
+            _ = emittedKeys?.Add(property.WireName);
         }
 
-        WriteExtensionData(writer, metadata, value);
+        WriteExtensionData(writer, metadata, value, emittedKeys);
 
         writer.WriteEndTable();
 
@@ -123,7 +129,11 @@ internal sealed class ObjectConverter<T>
     /// <param name="writer">The destination writer, positioned inside the open table.</param>
     /// <param name="metadata">The type metadata.</param>
     /// <param name="value">The instance being written.</param>
-    private static void WriteExtensionData(Utf8TomlWriter writer, TypeMetadata metadata, T value)
+    /// <param name="emittedKeys">The wire names already written for declared members, or <see langword="null" />.</param>
+    /// <exception cref="TomlSerializationException">
+    /// Thrown when an extension-data key collides with a key already written to the table.
+    /// </exception>
+    private static void WriteExtensionData(Utf8TomlWriter writer, TypeMetadata metadata, T value, HashSet<string>? emittedKeys)
     {
         if (metadata.ExtensionData is not { } member)
             return;
@@ -135,6 +145,12 @@ internal sealed class ObjectConverter<T>
         {
             if (entry.Value is null)
                 continue;
+
+            if (emittedKeys is not null && !emittedKeys.Add(entry.Key))
+            {
+                throw new TomlSerializationException(
+                    string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExtensionDataKeyCollision, entry.Key, typeof(T)));
+            }
 
             writer.WritePropertyName(entry.Key);
             entry.Value.WriteTo(writer);

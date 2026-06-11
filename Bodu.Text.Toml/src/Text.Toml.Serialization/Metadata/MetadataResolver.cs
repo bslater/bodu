@@ -119,6 +119,15 @@ internal static class MetadataResolver
             .Select(static draft => draft.ToMetadata())
             .ToArray();
 
+        // Two members serializing to the same wire name would emit a duplicate key, producing a document the
+        // serializer's own reader rejects; fail eagerly at metadata resolution instead.
+        HashSet<string> wireNames = new(StringComparer.Ordinal);
+        foreach (PropertyMetadata property in ordered)
+        {
+            if (!wireNames.Add(property.WireName))
+                throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_DuplicateWireName, type, property.WireName));
+        }
+
         StringComparer comparer = options.PropertyNameCaseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
         Dictionary<string, PropertyMetadata> byWireName = new(comparer);
         foreach (PropertyMetadata property in ordered)
