@@ -11,9 +11,16 @@ namespace Bodu.Text.Bencode;
 /// type mismatch, a missing required member, or a value Bencode cannot represent.
 /// </summary>
 /// <remarks>
+/// <para>
 /// This exception reports a binding-level failure and is distinct from <see cref="BencodeFormatException" />, which
 /// reports that the source bytes were not well-formed Bencode. When the failure can be traced to a position in the
 /// source bytes, <see cref="BytesOffset" /> carries it.
+/// </para>
+/// <para>
+/// The split is a deliberate divergence from <see cref="System.Text.Json" />, which funnels both causes through
+/// <see cref="System.Text.Json.JsonException" />; catch both exception types when the handling should not distinguish
+/// malformed bytes from unmappable values.
+/// </para>
 /// </remarks>
 public sealed class BencodeSerializationException
     : Exception

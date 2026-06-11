@@ -30,4 +30,8 @@
     <ProjectReference Include="..\src\Bodu.Text.Bencode.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\sample.torrent" />
+  </ItemGroup>
+
 </Project>

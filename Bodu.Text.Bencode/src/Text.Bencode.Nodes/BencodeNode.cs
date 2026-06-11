@@ -216,9 +216,34 @@ public abstract class BencodeNode
     /// Every <see cref="BencodeObject" /> materialized while parsing adopts the comparison selected by
     /// <paramref name="options" />, so a case-insensitive parse yields a tree whose dictionary lookups ignore case.
     /// </remarks>
-    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options)
+    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options) =>
+        Parse(data, options, default);
+
+    /// <summary>
+    /// Parses a single Bencode document into a node tree, using the supplied node options for every object created
+    /// while parsing and the supplied document options for the parse itself, mirroring the
+    /// <see cref="System.Text.Json.Nodes.JsonNode" /> overload that accepts both option types.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes.</param>
+    /// <param name="options">The node options controlling property-name case sensitivity.</param>
+    /// <param name="documentOptions">The document options controlling depth and dictionary-key leniency.</param>
+    /// <returns>The root node of the parsed tree.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when <paramref name="data" /> is empty or is not a single Bencode value acceptable under
+    /// <paramref name="documentOptions" />.
+    /// </exception>
+    /// <remarks>
+    /// When <see cref="Document.BencodeDocumentOptions.AllowDuplicateKeys" /> is set, repeated keys collapse into the
+    /// dictionary-backed <see cref="BencodeObject" /> with the last occurrence winning.
+    /// </remarks>
+    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options, Document.BencodeDocumentOptions documentOptions)
     {
-        var reader = new Utf8BencodeReader(data);
+        var reader = new Utf8BencodeReader(data, new BencodeReaderOptions
+        {
+            MaxDepth = documentOptions.MaxDepth,
+            AllowUnsortedKeys = documentOptions.AllowUnsortedKeys,
+            AllowDuplicateKeys = documentOptions.AllowDuplicateKeys,
+        });
         if (!reader.Read())
             throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
 
@@ -265,7 +290,9 @@ public abstract class BencodeNode
         switch (reader.TokenType)
         {
             case BencodeTokenType.Integer:
-                return BencodeValue.Create(reader.GetInt64());
+                return reader.TryGetInt64(out var integer)
+                    ? BencodeValue.Create(integer)
+                    : BencodeValue.Create(reader.GetUInt64());
 
             case BencodeTokenType.ByteString:
                 return BencodeValue.Create(reader.GetBytes());
@@ -306,6 +333,122 @@ public abstract class BencodeNode
     public abstract BencodeNode DeepClone();
 
     /// <summary>
+    /// Computes the path from the root of this node's tree to this node, mirroring
+    /// <see cref="System.Text.Json.Nodes.JsonNode.GetPath" />.
+    /// </summary>
+    /// <returns>
+    /// The JSONPath-style path: <c>$</c> for a root node, with <c>[n]</c> segments for array indices and <c>.name</c>
+    /// segments for object keys. A key containing characters other than ASCII letters, digits, and underscores is
+    /// rendered as a quoted <c>['name']</c> segment.
+    /// </returns>
+    /// <remarks>
+    /// When the same node instance is stored under more than one key of the same object, the path reports the first
+    /// matching key in enumeration order.
+    /// </remarks>
+    public string GetPath()
+    {
+        if (Parent is null)
+            return "$";
+
+        List<string> segments = [];
+        BencodeNode current = this;
+        while (current.Parent is { } parent)
+        {
+            segments.Add(GetPathSegment(parent, current));
+            current = parent;
+        }
+
+        segments.Reverse();
+        return "$" + string.Concat(segments);
+    }
+
+    /// <summary>
+    /// Replaces this node within its parent container with the supplied value, detaching this node, mirroring
+    /// <see cref="System.Text.Json.Nodes.JsonNode.ReplaceWith{T}(T)" />. The implicit conversions from
+    /// <see langword="string" />, integers, and byte arrays let scalars be passed directly.
+    /// </summary>
+    /// <param name="value">
+    /// The replacement node, or <see langword="null" /> to clear the slot this node occupies.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="value" /> already belongs to another container.
+    /// </exception>
+    /// <remarks>
+    /// When this node has no parent the call does nothing, matching the <see cref="System.Text.Json.Nodes.JsonNode" />
+    /// contract. After a successful replacement this node's <see cref="Parent" /> is <see langword="null" /> and it can
+    /// be added to another container.
+    /// </remarks>
+    public void ReplaceWith(BencodeNode? value)
+    {
+        switch (Parent)
+        {
+            case BencodeObject obj:
+                foreach (KeyValuePair<string, BencodeNode?> entry in obj)
+                {
+                    if (ReferenceEquals(entry.Value, this))
+                    {
+                        obj[entry.Key] = value;
+                        return;
+                    }
+                }
+
+                return;
+
+            case BencodeArray array:
+                array[array.IndexOf(this)] = value;
+                return;
+
+            default:
+                return;
+        }
+    }
+
+    /// <summary>
+    /// Formats the path segment that addresses <paramref name="child" /> within <paramref name="parent" />.
+    /// </summary>
+    /// <param name="parent">The containing node.</param>
+    /// <param name="child">The child whose segment is produced.</param>
+    /// <returns>An index segment for an array parent, or a key segment for an object parent.</returns>
+    private static string GetPathSegment(BencodeNode parent, BencodeNode child)
+    {
+        if (parent is BencodeArray array)
+            return "[" + array.IndexOf(child).ToString(CultureInfo.InvariantCulture) + "]";
+
+        var obj = (BencodeObject)parent;
+        foreach (KeyValuePair<string, BencodeNode?> entry in obj)
+        {
+            if (ReferenceEquals(entry.Value, child))
+                return FormatKeySegment(entry.Key);
+        }
+
+        // Unreachable while the single-parent invariant holds: a child always appears in its parent.
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Formats an object key as a path segment, quoting keys that contain characters outside ASCII letters, digits, and
+    /// underscores.
+    /// </summary>
+    /// <param name="key">The object key.</param>
+    /// <returns>A <c>.name</c> segment for simple keys; otherwise a quoted <c>['name']</c> segment.</returns>
+    private static string FormatKeySegment(string key)
+    {
+        var simple = key.Length > 0;
+        foreach (var c in key)
+        {
+            if (!char.IsAsciiLetterOrDigit(c) && c != '_')
+            {
+                simple = false;
+                break;
+            }
+        }
+
+        return simple
+            ? "." + key
+            : "['" + key.Replace("'", "\\'", StringComparison.Ordinal) + "']";
+    }
+
+    /// <summary>
     /// Determines whether two node trees are structurally equal.
     /// </summary>
     /// <param name="node1">The first node, which may be <see langword="null" />.</param>
@@ -331,7 +474,7 @@ public abstract class BencodeNode
 
         return kind switch
         {
-            BencodeValueKind.Integer => node1.AsValue().GetValue<long>() == node2.AsValue().GetValue<long>(),
+            BencodeValueKind.Integer => node1.AsValue().IntegerEquals(node2.AsValue()),
             BencodeValueKind.ByteString => node1.AsValue().GetValue<byte[]>().AsSpan().SequenceEqual(node2.AsValue().GetValue<byte[]>()),
             BencodeValueKind.Array => ArrayEquals(node1.AsArray(), node2.AsArray()),
             _ => ObjectEquals(node1.AsObject(), node2.AsObject()),
@@ -363,6 +506,14 @@ public abstract class BencodeNode
     /// </summary>
     /// <param name="value">The integer to wrap.</param>
     public static implicit operator BencodeNode(int value) =>
+        BencodeValue.Create(value);
+
+    /// <summary>
+    /// Creates a <see cref="BencodeValue" /> that wraps the supplied unsigned 64-bit integer, permitting the full
+    /// <see cref="ulong" /> range.
+    /// </summary>
+    /// <param name="value">The unsigned integer to wrap.</param>
+    public static implicit operator BencodeNode(ulong value) =>
         BencodeValue.Create(value);
 
     /// <summary>
@@ -402,6 +553,22 @@ public abstract class BencodeNode
     {
         ThrowHelper.ThrowIfNull(node);
         return node.GetValue<int>();
+    }
+
+    /// <summary>
+    /// Reads the scalar value of the supplied node as an unsigned 64-bit integer.
+    /// </summary>
+    /// <param name="node">The node to read.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="node" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="node" /> is not a non-negative integer-valued <see cref="BencodeValue" />.
+    /// </exception>
+    public static explicit operator ulong(BencodeNode node)
+    {
+        ThrowHelper.ThrowIfNull(node);
+        return node.GetValue<ulong>();
     }
 
     /// <summary>

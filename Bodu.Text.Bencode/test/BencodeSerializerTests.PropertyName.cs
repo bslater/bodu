@@ -124,6 +124,57 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing a type whose members resolve to the same wire name fails fast with
+    /// <see cref="InvalidOperationException" /> when the type's metadata is built, naming the colliding members and
+    /// the key, mirroring <see cref="System.Text.Json.JsonSerializer" />'s metadata-time collision check.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMembersCollideOnWireName_ShouldThrowInvalidOperationException()
+    {
+        var model = new CollidingWireNameModel { First = 1, Second = 2 };
+
+        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(CollidingWireNameModel.First), StringComparison.Ordinal));
+        Assert.IsTrue(ex.Message.Contains(nameof(CollidingWireNameModel.Second), StringComparison.Ordinal));
+        Assert.IsTrue(ex.Message.Contains("'id'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing into a type whose members resolve to the same wire name throws the same
+    /// metadata-time <see cref="InvalidOperationException" /> as serialization, because the collision is a property
+    /// of the type's mapping rather than of either direction.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenMembersCollideOnWireName_ShouldThrowInvalidOperationException()
+    {
+        var data = "d2:idi1ee"u8.ToArray();
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<CollidingWireNameModel>(data);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that members whose wire names differ only by case do not collide, even under the default
+    /// case-insensitive read matching: the keys are distinct raw bytes on the wire, so the dictionary remains
+    /// canonical and both keys are emitted.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenWireNamesDifferOnlyByCase_ShouldEmitBothKeys()
+    {
+        var model = new CaseOnlyWireNameModel { Lower = 1, Upper = 2 };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d2:IDi2e2:idi1ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
     /// A model with a single integer member used to exercise case-sensitive and case-insensitive key matching.
     /// </summary>
     private sealed class CaseInsensitiveModel
@@ -153,6 +204,46 @@ public partial class BencodeSerializerTests
         /// <returns>The last name.</returns>
         [BencodePropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model whose two members carry the same explicit wire name, producing a duplicate-key collision on write.
+    /// </summary>
+    private sealed class CollidingWireNameModel
+    {
+        /// <summary>
+        /// Gets or sets the first value, keyed under the wire name <c>id</c>.
+        /// </summary>
+        /// <returns>The first value.</returns>
+        [BencodePropertyName("id")]
+        public int First { get; set; }
+
+        /// <summary>
+        /// Gets or sets the second value, also keyed under the wire name <c>id</c>.
+        /// </summary>
+        /// <returns>The second value.</returns>
+        [BencodePropertyName("id")]
+        public int Second { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose two members carry wire names differing only by case, which are distinct keys on the wire.
+    /// </summary>
+    private sealed class CaseOnlyWireNameModel
+    {
+        /// <summary>
+        /// Gets or sets the first value, keyed under the lower-case wire name <c>id</c>.
+        /// </summary>
+        /// <returns>The first value.</returns>
+        [BencodePropertyName("id")]
+        public int Lower { get; set; }
+
+        /// <summary>
+        /// Gets or sets the second value, keyed under the upper-case wire name <c>ID</c>.
+        /// </summary>
+        /// <returns>The second value.</returns>
+        [BencodePropertyName("ID")]
+        public int Upper { get; set; }
     }
 
     /// <summary>

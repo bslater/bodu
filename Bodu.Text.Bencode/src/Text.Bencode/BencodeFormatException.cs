@@ -19,6 +19,13 @@ namespace Bodu.Text.Bencode;
 /// the remaining bytes, a dictionary's keys are not in lexicographic order, or the document contains trailing bytes
 /// after a complete value.
 /// </para>
+/// <para>
+/// Unlike <see cref="System.Text.Json" />, which funnels both malformed input and binding failures through
+/// <see cref="System.Text.Json.JsonException" />, this library separates the two causes: catch
+/// <see cref="BencodeFormatException" /> (a <see cref="FormatException" /> ) for bytes that are not valid Bencode, and
+/// <see cref="BencodeSerializationException" /> for values or documents that cannot be mapped; catch both when the
+/// handling should not distinguish the cause.
+/// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[

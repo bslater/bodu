@@ -47,6 +47,10 @@ public partial class Utf8BencodeReaderTests
     [DataRow("length exceeds input", "5:ab")]
     [DataRow("length with no colon at end", "3")]
     [DataRow("only length and colon truncated", "10:short")]
+    [DataRow("string length exceeds Int32 by one", "2147483648:x")]
+    [DataRow("string length far beyond Int32", "99999999999999999999:x")]
+    [DataRow("negative string length", "-1:x")]
+    [DataRow("negative string length in list", "l-1:xe")]
 
     // Container balance.
     [DataRow("unterminated list", "li1e")]
@@ -64,6 +68,7 @@ public partial class Utf8BencodeReaderTests
     [DataRow("unordered dictionary keys", "d1:b1:x1:a1:ye")]
     [DataRow("duplicate dictionary keys", "d1:a1:x1:a1:ye")]
     [DataRow("unordered by length", "d2:aa1:x1:a1:ye")]
+    [DataRow("keys sorted case-insensitively not by raw bytes", "d1:a1:x1:B1:ye")]
 
     // Trailing / leading bytes.
     [DataRow("trailing data after integer", "i1e2:xx")]
@@ -87,6 +92,69 @@ public partial class Utf8BencodeReaderTests
                 // Drive the reader to completion to surface any malformed-input error.
             }
         });
+    }
+
+    /// <summary>
+    /// Verifies that a byte-string length counted in characters rather than bytes is rejected: the four-character,
+    /// five-byte UTF-8 text leaves an unconsumed byte that surfaces as trailing data.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenStringLengthCountsCharactersNotBytes_ShouldThrowBencodeFormatException()
+    {
+        // "café" is four characters but five UTF-8 bytes; a buggy encoder that counts characters writes "4:".
+        byte[] bytes = "4:café"u8.ToArray();
+
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            while (reader.Read())
+            {
+                // Drive the reader to completion to surface the trailing-data error.
+            }
+        });
+    }
+
+    /// <summary>
+    /// Verifies that dictionary keys ordered by UTF-16 code units rather than raw UTF-8 bytes are rejected: an
+    /// astral-plane key sorts before U+FFFD in UTF-16 code-unit order but after it in raw byte order.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeysSortedByUtf16CodeUnitsNotRawBytes_ShouldThrowBencodeFormatException()
+    {
+        // U+1F600 encodes as F0 9F 98 80 and U+FFFD as EF BF BD: byte order requires U+FFFD first, while .NET
+        // ordinal string comparison (UTF-16 code units, where the surrogate D83D precedes FFFD) orders U+1F600 first.
+        byte[] bytes = "d4:😀1:x3:�1:ye"u8.ToArray();
+
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            while (reader.Read())
+            {
+                // Drive the reader to completion to surface the unordered-keys error.
+            }
+        });
+    }
+
+    /// <summary>
+    /// Verifies that dictionary keys in correct raw-byte order are accepted in cases where common text orderings
+    /// disagree — upper-case before lower-case ASCII, and U+FFFD before an astral-plane key.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeysOrderedByRawBytesAgainstTextOrder_ShouldSucceed()
+    {
+        // 'B' (0x42) precedes 'a' (0x61) in raw bytes although most text orderings reverse them, and U+FFFD
+        // (EF BF BD) precedes U+1F600 (F0 9F 98 80) although UTF-16 code-unit order reverses them.
+        byte[] bytes = "d1:B1:x1:a1:y3:�1:z4:😀1:we"u8.ToArray();
+
+        var reader = new Utf8BencodeReader(bytes);
+        var names = 0;
+        while (reader.Read())
+        {
+            if (reader.TokenType == BencodeTokenType.PropertyName)
+                names++;
+        }
+
+        Assert.AreEqual(4, names);
     }
 
     /// <summary>

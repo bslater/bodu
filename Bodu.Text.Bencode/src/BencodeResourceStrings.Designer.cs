@@ -79,6 +79,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The bencoded integer cannot be represented as {0}..
+        /// </summary>
+        internal static string Format_Invalid_BencodeIntegerOutOfTypeRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeIntegerOutOfTypeRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Invalid bencoded integer..
         /// </summary>
         internal static string Format_Invalid_BencodeInvalidInteger {
@@ -188,11 +197,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Bencoded dictionary keys must be unique and sorted by raw byte order..
+        ///   Looks up a localized string similar to Bencoded dictionary keys must be sorted by raw byte order..
         /// </summary>
         internal static string Format_Invalid_BencodeUnorderedDictionaryKeys {
             get {
                 return ResourceManager.GetString("Format_Invalid_BencodeUnorderedDictionaryKeys", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bencoded dictionary keys must be unique..
+        /// </summary>
+        internal static string Format_Invalid_BencodeDuplicateDictionaryKeys {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeDuplicateDictionaryKeys", resourceCulture);
             }
         }
 
@@ -331,6 +349,78 @@ namespace Bodu {
         internal static string Op_Invalid_WriterMaxDepthExceeded {
             get {
                 return ResourceManager.GetString("Op_Invalid_WriterMaxDepthExceeded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary contains more than one entry for the key '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_WriterDuplicateDictionaryKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterDuplicateDictionaryKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No container is open..
+        /// </summary>
+        internal static string Op_Invalid_WriterNoOpenContainer {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterNoOpenContainer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The requested end does not match the kind of the currently open container..
+        /// </summary>
+        internal static string Op_Invalid_WriterEndContainerMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterEndContainerMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A property name can only be written inside an open dictionary..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameNotAllowed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A property name has already been written and is awaiting its value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNamePending {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNamePending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A value cannot be written inside a dictionary before its property name..
+        /// </summary>
+        internal static string Op_Invalid_WriterValueWithoutPropertyName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterValueWithoutPropertyName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot be closed while a property name is awaiting its value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameWithoutValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameWithoutValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A complete root value has already been written; a Bencode document is single-valued unless AllowMultipleRootValues is set..
+        /// </summary>
+        internal static string Op_Invalid_WriterMultipleRootValues {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterMultipleRootValues", resourceCulture);
             }
         }
 
@@ -475,6 +565,15 @@ namespace Bodu {
         internal static string Op_Invalid_MultipleExtensionData {
             get {
                 return ResourceManager.GetString("Op_Invalid_MultipleExtensionData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The members &apos;{1}&apos; and &apos;{2}&apos; of type &apos;{0}&apos; both map to the Bencode key &apos;{3}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateWireName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateWireName", resourceCulture);
             }
         }
 

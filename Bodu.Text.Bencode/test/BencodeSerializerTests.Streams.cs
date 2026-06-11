@@ -32,6 +32,38 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that the synchronous <see cref="BencodeSerializer.Serialize{T}(Stream, T,
+    /// BencodeSerializerOptions?)" /> overload writes the same canonical bytes to the stream as the in-memory
+    /// overload returns.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStreamDestination_ShouldWriteCanonicalBytes()
+    {
+        var model = new StreamModel { Id = 7, Label = "x" };
+        using var destination = new MemoryStream();
+
+        BencodeSerializer.Serialize(destination, model);
+
+        CollectionAssert.AreEqual(BencodeSerializer.Serialize(model), destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that the synchronous <see cref="BencodeSerializer.Serialize{T}(Stream, T,
+    /// BencodeSerializerOptions?)" /> overload rejects a stream that does not support writing with
+    /// <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStreamNotWritable_ShouldThrowArgumentException()
+    {
+        using var destination = new MemoryStream([], writable: false);
+
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            BencodeSerializer.Serialize(destination, new StreamModel());
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BencodeSerializer.Deserialize{T}(Stream, BencodeSerializerOptions?)" /> reads a value
     /// from a stream positioned at a canonical document.
     /// </summary>

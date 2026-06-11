@@ -18,6 +18,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Format_Invalid_BencodeIntegerOutOfRange" xml:space="preserve"><value>The bencoded integer is outside the supported Int64 range.</value></data>
+  <data name="Format_Invalid_BencodeIntegerOutOfTypeRange" xml:space="preserve"><value>The bencoded integer cannot be represented as {0}.</value></data>
   <data name="Format_Invalid_BencodeInvalidInteger" xml:space="preserve"><value>Invalid bencoded integer.</value></data>
   <data name="Format_Invalid_BencodeLeadingZerosInteger" xml:space="preserve"><value>Bencoded integers cannot contain leading zeros.</value></data>
   <data name="Format_Invalid_BencodeNegativeZeroInteger" xml:space="preserve"><value>Negative zero is not a valid bencoded integer.</value></data>
@@ -30,7 +31,8 @@
   <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve"><value>The bencoded value contains trailing data.</value></data>
   <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve"><value>Unexpected end of bencoded data.</value></data>
   <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve"><value>Unexpected bencode token '{0}' at offset {1}.</value></data>
-  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value></data>
+  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be sorted by raw byte order.</value></data>
+  <data name="Format_Invalid_BencodeDuplicateDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique.</value></data>
   <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve"><value>Unterminated bencoded dictionary.</value></data>
   <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve"><value>Unterminated bencoded integer.</value></data>
   <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>
@@ -46,6 +48,14 @@
   <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
   <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be modified after they have been used to serialize or deserialize a value.</value></data>
   <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Op_Invalid_WriterDuplicateDictionaryKey" xml:space="preserve"><value>The dictionary contains more than one entry for the key '{0}'.</value></data>
+  <data name="Op_Invalid_WriterNoOpenContainer" xml:space="preserve"><value>No container is open.</value></data>
+  <data name="Op_Invalid_WriterEndContainerMismatch" xml:space="preserve"><value>The requested end does not match the kind of the currently open container.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameNotAllowed" xml:space="preserve"><value>A property name can only be written inside an open dictionary.</value></data>
+  <data name="Op_Invalid_WriterPropertyNamePending" xml:space="preserve"><value>A property name has already been written and is awaiting its value.</value></data>
+  <data name="Op_Invalid_WriterValueWithoutPropertyName" xml:space="preserve"><value>A value cannot be written inside a dictionary before its property name.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameWithoutValue" xml:space="preserve"><value>The dictionary cannot be closed while a property name is awaiting its value.</value></data>
+  <data name="Op_Invalid_WriterMultipleRootValues" xml:space="preserve"><value>A complete root value has already been written; a Bencode document is single-valued unless AllowMultipleRootValues is set.</value></data>
   <data name="Op_Invalid_ExpectedDictionary" xml:space="preserve"><value>Expected the start of a dictionary but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedList" xml:space="preserve"><value>Expected the start of a list but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedByteString" xml:space="preserve"><value>Expected a byte string but found '{0}'.</value></data>
@@ -62,6 +72,7 @@
   <data name="Op_Invalid_ElementKindMismatch" xml:space="preserve"><value>This operation requires a {0} element, but the element is a {1} element.</value></data>
   <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a BencodeObject or IDictionary&lt;string, BencodeNode?&gt;.</value></data>
   <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
+  <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The members '{1}' and '{2}' of type '{0}' both map to the Bencode key '{3}'.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
   <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The Bencode document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
   <data name="Format_Invalid_BencodeIntegerNegativeUnsigned" xml:space="preserve"><value>The bencoded integer is negative and cannot be read as UInt64.</value></data>

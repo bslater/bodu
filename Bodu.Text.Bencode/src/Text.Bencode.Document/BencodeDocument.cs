@@ -37,20 +37,30 @@ public sealed partial class BencodeDocument
     private readonly Row[] _rows;
 
     /// <summary>
-    /// The buffer rented from <see cref="ArrayPool{T}.Shared" /> holding a copy of the parsed bytes, or
-    /// <see langword="null" /> once the document has been disposed.
+    /// Whether <see cref="_data" /> was rented from <see cref="ArrayPool{T}.Shared" /> and must be returned on
+    /// disposal. Documents produced by <see cref="BencodeElement.Clone" /> own a plain array instead, so disposal is a
+    /// no-op and their elements remain valid indefinitely.
+    /// </summary>
+    private readonly bool _pooled;
+
+    /// <summary>
+    /// The buffer holding a copy of the parsed bytes, or <see langword="null" /> once the document has been disposed.
     /// </summary>
     private byte[]? _data;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodeDocument" /> class from a parsed buffer and row index.
     /// </summary>
-    /// <param name="data">The rented buffer holding the copied source bytes.</param>
+    /// <param name="data">The buffer holding the copied source bytes.</param>
     /// <param name="rows">The flat metadata index describing the document.</param>
-    private BencodeDocument(byte[] data, Row[] rows)
+    /// <param name="pooled">
+    /// Whether <paramref name="data" /> was rented from <see cref="ArrayPool{T}.Shared" />.
+    /// </param>
+    private BencodeDocument(byte[] data, Row[] rows, bool pooled)
     {
         _data = data;
         _rows = rows;
+        _pooled = pooled;
     }
 
     /// <summary>
@@ -69,7 +79,7 @@ public sealed partial class BencodeDocument
     /// Thrown when the bytes are not a single, canonical Bencode value.
     /// </exception>
     public static BencodeDocument Parse(ReadOnlySpan<byte> data) =>
-        Parse(data, 256);
+        Parse(data, default(BencodeReaderOptions));
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied options.
@@ -84,7 +94,7 @@ public sealed partial class BencodeDocument
     /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
     /// </remarks>
     public static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeDocumentOptions options) =>
-        Parse(data, options.MaxDepth <= 0 ? 256 : options.MaxDepth);
+        Parse(data, ToReaderOptions(options));
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" />.
@@ -101,7 +111,7 @@ public sealed partial class BencodeDocument
     {
         ThrowHelper.ThrowIfNull(data);
 
-        return Parse(data.AsSpan(), 256);
+        return Parse(data.AsSpan(), default(BencodeReaderOptions));
     }
 
     /// <summary>
@@ -123,38 +133,38 @@ public sealed partial class BencodeDocument
     {
         ThrowHelper.ThrowIfNull(data);
 
-        return Parse(data.AsSpan(), options.MaxDepth <= 0 ? 256 : options.MaxDepth);
+        return Parse(data.AsSpan(), ToReaderOptions(options));
     }
 
     /// <summary>
-    /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> enforcing the supplied maximum nesting
-    /// depth.
+    /// Translates document options into the equivalent reader options.
+    /// </summary>
+    /// <param name="options">The document options to translate.</param>
+    /// <returns>The reader options carrying the same depth and key-leniency settings.</returns>
+    private static BencodeReaderOptions ToReaderOptions(BencodeDocumentOptions options) =>
+        new()
+        {
+            MaxDepth = options.MaxDepth,
+            AllowUnsortedKeys = options.AllowUnsortedKeys,
+            AllowDuplicateKeys = options.AllowDuplicateKeys,
+        };
+
+    /// <summary>
+    /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied reader options.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
-    /// <param name="maxDepth">The maximum permitted container nesting depth.</param>
+    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
     /// <returns>A document over a private copy of <paramref name="data" />.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than
-    /// <paramref name="maxDepth" />.
+    /// Thrown when the bytes are not a single Bencode value acceptable under <paramref name="readerOptions" />.
     /// </exception>
-    private static BencodeDocument Parse(ReadOnlySpan<byte> data, int maxDepth)
+    private static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions)
     {
         byte[] buffer = ArrayPool<byte>.Shared.Rent(data.Length);
         try
         {
             data.CopyTo(buffer);
-
-            var reader = new Utf8BencodeReader(buffer.AsSpan(0, data.Length), maxDepth);
-            if (!reader.Read())
-                throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
-
-            List<Row> rows = [];
-            ReadValue(ref reader, rows);
-
-            // The reader rejects trailing bytes on the next Read, completing root validation.
-            reader.Read();
-
-            return new BencodeDocument(buffer, rows.ToArray());
+            return new BencodeDocument(buffer, ParseRows(buffer.AsSpan(0, data.Length), readerOptions), pooled: true);
         }
         catch
         {
@@ -164,14 +174,55 @@ public sealed partial class BencodeDocument
     }
 
     /// <summary>
+    /// Parses the supplied Bencode bytes into a non-pooled <see cref="BencodeDocument" /> whose disposal is a no-op,
+    /// backing the elements returned by <see cref="BencodeElement.Clone" />.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes, which must form a single complete value.</param>
+    /// <returns>A document over a private, plainly allocated copy of <paramref name="data" />.</returns>
+    internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data)
+    {
+        byte[] buffer = data.ToArray();
+        return new BencodeDocument(buffer, ParseRows(buffer, default), pooled: false);
+    }
+
+    /// <summary>
+    /// Parses the supplied bytes into the flat row index describing the document.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes.</param>
+    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
+    /// <returns>The completed row index.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the bytes are not a single Bencode value acceptable under <paramref name="readerOptions" />.
+    /// </exception>
+    private static Row[] ParseRows(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions)
+    {
+        var reader = new Utf8BencodeReader(data, readerOptions);
+        if (!reader.Read())
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
+
+        List<Row> rows = [];
+        ReadValue(ref reader, rows, valueStart: 0);
+
+        // The reader rejects trailing bytes on the next Read, completing root validation.
+        reader.Read();
+
+        return rows.ToArray();
+    }
+
+    /// <summary>
     /// Returns the rented buffer to <see cref="ArrayPool{T}.Shared" /> and invalidates the document.
     /// </summary>
     /// <remarks>
     /// Disposal is idempotent: calling it more than once has no further effect. After disposal, every element,
-    /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />.
+    /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />. For the
+    /// non-pooled documents that back <see cref="BencodeElement.Clone" /> results, disposal is a no-op and the document
+    /// remains usable, mirroring <see cref="System.Text.Json.JsonElement.Clone" />.
     /// </remarks>
     public void Dispose()
     {
+        if (!_pooled)
+            return;
+
         byte[]? data = _data;
         if (data is null)
             return;
@@ -186,19 +237,25 @@ public sealed partial class BencodeDocument
     /// </summary>
     /// <param name="reader">The reader, positioned on the value's first token.</param>
     /// <param name="rows">The growing flat metadata index to append to.</param>
+    /// <param name="valueStart">
+    /// The byte offset where the value's encoded form begins — the reader's consumed count captured before the read
+    /// that produced the current token.
+    /// </param>
     /// <exception cref="BencodeFormatException">
     /// Thrown when the reader is positioned on an unexpected token.
     /// </exception>
-    private static void ReadValue(ref Utf8BencodeReader reader, List<Row> rows)
+    private static void ReadValue(ref Utf8BencodeReader reader, List<Row> rows, int valueStart)
     {
         switch (reader.TokenType)
         {
             case BencodeTokenType.Integer:
-                rows.Add(Row.Int(reader.GetInt64()));
+                rows.Add(reader.TryGetInt64(out var integer)
+                    ? Row.Int(integer, valueStart, reader.BytesConsumed - valueStart)
+                    : Row.UInt(reader.GetUInt64(), valueStart, reader.BytesConsumed - valueStart));
                 return;
 
             case BencodeTokenType.ByteString:
-                rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length));
+                rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length, valueStart, reader.BytesConsumed - valueStart));
                 return;
 
             case BencodeTokenType.StartList:
@@ -206,13 +263,17 @@ public sealed partial class BencodeDocument
                     int self = rows.Count;
                     rows.Add(default);
                     int count = 0;
-                    while (reader.Read() && reader.TokenType != BencodeTokenType.EndList)
+                    while (true)
                     {
-                        ReadValue(ref reader, rows);
+                        int childStart = reader.BytesConsumed;
+                        if (!reader.Read() || reader.TokenType == BencodeTokenType.EndList)
+                            break;
+
+                        ReadValue(ref reader, rows, childStart);
                         count++;
                     }
 
-                    rows[self] = Row.Container(BencodeValueKind.Array, childCount: count, numberOfRows: rows.Count - self);
+                    rows[self] = Row.Container(BencodeValueKind.Array, childCount: count, numberOfRows: rows.Count - self, rawLocation: valueStart, rawLength: reader.BytesConsumed - valueStart);
                     return;
                 }
 
@@ -221,16 +282,22 @@ public sealed partial class BencodeDocument
                     int self = rows.Count;
                     rows.Add(default);
                     int pairs = 0;
-                    while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
+                    while (true)
                     {
+                        int keyStart = reader.BytesConsumed;
+                        if (!reader.Read() || reader.TokenType == BencodeTokenType.EndDictionary)
+                            break;
+
                         // The key is a property-name token; store it as a byte-string row.
-                        rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length));
+                        rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length, keyStart, reader.BytesConsumed - keyStart));
+
+                        int pairValueStart = reader.BytesConsumed;
                         reader.Read();
-                        ReadValue(ref reader, rows);
+                        ReadValue(ref reader, rows, pairValueStart);
                         pairs++;
                     }
 
-                    rows[self] = Row.Container(BencodeValueKind.Object, childCount: pairs, numberOfRows: rows.Count - self);
+                    rows[self] = Row.Container(BencodeValueKind.Object, childCount: pairs, numberOfRows: rows.Count - self, rawLocation: valueStart, rawLength: reader.BytesConsumed - valueStart);
                     return;
                 }
 
@@ -258,14 +325,68 @@ public sealed partial class BencodeDocument
     /// <returns>The decoded integer value.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer's value exceeds <see cref="long.MaxValue" /> and is therefore readable only through
+    /// <see cref="GetUnsignedInteger(int)" />.
+    /// </exception>
     internal long GetInteger(int index)
     {
         _ = EnsureNotDisposed();
         ref readonly Row row = ref _rows[index];
         if (row.Kind != BencodeValueKind.Integer)
             throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+        if (row.IntegerExceedsInt64)
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, row.RawLocation);
 
         return row.Integer;
+    }
+
+    /// <summary>
+    /// Attempts to get the integer value at the supplied row index as a 64-bit signed integer.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value fits the signed 64-bit range; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    internal bool TryGetInteger(int index, out long value)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+
+        if (row.IntegerExceedsInt64)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = row.Integer;
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the integer value at the supplied row index as a 64-bit unsigned integer, accepting any value in [0,
+    /// <see cref="ulong.MaxValue" /> ].
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The decoded unsigned integer value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the integer's value is negative.</exception>
+    internal ulong GetUnsignedInteger(int index)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+        if (!row.IntegerExceedsInt64 && row.Integer < 0)
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, row.RawLocation);
+
+        return unchecked((ulong)row.Integer);
     }
 
     /// <summary>
@@ -301,6 +422,36 @@ public sealed partial class BencodeDocument
 
         return data.AsSpan(row.Location, row.Length).ToArray();
     }
+
+    /// <summary>
+    /// Gets the complete encoded form of the value at the supplied row index — for a byte string this includes the
+    /// length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every child.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The raw encoded bytes, valid only until the document is disposed.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    internal ReadOnlySpan<byte> GetRawSpan(int index)
+    {
+        byte[] data = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        return data.AsSpan(row.RawLocation, row.RawLength);
+    }
+
+    /// <summary>
+    /// Writes the document's root value to the supplied writer.
+    /// </summary>
+    /// <param name="writer">The destination writer.</param>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the writer's call sequence does not permit a value at the current position.
+    /// </exception>
+    /// <remarks>
+    /// The encoded bytes are emitted verbatim through
+    /// <see cref="Writer.Utf8BencodeWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />; because the document was
+    /// validated when parsed, no re-validation occurs.
+    /// </remarks>
+    public void WriteTo(Writer.Utf8BencodeWriter writer) =>
+        RootElement.WriteTo(writer);
 
     /// <summary>
     /// Gets the number of elements in the array at the supplied row index.

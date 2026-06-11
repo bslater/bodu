@@ -217,6 +217,88 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Utf8BencodeReader.Skip" /> on a property name skips the property's scalar value,
+    /// mirroring <see cref="System.Text.Json.Utf8JsonReader.Skip" />, leaving the reader positioned to read the next
+    /// key.
+    /// </summary>
+    [TestMethod]
+    public void Skip_WhenOnPropertyNameWithScalarValue_ShouldSkipPropertyValue()
+    {
+        // { "a": 1, "b": 2 }
+        byte[] bytes = Bytes("d1:ai1e1:bi2ee");
+        var reader = new Utf8BencodeReader(bytes);
+        Assert.IsTrue(reader.Read()); // StartDictionary
+        Assert.IsTrue(reader.Read()); // PropertyName a
+        Assert.AreEqual(BencodeTokenType.PropertyName, reader.TokenType);
+
+        reader.Skip(); // skip the value of "a"
+
+        Assert.AreEqual(BencodeTokenType.Integer, reader.TokenType);
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BencodeTokenType.PropertyName, reader.TokenType);
+        Assert.AreEqual("b", reader.GetString());
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(2L, reader.GetInt64());
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BencodeTokenType.EndDictionary, reader.TokenType);
+        Assert.IsFalse(reader.Read());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Utf8BencodeReader.Skip" /> on a property name whose value is a container skips the
+    /// entire value subtree, mirroring <see cref="System.Text.Json.Utf8JsonReader.Skip" />, leaving the reader on the
+    /// value's end token.
+    /// </summary>
+    [TestMethod]
+    public void Skip_WhenOnPropertyNameWithContainerValue_ShouldSkipValueSubtree()
+    {
+        // { "a": [1,2,3], "b": 7 }
+        byte[] bytes = Bytes("d1:ali1ei2ei3ee1:bi7ee");
+        var reader = new Utf8BencodeReader(bytes);
+        Assert.IsTrue(reader.Read()); // StartDictionary
+        Assert.IsTrue(reader.Read()); // PropertyName a
+        Assert.AreEqual(BencodeTokenType.PropertyName, reader.TokenType);
+
+        reader.Skip(); // skip the list value of "a"
+
+        Assert.AreEqual(BencodeTokenType.EndList, reader.TokenType);
+        Assert.AreEqual(1, reader.CurrentDepth);
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BencodeTokenType.PropertyName, reader.TokenType);
+        Assert.AreEqual("b", reader.GetString());
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(7L, reader.GetInt64());
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BencodeTokenType.EndDictionary, reader.TokenType);
+        Assert.IsFalse(reader.Read());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Utf8BencodeReader.TrySkip" /> behaves as <see cref="Utf8BencodeReader.Skip" /> and
+    /// returns <see langword="true" />, the contract for a reader operating over a complete buffer.
+    /// </summary>
+    [TestMethod]
+    public void TrySkip_WhenOnContainerStart_ShouldSkipSubtreeAndReturnTrue()
+    {
+        byte[] bytes = Bytes("ld3:cow3:mooei7ee");
+        var reader = new Utf8BencodeReader(bytes);
+        Assert.IsTrue(reader.Read()); // StartList
+        Assert.IsTrue(reader.Read()); // StartDictionary
+
+        Assert.IsTrue(reader.TrySkip());
+
+        Assert.AreEqual(BencodeTokenType.EndDictionary, reader.TokenType);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(7L, reader.GetInt64());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Utf8BencodeReader.Skip" /> on a container end token is a no-op.
     /// </summary>
     [TestMethod]

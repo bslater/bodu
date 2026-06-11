@@ -73,6 +73,16 @@ public sealed class BencodeSerializerOptions
     private bool _includeFields;
 
     /// <summary>
+    /// Whether deserialization accepts dictionaries whose keys are not in ascending bytewise order.
+    /// </summary>
+    private bool _allowUnsortedKeys;
+
+    /// <summary>
+    /// Whether deserialization accepts dictionaries carrying more than one entry for the same key.
+    /// </summary>
+    private bool _allowDuplicateKeys;
+
+    /// <summary>
     /// The serializer-wide default condition under which a member is omitted on write.
     /// </summary>
     private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
@@ -155,6 +165,13 @@ public sealed class BencodeSerializerOptions
     /// <see langword="true" />.
     /// </value>
     /// <returns>Whether property-name matching ignores case.</returns>
+    /// <remarks>
+    /// The lenient default is a deliberate divergence from
+    /// <see cref="System.Text.Json.JsonSerializerOptions.PropertyNameCaseInsensitive" />, whose general default is
+    /// <see langword="false" />: Bencode wire keys are raw bytes with no prescribed casing convention, so reads
+    /// tolerate casing variation by default. The option affects reading only; written keys always use the resolved wire
+    /// name unchanged.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public bool PropertyNameCaseInsensitive
     {
@@ -163,6 +180,55 @@ public sealed class BencodeSerializerOptions
         {
             VerifyMutable();
             _caseInsensitive = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether deserialization accepts dictionaries whose keys are not in ascending
+    /// bytewise order.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to accept unsorted keys; otherwise <see langword="false" />. The default is
+    /// <see langword="false" />, rejecting unsorted keys with <see cref="BencodeFormatException" />.
+    /// </value>
+    /// <returns>Whether unsorted dictionary keys are accepted when reading.</returns>
+    /// <remarks>
+    /// BEP 3 requires keys sorted by raw byte order, but documents produced by older encoders occasionally violate
+    /// this. The option affects reading only; output is always written in canonical key order.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public bool AllowUnsortedKeys
+    {
+        get => _allowUnsortedKeys;
+        set
+        {
+            VerifyMutable();
+            _allowUnsortedKeys = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether deserialization accepts dictionaries carrying more than one entry for
+    /// the same key.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to accept duplicate keys; otherwise <see langword="false" />. The default is
+    /// <see langword="false" />, rejecting duplicate keys with <see cref="BencodeFormatException" />.
+    /// </value>
+    /// <returns>Whether duplicate dictionary keys are accepted when reading.</returns>
+    /// <remarks>
+    /// When enabled, repeated keys bind last-wins: the final occurrence of a key determines the member or dictionary
+    /// entry value. The option affects reading only; the writer always rejects duplicate keys because canonical Bencode
+    /// forbids them.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public bool AllowDuplicateKeys
+    {
+        get => _allowDuplicateKeys;
+        set
+        {
+            VerifyMutable();
+            _allowDuplicateKeys = value;
         }
     }
 
@@ -283,6 +349,13 @@ public sealed class BencodeSerializerOptions
     /// </summary>
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
     /// <returns>The configured maximum depth.</returns>
+    /// <remarks>
+    /// The default of <see cref="DefaultMaxDepth" /> (64) matches
+    /// <see cref="System.Text.Json.JsonSerializerOptions.MaxDepth" /> and is deliberately tighter than the default of
+    /// 256 used by <see cref="Reader.Utf8BencodeReader" />, <see cref="Writer.Utf8BencodeWriter" />, and
+    /// <see cref="Document.BencodeDocument" />: the serializer is the typical entry point for untrusted input, while
+    /// the lower-level surfaces favour permissiveness for callers that manage their own limits.
+    /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is negative.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public int MaxDepth
