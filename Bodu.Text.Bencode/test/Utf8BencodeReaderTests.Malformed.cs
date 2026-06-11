@@ -47,6 +47,8 @@ public partial class Utf8BencodeReaderTests
     [DataRow("length exceeds input", "5:ab")]
     [DataRow("length with no colon at end", "3")]
     [DataRow("only length and colon truncated", "10:short")]
+    [DataRow("string length exceeds Int32 by one", "2147483648:x")]
+    [DataRow("string length far beyond Int32", "99999999999999999999:x")]
 
     // Container balance.
     [DataRow("unterminated list", "li1e")]

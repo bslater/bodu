@@ -142,6 +142,24 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Utf8BencodeReader.GetString" /> on a byte string carrying non-UTF-8 binary content
+    /// decodes with U+FFFD replacement characters rather than throwing, pinning the documented contract that
+    /// <see cref="Utf8BencodeReader.GetBytes" /> is the lossless accessor for binary content.
+    /// </summary>
+    [TestMethod]
+    public void GetString_WhenContentNotValidUtf8_ShouldDecodeWithReplacementCharacters()
+    {
+        // 0xC3 starts a two-byte UTF-8 sequence, but 0x28 ('(') is not a valid continuation byte.
+        byte[] bytes = [(byte)'2', (byte)':', 0xC3, 0x28];
+        var reader = new Utf8BencodeReader(bytes);
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BencodeTokenType.ByteString, reader.TokenType);
+        Assert.AreEqual("�(", reader.GetString());
+        CollectionAssert.AreEqual(new byte[] { 0xC3, 0x28 }, reader.GetBytes());
+    }
+
+    /// <summary>
     /// Verifies that a long byte string whose length prefix consumes the entire remaining buffer is read in full.
     /// </summary>
     [TestMethod]
