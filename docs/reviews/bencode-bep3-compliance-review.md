@@ -93,3 +93,29 @@ The library's shape is a faithful S.T.J transposition: ref‑struct reader/write
 | Red phase (16 intended-behavior tests committed before fix) | 16 failed, as expected (commit `8e0c0a6b`) |
 | Green phase (writer guards + `Skip` alignment, commit `1e17b512`) | 775 passed / 0 failed |
 | Final, with coverage pins (commit `49234e2d`) | **778 passed / 0 failed** |
+
+## 5. Remediation record (follow-up session, 2026-06-11)
+
+Every open finding was subsequently addressed on this branch, one commit per finding, with the full regression tier
+green after each step. The only items deliberately deferred are the ones this report itself recommended deferring:
+multi-segment/`isFinalBlock` streaming reads (no consumer needs incremental parsing yet) and `BigInteger` integer
+support (the documented [`long.MinValue`, `ulong.MaxValue`] contract stands).
+
+| Finding | Resolution |
+|---|---|
+| R‑2 (remaining) | The writer now rejects a second root value with `InvalidOperationException`; `BencodeWriterOptions.AllowMultipleRootValues` is the explicit opt-in for concatenated-value framings. The former "writer's trust in the caller" pin is replaced by tests of both modes. |
+| R‑4 | `Utf8BencodeWriter` rewritten to stream: scalars and lists write through to the destination (or the innermost dictionary's buffer); each dictionary buffers entry values once in a single growing buffer with an offset table and is flushed, sorted, on close. No per-value `byte[]`, no O(depth) re-copying. Existing canonical-bytes tests plus a new randomized stress sweep guard the rewrite. |
+| R‑5 | `MetadataResolver` fails fast with `InvalidOperationException` naming the type, both members, and the colliding key when metadata is built. Detection is ordinal by design — wire names differing only by case are distinct raw keys and remain serializable (pinned). |
+| R‑6 | `AllowUnsortedKeys` / `AllowDuplicateKeys` added to `BencodeReaderOptions`, `BencodeDocumentOptions` (plus a `BencodeNode.Parse` overload accepting document options), and `BencodeSerializerOptions`; strict by default. Duplicates resolve per surface: reader reports every entry, document lookups return the first match, node tree and serializer bind last-wins. The duplicate-key error is now distinct from the unordered-key error. 15 lenient-acceptance tests cover all four surfaces. |
+| R‑7 | The supported integer range, `GetUInt64` extension, and rejection behaviour are documented in the package README ("Contracts and limits"). |
+| R‑8 | `StringConverter` carries the lossy-decoding warning; the README states the bytes-not-text contract and directs binary fields to `byte[]`. |
+| R‑9 | The serializer/reader depth-default split (64 vs 256) is documented on `BencodeSerializerOptions.MaxDepth` and in the README. |
+| R‑10 | All non-deferred rows closed: sync `Serialize(Stream)`; `SerializeToNode` / `SerializeToDocument` / `Deserialize(BencodeNode)`; `BencodeElement.GetRawBytes()` / `WriteTo` / `Clone()` and `BencodeDocument.WriteTo` (raw spans recorded per row; clones are non-pooled and need no disposal); reader `ValueTextEquals` / `CopyString`; writer `WriteRawValue` (validated by default); node `GetPath()` / `ReplaceWith()` (`DeepClone` already existed). Exception catch guidance and the `PropertyNameCaseInsensitive` divergence are documented on the types and in the README. |
+| R‑11 | Seeded 1000-iteration randomized node-tree round-trip (`Stress` tier); an authentic embedded `.torrent` fixture with real SHA‑1 piece digests parsed through all surfaces, pinning lossless `pieces` handling and reproducing the independently computed info-hash from `GetRawBytes`; lenient-mode acceptance tests landed with R‑6. |
+| Malformed-input taxonomy | Additional pins beyond the original matrix: empty input (all three surfaces, pre-existing), negative byte-string lengths, lengths counted in characters rather than bytes, keys sorted case-insensitively or by UTF‑16 code units rather than raw byte order, and acceptance of raw-byte order where text orderings disagree. |
+
+| Checkpoint | Result |
+|---|---|
+| After R‑4 streaming rewrite | 778 passed / 0 failed |
+| After R‑2, R‑10, R‑5, R‑6 increments | 780 → 801 → 814 → 824 → 831 → 833 → 849, all 0 failed |
+| Final, full regression tier (includes Stress) | **860 passed / 0 failed** |

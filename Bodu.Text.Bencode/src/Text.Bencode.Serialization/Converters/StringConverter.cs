@@ -13,6 +13,12 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// <summary>
 /// Converts a <see cref="string" /> value to and from a Bencode byte string, encoding and decoding the text as UTF-8.
 /// </summary>
+/// <remarks>
+/// Decoding follows <see cref="Utf8BencodeReader.GetString" />: byte sequences that are not valid UTF-8 are replaced
+/// with U+FFFD rather than rejected. Binding a binary byte string — such as a torrent's <c>pieces</c> — to a
+/// <see cref="string" /> member therefore corrupts it silently; map binary content to a <see langword="byte" /> array
+/// member instead, which round-trips losslessly.
+/// </remarks>
 internal sealed class StringConverter
     : BencodeConverter<string>
 {

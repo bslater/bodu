@@ -165,6 +165,13 @@ public sealed class BencodeSerializerOptions
     /// <see langword="true" />.
     /// </value>
     /// <returns>Whether property-name matching ignores case.</returns>
+    /// <remarks>
+    /// The lenient default is a deliberate divergence from
+    /// <see cref="System.Text.Json.JsonSerializerOptions.PropertyNameCaseInsensitive" />, whose general default is
+    /// <see langword="false" />: Bencode wire keys are raw bytes with no prescribed casing convention, so reads
+    /// tolerate casing variation by default. The option affects reading only; written keys always use the resolved wire
+    /// name unchanged.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public bool PropertyNameCaseInsensitive
     {
@@ -342,6 +349,13 @@ public sealed class BencodeSerializerOptions
     /// </summary>
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
     /// <returns>The configured maximum depth.</returns>
+    /// <remarks>
+    /// The default of <see cref="DefaultMaxDepth" /> (64) matches
+    /// <see cref="System.Text.Json.JsonSerializerOptions.MaxDepth" /> and is deliberately tighter than the default of
+    /// 256 used by <see cref="Reader.Utf8BencodeReader" />, <see cref="Writer.Utf8BencodeWriter" />, and
+    /// <see cref="Document.BencodeDocument" />: the serializer is the typical entry point for untrusted input, while
+    /// the lower-level surfaces favour permissiveness for callers that manage their own limits.
+    /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is negative.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public int MaxDepth

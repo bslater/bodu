@@ -23,6 +23,8 @@ The public surface mirrors `System.Text.Json`, so the patterns are familiar:
 | `JsonNamingPolicy` | `BencodeNamingPolicy` | `Bodu.Text.Bencode` |
 | `JsonConverter<T>` / `JsonConverterFactory` | `BencodeConverter<T>` / `BencodeConverterFactory` | `Bodu.Text.Bencode.Serialization` |
 | `[JsonPropertyName]` / `[JsonIgnore]` | `[BencodePropertyName]` / `[BencodeIgnore]` | `Bodu.Text.Bencode.Serialization` |
+| `JsonDocument` / `JsonElement` | `BencodeDocument` / `BencodeElement` | `Bodu.Text.Bencode.Document` |
+| `JsonNode` / `JsonObject` / `JsonArray` / `JsonValue` | `BencodeNode` / `BencodeObject` / `BencodeArray` / `BencodeValue` | `Bodu.Text.Bencode.Nodes` |
 
 ```csharp
 using Bodu.Text.Bencode;
@@ -31,11 +33,27 @@ byte[] payload = BencodeSerializer.Serialize(new TorrentInfo { Name = "ubuntu.is
 TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 ```
 
-- `Serialize` / `Deserialize` over `byte[]`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, and `Stream`, with async stream variants.
-- Output is always canonical Bencode: dictionary entries are emitted in ascending bytewise key order.
+- `Serialize` / `Deserialize` over `byte[]`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, and `Stream` (synchronous and asynchronous), plus `SerializeToNode`, `SerializeToDocument`, and `Deserialize(BencodeNode)` bridges into the two DOMs.
+- Output is always canonical Bencode: dictionary entries are emitted in ascending bytewise key order, and the writer rejects duplicate keys and (by default) a second root value.
 - Strings and `byte[]` map to byte strings, the integer family to `i…e`, and enums to member-name byte strings. Types with no canonical Bencode form (Booleans, floating-point, date-times) require a registered `BencodeConverter<T>`; a `null` member is omitted on write.
-- `Utf8BencodeReader` and `Utf8BencodeWriter` expose the low-level token surface directly for callers that do not want POCO mapping. The reader accepts only canonical BEP 3 (no leading or negative zeros, ascending unique dictionary keys, a single root with no trailing bytes).
-- Failures surface through `BencodeFormatException` (malformed bytes) and `BencodeSerializationException` (binding failures).
+- `Utf8BencodeReader` and `Utf8BencodeWriter` expose the low-level token surface directly for callers that do not want POCO mapping, including `ValueTextEquals`, `CopyString`, and `WriteRawValue`. By default the reader accepts only canonical BEP 3 (no leading or negative zeros, ascending unique dictionary keys, a single root with no trailing bytes).
+- `BencodeElement.GetRawBytes()` returns a value's exact encoded slice — for example the `info` dictionary of a torrent, whose SHA-1 is the info-hash — and `WriteRawValue` re-emits such slices verbatim.
+
+## Contracts and limits
+
+**Integers.** BEP 3 integers are arbitrary-precision; this library supports the range [`long.MinValue`, `ulong.MaxValue`]. Values in (`long.MaxValue`, `ulong.MaxValue`] are readable through `Utf8BencodeReader.GetUInt64` and writable through the `ulong` overload of `WriteInteger`; anything outside the supported range is rejected with `BencodeFormatException`. Arbitrary-precision (`BigInteger`) values are not supported.
+
+**Byte strings are bytes, not text.** `GetString` accessors (reader, element, node) and `string`-typed members decode as UTF-8 and substitute U+FFFD for invalid sequences. Binding a binary field — such as a torrent's `pieces` — to a `string` silently corrupts it; map binary content to `byte[]` (or read `ValueSpan` / `GetBytes`), which is always lossless.
+
+**Nesting depth.** `Utf8BencodeReader`, `Utf8BencodeWriter`, and `BencodeDocument` default to a maximum depth of 256; `BencodeSerializerOptions.MaxDepth` defaults to 64 because the serializer is the typical entry point for untrusted input. All four are configurable.
+
+**Single root.** A Bencode document is a single value. The reader rejects trailing bytes, and the writer rejects a second top-level value unless `BencodeWriterOptions.AllowMultipleRootValues` opts into concatenated-value framings.
+
+**Lenient reading of real-world documents.** Older encoders occasionally emit unsorted or duplicate dictionary keys. `AllowUnsortedKeys` and `AllowDuplicateKeys` — available on `BencodeReaderOptions`, `BencodeDocumentOptions`, and `BencodeSerializerOptions` — relax those two rules independently while everything else stays strict. With duplicates permitted, the document model returns the first occurrence from name lookups (enumeration shows every pair), while the node tree and the serializer bind last-wins. Writing is always strict.
+
+**Exceptions.** Unlike `System.Text.Json`, which funnels everything through `JsonException`, failures are split by cause: `BencodeFormatException` (a `FormatException`, carrying the byte `Offset`) reports malformed input, and `BencodeSerializationException` reports values or documents that cannot be mapped. Catch both when handling should not distinguish the cause.
+
+**Property-name matching.** `BencodeSerializerOptions.PropertyNameCaseInsensitive` defaults to `true` (lenient reads), a deliberate divergence from `System.Text.Json`'s general default. Wire keys themselves are raw bytes and case-sensitive; output never changes case.
 
 ## Testing
 
