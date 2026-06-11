@@ -306,6 +306,122 @@ public abstract class BencodeNode
     public abstract BencodeNode DeepClone();
 
     /// <summary>
+    /// Computes the path from the root of this node's tree to this node, mirroring
+    /// <see cref="System.Text.Json.Nodes.JsonNode.GetPath" />.
+    /// </summary>
+    /// <returns>
+    /// The JSONPath-style path: <c>$</c> for a root node, with <c>[n]</c> segments for array indices and <c>.name</c>
+    /// segments for object keys. A key containing characters other than ASCII letters, digits, and underscores is
+    /// rendered as a quoted <c>['name']</c> segment.
+    /// </returns>
+    /// <remarks>
+    /// When the same node instance is stored under more than one key of the same object, the path reports the first
+    /// matching key in enumeration order.
+    /// </remarks>
+    public string GetPath()
+    {
+        if (Parent is null)
+            return "$";
+
+        List<string> segments = [];
+        BencodeNode current = this;
+        while (current.Parent is { } parent)
+        {
+            segments.Add(GetPathSegment(parent, current));
+            current = parent;
+        }
+
+        segments.Reverse();
+        return "$" + string.Concat(segments);
+    }
+
+    /// <summary>
+    /// Replaces this node within its parent container with the supplied value, detaching this node, mirroring
+    /// <see cref="System.Text.Json.Nodes.JsonNode.ReplaceWith{T}(T)" />. The implicit conversions from
+    /// <see langword="string" />, integers, and byte arrays let scalars be passed directly.
+    /// </summary>
+    /// <param name="value">
+    /// The replacement node, or <see langword="null" /> to clear the slot this node occupies.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="value" /> already belongs to another container.
+    /// </exception>
+    /// <remarks>
+    /// When this node has no parent the call does nothing, matching the <see cref="System.Text.Json.Nodes.JsonNode" />
+    /// contract. After a successful replacement this node's <see cref="Parent" /> is <see langword="null" /> and it can
+    /// be added to another container.
+    /// </remarks>
+    public void ReplaceWith(BencodeNode? value)
+    {
+        switch (Parent)
+        {
+            case BencodeObject obj:
+                foreach (KeyValuePair<string, BencodeNode?> entry in obj)
+                {
+                    if (ReferenceEquals(entry.Value, this))
+                    {
+                        obj[entry.Key] = value;
+                        return;
+                    }
+                }
+
+                return;
+
+            case BencodeArray array:
+                array[array.IndexOf(this)] = value;
+                return;
+
+            default:
+                return;
+        }
+    }
+
+    /// <summary>
+    /// Formats the path segment that addresses <paramref name="child" /> within <paramref name="parent" />.
+    /// </summary>
+    /// <param name="parent">The containing node.</param>
+    /// <param name="child">The child whose segment is produced.</param>
+    /// <returns>An index segment for an array parent, or a key segment for an object parent.</returns>
+    private static string GetPathSegment(BencodeNode parent, BencodeNode child)
+    {
+        if (parent is BencodeArray array)
+            return "[" + array.IndexOf(child).ToString(CultureInfo.InvariantCulture) + "]";
+
+        var obj = (BencodeObject)parent;
+        foreach (KeyValuePair<string, BencodeNode?> entry in obj)
+        {
+            if (ReferenceEquals(entry.Value, child))
+                return FormatKeySegment(entry.Key);
+        }
+
+        // Unreachable while the single-parent invariant holds: a child always appears in its parent.
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Formats an object key as a path segment, quoting keys that contain characters outside ASCII letters, digits, and
+    /// underscores.
+    /// </summary>
+    /// <param name="key">The object key.</param>
+    /// <returns>A <c>.name</c> segment for simple keys; otherwise a quoted <c>['name']</c> segment.</returns>
+    private static string FormatKeySegment(string key)
+    {
+        var simple = key.Length > 0;
+        foreach (var c in key)
+        {
+            if (!char.IsAsciiLetterOrDigit(c) && c != '_')
+            {
+                simple = false;
+                break;
+            }
+        }
+
+        return simple
+            ? "." + key
+            : "['" + key.Replace("'", "\\'", StringComparison.Ordinal) + "']";
+    }
+
+    /// <summary>
     /// Determines whether two node trees are structurally equal.
     /// </summary>
     /// <param name="node1">The first node, which may be <see langword="null" />.</param>
