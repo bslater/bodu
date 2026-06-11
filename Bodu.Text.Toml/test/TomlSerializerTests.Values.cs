@@ -16,7 +16,8 @@ namespace Bodu.Text.Toml;
 /// Verifies the native scalar value model of <see cref="TomlSerializer" />: integers (including the range-checked
 /// boundaries and overflow on read), floats (fractional, exponent, and the <c>inf</c>/<c>-inf</c>/<c>nan</c>
 /// sentinels), the four date-time kinds, Booleans, strings with escaping, characters, <see cref="Guid" />,
-/// <see cref="Uri" />, byte arrays under both handlings, and the types TOML cannot natively represent.
+/// <see cref="Uri" />, <see cref="Version" />, <see cref="TimeSpan" />, <see cref="Half" />, byte arrays under both
+/// handlings, and the types TOML cannot natively represent.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -511,6 +512,163 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Value = 09:30:00.5\n", Serialize(value));
         Assert.AreEqual(value, RoundTrip(value));
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Version" /> serializes to its component string form and round-trips, across the two-,
+    /// three-, and four-component shapes.
+    /// </summary>
+    /// <param name="text">The version text under test.</param>
+    [TestMethod]
+    [DataRow("1.2")]
+    [DataRow("1.2.3")]
+    [DataRow("10.20.30.40")]
+    public void SerializeDeserialize_WhenVersion_ShouldEmitStringAndRoundTrip(string text)
+    {
+        var value = Version.Parse(text);
+
+        Assert.AreEqual($"Value = \"{text}\"\n", Serialize(value));
+        Assert.AreEqual(value, RoundTrip(value));
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="Version" /> from a string with leading or trailing whitespace throws
+    /// <see cref="TomlSerializationException" />, matching the strictness of the
+    /// <see cref="System.Text.Json" /> converter.
+    /// </summary>
+    /// <param name="padded">The padded version text under test.</param>
+    [TestMethod]
+    [DataRow(" 1.2.3")]
+    [DataRow("1.2.3 ")]
+    public void Deserialize_WhenVersionStringPadded_ShouldThrowTomlSerializationException(string padded)
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Version>>($"Value = \"{padded}\"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="Version" /> from a string that is not a parsable version throws
+    /// <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenVersionStringInvalid_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Version>>("Value = \"not-a-version\"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="Version" /> from a non-string token throws
+    /// <see cref="TomlSerializationException" />, because the converter requires a string.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenVersionFromInteger_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Version>>("Value = 1\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TimeSpan" /> serializes to the invariant constant (<c>"c"</c>) string form and
+    /// round-trips, across the zero, negative, multi-day, and fractional-second shapes.
+    /// </summary>
+    /// <param name="days">The day component of the value under test.</param>
+    /// <param name="ticksWithinDay">The remaining ticks beyond whole days, carrying the sub-day component.</param>
+    /// <param name="expected">The expected canonical constant-format text.</param>
+    [TestMethod]
+    [DataRow(0, 0L, "00:00:00")]
+    [DataRow(0, -300_000_000L, "-00:00:30")]
+    [DataRow(1, 73_845_670_000L, "1.02:03:04.5670000")]
+    [DataRow(0, 335_400_000_000L, "09:19:00")]
+    public void SerializeDeserialize_WhenTimeSpan_ShouldEmitConstantFormatAndRoundTrip(int days, long ticksWithinDay, string expected)
+    {
+        TimeSpan value = TimeSpan.FromDays(days) + TimeSpan.FromTicks(ticksWithinDay);
+
+        Assert.AreEqual($"Value = \"{expected}\"\n", Serialize(value));
+        Assert.AreEqual(value, RoundTrip(value));
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="TimeSpan" /> from a string that does not match the constant format throws
+    /// <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTimeSpanStringInvalid_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<TimeSpan>>("Value = \"not-a-timespan\"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="TimeSpan" /> from a non-string token throws
+    /// <see cref="TomlSerializationException" />, because the converter requires the constant-format string.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTimeSpanFromInteger_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<TimeSpan>>("Value = 30\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Half" /> value serializes to a TOML float through the exact widening to
+    /// <see cref="double" />, including the <c>nan</c>, <c>inf</c>, and <c>-inf</c> sentinels.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenHalf_ShouldEmitFloatText()
+    {
+        Assert.AreEqual("Value = 1.5\n", Serialize((Half)1.5));
+        Assert.AreEqual("Value = 65504.0\n", Serialize(Half.MaxValue));
+        Assert.AreEqual("Value = nan\n", Serialize(Half.NaN));
+        Assert.AreEqual("Value = inf\n", Serialize(Half.PositiveInfinity));
+        Assert.AreEqual("Value = -inf\n", Serialize(Half.NegativeInfinity));
+    }
+
+    /// <summary>
+    /// Verifies that finite and non-finite <see cref="Half" /> values round-trip through TOML to equal values.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenHalf_ShouldRoundTrip()
+    {
+        Assert.AreEqual((Half)1.5, RoundTrip((Half)1.5));
+        Assert.AreEqual(Half.MaxValue, RoundTrip(Half.MaxValue));
+        Assert.AreEqual(Half.PositiveInfinity, RoundTrip(Half.PositiveInfinity));
+        Assert.IsTrue(Half.IsNaN(RoundTrip(Half.NaN)));
+    }
+
+    /// <summary>
+    /// Verifies that reading a finite TOML float outside the <see cref="Half" /> range saturates to infinity rather than
+    /// throwing, matching IEEE 754 narrowing and the behavior of the <see cref="float" /> converter.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenFloatExceedsHalfRange_ShouldSaturateToInfinity()
+    {
+        Half actual = TomlSerializer.Deserialize<ValueModel<Half>>("Value = 1e10\n").Value;
+
+        Assert.IsTrue(Half.IsPositiveInfinity(actual));
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="Half" /> from a non-float token throws
+    /// <see cref="TomlSerializationException" />, mirroring the strictness of the <see cref="float" /> converter.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenHalfFromInteger_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Half>>("Value = 1\n");
+        });
     }
 
     /// <summary>
