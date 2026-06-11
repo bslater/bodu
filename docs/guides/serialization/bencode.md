@@ -23,12 +23,12 @@ FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 |---|---|
 | `string` | byte string (UTF-8) |
 | `byte[]` | byte string |
-| integer types | integer (`i…e`) |
+| integer types (incl. `ulong` beyond `long.MaxValue`) | integer (`i…e`) |
 | `enum` | byte string (member name) |
-| arrays, lists | list (`l…e`) |
-| objects, string-keyed dictionaries | dictionary (`d…e`) |
+| arrays, lists, sets, queues, stacks, concurrent collections | list (`l…e`) |
+| objects, dictionaries | dictionary (`d…e`) |
 
-Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a `null` member is omitted on write.
+Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a `null` member is omitted on write. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as their invariant text and parsed back on read. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`: the writer emits pop order and the reader pushes in document order.
 
 ## Pattern 3 — Rename members
 
@@ -40,6 +40,8 @@ var options = new BencodeSerializerOptions
 ```
 
 Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[BencodePropertyName("…")]`, which always wins over the policy.
+
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[BencodeInclude]` on the field. Fields follow the same naming-policy, ignore, required, and converter rules as properties.
 
 ## Pattern 4 — Handle the kinds Bencode cannot represent
 

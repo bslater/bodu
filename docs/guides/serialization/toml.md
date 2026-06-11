@@ -30,10 +30,10 @@ ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 | `DateOnly` / `TimeOnly` | local date / local time |
 | `enum` | string (member name) |
 | `byte[]` | integer array, or Base64 string via `ByteArrayHandling` |
-| arrays, lists | array |
-| objects, string-keyed dictionaries | table |
+| arrays, lists, sets, queues, stacks, concurrent collections | array |
+| objects, dictionaries | table |
 
-TOML has no null: a null member is omitted by default. `decimal` and `TimeSpan` are rejected unless a [converter](converters.md) maps them.
+TOML has no null: a null member is omitted by default. `decimal` and `TimeSpan` are rejected unless a [converter](converters.md) maps them. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`.
 
 Choose the `byte[]` form with <xref:Bodu.Text.Toml.TomlByteArrayHandling> on the options:
 
@@ -51,6 +51,8 @@ var options = new TomlSerializerOptions
 ```
 
 Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[TomlPropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`).
+
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines.
 
 ## Pattern 4 — Select the spec version
 
