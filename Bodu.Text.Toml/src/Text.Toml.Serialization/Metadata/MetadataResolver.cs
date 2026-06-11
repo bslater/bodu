@@ -61,7 +61,7 @@ internal static class MetadataResolver
                 if (!IsSupportedExtensionDataType(property.PropertyType))
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExtensionDataType, property.Name, type));
 
-                extensionData = new Draft(property, property.Name, converter, conditional, creationHandling, order, requiredByAttribute, declarationIndex++).ToMetadata();
+                extensionData = new Draft(property, property.Name, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++).ToMetadata();
                 continue;
             }
 
@@ -69,7 +69,7 @@ internal static class MetadataResolver
                 ?? namingPolicy?.ConvertName(property.Name)
                 ?? property.Name;
 
-            drafts.Add(new Draft(property, wireName, converter, conditional, creationHandling, order, requiredByAttribute, declarationIndex++));
+            drafts.Add(new Draft(property, wireName, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++));
         }
 
         ConstructorInfo? constructor = ChooseConstructor(type);
@@ -219,6 +219,7 @@ internal static class MetadataResolver
         /// </param>
         /// <param name="order">The write order.</param>
         /// <param name="requiredByAttribute">Whether the member is marked <see langword="required" />.</param>
+        /// <param name="included">Whether <see cref="TomlIncludeAttribute" /> opts the member into binding.</param>
         /// <param name="declarationIndex">The declaration order index.</param>
         internal Draft(
             PropertyInfo property,
@@ -228,6 +229,7 @@ internal static class MetadataResolver
             TomlObjectCreationHandling? creationHandling,
             int order,
             bool requiredByAttribute,
+            bool included,
             int declarationIndex)
         {
             Property = property;
@@ -237,6 +239,7 @@ internal static class MetadataResolver
             CreationHandling = creationHandling;
             Order = order;
             RequiredByAttribute = requiredByAttribute;
+            Included = included;
             DeclarationIndex = declarationIndex;
             ConstructorParameterIndex = -1;
         }
@@ -284,6 +287,13 @@ internal static class MetadataResolver
         internal bool RequiredByAttribute { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the member is opted into binding through non-public accessors by
+        /// <see cref="TomlIncludeAttribute" />.
+        /// </summary>
+        /// <returns><see langword="true" /> when the member carries the attribute.</returns>
+        internal bool Included { get; }
+
+        /// <summary>
         /// Gets the declaration order index.
         /// </summary>
         /// <returns>The declaration index.</returns>
@@ -320,7 +330,8 @@ internal static class MetadataResolver
                 Order,
                 ConstructorParameterIndex,
                 RequiredByAttribute || RequiredByConstructor,
-                DefaultValue)
+                DefaultValue,
+                Included)
             {
                 CreationHandling = CreationHandling,
             };
