@@ -178,16 +178,22 @@ public readonly partial struct BencodeElement
     /// <see cref="System.Text.Json.JsonElement.WriteTo" />.
     /// </summary>
     /// <param name="writer">The destination writer.</param>
-    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the writer's call sequence does not permit a value at the current position.
+    /// Thrown when this element is the default value and belongs to no document, or when the writer's call sequence
+    /// does not permit a value at the current position.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     /// <remarks>
     /// The encoded bytes are emitted verbatim; because the owning document was validated when parsed, no re-validation
     /// occurs.
     /// </remarks>
-    public void WriteTo(Writer.Utf8BencodeWriter writer) =>
+    public void WriteTo(Writer.Utf8BencodeWriter writer)
+    {
+        if (_document is null)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_DefaultElement);
+
         writer.WriteRawValue(_document.GetRawSpan(_index), skipInputValidation: true);
+    }
 
     /// <summary>
     /// Creates an independent copy of this element whose lifetime is not tied to the owning document, mirroring

@@ -497,6 +497,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A null document cannot be written to Bencode..
+        /// </summary>
+        internal static string Op_NotSupported_NullDocument {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullDocument", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation is not valid on a default BencodeElement that belongs to no document..
+        /// </summary>
+        internal static string Op_Invalid_DefaultElement {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a Bencode object..
         /// </summary>
         internal static string Op_Invalid_NodeNotObject {

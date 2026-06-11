@@ -33,6 +33,8 @@ internal static class DefaultConverters
     private static readonly BencodeConverter[] s_builtIn =
     [
         new BencodeNodeConverter(),
+        new BencodeElementConverter(),
+        new BencodeDocumentConverter(),
         new StringConverter(),
         new ByteArrayConverter(),
         new MemoryByteConverter(),
