@@ -21,6 +21,7 @@ We are mirroring the S.T.J test suite across both self-contained libraries — `
 | **B2b‑p2** | Bencode serializer features part 2: Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters (+ src fix: non-public setter assigned on read only with `[BencodeInclude]`) | `80e24b22` | BVT 310 / Reg 459 |
 | **T2a** | TOML serializer values/collections/dictionaries/nullables | `5e297e68` | BVT 400 / Reg 529 |
 | **B3** | Bencode DOMs + exceptions: `BencodeDocument`/`BencodeElement` (Parse grammar/depth, accessor kind-matrix, enumerators, disposal), `BencodeNode`/`Object`/`Array`/`Value` (full collection surfaces, conversions, DeepEquals/DeepClone), exception ctor surfaces (+ src fixes: `BencodeNode.Parse` now rejects trailing bytes per its documented contract; `BencodeObject`/`BencodeArray` detach a removed/replaced child's `Parent`) | `23d8390e` | BVT 468 / Reg 680 |
+| **T2b** | TOML serializer features: PropertyName, NamingPolicy, PropertyVisibility, PropertyOrder (**order IS honored** — reverses output lines), Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters (+ src fix mirroring B2b‑p2: non-public setter assigned on read only with `[TomlInclude]` — `PropertyMetadata.CanSet`) | `6a2f01d8` | BVT 516 / Reg 660 |
 
 Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guards on the B2a KAT methods, and three src fixes (see §4).
 
@@ -28,11 +29,10 @@ Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guar
 
 | Pass | Scope | Est. new tests |
 |---|---|---|
-| **T2b** | TOML serializer features (mirror B2b‑p1 + B2b‑p2) | ~120–150 |
 | **T3** | TOML DOMs + exceptions (mirror B3) | ~90–120 |
 | **RICH** | Richness/parity enhancements (implementation + tests): Queue/Stack/Concurrent collections, non-string dictionary keys, `ulong`>`Int64`, field serialization | ~40–60 |
 
-**Suggested order:** T2b → T3 → RICH. (B3 ✅ finished Bencode; T2b/T3 finish TOML; RICH last so tests pin current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
+**Suggested order:** T3 → RICH. (B3 ✅ finished Bencode; T2b ✅ done; T3 finishes TOML; RICH last so tests pin current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
 
 ---
 
@@ -297,7 +297,22 @@ Each pass: read the **src** types and the **existing committed tests** first; ex
 
 ---
 
-### 5.4 T2b — TOML serializer features (mirror B2b‑p1 + B2b‑p2)
+### 5.4 T2b — TOML serializer features (mirror B2b‑p1 + B2b‑p2) — ✅ DONE (`6a2f01d8`)
+
+> Completed and committed (BVT 516 / Reg 660). Probed contracts discovered during the pass (record alongside §4.2):
+> - **Required missing** → `TomlSerializationException`: “Required member '<wireName>' was not present in the input for type '<T>'.” (wire name, not CLR name). C# `required`, `[TomlRequired]`, and no-default ctor params are all enforced.
+> - **Duplicate key binding the same member** (incl. via case-insensitive match) → `TomlSerializationException` “appears more than once”. **Unmapped Disallow** message names both the key and the target type.
+> - **Extension data**: supported shapes `TomlObject` / `IDictionary<string,TomlNode?>` / `Dictionary<string,TomlNode?>` only (others → `InvalidOperationException`, as is a second `[TomlExtensionData]` member); entries write back **after declared members in insertion order** (no sort — contrast Bencode); stays null when no overflow; capture takes precedence over Disallow.
+> - **Populate**: options/type/member precedence identical to Bencode; merges dictionaries (header-table input), appends lists, populates get-only collections, falls back to Replace on a null seed.
+> - **MaxDepth**: serialize over-depth → `TomlSerializationException` (“maximum write depth of {n} has been exceeded”); read over-depth → `TomlFormatException` but **only for inline value nesting** (see flagged bug 1). Setter: negative → `ArgumentOutOfRangeException`, 0 → resets to `DefaultMaxDepth` (64), after first use → `InvalidOperationException`.
+> - **Enums**: default member-name string; integers accepted on read; case-insensitive name match; numeric strings parsed; undefined → decimal text; flags → “Read, Write”; `[TomlStringEnumMemberName]` beats naming policy; `TomlNumberEnumConverter` reading a string, or the string converter with `allowIntegerValues:false` reading an integer → `TomlSerializationException`.
+> - **Ctor binding**: attributed > parameterless > greatest arity; param↔member match by CLR name, always case-insensitive; renamed/policy wire names flow to ctor args; absent optional param uses its default.
+> - Empty nested object member emits `[Child]\n`; empty root table emits `“”`.
+>
+> **Flagged bugs, not fixed (candidates for a later pass):**
+> 1. Reader/writer MaxDepth asymmetry: `[a.b.c]` header paths are not bounded by MaxDepth on read (only inline-table/array nesting is), while the writer bounds the same graph on serialize. Pinned as current behavior in `Deserialize_WhenHeaderTablePathExceedsMaxDepth_ShouldNotThrow`.
+> 2. Extension-data key collision on write: an extension entry whose key equals a declared member's wire name is emitted as a duplicate key, producing invalid TOML (Bencode prefers the mapped member). Left untested.
+
 
 Same dimension set as B2b (all of §5.1) **plus** the B2b‑p1 dimensions (PropertyName, NamingPolicy, PropertyVisibility, PropertyOrder), adapted to TOML. **Key contrasts to assert** (vs Bencode):
 - **`[TomlPropertyOrder]` IS honored** (output is document-order, not key-sorted) — mirror `PropertyOrderTests.{BeforeDefaultOrder,AfterDefaultOrder,BeforeAndAfterDefaultOrder}` with real reordering effects.
