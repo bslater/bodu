@@ -6,7 +6,6 @@
 
 using System.Buffers;
 using System.Globalization;
-using System.Text;
 
 namespace Bodu.Text.Toml.Writer;
 
@@ -36,11 +35,6 @@ namespace Bodu.Text.Toml.Writer;
 /// </remarks>
 public ref struct Utf8TomlWriter
 {
-    /// <summary>
-    /// The UTF-8 encoding used to emit the finished document; it omits a byte-order mark.
-    /// </summary>
-    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
-
     /// <summary>
     /// The destination buffer writer that receives the completed document.
     /// </summary>
@@ -367,16 +361,15 @@ public ref struct Utf8TomlWriter
     }
 
     /// <summary>
-    /// Serializes the completed root table to canonical TOML and writes the UTF-8 bytes to the destination buffer
-    /// writer.
+    /// Serializes the completed root table to canonical TOML, emitting the UTF-8 bytes directly to the destination
+    /// buffer writer without an intermediate document-sized buffer.
     /// </summary>
     /// <param name="root">The completed root table.</param>
     private readonly void Serialize(TomlTableWriterNode root)
     {
-        StringBuilder builder = new();
-        TomlCanonicalWriter.WriteTableBody(builder, root, []);
-
-        _output.Write(s_utf8.GetBytes(builder.ToString()));
+        var emitter = new TomlUtf8Emitter(_output);
+        TomlCanonicalWriter.WriteTableBody(ref emitter, root, []);
+        emitter.Complete();
     }
 
     /// <summary>
