@@ -29,7 +29,6 @@ dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
-dotnet add package Bodu.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 
@@ -244,7 +243,7 @@ string? indentSize = config["format:indent:size"];
 
 ## Bodu.Text
 
-**Bodu.Text** adds the ergonomic, allocation-aware surface the BCL leaves out on top of `System.Text.Encoding` — byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. (For binary-to-text codecs such as Base64, reach for `Bodu.Text.Encoding` above.)
+The **`Bodu.Text`** namespace — shipped in the `Bodu.Core` package — adds the ergonomic, allocation-aware surface the BCL leaves out on top of `System.Text.Encoding` — byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. (For binary-to-text codecs such as Base64, reach for `Bodu.Text.Encoding` above.)
 
 ```csharp
 using Bodu.Text;

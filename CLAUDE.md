@@ -8,7 +8,7 @@ Guidance for AI assistants working in this repository. Read this file before mak
 
 | Project | Path | Responsibility |
 |---|---|---|
-| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, deque, evicting dictionary), extensions, text, XML, argument validation helpers (`ThrowHelper`), `WeekPattern`. |
+| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, deque, evicting dictionary), extensions, text-encoding utilities (`Bodu.Text` namespace: `EncodingDetection`, `EncodingExtensions`, `StringEncodingExtensions`), XML, argument validation helpers (`ThrowHelper`), `WeekPattern`. |
 | `Bodu.Test` | `Bodu.Test/` | Shared test infrastructure: KAT records (`Bodu.Test.Kat`), assertion helpers (`Bodu.Test.Assertions.ExceptionAssert`), reusable stream mocks (`Bodu.Test.IO`), test category constants (`TestCategories`). Referenced by other test projects. |
 | `Bodu.Numerics` | `Bodu.Numerics/` | `Fraction<T>` (rational arithmetic, parse/format, generic math, UTF-8). |
 | `Bodu.IO.Hashing` | `Bodu.IO.Hashing/` | Non-cryptographic hashing (Fletcher-16/32/64, full RevEng CRC catalogue, check-digit algorithms: Luhn, Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064). |
@@ -18,7 +18,6 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Text.Formats` | `Bodu.Text.Formats/` | Document formats: Delimited (RFC 4180 CSV/TSV), DotEnv, INI. |
 | `Bodu.Text.Bencode` | `Bodu.Text.Bencode/` | Self-contained Bencode (BEP 3) library shaped after the `System.Text.Json` BCL: ref-struct `Utf8BencodeReader`/`Utf8BencodeWriter` (+ `BencodeTokenType`/`BencodeValueKind`), the `BencodeSerializer` POCO mapper (converters, the full attribute family, options, naming policies, callbacks, enum converters), a mutable `JsonNode`-style DOM (`BencodeNode`/`BencodeObject`/`BencodeArray`/`BencodeValue`), and a read-only `JsonDocument`-style DOM (`BencodeDocument`/`BencodeElement`). Folders/namespaces follow the S.T.J source layout: `Bodu.Text.Bencode[.Reader/.Writer/.Document/.Nodes/.Serialization]`. |
 | `Bodu.Text.Toml` | `Bodu.Text.Toml/` | Self-contained TOML (v1.0.0 / v1.1.0) library, the same `System.Text.Json`-aligned shape and `Text.Toml.*` folder/namespace structure as `Bodu.Text.Bencode`: `Utf8TomlReader`/`Utf8TomlWriter`, the `TomlSerializer` POCO mapper, and the mutable (`TomlNode`) and read-only (`TomlDocument`) DOMs. TOML's richer value model adds native float, boolean, and the four RFC 3339 date-time kinds, plus `TomlSpecVersion` and `TomlByteArrayHandling`. |
-| `Bodu.Text` | `Bodu.Text/` | Text/encoding utilities: encoding detection (`EncodingDetection`) and string/byte encoding extensions (`EncodingExtensions`, `StringEncodingExtensions`). |
 | `Bodu.Extensions.Configuration.Text` | `Bodu.Extensions.Configuration.Text/` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. |
 | `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Resource-driven notable-date engine on the notable-date schema: rule model, date-calculation strategies and astronomical algorithms (`Algorithms`), range resolution (`RangeResolution`), observed-date adjustments, working-day extensions (`Bodu.Extensions`), and `NotableDateService`. |
 | `Bodu.Globalization.Calendar.Plugins` | `Bodu.Globalization.Calendar.Plugins/` | Trust-gated external plugin loading for assemblies contributing custom `INotableDateAlgorithm` implementations. |
@@ -48,7 +47,7 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled acr
 
 ## Key Types
 
-- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey, TValue>`, `IndexedSet<T>`, `IndexedPriorityQueue<TElement, TPriority>`, `ConcurrentHashSet<T>`, `PooledBufferBuilder`, `WeekPattern`, `ThrowHelper`.
+- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey, TValue>`, `IndexedSet<T>`, `IndexedPriorityQueue<TElement, TPriority>`, `ConcurrentHashSet<T>`, `PooledBufferBuilder`, `WeekPattern`, `ThrowHelper`; text-encoding utilities in the `Bodu.Text` namespace (`EncodingDetection`, `EncodingExtensions`, `StringEncodingExtensions`).
 - **Bodu.Numerics**: `Fraction<T>`.
 - **Bodu.IO.Hashing**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`(s), `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`, check-digit algorithms (`LuhnCheckDigitAlgorithm`, `IbanCheckDigitAlgorithm`, etc.).
 - **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Skipjack`, `Blowfish`, `Twofish`, `CamelliaEcb`, `Ascon128`, `Skein256/512/1024`, `Blake2b`, `Blake3`, `Tiger`, `SipHash`, `FNV1a`, `Adler32`, `CryptoHelpers`, AEAD modes (EAX, OFB, GCM), block-cipher modes.
