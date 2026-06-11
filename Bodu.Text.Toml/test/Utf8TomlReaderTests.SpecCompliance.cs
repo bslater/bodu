@@ -221,12 +221,28 @@ public sealed partial class Utf8TomlReaderTests
     }
 
     /// <summary>
-    /// Verifies that under the TOML v1.1.0 grammar a comment may contain control characters, which the draft
-    /// specification no longer prohibits.
+    /// Verifies that under the TOML v1.1.0 grammar a comment may not contain a control character other than tab: the
+    /// v1.1.0 draft retains the v1.0.0 prohibition (U+0000–U+0008, U+000A–U+001F, U+007F).
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenCommentContainsControlCharacter_ForV11_ShouldNotThrow()
+    public void Constructor_WhenCommentContainsControlCharacter_ForV11_ShouldThrowTomlFormatException()
     {
-        _ = CreateV11("a = 1 # comment \u0001 control\n");
+        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = CreateV11("a = 1 # comment \u0001 control\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a table header may not re-open an implicit super-table after the table has been extended via
+    /// dotted keys, because the dotted assignment defines the table in dotted-key form.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenHeaderReopensTableExtendedByDottedKeys_ShouldThrowTomlFormatException()
+    {
+        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = new Utf8TomlReader("[x.y.z]\n[x]\ny.q = 1\n[x.y]\n"u8);
+        });
     }
 }

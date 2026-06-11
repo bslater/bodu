@@ -249,6 +249,10 @@ internal sealed class TomlDocumentParser
     /// <summary>
     /// Skips a comment from the <c>#</c> to the end of the line, rejecting disallowed control characters.
     /// </summary>
+    /// <remarks>
+    /// Both TOML v1.0.0 and the v1.1.0 draft prohibit control characters other than tab (U+0000–U+0008,
+    /// U+000A–U+001F, U+007F) inside a comment, so the rule is applied unconditionally.
+    /// </remarks>
     private void SkipComment()
     {
         Advance();
@@ -630,6 +634,9 @@ internal sealed class TomlDocumentParser
 
             if (AtNewline())
             {
+                // The newline is content: preserve the source spelling (LF or CRLF) rather than normalizing.
+                if (Current == '\r')
+                    sb.Append('\r');
                 sb.Append('\n');
                 ConsumeNewline();
                 continue;
@@ -680,6 +687,9 @@ internal sealed class TomlDocumentParser
 
             if (AtNewline())
             {
+                // The newline is content: preserve the source spelling (LF or CRLF) rather than normalizing.
+                if (Current == '\r')
+                    sb.Append('\r');
                 sb.Append('\n');
                 ConsumeNewline();
                 continue;
@@ -1460,7 +1470,7 @@ internal sealed class TomlDocumentParser
             return;
         }
 
-        var created = new TomlTableNode(_pos);
+        var created = CreateChildTable(table);
         table.Set(key, created);
         _headerDefined.Add(created);
         _current = created;
@@ -1497,7 +1507,7 @@ internal sealed class TomlDocumentParser
             table.Set(key, array);
         }
 
-        var element = new TomlTableNode(_pos);
+        var element = CreateChildTable(table);
         array.Add(element);
         _current = element;
     }
@@ -1528,10 +1538,24 @@ internal sealed class TomlDocumentParser
             }
         }
 
-        var created = new TomlTableNode(_pos);
+        var created = CreateChildTable(table);
         table.Set(key, created);
         _implicitSuper.Add(created);
         return created;
+    }
+
+    /// <summary>
+    /// Creates a child table one level beneath <paramref name="parent" />, enforcing the maximum nesting depth.
+    /// </summary>
+    /// <param name="parent">The table the child will be added under.</param>
+    /// <returns>The created table.</returns>
+    /// <exception cref="TomlFormatException">Thrown when the child would exceed the configured maximum depth.</exception>
+    private TomlTableNode CreateChildTable(TomlTableNode parent)
+    {
+        if (parent.Depth >= _maxDepth)
+            throw Error(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Format_Invalid_TomlNestingTooDeep, _maxDepth));
+
+        return new TomlTableNode(_pos, parent.Depth + 1);
     }
 
     /// <summary>
@@ -1572,10 +1596,15 @@ internal sealed class TomlDocumentParser
             if (_headerDefined.Contains(child))
                 throw Error(TomlResourceStrings.Format_Invalid_TomlDuplicateTable);
 
+            // Traversing an implicit super-table with a dotted key defines it via dotted keys: a later [table] header
+            // may no longer re-open it, mirroring the rule that headers cannot redefine dotted-key tables.
+            if (_implicitSuper.Remove(child))
+                _dotted.Add(child);
+
             return child;
         }
 
-        var created = new TomlTableNode(_pos);
+        var created = CreateChildTable(table);
         _dotted.Add(created);
         table.Set(key, created);
         return created;

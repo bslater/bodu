@@ -73,12 +73,25 @@ public sealed partial class Utf8TomlReaderTests
     }
 
     /// <summary>
-    /// Verifies that a multi-line basic string preserves an unescaped embedded newline as a line feed.
+    /// Verifies that a multi-line basic string preserves an unescaped embedded CRLF newline verbatim, matching the
+    /// <c>mlb-content =/ newline</c> grammar production where the newline itself is content.
     /// </summary>
     [TestMethod]
-    public void Read_WhenMultilineBasicStringWithEmbeddedNewline_ShouldNormalizeToLineFeed()
+    public void Read_WhenMultilineBasicStringWithEmbeddedCrlf_ShouldPreserveCrlf()
     {
         Utf8TomlReader reader = Create("v = \"\"\"a\r\nb\"\"\"\n");
+
+        ExpectSingleValue(ref reader, TomlTokenType.String);
+        Assert.AreEqual("a\r\nb", reader.GetString());
+    }
+
+    /// <summary>
+    /// Verifies that a multi-line basic string preserves an unescaped embedded LF newline as a line feed.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenMultilineBasicStringWithEmbeddedLf_ShouldPreserveLineFeed()
+    {
+        Utf8TomlReader reader = Create("v = \"\"\"a\nb\"\"\"\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.String);
         Assert.AreEqual("a\nb", reader.GetString());
