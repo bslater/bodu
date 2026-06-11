@@ -33,7 +33,7 @@ namespace Bodu.Text.Toml.Writer;
 /// form matching their kind.
 /// </para>
 /// </remarks>
-public ref struct Utf8TomlWriter
+public ref partial struct Utf8TomlWriter
 {
     /// <summary>
     /// The destination buffer writer that receives the completed document.

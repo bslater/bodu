@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -56,6 +56,7 @@
   <data name="Op_Invalid_WriterEndMismatch" xml:space="preserve"><value>The end call does not match the innermost open container.</value></data>
   <data name="Op_Invalid_WriterNoOpenContainer" xml:space="preserve"><value>There is no open container to close.</value></data>
   <data name="Arg_Invalid_TomlUnpairedSurrogate" xml:space="preserve"><value>The value contains an unpaired surrogate and cannot be encoded as UTF-8 TOML.</value></data>
+  <data name="Arg_Invalid_TomlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the TOML key '{1}'.</value></data>
   <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a TomlConverter.</value></data>

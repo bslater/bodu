@@ -267,3 +267,31 @@ no internal type named `TomlLexer` remains.
 The A4 and B4 gates are the two points where the whole effort is re-validated end to end; nothing
 merges past them red. If Phase B stalls, the system left by A4 is self-consistent and
 independently valuable (assessment risk register, last row).
+
+---
+
+## Follow-up — Utf8Json tier 1/2 parity pass (delivered)
+
+After Phase B, the reader and writer were brought to `Utf8JsonReader`/`Utf8JsonWriter` tier 1/2
+parity, scoped against the real S.T.J sources:
+
+- **Reader tier 2** (`Utf8TomlReader`): `CurrentDepth` (bracket depth, `Utf8JsonReader`
+  convention), `TrySkip`, `ValueTextEquals` over UTF-8/string/char spans (allocation-free
+  escape-free fast path), `GetComment`, and the widened typed-accessor menu in
+  `Utf8TomlReader.TryGet.cs` — narrowing integer `Get*`/`TryGet*` (`byte`…`ulong`), `GetSingle`
+  and `GetDecimal` parsed exactly from the raw literal, `GetGuid`/`TryGetGuid`. Accessors are
+  token-type strict (integer family ← `Integer`, float family ← `Float`), preserving TOML's
+  typed value model.
+- **Writer tier 1** (`Utf8TomlWriter`): canonical emission is byte-native — `TomlCanonicalWriter`
+  renders through the span-leasing `TomlUtf8Emitter` straight into the destination
+  `IBufferWriter<byte>`, deleting the `StringBuilder` rendering, the document-sized UTF-16
+  string, and the final transcode. Output is byte-identical. The buffered layout tree remains by
+  design: the canonical layout reorders members (scalars before `[header]` sections), which is a
+  whole-document property a call-by-call streaming writer cannot reproduce.
+- **Writer tier 2**: paired property/value methods (`WriteString(name, value)`,
+  `WriteInteger(name, value)`, …, `WriteStartTable(name)`, `WriteStartArray(name)`) and
+  char-span/UTF-8 overloads of `WritePropertyName`/`WriteString` (strict UTF-8 validation,
+  `ArgumentException` on invalid bytes).
+- **Still deliberately absent** (tier 3): `ReadOnlySequence<byte>` input, resumable
+  `isFinalBlock`/reader-state continuation, and a streaming write model — the deferred tier
+  recorded in the assessment.

@@ -247,7 +247,7 @@ public sealed partial class Utf8TomlWriterTests
             Utf8TomlWriter writer = new(buffer);
             writer.WriteStartTable();
             writer.WritePropertyName("v");
-            writer.WriteString(null!);
+            writer.WriteString((string)null!);
         }, "value");
     }
 
@@ -262,7 +262,7 @@ public sealed partial class Utf8TomlWriterTests
             ArrayBufferWriter<byte> buffer = new();
             Utf8TomlWriter writer = new(buffer);
             writer.WriteStartTable();
-            writer.WritePropertyName(null!);
+            writer.WritePropertyName((string)null!);
         }, "name");
     }
 }
