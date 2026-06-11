@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -46,6 +46,19 @@
   <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve"><value>The string is not terminated.</value></data>
   <data name="Format_Invalid_TomlUnterminatedTable" xml:space="preserve"><value>The table header is not terminated.</value></data>
   <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Op_Invalid_WriterDuplicateKey" xml:space="preserve"><value>The key '{0}' has already been written to the current table.</value></data>
+  <data name="Op_Invalid_WriterValueWithoutKey" xml:space="preserve"><value>A value cannot be written to a table before a property name is written.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameOutsideTable" xml:space="preserve"><value>A property name can only be written when the current container is a table.</value></data>
+  <data name="Op_Invalid_WriterPropertyNamePending" xml:space="preserve"><value>A property name is already pending; write its value before writing another property name.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameWithoutValue" xml:space="preserve"><value>The current table has a pending property name without a value.</value></data>
+  <data name="Op_Invalid_WriterRootMustBeTable" xml:space="preserve"><value>The root of a TOML document must be a table.</value></data>
+  <data name="Op_Invalid_WriterDocumentComplete" xml:space="preserve"><value>The TOML document is complete; no further writes are permitted.</value></data>
+  <data name="Op_Invalid_WriterEndMismatch" xml:space="preserve"><value>The end call does not match the innermost open container.</value></data>
+  <data name="Op_Invalid_WriterNoOpenContainer" xml:space="preserve"><value>There is no open container to close.</value></data>
+  <data name="Arg_Invalid_TomlUnpairedSurrogate" xml:space="preserve"><value>The value contains an unpaired surrogate and cannot be encoded as UTF-8 TOML.</value></data>
+  <data name="Arg_Invalid_TomlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>
+  <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the TOML key '{1}'.</value></data>
+  <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a TomlConverter.</value></data>
   <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
   <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>TomlIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>

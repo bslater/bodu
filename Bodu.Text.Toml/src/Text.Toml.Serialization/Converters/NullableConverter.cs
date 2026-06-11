@@ -41,7 +41,7 @@ internal sealed class NullableConverter<T>
     }
 
     /// <inheritdoc />
-    public override T? Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+    public override T? Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
         (T)_inner.ReadAsObject(ref reader, typeof(T), options) !;
 
     /// <inheritdoc />

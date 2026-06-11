@@ -25,7 +25,7 @@ internal sealed class EnumNumberConverter<T>
     where T : struct, Enum
 {
     /// <inheritdoc />
-    public override T Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override T Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.Integer)
         {

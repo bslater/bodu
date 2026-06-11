@@ -29,7 +29,7 @@ internal sealed class TomlNodeConverter
         typeof(TomlNode).IsAssignableFrom(typeToConvert);
 
     /// <inheritdoc />
-    public override TomlNode Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+    public override TomlNode Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
         TomlNode.ReadFrom(ref reader);
 
     /// <inheritdoc />

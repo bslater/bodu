@@ -224,7 +224,7 @@ public abstract class TomlNode
     /// </remarks>
     public static TomlNode? Parse(ReadOnlySpan<byte> utf8Toml, TomlNodeOptions options)
     {
-        var reader = new Utf8TomlReader(utf8Toml);
+        var reader = new TomlDocumentReader(utf8Toml);
         if (!reader.Read())
             throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
 
@@ -244,7 +244,7 @@ public abstract class TomlNode
     /// token), matching the read-positioning contract the serializer's converters observe. Tables are created with the
     /// default, case-sensitive comparison.
     /// </remarks>
-    internal static TomlNode ReadFrom(ref Utf8TomlReader reader) =>
+    internal static TomlNode ReadFrom(ref TomlDocumentReader reader) =>
         ReadFrom(ref reader, default);
 
     /// <summary>
@@ -261,7 +261,7 @@ public abstract class TomlNode
     /// On return the reader is positioned on the value's last token (the scalar token itself, or the container's end
     /// token), matching the read-positioning contract the serializer's converters observe.
     /// </remarks>
-    internal static TomlNode ReadFrom(ref Utf8TomlReader reader, TomlNodeOptions options)
+    internal static TomlNode ReadFrom(ref TomlDocumentReader reader, TomlNodeOptions options)
     {
         switch (reader.TokenType)
         {

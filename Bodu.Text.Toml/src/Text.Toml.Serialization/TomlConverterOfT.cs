@@ -19,7 +19,7 @@ namespace Bodu.Text.Toml.Serialization;
 ///<![CDATA[
 /// public sealed class BooleanConverter : TomlConverter<bool>
 /// {
-///     public override bool Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+///     public override bool Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
 ///         reader.GetInt64() != 0;
 ///
 ///     public override void Write(Utf8TomlWriter writer, bool value, TomlSerializerOptions options) =>
@@ -50,9 +50,9 @@ public abstract class TomlConverter<T>
     /// <returns>The deserialized value.</returns>
     /// <remarks>
     /// On entry the reader is positioned on the value's first token. On return it must be positioned on the value's
-    /// last token, so the caller can advance past the value with a single <see cref="Utf8TomlReader.Read" />.
+    /// last token, so the caller can advance past the value with a single <see cref="TomlDocumentReader.Read" />.
     /// </remarks>
-    public abstract T Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options);
+    public abstract T Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options);
 
     /// <summary>
     /// Writes a value of type <typeparamref name="T" /> to the writer.
@@ -63,7 +63,7 @@ public abstract class TomlConverter<T>
     public abstract void Write(Utf8TomlWriter writer, T value, TomlSerializerOptions options);
 
     /// <inheritdoc />
-    internal sealed override object? ReadAsObject(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+    internal sealed override object? ReadAsObject(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
         Read(ref reader, typeToConvert, options);
 
     /// <inheritdoc />

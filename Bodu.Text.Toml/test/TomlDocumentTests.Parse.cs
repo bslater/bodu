@@ -197,18 +197,28 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that inline arrays nested exactly to the default maximum depth of 256 are accepted while one further
-    /// level throws <see cref="TomlFormatException" />.
+    /// Verifies that inline arrays nested exactly to the default maximum depth of 256 are accepted.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenNestingAtDefaultMaxDepth_ShouldParseDocument()
+    {
+        string atLimit = "a = " + new string('[', 256) + "1" + new string(']', 256) + "\n";
+
+        using TomlDocument document = TomlDocument.Parse(atLimit);
+
+        Assert.AreEqual(TomlValueKind.Array, document.RootElement.GetProperty("a").ValueKind);
+    }
+
+    /// <summary>
+    /// Verifies that inline arrays nested one level beyond the default maximum depth of 256 throw
+    /// <see cref="TomlFormatException" />.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowTomlFormatException()
     {
-        string atLimit = "a = " + new string('[', 256) + "1" + new string(']', 256) + "\n";
         string beyondLimit = "a = " + new string('[', 257) + "1" + new string(']', 257) + "\n";
-
-        using TomlDocument document = TomlDocument.Parse(atLimit);
-        Assert.AreEqual(TomlValueKind.Array, document.RootElement.GetProperty("a").ValueKind);
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -217,18 +227,26 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that the <c>\e</c> escape is rejected under the default TOML v1.0 grammar but accepted as U+001B when
-    /// <see cref="TomlDocumentOptions.SpecVersion" /> selects <see cref="TomlSpecVersion.V1_1" />.
+    /// Verifies that the <c>\e</c> escape is rejected under the default TOML v1.0 grammar.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenSpecVersionVaries_ForEscapeE_ShouldGateGrammar()
+    public void Parse_WhenEscapeSequenceEscape_ForV10_ShouldThrowTomlFormatException()
     {
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             using TomlDocument rejected = TomlDocument.Parse("a = \"\\e\"\n");
         });
+    }
 
+    /// <summary>
+    /// Verifies that the <c>\e</c> escape decodes to U+001B when <see cref="TomlDocumentOptions.SpecVersion" />
+    /// selects <see cref="TomlSpecVersion.V1_1" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenEscapeSequenceEscape_ForV11_ShouldDecodeEscapeCharacter()
+    {
         using TomlDocument document = TomlDocument.Parse("a = \"\\e\"\n", new TomlDocumentOptions { SpecVersion = TomlSpecVersion.V1_1 });
+
         Assert.AreEqual("\u001b", document.RootElement.GetProperty("a").GetString());
     }
 

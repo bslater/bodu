@@ -17,7 +17,7 @@ internal sealed class BooleanConverter
     : TomlConverter<bool>
 {
     /// <inheritdoc />
-    public override bool Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override bool Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.Boolean)
         {

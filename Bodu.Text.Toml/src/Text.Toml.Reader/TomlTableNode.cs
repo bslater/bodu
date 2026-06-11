@@ -29,11 +29,24 @@ internal sealed class TomlTableNode
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlTableNode" /> class.
     /// </summary>
-    /// <param name="offset">The zero-based source character offset at which the table begins.</param>
-    internal TomlTableNode(int offset)
+    /// <param name="offset">The zero-based source byte offset at which the table begins.</param>
+    /// <param name="depth">The nesting depth of the table within its tree, where the document root is zero.</param>
+    internal TomlTableNode(int offset, int depth = 0)
         : base(offset)
     {
+        Depth = depth;
     }
+
+    /// <summary>
+    /// Gets the nesting depth of the table within its tree, where the document root is zero.
+    /// </summary>
+    /// <returns>The zero-based nesting depth.</returns>
+    /// <remarks>
+    /// The builder uses the depth to bound table nesting created by dotted keys and <c>[a.b.c]</c> headers against the
+    /// configured maximum, so that a hostile document cannot drive unbounded recursion when the finished tree is
+    /// flattened.
+    /// </remarks>
+    internal int Depth { get; }
 
     /// <inheritdoc />
     internal override TomlReaderNodeKind Kind => TomlReaderNodeKind.Table;

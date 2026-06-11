@@ -23,7 +23,7 @@ internal sealed class TomlScalarNode
     /// </summary>
     /// <param name="tokenType">The token type that classifies the scalar.</param>
     /// <param name="value">The decoded CLR value.</param>
-    /// <param name="offset">The zero-based source character offset at which the scalar begins.</param>
+    /// <param name="offset">The zero-based source byte offset at which the scalar begins.</param>
     internal TomlScalarNode(TomlTokenType tokenType, object value, int offset)
         : base(offset)
     {

@@ -18,7 +18,7 @@ internal sealed class SingleConverter
     : TomlConverter<float>
 {
     /// <inheritdoc />
-    public override float Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override float Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.Float)
         {

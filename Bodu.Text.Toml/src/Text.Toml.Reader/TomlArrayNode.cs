@@ -22,7 +22,7 @@ internal sealed class TomlArrayNode
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlArrayNode" /> class.
     /// </summary>
-    /// <param name="offset">The zero-based source character offset at which the array begins.</param>
+    /// <param name="offset">The zero-based source byte offset at which the array begins.</param>
     internal TomlArrayNode(int offset)
         : base(offset)
     {

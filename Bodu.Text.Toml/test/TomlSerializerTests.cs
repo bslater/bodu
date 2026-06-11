@@ -458,7 +458,7 @@ public partial class TomlSerializerTests
         : TomlConverter<decimal>
     {
         /// <inheritdoc />
-        public override decimal Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+        public override decimal Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
             decimal.Parse(reader.GetString(), System.Globalization.CultureInfo.InvariantCulture);
 
         /// <inheritdoc />

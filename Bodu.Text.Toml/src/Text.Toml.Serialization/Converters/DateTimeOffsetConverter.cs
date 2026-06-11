@@ -17,7 +17,7 @@ internal sealed class DateTimeOffsetConverter
     : TomlConverter<DateTimeOffset>
 {
     /// <inheritdoc />
-    public override DateTimeOffset Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override DateTimeOffset Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.OffsetDateTime)
         {

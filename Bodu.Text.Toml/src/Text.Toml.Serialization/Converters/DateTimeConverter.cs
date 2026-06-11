@@ -17,21 +17,23 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <remarks>
 /// A <see cref="DateTimeKind.Unspecified" /> value carries no zone relation and is written as a TOML local date-time; a
 /// <see cref="DateTimeKind.Utc" /> or <see cref="DateTimeKind.Local" /> value is written as a TOML offset date-time. On
-/// read a local date-time is returned with <see cref="DateTimeKind.Unspecified" />, matching the source token.
+/// read a local date-time is returned with <see cref="DateTimeKind.Unspecified" />, matching the source token, and an
+/// offset date-time is returned as its UTC instant with <see cref="DateTimeKind.Utc" />, so every value the converter
+/// writes is read back to the same instant.
 /// </remarks>
 internal sealed class DateTimeConverter
     : TomlConverter<DateTime>
 {
     /// <inheritdoc />
-    public override DateTime Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override DateTime Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
-        if (reader.TokenType != TomlTokenType.LocalDateTime)
+        return reader.TokenType switch
         {
-            throw new TomlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedLocalDateTime, reader.TokenType));
-        }
-
-        return reader.GetDateTime();
+            TomlTokenType.LocalDateTime => reader.GetDateTime(),
+            TomlTokenType.OffsetDateTime => reader.GetDateTimeOffset().UtcDateTime,
+            _ => throw new TomlSerializationException(
+                string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedLocalDateTime, reader.TokenType)),
+        };
     }
 
     /// <inheritdoc />

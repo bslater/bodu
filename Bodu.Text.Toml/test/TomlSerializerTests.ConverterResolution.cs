@@ -227,7 +227,7 @@ public partial class TomlSerializerTests
         : TomlConverter<Code>
     {
         /// <inheritdoc />
-        public override Code Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+        public override Code Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
         {
             var text = reader.GetString();
             return new Code(int.Parse(text.AsSpan("code:".Length), System.Globalization.CultureInfo.InvariantCulture));
@@ -245,7 +245,7 @@ public partial class TomlSerializerTests
         : TomlConverter<Code>
     {
         /// <inheritdoc />
-        public override Code Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+        public override Code Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
             new((int)reader.GetInt64());
 
         /// <inheritdoc />
@@ -261,7 +261,7 @@ public partial class TomlSerializerTests
         : TomlConverter<Code>
     {
         /// <inheritdoc />
-        public override Code Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+        public override Code Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
             new((int)reader.GetInt64());
 
         /// <inheritdoc />
@@ -276,7 +276,7 @@ public partial class TomlSerializerTests
         : TomlConverter<PlainCode>
     {
         /// <inheritdoc />
-        public override PlainCode Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+        public override PlainCode Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
             new((int)reader.GetInt64());
 
         /// <inheritdoc />
@@ -292,7 +292,7 @@ public partial class TomlSerializerTests
         : TomlConverter<PlainCode>
     {
         /// <inheritdoc />
-        public override PlainCode Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+        public override PlainCode Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
             new(0);
 
         /// <inheritdoc />

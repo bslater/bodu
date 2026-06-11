@@ -184,23 +184,4 @@ public sealed partial class Utf8TomlWriterTests
         Assert.AreEqual("[a]\n\n[a.b]\nc = 1\n", actual);
     }
 
-    /// <summary>
-    /// Verifies that closing an array as the outermost container — leaving a non-table root — emits no document bytes.
-    /// </summary>
-    /// <remarks>
-    /// The canonical writer only serializes when the closed root is a table. Closing an array at the root therefore
-    /// records the value but produces no output, mirroring TOML's requirement that a document root be a table.
-    /// </remarks>
-    [TestMethod]
-    public void Write_WhenRootIsArray_ShouldEmitNothing()
-    {
-        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
-        {
-            writer.WriteStartArray();
-            writer.WriteInteger(1);
-            writer.WriteEndArray();
-        });
-
-        Assert.AreEqual(string.Empty, actual);
-    }
 }

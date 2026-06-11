@@ -292,9 +292,10 @@ Current state: mature; 56 src / 108 test files. Bencode, Delimited
   versions. A thin static `Toml` facade delegates to the pair for
   ergonomic one-liners. Validated against the spec examples, the shared
   `TextDocumentFormatContractTests` harness, and the vendored
-  **toml-test conformance corpus** (run in both the v1.0 and v1.1
-  profiles as a Regression-tier suite) — which surfaced and closed three
-  real parser bugs. The TOML implementation is now feature-complete.
+  **toml-test conformance corpus** (vendored at
+  `Bodu.Text.Toml/test/TomlTestCorpus/` and run in both the v1.0 and
+  v1.1 profiles as a Regression-tier suite via `TomlTestCorpusTests`).
+  The TOML implementation is now feature-complete.
 - **Streaming async readers have landed.** ✅ **Shipped.** The
   forward-only readers expose `ValueTask<bool> ReadAsync` — `IniReader`,
   `DelimitedReader`, and `DotEnvReader` — and Bencode adds streaming
