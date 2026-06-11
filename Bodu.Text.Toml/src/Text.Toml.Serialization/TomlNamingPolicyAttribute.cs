@@ -15,6 +15,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// on <see cref="TomlNamingPolicy" />. A member that carries an explicit <see cref="TomlPropertyNameAttribute" /> is
 /// unaffected, since that attribute always takes precedence over any naming policy.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [TomlNamingPolicy(TomlKnownNamingPolicy.SnakeCaseLower)]
+/// public sealed class RetryPolicy
+/// {
+///     public int MaxRetryCount { get; set; } = 5;
+/// }
+///
+/// // Serializes as: max_retry_count = 5
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class TomlNamingPolicyAttribute
     : TomlAttribute

@@ -10,6 +10,22 @@ namespace Bodu.Text.Bencode.Serialization;
 /// Excludes a property or field from Bencode serialization, either unconditionally or under the condition given by
 /// <see cref="Condition" />.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Account
+/// {
+///     [BencodeIgnore]
+///     public string? Secret { get; set; }
+///
+///     [BencodeIgnore(Condition = BencodeIgnoreCondition.WhenWritingNull)]
+///     public string? Comment { get; set; }
+/// }
+///
+/// // Secret is never written; Comment is written only when it is non-null.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class BencodeIgnoreAttribute
     : BencodeAttribute

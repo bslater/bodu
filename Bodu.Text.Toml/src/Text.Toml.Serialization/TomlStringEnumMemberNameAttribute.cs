@@ -21,6 +21,22 @@ namespace Bodu.Text.Toml.Serialization;
 /// serialization attribute family.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [TomlConverter(typeof(TomlStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///
+///     [TomlStringEnumMemberName("on-hold")]
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the TOML string "on-hold".
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 public sealed class TomlStringEnumMemberNameAttribute
     : TomlAttribute

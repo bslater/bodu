@@ -52,7 +52,7 @@ var options = new TomlSerializerOptions
 
 Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[TomlPropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`).
 
-Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines.
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
 ## Pattern 4 — Select the spec version
 

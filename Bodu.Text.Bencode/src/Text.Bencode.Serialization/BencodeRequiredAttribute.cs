@@ -14,6 +14,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// the member must appear in the Bencode dictionary being read, otherwise a
 /// <see cref="BencodeSerializationException" /> is thrown.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig
+/// {
+///     [BencodeRequired]
+///     public string Host { get; set; } = string.Empty;
+/// }
+///
+/// // Deserializing input without a "Host" key throws BencodeSerializationException.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeRequiredAttribute
     : BencodeAttribute

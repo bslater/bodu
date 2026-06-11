@@ -16,6 +16,23 @@ namespace Bodu.Text.Bencode.Serialization;
 /// ascending key order when a dictionary is closed, this order governs the sequence in which members are presented to
 /// the writer rather than the final on-the-wire order.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Manifest
+/// {
+///     [BencodePropertyOrder(2)]
+///     public string Name { get; set; } = "demo";
+///
+///     [BencodePropertyOrder(1)]
+///     public int Version { get; set; } = 3;
+/// }
+///
+/// // Version is presented to the writer first, but the closed dictionary is still
+/// // emitted in canonical key order: d4:Name4:demo7:Versioni3ee
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class BencodePropertyOrderAttribute
     : BencodeAttribute

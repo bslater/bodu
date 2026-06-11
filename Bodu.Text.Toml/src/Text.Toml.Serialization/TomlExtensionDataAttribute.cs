@@ -23,6 +23,21 @@ namespace Bodu.Text.Toml.Serialization;
 /// On serialization the captured entries are written alongside the type's other members in document order.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig
+/// {
+///     public int Port { get; set; }
+///
+///     [TomlExtensionData]
+///     public Dictionary<string, TomlNode>? Extra { get; set; }
+/// }
+///
+/// // Keys that map to no member land in Extra and are written back on serialization.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class TomlExtensionDataAttribute
     : TomlAttribute

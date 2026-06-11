@@ -10,6 +10,22 @@ namespace Bodu.Text.Toml.Serialization;
 /// Excludes a property or field from TOML serialization, either unconditionally or under the condition given by
 /// <see cref="Condition" />.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Account
+/// {
+///     [TomlIgnore]
+///     public string? Secret { get; set; }
+///
+///     [TomlIgnore(Condition = TomlIgnoreCondition.WhenWritingNull)]
+///     public string? Comment { get; set; }
+/// }
+///
+/// // Secret is never written; Comment is written only when it is non-null.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class TomlIgnoreAttribute
     : TomlAttribute

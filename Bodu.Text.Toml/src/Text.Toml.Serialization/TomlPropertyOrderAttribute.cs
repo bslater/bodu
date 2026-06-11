@@ -15,6 +15,24 @@ namespace Bodu.Text.Toml.Serialization;
 /// and otherwise keep their declaration order. Because the TOML writer preserves the order in which members are
 /// presented, this order governs the on-the-wire sequence of the table's key/value lines.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Manifest
+/// {
+///     [TomlPropertyOrder(2)]
+///     public string Name { get; set; } = "demo";
+///
+///     [TomlPropertyOrder(1)]
+///     public int Version { get; set; } = 3;
+/// }
+///
+/// // Emitted with Version first:
+/// // Version = 3
+/// // Name = "demo"
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class TomlPropertyOrderAttribute
     : TomlAttribute

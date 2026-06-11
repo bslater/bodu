@@ -10,6 +10,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// Specifies the dictionary key used for a property or field when it is serialized to Bencode, overriding the member's
 /// CLR name and any configured naming policy.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Profile
+/// {
+///     [BencodePropertyName("display-name")]
+///     public string DisplayName { get; set; } = "Ada";
+/// }
+///
+/// // Serializes as the dictionary entry: 12:display-name3:Ada
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class BencodePropertyNameAttribute
     : BencodeAttribute

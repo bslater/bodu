@@ -16,6 +16,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// the type that does not carry its own attribute. A member-level attribute takes precedence over a type-level one, and
 /// both take precedence over the options-level default.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Pipeline
+/// {
+///     [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+///     public List<string> Steps { get; } = new() { "restore" };
+/// }
+///
+/// // Deserialized entries are appended to the existing list instead of replacing it.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class TomlObjectCreationHandlingAttribute
     : TomlAttribute

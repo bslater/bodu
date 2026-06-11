@@ -16,6 +16,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <see cref="BencodePropertyNameAttribute" /> is unaffected, since that attribute always takes precedence over any
 /// naming policy.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeNamingPolicy(BencodeKnownNamingPolicy.SnakeCaseLower)]
+/// public sealed class RetryPolicy
+/// {
+///     public int MaxRetryCount { get; set; } = 5;
+/// }
+///
+/// // Serializes under the key "max_retry_count": d15:max_retry_counti5ee
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class BencodeNamingPolicyAttribute
     : BencodeAttribute

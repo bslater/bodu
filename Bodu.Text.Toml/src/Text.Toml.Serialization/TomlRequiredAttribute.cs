@@ -14,6 +14,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// the member must appear in the TOML table being read, otherwise a <see cref="TomlSerializationException" /> is
 /// thrown.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig
+/// {
+///     [TomlRequired]
+///     public string Host { get; set; } = string.Empty;
+/// }
+///
+/// // Deserializing input without a "Host" key throws TomlSerializationException.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class TomlRequiredAttribute
     : TomlAttribute

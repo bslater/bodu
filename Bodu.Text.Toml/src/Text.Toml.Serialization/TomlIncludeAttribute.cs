@@ -17,6 +17,22 @@ namespace Bodu.Text.Toml.Serialization;
 /// visibility. Public fields participate only when this attribute is applied or
 /// <see cref="TomlSerializerOptions.IncludeFields" /> is enabled; non-public fields are never surfaced.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Counter
+/// {
+///     [TomlInclude]
+///     public int Total { get; private set; }
+///
+///     [TomlInclude]
+///     public int Retries;
+/// }
+///
+/// // Both members round-trip, despite the non-public setter and the field.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class TomlIncludeAttribute
     : TomlAttribute

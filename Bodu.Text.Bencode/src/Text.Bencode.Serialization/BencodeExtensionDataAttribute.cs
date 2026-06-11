@@ -23,6 +23,21 @@ namespace Bodu.Text.Bencode.Serialization;
 /// position automatically.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig
+/// {
+///     public int Port { get; set; }
+///
+///     [BencodeExtensionData]
+///     public Dictionary<string, BencodeNode>? Extra { get; set; }
+/// }
+///
+/// // Keys that map to no member land in Extra and are written back on serialization.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeExtensionDataAttribute
     : BencodeAttribute

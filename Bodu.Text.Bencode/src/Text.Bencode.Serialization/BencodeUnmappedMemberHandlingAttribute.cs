@@ -15,6 +15,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// default for that type. A type with an extension-data member still captures unmapped keys into that member regardless
 /// of this setting.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeUnmappedMemberHandling(BencodeUnmappedMemberHandling.Disallow)]
+/// public sealed class StrictConfig
+/// {
+///     public int Port { get; set; }
+/// }
+///
+/// // Input containing a key that maps to no member throws BencodeSerializationException.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class BencodeUnmappedMemberHandlingAttribute
     : BencodeAttribute

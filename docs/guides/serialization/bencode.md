@@ -41,7 +41,7 @@ var options = new BencodeSerializerOptions
 
 Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[BencodePropertyName("…")]`, which always wins over the policy.
 
-Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[BencodeInclude]` on the field. Fields follow the same naming-policy, ignore, required, and converter rules as properties.
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[BencodeInclude]` on the field. Fields follow the same naming-policy, ignore, required, and converter rules as properties. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
 ## Pattern 4 — Handle the kinds Bencode cannot represent
 

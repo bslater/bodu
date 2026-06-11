@@ -15,6 +15,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// default for that type. A type with an extension-data member still captures unmapped keys into that member regardless
 /// of this setting.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [TomlUnmappedMemberHandling(TomlUnmappedMemberHandling.Disallow)]
+/// public sealed class StrictConfig
+/// {
+///     public int Port { get; set; }
+/// }
+///
+/// // Input containing a key that maps to no member throws TomlSerializationException.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public sealed class TomlUnmappedMemberHandlingAttribute
     : TomlAttribute
