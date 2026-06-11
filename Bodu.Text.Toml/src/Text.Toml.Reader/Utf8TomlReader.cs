@@ -272,6 +272,31 @@ public ref partial struct Utf8TomlReader
     public readonly bool IsFinalKeySegment => _isFinalKeySegment;
 
     /// <summary>
+    /// Gets the current bracket nesting depth: the number of arrays and inline tables open around the current token.
+    /// </summary>
+    /// <returns>
+    /// The depth, where zero is outside any value. Mirroring
+    /// <see cref="System.Text.Json.Utf8JsonReader.CurrentDepth" />, a <see cref="TomlTokenType.StartArray" /> or
+    /// <see cref="TomlTokenType.StartInlineTable" /> token reports the depth of its enclosing context, and the
+    /// matching end token likewise.
+    /// </returns>
+    /// <remarks>
+    /// The depth counts only lexical bracket nesting. <c>[table]</c> and <c>[[array-of-tables]]</c> headers describe
+    /// structural — not lexical — nesting, so they do not contribute; the normalized
+    /// <see cref="TomlDocumentReader.CurrentDepth" /> reflects them instead.
+    /// </remarks>
+    public readonly int CurrentDepth
+    {
+        get
+        {
+            var depth = _containerCount;
+            if (_tokenType is TomlTokenType.StartArray or TomlTokenType.StartInlineTable)
+                depth--;
+            return depth;
+        }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the cursor is at the end of the source.
     /// </summary>
     /// <returns><see langword="true" /> when no bytes remain.</returns>
@@ -576,6 +601,16 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
+    /// Reads the current token as a comment, returning the text after the <c>#</c> to the end of the line.
+    /// </summary>
+    /// <returns>The comment text, excluding the leading <c>#</c>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a <see cref="TomlTokenType.Comment" />.
+    /// </exception>
+    public readonly string GetComment() =>
+        _tokenType == TomlTokenType.Comment ? Encoding.UTF8.GetString(ValueSpan) : throw new InvalidOperationException();
+
+    /// <summary>
     /// Reads the current token as a 64-bit signed integer.
     /// </summary>
     /// <returns>The integer value decoded during <see cref="Read" />.</returns>
@@ -675,6 +710,93 @@ public ref partial struct Utf8TomlReader
         while (_containerCount >= depth && Read())
         {
             // Read until the matching container end returns control to the original depth.
+        }
+    }
+
+    /// <summary>
+    /// Attempts to skip the current value in source order.
+    /// </summary>
+    /// <returns><see langword="true" /> when the value was skipped.</returns>
+    /// <remarks>
+    /// The method exists for parity with <see cref="System.Text.Json.Utf8JsonReader.TrySkip" />, where a skip can fail
+    /// when the input is not yet complete. This reader always holds the final block, so the method behaves exactly
+    /// like <see cref="Skip" /> and always returns <see langword="true" />; lexically invalid skipped source still
+    /// raises <see cref="TomlFormatException" />.
+    /// </remarks>
+    /// <exception cref="TomlFormatException">Thrown when the skipped source is not lexically valid TOML.</exception>
+    public bool TrySkip()
+    {
+        Skip();
+        return true;
+    }
+
+    /// <summary>
+    /// Compares the current string or key token to the supplied UTF-8 text without allocating when the token is
+    /// escape-free.
+    /// </summary>
+    /// <param name="utf8Text">The UTF-8 text to compare against the decoded token text.</param>
+    /// <returns><see langword="true" /> when the decoded token text equals <paramref name="utf8Text" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a <see cref="TomlTokenType.String" /> or <see cref="TomlTokenType.Key" />.
+    /// </exception>
+    public readonly bool ValueTextEquals(ReadOnlySpan<byte> utf8Text)
+    {
+        if (_tokenType is not (TomlTokenType.String or TomlTokenType.Key))
+            throw new InvalidOperationException();
+
+        if (!_hasEscapes)
+            return ValueSpan.SequenceEqual(utf8Text);
+
+        return utf8Text.SequenceEqual(Encoding.UTF8.GetBytes(GetString()));
+    }
+
+    /// <summary>
+    /// Compares the current string or key token to the supplied text.
+    /// </summary>
+    /// <param name="text">The text to compare against the decoded token text.</param>
+    /// <returns><see langword="true" /> when the decoded token text equals <paramref name="text" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a <see cref="TomlTokenType.String" /> or <see cref="TomlTokenType.Key" />.
+    /// </exception>
+    /// <remarks>
+    /// A <see langword="null" /> <paramref name="text" /> compares as empty, matching
+    /// <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(string)" />.
+    /// </remarks>
+    public readonly bool ValueTextEquals(string? text) =>
+        ValueTextEquals(text.AsSpan());
+
+    /// <summary>
+    /// Compares the current string or key token to the supplied text without allocating when the token is escape-free
+    /// and the text is small.
+    /// </summary>
+    /// <param name="text">The text to compare against the decoded token text.</param>
+    /// <returns><see langword="true" /> when the decoded token text equals <paramref name="text" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a <see cref="TomlTokenType.String" /> or <see cref="TomlTokenType.Key" />.
+    /// </exception>
+    public readonly bool ValueTextEquals(ReadOnlySpan<char> text)
+    {
+        if (_tokenType is not (TomlTokenType.String or TomlTokenType.Key))
+            throw new InvalidOperationException();
+
+        if (_hasEscapes)
+            return GetString().AsSpan().SequenceEqual(text);
+
+        // Every UTF-16 char yields at least one UTF-8 byte and at most three (surrogate pairs yield four for two).
+        if (ValueSpan.Length < text.Length || ValueSpan.Length > text.Length * 3)
+            return false;
+
+        byte[]? rented = null;
+        Span<byte> buffer = text.Length <= 85 ? stackalloc byte[256] : rented = System.Buffers.ArrayPool<byte>.Shared.Rent(text.Length * 3);
+        try
+        {
+            var written = Encoding.UTF8.GetBytes(text, buffer);
+            return ValueSpan.SequenceEqual(buffer[..written]);
+        }
+        finally
+        {
+            if (rented is not null)
+                System.Buffers.ArrayPool<byte>.Shared.Return(rented);
         }
     }
 
