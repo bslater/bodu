@@ -46,6 +46,13 @@
   <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
   <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be modified after they have been used to serialize or deserialize a value.</value></data>
   <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Op_Invalid_WriterDuplicateDictionaryKey" xml:space="preserve"><value>The dictionary contains more than one entry for the key '{0}'.</value></data>
+  <data name="Op_Invalid_WriterNoOpenContainer" xml:space="preserve"><value>No container is open.</value></data>
+  <data name="Op_Invalid_WriterEndContainerMismatch" xml:space="preserve"><value>The requested end does not match the kind of the currently open container.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameNotAllowed" xml:space="preserve"><value>A property name can only be written inside an open dictionary.</value></data>
+  <data name="Op_Invalid_WriterPropertyNamePending" xml:space="preserve"><value>A property name has already been written and is awaiting its value.</value></data>
+  <data name="Op_Invalid_WriterValueWithoutPropertyName" xml:space="preserve"><value>A value cannot be written inside a dictionary before its property name.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameWithoutValue" xml:space="preserve"><value>The dictionary cannot be closed while a property name is awaiting its value.</value></data>
   <data name="Op_Invalid_ExpectedDictionary" xml:space="preserve"><value>Expected the start of a dictionary but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedList" xml:space="preserve"><value>Expected the start of a list but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedByteString" xml:space="preserve"><value>Expected a byte string but found '{0}'.</value></data>

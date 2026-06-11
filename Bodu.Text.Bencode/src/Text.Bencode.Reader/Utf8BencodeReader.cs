@@ -333,10 +333,16 @@ public ref struct Utf8BencodeReader
             : throw new InvalidOperationException();
 
     /// <summary>
-    /// Skips the current value, including the entire subtree when the reader is on a container start.
+    /// Skips the current value, including the entire subtree when the reader is on a container start. On a property
+    /// name the reader first advances to the property's value and then skips it, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonReader.Skip" />.
     /// </summary>
+    /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
     public void Skip()
     {
+        if (_tokenType == BencodeTokenType.PropertyName)
+            _ = Read();
+
         if (_tokenType is not(BencodeTokenType.StartList or BencodeTokenType.StartDictionary))
             return;
 

@@ -18,9 +18,16 @@ namespace Bodu.Text.Bencode.Writer;
 /// closed.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The writer is a <see langword="ref struct" /> whose mutable state lives in shared managed buffers, so a copy taken
 /// by value continues to write to the same output. Booleans, floating-point values, and date-times have no Bencode
 /// representation and must be reduced to an integer or byte string by a converter before they are written.
+/// </para>
+/// <para>
+/// The writer validates the call sequence against the canonical grammar: a property name may only be written inside
+/// an open dictionary, every dictionary value must follow a property name, container ends must match the open
+/// container kind, and a dictionary containing duplicate keys is rejected when it is closed.
+/// </para>
 /// </remarks>
 public ref struct Utf8BencodeWriter
 {
@@ -85,11 +92,15 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Writes the start of a list.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the list is opened directly inside a dictionary before a property name has been written.
+    /// </exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when opening the list would exceed the configured maximum nesting depth.
     /// </exception>
     public readonly void WriteStartList()
     {
+        EnsureValueAllowed();
         if (_frames.Count >= _maxDepth)
             throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
 
@@ -99,9 +110,17 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Writes the end of the current list.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when no container is open, or when the currently open container is not a list.
+    /// </exception>
     public readonly void WriteEndList()
     {
-        var frame = (ListFrame)Pop();
+        if (_frames.Count == 0)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterNoOpenContainer);
+        if (_frames[^1] is not ListFrame frame)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterEndContainerMismatch);
+
+        _frames.RemoveAt(_frames.Count - 1);
 
         var buffer = new ArrayBufferWriter<byte>();
         buffer.Write("l"u8);
@@ -114,11 +133,15 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Writes the start of a dictionary.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the dictionary is opened directly inside a dictionary before a property name has been written.
+    /// </exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when opening the dictionary would exceed the configured maximum nesting depth.
     /// </exception>
     public readonly void WriteStartDictionary()
     {
+        EnsureValueAllowed();
         if (_frames.Count >= _maxDepth)
             throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
 
@@ -128,15 +151,35 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Writes the end of the current dictionary, emitting its entries in ascending bytewise key order.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when no container is open, when the currently open container is not a dictionary, or when a property
+    /// name is still awaiting its value.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when the dictionary contains more than one entry for the same key, which canonical Bencode forbids.
+    /// </exception>
     public readonly void WriteEndDictionary()
     {
-        var frame = (DictionaryFrame)Pop();
+        if (_frames.Count == 0)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterNoOpenContainer);
+        if (_frames[^1] is not DictionaryFrame frame)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterEndContainerMismatch);
+        if (frame.PendingKey is not null)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNameWithoutValue);
+
+        _frames.RemoveAt(_frames.Count - 1);
         frame.Entries.Sort(static (left, right) => left.Key.AsSpan().SequenceCompareTo(right.Key));
 
         var buffer = new ArrayBufferWriter<byte>();
         buffer.Write("d"u8);
+        byte[]? previousKey = null;
         foreach (var (key, value) in frame.Entries)
         {
+            // Equal keys are adjacent after the canonical sort, so a single neighbour comparison detects duplicates.
+            if (previousKey is not null && previousKey.AsSpan().SequenceEqual(key))
+                throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterDuplicateDictionaryKey, Encoding.UTF8.GetString(key)));
+
+            previousKey = key;
             WriteByteStringTo(buffer, key);
             buffer.Write(value);
         }
@@ -149,8 +192,19 @@ public ref struct Utf8BencodeWriter
     /// Writes the name of the dictionary key whose value follows.
     /// </summary>
     /// <param name="name">The key bytes.</param>
-    public readonly void WritePropertyName(ReadOnlySpan<byte> name) =>
-        ((DictionaryFrame)_frames[^1]).PendingKey = name.ToArray();
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WritePropertyName(ReadOnlySpan<byte> name)
+    {
+        if (_frames.Count == 0 || _frames[^1] is not DictionaryFrame frame)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNameNotAllowed);
+        if (frame.PendingKey is not null)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNamePending);
+
+        frame.PendingKey = name.ToArray();
+    }
 
     /// <summary>
     /// Writes the name of the dictionary key whose value follows, encoding the name as UTF-8.
@@ -158,6 +212,10 @@ public ref struct Utf8BencodeWriter
     /// <param name="name">The key text.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
     /// </exception>
     public readonly void WritePropertyName(string name)
     {
@@ -169,8 +227,13 @@ public ref struct Utf8BencodeWriter
     /// Writes an integer value.
     /// </summary>
     /// <param name="value">The integer value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// </exception>
     public readonly void WriteInteger(long value)
     {
+        EnsureValueAllowed();
+
         var buffer = new ArrayBufferWriter<byte>();
         buffer.Write("i"u8);
         WriteAsciiInt64(buffer, value);
@@ -188,8 +251,13 @@ public ref struct Utf8BencodeWriter
     /// reader consuming such a value must use <see cref="Reader.Utf8BencodeReader.GetUInt64" /> rather than
     /// <see cref="Reader.Utf8BencodeReader.GetInt64" />.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// </exception>
     public readonly void WriteInteger(ulong value)
     {
+        EnsureValueAllowed();
+
         var buffer = new ArrayBufferWriter<byte>();
         buffer.Write("i"u8);
         WriteAsciiUInt64(buffer, value);
@@ -201,8 +269,13 @@ public ref struct Utf8BencodeWriter
     /// Writes a byte-string value.
     /// </summary>
     /// <param name="value">The byte-string content.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
+    /// </exception>
     public readonly void WriteByteString(ReadOnlySpan<byte> value)
     {
+        EnsureValueAllowed();
+
         var buffer = new ArrayBufferWriter<byte>();
         WriteByteStringTo(buffer, value);
         Emit(buffer.WrittenSpan.ToArray());
@@ -214,6 +287,9 @@ public ref struct Utf8BencodeWriter
     /// <param name="value">The string value.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written.
     /// </exception>
     public readonly void WriteString(string value)
     {
@@ -258,18 +334,16 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// Pops the innermost open container.
+    /// Enforces that a value may begin at the current position, rejecting a value written directly inside a
+    /// dictionary before its property name.
     /// </summary>
-    /// <returns>The popped frame.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when no container is open.</exception>
-    private readonly Frame Pop()
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is a dictionary with no property name awaiting a value.
+    /// </exception>
+    private readonly void EnsureValueAllowed()
     {
-        if (_frames.Count == 0)
-            throw new InvalidOperationException();
-
-        var frame = _frames[^1];
-        _frames.RemoveAt(_frames.Count - 1);
-        return frame;
+        if (_frames.Count > 0 && _frames[^1] is DictionaryFrame { PendingKey: null })
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterValueWithoutPropertyName);
     }
 
     /// <summary>

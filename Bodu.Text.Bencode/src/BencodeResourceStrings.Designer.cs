@@ -335,6 +335,69 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary contains more than one entry for the key '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_WriterDuplicateDictionaryKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterDuplicateDictionaryKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No container is open..
+        /// </summary>
+        internal static string Op_Invalid_WriterNoOpenContainer {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterNoOpenContainer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The requested end does not match the kind of the currently open container..
+        /// </summary>
+        internal static string Op_Invalid_WriterEndContainerMismatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterEndContainerMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A property name can only be written inside an open dictionary..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameNotAllowed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A property name has already been written and is awaiting its value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNamePending {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNamePending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A value cannot be written inside a dictionary before its property name..
+        /// </summary>
+        internal static string Op_Invalid_WriterValueWithoutPropertyName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterValueWithoutPropertyName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot be closed while a property name is awaiting its value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameWithoutValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameWithoutValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Expected the start of a dictionary but found '{0}'..
         /// </summary>
         internal static string Op_Invalid_ExpectedDictionary {
