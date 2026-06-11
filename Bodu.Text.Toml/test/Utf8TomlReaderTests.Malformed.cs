@@ -105,6 +105,7 @@ public sealed partial class Utf8TomlReaderTests
             _ = new Utf8TomlReader(Encoding.UTF8.GetBytes(kat.Input));
         });
 
+        Assert.AreEqual(kat.ExceptionType, ex.GetType());
         Assert.IsNotNull(ex.LineNumber);
         Assert.IsNotNull(ex.ColumnNumber);
         Assert.IsNotNull(ex.Offset);

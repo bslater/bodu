@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.IO;
 
 namespace Bodu.Text.Toml;
 
@@ -64,6 +65,78 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual(original.Id, roundTripped.Id);
         Assert.AreEqual(original.Label, roundTripped.Label);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlSerializer.SerializeAsync{T}(Stream, T, TomlSerializerOptions?,
+    /// CancellationToken)" /> honors a token that is already canceled by faulting with
+    /// <see cref="TaskCanceledException" /> before writing to the stream.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenTokenAlreadyCanceled_ShouldThrowTaskCanceledException()
+    {
+        var model = new StreamModel { Id = 7, Label = "x" };
+        using var destination = new MemoryStream();
+        using var cancellation = new CancellationTokenSource();
+        await cancellation.CancelAsync();
+
+        _ = await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+        {
+            await TomlSerializer.SerializeAsync(destination, model, options: null, cancellation.Token);
+        });
+
+        Assert.AreEqual(0, destination.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlSerializer.DeserializeAsync{T}(Stream, TomlSerializerOptions?,
+    /// CancellationToken)" /> honors a token that is already canceled by faulting with
+    /// <see cref="TaskCanceledException" /> before reading the stream.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsync_WhenTokenAlreadyCanceled_ShouldThrowTaskCanceledException()
+    {
+        using var source = new MemoryStream(Encoding.UTF8.GetBytes("Id = 7\nLabel = \"x\"\n"));
+        using var cancellation = new CancellationTokenSource();
+        await cancellation.CancelAsync();
+
+        _ = await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+        {
+            _ = await TomlSerializer.DeserializeAsync<StreamModel>(source, options: null, cancellation.Token);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlSerializer.Deserialize{T}(Stream, TomlSerializerOptions?)" /> reads a value from a
+    /// stream that does not support seeking.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStreamIsNonSeekable_ShouldReturnValue()
+    {
+        using var source = new NonSeekableStream(Encoding.UTF8.GetBytes("Id = 7\nLabel = \"x\"\n"));
+
+        StreamModel model = TomlSerializer.Deserialize<StreamModel>(source);
+
+        Assert.AreEqual(7, model.Id);
+        Assert.AreEqual("x", model.Label);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlSerializer.DeserializeAsync{T}(Stream, TomlSerializerOptions?,
+    /// CancellationToken)" /> reads a value from a stream that yields its bytes in small fixed-size chunks.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsync_WhenStreamReadsInSmallChunks_ShouldReturnValue()
+    {
+        using var source = new FixedChunkStream(Encoding.UTF8.GetBytes("Id = 7\nLabel = \"x\"\n"), chunkSize: 3);
+
+        StreamModel model = await TomlSerializer.DeserializeAsync<StreamModel>(source);
+
+        Assert.AreEqual(7, model.Id);
+        Assert.AreEqual("x", model.Label);
     }
 
     /// <summary>

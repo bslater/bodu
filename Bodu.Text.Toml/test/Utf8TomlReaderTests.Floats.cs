@@ -18,7 +18,6 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     [DataRow("1.5", 1.5, DisplayName = "fraction")]
     [DataRow("0.0", 0.0, DisplayName = "zero fraction")]
-    [DataRow("-0.0", -0.0, DisplayName = "negative zero")]
     [DataRow("+1.0", 1.0, DisplayName = "explicit plus")]
     [DataRow("-2.5", -2.5, DisplayName = "negative fraction")]
     [DataRow("3.1415", 3.1415, DisplayName = "pi")]

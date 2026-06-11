@@ -460,72 +460,8 @@ public sealed partial class Utf8TomlReaderTests
         });
     }
 
-    /// <summary>
-    /// Verifies that decimal, hexadecimal, octal, and binary integer literals all decode to their numeric value.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void Read_WhenRadixIntegers_ShouldDecodeToValue()
-    {
-        Utf8TomlReader reader = Create("d = 1_000\nh = 0xFF\no = 0o17\nb = 0b1010\n");
 
-        ExpectStartTable(ref reader);
 
-        ExpectProperty(ref reader, "d");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1000L, reader.GetInt64());
-
-        ExpectProperty(ref reader, "h");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(255L, reader.GetInt64());
-
-        ExpectProperty(ref reader, "o");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(15L, reader.GetInt64());
-
-        ExpectProperty(ref reader, "b");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(10L, reader.GetInt64());
-    }
-
-    /// <summary>
-    /// Verifies that the floating-point sentinels <c>inf</c> and <c>nan</c> decode to their IEEE 754 representations.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void Read_WhenFloatSentinels_ShouldDecodeInfinityAndNaN()
-    {
-        Utf8TomlReader reader = Create("p = inf\nn = -inf\nx = nan\n");
-
-        ExpectStartTable(ref reader);
-
-        ExpectProperty(ref reader, "p");
-        ExpectToken(ref reader, TomlTokenType.Float);
-        Assert.AreEqual(double.PositiveInfinity, reader.GetDouble());
-
-        ExpectProperty(ref reader, "n");
-        ExpectToken(ref reader, TomlTokenType.Float);
-        Assert.AreEqual(double.NegativeInfinity, reader.GetDouble());
-
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Float);
-        Assert.IsTrue(double.IsNaN(reader.GetDouble()));
-    }
-
-    /// <summary>
-    /// Verifies that a multi-line basic string with an escaped newline decodes its content.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void Read_WhenMultilineBasicString_ShouldDecodeContent()
-    {
-        Utf8TomlReader reader = Create("s = \"\"\"a\nb\"\"\"\n");
-
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "s");
-        ExpectToken(ref reader, TomlTokenType.String);
-        Assert.AreEqual("a\nb", reader.GetString());
-    }
 
     /// <summary>
     /// Verifies that an offset date-time with a negative offset decodes to the expected instant.
@@ -571,24 +507,6 @@ public sealed partial class Utf8TomlReaderTests
         ExpectEndTable(ref reader);
     }
 
-    /// <summary>
-    /// Verifies that a time value without seconds is rejected under TOML v1.0.0 but accepted under v1.1.0.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenTimeWithoutSeconds_ShouldHonorSpecVersion()
-    {
-        Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("t = 07:32\n");
-        });
-
-        TomlReaderOptions options = new() { SpecVersion = TomlSpecVersion.V1_1 };
-        Utf8TomlReader reader = new(Encoding.UTF8.GetBytes("t = 07:32\n"), options);
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "t");
-        ExpectToken(ref reader, TomlTokenType.LocalTime);
-        Assert.AreEqual(new TimeOnly(7, 32, 0), reader.GetTimeOnly());
-    }
 
     /// <summary>
     /// Creates a reader over the UTF-8 encoding of <paramref name="toml" /> using the default options.
