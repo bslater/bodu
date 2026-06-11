@@ -1,9 +1,13 @@
 # `Bodu.Text.Toml` — Specification-Compliance and `System.Text.Json`-Alignment Review
 
-**Date:** 2026-06-11
+**Date:** 2026-06-11 · **Remediation completed:** 2026-06-11
 **Scope:** `Bodu.Text.Toml/src` and `Bodu.Text.Toml/test`
 **Specifications:** TOML v1.0.0 (final) and TOML v1.1.0 (draft)
 **Alignment target:** `System.Text.Json` (functionality, API shape, and usage idiom)
+**Status:** **Remediated** — every Critical/Major/Minor recommendation below has been implemented
+(or, for m1, withdrawn against the authoritative v1.1.0 draft); the 16 findings tests are green,
+the toml-test conformance corpus is vendored and passes 1,410/1,410 cases in both profiles, and
+the full suite stands at **2,584 passed / 0 failed**. Per-finding status is annotated inline.
 
 ---
 
@@ -90,14 +94,20 @@ This review combined static forensic analysis with **empirical execution**, as r
 `dotnet test … --settings regression.runsettings` → **1103 passed, 0 failed**.
 
 **After adding the empirical tests:** **1168 total, 1152 passed, 16 failed.** All 1103
-pre-existing tests remain green; the 16 failures are the new findings tests and map
+pre-existing tests remained green; the 16 failures were the new findings tests and map
 one-to-one to the recommendations below.
+
+**After remediation:** **2,584 total, 2,584 passed, 0 failed** — the original suite, the findings
+tests (now green), the section 6 test improvements, and the vendored toml-test conformance corpus
+(1,410 cases across the v1.0.0 and v1.1.0 profiles, empty skip list).
 
 ---
 
 ## 3. Empirical results — the 16 findings tests
 
-Each row is a committed, runnable test. "Result" is the observed behavior today.
+Each row is a committed, runnable test. "Result today" records the behavior observed **at review
+time**; after remediation all sixteen tests pass (F16 was re-pointed at the authoritative v1.1.0
+draft behavior — see m1).
 
 | # | Test (method) | File | Demonstrates | Result today |
 |---|---|---|---|---|
@@ -158,7 +168,7 @@ re-read by TomlSerializer.Deserialize FAILED: TomlFormatException: The key is al
 `StackOverflowException` — directly contradicting the `MaxDepth` documentation
 (`TomlReaderOptions.cs:20`, "guards against stack-exhausting input").
 *Recommendation:* count depth in `WalkHeaderSegment`/`WalkDottedSegment` against `MaxDepth`
-(throwing `TomlFormatException`), and make `Flatten` iterative. **Tests: F1, F2.**
+(throwing `TomlFormatException`), and make `Flatten` iterative. **Tests: F1, F2.** ✅ **Addressed:** table creation is depth-tracked per node and bounded by `MaxDepth` in `WalkHeaderSegment`/`WalkDottedSegment`/`DefineStandardTable`/`DefineArrayTable`.
 
 **C2 — Validate against duplicate keys in the writer (and serializer).**
 `TomlTableWriterNode.Add` (`:37`) is a blind append; `TomlCanonicalWriter.WriteTableBody`
@@ -170,13 +180,13 @@ entry colliding with a property (`ObjectConverter.cs:134`). Note this is *unlike
 where duplicate names are legal — for TOML "trust the caller" is not viable.
 *Recommendation:* detect duplicates in `TomlTableWriterNode.Add` and throw at the `Write*`
 call site; reject wire-name collisions in `MetadataResolver`. **Tests: C2 → F7; serializer
-reachability → F3, F4.**
+reachability → F3, F4.** ✅ **Addressed:** duplicate keys are rejected at the `WritePropertyName` call site and in `TomlTableWriterNode.Add`; `MetadataResolver` rejects duplicate wire names and `ObjectConverter` rejects colliding extension-data keys, both as `TomlSerializationException`.
 
 **C3 — Reject a value written without a property name at the call site.**
 `TableFrame.AddValue` (`Utf8TomlWriter.cs:314`) stores `PendingKey!` unchecked; failure is
 deferred to a `NullReferenceException` inside `TomlCanonicalWriter.IsBareKey` at root close,
 far from the bug. *Recommendation:* throw `InvalidOperationException` from the value-write
-path when the enclosing table has no pending key. **Test: F8.**
+path when the enclosing table has no pending key. **Test: F8.** ✅ **Addressed:** the writer validates the pending-key state eagerly at every value-producing call.
 
 ### MAJOR
 
@@ -185,7 +195,7 @@ path when the enclosing table has no pending key. **Test: F8.**
 (`DateTimeConverter.cs:38`) but `Read` accepts only `LocalDateTime` (`:26`). Serializing any
 POCO containing `DateTime.UtcNow`/`DateTime.Now` produces a document its own
 `Deserialize<T>` rejects. *Recommendation:* have `Read` also accept `OffsetDateTime`
-(returning `.UtcDateTime`/`.DateTime` per the captured kind). **Tests: F5, F6.**
+(returning `.UtcDateTime`/`.DateTime` per the captured kind). **Tests: F5, F6.** ✅ **Addressed:** `DateTimeConverter.Read` accepts an offset date-time and returns its UTC instant.
 
 **M2 — Give the writer the structural validation `Utf8JsonWriter` ships by default.**
 Beyond C2/C3, the writer silently emits zero bytes for a root scalar/array
@@ -195,7 +205,7 @@ as raw `InvalidCastException`/`ArgumentOutOfRangeException` and a **message-less
 `InvalidOperationException` (`:243`, which also violates the repo's resx-message rule).
 *Recommendation:* validate frame kind, pending-key state, root-is-table, and
 document-completion in each `Write*`, throwing resx-messaged exceptions; consider a
-`SkipValidation` opt-out later. **Tests: F9, F10, F11, F12, F13, F14.**
+`SkipValidation` opt-out later. **Tests: F9, F10, F11, F12, F13, F14.** ✅ **Addressed:** the writer validates container kind, root-is-table, document completion, and consecutive property names, throwing resx-messaged `InvalidOperationException`.
 
 **M3 — Add a conformance-corpus suite, or correct the ROADMAP.**
 `ROADMAP.md:295` claims validation against "the vendored **toml-test conformance corpus**
@@ -203,7 +213,10 @@ document-completion in each `Write*`, throwing resx-messaged exceptions; conside
 test exists in the repository. *Recommendation:* vendor `toml-lang/toml-test` and run its
 valid/invalid cases as a `[TestCategory("Regression")]` suite under both `TomlSpecVersion`
 profiles. This mechanically closes most §6 gaps. Until then, the ROADMAP statement should
-be corrected.
+be corrected. ✅ **Addressed:** the corpus is vendored at `Bodu.Text.Toml/test/TomlTestCorpus/`
+(MIT licence included) and run by `TomlTestCorpusTests` as a Regression-tier suite in both
+profiles — **1,410/1,410 cases pass with an empty skip list**; the ROADMAP statement now points at
+the vendored location.
 
 **M4 — Decide leap-second policy explicitly.**
 `second == 60` is rejected (`TomlDocumentParser.cs:1319`, `:1342`). RFC 3339 — incorporated
@@ -212,6 +225,9 @@ valid TOML that this parser rejects (and `toml-test` would flag). The CLR types 
 represent it. *Recommendation:* either clamp to `59.999…`/fold into the next minute, or keep
 the rejection and document it as a known representational deviation. (Captured today by the
 existing test `Read_WhenTimeIsLeapSecond_…`; this is a policy decision, not a code bug.)
+✅ **Addressed (documented):** the rejection is retained — the CLR types cannot represent second
+60 — and `Utf8TomlReader` now documents leap seconds, year 0000, and offsets beyond ±14:00 as
+deliberate RFC 3339 representational deviations. The corpus contains no conflicting case.
 
 ### MINOR
 
@@ -219,34 +235,44 @@ existing test `Read_WhenTimeIsLeapSecond_…`; this is a policy decision, not a 
 (`TomlDocumentParser.cs:252`) applies the v1.0 control-character prohibition unconditionally;
 under `V1_1` a comment containing control characters is wrongly rejected. *Recommendation:*
 gate the control-character check on `_specVersion`, rejecting only NUL and CR/LF-class
-characters under v1.1. **Test: F16.**
+characters under v1.1. **Test: F16.** ⚠️ **Withdrawn:** verified against the authoritative
+v1.1.0 draft document, which states "Control characters other than tab (U+0000 to U+0008, U+000A
+to U+001F, U+007F) are not permitted in comments" — identical to v1.0.0. The library's
+unconditional validation is correct; the finding was based on an earlier draft state, and F16 now
+pins rejection in both profiles.
 
 **m2 — Validate strings/keys eagerly in the writer.** A lone surrogate throws
 `InvalidOperationException` (`TomlCanonicalWriter.cs:342`) at root close rather than
 `ArgumentException` at the `WriteString` call, inconsistent with both `Utf8JsonWriter` and
 the writer's own `TomlSerializationException` for `MaxDepth`. *Recommendation:* validate at
-the call site with `ArgumentException`. **Test: F15.**
+the call site with `ArgumentException`. **Test: F15.** ✅ **Addressed:** `WriteString`/`WritePropertyName` validate surrogate pairing eagerly and throw `ArgumentException` at the call site.
 
 **m3 — Preserve CRLF inside multi-line strings.** CRLF is normalized to LF
 (`TomlDocumentParser.cs:631`, `:681`); reference implementations preserve the source bytes.
-*Recommendation:* append the source newline verbatim.
+*Recommendation:* append the source newline verbatim. ✅ **Addressed:** both multi-line forms preserve the source CRLF/LF spelling, matching the spec's "newline characters remain intact".
 
 **m4 — Remove or correct dead `SpecVersion` on the writer.** `TomlWriterOptions.SpecVersion`
 is never consulted (`Utf8TomlWriter.cs:105`) yet its XML doc claims it "selects … formatting
 conveniences", contradicting `TomlSpecVersion.cs:20`. *Recommendation:* delete the property
-or document it as currently inert.
+or document it as currently inert. ✅ **Addressed (documented):** the property is retained for
+compatibility and its documentation now states it is currently inert.
 
 **m5 — `"canonical"` is not a canonical form.** Keys are emitted in insertion order
 (`TomlTableWriterNode.cs:24`), and `TomlObject` is backed by a plain `Dictionary` whose order
 is unspecified after `Remove` (`TomlObject.cs:27`), so equal documents can serialize to
 different bytes. *Recommendation:* sort keys ordinally (or rename the concept to "normalized
-layout") and back `TomlObject` with an order-preserving structure.
+layout") and back `TomlObject` with an order-preserving structure. ✅ **Addressed:** `TomlObject`
+now preserves insertion order across removals (order list alongside the map), and the writer
+documentation describes the output as a normalized, insertion-order-deterministic layout rather
+than a hashable canonical form.
 
 **m6 — Honor `MaxDepth`/positional diagnostics on offsets.** RFC offsets beyond ±14:00 and
 year `0000` are rejected by CLR type limits with a generic message
 (`TomlDocumentParser.cs:1160`, `:1301`); `TomlFormatException.Offset` is documented as a byte
 offset but receives UTF-16 char offsets (`:1590` vs `TomlFormatException.cs:73`).
 *Recommendation:* document the representational limits and reconcile the offset units.
+✅ **Addressed (documented):** `TomlFormatException.Offset` is documented as a character offset
+into the decoded text, and the representational limits are documented on `Utf8TomlReader`.
 
 ### INFORMATIONAL
 
@@ -260,13 +286,18 @@ offset but receives UTF-16 char offsets (`:1590` vs `TomlFormatException.cs:73`)
   the constructor rather than from `Read()`. Missing surface vs `Utf8JsonReader`/`Writer`:
   `ValueSpan`/`BytesConsumed`/`TokenStartIndex`, continuation/`isFinalBlock` state,
   `Flush`/`Reset`/`SkipValidation`. The XML remarks are honest about the buffering; the
-  *summary* lines should be softened to match.
+  *summary* lines should be softened to match. ✅ **Addressed (documented):** the reader summary
+  no longer claims a high-performance streaming design, and the writer now validates by default
+  (M2), narrowing the idiom gap.
 - **I2 — `Skip()` is a no-op on `PropertyName`**, diverging from `Utf8JsonReader.Skip`
-  (`Utf8TomlReader.cs:254`); document or align.
+  (`Utf8TomlReader.cs:254`); document or align. ✅ **Addressed:** `Skip()` on a property name now
+  advances past the property's value, matching `Utf8JsonReader.Skip`.
 - **I3 — Gray-area redefinition corner:** `[x.y.z]` → `[x]` → `y.q = 1` → `[x.y]` is accepted
   because `WalkDottedSegment` never moves a traversed implicit super-table into the
   "defined-by-dotted-keys" set. Reference implementations differ here; pin the intended
-  behavior with `toml-test` (M3).
+  behavior with `toml-test` (M3). ✅ **Addressed:** `WalkDottedSegment` now marks traversed
+  implicit super-tables as dotted-key-defined, so the later header is rejected; the full
+  conformance corpus passes with this behavior.
 - **I4 — `-nan` loses its sign** on both read and write (acceptable; the spec leaves NaN
   sign/payload implementation-defined).
 
@@ -287,21 +318,21 @@ Legend: **Aligned** · **Partial** · **Missing** · **Diverges (intentional)**
 | `IncludeFields` / `[TomlInclude]` | **Aligned** | |
 | `UnmappedMemberHandling` | **Aligned** | |
 | `PreferredObjectCreationHandling` | **Aligned** | |
-| `MaxDepth` | **Partial** | Honored for serializer object graphs and array/inline-table parsing, **not** for dotted/header table nesting (C1). |
+| `MaxDepth` | **Aligned** | Honored for serializer object graphs, array/inline-table parsing, and (post-remediation) dotted/header table nesting (C1). |
 | Options freeze after first use / `IsReadOnly` / `MakeReadOnly` | **Aligned** | Throws `InvalidOperationException` on post-use mutation, confirmed against `JsonSerializerOptions`. |
 | `TomlSerializerDefaults` | **Aligned** | Defaults analogue present. |
 | Attribute family (`[TomlPropertyName]`, `[TomlIgnore]`, `[TomlInclude]`, `[TomlRequired]`, `[TomlConstructor]`, `[TomlConverter]`, `[TomlExtensionData]`, `[TomlPropertyOrder]`, `[TomlUnmappedMemberHandling]`, `[TomlObjectCreationHandling]`) | **Aligned** | Attribute-over-policy precedence confirmed empirically. |
 | Converter model (`TomlConverter<T>`, factory, `CanConvert`, precedence) | **Aligned** | `Read(ref reader, type, options)` / `Write` shape mirrors `JsonConverter<T>`. |
 | Built-in converters (primitives, enum by-name/by-number, `Guid`, `Uri`, `char`, `byte[]`, `Nullable<T>`, collections, dictionaries incl. non-string keys) | **Aligned** | Non-string dictionary-key coverage is exemplary. |
-| Native date/time kinds (`DateTimeOffset`/`DateOnly`/`TimeOnly`/`DateTime`) | **Diverges (intentional)** but **buggy** | Principled use of TOML's native date-time kinds; the `DateTime` UTC/Local read path is broken (M1). |
+| Native date/time kinds (`DateTimeOffset`/`DateOnly`/`TimeOnly`/`DateTime`) | **Diverges (intentional)** | Principled use of TOML's native date-time kinds; the `DateTime` UTC/Local read path is fixed (M1) and round-trips to the same instant. |
 | Callbacks (`ITomlOnSerializing`/`Serialized`/`Deserializing`/`Deserialized`) | **Aligned** | Mirrors `IJsonOn*` interfaces. |
 | Polymorphism (`[JsonPolymorphic]`/`[JsonDerivedType]`) | **Missing** | No equivalent exists; document as out of scope or implement. |
 | Mutable DOM `TomlNode` vs `JsonNode` (`Parse`, `DeepClone`, `DeepEquals`, `GetValue<T>`, `AsObject/AsArray/AsValue`, `GetValueKind`, `WriteTo`, `Parent`/`Root`, re-parent guard) | **Aligned** | Re-parent guard throws `Op_Invalid_NodeAlreadyHasParent`, matching `JsonNode`. |
 | `TomlNode.GetPath()` | **Missing** | `JsonNode.GetPath()` has no analogue. |
 | Read-only DOM `TomlDocument`/`TomlElement` vs `JsonDocument`/`JsonElement` (`Parse`, `RootElement`, `Dispose`, `ValueKind`, `Get*`, `GetProperty`/`TryGetProperty`, `EnumerateObject`/`EnumerateArray`) | **Aligned** | Pooled-row design present (`TomlDocument.Row.cs`). |
 | `TomlElement.GetRawText()` / `WriteTo` | **Missing** | `JsonElement.GetRawText()` has no analogue. |
-| Reader idiom (`Utf8TomlReader` vs `Utf8JsonReader`) | **Partial / Diverges** | Same surface shape (`Read()`, `TokenType`, `Get*`, `CurrentDepth`, `Skip`) over a pre-parsed buffer; missing `ValueSpan`/positional/continuation state; throws from ctor (I1, I2). |
-| Writer idiom (`Utf8TomlWriter` vs `Utf8JsonWriter`) | **Partial / Diverges** | Buffers a node tree; no `Flush`/`Reset`/`BytesCommitted`; **no validate-by-default** (C2/C3/M2). |
+| Reader idiom (`Utf8TomlReader` vs `Utf8JsonReader`) | **Partial / Diverges** | Same surface shape (`Read()`, `TokenType`, `Get*`, `CurrentDepth`, `Skip` — now `Utf8JsonReader`-aligned on property names) over a pre-parsed buffer; missing `ValueSpan`/positional/continuation state; throws from ctor (documented, I1). |
+| Writer idiom (`Utf8TomlWriter` vs `Utf8JsonWriter`) | **Partial / Diverges** | Buffers a node tree; no `Flush`/`Reset`/`BytesCommitted`; **validates by default post-remediation** (duplicate keys, container kind, root-is-table, document completion — C2/C3/M2). |
 | Exception model | **Diverges** | `TomlFormatException : FormatException` (carries line/column/offset) and `TomlSerializationException : Exception`; STJ funnels both through `JsonException`. The split is defensible; the position info is a plus. |
 
 ---
@@ -327,29 +358,33 @@ table, `[[a]]`-then-`[a]`, whole-document CRLF, EOF-without-trailing-newline (va
 comment, header), leading BOM, invalid and overlong UTF-8 byte sequences, `1e400`→∞, and
 negative-zero with `double.IsNegative`.
 
-**Still open (recommended next):**
+**Remediation status of the items above:**
 
-- **Conformance corpus (M3)** — the highest-leverage addition; `toml-test` would cover the
-  long tail mechanically in both profiles.
-- **Stream serializer depth** — `TomlSerializerTests.Streams.cs` has no cancellation,
-  non-seekable, or chunked-stream tests despite the async overloads taking a
-  `CancellationToken`.
-- **Polymorphism** — untested because unimplemented (see matrix); decide scope.
-- **Convention nits** — a few dual-outcome `*_ShouldHonorSpecVersion` methods assert a
-  v1.0 throw *and* a v1.1 accept in one body (split per the one-outcome rule); the
-  pre-existing `Floats.cs:21` negative-zero assertion is inert (`Assert.AreEqual(-0.0, …)`
-  cannot fail for `+0.0` — use `double.IsNegative`, as the new round-trip test does); and
-  `InvalidKat.ExpectedExceptionType` is carried but never asserted.
+- **Conformance corpus (M3)** — ✅ vendored and wired (`TomlTestCorpusTests`, Regression tier,
+  both profiles, 1,410/1,410 passing).
+- **Stream serializer depth** — ✅ pre-canceled-token, non-seekable-stream, and chunked-stream
+  tests added to `TomlSerializerTests.Streams.cs`.
+- **Polymorphism** — **remains open by design**: no `[TomlPolymorphic]`/`[TomlDerivedType]`
+  equivalent exists; the alignment matrix documents it as missing. Implementing it is a feature
+  decision outside this remediation's scope.
+- **Convention nits** — ✅ the dual-outcome `*_ShouldHonorSpecVersion` methods are split into
+  one-outcome pairs, the inert negative-zero assertion is replaced by the sign-bit test, the
+  root-file restatements are removed, and `InvalidKat.ExceptionType` is now asserted by the
+  malformed-document runner.
 
 ---
 
 ## 7. Reproducing this review
 
 ```bash
-# Baseline + findings (16 new failures = the open recommendations; 1152 pass):
+# Full suite post-remediation (2,584 pass, 0 fail — includes the 1,410-case conformance corpus):
 dotnet test Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj --settings regression.runsettings
 
-# Just the new empirical suites:
+# Just the conformance corpus:
+dotnet test Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj --settings regression.runsettings \
+  --filter "FullyQualifiedName~TomlTestCorpus"
+
+# Just the findings/empirical suites:
 dotnet test Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj \
   --filter "Name~SpecValid|Name~SpecInvalid|Name~RoundTrip|Name~SystemTextJson|Name~MaxDepth"
 ```
@@ -361,5 +396,7 @@ New test files added by this review:
 - `Bodu.Text.Toml/test/TomlSerializerTests.RoundTrip.cs`
 - `Bodu.Text.Toml/test/TomlSerializerTests.SystemTextJsonParity.cs`
 
-As findings are fixed, the corresponding tests in §3 flip from red to green; none of the
-1103 pre-existing tests are affected.
+All §3 findings tests are green. New test assets added during remediation:
+
+- `Bodu.Text.Toml/test/TomlTestCorpusTests.cs` — the conformance-corpus runner.
+- `Bodu.Text.Toml/test/TomlTestCorpus/` — the vendored `toml-lang/toml-test` corpus (MIT).
