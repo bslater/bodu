@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedTests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,7 +46,7 @@ public partial class DelimitedTests
         var options = new DelimitedParseOptions { Delimiter = '\t', HasHeader = false };
 
         using (DelimitedWriter writer = Delimited.CreateWriter(sink, options))
-            writer.WriteRow(new[] { "a", "b" });
+            writer.WriteRow(["a", "b"]);
 
         Assert.Contains("a\tb", sink.ToString());
     }

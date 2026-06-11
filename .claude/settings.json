@@ -1,4 +1,15 @@
 {
+  "extraKnownMarketplaces": {
+    "dotnet-arcade-skills": {
+      "source": {
+        "source": "github",
+        "repo": "dotnet/arcade-skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "dotnet-dnceng@dotnet-arcade-skills": true
+  },
   "hooks": {
     "SessionStart": [
       {

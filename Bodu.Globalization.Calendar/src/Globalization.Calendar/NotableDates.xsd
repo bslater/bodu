@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-  NotableDates.v2.xsd — revised Bodu calendar document schema (v2).
+  NotableDates.xsd — Bodu calendar document schema (v1).
 
   Models fixed-date, DayOfWeekInMonth, WeekdayNearDate, RelativeWeekdayInMonth,
   OffsetFromRule, and Algorithm strategies; reusable adjustment policies with explicit

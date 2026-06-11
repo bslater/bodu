@@ -183,9 +183,9 @@ public sealed class IniDocumentTests
     public void Constructor_WhenGivenGlobalAndSections_ShouldExposeThem()
     {
         IniSection global = new(string.Empty, Array.Empty<IniEntry>());
-        IniSection db = new("db", new[] { new IniEntry("host", "local") });
+        IniSection db = new("db", [new IniEntry("host", "local")]);
 
-        IniDocument doc = new(global, new[] { db });
+        IniDocument doc = new(global, [db]);
 
         Assert.AreSame(global, doc.GlobalSection);
         Assert.AreEqual((1, "local"), (doc.Sections.Count, doc.GetSection("db")!["host"]));
@@ -236,7 +236,7 @@ public sealed class IniDocumentTests
     {
         IniSection global = new(string.Empty, Array.Empty<IniEntry>());
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(global, new IniSection[] { null! }));
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(global, [null!]));
 
         Assert.AreEqual("sections", ex.ParamName);
     }
