@@ -21,24 +21,32 @@ ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 
 | .NET | TOML |
 |---|---|
-| `string` / `char` / `Guid` / `Uri` | string |
-| integer types | integer |
-| `double` / `float` | float (incl. `inf` / `nan`) |
+| `string` / `char` / `Guid` / `Uri` / `Version` | string |
+| `TimeSpan` | string (invariant `"c"` format) |
+| integer types (incl. `Int128` / `UInt128` within the i64 range) | integer |
+| `double` / `float` / `Half` | float (incl. `inf` / `nan`) |
+| `decimal` | float, or lossless string via `DecimalHandling` |
 | `bool` | boolean |
 | `DateTimeOffset` | offset date-time |
 | `DateTime` (`Unspecified`) | local date-time |
 | `DateOnly` / `TimeOnly` | local date / local time |
 | `enum` | string (member name) |
-| `byte[]` | integer array, or Base64 string via `ByteArrayHandling` |
+| `byte[]` / `Memory<byte>` / `ReadOnlyMemory<byte>` | integer array, or Base64 string via `ByteArrayHandling` |
 | arrays, lists, sets, queues, stacks, concurrent collections | array |
 | objects, dictionaries | table |
+| `object` members | runtime type on write, `TomlElement` on read |
+| `TomlNode` / `TomlElement` / `TomlDocument` | the value's own kind |
 
-TOML has no null: a null member is omitted by default. `decimal` and `TimeSpan` are rejected unless a [converter](converters.md) maps them. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`.
+TOML has no null: a null member is omitted by default. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
 
-Choose the `byte[]` form with <xref:Bodu.Text.Toml.TomlByteArrayHandling> on the options:
+Choose the `byte[]` form with <xref:Bodu.Text.Toml.TomlByteArrayHandling> and the `decimal` form with <xref:Bodu.Text.Toml.TomlDecimalHandling> on the options:
 
 ```csharp
-var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
+var options = new TomlSerializerOptions
+{
+    ByteArrayHandling = TomlByteArrayHandling.Base64String,
+    DecimalHandling = TomlDecimalHandling.String,   // lossless; default Float is native but binary64-bounded
+};
 ```
 
 ## Pattern 3 — Rename members

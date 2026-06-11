@@ -22,13 +22,15 @@ FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 | .NET | Bencode |
 |---|---|
 | `string` | byte string (UTF-8) |
-| `byte[]` | byte string |
-| integer types (incl. `ulong` beyond `long.MaxValue`) | integer (`i…e`) |
+| `byte[]` / `Memory<byte>` / `ReadOnlyMemory<byte>` | byte string |
+| integer types (incl. `ulong` and `UInt128` beyond `long.MaxValue`, up to `ulong.MaxValue`) | integer (`i…e`) |
 | `enum` | byte string (member name) |
 | arrays, lists, sets, queues, stacks, concurrent collections | list (`l…e`) |
 | objects, dictionaries | dictionary (`d…e`) |
+| `object` members | runtime type on write, `BencodeElement` on read |
+| `BencodeNode` / `BencodeElement` / `BencodeDocument` | the value's own kind |
 
-Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a `null` member is omitted on write. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as their invariant text and parsed back on read. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`: the writer emits pop order and the reader pushes in document order.
+Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a `null` member is omitted on write. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` — non-string keys are written as their invariant text and parsed back on read. A `Stack<T>` round-trip reverses the stack, matching `System.Text.Json`: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
 
 ## Pattern 3 — Rename members
 

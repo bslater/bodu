@@ -9,3 +9,4 @@ Practical, task-focused walkthroughs for the two `System.Text.Json`-shaped seria
 - **[Using TOML](toml.md)** — `TomlSerializer`, the type mapping, spec-version selection, the DOMs, and streams.
 - **[Using Bencode](bencode.md)** — `BencodeSerializer`, byte strings, canonical key ordering, and the kinds Bencode cannot represent.
 - **[Writing converters](converters.md)** — customise a type's shape with `BencodeConverter<T>` / `TomlConverter<T>`, and understand resolution order.
+- **[Built-in converter catalog](builtin-converters.md)** — every provisioned converter in both libraries, and how each type is represented in TOML or Bencode.

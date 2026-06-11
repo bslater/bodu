@@ -4,9 +4,9 @@ title: Writing converters
 
 # Writing converters
 
-A converter customises how a single type is read and written. It mirrors [`JsonConverter<T>`](https://learn.microsoft.com/dotnet/api/system.text.json.serialization.jsonconverter-1): derive `TomlConverter<T>` (<xref:Bodu.Text.Toml.Serialization.TomlConverter`1>) or `BencodeConverter<T>` (<xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>), and read or write tokens through the format's `Utf8…Reader` and `Utf8…Writer`.
+A converter customises how a single type is read and written. It mirrors [`JsonConverter<T>`](https://learn.microsoft.com/dotnet/api/system.text.json.serialization.jsonconverter-1): derive `TomlConverter<T>` (<xref:Bodu.Text.Toml.Serialization.TomlConverter`1>) or `BencodeConverter<T>` (<xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>), and read or write tokens through the format's reader and writer surfaces.
 
-Because each library is self-contained, a converter is written against one format's reader/writer. The pattern is identical across the two; only the prefix differs.
+Because each library is self-contained, a converter is written against one format's reader/writer. The pattern is identical across the two; only the prefix differs. The set of converters each library already ships — and therefore the types you never need to write one for — is listed in the [built-in converter catalog](builtin-converters.md).
 
 ## Pattern 1 — Convert a value type
 
@@ -19,7 +19,7 @@ using Bodu.Text.Toml.Writer;
 
 public sealed class PointConverter : TomlConverter<Point>
 {
-    public override Point Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override Point Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         string[] parts = reader.GetString().Split(',');
         return new Point(int.Parse(parts[0]), int.Parse(parts[1]));
@@ -66,7 +66,7 @@ To convert an open generic (say, every `Money<TCurrency>`), derive `TomlConverte
 
 ## Pattern 5 — Map a type the format cannot represent
 
-Some BCL types have no native form in a format and are rejected unless a converter maps them: Booleans, floating-point, and date-times in **Bencode**; `decimal` and `TimeSpan` in **TOML**. A converter bridges the gap — for example, writing a `bool` as a Bencode integer:
+Some BCL types have no native form in a format and are rejected unless a converter maps them: in **Bencode** that is Booleans, floating-point types, `char`, `Guid`, `Uri`, `Version`, `TimeSpan`, and the date-time types — by design, the library never invents a lossy representation implicitly. (TOML has built-in mappings for all of these, including `decimal` and `TimeSpan`; see the [built-in converter catalog](builtin-converters.md).) A converter bridges the gap — for example, writing a `bool` as a Bencode integer:
 
 ```csharp
 using Bodu.Text.Bencode.Reader;
