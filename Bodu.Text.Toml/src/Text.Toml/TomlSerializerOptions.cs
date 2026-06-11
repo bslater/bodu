@@ -68,6 +68,11 @@ public sealed class TomlSerializerOptions
     private bool _caseInsensitive = true;
 
     /// <summary>
+    /// Whether public fields are surfaced as serializable members.
+    /// </summary>
+    private bool _includeFields;
+
+    /// <summary>
     /// The serializer-wide default condition under which a member is omitted on write.
     /// </summary>
     private TomlIgnoreCondition _defaultIgnoreCondition = TomlIgnoreCondition.Never;
@@ -168,6 +173,33 @@ public sealed class TomlSerializerOptions
         {
             VerifyMutable();
             _caseInsensitive = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.
+    /// Mirrors <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" />.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to serialize and deserialize public fields; otherwise <see langword="false" />. The
+    /// default is <see langword="false" />.
+    /// </value>
+    /// <returns>Whether public fields participate in serialization.</returns>
+    /// <remarks>
+    /// A public field annotated with <see cref="Serialization.TomlIncludeAttribute" /> participates regardless of this
+    /// setting, mirroring how <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" /> opts an individual
+    /// field in. Fields honor the property naming policy, name and order attributes, ignore conditions, and
+    /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
+    /// assigned on read.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public bool IncludeFields
+    {
+        get => _includeFields;
+        set
+        {
+            VerifyMutable();
+            _includeFields = value;
         }
     }
 
@@ -361,8 +393,8 @@ public sealed class TomlSerializerOptions
     /// </summary>
     /// <param name="type">The candidate document root type.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="type" /> is serialized as a table (a mapped object or a
-    /// string-keyed dictionary); otherwise <see langword="false" />.
+    /// <see langword="true" /> when <paramref name="type" /> is serialized as a table (a mapped object or a dictionary
+    /// with a supported key type); otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// The classification resolves the type's converter and inspects its kind, so a user converter that produces a
@@ -381,7 +413,7 @@ public sealed class TomlSerializerOptions
             return false;
 
         Type definition = converterType.GetGenericTypeDefinition();
-        return definition == typeof(ObjectConverter<>) || definition == typeof(DictionaryConverter<,>);
+        return definition == typeof(ObjectConverter<>) || definition == typeof(DictionaryConverter<,,>);
     }
 
     /// <summary>

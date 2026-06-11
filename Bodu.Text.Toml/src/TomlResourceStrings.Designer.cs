@@ -353,6 +353,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary key &apos;{0}&apos; cannot be converted to type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_DictionaryKeyParse {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DictionaryKeyParse", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The property '{0}' appears more than once..
         /// </summary>
         internal static string Op_Invalid_DuplicateProperty {

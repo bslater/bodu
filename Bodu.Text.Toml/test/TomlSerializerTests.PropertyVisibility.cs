@@ -9,12 +9,12 @@ using Bodu.Text.Toml.Serialization;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies which members the <see cref="TomlSerializer" /> surfaces and how it binds them: read/write properties,
-/// init-only properties, get-only properties, properties with non-public accessors, and the
-/// <see cref="TomlIncludeAttribute" /> opt-in. It also pins two shapes that differ from the most permissive
+/// Verifies which property members the <see cref="TomlSerializer" /> surfaces and how it binds them: read/write
+/// properties, init-only properties, get-only properties, properties with non-public accessors, and the
+/// <see cref="TomlIncludeAttribute" /> opt-in. It also pins a shape that differs from the most permissive
 /// <see cref="System.Text.Json.JsonSerializer" /> configuration: a get-only scalar property is written but cannot be
-/// set on read, and a public field is not surfaced as a member even with <see cref="TomlIncludeAttribute" />, because
-/// the serializer maps only properties.
+/// set on read. Field serialization — opt-in through <see cref="TomlSerializerOptions.IncludeFields" /> or
+/// <see cref="TomlIncludeAttribute" /> — is covered by the <c>Fields</c> partial.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -114,32 +114,6 @@ public partial class TomlSerializerTests
 
         var roundTripped = TomlSerializer.Deserialize<IncludedPrivateSetterModel>(text);
         Assert.AreEqual(5, roundTripped.Value);
-    }
-
-    /// <summary>
-    /// Verifies that a public field is not surfaced as a serializable member, so only the type's properties are
-    /// written; this records the TOML serializer's property-only mapping, which is narrower than the field support of
-    /// <see cref="System.Text.Json.JsonSerializer" />.
-    /// </summary>
-    [TestMethod]
-    public void Serialize_WhenPublicField_ShouldNotWriteField()
-    {
-        string text = TomlSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 });
-
-        Assert.AreEqual("Property = 6\n", text);
-    }
-
-    /// <summary>
-    /// Verifies that a public field annotated with <see cref="TomlIncludeAttribute" /> is still not surfaced as a
-    /// member, confirming the attribute opts non-public property accessors in but does not extend the mapping to
-    /// fields.
-    /// </summary>
-    [TestMethod]
-    public void Serialize_WhenIncludedField_ShouldNotWriteField()
-    {
-        string text = TomlSerializer.Serialize(new IncludedFieldModel { Field = 5 });
-
-        Assert.AreEqual(string.Empty, text);
     }
 
     /// <summary>
@@ -250,35 +224,5 @@ public partial class TomlSerializerTests
         /// <returns>The value.</returns>
         [TomlInclude]
         public int Value { get; private set; }
-    }
-
-    /// <summary>
-    /// A model with both a public field and a public property, used to confirm only the property is mapped.
-    /// </summary>
-    private sealed class FieldAndPropertyModel
-    {
-        /// <summary>
-        /// The public field, which the serializer does not surface as a member.
-        /// </summary>
-        public int Field;
-
-        /// <summary>
-        /// Gets or sets the public property, which the serializer surfaces as a member.
-        /// </summary>
-        /// <returns>The property value.</returns>
-        public int Property { get; set; }
-    }
-
-    /// <summary>
-    /// A model whose only candidate member is a public field annotated with <see cref="TomlIncludeAttribute" />, which
-    /// the serializer still does not surface.
-    /// </summary>
-    private sealed class IncludedFieldModel
-    {
-        /// <summary>
-        /// The public field annotated for inclusion, which the serializer nonetheless does not surface as a member.
-        /// </summary>
-        [TomlInclude]
-        public int Field;
     }
 }

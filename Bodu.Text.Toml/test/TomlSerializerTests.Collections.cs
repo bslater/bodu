@@ -7,10 +7,11 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies the collection value model of <see cref="TomlSerializer" />: a sequence member maps to a TOML array
-/// preserving element order, empty and nested arrays are handled, a <see langword="null" /> element is rejected, an
-/// interface-typed member materializes a concrete list on read, and a top-level collection is rejected because a TOML
-/// document's root must be a table.
+/// Verifies the collection value model of <see cref="TomlSerializer" />: a sequence member (including the queue-,
+/// stack-, and bag-shaped collections that do not implement <see cref="ICollection{T}" />) maps to a TOML array
+/// preserving element order — with the stack-reversing round-trip — empty and nested arrays are handled, a
+/// <see langword="null" /> element is rejected, an interface-typed member materializes a concrete list on read, and a
+/// top-level collection is rejected because a TOML document's root must be a table.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -242,6 +243,145 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="System.Collections.Generic.Queue{T}" /> member serializes to a TOML array in
+    /// dequeue (first-in) order and round-trips to a queue that dequeues the same sequence.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenQueueMember_ShouldRoundTripInDequeueOrder()
+    {
+        var model = new QueueModel();
+        model.Items.Enqueue(1);
+        model.Items.Enqueue(2);
+        model.Items.Enqueue(3);
+
+        string text = TomlSerializer.Serialize(model);
+        Assert.AreEqual("Items = [1, 2, 3]\n", text);
+
+        var roundTripped = TomlSerializer.Deserialize<QueueModel>(text);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.Items.ToArray());
+        Assert.AreEqual(1, roundTripped.Items.Dequeue());
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="System.Collections.Generic.Stack{T}" /> member serializes to a TOML array in pop
+    /// order (most recently pushed first), the stack's natural enumeration order.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStackMember_ShouldWriteElementsInPopOrder()
+    {
+        var model = new StackModel();
+        model.Items.Push(1);
+        model.Items.Push(2);
+        model.Items.Push(3);
+
+        string text = TomlSerializer.Serialize(model);
+
+        Assert.AreEqual("Items = [3, 2, 1]\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a TOML array into a <see cref="System.Collections.Generic.Stack{T}" /> pushes the
+    /// elements in document order, so the last document element becomes the top of the stack.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStackMember_ShouldPushElementsInDocumentOrder()
+    {
+        var model = TomlSerializer.Deserialize<StackModel>("Items = [1, 2, 3]\n");
+
+        Assert.AreEqual(3, model.Items.Count);
+        Assert.AreEqual(3, model.Items.Pop());
+        Assert.AreEqual(2, model.Items.Pop());
+        Assert.AreEqual(1, model.Items.Pop());
+    }
+
+    /// <summary>
+    /// Verifies that a serialize/deserialize round-trip reverses a <see cref="System.Collections.Generic.Stack{T}" />:
+    /// the writer enumerates pop order while the reader pushes in document order, mirroring the behavior of
+    /// <see cref="System.Text.Json.JsonSerializer" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStackMember_ShouldReverseElementOrder()
+    {
+        var model = new StackModel { Items = new Stack<int>(new[] { 1, 2 }) };
+
+        string text = TomlSerializer.Serialize(model);
+        var roundTripped = TomlSerializer.Deserialize<StackModel>(text);
+
+        CollectionAssert.AreEqual(model.Items.Reverse().ToArray(), roundTripped.Items.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> member serializes to a TOML
+    /// array in dequeue order and round-trips to a queue yielding the same sequence.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenConcurrentQueueMember_ShouldRoundTripInDequeueOrder()
+    {
+        var model = new ConcurrentQueueModel();
+        model.Items.Enqueue(1);
+        model.Items.Enqueue(2);
+        model.Items.Enqueue(3);
+
+        string text = TomlSerializer.Serialize(model);
+        Assert.AreEqual("Items = [1, 2, 3]\n", text);
+
+        var roundTripped = TomlSerializer.Deserialize<ConcurrentQueueModel>(text);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.Items.ToArray());
+        Assert.IsTrue(roundTripped.Items.TryPeek(out var head));
+        Assert.AreEqual(1, head);
+    }
+
+    /// <summary>
+    /// Verifies that a serialize/deserialize round-trip reverses a
+    /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" />, matching the
+    /// <see cref="System.Collections.Generic.Stack{T}" /> semantics: the writer enumerates pop order while the reader
+    /// pushes in document order.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenConcurrentStackMember_ShouldReverseElementOrder()
+    {
+        var model = new ConcurrentStackModel();
+        model.Items.Push(1);
+        model.Items.Push(2);
+
+        string text = TomlSerializer.Serialize(model);
+        Assert.AreEqual("Items = [2, 1]\n", text);
+
+        var roundTripped = TomlSerializer.Deserialize<ConcurrentStackModel>(text);
+        Assert.IsTrue(roundTripped.Items.TryPeek(out var top));
+        Assert.AreEqual(1, top);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> member serializes to a TOML
+    /// array and round-trips to a bag holding an equivalent set of elements, with no enumeration-order guarantee.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenConcurrentBagMember_ShouldRoundTripToEquivalentElements()
+    {
+        var model = new ConcurrentBagModel { Items = { 1, 2, 3 } };
+
+        string text = TomlSerializer.Serialize(model);
+
+        var roundTripped = TomlSerializer.Deserialize<ConcurrentBagModel>(text);
+        CollectionAssert.AreEquivalent(model.Items.ToList(), roundTripped.Items.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that serializing a top-level <see cref="System.Collections.Generic.Queue{T}" /> throws
+    /// <see cref="TomlSerializationException" />, because queue-shaped collections map to TOML arrays and a TOML
+    /// document's root must be a table.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenRootIsQueue_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(new Queue<int>(new[] { 1, 2 }));
+        });
+    }
+
+    /// <summary>
     /// A model with a list member.
     /// </summary>
     private sealed class ListModel
@@ -339,5 +479,55 @@ public partial class TomlSerializerTests
         /// <summary>Gets or sets the integer collection, typed as an interface.</summary>
         /// <returns>The collection.</returns>
         public ICollection<int> Numbers { get; set; } = new List<int>();
+    }
+
+    /// <summary>
+    /// A model with a <see cref="System.Collections.Generic.Queue{T}" /> member.
+    /// </summary>
+    private sealed class QueueModel
+    {
+        /// <summary>Gets or sets the integer queue.</summary>
+        /// <returns>The queue.</returns>
+        public Queue<int> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A model with a <see cref="System.Collections.Generic.Stack{T}" /> member.
+    /// </summary>
+    private sealed class StackModel
+    {
+        /// <summary>Gets or sets the integer stack.</summary>
+        /// <returns>The stack.</returns>
+        public Stack<int> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A model with a <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> member.
+    /// </summary>
+    private sealed class ConcurrentQueueModel
+    {
+        /// <summary>Gets or sets the integer queue.</summary>
+        /// <returns>The queue.</returns>
+        public System.Collections.Concurrent.ConcurrentQueue<int> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A model with a <see cref="System.Collections.Concurrent.ConcurrentStack{T}" /> member.
+    /// </summary>
+    private sealed class ConcurrentStackModel
+    {
+        /// <summary>Gets or sets the integer stack.</summary>
+        /// <returns>The stack.</returns>
+        public System.Collections.Concurrent.ConcurrentStack<int> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A model with a <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> member.
+    /// </summary>
+    private sealed class ConcurrentBagModel
+    {
+        /// <summary>Gets or sets the integer bag.</summary>
+        /// <returns>The bag.</returns>
+        public System.Collections.Concurrent.ConcurrentBag<int> Items { get; set; } = new();
     }
 }

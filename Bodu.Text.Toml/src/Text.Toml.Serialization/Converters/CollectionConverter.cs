@@ -15,9 +15,22 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// collection type <typeparamref name="TCollection" /> according to a <see cref="CollectionStrategy" />.
 /// </summary>
 /// <typeparam name="TCollection">
-/// The declared collection type (an array, a list, a list-compatible interface, or a concrete collection).
+/// The declared collection type (an array, a list, a list-compatible interface, a concrete collection, or a queue-,
+/// stack-, or bag-shaped collection).
 /// </typeparam>
 /// <typeparam name="TElement">The element type.</typeparam>
+/// <remarks>
+/// <para>
+/// Writing always enumerates the collection in its natural enumeration order. For <see cref="Queue{T}" /> and
+/// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> that is dequeue (first-in) order, so a queue
+/// round-trips unchanged. For <see cref="Stack{T}" /> and
+/// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" /> enumeration yields pop order (most recently pushed
+/// first), while reading pushes the document's elements in document order — so a serialize/deserialize round-trip
+/// reverses a stack, mirroring the behavior of <see cref="System.Text.Json.JsonSerializer" />.
+/// <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> makes no enumeration-order guarantee in either
+/// direction.
+/// </para>
+/// </remarks>
 internal sealed class CollectionConverter<TCollection, TElement>
     : TomlConverter<TCollection>
     where TCollection : class
@@ -90,6 +103,11 @@ internal sealed class CollectionConverter<TCollection, TElement>
         {
             CollectionStrategy.Array => (TCollection)(object)items.ToArray(),
             CollectionStrategy.ListAssignable => (TCollection)(object)items,
+            CollectionStrategy.Queue => MaterializeQueue(items),
+            CollectionStrategy.Stack => MaterializeStack(items),
+            CollectionStrategy.ConcurrentQueue => MaterializeConcurrentQueue(items),
+            CollectionStrategy.ConcurrentStack => MaterializeConcurrentStack(items),
+            CollectionStrategy.ConcurrentBag => MaterializeConcurrentBag(items),
             _ => MaterializeConcrete(items),
         };
 
@@ -104,6 +122,85 @@ internal sealed class CollectionConverter<TCollection, TElement>
         var collection = (ICollection<TElement>)instance;
         foreach (TElement element in items)
             collection.Add(element);
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Materializes a <see cref="Queue{T}" /> (or subclass) by enqueuing each element in document order.
+    /// </summary>
+    /// <param name="items">The read elements.</param>
+    /// <returns>The materialized queue.</returns>
+    private static TCollection MaterializeQueue(List<TElement> items)
+    {
+        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var queue = (Queue<TElement>)(object)instance;
+        foreach (TElement element in items)
+            queue.Enqueue(element);
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Materializes a <see cref="Stack{T}" /> (or subclass) by pushing each element in document order, so enumeration
+    /// yields the elements in reverse document order.
+    /// </summary>
+    /// <param name="items">The read elements.</param>
+    /// <returns>The materialized stack.</returns>
+    private static TCollection MaterializeStack(List<TElement> items)
+    {
+        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var stack = (Stack<TElement>)(object)instance;
+        foreach (TElement element in items)
+            stack.Push(element);
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Materializes a <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> (or subclass) by enqueuing each
+    /// element in document order.
+    /// </summary>
+    /// <param name="items">The read elements.</param>
+    /// <returns>The materialized queue.</returns>
+    private static TCollection MaterializeConcurrentQueue(List<TElement> items)
+    {
+        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var queue = (System.Collections.Concurrent.ConcurrentQueue<TElement>)(object)instance;
+        foreach (TElement element in items)
+            queue.Enqueue(element);
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Materializes a <see cref="System.Collections.Concurrent.ConcurrentStack{T}" /> (or subclass) by pushing each
+    /// element in document order, so enumeration yields the elements in reverse document order.
+    /// </summary>
+    /// <param name="items">The read elements.</param>
+    /// <returns>The materialized stack.</returns>
+    private static TCollection MaterializeConcurrentStack(List<TElement> items)
+    {
+        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var stack = (System.Collections.Concurrent.ConcurrentStack<TElement>)(object)instance;
+        foreach (TElement element in items)
+            stack.Push(element);
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Materializes a <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> (or subclass) by adding each
+    /// element.
+    /// </summary>
+    /// <param name="items">The read elements.</param>
+    /// <returns>The materialized bag.</returns>
+    private static TCollection MaterializeConcurrentBag(List<TElement> items)
+    {
+        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var bag = (System.Collections.Concurrent.ConcurrentBag<TElement>)(object)instance;
+        foreach (TElement element in items)
+            bag.Add(element);
 
         return instance;
     }

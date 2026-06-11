@@ -85,4 +85,5 @@
   <data name="Op_Invalid_NodeValueConversion" xml:space="preserve"><value>A TOML value of kind '{1}' cannot be converted to type '{0}'.</value></data>
   <data name="Op_Invalid_ElementKindMismatch" xml:space="preserve"><value>This operation requires a {0} element, but the element is a {1} element.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
+  <data name="Op_Invalid_DictionaryKeyParse" xml:space="preserve"><value>The dictionary key '{0}' cannot be converted to type '{1}'.</value></data>
 </root>
