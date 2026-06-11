@@ -4,577 +4,241 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Text;
 using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="Utf8TomlReader" />, the forward-only TOML token reader.
+/// Verifies the behaviour of <see cref="Utf8TomlReader" />, the source-order UTF-8 TOML lexer: its token vocabulary,
+/// lexical validation, and lazy decoding.
 /// </summary>
 [TestClass]
 public sealed partial class Utf8TomlReaderTests
 {
     /// <summary>
-    /// Verifies that a representative document can be read happy-path, producing a table containing a scalar.
+    /// Verifies that a key/value pair lexes as one key segment followed by the value token, in source order.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
-    public void Read_WhenSimpleKeyValue_ShouldYieldTableWithScalar()
+    public void Read_WhenSimpleKeyValue_ShouldEmitKeyThenValue()
     {
-        Utf8TomlReader reader = Create("a = 1\n");
+        Utf8TomlReader lexer = Create("a = 1\n");
 
-        Assert.IsTrue(reader.Read());
-        Assert.AreEqual(TomlTokenType.StartTable, reader.TokenType);
-
-        Assert.IsTrue(reader.Read());
-        Assert.AreEqual(TomlTokenType.PropertyName, reader.TokenType);
-        Assert.AreEqual("a", reader.GetString());
-
-        Assert.IsTrue(reader.Read());
-        Assert.AreEqual(TomlTokenType.Integer, reader.TokenType);
-        Assert.AreEqual(1L, reader.GetInt64());
-
-        Assert.IsTrue(reader.Read());
-        Assert.AreEqual(TomlTokenType.EndTable, reader.TokenType);
-
-        Assert.IsFalse(reader.Read());
-        Assert.AreEqual(TomlTokenType.None, reader.TokenType);
+        CollectionAssert.AreEqual(
+            new[] { "Key(a)!", "Integer(1)" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that each scalar value kind is surfaced as the matching token type and decoded value.
+    /// Verifies that a table header lexes as a header token followed by one key token per dotted segment, with the
+    /// final segment flagged.
     /// </summary>
     [TestMethod]
-    public void Read_WhenScalarKeyValues_ShouldDecodeEachValue()
+    public void Read_WhenDottedTableHeader_ShouldEmitHeaderThenKeySegments()
     {
-        Utf8TomlReader reader = Create("i = 42\ns = \"x\"\nf = 1.5\nb = true\n");
+        Utf8TomlReader lexer = Create("[server.tls]\nenabled = true\n");
 
-        ExpectStartTable(ref reader);
-
-        ExpectProperty(ref reader, "i");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(42L, reader.GetInt64());
-
-        ExpectProperty(ref reader, "s");
-        ExpectToken(ref reader, TomlTokenType.String);
-        Assert.AreEqual("x", reader.GetString());
-
-        ExpectProperty(ref reader, "f");
-        ExpectToken(ref reader, TomlTokenType.Float);
-        Assert.AreEqual(1.5d, reader.GetDouble());
-
-        ExpectProperty(ref reader, "b");
-        ExpectToken(ref reader, TomlTokenType.Boolean);
-        Assert.IsTrue(reader.GetBoolean());
-
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "TableHeader", "Key(server)", "Key(tls)!", "Key(enabled)!", "Boolean(true)" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that a <c>[table]</c> header surfaces as a nested table reached through its property name.
+    /// Verifies that an array-of-tables header lexes as its own header token followed by its key segments.
     /// </summary>
     [TestMethod]
-    public void Read_WhenTableHeader_ShouldNestKeysUnderTable()
+    public void Read_WhenArrayTableHeader_ShouldEmitArrayTableHeaderToken()
     {
-        Utf8TomlReader reader = Create("[owner]\nname = \"Tom\"\nage = 45\n");
+        Utf8TomlReader lexer = Create("[[fruit]]\nname = \"apple\"\n");
 
-        ExpectStartTable(ref reader);
-
-        ExpectProperty(ref reader, "owner");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        Assert.AreEqual(1, reader.CurrentDepth);
-
-        ExpectProperty(ref reader, "name");
-        ExpectToken(ref reader, TomlTokenType.String);
-        Assert.AreEqual("Tom", reader.GetString());
-
-        ExpectProperty(ref reader, "age");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(45L, reader.GetInt64());
-
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "ArrayTableHeader", "Key(fruit)!", "Key(name)!", "String(apple)" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that out-of-line <c>[a.b]</c> headers merge into the correct nested tables.
+    /// Verifies that a dotted key lexes as one key token per segment in source order, not as nested tables.
     /// </summary>
     [TestMethod]
-    public void Read_WhenDottedHeaderPath_ShouldMergeIntoNestedTables()
+    public void Read_WhenDottedKey_ShouldEmitOneKeyPerSegment()
     {
-        Utf8TomlReader reader = Create("[a.b]\nc = 1\n");
+        Utf8TomlReader lexer = Create("a.b.c = 1\n");
 
-        ExpectStartTable(ref reader);
-
-        ExpectProperty(ref reader, "a");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-
-        ExpectProperty(ref reader, "b");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-
-        ExpectProperty(ref reader, "c");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "Key(a)", "Key(b)", "Key(c)!", "Integer(1)" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that a dotted key surfaces as nested tables identical to a header path.
+    /// Verifies that an array value lexes as start/end tokens enclosing each element in source order.
     /// </summary>
     [TestMethod]
-    public void Read_WhenDottedKey_ShouldSurfaceAsNestedTable()
+    public void Read_WhenArrayValue_ShouldEmitStartAndEndArray()
     {
-        Utf8TomlReader reader = Create("a.b.c = 1\n");
+        Utf8TomlReader lexer = Create("ports = [1, 2, 3]\n");
 
-        ExpectStartTable(ref reader);
-
-        ExpectProperty(ref reader, "a");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "b");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-
-        ExpectProperty(ref reader, "c");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "Key(ports)!", "StartArray", "Integer(1)", "Integer(2)", "Integer(3)", "EndArray" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that an array surfaces as a start/end array boundary enclosing each element.
+    /// Verifies that an inline table lexes with inline-table tokens distinct from header-defined structure.
     /// </summary>
     [TestMethod]
-    public void Read_WhenArray_ShouldSurfaceElementsBetweenArrayBoundaries()
+    public void Read_WhenInlineTable_ShouldEmitInlineTableTokens()
     {
-        Utf8TomlReader reader = Create("v = [1, 2, 3]\n");
+        Utf8TomlReader lexer = Create("p = { x = 1, y = 2 }\n");
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "v");
-
-        ExpectToken(ref reader, TomlTokenType.StartArray);
-        Assert.AreEqual(1, reader.CurrentDepth);
-
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(2L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(3L, reader.GetInt64());
-
-        ExpectToken(ref reader, TomlTokenType.EndArray);
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "Key(p)!", "StartInlineTable", "Key(x)!", "Integer(1)", "Key(y)!", "Integer(2)", "EndInlineTable" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that an inline table surfaces identically to a header-defined table.
+    /// Verifies that comments are surfaced as tokens carrying the text after the <c>#</c>.
     /// </summary>
     [TestMethod]
-    public void Read_WhenInlineTable_ShouldSurfaceAsTable()
+    public void Read_WhenComments_ShouldSurfaceCommentTokens()
     {
-        Utf8TomlReader reader = Create("p = {x = 1}\n");
+        Utf8TomlReader lexer = Create("# leading\na = 1 # trailing\n");
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "p");
-
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "Comment( leading)", "Key(a)!", "Integer(1)", "Comment( trailing)" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that an array-of-tables surfaces as an array whose elements are each a table.
+    /// Verifies that comments inside an array surface as tokens between the element tokens.
     /// </summary>
     [TestMethod]
-    public void Read_WhenArrayOfTables_ShouldSurfaceArrayOfTables()
+    public void Read_WhenCommentInsideArray_ShouldSurfaceCommentToken()
     {
-        Utf8TomlReader reader = Create("[[products]]\nname = \"A\"\n\n[[products]]\nname = \"B\"\n");
+        Utf8TomlReader lexer = Create("v = [ # first\n1,\n2 ]\n");
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "products");
-        ExpectToken(ref reader, TomlTokenType.StartArray);
-
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "name");
-        ExpectToken(ref reader, TomlTokenType.String);
-        Assert.AreEqual("A", reader.GetString());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "name");
-        ExpectToken(ref reader, TomlTokenType.String);
-        Assert.AreEqual("B", reader.GetString());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-
-        ExpectToken(ref reader, TomlTokenType.EndArray);
-        ExpectEndTable(ref reader);
-        Assert.IsFalse(reader.Read());
+        CollectionAssert.AreEqual(
+            new[] { "Key(v)!", "StartArray", "Comment( first)", "Integer(1)", "Integer(2)", "EndArray" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that an offset date-time is decoded to the expected <see cref="DateTimeOffset" />.
+    /// Verifies that every scalar kind lexes to the matching token type and decoded value.
     /// </summary>
     [TestMethod]
-    public void Read_WhenOffsetDateTime_ShouldDecodeDateTimeOffset()
+    public void Read_WhenEveryScalarKind_ShouldClassifyAndDecodeEachValue()
     {
-        Utf8TomlReader reader = Create("d = 1979-05-27T07:32:00Z\n");
+        Utf8TomlReader lexer = Create(
+            "s = \"str\"\ni = 42\nf = 1.5\nb = true\nodt = 1979-05-27T07:32:00Z\nldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00\n");
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "d");
-        ExpectToken(ref reader, TomlTokenType.OffsetDateTime);
-        Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), reader.GetDateTimeOffset());
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                "Key(s)!", "String(str)",
+                "Key(i)!", "Integer(42)",
+                "Key(f)!", "Float(1.5)",
+                "Key(b)!", "Boolean(true)",
+                "Key(odt)!", "OffsetDateTime(1979-05-27T07:32:00.0000000+00:00)",
+                "Key(ldt)!", "LocalDateTime(1979-05-27T07:32:00.0000000)",
+                "Key(ld)!", "LocalDate(1979-05-27)",
+                "Key(lt)!", "LocalTime(07:32:00.0000000)",
+            },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that a local date-time is decoded to an unspecified-kind <see cref="DateTime" />.
+    /// Verifies that the lexer accepts structurally invalid input — duplicate keys lex cleanly because duplicate
+    /// detection is the document builder's responsibility, not the lexer's.
     /// </summary>
     [TestMethod]
-    public void Read_WhenLocalDateTime_ShouldDecodeDateTime()
+    public void Read_WhenDuplicateKeys_ShouldLexCleanly()
     {
-        Utf8TomlReader reader = Create("d = 1979-05-27T07:32:00\n");
+        Utf8TomlReader lexer = Create("a = 1\na = 2\n");
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "d");
-        ExpectToken(ref reader, TomlTokenType.LocalDateTime);
-        Assert.AreEqual(new DateTime(1979, 5, 27, 7, 32, 0, DateTimeKind.Unspecified), reader.GetDateTime());
-        Assert.AreEqual(DateTimeKind.Unspecified, reader.GetDateTime().Kind);
+        CollectionAssert.AreEqual(
+            new[] { "Key(a)!", "Integer(1)", "Key(a)!", "Integer(2)" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that a local date is decoded to the expected <see cref="DateOnly" />.
+    /// Verifies that redefining a table lexes cleanly, because table redefinition is a structural rule enforced by the
+    /// document builder.
     /// </summary>
     [TestMethod]
-    public void Read_WhenLocalDate_ShouldDecodeDateOnly()
+    public void Read_WhenTableRedefined_ShouldLexCleanly()
     {
-        Utf8TomlReader reader = Create("d = 1979-05-27\n");
+        Utf8TomlReader lexer = Create("[a]\n[a]\n");
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "d");
-        ExpectToken(ref reader, TomlTokenType.LocalDate);
-        Assert.AreEqual(new DateOnly(1979, 5, 27), reader.GetDateOnly());
+        CollectionAssert.AreEqual(
+            new[] { "TableHeader", "Key(a)!", "TableHeader", "Key(a)!" },
+            Drain(ref lexer));
     }
 
     /// <summary>
-    /// Verifies that a local time is decoded to the expected <see cref="TimeOnly" />.
+    /// Verifies that an empty document produces no tokens.
     /// </summary>
     [TestMethod]
-    public void Read_WhenLocalTime_ShouldDecodeTimeOnly()
+    public void Read_WhenEmptyDocument_ShouldProduceNoTokens()
     {
-        Utf8TomlReader reader = Create("t = 07:32:10\n");
+        Utf8TomlReader lexer = Create(string.Empty);
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "t");
-        ExpectToken(ref reader, TomlTokenType.LocalTime);
-        Assert.AreEqual(new TimeOnly(7, 32, 10), reader.GetTimeOnly());
+        Assert.IsFalse(lexer.Read());
+        Assert.AreEqual(TomlTokenType.None, lexer.TokenType);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Utf8TomlReader.Skip" /> over a table start advances to just past its matching end.
+    /// Verifies that a leading UTF-8 byte-order mark is skipped.
     /// </summary>
     [TestMethod]
-    public void Skip_WhenPositionedOnStartTable_ShouldAdvancePastSubtree()
+    public void Read_WhenLeadingByteOrderMark_ShouldSkipIt()
     {
-        Utf8TomlReader reader = Create("[owner]\nname = \"Tom\"\nnested.k = 1\n\n[other]\nx = 9\n");
+        byte[] source = [0xEF, 0xBB, 0xBF, .. "a = 1\n"u8.ToArray()];
+        var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });
 
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "owner");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-
-        reader.Skip();
-        Assert.AreEqual(TomlTokenType.EndTable, reader.TokenType);
-        Assert.AreEqual(0, reader.CurrentDepth);
-
-        // The next property after skipping the owner subtree is the second top-level table.
-        ExpectProperty(ref reader, "other");
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(9L, reader.GetInt64());
+        Assert.IsTrue(lexer.Read());
+        Assert.AreEqual(TomlTokenType.Key, lexer.TokenType);
+        Assert.AreEqual("a", lexer.GetString());
+        Assert.AreEqual(1, lexer.ColumnNumber);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Utf8TomlReader.Skip" /> over an array start advances to just past its matching end.
-    /// </summary>
-    [TestMethod]
-    public void Skip_WhenPositionedOnStartArray_ShouldAdvancePastArray()
-    {
-        Utf8TomlReader reader = Create("v = [1, [2, 3], 4]\nw = 5\n");
-
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "v");
-        ExpectToken(ref reader, TomlTokenType.StartArray);
-
-        reader.Skip();
-        Assert.AreEqual(TomlTokenType.EndArray, reader.TokenType);
-        Assert.AreEqual(0, reader.CurrentDepth);
-
-        ExpectProperty(ref reader, "w");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(5L, reader.GetInt64());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Utf8TomlReader.Skip" /> over a property name advances past the property's value,
-    /// matching the <c>Utf8JsonReader.Skip</c> contract.
-    /// </summary>
-    [TestMethod]
-    public void Skip_WhenPositionedOnPropertyName_ShouldSkipPropertyValue()
-    {
-        Utf8TomlReader reader = Create("v = [1, 2, 3]\nw = 5\n");
-
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "v");
-
-        reader.Skip();
-        Assert.AreEqual(TomlTokenType.EndArray, reader.TokenType);
-
-        ExpectProperty(ref reader, "w");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(5L, reader.GetInt64());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Utf8TomlReader.Skip" /> is a no-op when the reader is on a scalar token.
-    /// </summary>
-    [TestMethod]
-    public void Skip_WhenPositionedOnScalar_ShouldNotAdvance()
-    {
-        Utf8TomlReader reader = Create("a = 1\nb = 2\n");
-
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "a");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-
-        reader.Skip();
-        Assert.AreEqual(TomlTokenType.Integer, reader.TokenType);
-        Assert.AreEqual(1L, reader.GetInt64());
-    }
-
-    /// <summary>
-    /// Verifies that requesting a value of the wrong kind throws <see cref="InvalidOperationException" />.
-    /// </summary>
-    [TestMethod]
-    public void GetInt64_WhenTokenIsString_ShouldThrowInvalidOperationException()
-    {
-        // A ref struct cannot be captured by a lambda, so the reader is built and advanced inside the assertion.
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            Utf8TomlReader reader = Create("s = \"x\"\n");
-            ExpectStartTable(ref reader);
-            ExpectProperty(ref reader, "s");
-            ExpectToken(ref reader, TomlTokenType.String);
-            _ = reader.GetInt64();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a key/value pair without a value throws <see cref="TomlFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenValueMissing_ShouldThrowTomlFormatException()
-    {
-        Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("a = \n");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that an unterminated string throws <see cref="TomlFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenStringUnterminated_ShouldThrowTomlFormatException()
-    {
-        Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("a = \"unterminated\n");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a duplicate key throws <see cref="TomlFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenKeyDuplicated_ShouldThrowTomlFormatException()
-    {
-        Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("a = 1\na = 2\n");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a malformed date throws <see cref="TomlFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenDateInvalid_ShouldThrowTomlFormatException()
-    {
-        Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("d = 2020-13-01\n");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the recorded line, column, and offset are populated on a parse failure.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenInvalid_ShouldRecordSourceLocation()
-    {
-        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("a = 1\nb = \n");
-        });
-
-        Assert.AreEqual(2, ex.LineNumber);
-        Assert.IsNotNull(ex.ColumnNumber);
-        Assert.IsNotNull(ex.Offset);
-    }
-
-    /// <summary>
-    /// Verifies that exceeding the configured maximum depth throws <see cref="TomlFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenNestingExceedsMaxDepth_ShouldThrowTomlFormatException()
-    {
-        TomlReaderOptions options = new() { MaxDepth = 2 };
-
-        Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = new Utf8TomlReader(Encoding.UTF8.GetBytes("v = [[[1]]]\n"), options);
-        });
-    }
-
-
-
-
-    /// <summary>
-    /// Verifies that an offset date-time with a negative offset decodes to the expected instant.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void Read_WhenOffsetDateTimeNegativeOffset_ShouldDecodeInstant()
-    {
-        Utf8TomlReader reader = Create("d = 1979-05-27T00:32:00-07:00\n");
-
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "d");
-        ExpectToken(ref reader, TomlTokenType.OffsetDateTime);
-        Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 0, 32, 0, TimeSpan.FromHours(-7)), reader.GetDateTimeOffset());
-    }
-
-    /// <summary>
-    /// Verifies that an array of inline tables surfaces each element as a nested table.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void Read_WhenArrayOfInlineTables_ShouldSurfaceNestedTables()
-    {
-        Utf8TomlReader reader = Create("v = [{x = 1}, {x = 2}]\n");
-
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "v");
-        ExpectToken(ref reader, TomlTokenType.StartArray);
-
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-
-        ExpectToken(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(2L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-
-        ExpectToken(ref reader, TomlTokenType.EndArray);
-        ExpectEndTable(ref reader);
-    }
-
-
-    /// <summary>
-    /// Creates a reader over the UTF-8 encoding of <paramref name="toml" /> using the default options.
+    /// Creates a lexer over the UTF-8 encoding of <paramref name="toml" />.
     /// </summary>
     /// <param name="toml">The TOML source text.</param>
-    /// <returns>A reader positioned before the first token.</returns>
-    private static Utf8TomlReader Create(string toml) =>
-        new(Encoding.UTF8.GetBytes(toml));
+    /// <param name="specVersion">The specification version to enforce.</param>
+    /// <returns>A lexer positioned before the first token.</returns>
+    private static Utf8TomlReader Create(string toml, TomlSpecVersion specVersion = TomlSpecVersion.V1_0) =>
+        new(Encoding.UTF8.GetBytes(toml), new TomlReaderOptions { SpecVersion = specVersion });
 
     /// <summary>
-    /// Creates a reader over the UTF-8 encoding of <paramref name="toml" /> enforcing the TOML v1.1.0 grammar.
+    /// Drains the lexer to the end of the document, formatting each token as <c>TokenType(value)</c> — with a
+    /// trailing <c>!</c> marking a final key segment — so a test can assert the exact source-order token sequence.
     /// </summary>
-    /// <param name="toml">The TOML source text.</param>
-    /// <returns>A reader positioned before the first token.</returns>
-    private static Utf8TomlReader CreateV11(string toml) =>
-        new(Encoding.UTF8.GetBytes(toml), new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_1 });
-
-    /// <summary>
-    /// Advances a reader positioned at the document start over <c>StartTable</c> and the single property named
-    /// <c>v</c>, then over the value token, asserting it is of the expected kind.
-    /// </summary>
-    /// <param name="reader">The reader to advance.</param>
-    /// <param name="expected">The expected value token type.</param>
-    /// <remarks>
-    /// The helper supports the many single key/value tests whose source is <c>v = &lt;value&gt;</c>, leaving the reader
-    /// positioned on the decoded value token ready for a typed accessor assertion.
-    /// </remarks>
-    private static void ExpectSingleValue(ref Utf8TomlReader reader, TomlTokenType expected)
+    /// <param name="lexer">The lexer to drain.</param>
+    /// <returns>The formatted token entries in read order.</returns>
+    private static List<string> Drain(ref Utf8TomlReader lexer)
     {
-        ExpectStartTable(ref reader);
-        ExpectProperty(ref reader, "v");
-        ExpectToken(ref reader, expected);
-    }
+        var tokens = new List<string>();
+        while (lexer.Read())
+        {
+            var entry = lexer.TokenType switch
+            {
+                TomlTokenType.Key => $"Key({lexer.GetString()}){(lexer.IsFinalKeySegment ? "!" : string.Empty)}",
+                TomlTokenType.String => $"String({lexer.GetString()})",
+                TomlTokenType.Comment => $"Comment({lexer.GetString()})",
+                TomlTokenType.Integer => $"Integer({lexer.GetInt64().ToString(CultureInfo.InvariantCulture)})",
+                TomlTokenType.Float => $"Float({lexer.GetDouble().ToString("R", CultureInfo.InvariantCulture)})",
+                TomlTokenType.Boolean => $"Boolean({(lexer.GetBoolean() ? "true" : "false")})",
+                TomlTokenType.OffsetDateTime => $"OffsetDateTime({lexer.GetDateTimeOffset().ToString("o", CultureInfo.InvariantCulture)})",
+                TomlTokenType.LocalDateTime => $"LocalDateTime({lexer.GetDateTime().ToString("o", CultureInfo.InvariantCulture)})",
+                TomlTokenType.LocalDate => $"LocalDate({lexer.GetDateOnly().ToString("o", CultureInfo.InvariantCulture)})",
+                TomlTokenType.LocalTime => $"LocalTime({lexer.GetTimeOnly().ToString("o", CultureInfo.InvariantCulture)})",
+                _ => lexer.TokenType.ToString(),
+            };
 
-    /// <summary>
-    /// Advances the reader and asserts that it landed on a <see cref="TomlTokenType.StartTable" />.
-    /// </summary>
-    /// <param name="reader">The reader to advance.</param>
-    private static void ExpectStartTable(ref Utf8TomlReader reader) =>
-        ExpectToken(ref reader, TomlTokenType.StartTable);
+            tokens.Add(entry);
+        }
 
-    /// <summary>
-    /// Advances the reader and asserts that it landed on a <see cref="TomlTokenType.EndTable" />.
-    /// </summary>
-    /// <param name="reader">The reader to advance.</param>
-    private static void ExpectEndTable(ref Utf8TomlReader reader) =>
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-
-    /// <summary>
-    /// Advances the reader and asserts that it landed on a <see cref="TomlTokenType.PropertyName" /> carrying the
-    /// expected key.
-    /// </summary>
-    /// <param name="reader">The reader to advance.</param>
-    /// <param name="expected">The expected property name.</param>
-    private static void ExpectProperty(ref Utf8TomlReader reader, string expected)
-    {
-        ExpectToken(ref reader, TomlTokenType.PropertyName);
-        Assert.AreEqual(expected, reader.GetString());
-    }
-
-    /// <summary>
-    /// Advances the reader and asserts that it landed on the expected token type.
-    /// </summary>
-    /// <param name="reader">The reader to advance.</param>
-    /// <param name="expected">The expected token type.</param>
-    private static void ExpectToken(ref Utf8TomlReader reader, TomlTokenType expected)
-    {
-        Assert.IsTrue(reader.Read(), $"Expected {expected} but the reader reported end of document.");
-        Assert.AreEqual(expected, reader.TokenType);
+        return tokens;
     }
 }

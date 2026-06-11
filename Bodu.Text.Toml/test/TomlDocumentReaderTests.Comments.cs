@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Comments.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.Comments.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that a full-line comment preceding a key/value pair is ignored.
@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenFullLineComment_ShouldIgnoreComment()
     {
-        Utf8TomlReader reader = Create("# a leading comment\nv = 1\n");
+        TomlDocumentReader reader = Create("# a leading comment\nv = 1\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Integer);
         Assert.AreEqual(1L, reader.GetInt64());
@@ -28,7 +28,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenInlineComment_ShouldIgnoreComment()
     {
-        Utf8TomlReader reader = Create("v = 1 # trailing comment\n");
+        TomlDocumentReader reader = Create("v = 1 # trailing comment\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Integer);
         Assert.AreEqual(1L, reader.GetInt64());
@@ -42,7 +42,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenDocumentIsCommentsOnly_ShouldSurfaceEmptyRoot()
     {
-        Utf8TomlReader reader = Create("# only\n\n# comments\n");
+        TomlDocumentReader reader = Create("# only\n\n# comments\n");
 
         ExpectStartTable(ref reader);
         ExpectEndTable(ref reader);
@@ -55,7 +55,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenBlankLinesBetweenPairs_ShouldSurfaceBothPairs()
     {
-        Utf8TomlReader reader = Create("a = 1\n\n\nb = 2\n");
+        TomlDocumentReader reader = Create("a = 1\n\n\nb = 2\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "a");

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.DateTimes.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.DateTimes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that an offset date-time with a positive offset decodes to the expected instant.
@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenOffsetDateTimePositiveOffset_ShouldDecodeInstant()
     {
-        Utf8TomlReader reader = Create("v = 1979-05-27T07:32:00+02:00\n");
+        TomlDocumentReader reader = Create("v = 1979-05-27T07:32:00+02:00\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.OffsetDateTime);
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.FromHours(2)), reader.GetDateTimeOffset());
@@ -28,7 +28,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenOffsetDateTimePlusZeroOffset_ShouldDecodeAsZeroOffset()
     {
-        Utf8TomlReader reader = Create("v = 1979-05-27T07:32:00+00:00\n");
+        TomlDocumentReader reader = Create("v = 1979-05-27T07:32:00+00:00\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.OffsetDateTime);
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), reader.GetDateTimeOffset());
@@ -40,7 +40,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenOffsetDateTimeUsesLowercaseSeparators_ShouldDecodeInstant()
     {
-        Utf8TomlReader reader = Create("v = 1979-05-27t07:32:00z\n");
+        TomlDocumentReader reader = Create("v = 1979-05-27t07:32:00z\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.OffsetDateTime);
         Assert.AreEqual(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero), reader.GetDateTimeOffset());
@@ -53,7 +53,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenLocalDateTimeSpaceSeparated_ShouldDecodeDateTime()
     {
-        Utf8TomlReader reader = Create("v = 1979-05-27 07:32:00\n");
+        TomlDocumentReader reader = Create("v = 1979-05-27 07:32:00\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.LocalDateTime);
         Assert.AreEqual(new DateTime(1979, 5, 27, 7, 32, 0, DateTimeKind.Unspecified), reader.GetDateTime());
@@ -72,7 +72,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("123456789", 1_234_567L, DisplayName = "truncated beyond ticks")]
     public void Read_WhenLocalTimeHasFractionalSeconds_ShouldDecodeTruncatedToTicks(string fraction, long expectedTicks)
     {
-        Utf8TomlReader reader = Create($"v = 07:32:10.{fraction}\n");
+        TomlDocumentReader reader = Create($"v = 07:32:10.{fraction}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.LocalTime);
 
@@ -86,7 +86,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenLocalTimeMidnight_ShouldDecodeTimeOnly()
     {
-        Utf8TomlReader reader = Create("v = 00:00:00\n");
+        TomlDocumentReader reader = Create("v = 00:00:00\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.LocalTime);
         Assert.AreEqual(new TimeOnly(0, 0, 0), reader.GetTimeOnly());

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlLexerTests.Values.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Utf8TomlReaderTests.Values.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class TomlLexerTests
+public sealed partial class Utf8TomlReaderTests
 {
     /// <summary>
     /// Verifies that an escape-free basic string exposes its raw content bytes and reports no escapes, so decoding is
@@ -18,23 +18,23 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void ValueSpan_WhenEscapeFreeBasicString_ShouldExposeRawContentWithoutEscapes()
     {
-        TomlLexer lexer = CreateLexer("s = \"plain\"\n");
+        Utf8TomlReader lexer = Create("s = \"plain\"\n");
 
         Advance(ref lexer, 2);
-        Assert.AreEqual(TomlLexTokenType.String, lexer.TokenType);
+        Assert.AreEqual(TomlTokenType.String, lexer.TokenType);
         Assert.IsFalse(lexer.HasEscapes);
         Assert.IsTrue(lexer.ValueSpan.SequenceEqual("plain"u8));
         Assert.AreEqual("plain", lexer.GetString());
     }
 
     /// <summary>
-    /// Verifies that a basic string with escapes exposes the raw escaped bytes while <see cref="TomlLexer.GetString" />
+    /// Verifies that a basic string with escapes exposes the raw escaped bytes while <see cref="Utf8TomlReader.GetString" />
     /// resolves them.
     /// </summary>
     [TestMethod]
     public void ValueSpan_WhenEscapedBasicString_ShouldExposeRawBytesAndDecodeOnDemand()
     {
-        TomlLexer lexer = CreateLexer("s = \"a\\nb\"\n");
+        Utf8TomlReader lexer = Create("s = \"a\\nb\"\n");
 
         Advance(ref lexer, 2);
         Assert.IsTrue(lexer.HasEscapes);
@@ -48,7 +48,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void ValueSpan_WhenLiteralString_ShouldExposeContentVerbatim()
     {
-        TomlLexer lexer = CreateLexer(@"s = 'C:\Users\node'" + "\n");
+        Utf8TomlReader lexer = Create(@"s = 'C:\Users\node'" + "\n");
 
         Advance(ref lexer, 2);
         Assert.IsFalse(lexer.HasEscapes);
@@ -62,7 +62,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void GetString_WhenMultilineBasicString_ShouldTrimLeadingNewlineAndResolveEscapes()
     {
-        TomlLexer lexer = CreateLexer("s = \"\"\"\nline1\nline2 \\\n   joined\"\"\"\n");
+        Utf8TomlReader lexer = Create("s = \"\"\"\nline1\nline2 \\\n   joined\"\"\"\n");
 
         Advance(ref lexer, 2);
         Assert.AreEqual("line1\nline2 joined", lexer.GetString());
@@ -74,7 +74,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void GetString_WhenMultilineLiteralString_ShouldTrimLeadingNewlineOnly()
     {
-        TomlLexer lexer = CreateLexer("s = '''\nraw \\n text'''\n");
+        Utf8TomlReader lexer = Create("s = '''\nraw \\n text'''\n");
 
         Advance(ref lexer, 2);
         Assert.IsFalse(lexer.HasEscapes);
@@ -88,7 +88,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void GetString_WhenMultilineStringEndsWithQuotes_ShouldKeepContentQuotes()
     {
-        TomlLexer lexer = CreateLexer("s = \"\"\"two quotes:\"\"\"\"\"\n");
+        Utf8TomlReader lexer = Create("s = \"\"\"two quotes:\"\"\"\"\"\n");
 
         Advance(ref lexer, 2);
         Assert.AreEqual("two quotes:\"\"", lexer.GetString());
@@ -101,7 +101,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void ValueSpan_WhenUnderscoredInteger_ShouldExposeRawTextAndDecodeValue()
     {
-        TomlLexer lexer = CreateLexer("i = 1_000_000\n");
+        Utf8TomlReader lexer = Create("i = 1_000_000\n");
 
         Advance(ref lexer, 2);
         Assert.IsTrue(lexer.ValueSpan.SequenceEqual("1_000_000"u8));
@@ -118,7 +118,7 @@ public sealed partial class TomlLexerTests
     [DataRow("0xF_F", 255L, DisplayName = "hex with underscore")]
     public void GetInt64_WhenRadixInteger_ShouldDecodeValue(string literal, long expected)
     {
-        TomlLexer lexer = CreateLexer($"i = {literal}\n");
+        Utf8TomlReader lexer = Create($"i = {literal}\n");
 
         Advance(ref lexer, 2);
         Assert.AreEqual(expected, lexer.GetInt64());
@@ -132,7 +132,7 @@ public sealed partial class TomlLexerTests
     [DataRow("-9223372036854775808", long.MinValue, DisplayName = "long.MinValue")]
     public void GetInt64_WhenAtRangeBoundary_ShouldDecodeValue(string literal, long expected)
     {
-        TomlLexer lexer = CreateLexer($"i = {literal}\n");
+        Utf8TomlReader lexer = Create($"i = {literal}\n");
 
         Advance(ref lexer, 2);
         Assert.AreEqual(expected, lexer.GetInt64());
@@ -148,7 +148,7 @@ public sealed partial class TomlLexerTests
     [DataRow("6.626e-34", 6.626e-34, DisplayName = "exponent")]
     public void GetDouble_WhenSpecialOrExponentFloat_ShouldDecodeValue(string literal, double expected)
     {
-        TomlLexer lexer = CreateLexer($"f = {literal}\n");
+        Utf8TomlReader lexer = Create($"f = {literal}\n");
 
         Advance(ref lexer, 2);
         Assert.AreEqual(expected, lexer.GetDouble());
@@ -160,7 +160,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void GetDouble_WhenNan_ShouldDecodeToNaN()
     {
-        TomlLexer lexer = CreateLexer("f = nan\n");
+        Utf8TomlReader lexer = Create("f = nan\n");
 
         Advance(ref lexer, 2);
         Assert.IsTrue(double.IsNaN(lexer.GetDouble()));
@@ -175,7 +175,7 @@ public sealed partial class TomlLexerTests
     {
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            TomlLexer lexer = CreateLexer("s = \"x\"\n");
+            Utf8TomlReader lexer = Create("s = \"x\"\n");
             Advance(ref lexer, 2);
             _ = lexer.GetInt64();
         });
@@ -186,7 +186,7 @@ public sealed partial class TomlLexerTests
     /// </summary>
     /// <param name="lexer">The lexer to advance.</param>
     /// <param name="count">The number of tokens to read.</param>
-    private static void Advance(ref TomlLexer lexer, int count)
+    private static void Advance(ref Utf8TomlReader lexer, int count)
     {
         for (var i = 0; i < count; i++)
             Assert.IsTrue(lexer.Read(), $"Expected a token at position {i + 1} but the lexer reported end of document.");

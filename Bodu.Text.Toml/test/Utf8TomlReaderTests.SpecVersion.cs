@@ -11,110 +11,66 @@ namespace Bodu.Text.Toml;
 public sealed partial class Utf8TomlReaderTests
 {
     /// <summary>
-    /// Verifies that the TOML v1.1.0 hex-byte escape <c>\xHH</c> is rejected under the v1.0.0 grammar.
+    /// Verifies that the <c>\e</c> escape decodes to U+001B under TOML v1.1.0.
     /// </summary>
     [TestMethod]
-    public void Read_WhenHexByteEscape_ForV10_ShouldThrowTomlFormatException()
+    public void Read_WhenEscapeE_ForV11_ShouldDecodeEscapeCharacter()
+    {
+        Utf8TomlReader lexer = Create("s = \"\\e\"\n", TomlSpecVersion.V1_1);
+
+        Advance(ref lexer, 2);
+        Assert.AreEqual("\u001b", lexer.GetString());
+    }
+
+    /// <summary>
+    /// Verifies that the <c>\xHH</c> escape decodes to the corresponding scalar under TOML v1.1.0.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenEscapeX_ForV11_ShouldDecodeHexScalar()
+    {
+        Utf8TomlReader lexer = Create("s = \"\\x41\"\n", TomlSpecVersion.V1_1);
+
+        Advance(ref lexer, 2);
+        Assert.AreEqual("A", lexer.GetString());
+    }
+
+    /// <summary>
+    /// Verifies that the v1.1.0-only escapes are rejected under TOML v1.0.0.
+    /// </summary>
+    [TestMethod]
+    [DataRow("s = \"\\e\"\n", DisplayName = "escape e")]
+    [DataRow("s = \"\\x41\"\n", DisplayName = "escape x")]
+    public void Read_WhenV11Escape_ForV10_ShouldThrowTomlFormatException(string toml)
     {
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = Create("v = \"\\x41\"\n");
+            Utf8TomlReader lexer = Create(toml);
+            Drain(ref lexer);
         });
     }
 
     /// <summary>
-    /// Verifies that the TOML v1.1.0 hex-byte escape <c>\xHH</c> decodes to its scalar value under the v1.1.0 grammar.
+    /// Verifies that a time without seconds is accepted under TOML v1.1.0 and decodes with zero seconds.
     /// </summary>
     [TestMethod]
-    public void Read_WhenHexByteEscape_ForV11_ShouldDecodeScalar()
+    public void Read_WhenTimeWithoutSeconds_ForV11_ShouldDecodeWithZeroSeconds()
     {
-        Utf8TomlReader reader = CreateV11("v = \"\\x41\"\n");
+        Utf8TomlReader lexer = Create("t = 07:32\n", TomlSpecVersion.V1_1);
 
-        ExpectSingleValue(ref reader, TomlTokenType.String);
-        Assert.AreEqual("A", reader.GetString());
+        Advance(ref lexer, 2);
+        Assert.AreEqual(new TimeOnly(7, 32, 0), lexer.GetTimeOnly());
     }
 
     /// <summary>
-    /// Verifies that the TOML v1.1.0 escape <c>\e</c> is rejected under the v1.0.0 grammar.
+    /// Verifies that a multi-line inline table with a trailing comma lexes under TOML v1.1.0.
     /// </summary>
     [TestMethod]
-    public void Read_WhenEscapeSequenceEscape_ForV10_ShouldThrowTomlFormatException()
+    public void Read_WhenMultilineInlineTableWithTrailingComma_ForV11_ShouldLexCleanly()
     {
-        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("v = \"\\e\"\n");
-        });
-    }
+        Utf8TomlReader lexer = Create("p = {\n  x = 1, # one\n  y = 2,\n}\n", TomlSpecVersion.V1_1);
 
-    /// <summary>
-    /// Verifies that the TOML v1.1.0 escape <c>\e</c> decodes to U+001B under the v1.1.0 grammar.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenEscapeSequenceEscape_ForV11_ShouldDecodeEscapeCharacter()
-    {
-        Utf8TomlReader reader = CreateV11("v = \"\\e\"\n");
-
-        ExpectSingleValue(ref reader, TomlTokenType.String);
-        Assert.AreEqual("\u001b", reader.GetString());
-    }
-
-
-    /// <summary>
-    /// Verifies that a trailing comma in an inline table is accepted under the v1.1.0 grammar.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenInlineTableHasTrailingComma_ForV11_ShouldDecodeTable()
-    {
-        Utf8TomlReader reader = CreateV11("v = {x = 1,}\n");
-
-        ExpectSingleValue(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-    }
-
-
-    /// <summary>
-    /// Verifies that a multi-line inline table is accepted under the v1.1.0 grammar.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenInlineTableSpansLines_ForV11_ShouldDecodeTable()
-    {
-        Utf8TomlReader reader = CreateV11("v = {x = 1,\ny = 2}\n");
-
-        ExpectSingleValue(ref reader, TomlTokenType.StartTable);
-        ExpectProperty(ref reader, "x");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(1L, reader.GetInt64());
-        ExpectProperty(ref reader, "y");
-        ExpectToken(ref reader, TomlTokenType.Integer);
-        Assert.AreEqual(2L, reader.GetInt64());
-        ExpectToken(ref reader, TomlTokenType.EndTable);
-    }
-
-    /// <summary>
-    /// Verifies that a time value omitting seconds is rejected under the v1.0.0 grammar.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenTimeOmitsSeconds_ForV10_ShouldThrowTomlFormatException()
-    {
-        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
-        {
-            _ = Create("v = 07:32\n");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a time value omitting seconds is accepted under the v1.1.0 grammar, defaulting the seconds to
-    /// zero.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenTimeOmitsSeconds_ForV11_ShouldDefaultSecondsToZero()
-    {
-        Utf8TomlReader reader = CreateV11("v = 07:32\n");
-
-        ExpectSingleValue(ref reader, TomlTokenType.LocalTime);
-        Assert.AreEqual(new TimeOnly(7, 32, 0), reader.GetTimeOnly());
+        CollectionAssert.AreEqual(
+            new[] { "Key(p)!", "StartInlineTable", "Key(x)!", "Integer(1)", "Comment( one)", "Key(y)!", "Integer(2)", "EndInlineTable" },
+            Drain(ref lexer));
     }
 }

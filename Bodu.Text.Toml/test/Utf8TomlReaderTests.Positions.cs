@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlLexerTests.Positions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Utf8TomlReaderTests.Positions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class TomlLexerTests
+public sealed partial class Utf8TomlReaderTests
 {
     /// <summary>
     /// Verifies that token positions are reported as byte offsets, lines, and byte columns for ASCII input.
@@ -16,7 +16,7 @@ public sealed partial class TomlLexerTests
     [TestMethod]
     public void TokenStartIndex_WhenAsciiDocument_ShouldReportBytePositions()
     {
-        TomlLexer lexer = CreateLexer("a = 1\nbb = 2\n");
+        Utf8TomlReader lexer = Create("a = 1\nbb = 2\n");
 
         Advance(ref lexer, 1);
         Assert.AreEqual(0, lexer.TokenStartIndex);
@@ -41,7 +41,7 @@ public sealed partial class TomlLexerTests
     public void TokenStartIndex_WhenMultiByteContent_ShouldCountBytes()
     {
         // The first line is s(0) sp(1) =(2) sp(3) "(4) é(5,6) "(7) LF(8); the second key starts at byte 9.
-        TomlLexer lexer = CreateLexer("s = \"é\"\nx = 1\n");
+        Utf8TomlReader lexer = Create("s = \"é\"\nx = 1\n");
 
         Advance(ref lexer, 2);
         Assert.AreEqual(4, lexer.TokenStartIndex);
@@ -49,7 +49,7 @@ public sealed partial class TomlLexerTests
         Assert.AreEqual(2, lexer.ValueSpan.Length);
 
         Advance(ref lexer, 1);
-        Assert.AreEqual(TomlLexTokenType.Key, lexer.TokenType);
+        Assert.AreEqual(TomlTokenType.Key, lexer.TokenType);
         Assert.AreEqual(9, lexer.TokenStartIndex);
         Assert.AreEqual(2, lexer.LineNumber);
         Assert.AreEqual(1, lexer.ColumnNumber);
@@ -63,8 +63,8 @@ public sealed partial class TomlLexerTests
     {
         var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            TomlLexer lexer = CreateLexer("a = \"x");
-            DrainLexer(ref lexer);
+            Utf8TomlReader lexer = Create("a = \"x");
+            Drain(ref lexer);
         });
 
         Assert.AreEqual(1, ex.LineNumber);
@@ -80,8 +80,8 @@ public sealed partial class TomlLexerTests
     {
         var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            TomlLexer lexer = CreateLexer("a = 1\nb = @\n");
-            DrainLexer(ref lexer);
+            Utf8TomlReader lexer = Create("a = 1\nb = @\n");
+            Drain(ref lexer);
         });
 
         // The invalid-number error is raised after the bare token "@" is consumed, at the terminating newline.

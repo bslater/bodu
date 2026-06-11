@@ -7,8 +7,8 @@
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Identifies how the raw bytes of a <see cref="TomlLexer" /> text token are decoded into a string when
-/// <see cref="TomlLexer.GetString" /> is called.
+/// Identifies how the raw bytes of a <see cref="Utf8TomlReader" /> text token are decoded into a string when
+/// <see cref="Utf8TomlReader.GetString" /> is called.
 /// </summary>
 internal enum TomlScalarTextKind
 {

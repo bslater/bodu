@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.SpecCompliance.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.SpecCompliance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Yields documents that are valid under the TOML v1.0.0 grammar and therefore must be accepted, covering
@@ -59,7 +59,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestCategory("Regression")]
     public void Constructor_WhenDocumentSpecValid_ShouldNotThrow(ValidKat<string, string> kat)
     {
-        _ = new Utf8TomlReader(Encoding.UTF8.GetBytes(kat.Input));
+        _ = new TomlDocumentReader(Encoding.UTF8.GetBytes(kat.Input));
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public sealed partial class Utf8TomlReaderTests
     {
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader(Encoding.UTF8.GetBytes(kat.Input));
+            _ = new TomlDocumentReader(Encoding.UTF8.GetBytes(kat.Input));
         });
     }
 
@@ -146,7 +146,7 @@ public sealed partial class Utf8TomlReaderTests
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader(document);
+            _ = new TomlDocumentReader(document);
         });
     }
 
@@ -161,7 +161,7 @@ public sealed partial class Utf8TomlReaderTests
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader(document);
+            _ = new TomlDocumentReader(document);
         });
     }
 
@@ -172,7 +172,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenFloatOverflowsDouble_ShouldYieldPositiveInfinity()
     {
-        Utf8TomlReader reader = Create("v = 1e400\n");
+        TomlDocumentReader reader = Create("v = 1e400\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Float);
         Assert.IsTrue(double.IsPositiveInfinity(reader.GetDouble()));
@@ -184,7 +184,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenFloatIsNegativeZero_ShouldPreserveSignBit()
     {
-        Utf8TomlReader reader = Create("v = -0.0\n");
+        TomlDocumentReader reader = Create("v = -0.0\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Float);
         Assert.IsTrue(double.IsNegative(reader.GetDouble()));
@@ -201,7 +201,7 @@ public sealed partial class Utf8TomlReaderTests
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader(Encoding.UTF8.GetBytes(header));
+            _ = new TomlDocumentReader(Encoding.UTF8.GetBytes(header));
         });
     }
 
@@ -216,7 +216,7 @@ public sealed partial class Utf8TomlReaderTests
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader(Encoding.UTF8.GetBytes(pair));
+            _ = new TomlDocumentReader(Encoding.UTF8.GetBytes(pair));
         });
     }
 
@@ -242,7 +242,7 @@ public sealed partial class Utf8TomlReaderTests
     {
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader("[x.y.z]\n[x]\ny.q = 1\n[x.y]\n"u8);
+            _ = new TomlDocumentReader("[x.y.z]\n[x]\ny.q = 1\n[x.y]\n"u8);
         });
     }
 }

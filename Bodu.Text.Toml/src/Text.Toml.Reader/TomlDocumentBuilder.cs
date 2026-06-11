@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// The authoritative TOML structural parser: consumes the source-order token stream of a <see cref="TomlLexer" /> and
+/// The authoritative TOML structural parser: consumes the source-order token stream of a <see cref="Utf8TomlReader" /> and
 /// materializes the document into a <see cref="TomlTableNode" /> value tree, enforcing the specification's key, value,
 /// table, and array-of-tables rules for the configured <see cref="TomlSpecVersion" />.
 /// </summary>
@@ -99,23 +99,23 @@ internal sealed class TomlDocumentBuilder
     /// <exception cref="TomlFormatException">Thrown when the source is not valid TOML.</exception>
     internal TomlTableNode Parse(ReadOnlySpan<byte> source)
     {
-        var lexer = new TomlLexer(source, _specVersion);
+        var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = _specVersion, MaxDepth = _maxDepth });
         while (lexer.Read())
         {
             switch (lexer.TokenType)
             {
-                case TomlLexTokenType.Comment:
+                case TomlTokenType.Comment:
                     break;
 
-                case TomlLexTokenType.TableHeader:
+                case TomlTokenType.TableHeader:
                     DefineStandardTable(ReadHeaderPath(ref lexer), ref lexer);
                     break;
 
-                case TomlLexTokenType.ArrayTableHeader:
+                case TomlTokenType.ArrayTableHeader:
                     DefineArrayTable(ReadHeaderPath(ref lexer), ref lexer);
                     break;
 
-                case TomlLexTokenType.Key:
+                case TomlTokenType.Key:
                 default:
                 {
                     List<string> path = ReadKeyPath(ref lexer);
@@ -130,24 +130,24 @@ internal sealed class TomlDocumentBuilder
     }
 
     /// <summary>
-    /// Reads the key segments of a header whose <see cref="TomlLexTokenType.TableHeader" /> or
-    /// <see cref="TomlLexTokenType.ArrayTableHeader" /> token is current.
+    /// Reads the key segments of a header whose <see cref="TomlTokenType.TableHeader" /> or
+    /// <see cref="TomlTokenType.ArrayTableHeader" /> token is current.
     /// </summary>
     /// <param name="lexer">The lexer to read from.</param>
     /// <returns>The key segments in order.</returns>
-    private static List<string> ReadHeaderPath(ref TomlLexer lexer)
+    private static List<string> ReadHeaderPath(ref Utf8TomlReader lexer)
     {
         _ = lexer.Read();
         return ReadKeyPath(ref lexer);
     }
 
     /// <summary>
-    /// Reads the remaining segments of a dotted key path whose first <see cref="TomlLexTokenType.Key" /> token is
+    /// Reads the remaining segments of a dotted key path whose first <see cref="TomlTokenType.Key" /> token is
     /// current.
     /// </summary>
     /// <param name="lexer">The lexer to read from.</param>
     /// <returns>The key segments in order.</returns>
-    private static List<string> ReadKeyPath(ref TomlLexer lexer)
+    private static List<string> ReadKeyPath(ref Utf8TomlReader lexer)
     {
         var keys = new List<string> { lexer.GetString() };
         while (!lexer.IsFinalKeySegment)
@@ -164,7 +164,7 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="lexer">The lexer to read from, positioned before the value's first token.</param>
     /// <returns>The materialized value node.</returns>
-    private TomlReaderNode ReadValue(ref TomlLexer lexer)
+    private TomlReaderNode ReadValue(ref Utf8TomlReader lexer)
     {
         _ = lexer.Read();
         return ReadValueAtCurrent(ref lexer);
@@ -175,20 +175,20 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="lexer">The lexer positioned on the value's first token.</param>
     /// <returns>The materialized value node.</returns>
-    private TomlReaderNode ReadValueAtCurrent(ref TomlLexer lexer)
+    private TomlReaderNode ReadValueAtCurrent(ref Utf8TomlReader lexer)
     {
         switch (lexer.TokenType)
         {
-            case TomlLexTokenType.StartArray:
+            case TomlTokenType.StartArray:
             {
                 EnterDepth(ref lexer);
                 var array = new TomlArrayNode(lexer.TokenStartIndex);
                 while (true)
                 {
                     _ = lexer.Read();
-                    if (lexer.TokenType == TomlLexTokenType.Comment)
+                    if (lexer.TokenType == TomlTokenType.Comment)
                         continue;
-                    if (lexer.TokenType == TomlLexTokenType.EndArray)
+                    if (lexer.TokenType == TomlTokenType.EndArray)
                         break;
 
                     array.Add(ReadValueAtCurrent(ref lexer));
@@ -198,16 +198,16 @@ internal sealed class TomlDocumentBuilder
                 return array;
             }
 
-            case TomlLexTokenType.StartInlineTable:
+            case TomlTokenType.StartInlineTable:
             {
                 EnterDepth(ref lexer);
                 var table = new TomlTableNode(lexer.TokenStartIndex);
                 while (true)
                 {
                     _ = lexer.Read();
-                    if (lexer.TokenType == TomlLexTokenType.Comment)
+                    if (lexer.TokenType == TomlTokenType.Comment)
                         continue;
-                    if (lexer.TokenType == TomlLexTokenType.EndInlineTable)
+                    if (lexer.TokenType == TomlTokenType.EndInlineTable)
                         break;
 
                     List<string> path = ReadKeyPath(ref lexer);
@@ -220,28 +220,28 @@ internal sealed class TomlDocumentBuilder
                 return table;
             }
 
-            case TomlLexTokenType.String:
+            case TomlTokenType.String:
                 return new TomlScalarNode(TomlTokenType.String, lexer.GetString(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.Integer:
+            case TomlTokenType.Integer:
                 return new TomlScalarNode(TomlTokenType.Integer, lexer.GetInt64(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.Float:
+            case TomlTokenType.Float:
                 return new TomlScalarNode(TomlTokenType.Float, lexer.GetDouble(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.Boolean:
+            case TomlTokenType.Boolean:
                 return new TomlScalarNode(TomlTokenType.Boolean, lexer.GetBoolean(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.OffsetDateTime:
+            case TomlTokenType.OffsetDateTime:
                 return new TomlScalarNode(TomlTokenType.OffsetDateTime, lexer.GetDateTimeOffset(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.LocalDateTime:
+            case TomlTokenType.LocalDateTime:
                 return new TomlScalarNode(TomlTokenType.LocalDateTime, lexer.GetDateTime(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.LocalDate:
+            case TomlTokenType.LocalDate:
                 return new TomlScalarNode(TomlTokenType.LocalDate, lexer.GetDateOnly(), lexer.TokenStartIndex);
 
-            case TomlLexTokenType.LocalTime:
+            case TomlTokenType.LocalTime:
             default:
                 return new TomlScalarNode(TomlTokenType.LocalTime, lexer.GetTimeOnly(), lexer.TokenStartIndex);
         }
@@ -252,7 +252,7 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="lexer">The lexer whose current token supplies the error position.</param>
     /// <exception cref="TomlFormatException">Thrown when the nesting depth exceeds the configured maximum.</exception>
-    private void EnterDepth(ref TomlLexer lexer)
+    private void EnterDepth(ref Utf8TomlReader lexer)
     {
         _depth++;
         if (_depth > _maxDepth)
@@ -269,7 +269,7 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="path">The table key path.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void DefineStandardTable(List<string> path, ref TomlLexer lexer)
+    private void DefineStandardTable(List<string> path, ref Utf8TomlReader lexer)
     {
         TomlTableNode table = _root;
         for (var i = 0; i < path.Count - 1; i++)
@@ -303,7 +303,7 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="path">The array key path.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void DefineArrayTable(List<string> path, ref TomlLexer lexer)
+    private void DefineArrayTable(List<string> path, ref Utf8TomlReader lexer)
     {
         TomlTableNode table = _root;
         for (var i = 0; i < path.Count - 1; i++)
@@ -341,7 +341,7 @@ internal sealed class TomlDocumentBuilder
     /// <param name="key">The segment key.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     /// <returns>The table for the segment.</returns>
-    private TomlTableNode WalkHeaderSegment(TomlTableNode table, string key, ref TomlLexer lexer)
+    private TomlTableNode WalkHeaderSegment(TomlTableNode table, string key, ref Utf8TomlReader lexer)
     {
         if (_inline.Contains(table))
             throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
@@ -374,7 +374,7 @@ internal sealed class TomlDocumentBuilder
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     /// <returns>The created table.</returns>
     /// <exception cref="TomlFormatException">Thrown when the child would exceed the configured maximum depth.</exception>
-    private TomlTableNode CreateChildTable(TomlTableNode parent, ref TomlLexer lexer)
+    private TomlTableNode CreateChildTable(TomlTableNode parent, ref Utf8TomlReader lexer)
     {
         if (parent.Depth >= _maxDepth)
             throw lexer.TokenError(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Format_Invalid_TomlNestingTooDeep, _maxDepth));
@@ -389,7 +389,7 @@ internal sealed class TomlDocumentBuilder
     /// <param name="path">The dotted key path.</param>
     /// <param name="value">The value to assign.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void AssignKeyValue(TomlTableNode target, List<string> path, TomlReaderNode value, ref TomlLexer lexer)
+    private void AssignKeyValue(TomlTableNode target, List<string> path, TomlReaderNode value, ref Utf8TomlReader lexer)
     {
         TomlTableNode table = target;
         for (var i = 0; i < path.Count - 1; i++)
@@ -409,7 +409,7 @@ internal sealed class TomlDocumentBuilder
     /// <param name="key">The segment key.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     /// <returns>The intermediate table.</returns>
-    private TomlTableNode WalkDottedSegment(TomlTableNode table, string key, ref TomlLexer lexer)
+    private TomlTableNode WalkDottedSegment(TomlTableNode table, string key, ref Utf8TomlReader lexer)
     {
         if (table.TryGetValue(key, out TomlReaderNode? existing))
         {

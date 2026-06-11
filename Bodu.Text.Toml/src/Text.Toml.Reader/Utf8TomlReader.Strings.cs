@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlLexer.Strings.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Utf8TomlReader.Strings.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Bodu.Text.Toml.Reader;
 
-internal ref partial struct TomlLexer
+public ref partial struct Utf8TomlReader
 {
     /// <summary>
     /// Scans a single-line basic string (its opening quote at the cursor), validating escapes, control characters,

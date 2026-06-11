@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlLexer.Numbers.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Utf8TomlReader.Numbers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace Bodu.Text.Toml.Reader;
 
-internal ref partial struct TomlLexer
+public ref partial struct Utf8TomlReader
 {
     /// <summary>
     /// Scans a boolean literal, caching its value.
@@ -28,7 +28,7 @@ internal ref partial struct TomlLexer
             throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
         }
 
-        _tokenType = TomlLexTokenType.Boolean;
+        _tokenType = TomlTokenType.Boolean;
         SetValueSpan(_tokenStart, _pos - _tokenStart);
     }
 
@@ -131,23 +131,23 @@ internal ref partial struct TomlLexer
     }
 
     /// <summary>
-    /// Records the current token as an <see cref="TomlLexTokenType.Integer" /> carrying <paramref name="value" />.
+    /// Records the current token as an <see cref="TomlTokenType.Integer" /> carrying <paramref name="value" />.
     /// </summary>
     /// <param name="value">The decoded integer value.</param>
     private void SetInteger(long value)
     {
         _longValue = value;
-        _tokenType = TomlLexTokenType.Integer;
+        _tokenType = TomlTokenType.Integer;
     }
 
     /// <summary>
-    /// Records the current token as a <see cref="TomlLexTokenType.Float" /> carrying <paramref name="value" />.
+    /// Records the current token as a <see cref="TomlTokenType.Float" /> carrying <paramref name="value" />.
     /// </summary>
     /// <param name="value">The decoded floating-point value.</param>
     private void SetFloat(double value)
     {
         _doubleValue = value;
-        _tokenType = TomlLexTokenType.Float;
+        _tokenType = TomlTokenType.Float;
     }
 
     /// <summary>

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Tables.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.Tables.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that an empty <c>[table]</c> header surfaces as an empty nested table.
@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenEmptyTableHeader_ShouldSurfaceEmptyTable()
     {
-        Utf8TomlReader reader = Create("[empty]\n");
+        TomlDocumentReader reader = Create("[empty]\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "empty");
@@ -32,7 +32,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenThreeLevelHeader_ShouldSurfaceThreeNestedTables()
     {
-        Utf8TomlReader reader = Create("[a.b.c]\nd = 1\n");
+        TomlDocumentReader reader = Create("[a.b.c]\nd = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "a");
@@ -56,7 +56,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenSuperTableDefinedAfterSubTable_ShouldMergeKeys()
     {
-        Utf8TomlReader reader = Create("[a.b.c]\nd = 1\n\n[a]\ne = 2\n");
+        TomlDocumentReader reader = Create("[a.b.c]\nd = 1\n\n[a]\ne = 2\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "a");
@@ -88,7 +88,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenDottedKeyUnderHeader_ShouldNestUnderHeaderTable()
     {
-        Utf8TomlReader reader = Create("[a]\nb.c = 1\n");
+        TomlDocumentReader reader = Create("[a]\nb.c = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "a");
@@ -108,7 +108,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenArrayOfTablesAppended_ShouldGrowSameArray()
     {
-        Utf8TomlReader reader = Create("[[fruit]]\nname = \"apple\"\n\n[[fruit]]\nname = \"banana\"\n");
+        TomlDocumentReader reader = Create("[[fruit]]\nname = \"apple\"\n\n[[fruit]]\nname = \"banana\"\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "fruit");
@@ -136,7 +136,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenSubTableUnderArrayOfTables_ShouldNestUnderLastElement()
     {
-        Utf8TomlReader reader = Create("[[fruit]]\nname = \"apple\"\n\n[fruit.physical]\ncolor = \"red\"\n");
+        TomlDocumentReader reader = Create("[[fruit]]\nname = \"apple\"\n\n[fruit.physical]\ncolor = \"red\"\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "fruit");

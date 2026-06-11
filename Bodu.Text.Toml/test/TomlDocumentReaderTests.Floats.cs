@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Floats.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.Floats.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that fractional, exponential, signed, and underscore-grouped float literals decode to their value.
@@ -29,7 +29,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("1e1_0", 1e10, DisplayName = "underscore in exponent")]
     public void Read_WhenFloat_ShouldDecodeToValue(string literal, double expected)
     {
-        Utf8TomlReader reader = Create($"v = {literal}\n");
+        TomlDocumentReader reader = Create($"v = {literal}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Float);
         Assert.AreEqual(expected, reader.GetDouble());
@@ -45,7 +45,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("+inf", DisplayName = "explicit plus")]
     public void Read_WhenPositiveInfinity_ShouldDecodeToInfinity(string literal)
     {
-        Utf8TomlReader reader = Create($"v = {literal}\n");
+        TomlDocumentReader reader = Create($"v = {literal}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Float);
         Assert.AreEqual(double.PositiveInfinity, reader.GetDouble());
@@ -57,7 +57,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenNegativeInfinity_ShouldDecodeToNegativeInfinity()
     {
-        Utf8TomlReader reader = Create("v = -inf\n");
+        TomlDocumentReader reader = Create("v = -inf\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Float);
         Assert.AreEqual(double.NegativeInfinity, reader.GetDouble());
@@ -73,7 +73,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("-nan", DisplayName = "explicit minus")]
     public void Read_WhenNotANumber_ShouldDecodeToNaN(string literal)
     {
-        Utf8TomlReader reader = Create($"v = {literal}\n");
+        TomlDocumentReader reader = Create($"v = {literal}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Float);
         Assert.IsTrue(double.IsNaN(reader.GetDouble()));

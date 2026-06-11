@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.TokenStream.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.TokenStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that out-of-line headers merge into nested position, producing the exact normalized token sequence
@@ -18,7 +18,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenOutOfLineHeaders_ShouldEmitExactMergedTokenSequence()
     {
-        Utf8TomlReader reader = Create("[server]\nhost = \"a\"\n\n[client]\ntimeout = 5\n\n[server.tls]\nenabled = true\n");
+        TomlDocumentReader reader = Create("[server]\nhost = \"a\"\n\n[client]\ntimeout = 5\n\n[server.tls]\nenabled = true\n");
 
         CollectionAssert.AreEqual(
             new[]
@@ -51,7 +51,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenDottedKeys_ShouldEmitExactNestedTokenSequence()
     {
-        Utf8TomlReader reader = Create("a.b.c = 1\na.b.d = 2\n");
+        TomlDocumentReader reader = Create("a.b.c = 1\na.b.d = 2\n");
 
         CollectionAssert.AreEqual(
             new[]
@@ -79,7 +79,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenArrayOfTablesWithSubTable_ShouldEmitExactTokenSequence()
     {
-        Utf8TomlReader reader = Create("[[fruit]]\nname = \"apple\"\n\n[fruit.physical]\ncolor = \"red\"\n\n[[fruit]]\nname = \"banana\"\n");
+        TomlDocumentReader reader = Create("[[fruit]]\nname = \"apple\"\n\n[fruit.physical]\ncolor = \"red\"\n\n[[fruit]]\nname = \"banana\"\n");
 
         CollectionAssert.AreEqual(
             new[]
@@ -113,7 +113,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenInlineTableWithArray_ShouldEmitExactTokenSequence()
     {
-        Utf8TomlReader reader = Create("p = { x = 1, y = [\"a\", \"b\"] }\n");
+        TomlDocumentReader reader = Create("p = { x = 1, y = [\"a\", \"b\"] }\n");
 
         CollectionAssert.AreEqual(
             new[]
@@ -140,7 +140,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenEveryScalarKind_ShouldEmitExactTokenSequence()
     {
-        Utf8TomlReader reader = Create(
+        TomlDocumentReader reader = Create(
             "s = \"str\"\ni = 42\nf = 1.5\nb = true\nodt = 1979-05-27T07:32:00Z\nldt = 1979-05-27T07:32:00\nld = 1979-05-27\nlt = 07:32:00\n");
 
         CollectionAssert.AreEqual(
@@ -174,7 +174,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenEmptyDocument_ShouldEmitRootTableOnly()
     {
-        Utf8TomlReader reader = Create(string.Empty);
+        TomlDocumentReader reader = Create(string.Empty);
 
         CollectionAssert.AreEqual(
             new[] { "StartTable()@0", "EndTable()@0" },
@@ -187,7 +187,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenNestedArrays_ShouldEmitExactDepths()
     {
-        Utf8TomlReader reader = Create("v = [[[1]]]\n");
+        TomlDocumentReader reader = Create("v = [[[1]]]\n");
 
         CollectionAssert.AreEqual(
             new[]
@@ -213,7 +213,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenSuperTableDefinedAfterSubTable_ShouldEmitExactTokenSequence()
     {
-        Utf8TomlReader reader = Create("[a.b]\nx = 1\n\n[a]\ny = 2\n");
+        TomlDocumentReader reader = Create("[a.b]\nx = 1\n\n[a]\ny = 2\n");
 
         CollectionAssert.AreEqual(
             new[]
@@ -240,7 +240,7 @@ public sealed partial class Utf8TomlReaderTests
     /// </summary>
     /// <param name="reader">The reader to drain.</param>
     /// <returns>The formatted token entries in read order.</returns>
-    private static List<string> Drain(ref Utf8TomlReader reader)
+    private static List<string> Drain(ref TomlDocumentReader reader)
     {
         var tokens = new List<string>();
         while (reader.Read())

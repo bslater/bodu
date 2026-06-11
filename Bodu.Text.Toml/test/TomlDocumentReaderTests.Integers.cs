@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Integers.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.Integers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that decimal integers — bare, explicitly signed, and underscore-grouped — decode to their value.
@@ -28,7 +28,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("-9223372036854775808", long.MinValue, DisplayName = "Int64 min")]
     public void Read_WhenDecimalInteger_ShouldDecodeToValue(string literal, long expected)
     {
-        Utf8TomlReader reader = Create($"v = {literal}\n");
+        TomlDocumentReader reader = Create($"v = {literal}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Integer);
         Assert.AreEqual(expected, reader.GetInt64());
@@ -51,7 +51,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("0b1_0", 2L, DisplayName = "binary with underscore")]
     public void Read_WhenRadixInteger_ShouldDecodeToValue(string literal, long expected)
     {
-        Utf8TomlReader reader = Create($"v = {literal}\n");
+        TomlDocumentReader reader = Create($"v = {literal}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Integer);
         Assert.AreEqual(expected, reader.GetInt64());
@@ -63,7 +63,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenHexLiteralAtInt64Max_ShouldDecodeToMaxValue()
     {
-        Utf8TomlReader reader = Create("v = 0x7FFFFFFFFFFFFFFF\n");
+        TomlDocumentReader reader = Create("v = 0x7FFFFFFFFFFFFFFF\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.Integer);
         Assert.AreEqual(long.MaxValue, reader.GetInt64());

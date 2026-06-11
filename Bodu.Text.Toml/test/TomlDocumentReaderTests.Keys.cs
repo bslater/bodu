@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Keys.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.Keys.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that a bare key composed of letters, digits, underscores, and hyphens surfaces verbatim.
@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenBareKeyHasAllowedCharacters_ShouldSurfaceKeyVerbatim()
     {
-        Utf8TomlReader reader = Create("A-z_0-9 = 1\n");
+        TomlDocumentReader reader = Create("A-z_0-9 = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "A-z_0-9");
@@ -30,7 +30,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenBareKeyIsNumeric_ShouldSurfaceAsString()
     {
-        Utf8TomlReader reader = Create("1234 = 1\n");
+        TomlDocumentReader reader = Create("1234 = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "1234");
@@ -44,7 +44,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenQuotedBasicKey_ShouldSurfaceDecodedKey()
     {
-        Utf8TomlReader reader = Create("\"needs quoting\" = 1\n");
+        TomlDocumentReader reader = Create("\"needs quoting\" = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "needs quoting");
@@ -57,7 +57,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenQuotedLiteralKey_ShouldSurfaceKeyVerbatim()
     {
-        Utf8TomlReader reader = Create("'quoted\\key' = 1\n");
+        TomlDocumentReader reader = Create("'quoted\\key' = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "quoted\\key");
@@ -70,7 +70,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenQuotedKeyIsEmpty_ShouldSurfaceEmptyKey()
     {
-        Utf8TomlReader reader = Create("\"\" = 1\n");
+        TomlDocumentReader reader = Create("\"\" = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, string.Empty);
@@ -84,7 +84,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenDottedKeyHasWhitespaceAroundDots_ShouldSurfaceNestedTables()
     {
-        Utf8TomlReader reader = Create("a . b . c = 1\n");
+        TomlDocumentReader reader = Create("a . b . c = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "a");
@@ -105,7 +105,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenDottedKeyMixesBareAndQuotedSegments_ShouldDecodeEachSegment()
     {
-        Utf8TomlReader reader = Create("site.\"sub key\".value = 1\n");
+        TomlDocumentReader reader = Create("site.\"sub key\".value = 1\n");
 
         ExpectStartTable(ref reader);
         ExpectProperty(ref reader, "site");

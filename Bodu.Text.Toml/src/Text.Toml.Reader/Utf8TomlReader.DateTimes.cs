@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlLexer.DateTimes.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Utf8TomlReader.DateTimes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Text.Toml.Reader;
 
-internal ref partial struct TomlLexer
+public ref partial struct Utf8TomlReader
 {
     /// <summary>
     /// Scans a date or date-time value beginning with a four-digit year, caching the decoded value as a local date,
@@ -35,7 +35,7 @@ internal ref partial struct TomlLexer
         if (!hasTime)
         {
             _dateOnlyValue = MakeDate(year, month, day);
-            _tokenType = TomlLexTokenType.LocalDate;
+            _tokenType = TomlTokenType.LocalDate;
             SetValueSpan(_tokenStart, _pos - _tokenStart);
             return;
         }
@@ -55,12 +55,12 @@ internal ref partial struct TomlLexer
                 throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidDateTime);
             }
 
-            _tokenType = TomlLexTokenType.OffsetDateTime;
+            _tokenType = TomlTokenType.OffsetDateTime;
         }
         else
         {
             _dateTimeValue = MakeDateTime(year, month, day, hour, minute, second, fractionTicks);
-            _tokenType = TomlLexTokenType.LocalDateTime;
+            _tokenType = TomlTokenType.LocalDateTime;
         }
 
         SetValueSpan(_tokenStart, _pos - _tokenStart);
@@ -73,7 +73,7 @@ internal ref partial struct TomlLexer
     {
         var (hour, minute, second, fractionTicks) = ReadPartialTime();
         _timeOnlyValue = MakeTime(hour, minute, second, fractionTicks);
-        _tokenType = TomlLexTokenType.LocalTime;
+        _tokenType = TomlTokenType.LocalTime;
         SetValueSpan(_tokenStart, _pos - _tokenStart);
     }
 

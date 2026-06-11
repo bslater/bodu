@@ -39,7 +39,7 @@ public sealed class TomlDocumentBuilderTests
         byte[] source = Encoding.UTF8.GetBytes(toml);
 
         // The lexer accepts the document: the rule under test is structural, not lexical.
-        var lexer = new TomlLexer(source, TomlSpecVersion.V1_0);
+        var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });
         while (lexer.Read())
         {
         }

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.InlineTables.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.InlineTables.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that an empty inline table surfaces as adjacent start and end table boundaries.
@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenInlineTableIsEmpty_ShouldSurfaceEmptyTable()
     {
-        Utf8TomlReader reader = Create("v = {}\n");
+        TomlDocumentReader reader = Create("v = {}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartTable);
         ExpectToken(ref reader, TomlTokenType.EndTable);
@@ -29,7 +29,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenInlineTableHasMultiplePairs_ShouldSurfaceEachPair()
     {
-        Utf8TomlReader reader = Create("v = {x = 1, y = 2, z = 3}\n");
+        TomlDocumentReader reader = Create("v = {x = 1, y = 2, z = 3}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "x");
@@ -50,7 +50,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenInlineTableIsNested_ShouldSurfaceNestedTable()
     {
-        Utf8TomlReader reader = Create("v = {point = {x = 1, y = 2}}\n");
+        TomlDocumentReader reader = Create("v = {point = {x = 1, y = 2}}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "point");
@@ -71,7 +71,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenInlineTableHasDottedKey_ShouldSurfaceIntermediateTable()
     {
-        Utf8TomlReader reader = Create("v = {a.b = 1}\n");
+        TomlDocumentReader reader = Create("v = {a.b = 1}\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "a");

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Arrays.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlDocumentReaderTests.Arrays.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
-public sealed partial class Utf8TomlReaderTests
+public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
     /// Verifies that an empty array surfaces as adjacent start and end array boundaries with no elements.
@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenArrayIsEmpty_ShouldSurfaceEmptyArray()
     {
-        Utf8TomlReader reader = Create("v = []\n");
+        TomlDocumentReader reader = Create("v = []\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartArray);
         ExpectToken(ref reader, TomlTokenType.EndArray);
@@ -29,7 +29,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenArrayHasTrailingComma_ShouldSurfaceElements()
     {
-        Utf8TomlReader reader = Create("v = [1, 2, 3,]\n");
+        TomlDocumentReader reader = Create("v = [1, 2, 3,]\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartArray);
         ExpectToken(ref reader, TomlTokenType.Integer);
@@ -47,7 +47,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenArrayHasMixedTypes_ShouldSurfaceEachElementKind()
     {
-        Utf8TomlReader reader = Create("v = [1, \"two\", true, 3.5]\n");
+        TomlDocumentReader reader = Create("v = [1, \"two\", true, 3.5]\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartArray);
 
@@ -69,7 +69,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenArrayIsNested_ShouldSurfaceNestedBoundaries()
     {
-        Utf8TomlReader reader = Create("v = [[1, 2], [3]]\n");
+        TomlDocumentReader reader = Create("v = [[1, 2], [3]]\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartArray);
 
@@ -95,7 +95,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestCategory("Regression")]
     public void Read_WhenArraySpansLinesWithComments_ShouldSurfaceElements()
     {
-        Utf8TomlReader reader = Create("v = [\n  1, # first\n  2,\n  # comment line\n  3\n]\n");
+        TomlDocumentReader reader = Create("v = [\n  1, # first\n  2,\n  # comment line\n  3\n]\n");
 
         ExpectSingleValue(ref reader, TomlTokenType.StartArray);
         ExpectToken(ref reader, TomlTokenType.Integer);
