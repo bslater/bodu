@@ -51,6 +51,8 @@ internal static class DefaultConverters
         new DateOnlyConverter(),
         new TimeOnlyConverter(),
         new ByteArrayConverter(),
+        new MemoryByteConverter(),
+        new ReadOnlyMemoryByteConverter(),
         new IntegerConverterFactory(),
         new EnumConverterFactory(),
         new NullableConverterFactory(),

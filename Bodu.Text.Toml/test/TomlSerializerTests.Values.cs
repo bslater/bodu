@@ -841,6 +841,65 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="Memory{T}" /> of <see cref="byte" /> serializes under both byte-array handlings and
+    /// round-trips, sharing the byte-array representation.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemoryOfByte_ShouldUseByteArrayFormsAndRoundTrip()
+    {
+        Memory<byte> value = new byte[] { 0x61, 0x62, 0x63 };
+
+        Assert.AreEqual("Value = [97, 98, 99]\n", Serialize(value));
+        CollectionAssert.AreEqual(value.ToArray(), RoundTrip(value).ToArray());
+
+        var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
+        string text = TomlSerializer.Serialize(new ValueModel<Memory<byte>> { Value = value }, options);
+        Assert.AreEqual("Value = \"YWJj\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="ReadOnlyMemory{T}" /> of <see cref="byte" /> serializes under both byte-array
+    /// handlings and round-trips, sharing the byte-array representation.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenReadOnlyMemoryOfByte_ShouldUseByteArrayFormsAndRoundTrip()
+    {
+        ReadOnlyMemory<byte> value = new byte[] { 0x61, 0x62, 0x63 };
+
+        Assert.AreEqual("Value = [97, 98, 99]\n", Serialize(value));
+        CollectionAssert.AreEqual(value.ToArray(), RoundTrip(value).ToArray());
+
+        var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
+        string text = TomlSerializer.Serialize(new ValueModel<ReadOnlyMemory<byte>> { Value = value }, options);
+        Assert.AreEqual("Value = \"YWJj\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a memory-of-byte member written as a Base64 string reads back under the default integer-array
+    /// handling, because the shared read path accepts either form.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenMemoryOfByteFromBase64UnderDefaultHandling_ShouldDecode()
+    {
+        Memory<byte> actual = TomlSerializer.Deserialize<ValueModel<Memory<byte>>>("Value = \"YWJj\"\n").Value;
+
+        CollectionAssert.AreEqual(new byte[] { 0x61, 0x62, 0x63 }, actual.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that an empty <see cref="ReadOnlyMemory{T}" /> of <see cref="byte" /> serializes to an empty TOML array
+    /// and round-trips to an empty memory.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemoryOfByteEmpty_ShouldRoundTripEmpty()
+    {
+        ReadOnlyMemory<byte> value = ReadOnlyMemory<byte>.Empty;
+
+        Assert.AreEqual("Value = []\n", Serialize(value));
+        Assert.AreEqual(0, RoundTrip(value).Length);
+    }
+
+    /// <summary>
     /// Verifies that reading a TOML value whose kind does not match the target scalar member throws
     /// <see cref="TomlSerializationException" /> across the representative type-mismatch cases.
     /// </summary>
