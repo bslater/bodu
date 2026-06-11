@@ -92,6 +92,47 @@ public readonly partial struct BencodeElement
         _document.GetBytes(_index);
 
     /// <summary>
+    /// Copies the complete encoded form of this element to a new array, mirroring
+    /// <see cref="System.Text.Json.JsonElement.GetRawText" /> for a binary format. For a byte string the result
+    /// includes the length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every
+    /// child.
+    /// </summary>
+    /// <returns>The raw encoded bytes of this element.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <remarks>
+    /// Because canonical Bencode is byte-exact, the returned slice is suitable for hashing — for example, computing a
+    /// torrent's info-hash from the <c>info</c> dictionary's element — and for verbatim re-emission through
+    /// <see cref="Writer.Utf8BencodeWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />.
+    /// </remarks>
+    public byte[] GetRawBytes() =>
+        _document.GetRawSpan(_index).ToArray();
+
+    /// <summary>
+    /// Writes the complete encoded form of this element to the supplied writer, mirroring
+    /// <see cref="System.Text.Json.JsonElement.WriteTo" />.
+    /// </summary>
+    /// <param name="writer">The destination writer.</param>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the writer's call sequence does not permit a value at the current position.
+    /// </exception>
+    /// <remarks>
+    /// The encoded bytes are emitted verbatim; because the owning document was validated when parsed, no re-validation
+    /// occurs.
+    /// </remarks>
+    public void WriteTo(Writer.Utf8BencodeWriter writer) =>
+        writer.WriteRawValue(_document.GetRawSpan(_index), skipInputValidation: true);
+
+    /// <summary>
+    /// Creates an independent copy of this element whose lifetime is not tied to the owning document, mirroring
+    /// <see cref="System.Text.Json.JsonElement.Clone" />.
+    /// </summary>
+    /// <returns>A <see cref="BencodeElement" /> backed by a private document that does not require disposal.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    public BencodeElement Clone() =>
+        BencodeDocument.ParseUnpooled(_document.GetRawSpan(_index)).RootElement;
+
+    /// <summary>
     /// Gets the number of elements in this array element.
     /// </summary>
     /// <returns>The element count.</returns>
