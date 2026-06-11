@@ -264,6 +264,65 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Int128" /> and <see cref="UInt128" /> values within the signed 64-bit range TOML can
+    /// store round-trip exactly, including at the boundaries.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_When128BitWithinInt64Range_ShouldRoundTrip()
+    {
+        Assert.AreEqual((Int128)long.MaxValue, RoundTrip((Int128)long.MaxValue));
+        Assert.AreEqual((Int128)long.MinValue, RoundTrip((Int128)long.MinValue));
+        Assert.AreEqual((UInt128)long.MaxValue, RoundTrip((UInt128)long.MaxValue));
+        Assert.AreEqual((Int128)0, RoundTrip((Int128)0));
+        Assert.AreEqual((UInt128)0, RoundTrip((UInt128)0));
+    }
+
+    /// <summary>
+    /// Verifies that serializing an <see cref="Int128" /> outside the signed 64-bit range TOML can store throws
+    /// <see cref="TomlSerializationException" /> carrying the checked-conversion <see cref="OverflowException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenInt128ExceedsInt64Range_ShouldThrowTomlSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = Serialize(Int128.MaxValue);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see cref="UInt128" /> outside the signed 64-bit range TOML can store throws
+    /// <see cref="TomlSerializationException" /> carrying the checked-conversion <see cref="OverflowException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenUInt128ExceedsInt64Range_ShouldThrowTomlSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = Serialize((UInt128)long.MaxValue + 1);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that reading a negative TOML integer into a <see cref="UInt128" /> member throws
+    /// <see cref="TomlSerializationException" />, demonstrating the checked conversion on the read path.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntoUInt128_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<UInt128>>("Value = -1\n");
+        });
+    }
+
+    /// <summary>
     /// Verifies that a <see cref="bool" /> value serializes to the lowercase <c>true</c> and <c>false</c> literals and
     /// round-trips.
     /// </summary>
