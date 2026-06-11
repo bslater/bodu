@@ -249,7 +249,9 @@ public sealed partial class BencodeDocument
         switch (reader.TokenType)
         {
             case BencodeTokenType.Integer:
-                rows.Add(Row.Int(reader.GetInt64(), valueStart, reader.BytesConsumed - valueStart));
+                rows.Add(reader.TryGetInt64(out var integer)
+                    ? Row.Int(integer, valueStart, reader.BytesConsumed - valueStart)
+                    : Row.UInt(reader.GetUInt64(), valueStart, reader.BytesConsumed - valueStart));
                 return;
 
             case BencodeTokenType.ByteString:
@@ -323,14 +325,68 @@ public sealed partial class BencodeDocument
     /// <returns>The decoded integer value.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer's value exceeds <see cref="long.MaxValue" /> and is therefore readable only through
+    /// <see cref="GetUnsignedInteger(int)" />.
+    /// </exception>
     internal long GetInteger(int index)
     {
         _ = EnsureNotDisposed();
         ref readonly Row row = ref _rows[index];
         if (row.Kind != BencodeValueKind.Integer)
             throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+        if (row.IntegerExceedsInt64)
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, row.RawLocation);
 
         return row.Integer;
+    }
+
+    /// <summary>
+    /// Attempts to get the integer value at the supplied row index as a 64-bit signed integer.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value fits the signed 64-bit range; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    internal bool TryGetInteger(int index, out long value)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+
+        if (row.IntegerExceedsInt64)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = row.Integer;
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the integer value at the supplied row index as a 64-bit unsigned integer, accepting any value in [0,
+    /// <see cref="ulong.MaxValue" /> ].
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The decoded unsigned integer value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the integer's value is negative.</exception>
+    internal ulong GetUnsignedInteger(int index)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+        if (!row.IntegerExceedsInt64 && row.Integer < 0)
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, row.RawLocation);
+
+        return unchecked((ulong)row.Integer);
     }
 
     /// <summary>

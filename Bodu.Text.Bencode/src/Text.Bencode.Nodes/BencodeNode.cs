@@ -290,7 +290,9 @@ public abstract class BencodeNode
         switch (reader.TokenType)
         {
             case BencodeTokenType.Integer:
-                return BencodeValue.Create(reader.GetInt64());
+                return reader.TryGetInt64(out var integer)
+                    ? BencodeValue.Create(integer)
+                    : BencodeValue.Create(reader.GetUInt64());
 
             case BencodeTokenType.ByteString:
                 return BencodeValue.Create(reader.GetBytes());
@@ -472,7 +474,7 @@ public abstract class BencodeNode
 
         return kind switch
         {
-            BencodeValueKind.Integer => node1.AsValue().GetValue<long>() == node2.AsValue().GetValue<long>(),
+            BencodeValueKind.Integer => node1.AsValue().IntegerEquals(node2.AsValue()),
             BencodeValueKind.ByteString => node1.AsValue().GetValue<byte[]>().AsSpan().SequenceEqual(node2.AsValue().GetValue<byte[]>()),
             BencodeValueKind.Array => ArrayEquals(node1.AsArray(), node2.AsArray()),
             _ => ObjectEquals(node1.AsObject(), node2.AsObject()),
@@ -504,6 +506,14 @@ public abstract class BencodeNode
     /// </summary>
     /// <param name="value">The integer to wrap.</param>
     public static implicit operator BencodeNode(int value) =>
+        BencodeValue.Create(value);
+
+    /// <summary>
+    /// Creates a <see cref="BencodeValue" /> that wraps the supplied unsigned 64-bit integer, permitting the full
+    /// <see cref="ulong" /> range.
+    /// </summary>
+    /// <param name="value">The unsigned integer to wrap.</param>
+    public static implicit operator BencodeNode(ulong value) =>
         BencodeValue.Create(value);
 
     /// <summary>
@@ -543,6 +553,22 @@ public abstract class BencodeNode
     {
         ThrowHelper.ThrowIfNull(node);
         return node.GetValue<int>();
+    }
+
+    /// <summary>
+    /// Reads the scalar value of the supplied node as an unsigned 64-bit integer.
+    /// </summary>
+    /// <param name="node">The node to read.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="node" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <paramref name="node" /> is not a non-negative integer-valued <see cref="BencodeValue" />.
+    /// </exception>
+    public static explicit operator ulong(BencodeNode node)
+    {
+        ThrowHelper.ThrowIfNull(node);
+        return node.GetValue<ulong>();
     }
 
     /// <summary>

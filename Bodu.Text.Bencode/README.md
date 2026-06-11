@@ -41,7 +41,7 @@ TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 
 ## Contracts and limits
 
-**Integers.** BEP 3 integers are arbitrary-precision; this library supports the range [`long.MinValue`, `ulong.MaxValue`]. Values in (`long.MaxValue`, `ulong.MaxValue`] are readable through `Utf8BencodeReader.GetUInt64` and writable through the `ulong` overload of `WriteInteger`; anything outside the supported range is rejected with `BencodeFormatException`. Arbitrary-precision (`BigInteger`) values are not supported.
+**Integers.** BEP 3 integers are arbitrary-precision; this library supports the range [`long.MinValue`, `ulong.MaxValue`] on every surface. Values in (`long.MaxValue`, `ulong.MaxValue`] are readable through `Utf8BencodeReader.GetUInt64`, `BencodeElement.GetUInt64`, and `GetValue<ulong>()` on nodes, and writable through the `ulong` overload of `WriteInteger` and `BencodeValue.Create(ulong)`; anything outside the supported range is rejected with `BencodeFormatException`. Arbitrary-precision (`BigInteger`) values are not supported.
 
 **Byte strings are bytes, not text.** `GetString` accessors (reader, element, node) and `string`-typed members decode as UTF-8 and substitute U+FFFD for invalid sequences. Binding a binary field — such as a torrent's `pieces` — to a `string` silently corrupts it; map binary content to `byte[]` (or read `ValueSpan` / `GetBytes`), which is always lossless.
 

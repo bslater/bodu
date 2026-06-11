@@ -63,8 +63,74 @@ public readonly partial struct BencodeElement
     /// <exception cref="InvalidOperationException">
     /// Thrown when this element is not an <see cref="BencodeValueKind.Integer" />.
     /// </exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer's value exceeds <see cref="long.MaxValue" />; use <see cref="GetUInt64" /> to read
+    /// values in the upper unsigned 64-bit range.
+    /// </exception>
     public long GetInt64() =>
         _document.GetInteger(_index);
+
+    /// <summary>
+    /// Attempts to get the value of this integer element as a 64-bit signed integer.
+    /// </summary>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value fits the signed 64-bit range; <see langword="false" /> when it is
+    /// readable only through <see cref="GetUInt64" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this element is not an <see cref="BencodeValueKind.Integer" />.
+    /// </exception>
+    public bool TryGetInt64(out long value) =>
+        _document.TryGetInteger(_index, out value);
+
+    /// <summary>
+    /// Gets the value of this integer element as a 64-bit unsigned integer, accepting any value in [0,
+    /// <see cref="ulong.MaxValue" /> ].
+    /// </summary>
+    /// <returns>The decoded unsigned integer value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this element is not an <see cref="BencodeValueKind.Integer" />.
+    /// </exception>
+    /// <exception cref="BencodeFormatException">Thrown when the integer's value is negative.</exception>
+    /// <remarks>
+    /// Bencode integers are arbitrary-precision per BEP 3, so a document may carry a value between
+    /// <see cref="long.MaxValue" /> and <see cref="ulong.MaxValue" /> that <see cref="GetInt64" /> cannot represent;
+    /// this accessor reads such values without loss, mirroring <see cref="Reader.Utf8BencodeReader.GetUInt64" />.
+    /// </remarks>
+    public ulong GetUInt64() =>
+        _document.GetUnsignedInteger(_index);
+
+    /// <summary>
+    /// Attempts to get the value of this integer element as a 64-bit unsigned integer.
+    /// </summary>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the unsigned integer value; otherwise zero.
+    /// </param>
+    /// <returns><see langword="true" /> when the value is non-negative; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this element is not an <see cref="BencodeValueKind.Integer" />.
+    /// </exception>
+    public bool TryGetUInt64(out ulong value)
+    {
+        if (_document.TryGetInteger(_index, out var signed))
+        {
+            if (signed < 0)
+            {
+                value = 0;
+                return false;
+            }
+
+            value = (ulong)signed;
+            return true;
+        }
+
+        value = _document.GetUnsignedInteger(_index);
+        return true;
+    }
 
     /// <summary>
     /// Decodes this byte-string element as UTF-8 text.
@@ -257,7 +323,9 @@ public readonly partial struct BencodeElement
     public override string ToString() =>
         _document.GetKind(_index) switch
         {
-            BencodeValueKind.Integer => _document.GetInteger(_index).ToString(CultureInfo.InvariantCulture),
+            BencodeValueKind.Integer => _document.TryGetInteger(_index, out var integer)
+                ? integer.ToString(CultureInfo.InvariantCulture)
+                : _document.GetUnsignedInteger(_index).ToString(CultureInfo.InvariantCulture),
             BencodeValueKind.ByteString => _document.GetString(_index),
             BencodeValueKind.Array => nameof(BencodeValueKind.Array),
             _ => nameof(BencodeValueKind.Object),

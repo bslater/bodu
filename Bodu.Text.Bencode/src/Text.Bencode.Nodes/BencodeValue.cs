@@ -28,9 +28,18 @@ public sealed class BencodeValue
     private readonly BencodeValueKind _kind;
 
     /// <summary>
-    /// The integer payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.Integer" />.
+    /// The integer payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.Integer" />. When
+    /// <see cref="_integerExceedsInt64" /> is set, the field holds the unchecked bit pattern of an unsigned value above
+    /// <see cref="long.MaxValue" />.
     /// </summary>
     private readonly long _integer;
+
+    /// <summary>
+    /// Whether the stored integer exceeds <see cref="long.MaxValue" /> and is therefore representable only as
+    /// <see cref="ulong" />. Values within the signed range are always stored in signed form, so two equal integers
+    /// always share one representation.
+    /// </summary>
+    private readonly bool _integerExceedsInt64;
 
     /// <summary>
     /// The byte-string payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.ByteString" />.
@@ -45,6 +54,20 @@ public sealed class BencodeValue
     {
         _kind = BencodeValueKind.Integer;
         _integer = value;
+        _bytes = [];
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BencodeValue" /> class holding an unsigned integer above
+    /// <see cref="long.MaxValue" />.
+    /// </summary>
+    /// <param name="value">The unsigned integer payload, which must exceed <see cref="long.MaxValue" />.</param>
+    /// <param name="exceedsInt64">Discriminates this constructor; always <see langword="true" />.</param>
+    private BencodeValue(ulong value, bool exceedsInt64)
+    {
+        _kind = BencodeValueKind.Integer;
+        _integer = unchecked((long)value);
+        _integerExceedsInt64 = exceedsInt64;
         _bytes = [];
     }
 
@@ -73,6 +96,23 @@ public sealed class BencodeValue
     /// <returns>A new integer-valued node.</returns>
     public static BencodeValue Create(int value) =>
         Create((long)value);
+
+    /// <summary>
+    /// Creates a <see cref="BencodeValue" /> holding the supplied unsigned 64-bit integer, permitting the full
+    /// <see cref="ulong" /> range.
+    /// </summary>
+    /// <param name="value">The unsigned integer value.</param>
+    /// <returns>A new integer-valued node.</returns>
+    /// <remarks>
+    /// Bencode integers are arbitrary-precision per BEP 3, so values between <see cref="long.MaxValue" /> and
+    /// <see cref="ulong.MaxValue" /> are valid documents. Such a value reads back through
+    /// <c>GetValue&lt;ulong&gt;()</c>; requesting a narrower integer type fails. Values within the signed 64-bit range
+    /// are stored identically to <see cref="Create(long)" />.
+    /// </remarks>
+    public static BencodeValue Create(ulong value) =>
+        value <= long.MaxValue
+            ? new BencodeValue((long)value)
+            : new BencodeValue(value, exceedsInt64: true);
 
     /// <summary>
     /// Creates a <see cref="BencodeValue" /> holding the supplied string as a UTF-8 byte string.
@@ -160,23 +200,38 @@ public sealed class BencodeValue
     /// <inheritdoc />
     public override void WriteTo(Utf8BencodeWriter writer)
     {
-        if (_kind == BencodeValueKind.Integer)
-            writer.WriteInteger(_integer);
-        else
+        if (_kind != BencodeValueKind.Integer)
             writer.WriteByteString(_bytes);
+        else if (_integerExceedsInt64)
+            writer.WriteInteger(unchecked((ulong)_integer));
+        else
+            writer.WriteInteger(_integer);
     }
 
     /// <inheritdoc />
     public override BencodeNode DeepClone() =>
         _kind == BencodeValueKind.Integer
-            ? new BencodeValue(_integer)
+            ? _integerExceedsInt64
+                ? new BencodeValue(unchecked((ulong)_integer), exceedsInt64: true)
+                : new BencodeValue(_integer)
             : new BencodeValue((byte[])_bytes.Clone());
 
     /// <inheritdoc />
     public override string ToString() =>
-        _kind == BencodeValueKind.Integer
-            ? _integer.ToString(CultureInfo.InvariantCulture)
-            : Encoding.UTF8.GetString(_bytes);
+        _kind != BencodeValueKind.Integer
+            ? Encoding.UTF8.GetString(_bytes)
+            : _integerExceedsInt64
+                ? unchecked((ulong)_integer).ToString(CultureInfo.InvariantCulture)
+                : _integer.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Determines whether this integer value equals another, comparing the normalized representation so signed and
+    /// unsigned storage of the same number compare equal.
+    /// </summary>
+    /// <param name="other">The other integer value.</param>
+    /// <returns><see langword="true" /> when both values represent the same integer.</returns>
+    internal bool IntegerEquals(BencodeValue other) =>
+        _integerExceedsInt64 == other._integerExceedsInt64 && _integer == other._integer;
 
     /// <summary>
     /// Attempts to convert the stored integer to the requested type through a checked conversion.
@@ -188,6 +243,19 @@ public sealed class BencodeValue
     /// </returns>
     private bool TryGetInteger<T>(out T value)
     {
+        // A value above long.MaxValue is representable only as UInt64; every narrower request fails.
+        if (_integerExceedsInt64)
+        {
+            if (typeof(T) == typeof(ulong))
+            {
+                value = (T)(object)unchecked((ulong)_integer);
+                return true;
+            }
+
+            value = default!;
+            return false;
+        }
+
         try
         {
             object? boxed = Type.GetTypeCode(typeof(T)) switch
@@ -225,7 +293,7 @@ public sealed class BencodeValue
     /// <typeparam name="T">The requested type.</typeparam>
     /// <param name="value">When this method returns <see langword="true" />, the converted value.</param>
     /// <returns>
-    /// <see langword="true" /> when <typeparamref name="T" /> is <see cref="string" /> or <see cref="byte" />[].
+    /// <see langword="true" /> when <typeparamref name="T" /> is <see cref="string" /> or <see cref="byte" /> [].
     /// </returns>
     private bool TryGetByteString<T>(out T value)
     {
