@@ -288,7 +288,9 @@ into the decoded text, and the representational limits are documented on `Utf8To
   `Flush`/`Reset`/`SkipValidation`. The XML remarks are honest about the buffering; the
   *summary* lines should be softened to match. ✅ **Addressed (documented):** the reader summary
   no longer claims a high-performance streaming design, and the writer now validates by default
-  (M2), narrowing the idiom gap.
+  (M2), narrowing the idiom gap. A full architectural redesign (source-order lexer + document
+  builder + normalized binding cursor) has since been assessed and designed — see
+  [`utf8-toml-reader-redesign-assessment.md`](./utf8-toml-reader-redesign-assessment.md).
 - **I2 — `Skip()` is a no-op on `PropertyName`**, diverging from `Utf8JsonReader.Skip`
   (`Utf8TomlReader.cs:254`); document or align. ✅ **Addressed:** `Skip()` on a property name now
   advances past the property's value, matching `Utf8JsonReader.Skip`.
