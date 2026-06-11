@@ -337,7 +337,8 @@ public sealed partial class BencodeDocument
         if (row.Kind != BencodeValueKind.Array)
             throw KindMismatch(BencodeValueKind.Array, row.Kind);
 
-        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, nameof(elementIndex));
+        // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
+        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, "index");
 
         int child = index + 1;
         for (int i = 0; i < elementIndex; i++)

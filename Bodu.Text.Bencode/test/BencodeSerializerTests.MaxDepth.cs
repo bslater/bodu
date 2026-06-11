@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode;
@@ -81,17 +82,17 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that setting <see cref="BencodeSerializerOptions.MaxDepth" /> to a negative value throws
-    /// <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
     public void MaxDepth_WhenSetToNegative_ShouldThrowArgumentOutOfRangeException()
     {
         var options = new BencodeSerializerOptions();
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             options.MaxDepth = -1;
-        });
+        }, "value");
     }
 
     /// <summary>

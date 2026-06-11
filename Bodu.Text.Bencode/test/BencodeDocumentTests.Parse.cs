@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Document;
 
 namespace Bodu.Text.Bencode;
@@ -171,15 +172,16 @@ public partial class BencodeDocumentTests
 
     /// <summary>
     /// Verifies that <see cref="BencodeDocument.Parse(byte[], BencodeDocumentOptions)" /> throws
-    /// <see cref="ArgumentNullException" /> when the array is <see langword="null" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>data</c> when the array is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenArrayIsNull_ForOptionsOverload_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = BencodeDocument.Parse(null!, new BencodeDocumentOptions { MaxDepth = 4 });
-        });
+        }, "data");
     }
 
     /// <summary>

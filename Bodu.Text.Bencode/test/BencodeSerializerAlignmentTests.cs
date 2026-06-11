@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Serialization;
 
@@ -58,12 +59,10 @@ public class BencodeSerializerAlignmentTests
     {
         var options = new BencodeSerializerOptions();
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             options.DefaultIgnoreCondition = BencodeIgnoreCondition.Always;
-        });
-
-        Assert.AreEqual("value", ex.ParamName);
+        }, "value");
     }
 
     /// <summary>
@@ -173,15 +172,16 @@ public class BencodeSerializerAlignmentTests
 
     /// <summary>
     /// Verifies that constructing <see cref="BencodeSerializerOptions" /> with an undefined
-    /// <see cref="BencodeSerializerDefaults" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="BencodeSerializerDefaults" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>defaults</c>.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenDefaultsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = new BencodeSerializerOptions((BencodeSerializerDefaults)99);
-        });
+        }, "defaults");
     }
 
     /// <summary>

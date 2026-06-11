@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Document;
 
 namespace Bodu.Text.Bencode;
@@ -197,7 +198,7 @@ public partial class BencodeDocumentTests
 
     /// <summary>
     /// Verifies that the array indexer throws <see cref="ArgumentOutOfRangeException" /> when the index is outside the
-    /// array bounds.
+    /// array bounds, reporting the indexer's <c>index</c> parameter name.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenIndexOutOfRange_ShouldThrowArgumentOutOfRangeException()
@@ -206,10 +207,10 @@ public partial class BencodeDocumentTests
 
         BencodeElement array = document.RootElement;
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = array[5];
-        });
+        }, "index");
     }
 
     /// <summary>
@@ -242,16 +243,16 @@ public partial class BencodeDocumentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeDocument.Parse(byte[])" /> throws <see cref="ArgumentNullException" /> when the
-    /// array is <see langword="null" />.
+    /// Verifies that <see cref="BencodeDocument.Parse(byte[])" /> throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>data</c> when the array is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = BencodeDocument.Parse((byte[])null!);
-        });
+        }, "data");
     }
 
     /// <summary>

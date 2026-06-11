@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Serialization;
 using Bodu.Text.Bencode.Writer;
@@ -113,6 +114,19 @@ public partial class BencodeSerializerTests
 
         // The first registered converter writes i5e; the second would have written 6:code:5.
         Assert.AreEqual("d4:Codei5ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="BencodeConverterAttribute" /> with a <see langword="null" /> converter
+    /// type throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>converterType</c>.
+    /// </summary>
+    [TestMethod]
+    public void BencodeConverterAttribute_WhenConverterTypeNull_ShouldThrowArgumentNullException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = new BencodeConverterAttribute(null!);
+        }, "converterType");
     }
 
     /// <summary>

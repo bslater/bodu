@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode;
 
 namespace Bodu.Text.Bencode.Nodes;
@@ -36,16 +37,16 @@ public class BencodeObjectTests
     }
 
     /// <summary>
-    /// Verifies that the enumerable constructor throws <see cref="ArgumentNullException" /> when the sequence is
-    /// <see langword="null" />.
+    /// Verifies that the enumerable constructor throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>items</c> when the sequence is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenItemsIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new BencodeObject((IEnumerable<KeyValuePair<string, BencodeNode?>>)null!);
-        });
+        }, "items");
     }
 
     /// <summary>
@@ -80,33 +81,33 @@ public class BencodeObjectTests
     }
 
     /// <summary>
-    /// Verifies that the indexer getter throws <see cref="ArgumentNullException" /> when the key is
-    /// <see langword="null" />.
+    /// Verifies that the indexer getter throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>key</c> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenGetWithNullKey_ShouldThrowArgumentNullException()
     {
         var obj = new BencodeObject();
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = obj[null!];
-        });
+        }, "key");
     }
 
     /// <summary>
-    /// Verifies that the indexer setter throws <see cref="ArgumentNullException" /> when the key is
-    /// <see langword="null" />.
+    /// Verifies that the indexer setter throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>key</c> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenSetWithNullKey_ShouldThrowArgumentNullException()
     {
         var obj = new BencodeObject();
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             obj[null!] = BencodeValue.Create(1L);
-        });
+        }, "key");
     }
 
     /// <summary>
@@ -164,17 +165,18 @@ public class BencodeObjectTests
 
     /// <summary>
     /// Verifies that <see cref="BencodeObject.Add(string, BencodeNode?)" /> throws
-    /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>key</c> when the key is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         var obj = new BencodeObject();
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             obj.Add(null!, BencodeValue.Create(1L));
-        });
+        }, "key");
     }
 
     /// <summary>

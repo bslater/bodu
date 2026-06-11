@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Reader;
 
 namespace Bodu.Text.Bencode;
@@ -127,7 +128,7 @@ public partial class Utf8BencodeReaderTests
 
     /// <summary>
     /// Verifies that constructing a reader with a non-positive maximum depth throws
-    /// <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> <c>maxDepth</c>.
     /// </summary>
     /// <param name="maxDepth">The invalid maximum depth.</param>
     [TestMethod]
@@ -135,10 +136,10 @@ public partial class Utf8BencodeReaderTests
     [DataRow(-1)]
     public void Ctor_WhenMaxDepthNotPositive_ShouldThrowArgumentOutOfRangeException(int maxDepth)
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = new Utf8BencodeReader([], maxDepth);
-        });
+        }, "maxDepth");
     }
 
     /// <summary>

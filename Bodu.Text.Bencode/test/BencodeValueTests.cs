@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode;
 
 namespace Bodu.Text.Bencode.Nodes;
@@ -56,29 +57,29 @@ public class BencodeValueTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeValue.Create(string)" /> throws <see cref="ArgumentNullException" /> when the
-    /// string is <see langword="null" />.
+    /// Verifies that <see cref="BencodeValue.Create(string)" /> throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>value</c> when the string is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Create_WhenStringIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = BencodeValue.Create((string)null!);
-        });
+        }, "value");
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeValue.Create(byte[])" /> throws <see cref="ArgumentNullException" /> when the
-    /// array is <see langword="null" />.
+    /// Verifies that <see cref="BencodeValue.Create(byte[])" /> throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>value</c> when the array is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Create_WhenByteArrayIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = BencodeValue.Create((byte[])null!);
-        });
+        }, "value");
     }
 
     /// <summary>

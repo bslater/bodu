@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Document;
 
 namespace Bodu.Text.Bencode;
@@ -162,7 +163,7 @@ public partial class BencodeDocumentTests
 
     /// <summary>
     /// Verifies that <see cref="BencodeElement.GetProperty(string)" /> throws <see cref="ArgumentNullException" />
-    /// when the property name is <see langword="null" />.
+    /// with <c>ParamName</c> <c>propertyName</c> when the property name is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void GetProperty_WhenPropertyNameIsNull_ShouldThrowArgumentNullException()
@@ -170,15 +171,16 @@ public partial class BencodeDocumentTests
         using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement root = document.RootElement;
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = root.GetProperty(null!);
-        });
+        }, "propertyName");
     }
 
     /// <summary>
     /// Verifies that <see cref="BencodeElement.TryGetProperty(string, out BencodeElement)" /> throws
-    /// <see cref="ArgumentNullException" /> when the property name is <see langword="null" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>propertyName</c> when the property name is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void TryGetProperty_WhenPropertyNameIsNull_ShouldThrowArgumentNullException()
@@ -186,15 +188,15 @@ public partial class BencodeDocumentTests
         using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement root = document.RootElement;
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = root.TryGetProperty(null!, out _);
-        });
+        }, "propertyName");
     }
 
     /// <summary>
     /// Verifies that the positional indexer throws <see cref="ArgumentOutOfRangeException" /> when the index is
-    /// negative.
+    /// negative, reporting the indexer's <c>index</c> parameter name.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
@@ -202,10 +204,10 @@ public partial class BencodeDocumentTests
         using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ee"));
         BencodeElement root = document.RootElement;
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = root[-1];
-        });
+        }, "index");
     }
 
     /// <summary>

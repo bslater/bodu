@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode;
@@ -152,6 +153,20 @@ public partial class BencodeSerializerTests
 
         Assert.IsNotNull(model.Items);
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="BencodeObjectCreationHandlingAttribute" /> with an undefined
+    /// <see cref="BencodeObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>handling</c>.
+    /// </summary>
+    [TestMethod]
+    public void BencodeObjectCreationHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new BencodeObjectCreationHandlingAttribute((BencodeObjectCreationHandling)99);
+        }, "handling");
     }
 
     /// <summary>

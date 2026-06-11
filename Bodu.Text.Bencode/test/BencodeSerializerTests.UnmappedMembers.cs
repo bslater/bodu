@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode;
@@ -117,6 +118,20 @@ public partial class BencodeSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("unknown", StringComparison.Ordinal));
         Assert.IsTrue(ex.Message.Contains(nameof(PlainNameModel), StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="BencodeUnmappedMemberHandlingAttribute" /> with an undefined
+    /// <see cref="BencodeUnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>unmappedMemberHandling</c>.
+    /// </summary>
+    [TestMethod]
+    public void BencodeUnmappedMemberHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new BencodeUnmappedMemberHandlingAttribute((BencodeUnmappedMemberHandling)99);
+        }, "unmappedMemberHandling");
     }
 
     /// <summary>

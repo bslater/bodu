@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode;
@@ -338,6 +339,51 @@ public class BencodeEnumConverterTests
         byte[] bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d6:Status9:not-founde", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeStringEnumConverter.CanConvert(Type)" /> throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>typeToConvert</c> when the type is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CanConvert_WhenTypeToConvertNull_ShouldThrowArgumentNullException()
+    {
+        var converter = new BencodeStringEnumConverter();
+
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = converter.CanConvert(null!);
+        }, "typeToConvert");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeStringEnumConverter.CreateConverter(Type, BencodeSerializerOptions)" /> throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>typeToConvert</c> when the type is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateConverter_WhenTypeToConvertNull_ShouldThrowArgumentNullException()
+    {
+        var converter = new BencodeStringEnumConverter();
+
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = converter.CreateConverter(null!, new BencodeSerializerOptions());
+        }, "typeToConvert");
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="BencodeStringEnumMemberNameAttribute" /> with a <see langword="null" />
+    /// name throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>name</c>.
+    /// </summary>
+    [TestMethod]
+    public void BencodeStringEnumMemberNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = new BencodeStringEnumMemberNameAttribute(null!);
+        }, "name");
     }
 
     /// <summary>

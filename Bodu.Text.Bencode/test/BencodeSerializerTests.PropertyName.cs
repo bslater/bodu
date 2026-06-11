@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode;
@@ -116,12 +117,10 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void BencodePropertyNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new BencodePropertyNameAttribute(null!);
-        });
-
-        Assert.AreEqual("name", ex.ParamName);
+        }, "name");
     }
 
     /// <summary>

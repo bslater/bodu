@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Writer;
 
 namespace Bodu.Text.Bencode;
@@ -136,49 +137,63 @@ public class Utf8BencodeWriterTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Utf8BencodeWriter.WriteString" /> throws <see cref="ArgumentNullException" /> when
-    /// the value is <see langword="null" />.
+    /// Verifies that <see cref="Utf8BencodeWriter.WriteString" /> throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>value</c> when the value is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void WriteString_WhenValueNull_ShouldThrowArgumentNullException()
     {
         var buffer = new ArrayBufferWriter<byte>();
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             var writer = new Utf8BencodeWriter(buffer);
             writer.WriteString(null!);
-        });
+        }, "value");
     }
 
     /// <summary>
     /// Verifies that <see cref="Utf8BencodeWriter.WritePropertyName(string)" /> throws
-    /// <see cref="ArgumentNullException" /> when the name is <see langword="null" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>name</c> when the name is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void WritePropertyName_WhenNameNull_ShouldThrowArgumentNullException()
     {
         var buffer = new ArrayBufferWriter<byte>();
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             var writer = new Utf8BencodeWriter(buffer);
             writer.WriteStartDictionary();
             writer.WritePropertyName((string)null!);
-        });
+        }, "name");
     }
 
     /// <summary>
     /// Verifies that constructing the writer with a <see langword="null" /> output throws
-    /// <see cref="ArgumentNullException" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>output</c>.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenOutputNull_ShouldThrowArgumentNullException()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new Utf8BencodeWriter(null!);
-        });
+        }, "output");
+    }
+
+    /// <summary>
+    /// Verifies that constructing the writer with a <see langword="null" /> output and explicit options throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>output</c>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenOutputNull_ForOptionsOverload_ShouldThrowArgumentNullException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = new Utf8BencodeWriter(null!, new BencodeWriterOptions { MaxDepth = 4 });
+        }, "output");
     }
 
     /// <summary>

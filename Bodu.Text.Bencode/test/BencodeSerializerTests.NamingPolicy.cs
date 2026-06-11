@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
 using Bodu.Text.Bencode.Serialization;
 
@@ -130,15 +131,16 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that constructing <see cref="BencodeNamingPolicyAttribute" /> with an undefined
-    /// <see cref="BencodeKnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="BencodeKnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>namingPolicy</c>.
     /// </summary>
     [TestMethod]
     public void BencodeNamingPolicyAttribute_WhenKnownPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = new BencodeNamingPolicyAttribute((BencodeKnownNamingPolicy)99);
-        });
+        }, "namingPolicy");
     }
 
     /// <summary>

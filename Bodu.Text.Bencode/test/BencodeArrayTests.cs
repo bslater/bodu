@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode;
 
 namespace Bodu.Text.Bencode.Nodes;
@@ -31,16 +32,16 @@ public class BencodeArrayTests
     }
 
     /// <summary>
-    /// Verifies that the params constructor throws <see cref="ArgumentNullException" /> when the items array is
-    /// <see langword="null" />.
+    /// Verifies that the params constructor throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>items</c> when the items array is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenItemsIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new BencodeArray((BencodeNode?[])null!);
-        });
+        }, "items");
     }
 
     /// <summary>
@@ -72,10 +73,10 @@ public class BencodeArrayTests
     {
         var array = new BencodeArray(1);
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = array[index];
-        });
+        }, "index");
     }
 
     /// <summary>
@@ -90,10 +91,10 @@ public class BencodeArrayTests
     {
         var array = new BencodeArray(1);
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             array[index] = 2L;
-        });
+        }, "index");
     }
 
     /// <summary>
@@ -180,10 +181,10 @@ public class BencodeArrayTests
     {
         var array = new BencodeArray(1);
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             array.Insert(index, 2L);
-        });
+        }, "index");
     }
 
     /// <summary>
@@ -233,10 +234,10 @@ public class BencodeArrayTests
     {
         var array = new BencodeArray(1);
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             array.RemoveAt(index);
-        });
+        }, "index");
     }
 
     /// <summary>

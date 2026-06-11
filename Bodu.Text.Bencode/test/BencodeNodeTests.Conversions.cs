@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Bencode;
 
 namespace Bodu.Text.Bencode.Nodes;
@@ -34,31 +35,31 @@ public partial class BencodeNodeTests
     }
 
     /// <summary>
-    /// Verifies that each explicit reading operator throws <see cref="ArgumentNullException" /> when the node is
-    /// <see langword="null" />.
+    /// Verifies that each explicit reading operator throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>node</c> when the node is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void ExplicitOperators_WhenNodeIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (long)(BencodeNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (int)(BencodeNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (string)(BencodeNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (byte[])(BencodeNode)null!;
-        });
+        }, "node");
     }
 
     /// <summary>
