@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Writer;
 
@@ -520,15 +521,28 @@ public sealed partial class Utf8TomlWriterTests
 
     /// <summary>
     /// Verifies that passing a <see langword="null" /> buffer writer to the constructor throws
-    /// <see cref="ArgumentNullException" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>output</c>.
     /// </summary>
     [TestMethod]
     public void Constructor_WhenOutputIsNull_ShouldThrowArgumentNullException()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new Utf8TomlWriter(null!);
-        });
+        }, "output");
+    }
+
+    /// <summary>
+    /// Verifies that passing a <see langword="null" /> buffer writer to the options constructor overload throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>output</c>.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenOutputIsNull_ForOptionsOverload_ShouldThrowArgumentNullException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = new Utf8TomlWriter(null!, new TomlWriterOptions { MaxDepth = 4 });
+        }, "output");
     }
 
     /// <summary>

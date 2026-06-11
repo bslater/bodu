@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Document;
 
 namespace Bodu.Text.Toml;
@@ -248,7 +249,8 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that indexing an array beyond its bounds throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that indexing an array beyond its bounds throws <see cref="ArgumentOutOfRangeException" />,
+    /// reporting the indexer's <c>index</c> parameter name.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenArrayIndexOutOfRange_ShouldThrowArgumentOutOfRangeException()
@@ -257,10 +259,10 @@ public partial class TomlDocumentTests
 
         TomlElement ports = document.RootElement.GetProperty("ports");
 
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = ports[2];
-        });
+        }, "index");
     }
 
     /// <summary>
@@ -334,14 +336,15 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlDocument.Parse(string)" /> rejects a <see langword="null" /> string.
+    /// Verifies that <see cref="TomlDocument.Parse(string)" /> rejects a <see langword="null" /> string with
+    /// <see cref="ArgumentNullException" /> and <c>ParamName</c> <c>toml</c>.
     /// </summary>
     [TestMethod]
     public void Parse_WhenStringIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             using var document = TomlDocument.Parse((string)null!);
-        });
+        }, "toml");
     }
 }

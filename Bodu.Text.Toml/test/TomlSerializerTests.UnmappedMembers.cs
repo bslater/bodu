@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -108,6 +109,20 @@ public partial class TomlSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("unknown", StringComparison.Ordinal));
         Assert.IsTrue(ex.Message.Contains(nameof(PlainNameModel), StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="TomlUnmappedMemberHandlingAttribute" /> with an undefined
+    /// <see cref="TomlUnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>unmappedMemberHandling</c>.
+    /// </summary>
+    [TestMethod]
+    public void TomlUnmappedMemberHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new TomlUnmappedMemberHandlingAttribute((TomlUnmappedMemberHandling)99);
+        }, "unmappedMemberHandling");
     }
 
     /// <summary>

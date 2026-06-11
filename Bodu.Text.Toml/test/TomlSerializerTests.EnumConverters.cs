@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -334,6 +335,51 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Status = \"not-found\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlStringEnumConverter.CanConvert(Type)" /> throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>typeToConvert</c> when the type is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CanConvert_WhenTypeToConvertNull_ShouldThrowArgumentNullException()
+    {
+        var converter = new TomlStringEnumConverter();
+
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = converter.CanConvert(null!);
+        }, "typeToConvert");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlStringEnumConverter.CreateConverter(Type, TomlSerializerOptions)" /> throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>typeToConvert</c> when the type is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateConverter_WhenTypeToConvertNull_ShouldThrowArgumentNullException()
+    {
+        var converter = new TomlStringEnumConverter();
+
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = converter.CreateConverter(null!, new TomlSerializerOptions());
+        }, "typeToConvert");
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="TomlStringEnumMemberNameAttribute" /> with a <see langword="null" />
+    /// name throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>name</c>.
+    /// </summary>
+    [TestMethod]
+    public void TomlStringEnumMemberNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = new TomlStringEnumMemberNameAttribute(null!);
+        }, "name");
     }
 
     /// <summary>

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
@@ -110,17 +112,17 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that setting <see cref="TomlSerializerOptions.MaxDepth" /> to a negative value throws
-    /// <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
     public void MaxDepth_WhenSetToNegative_ShouldThrowArgumentOutOfRangeException()
     {
         var options = new TomlSerializerOptions();
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             options.MaxDepth = -1;
-        });
+        }, "value");
     }
 
     /// <summary>

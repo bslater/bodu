@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
 using Bodu.Text.Toml.Document;
 
@@ -233,15 +234,16 @@ public partial class TomlDocumentTests
 
     /// <summary>
     /// Verifies that <see cref="TomlDocument.Parse(string, TomlDocumentOptions)" /> throws
-    /// <see cref="ArgumentNullException" /> when the text is <see langword="null" />.
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>toml</c> when the text is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenStringIsNull_ForOptionsOverload_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             using TomlDocument document = TomlDocument.Parse((string)null!, new TomlDocumentOptions { MaxDepth = 4 });
-        });
+        }, "toml");
     }
 
     /// <summary>

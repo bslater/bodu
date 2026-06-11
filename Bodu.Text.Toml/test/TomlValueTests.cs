@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
+
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
@@ -29,16 +31,16 @@ public class TomlValueTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlValue.Create(string)" /> throws <see cref="ArgumentNullException" /> when the
-    /// string is <see langword="null" />.
+    /// Verifies that <see cref="TomlValue.Create(string)" /> throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>value</c> when the string is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Create_WhenStringIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = TomlValue.Create((string)null!);
-        });
+        }, "value");
     }
 
     /// <summary>

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -123,12 +124,10 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void TomlPropertyNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new TomlPropertyNameAttribute(null!);
-        });
-
-        Assert.AreEqual("name", ex.ParamName);
+        }, "name");
     }
 
     /// <summary>

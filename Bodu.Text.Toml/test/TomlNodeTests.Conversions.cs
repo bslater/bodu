@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
+
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
@@ -68,56 +70,56 @@ public partial class TomlNodeTests
     }
 
     /// <summary>
-    /// Verifies that each explicit reading operator throws <see cref="ArgumentNullException" /> when the node is
-    /// <see langword="null" />.
+    /// Verifies that each explicit reading operator throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>node</c> when the node is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void ExplicitOperators_WhenNodeIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (string)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (long)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (int)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (double)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (bool)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (DateTimeOffset)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (DateTime)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (DateOnly)(TomlNode)null!;
-        });
+        }, "node");
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = (TimeOnly)(TomlNode)null!;
-        });
+        }, "node");
     }
 
     /// <summary>

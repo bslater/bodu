@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
+
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
@@ -33,16 +35,16 @@ public class TomlObjectTests
     }
 
     /// <summary>
-    /// Verifies that the enumerable constructor throws <see cref="ArgumentNullException" /> when the sequence is
-    /// <see langword="null" />.
+    /// Verifies that the enumerable constructor throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>items</c> when the sequence is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenItemsIsNull_ShouldThrowArgumentNullException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             _ = new TomlObject((IEnumerable<KeyValuePair<string, TomlNode?>>)null!);
-        });
+        }, "items");
     }
 
     /// <summary>
@@ -77,18 +79,33 @@ public class TomlObjectTests
     }
 
     /// <summary>
-    /// Verifies that the indexer setter throws <see cref="ArgumentNullException" /> when the key is
-    /// <see langword="null" />.
+    /// Verifies that the indexer setter throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>key</c> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenSetWithNullKey_ShouldThrowArgumentNullException()
     {
         var obj = new TomlObject();
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             obj[null!] = TomlValue.Create(1L);
-        });
+        }, "key");
+    }
+
+    /// <summary>
+    /// Verifies that the indexer getter throws <see cref="ArgumentNullException" /> with <c>ParamName</c>
+    /// <c>key</c> when the key is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenGetWithNullKey_ShouldThrowArgumentNullException()
+    {
+        var obj = new TomlObject();
+
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = obj[null!];
+        }, "key");
     }
 
     /// <summary>
@@ -161,18 +178,18 @@ public class TomlObjectTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlObject.Add(string, TomlNode?)" /> throws <see cref="ArgumentNullException" /> when
-    /// the key is <see langword="null" />.
+    /// Verifies that <see cref="TomlObject.Add(string, TomlNode?)" /> throws <see cref="ArgumentNullException" />
+    /// with <c>ParamName</c> <c>key</c> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         var obj = new TomlObject();
 
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             obj.Add(null!, TomlValue.Create(1L));
-        });
+        }, "key");
     }
 
     /// <summary>

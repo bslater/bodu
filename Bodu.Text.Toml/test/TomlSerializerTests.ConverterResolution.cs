@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Serialization;
 using Bodu.Text.Toml.Writer;
@@ -112,6 +113,19 @@ public partial class TomlSerializerTests
 
         // The first registered converter writes 5; the second would have written "code:5".
         Assert.AreEqual("Code = 5\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="TomlConverterAttribute" /> with a <see langword="null" /> converter
+    /// type throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>converterType</c>.
+    /// </summary>
+    [TestMethod]
+    public void TomlConverterAttribute_WhenConverterTypeNull_ShouldThrowArgumentNullException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = new TomlConverterAttribute(null!);
+        }, "converterType");
     }
 
     /// <summary>

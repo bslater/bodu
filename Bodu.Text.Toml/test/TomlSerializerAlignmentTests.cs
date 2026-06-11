@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Serialization;
 
@@ -58,12 +59,10 @@ public class TomlSerializerAlignmentTests
     {
         var options = new TomlSerializerOptions();
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             options.DefaultIgnoreCondition = TomlIgnoreCondition.Always;
-        });
-
-        Assert.AreEqual("value", ex.ParamName);
+        }, "value");
     }
 
     /// <summary>
@@ -167,15 +166,16 @@ public class TomlSerializerAlignmentTests
 
     /// <summary>
     /// Verifies that constructing <see cref="TomlSerializerOptions" /> with an undefined
-    /// <see cref="TomlSerializerDefaults" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="TomlSerializerDefaults" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>defaults</c>.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenDefaultsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = new TomlSerializerOptions((TomlSerializerDefaults)99);
-        });
+        }, "defaults");
     }
 
     /// <summary>

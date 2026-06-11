@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Writer;
 
 namespace Bodu.Text.Toml;
@@ -240,16 +241,14 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void WriteString_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             ArrayBufferWriter<byte> buffer = new();
             Utf8TomlWriter writer = new(buffer);
             writer.WriteStartTable();
             writer.WritePropertyName("v");
             writer.WriteString(null!);
-        });
-
-        Assert.AreEqual("value", ex.ParamName);
+        }, "value");
     }
 
     /// <summary>
@@ -258,14 +257,12 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void WritePropertyName_WhenNameIsNull_ShouldThrowArgumentNullException()
     {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
             ArrayBufferWriter<byte> buffer = new();
             Utf8TomlWriter writer = new(buffer);
             writer.WriteStartTable();
             writer.WritePropertyName(null!);
-        });
-
-        Assert.AreEqual("name", ex.ParamName);
+        }, "name");
     }
 }

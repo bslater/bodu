@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
 using Bodu.Text.Toml.Serialization;
 
@@ -127,15 +128,16 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that constructing <see cref="TomlNamingPolicyAttribute" /> with an undefined
-    /// <see cref="TomlKnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="TomlKnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>namingPolicy</c>.
     /// </summary>
     [TestMethod]
     public void TomlNamingPolicyAttribute_WhenKnownPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
             _ = new TomlNamingPolicyAttribute((TomlKnownNamingPolicy)99);
-        });
+        }, "namingPolicy");
     }
 
     /// <summary>

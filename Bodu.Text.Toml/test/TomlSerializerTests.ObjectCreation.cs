@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -138,6 +139,20 @@ public partial class TomlSerializerTests
 
         Assert.IsNotNull(model.Items);
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
+    }
+
+    /// <summary>
+    /// Verifies that constructing <see cref="TomlObjectCreationHandlingAttribute" /> with an undefined
+    /// <see cref="TomlObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <c>ParamName</c> <c>handling</c>.
+    /// </summary>
+    [TestMethod]
+    public void TomlObjectCreationHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new TomlObjectCreationHandlingAttribute((TomlObjectCreationHandling)99);
+        }, "handling");
     }
 
     /// <summary>
