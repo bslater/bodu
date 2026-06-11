@@ -292,6 +292,25 @@ parity, scoped against the real S.T.J sources:
   `WriteInteger(name, value)`, …, `WriteStartTable(name)`, `WriteStartArray(name)`) and
   char-span/UTF-8 overloads of `WritePropertyName`/`WriteString` (strict UTF-8 validation,
   `ArgumentException` on invalid bytes).
-- **Still deliberately absent** (tier 3): `ReadOnlySequence<byte>` input, resumable
-  `isFinalBlock`/reader-state continuation, and a streaming write model — the deferred tier
-  recorded in the assessment.
+- **Tier 3 (delivered in a final pass):**
+  - **Resumable reader.** `Utf8TomlReader` implements the `Utf8JsonReader` multi-block protocol:
+    `(ReadOnlySpan<byte>, bool isFinalBlock, TomlReaderState state)` constructors, `IsFinalBlock`,
+    `BytesConsumed`, and `CurrentState`. On a non-final block, `Read()` returns `false` instead of
+    throwing when the buffer ends mid-token and restores the reader to its pre-read snapshot, so
+    consumption is always whole-token; every end-of-buffer ambiguity is handled (split
+    CRLF/BOM/UTF-8 sequences, quote runs and empty-string-vs-multi-line delimiters at the
+    boundary, keyword/bare-token/date-time prefixes, potential line-ending backslashes).
+    `TomlReaderState` carries grammar context, container stack, and line/column counters, and its
+    `default` is the valid start state. `Skip` requires the final block (parity); `TrySkip`
+    restores and returns `false` on incomplete data. A torture document replayed through the
+    protocol at chunk sizes 1-64 produces token streams identical to the single pass.
+  - **`ReadOnlySequence<byte>` constructors** on both readers: a single-segment sequence is read
+    in place; a multi-segment sequence is copied once into a contiguous buffer - documented, and
+    `ValueSpan` is therefore always contiguous (no `HasValueSequence` analogue is needed). True
+    segment-walking without the copy remains future work; the resumable protocol is the
+    recommended path for very large inputs.
+  - **Writer streaming surface.** `Utf8TomlWriter(Stream[, TomlWriterOptions])`, `Flush`,
+    `Dispose` (enabling `using`), `Reset`, and `BytesCommitted`/`BytesPending`. Rendering still
+    happens when the root table closes (the canonical-layout constraint above); in stream mode
+    the rendered bytes are buffered and counted as pending until flushed. Async flushing is not
+    possible on a `ref struct` and is omitted.
