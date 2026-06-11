@@ -32,7 +32,9 @@ namespace Bodu.Text.Bencode.Writer;
 /// <para>
 /// Scalars and lists written outside any dictionary are emitted to the destination as they are written; bytes that
 /// belong to an open dictionary are held in that dictionary's buffer until it closes, because the canonical key order
-/// is only known at that point.
+/// is only known at that point. A consequence of streaming is that a write failing partway through a document leaves
+/// the bytes already emitted in the destination — discard the destination when any write throws, and assert
+/// <see cref="CurrentDepth" /> is zero before consuming it.
 /// </para>
 /// </remarks>
 public ref struct Utf8BencodeWriter
@@ -109,6 +111,18 @@ public ref struct Utf8BencodeWriter
         _allowMultipleRootValues = options.AllowMultipleRootValues;
         _root = new RootState();
     }
+
+    /// <summary>
+    /// Gets the current container nesting depth, mirroring <see cref="System.Text.Json.Utf8JsonWriter.CurrentDepth" />.
+    /// </summary>
+    /// <returns>The number of open containers, where zero means the writer is at the document root.</returns>
+    /// <remarks>
+    /// A document is complete only when the depth has returned to zero: an unclosed dictionary's bytes never reach the
+    /// destination, and an unclosed list leaves the output without its terminating <c>e</c>. Callers driving the writer
+    /// manually can assert this property is zero before consuming the destination.
+    /// </remarks>
+    public readonly int CurrentDepth =>
+        _frames.Count;
 
     /// <summary>
     /// Writes the start of a list.
@@ -196,17 +210,23 @@ public ref struct Utf8BencodeWriter
         _frames.RemoveAt(_frames.Count - 1);
         frame.Entries.Sort(static (left, right) => left.Key.AsSpan().SequenceCompareTo(right.Key));
 
-        IBufferWriter<byte> sink = frame.Sink;
-        ReadOnlySpan<byte> values = frame.Buffer.WrittenSpan;
-        sink.Write("d"u8);
+        // Validate before emitting: no byte may reach the sink until the dictionary is known to be canonical, so a
+        // duplicate-key failure cannot leak a partial document into the caller's destination. Equal keys are
+        // adjacent after the canonical sort, so a single neighbour comparison detects duplicates.
         byte[]? previousKey = null;
         foreach (DictionaryEntry entry in frame.Entries)
         {
-            // Equal keys are adjacent after the canonical sort, so a single neighbour comparison detects duplicates.
             if (previousKey is not null && previousKey.AsSpan().SequenceEqual(entry.Key))
                 throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterDuplicateDictionaryKey, Encoding.UTF8.GetString(entry.Key)));
 
             previousKey = entry.Key;
+        }
+
+        IBufferWriter<byte> sink = frame.Sink;
+        ReadOnlySpan<byte> values = frame.Buffer.WrittenSpan;
+        sink.Write("d"u8);
+        foreach (DictionaryEntry entry in frame.Entries)
+        {
             WriteByteStringTo(sink, entry.Key);
             sink.Write(values.Slice(entry.ValueStart, entry.ValueLength));
         }

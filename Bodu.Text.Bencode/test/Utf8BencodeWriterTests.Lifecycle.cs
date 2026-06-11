@@ -38,6 +38,58 @@ public partial class Utf8BencodeWriterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Utf8BencodeWriter.CurrentDepth" /> tracks container opens and closes, returning to
+    /// zero when the document completes — the completeness assertion available to manual writer callers.
+    /// </summary>
+    [TestMethod]
+    public void CurrentDepth_WhenContainersOpenAndClose_ShouldTrackNesting()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8BencodeWriter(buffer);
+
+        Assert.AreEqual(0, writer.CurrentDepth);
+
+        writer.WriteStartDictionary();
+        Assert.AreEqual(1, writer.CurrentDepth);
+
+        writer.WritePropertyName("a");
+        writer.WriteStartList();
+        Assert.AreEqual(2, writer.CurrentDepth);
+
+        writer.WriteInteger(1);
+        writer.WriteEndList();
+        Assert.AreEqual(1, writer.CurrentDepth);
+
+        writer.WriteEndDictionary();
+        Assert.AreEqual(0, writer.CurrentDepth);
+    }
+
+    /// <summary>
+    /// Verifies that a duplicate-key failure on a root dictionary leaves the destination untouched: validation must
+    /// complete before any byte of the dictionary is emitted, so a failed close does not leak a partial document.
+    /// </summary>
+    [TestMethod]
+    public void WriteEndDictionary_WhenDuplicateKeysAtRoot_ShouldEmitNothing()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+
+        _ = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            var writer = new Utf8BencodeWriter(buffer);
+            writer.WriteStartDictionary();
+            writer.WritePropertyName("a");
+            writer.WriteInteger(1);
+            writer.WritePropertyName("b");
+            writer.WriteInteger(2);
+            writer.WritePropertyName("b");
+            writer.WriteInteger(3);
+            writer.WriteEndDictionary();
+        });
+
+        Assert.AreEqual(0, buffer.WrittenCount);
+    }
+
+    /// <summary>
     /// Verifies that closing a dictionary whose duplicate keys are separated by another entry throws
     /// <see cref="BencodeSerializationException" />, confirming duplicates are detected after the canonical sort
     /// rather than only between adjacent writes.
