@@ -96,8 +96,6 @@
     <Project Path="Bodu.Extensions.Configuration.Text\src\Bodu.Extensions.Configuration.Text.csproj" />
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
-  <Project Path="bc-csharp\crypto\src\BouncyCastle.Crypto.csproj" />
   <Project Path="Bodu.Test\test\Bodu.Test.csproj" />
-  <Project Path="ConsoleApp2\ConsoleApp2.csproj" />
   <Project Path="docs\doc.csproj" />
 </Solution>
