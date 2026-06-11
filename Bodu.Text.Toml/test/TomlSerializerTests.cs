@@ -18,7 +18,7 @@ namespace Bodu.Text.Toml;
 /// null-member omission.
 /// </summary>
 [TestClass]
-public class TomlSerializerTests
+public partial class TomlSerializerTests
 {
     /// <summary>
     /// The UTF-8 encoding used to decode serializer output for assertions; it omits a byte-order mark.
