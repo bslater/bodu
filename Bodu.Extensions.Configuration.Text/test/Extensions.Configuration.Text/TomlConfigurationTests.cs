@@ -14,7 +14,7 @@ namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Behavioural tests for the read-only TOML configuration source — flattening into the colon-delimited key model,
-/// file and stream loading, the read-only contract, and the <see cref="TomlReader" /> inheritance relationship.
+/// file and stream loading, and the read-only contract.
 /// </summary>
 [TestClass]
 public sealed class TomlConfigurationTests
@@ -111,11 +111,11 @@ public sealed class TomlConfigurationTests
     }
 
     [TestMethod]
-    public void Provider_ShouldInheritTomlReader()
+    public void Provider_ShouldImplementConfigurationProvider()
     {
         var provider = new TomlConfigurationProvider(new TomlConfigurationSource());
 
-        Assert.IsInstanceOfType<TomlReader>(provider);
+        Assert.IsInstanceOfType<IConfigurationProvider>(provider);
     }
 
     [TestMethod]

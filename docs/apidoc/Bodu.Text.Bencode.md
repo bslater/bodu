@@ -6,61 +6,75 @@ uid: Bodu.Text.Bencode
 
 ## Purpose
 
-**Bodu.Text.Bencode** decodes and encodes the **Bencode** serialization grammar specified by [BEP 3](https://www.bittorrent.org/beps/bep_0003.html), the BitTorrent metadata format. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, and <xref:Bodu.Text.Toml>.
+**Bodu.Text.Bencode** is a self-contained [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html) serializer for .NET 8, shaped after [`System.Text.Json`](https://learn.microsoft.com/dotnet/api/system.text.json). It maps plain CLR objects to and from Bencode — the BitTorrent metadata format — through a configurable converter model, over a low-level, forward-only token reader and writer, with both a mutable and a read-only document object model.
 
-Bencode is exposed through the same shape used across the format family: a strongly-typed value tree, a static codec with `Encode` / `Decode` / `TryEncode` / `TryDecode` / `GetEncodedLength` over `ReadOnlySpan<byte>` / `byte[]` / `Stream`, and BEP 3 invariants that the encoder always honours and the parser always enforces. No reflection, no `dynamic`, no schema, no allocations beyond the immutable result graph.
+The public surface mirrors `System.Text.Json` member for member, so the patterns are familiar: a static <xref:Bodu.Text.Bencode.BencodeSerializer> (the `JsonSerializer` analogue), the <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> `ref struct` pair (the `Utf8JsonReader` / `Utf8JsonWriter` analogue), a mutable <xref:Bodu.Text.Bencode.Nodes.BencodeNode> DOM (the `JsonNode` analogue), and a read-only <xref:Bodu.Text.Bencode.Document.BencodeDocument> DOM (the `JsonDocument` analogue). The twin library <xref:Bodu.Text.Toml> applies the identical shape to TOML.
 
-For binary-to-text encodings (Base16 / Base32 / Base64 / Base58 / Base85) that operate on flat byte sequences without a structural grammar, see the companion <xref:Bodu.Text.Encoding> package.
+Output is always canonical Bencode: dictionary entries are emitted in ascending bytewise key order. For binary-to-text encodings (Base16 / Base32 / Base64 / Base58 / Base85) that operate on flat byte sequences without a structural grammar, see the companion <xref:Bodu.Text.Encoding> package.
 
 ## Static documentation
 
-- **[Bodu.Text.Formats introduction](~/docs/formats/index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Text.Formats core concepts](~/docs/formats/concepts.md)** — vocabulary: format vs codec, value vs document, framing tokens, canonical encoding, byte string vs text, format exception.
-- **[Bodu.Text.Formats getting started](~/docs/formats/getting-started.md)** — install and minimal samples for `Decode`, `Encode`, `Try*`, and the stream overloads.
-- **[Bodu.Text.Formats guides](~/guides/formats/index.md)** — Using Bencode, the `BencodedValue` model, streams and async I/O.
+- **[Bodu serializers introduction](~/docs/serialization/index.md)** — the two libraries, the three tiers, scenarios.
+- **[Core concepts](~/docs/serialization/concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam.
+- **[Getting started](~/docs/serialization/getting-started.md)** — install and the first round trip.
+- **[Using Bencode](~/guides/serialization/bencode.md)** — type mapping, canonical ordering, the DOMs, and unsupported kinds.
+- **[Writing converters](~/guides/serialization/converters.md)** — custom shapes with `BencodeConverter<T>`.
 
 ## Key types
 
-- <xref:Bodu.Text.Bencode.Bencode> — static codec. Exposes `Encode`, `Decode`, `TryEncode`, `TryDecode`, `GetEncodedLength`, plus synchronous and asynchronous `Stream` overloads. The recursive writer emits framing tokens and payload bytes into a destination span; the forward-only parser peeks the leading byte, dispatches on the matching value kind, and rebuilds the value tree under BEP 3 invariants.
-- <xref:Bodu.Text.Bencode.BencodedValue> — abstract base for every decoded value. Exposes `Kind` for switch-style dispatch.
-- <xref:Bodu.Text.Bencode.BencodedValueKind> — `Integer`, `String`, `List`, `Dictionary`.
-- <xref:Bodu.Text.Bencode.BencodedInteger> — signed 64-bit integer; rejects leading zeros, negative zero, and out-of-range overflow.
-- <xref:Bodu.Text.Bencode.BencodedString> — length-prefixed raw byte payload. `Bytes`, `Length`, `FromUtf8(string)`, `GetUtf8String()`.
-- <xref:Bodu.Text.Bencode.BencodedList> — ordered, possibly-nested list. Constructor rejects `null` elements.
-- <xref:Bodu.Text.Bencode.BencodedDictionary> — byte-string-keyed mapping. Keys are stored sorted by raw byte ordinal using <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal>; the constructor rejects `null` keys / values and duplicates. Indexer and `TryGetValue(BencodedString)` / `TryGetValue(string)` (UTF-8) look up by byte order.
-- <xref:Bodu.Text.Bencode.BencodedStringComparer> — singleton `Ordinal` comparer; implements both `IComparer<BencodedString>` and `IEqualityComparer<BencodedString>`.
-- <xref:Bodu.Text.Bencode.BencodeFormatException> — derives from <xref:System.FormatException>; thrown on any BEP 3 violation. The message identifies the exact failure mode.
-- <xref:Bodu.Text.Bencode.BencodeExtensions> — fluent extension methods that mirror the static codec on the value/byte types: `ParseBencode` / `TryParseBencode` (on `byte[]` / `ReadOnlySpan<byte>`) and `FormatBencode` / `TryFormatBencode` / `GetBencodedLength` (on <xref:Bodu.Text.Bencode.BencodedValue>).
+**Serializer (`Bodu.Text.Bencode`)**
+
+- <xref:Bodu.Text.Bencode.BencodeSerializer> — static façade. `Serialize` to `byte[]` / `IBufferWriter<byte>` / `Stream` and `Deserialize<T>` from `ReadOnlySpan<byte>` / `byte[]` / `Stream`, sync and async.
+- <xref:Bodu.Text.Bencode.BencodeSerializerOptions> — converters, naming policy, ignore conditions, depth, and `IncludeFields`; cached and frozen on first use. The `JsonSerializerOptions` analogue.
+- <xref:Bodu.Text.Bencode.BencodeSerializerDefaults> — the `General` / `Web` preset selector.
+- <xref:Bodu.Text.Bencode.BencodeNamingPolicy> — camel, snake, and kebab casing policies.
+- <xref:Bodu.Text.Bencode.BencodeTokenType>, <xref:Bodu.Text.Bencode.BencodeValueKind> — the token and value-kind enumerations.
+- <xref:Bodu.Text.Bencode.BencodeFormatException> — malformed bytes. <xref:Bodu.Text.Bencode.BencodeSerializationException> — binding failures.
+
+**Low-level reader / writer**
+
+- <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> (+ <xref:Bodu.Text.Bencode.Reader.BencodeReaderOptions>) — forward-only, allocation-free token reader; accepts only canonical BEP 3.
+- <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> (+ <xref:Bodu.Text.Bencode.Writer.BencodeWriterOptions>) — forward-only token writer; emits canonical Bencode.
+
+**Document object models**
+
+- <xref:Bodu.Text.Bencode.Nodes.BencodeNode> / <xref:Bodu.Text.Bencode.Nodes.BencodeObject> / <xref:Bodu.Text.Bencode.Nodes.BencodeArray> / <xref:Bodu.Text.Bencode.Nodes.BencodeValue> — the mutable, editable DOM. `JsonNode` analogue.
+- <xref:Bodu.Text.Bencode.Document.BencodeDocument> / <xref:Bodu.Text.Bencode.Document.BencodeElement> / <xref:Bodu.Text.Bencode.Document.BencodeProperty> — the read-only, low-allocation DOM. `JsonDocument` analogue.
+
+**Converters and attributes (`Bodu.Text.Bencode.Serialization`)**
+
+- <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> / <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> — the `JsonConverter<T>` / `JsonConverterFactory` analogues.
+- <xref:Bodu.Text.Bencode.Serialization.BencodePropertyNameAttribute>, <xref:Bodu.Text.Bencode.Serialization.BencodeIgnoreAttribute>, <xref:Bodu.Text.Bencode.Serialization.BencodeConverterAttribute>, and the rest of the attribute family (`PropertyOrder`, `Constructor`, `Required`, `Include`, `ExtensionData`, `NamingPolicy`, `UnmappedMemberHandling`, `ObjectCreationHandling`, `StringEnumMemberName`).
+- <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerialized>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserialized> — the serialization callbacks.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter>, <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1> — the built-in enum converters.
 
 ## Example
 
 ```csharp
 using Bodu.Text.Bencode;
 
-byte[] payload = File.ReadAllBytes("ubuntu.iso.torrent");
+public sealed class TorrentInfo
+{
+    public string Name { get; set; } = "";
+    public long Length { get; set; }
+}
 
-BencodedValue root = Bencode.Parse(payload);
-BencodedDictionary doc = (BencodedDictionary)root;
+byte[] payload = BencodeSerializer.Serialize(new TorrentInfo { Name = "ubuntu.iso", Length = 1024 });
+// d6:Lengthi1024e4:Name10:ubuntu.isoe   (dictionary keys in canonical order)
 
-string tracker = ((BencodedString)doc["announce"]).GetUtf8String();
-BencodedDictionary info = (BencodedDictionary)doc["info"];
-string name = ((BencodedString)info["name"]).GetUtf8String();
-long pieceLength = ((BencodedInteger)info["piece length"]).Value;
+TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 
-// Pre-size and re-emit canonically.
-int size = Bencode.GetFormattedLength(doc);
-byte[] reEncoded = new byte[size];
-Bencode.TryFormat(doc, reEncoded, out int written);
-Debug.Assert(written == size);
+// Edit a document without a model:
+using Bodu.Text.Bencode.Nodes;
+BencodeNode node = BencodeNode.Parse(payload)!;
+byte[] back = node.ToByteArray();
 ```
 
 ## Notes
 
-- **Canonical encoding.** Bencode has exactly one canonical encoding for any value — integers use the shortest decimal representation with no padding and no `+` sign; byte-string lengths use the shortest decimal representation; dictionary keys are sorted by raw byte order; no whitespace is permitted anywhere. The encoder always produces canonical output; the parser rejects every non-canonical input. This rejection is intentional — equivalence between two encodings would break content-addressed identifiers (the SHA-1 of a torrent's `info` dictionary, the *infohash*).
-- **BEP 3 strictness.** Leading zeros, negative zero, unsorted or duplicate dictionary keys, missing terminators, and trailing data all surface as <xref:Bodu.Text.Bencode.BencodeFormatException>. The exception message identifies the exact failure mode (e.g. *Bencoded dictionary keys must be unique and sorted by raw byte order*). `TryDecode` and `TryEncode` swap these exceptions for `bool` results.
-- **Byte string vs text.** Bencoded strings are raw bytes, not characters. Treating them as text is a per-field decision driven by the consuming format — `info.name` in a torrent is UTF-8, `info.pieces` is a concatenation of 20-byte SHA-1 hashes. <xref:Bodu.Text.Bencode.BencodedString.GetUtf8String> projects when the field is known to be text; <xref:Bodu.Text.Bencode.BencodedString.FromUtf8(System.String)> goes the other way.
-- **Stream buffering.** `Bencode.Parse(Stream)` and `ParseAsync(Stream)` buffer the entire stream into a pooled `MemoryStream` before parsing — Bencode is not a streaming format because framing tokens can be arbitrarily far apart and the parser must consume them in order. The pooled buffer is sized to the stream length where available and released back to <xref:System.Buffers.ArrayPool`1> before the parser runs. Stream encoding writes in a single `Write` / `WriteAsync` call sized to `GetFormattedLength`.
-- **Immutable value tree.** Every <xref:Bodu.Text.Bencode.BencodedValue> subclass is immutable from the consumer's perspective — `BencodedDictionary` keys arrive sorted, `BencodedList` items are stored in their construction order, `BencodedString.Bytes` is exposed as a read-only span. Deep equality between two trees is something the consumer composes — `BencodedString.Equals` and `BencodedInteger.Equals` give per-leaf equality, the container types do not.
-- **Ordering and equality.** Dictionary keys are ordered and compared by raw byte ordinal — never by Unicode collation, locale, or codepoint. <xref:Bodu.Text.Bencode.BencodedStringComparer.Ordinal> is the singleton comparer used internally; surface it directly when building your own `SortedDictionary` keyed by bencoded values.
-- **Determinism.** All encode and decode operations produce identical output across platforms and architectures for the same input. There is no random seed, no thread-local state, and no culture-sensitive code path.
-- **See also:** the [introduction](~/docs/formats/index.md), [core concepts](~/docs/formats/concepts.md), and [getting-started](~/docs/formats/getting-started.md); the [Bencode](~/guides/formats/bencode.md), [value-model](~/guides/formats/value-model.md), and [streaming](~/guides/formats/streaming.md) guides.
+- **`System.Text.Json` alignment.** Every concept maps onto a BCL JSON counterpart with the `Json` prefix swapped for `Bencode`. The converter, attribute, callback, naming-policy, and enum-converter surfaces are all present.
+- **Self-contained.** The library has no shared engine dependency — everything the serializer needs lives in this assembly. Its twin, <xref:Bodu.Text.Toml>, mirrors it type for type for TOML.
+- **Canonical output.** Bencode has exactly one canonical encoding for any value: integers use the shortest decimal representation with no padding and no `+` sign; dictionary keys are sorted by raw byte order; no whitespace is permitted. The serializer always produces canonical output, and the reader rejects every non-canonical input.
+- **Value mapping.** Strings and `byte[]` map to byte strings, the integer family — spanning the full `long.MinValue` through `ulong.MaxValue` range — to `i…e`, and enums to member-name byte strings. Collections (arrays, lists, sets, queues, stacks, and the concurrent collections) map to lists, with `Stack<T>` round-trips reversing per the `System.Text.Json` semantics. Dictionaries map to canonical dictionaries; keys may be strings, integers, enums, `Guid`, `bool`, or `char`, stringified on the wire. Types with no canonical Bencode form — Booleans, floating-point, and date-times — require a registered <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>; a `null` member is omitted on write. Public fields participate via `IncludeFields` or `[BencodeInclude]`.
+- **Errors.** Malformed bytes surface through <xref:Bodu.Text.Bencode.BencodeFormatException>; binding failures through <xref:Bodu.Text.Bencode.BencodeSerializationException>.
+- **See also:** the [introduction](~/docs/serialization/index.md), [core concepts](~/docs/serialization/concepts.md), and [getting-started](~/docs/serialization/getting-started.md); the [Using Bencode](~/guides/serialization/bencode.md) and [writing converters](~/guides/serialization/converters.md) guides; and the twin [TOML](xref:Bodu.Text.Toml) library.

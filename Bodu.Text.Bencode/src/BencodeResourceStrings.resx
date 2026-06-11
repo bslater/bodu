@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Format_Invalid_BencodeIntegerOutOfRange" xml:space="preserve"><value>The bencoded integer is outside the supported Int64 range.</value></data>
+  <data name="Format_Invalid_BencodeInvalidInteger" xml:space="preserve"><value>Invalid bencoded integer.</value></data>
+  <data name="Format_Invalid_BencodeLeadingZerosInteger" xml:space="preserve"><value>Bencoded integers cannot contain leading zeros.</value></data>
+  <data name="Format_Invalid_BencodeNegativeZeroInteger" xml:space="preserve"><value>Negative zero is not a valid bencoded integer.</value></data>
+  <data name="Format_Invalid_BencodeNestingTooDeep" xml:space="preserve"><value>Bencoded value nesting exceeds the maximum permitted depth of {0}.</value></data>
+  <data name="Format_Invalid_BencodeNonStringDictionaryKey" xml:space="preserve"><value>Bencoded dictionary keys must be byte strings.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthExceedsInput" xml:space="preserve"><value>The bencoded string length exceeds the available input.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthLeadingZeros" xml:space="preserve"><value>Bencoded string lengths cannot contain leading zeros.</value></data>
+  <data name="Format_Invalid_BencodeStringLengthTooLarge" xml:space="preserve"><value>The bencoded string length exceeds Int32.MaxValue.</value></data>
+  <data name="Format_Invalid_BencodeStringMissingSeparator" xml:space="preserve"><value>Expected ':' after bencoded string length.</value></data>
+  <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve"><value>The bencoded value contains trailing data.</value></data>
+  <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve"><value>Unexpected end of bencoded data.</value></data>
+  <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve"><value>Unexpected bencode token '{0}' at offset {1}.</value></data>
+  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value></data>
+  <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve"><value>Unterminated bencoded dictionary.</value></data>
+  <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve"><value>Unterminated bencoded integer.</value></data>
+  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>
+  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve"><value>Stream does not support writing.</value></data>
+  <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a BencodeConverter.</value></data>
+  <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
+  <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>BencodeIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>
+  <data name="Op_Invalid_UnexpectedEndOfInput" xml:space="preserve"><value>Unexpected end of input while reading a value of type '{0}'.</value></data>
+  <data name="Op_Invalid_MissingRequiredMember" xml:space="preserve"><value>Required member '{0}' was not present in the input for type '{1}'.</value></data>
+  <data name="Op_Invalid_DuplicateProperty" xml:space="preserve"><value>The property '{0}' appears more than once.</value></data>
+  <data name="Op_Invalid_EnumValueNotFound" xml:space="preserve"><value>'{0}' is not a defined value of enumeration '{1}'.</value></data>
+  <data name="Op_Invalid_IntegerOverflow" xml:space="preserve"><value>The value {0} is outside the representable range of type '{1}'.</value></data>
+  <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
+  <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be modified after they have been used to serialize or deserialize a value.</value></data>
+  <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Op_Invalid_ExpectedDictionary" xml:space="preserve"><value>Expected the start of a dictionary but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedList" xml:space="preserve"><value>Expected the start of a list but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedByteString" xml:space="preserve"><value>Expected a byte string but found '{0}'.</value></data>
+  <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>
+  <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
+  <data name="Op_NotSupported_Deserialize" xml:space="preserve"><value>Type '{0}' cannot be deserialized because it cannot be instantiated.</value></data>
+  <data name="Op_NotSupported_NullCollectionElement" xml:space="preserve"><value>A null collection element cannot be written to Bencode.</value></data>
+  <data name="Op_NotSupported_NullNode" xml:space="preserve"><value>A null node cannot be written to Bencode.</value></data>
+  <data name="Op_Invalid_NodeNotObject" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a Bencode object.</value></data>
+  <data name="Op_Invalid_NodeNotArray" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a Bencode array.</value></data>
+  <data name="Op_Invalid_NodeNotValue" xml:space="preserve"><value>The node is a '{0}' and cannot be used as a Bencode value.</value></data>
+  <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve"><value>The node already has a parent.</value></data>
+  <data name="Op_Invalid_NodeValueConversion" xml:space="preserve"><value>A Bencode value of kind '{1}' cannot be converted to type '{0}'.</value></data>
+  <data name="Op_Invalid_ElementKindMismatch" xml:space="preserve"><value>This operation requires a {0} element, but the element is a {1} element.</value></data>
+  <data name="Op_Invalid_ExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' on type '{1}' must be a BencodeObject or IDictionary&lt;string, BencodeNode?&gt;.</value></data>
+  <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
+  <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
+  <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The Bencode document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
+  <data name="Format_Invalid_BencodeIntegerNegativeUnsigned" xml:space="preserve"><value>The bencoded integer is negative and cannot be read as UInt64.</value></data>
+  <data name="Op_Invalid_DictionaryKeyParse" xml:space="preserve"><value>The dictionary key '{0}' cannot be converted to type '{1}'.</value></data>
+</root>

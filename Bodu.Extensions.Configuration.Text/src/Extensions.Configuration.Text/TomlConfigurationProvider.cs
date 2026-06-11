@@ -14,22 +14,20 @@ using Microsoft.Extensions.Primitives;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// A read-only <see cref="IConfigurationProvider" /> that consumes TOML by inheriting <see cref="TomlReader" />. The
-/// inherited read capability deserializes the source into a <see cref="TomlTable" />, which is then flattened into the
-/// colon-delimited configuration key model. Because the provider exposes no mutation surface, <see cref="Set" /> is
-/// rejected.
+/// A read-only <see cref="IConfigurationProvider" /> that consumes TOML through the <c>Bodu.Text.Toml</c> read-only
+/// document model and flattens it into the colon-delimited configuration key model. Because the provider exposes no
+/// mutation surface, <see cref="Set" /> is rejected.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider deliberately derives from <see cref="TomlReader" /> rather than from
-/// <see cref="Microsoft.Extensions.Configuration.ConfigurationProvider" />: the read/write split keeps the
+/// The provider implements <see cref="IConfigurationProvider" /> directly rather than deriving from
+/// <see cref="Microsoft.Extensions.Configuration.ConfigurationProvider" />: omitting the mutable base keeps the
 /// configuration bridge on the read-only half of the contract, so configuration loaded from TOML cannot be mutated back
 /// through the provider.
 /// </para>
 /// </remarks>
 public sealed class TomlConfigurationProvider
-    : TomlReader
-    , IConfigurationProvider
+    : IConfigurationProvider
 {
     /// <summary>
     /// The source that produced this provider.
@@ -70,7 +68,7 @@ public sealed class TomlConfigurationProvider
     {
         if (_source.Stream is { } stream)
         {
-            _data = TomlConfigurationParser.Flatten(Read(stream));
+            _data = TomlConfigurationParser.Parse(stream);
             return;
         }
 
@@ -88,7 +86,7 @@ public sealed class TomlConfigurationProvider
             }
 
             using FileStream file = File.OpenRead(path);
-            _data = TomlConfigurationParser.Flatten(Read(file));
+            _data = TomlConfigurationParser.Parse(file);
             return;
         }
 

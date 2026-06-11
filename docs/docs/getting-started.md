@@ -153,25 +153,47 @@ For lenient parsing (whitespace, `0x` prefix, missing padding), `OperationStatus
 
 ## Bodu.Text.Formats
 
-**Bodu.Text.Formats** parses and emits self-framing serialization formats — Bencode, Delimited (CSV / TSV), Ini, and DotEnv — each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
+**Bodu.Text.Formats** parses and emits self-framing serialization formats — Delimited (CSV / TSV), DotEnv, and Ini — each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
 
 ```csharp
-using Bodu.Text.Bencode;
+using Bodu.Text.Ini;
 
-byte[] payload = File.ReadAllBytes("ubuntu.iso.torrent");
+IniDocument config = Ini.Parse("""
+    ; connection settings
+    [database]
+    host = localhost
+    port = 5432
+    """);
 
-BencodedValue root = Bencode.Parse(payload);
-BencodedDictionary doc = (BencodedDictionary)root;
+config.GetOrAddSection("database").SetEntry("port", "5433");
 
-string tracker = ((BencodedString)doc["announce"]).GetUtf8String();
-BencodedDictionary info = (BencodedDictionary)doc["info"];
-string name = ((BencodedString)info["name"]).GetUtf8String();
-long pieceLength = ((BencodedInteger)info["piece length"]).Value;
+string text = Ini.Format(config);   // comments, ordering, and whitespace preserved
 ```
 
-The parser enforces every BEP 3 invariant — no leading zeros, no negative zero, dictionary keys sorted by raw byte order, no trailing bytes — so a successful decode round-trips bit-exactly through `Bencode.Format`. The Delimited, Ini, and DotEnv namespaces follow the same shape.
+The parsed model retains comments, ordering, and whitespace, so a `Parse` → mutate → `Format` cycle round-trips the source. The Delimited and DotEnv namespaces follow the same `Parse` / `Format` shape.
 
 → **[Introduction](formats/index.md)** · **[Getting started](formats/getting-started.md)** · **[Guides](../guides/formats/index.md)**
+
+## Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
+
+**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained, `System.Text.Json`-shaped libraries that map your own types to and from a format. They are deliberate twins — the same shape, member for member — and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
+
+```csharp
+using Bodu.Text.Toml;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = "";
+    public int Port { get; set; }
+}
+
+string toml = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
+ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(toml);
+```
+
+Swap `Toml` for `Bencode` (and `string` for `byte[]`) for the Bencode equivalent. Bencode (BEP 3) object mapping lives here, not in `Bodu.Text.Formats`.
+
+→ **[Introduction](serialization/index.md)** · **[Getting started](serialization/getting-started.md)** · **[Guides](../guides/serialization/index.md)**
 
 ## Bodu.Text.Configuration
 

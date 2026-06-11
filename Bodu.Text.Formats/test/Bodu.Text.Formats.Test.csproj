@@ -26,16 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-valid.json" />
-    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-invalid.json" />
-    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.0.0.txt" />
-    <EmbeddedResource Include="Text.Toml\Conformance\toml-test-files-1.1.0.txt" />
-    <EmbeddedResource Include="Text.Toml\Conformance\bodu-toml10-valid.json" />
-    <EmbeddedResource Include="Text.Toml\Conformance\bodu-toml10-invalid.json" />
-    <EmbeddedResource Include="Text.Toml\Conformance\encoding\*.toml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\..\Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
     <ProjectReference Include="..\src\Bodu.Text.Formats.csproj" />

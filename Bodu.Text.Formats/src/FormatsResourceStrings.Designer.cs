@@ -60,23 +60,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
-        /// </summary>
-        internal static string Arg_Invalid_DuplicateDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The table already contains the key '{0}'..
-        /// </summary>
-        internal static string Arg_Invalid_TomlDuplicateKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_TomlDuplicateKey", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to DotEnv comment prefix must be '#'..
@@ -141,23 +124,7 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain null keys..
-        /// </summary>
-        internal static string Arg_Invalid_NullDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullDictionaryKey", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain null values..
-        /// </summary>
-        internal static string Arg_Invalid_NullDictionaryValue {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_NullDictionaryValue", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The list cannot contain null values..
@@ -186,176 +153,24 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported bencoded value type..
-        /// </summary>
-        internal static string Arg_OutOfRange_UnsupportedBencodedValueType {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_UnsupportedBencodedValueType", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
-        /// </summary>
-        internal static string Format_Invalid_BencodeIntegerOutOfRange {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeIntegerOutOfRange", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid bencoded integer..
-        /// </summary>
-        internal static string Format_Invalid_BencodeInvalidInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeInvalidInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded integers cannot contain leading zeros..
-        /// </summary>
-        internal static string Format_Invalid_BencodeLeadingZerosInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeLeadingZerosInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Negative zero is not a valid bencoded integer..
-        /// </summary>
-        internal static string Format_Invalid_BencodeNegativeZeroInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeNegativeZeroInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded dictionary keys must be byte strings..
-        /// </summary>
-        internal static string Format_Invalid_BencodeNonStringDictionaryKey {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeNonStringDictionaryKey", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded string length exceeds the available input..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthExceedsInput {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExceedsInput", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a bencoded string length..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthExpected {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExpected", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded string lengths cannot contain leading zeros..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthLeadingZeros {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthLeadingZeros", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded string length exceeds Int32.MaxValue..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringLengthTooLarge {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthTooLarge", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Expected ':' after bencoded string length..
-        /// </summary>
-        internal static string Format_Invalid_BencodeStringMissingSeparator {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeStringMissingSeparator", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The bencoded value contains trailing data..
-        /// </summary>
-        internal static string Format_Invalid_BencodeTrailingData {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeTrailingData", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected end of bencoded data..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnexpectedEndOfData {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnexpectedEndOfData", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected bencode token '{0}' at offset {1}..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnexpectedToken {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnexpectedToken", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded dictionary keys must be unique and sorted by raw byte order..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnorderedDictionaryKeys {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnorderedDictionaryKeys", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Bencoded value nesting exceeds the maximum permitted depth of {0}..
-        /// </summary>
-        internal static string Format_Invalid_BencodeNestingTooDeep {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeNestingTooDeep", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded dictionary..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedDictionary {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedDictionary", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded integer..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedInteger {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedInteger", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated bencoded list..
-        /// </summary>
-        internal static string Format_Invalid_BencodeUnterminatedList {
-            get {
-                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedList", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Duplicate header &apos;{0}&apos; on line {1}..
@@ -484,240 +299,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Cannot append a table to a statically defined array..
-        /// </summary>
-        internal static string Format_Invalid_TomlAppendToStaticArray {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlAppendToStaticArray", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The key conflicts with an existing array of tables..
-        /// </summary>
-        internal static string Format_Invalid_TomlArrayTableConflict {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlArrayTableConflict", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to A control character is not permitted in this context..
-        /// </summary>
-        internal static string Format_Invalid_TomlControlCharacter {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlControlCharacter", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The key is already defined..
-        /// </summary>
-        internal static string Format_Invalid_TomlDuplicateKey {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlDuplicateKey", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The table is already defined..
-        /// </summary>
-        internal static string Format_Invalid_TomlDuplicateTable {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlDuplicateTable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Expected an equals sign after the key..
-        /// </summary>
-        internal static string Format_Invalid_TomlExpectedEquals {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlExpectedEquals", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a key..
-        /// </summary>
-        internal static string Format_Invalid_TomlExpectedKey {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlExpectedKey", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a newline or end of file after the expression..
-        /// </summary>
-        internal static string Format_Invalid_TomlExpectedNewline {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlExpectedNewline", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a value..
-        /// </summary>
-        internal static string Format_Invalid_TomlExpectedValue {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlExpectedValue", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot extend an inline table after it has been defined..
-        /// </summary>
-        internal static string Format_Invalid_TomlExtendInlineTable {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlExtendInlineTable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The integer value is outside the range of a 64-bit signed integer..
-        /// </summary>
-        internal static string Format_Invalid_TomlIntegerOutOfRange {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlIntegerOutOfRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a comma or closing bracket in the array..
-        /// </summary>
-        internal static string Format_Invalid_TomlInvalidArray {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInvalidArray", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The date-time value is not valid..
-        /// </summary>
-        internal static string Format_Invalid_TomlInvalidDateTime {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInvalidDateTime", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The escape sequence is not valid..
-        /// </summary>
-        internal static string Format_Invalid_TomlInvalidEscape {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInvalidEscape", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Expected a comma or closing brace in the inline table..
-        /// </summary>
-        internal static string Format_Invalid_TomlInvalidInlineTable {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInvalidInlineTable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The numeric value is not valid..
-        /// </summary>
-        internal static string Format_Invalid_TomlInvalidNumber {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInvalidNumber", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to A trailing comma is not permitted in an inline table..
-        /// </summary>
-        internal static string Format_Invalid_TomlInlineTableTrailingComma {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInlineTableTrailingComma", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The input does not contain valid UTF-8 text..
-        /// </summary>
-        internal static string Format_Invalid_TomlInvalidUtf8 {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlInvalidUtf8", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Leap seconds are not supported..
-        /// </summary>
-        internal static string Format_Invalid_TomlLeapSecond {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlLeapSecond", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to A time value must include seconds..
-        /// </summary>
-        internal static string Format_Invalid_TomlSecondsRequired {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlSecondsRequired", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot define a dotted key under a value that is not a table..
-        /// </summary>
-        internal static string Format_Invalid_TomlKeyOnValue {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlKeyOnValue", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to A multi-line string cannot be used as a key..
-        /// </summary>
-        internal static string Format_Invalid_TomlMultilineKey {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlMultilineKey", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The input contains an unpaired surrogate and is not valid UTF-8 text..
-        /// </summary>
-        internal static string Format_Invalid_TomlUnpairedSurrogate {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlUnpairedSurrogate", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The string is not terminated..
-        /// </summary>
-        internal static string Format_Invalid_TomlUnterminatedString {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlUnterminatedString", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The table header is not terminated..
-        /// </summary>
-        internal static string Format_Invalid_TomlUnterminatedTable {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlUnterminatedTable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected character &apos;{0}&apos;..
-        /// </summary>
-        internal static string Format_Invalid_TomlUnexpectedCharacter {
-            get {
-                return ResourceManager.GetString("Format_Invalid_TomlUnexpectedCharacter", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The column header '{0}' was not found..
         /// </summary>
         internal static string Op_Invalid_DelimitedHeaderNotFound {
@@ -753,49 +334,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The integer value could not be formatted..
-        /// </summary>
-        internal static string Op_Invalid_IntegerFormatFailed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_IntegerFormatFailed", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The string length could not be formatted..
-        /// </summary>
-        internal static string Op_Invalid_StringLengthFormatFailed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_StringLengthFormatFailed", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The document graph contains a cycle at &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_TomlCycle {
-            get {
-                return ResourceManager.GetString("Op_Invalid_TomlCycle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to A key or string value contains an unpaired surrogate and cannot be encoded as UTF-8..
-        /// </summary>
-        internal static string Op_Invalid_TomlUnpairedSurrogate {
-            get {
-                return ResourceManager.GetString("Op_Invalid_TomlUnpairedSurrogate", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The TOML value type is not supported by the writer..
-        /// </summary>
-        internal static string Op_NotSupported_TomlValueKind {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_TomlValueKind", resourceCulture);
-            }
-        }
     }
 }

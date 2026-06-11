@@ -6,7 +6,7 @@ title: Using DotEnv
 
 `DotEnv` is the static codec for the de-facto `.env` file format — `KEY=VALUE` lines with optional `export` prefix, single-quoted or double-quoted values, and full-line comments. The dialect matches what dotenv libraries, Foreman, Docker Compose, and similar tools accept on the wire.
 
-The surface mirrors the [Bencode codec](bencode.md): `Parse` / `TryParse` / `Format` over spans and the document model. Unlike Delimited, there is no streaming reader / writer — `.env` files are not large enough to warrant one.
+It exposes the package's common codec shape: `Parse` / `TryParse` / `Format` over spans and the document model. Unlike Delimited, there is no streaming reader / writer — `.env` files are not large enough to warrant one.
 
 For the vocabulary used below (document, entry, comment, parse options) see [Core concepts](../../docs/formats/concepts.md).
 
@@ -154,6 +154,6 @@ string output      = doc.FormatDotEnv();
 
 ## See also
 
-- [Bencode](bencode.md), [Delimited](delimited.md), [INI](ini.md) — the other formats in the package.
+- [Delimited](delimited.md), [INI](ini.md) — the other formats in the package.
 - [`Bodu.Text.DotEnv` API reference](xref:Bodu.Text.DotEnv)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for hierarchical key / value configuration with sections.

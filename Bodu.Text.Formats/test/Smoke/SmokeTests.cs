@@ -1,11 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
-using Bodu.Text.Bencode;
 using Bodu.Text.Delimited;
 using Bodu.Text.DotEnv;
 using Bodu.Text.Ini;
@@ -19,102 +18,6 @@ namespace Bodu.Smoke;
 [TestClass]
 public sealed class SmokeTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Parse(ReadOnlySpan{byte})" /> and
-    /// <see cref="Bencode.Format(BencodedValue)" /> round-trip the canonical BEP 3 string example.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void Bencode_DecodeEncode_ShouldRoundTripBep3StringExample()
-    {
-        var encoded = System.Text.Encoding.ASCII.GetBytes("4:spam");
-
-        BencodedValue decoded = Bencode.Parse(encoded);
-        var reencoded = Bencode.Format(decoded);
-
-        Assert.AreEqual("spam", ((BencodedString)decoded).GetUtf8String());
-        CollectionAssert.AreEqual(encoded, reencoded);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedDictionary" /> constructs with two pairs and enumerates them in sorted
-    /// raw-byte-string key order.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedDictionary_Construct_ShouldExposeOrderedItems()
-    {
-        BencodedDictionary dict = new(
-        [
-            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
-            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
-        ]);
-
-        var orderedKeys = dict.GetOrderedItems()
-            .Select(pair => pair.Key.GetUtf8String())
-            .ToArray();
-
-        CollectionAssert.AreEqual(new[] { "cow", "spam" }, orderedKeys);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedInteger" /> constructs successfully and exposes the supplied value with
-    /// <see cref="BencodedValueKind.Integer" />.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedInteger_Construct_ShouldExposeValueAndKind()
-    {
-        BencodedInteger integer = new(42);
-
-        Assert.AreEqual(42, integer.Value);
-        Assert.AreEqual(BencodedValueKind.Integer, integer.Kind);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedList" /> constructs with two values and exposes
-    /// <see cref="BencodedList.Count" /> equal to two.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedList_Construct_ShouldExposeItems()
-    {
-        BencodedList list = new(
-        [
-            BencodedString.FromUtf8("spam"),
-            new BencodedInteger(42),
-        ]);
-
-        Assert.AreEqual(2, list.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> followed by
-    /// <see cref="BencodedString.GetUtf8String" /> round-trips text content.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedString_FromUtf8_ShouldRoundTripText()
-    {
-        var value = BencodedString.FromUtf8("hello");
-
-        Assert.AreEqual("hello", value.GetUtf8String());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedStringComparer.Ordinal" /> compares byte sequences by raw byte order.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedStringComparer_OrdinalCompare_ShouldOrderByRawBytes()
-    {
-        BencodedString a = new([0xAA]);
-        BencodedString b = new([0xAA, 0xBB]);
-
-        Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
-    }
-
     /// <summary>
     /// Verifies that <see cref="Delimited.Parse(ReadOnlySpan{char})" /> and
     /// <see cref="Delimited.Format(DelimitedDocument)" /> round-trip a simple CSV document — headers and all field
@@ -176,5 +79,4 @@ public sealed class SmokeTests
         Assert.AreEqual("localhost", server["host"]);
         Assert.AreEqual("8080", server["port"]);
     }
-
 }

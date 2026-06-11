@@ -9,7 +9,7 @@ uid: Bodu.Text
 The **Bodu.Text** namespace serves two complementary roles:
 
 - It is the home of the **`Bodu.Text` library** — allocation-conscious helpers for the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. (These are distinct from the binary-to-text *radix* encodings, which live in [`Bodu.Text.Encoding`](Bodu.Text.Encoding.md).)
-- It also holds the **shared base exception** for the document-format codecs in [`Bodu.Text.Formats`](Bodu.Text.Bencode.md), so callers can catch any format-level parse failure — Bencode, delimited (CSV/TSV), DotEnv, INI, or TOML — through a single common type while each codec still throws its own precise subtype.
+- It also holds the **shared base exception** for the document-format codecs in [`Bodu.Text.Formats`](~/docs/formats/index.md), so callers can catch any format-level parse failure — delimited (CSV/TSV), DotEnv, or INI — through a single common type while each codec still throws its own precise subtype.
 
 ## Static documentation
 
@@ -26,7 +26,7 @@ The **Bodu.Text** namespace serves two complementary roles:
 
 **Document-format exceptions**
 
-- <xref:Bodu.Text.TextFormatException> — the abstract base for every format-specific parse exception in the formats library. Concrete subtypes include <xref:Bodu.Text.Bencode.BencodeFormatException>, <xref:Bodu.Text.Delimited.DelimitedFormatException>, <xref:Bodu.Text.DotEnv.DotEnvFormatException>, <xref:Bodu.Text.Ini.IniFormatException>, and <xref:Bodu.Text.Toml.TomlFormatException>.
+- <xref:Bodu.Text.TextFormatException> — the abstract base for every format-specific parse exception in the formats library. Concrete subtypes are <xref:Bodu.Text.Delimited.DelimitedFormatException>, <xref:Bodu.Text.DotEnv.DotEnvFormatException>, and <xref:Bodu.Text.Ini.IniFormatException>.
 
 ## Example
 
@@ -48,4 +48,4 @@ catch (TextFormatException ex)
 ## Notes
 
 - **Catch broad or narrow.** Catch <xref:Bodu.Text.TextFormatException> to handle any document-format failure uniformly, or the concrete subtype when you need format-specific detail.
-- **See also:** the per-format guides — [Bencode](~/guides/formats/bencode.md), [delimited](~/guides/formats/delimited.md), [DotEnv](~/guides/formats/dotenv.md), [INI](~/guides/formats/ini.md), [TOML](~/guides/formats/toml.md).
+- **See also:** the per-format guides — [delimited](~/guides/formats/delimited.md), [DotEnv](~/guides/formats/dotenv.md), [INI](~/guides/formats/ini.md).

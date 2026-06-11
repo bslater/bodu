@@ -86,6 +86,11 @@ public readonly partial struct Fraction<T>
     private static readonly BigInteger s_maxBackingBig;
 
     /// <summary>
+    /// The canonical denominator backing <see cref="Denominator" />, or zero for a default-initialized instance.
+    /// </summary>
+    private readonly T _denominator;
+
+    /// <summary>
     /// Initializes static members of the <see cref="Fraction{T}" /> struct.
     /// </summary>
     static Fraction()
@@ -106,7 +111,7 @@ public readonly partial struct Fraction<T>
     public Fraction(T value)
     {
         Numerator = value;
-        Denominator = T.One;
+        _denominator = T.One;
     }
 
     /// <summary>
@@ -140,7 +145,7 @@ public readonly partial struct Fraction<T>
         }
 
         Numerator = T.CreateChecked(n);
-        Denominator = T.CreateChecked(d);
+        _denominator = T.CreateChecked(d);
     }
 
     /// <summary>
@@ -156,7 +161,7 @@ public readonly partial struct Fraction<T>
     {
         _ = canonical;
         Numerator = numerator;
-        Denominator = denominator;
+        _denominator = denominator;
     }
 
     /// <summary>
@@ -232,7 +237,7 @@ public readonly partial struct Fraction<T>
     /// as the rational value zero.
     /// </value>
     public T Denominator =>
-        T.IsZero(field) ? T.One : field;
+        T.IsZero(_denominator) ? T.One : _denominator;
 
     /// <summary>
     /// Gets the sign of the rational value.

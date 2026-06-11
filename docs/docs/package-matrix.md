@@ -18,9 +18,8 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Calendar runtime** | `Bodu.Globalization.Calendar` | Stable | `Bodu.Core` | [Bodu.Globalization.Calendar](calendar/index.md) | [Get started](calendar/getting-started.md) |
 | **Text encoding** | `Bodu.Text.Encoding` | Stable | `Bodu.Core` | [Bodu.Text.Encoding](text-encoding/index.md) | [Get started](text-encoding/getting-started.md) |
 | **Text formats** | `Bodu.Text.Formats` | Stable | `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
-| **Serialization engine** | `Bodu.Text.Serialization` | **Preview** | `Bodu.Core` | [Bodu.Text.Serialization](serialization/index.md) | [Get started](serialization/getting-started.md) |
-| **TOML serializer** | `Bodu.Text.Serialization.Toml` | **Preview** | `Bodu.Text.Serialization` | [Bodu.Text.Serialization](serialization/index.md) | [Get started](serialization/getting-started.md) |
-| **Bencode serializer** | `Bodu.Text.Serialization.Bencode` | **Preview** | `Bodu.Text.Serialization` | [Bodu.Text.Serialization](serialization/index.md) | [Get started](serialization/getting-started.md) |
+| **TOML serializer** | `Bodu.Text.Toml` | **Preview** | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
+| **Bencode serializer** | `Bodu.Text.Bencode` | **Preview** | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
 | **Text configuration** | `Bodu.Text.Configuration` | Stable | `Bodu.Core`, `Bodu.Text.Formats` | [Bodu.Text.Configuration](text-configuration/index.md) | [Get started](text-configuration/getting-started.md) |
 | **Configuration bridge** | `Bodu.Extensions.Configuration.Text` | Stable | `Bodu.Text.Configuration`, `Microsoft.Extensions.Configuration` | [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) | [Get started](extensions-configuration-text/getting-started.md) |
 | **Text encoding helpers** | `Bodu.Text` | Stable | `Bodu.Core` | [Bodu.Text](text/index.md) | [Get started](getting-started.md#bodutext) |
@@ -71,6 +70,8 @@ dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
+dotnet add package Bodu.Text.Toml
+dotnet add package Bodu.Text.Bencode
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Text

@@ -49,6 +49,7 @@
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Text.Configuration\src\Bodu.Text.Configuration.csproj" />
     <ProjectReference Include="..\..\Bodu.Text.Formats\src\Bodu.Text.Formats.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Toml\src\Bodu.Text.Toml.csproj" />
   </ItemGroup>
 
 

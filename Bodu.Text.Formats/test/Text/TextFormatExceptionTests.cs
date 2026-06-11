@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Bencode;
 using Bodu.Text.Delimited;
 using Bodu.Text.DotEnv;
 using Bodu.Text.Ini;
@@ -26,7 +25,6 @@ public sealed class TextFormatExceptionTests
     [TestMethod]
     public void EveryFormatException_ShouldDeriveFromTextFormatException()
     {
-        Assert.IsTrue(typeof(TextFormatException).IsAssignableFrom(typeof(BencodeFormatException)));
         Assert.IsTrue(typeof(TextFormatException).IsAssignableFrom(typeof(DelimitedFormatException)));
         Assert.IsTrue(typeof(TextFormatException).IsAssignableFrom(typeof(DotEnvFormatException)));
         Assert.IsTrue(typeof(TextFormatException).IsAssignableFrom(typeof(IniFormatException)));
@@ -38,24 +36,6 @@ public sealed class TextFormatExceptionTests
     /// </summary>
     [TestMethod]
     public void TextFormatException_ShouldDeriveFromFormatException() => Assert.IsTrue(typeof(FormatException).IsAssignableFrom(typeof(TextFormatException)));
-
-    /// <summary>
-    /// Verifies that a Bencode parse failure populates <see cref="TextFormatException.Offset" /> with the byte
-    /// offset at which the failure was detected.
-    /// </summary>
-    [TestMethod]
-    public void BencodeParseFailure_ShouldExposeOffsetThroughBase()
-    {
-        // "i9223372036854775808e" — out of range, throws at the integer parse step.
-        var payload = System.Text.Encoding.ASCII.GetBytes("i9223372036854775808e");
-
-        TextFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
-        {
-            _ = Bencode.Bencode.Parse(payload);
-        });
-
-        Assert.IsNotNull(ex.Offset);
-    }
 
     /// <summary>
     /// Verifies that a Delimited parse failure populates <see cref="TextFormatException.LineNumber" /> when the
