@@ -2,6 +2,7 @@
 
 **Date:** 2026-06-11
 **Status:** Assessment and design only — **no implementation ships with this document.**
+**Implementation plan:** [`utf8-toml-reader-redesign-plan.md`](./utf8-toml-reader-redesign-plan.md)
 **Relates to:** finding I1 of [`toml-spec-compliance-review.md`](./toml-spec-compliance-review.md)
 **Decisions taken:** assessment covers both phases (UTF-8 span-native core *and* lexer/builder
 separation); benchmarks consciously skipped (recorded as a risk in §7); the public token contract
