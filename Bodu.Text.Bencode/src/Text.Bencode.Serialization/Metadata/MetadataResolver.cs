@@ -123,7 +123,7 @@ internal static class MetadataResolver
         Dictionary<string, PropertyMetadata> byWireName = new(comparer);
 
         // Collision detection is always ordinal: two members on the same exact wire key can never be written as a
-        // canonical dictionary, so the type fails fast here (mirroring System.Text.Json's metadata-time check).
+        // canonical dictionary, so the type fails fast here at metadata-resolution time.
         // Members whose wire names differ only by case remain distinct keys on the wire; under a case-insensitive
         // read comparer the later member shadows the earlier one for lookups, which the indexer assignment preserves.
         Dictionary<string, PropertyMetadata> byOrdinalWireName = new(StringComparer.Ordinal);

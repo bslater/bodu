@@ -14,20 +14,18 @@ namespace Bodu.Text.Bencode.Nodes;
 /// <summary>
 /// Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three
 /// concrete node kinds — <see cref="BencodeObject" />, <see cref="BencodeArray" />, and <see cref="BencodeValue" />.
-/// Mirrors the role of <see cref="System.Text.Json.Nodes.JsonNode" /> for Bencode.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
 /// and any node can be re-serialized to canonical Bencode through <see cref="WriteTo" /> or <see cref="ToByteArray" />.
-/// Because Bencode defines only four value kinds, the model omits the Boolean, null, and floating-point members that
-/// <see cref="System.Text.Json.Nodes.JsonNode" /> carries; in particular there is no null node, so a tree that still
-/// contains a <see langword="null" /> entry cannot be written.
+/// Bencode has no boolean, null, or floating-point values, so the model defines only the four value kinds the format
+/// supports; in particular there is no null node, so a tree that still contains a <see langword="null" /> entry cannot
+/// be written.
 /// </para>
 /// <para>
 /// Each node has at most one parent. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />, matching the single-parent rule of
-/// <see cref="System.Text.Json.Nodes.JsonNode" />.
+/// <see cref="InvalidOperationException" />.
 /// </para>
 /// </remarks>
 public abstract class BencodeNode
@@ -221,8 +219,7 @@ public abstract class BencodeNode
 
     /// <summary>
     /// Parses a single Bencode document into a node tree, using the supplied node options for every object created
-    /// while parsing and the supplied document options for the parse itself, mirroring the
-    /// <see cref="System.Text.Json.Nodes.JsonNode" /> overload that accepts both option types.
+    /// while parsing and the supplied document options for the parse itself.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
     /// <param name="options">The node options controlling property-name case sensitivity.</param>
@@ -333,8 +330,7 @@ public abstract class BencodeNode
     public abstract BencodeNode DeepClone();
 
     /// <summary>
-    /// Computes the path from the root of this node's tree to this node, mirroring
-    /// <see cref="System.Text.Json.Nodes.JsonNode.GetPath" />.
+    /// Computes the path from the root of this node's tree to this node.
     /// </summary>
     /// <returns>
     /// The JSONPath-style path: <c>$</c> for a root node, with <c>[n]</c> segments for array indices and <c>.name</c>
@@ -363,9 +359,8 @@ public abstract class BencodeNode
     }
 
     /// <summary>
-    /// Replaces this node within its parent container with the supplied value, detaching this node, mirroring
-    /// <see cref="System.Text.Json.Nodes.JsonNode.ReplaceWith{T}(T)" />. The implicit conversions from
-    /// <see langword="string" />, integers, and byte arrays let scalars be passed directly.
+    /// Replaces this node within its parent container with the supplied value, detaching this node. The implicit
+    /// conversions from <see langword="string" />, integers, and byte arrays let scalars be passed directly.
     /// </summary>
     /// <param name="value">
     /// The replacement node, or <see langword="null" /> to clear the slot this node occupies.
@@ -374,9 +369,8 @@ public abstract class BencodeNode
     /// Thrown when <paramref name="value" /> already belongs to another container.
     /// </exception>
     /// <remarks>
-    /// When this node has no parent the call does nothing, matching the <see cref="System.Text.Json.Nodes.JsonNode" />
-    /// contract. After a successful replacement this node's <see cref="Parent" /> is <see langword="null" /> and it can
-    /// be added to another container.
+    /// When this node has no parent the call does nothing. After a successful replacement this node's
+    /// <see cref="Parent" /> is <see langword="null" /> and it can be added to another container.
     /// </remarks>
     public void ReplaceWith(BencodeNode? value)
     {

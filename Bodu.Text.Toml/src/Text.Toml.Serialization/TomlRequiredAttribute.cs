@@ -8,7 +8,6 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Marks a property or field as required, so deserialization fails when the corresponding key is absent from the input.
-/// Mirrors <see cref="System.Text.Json.Serialization.JsonRequiredAttribute" />.
 /// </summary>
 /// <remarks>
 /// Applying this attribute has the same effect as declaring the member with the <see langword="required" /> keyword:

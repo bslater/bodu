@@ -9,14 +9,13 @@ using System.Text;
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Provides a forward-only cursor over the normalized, tree-order token stream of a parsed TOML document, playing the
-/// binding-layer role for converters that <see cref="System.Text.Json.Utf8JsonReader" /> plays for JSON. The reader is
-/// a <see langword="ref struct" />, so it cannot be boxed or captured; pass it by <see langword="ref" /> to thread it
-/// through a converter.
+/// Provides a forward-only cursor over the normalized, tree-order token stream of a parsed TOML document, serving as
+/// the binding layer through which converters consume values. The reader is a <see langword="ref struct" />, so it
+/// cannot be boxed or captured; pass it by <see langword="ref" /> to thread it through a converter.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Unlike JSON, TOML cannot be tokenized into tree order in a single forward pass: out-of-line <c>[table]</c> and
+/// TOML cannot be tokenized into tree order in a single forward pass: out-of-line <c>[table]</c> and
 /// <c>[[array-of-tables]]</c> headers contribute to structure declared elsewhere in the document. The constructor
 /// therefore parses the entire document up front — scanning the UTF-8 bytes with <see cref="Utf8TomlReader" /> and
 /// enforcing TOML's key, value, table, and array-of-tables rules through <see cref="TomlDocumentBuilder" /> — and
@@ -285,10 +284,9 @@ public ref struct TomlDocumentReader
     /// </summary>
     /// <remarks>
     /// When the reader is positioned on a <see cref="TomlTokenType.PropertyName" />, it advances to the property's
-    /// value and then skips it, mirroring <see cref="System.Text.Json.Utf8JsonReader.Skip" />. When it is positioned on
-    /// a container start, the reader advances to the matching <see cref="TomlTokenType.EndTable" /> or
-    /// <see cref="TomlTokenType.EndArray" /> at the same depth. When it is positioned on a scalar value, the call has
-    /// no effect.
+    /// value and then skips it. When it is positioned on a container start, the reader advances to the matching
+    /// <see cref="TomlTokenType.EndTable" /> or <see cref="TomlTokenType.EndArray" /> at the same depth. When it is
+    /// positioned on a scalar value, the call has no effect.
     /// </remarks>
     public void Skip()
     {

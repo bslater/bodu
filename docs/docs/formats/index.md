@@ -14,7 +14,7 @@ title: Bodu.Text.Formats — Introduction
 
 Each format exposes a modern, span-friendly shape: a strongly-typed value model, a `Parse` / `Format` entry point, `Try*` variants that swap exceptions for `bool` results, and forward-only streaming readers and writers with synchronous and asynchronous APIs. No reflection, no `dynamic`, and minimal allocation beyond the result model.
 
-> **TOML, Bencode, and POCO serialization.** TOML and Bencode (BEP 3) live in the dedicated standalone packages **Bodu.Text.Toml** (<xref:Bodu.Text.Toml>) and **Bodu.Text.Bencode** (<xref:Bodu.Text.Bencode>) — object-mapping serializers (POCO ↔ format) shaped after `System.Text.Json` — and are documented there, not in this package. See the [Bodu serializers introduction](../serialization/index.md).
+> **TOML, Bencode, and POCO serialization.** TOML and Bencode (BEP 3) live in the dedicated standalone packages **Bodu.Text.Toml** (<xref:Bodu.Text.Toml>) and **Bodu.Text.Bencode** (<xref:Bodu.Text.Bencode>) — object-mapping serializers (POCO ↔ format) — and are documented there, not in this package. See the [Bodu serializers introduction](../serialization/index.md).
 
 ## Key concepts
 

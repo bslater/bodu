@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Specifies the condition under which a member is excluded from serialization, whether through
-/// <see cref="BencodeIgnoreAttribute" /> on the member or through the serializer-wide default ignore condition. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonIgnoreCondition" />.
+/// <see cref="BencodeIgnoreAttribute" /> on the member or through the serializer-wide default ignore condition.
 /// </summary>
 public enum BencodeIgnoreCondition
 {

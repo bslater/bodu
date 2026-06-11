@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Defines a callback that the serializer invokes on a value immediately after its members have been written to TOML,
-/// letting the value restore or release any state established for serialization. Mirrors
-/// <see cref="System.Text.Json.Serialization.IJsonOnSerialized" />.
+/// letting the value restore or release any state established for serialization.
 /// </summary>
 /// <remarks>
 /// <see cref="OnSerialized" /> is called after the value's dictionary has been closed, so it observes the completed

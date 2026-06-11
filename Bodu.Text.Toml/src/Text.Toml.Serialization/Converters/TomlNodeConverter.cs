@@ -11,9 +11,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
-/// Converts a <see cref="TomlNode" /> tree to and from TOML, bridging the document object model to the serializer the
-/// way <see cref="System.Text.Json.Serialization.JsonConverter{T}" /> bridges
-/// <see cref="System.Text.Json.Nodes.JsonNode" /> to <see cref="System.Text.Json.JsonSerializer" />.
+/// Converts a <see cref="TomlNode" /> tree to and from TOML, bridging the document object model to the serializer.
 /// </summary>
 /// <remarks>
 /// The converter accepts every node type — <see cref="TomlObject" />, <see cref="TomlArray" />, and

@@ -14,8 +14,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// Members are written in ascending <see cref="Order" />. Members without the attribute take the default order of zero
 /// and otherwise keep their declaration order. Because the Bencode writer re-sorts dictionary entries into canonical
 /// ascending key order when a dictionary is closed, this order governs the sequence in which members are presented to
-/// the writer rather than the final on-the-wire order. This mirrors
-/// <see cref="System.Text.Json.Serialization.JsonPropertyOrderAttribute" />.
+/// the writer rather than the final on-the-wire order.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class BencodePropertyOrderAttribute

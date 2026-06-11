@@ -10,9 +10,6 @@ namespace Bodu.Text.Toml.Serialization;
 /// Excludes a property or field from TOML serialization, either unconditionally or under the condition given by
 /// <see cref="Condition" />.
 /// </summary>
-/// <remarks>
-/// This attribute mirrors the role of <see cref="System.Text.Json.Serialization.JsonIgnoreAttribute" />.
-/// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class TomlIgnoreAttribute
     : TomlAttribute

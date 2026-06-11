@@ -10,10 +10,9 @@ using System.Text;
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Provides a forward-only, source-order reader for UTF-8 TOML bytes, mirroring the role of
-/// <see cref="System.Text.Json.Utf8JsonReader" />: a <see langword="ref struct" /> that holds the input span and scans
-/// it incrementally. Each <see cref="Read" /> advances to the next lexical token in document order — for example
-/// <c>[server.tls]</c> surfaces as <see cref="TomlTokenType.TableHeader" /> followed by a
+/// Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <see langword="ref struct" /> that holds the
+/// input span and scans it incrementally. Each <see cref="Read" /> advances to the next lexical token in document order
+/// — for example <c>[server.tls]</c> surfaces as <see cref="TomlTokenType.TableHeader" /> followed by a
 /// <see cref="TomlTokenType.Key" /> per dotted segment, and <c>ports = [1, 2]</c> as a key, then
 /// <see cref="TomlTokenType.StartArray" />, two integers, and <see cref="TomlTokenType.EndArray" />.
 /// </summary>
@@ -374,8 +373,7 @@ public ref partial struct Utf8TomlReader
     /// Gets the current bracket nesting depth: the number of arrays and inline tables open around the current token.
     /// </summary>
     /// <returns>
-    /// The depth, where zero is outside any value. Mirroring
-    /// <see cref="System.Text.Json.Utf8JsonReader.CurrentDepth" />, a <see cref="TomlTokenType.StartArray" /> or
+    /// The depth, where zero is outside any value. A <see cref="TomlTokenType.StartArray" /> or
     /// <see cref="TomlTokenType.StartInlineTable" /> token reports the depth of its enclosing context, and the
     /// matching end token likewise.
     /// </returns>
@@ -935,7 +933,7 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="TomlFormatException">Thrown when the skipped source is not lexically valid TOML.</exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <see cref="IsFinalBlock" /> is <see langword="false" />; use <see cref="TrySkip" /> on partial
-    /// data, mirroring <see cref="System.Text.Json.Utf8JsonReader.Skip" />.
+    /// data.
     /// </exception>
     public void Skip()
     {
@@ -1044,8 +1042,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.String" /> or <see cref="TomlTokenType.Key" />.
     /// </exception>
     /// <remarks>
-    /// A <see langword="null" /> <paramref name="text" /> compares as empty, matching
-    /// <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(string)" />.
+    /// A <see langword="null" /> <paramref name="text" /> compares as empty.
     /// </remarks>
     public readonly bool ValueTextEquals(string? text) =>
         ValueTextEquals(text.AsSpan());

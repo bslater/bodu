@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Produces an <see cref="EnumConverter{T}" /> for any enumeration type, configured with the built-in default behavior:
-/// no naming policy and integers accepted on read. Mirrors the implicit enum-to-name handling of
-/// <see cref="System.Text.Json.JsonSerializerOptions" />.
+/// no naming policy and integers accepted on read.
 /// </summary>
 internal sealed class EnumConverterFactory
     : TomlConverterFactory

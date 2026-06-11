@@ -4,7 +4,7 @@ title: Writing converters
 
 # Writing converters
 
-A converter customises how a single type is read and written. It mirrors [`JsonConverter<T>`](https://learn.microsoft.com/dotnet/api/system.text.json.serialization.jsonconverter-1): derive `TomlConverter<T>` (<xref:Bodu.Text.Toml.Serialization.TomlConverter`1>) or `BencodeConverter<T>` (<xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>), and read or write tokens through the format's `Utf8…Reader` and `Utf8…Writer`.
+A converter customises how a single type is read and written: derive `TomlConverter<T>` (<xref:Bodu.Text.Toml.Serialization.TomlConverter`1>) or `BencodeConverter<T>` (<xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>), and read or write tokens through the format's `Utf8…Reader` and `Utf8…Writer`.
 
 Because each library is self-contained, a converter is written against one format's reader/writer. The pattern is identical across the two; only the prefix differs.
 
@@ -85,4 +85,4 @@ public sealed class BoolAsIntConverter : BencodeConverter<bool>
 
 ## Built-in enum converters
 
-For enums you usually do not need a hand-written converter. Each library ships a string-enum converter (member names) and a number-enum converter; reference them from a `[…Converter]` attribute on a member, property, or the enumeration itself — the `JsonStringEnumConverter` / number-enum analogues.
+For enums you usually do not need a hand-written converter. Each library ships a string-enum converter (member names) and a number-enum converter; reference them from a `[…Converter]` attribute on a member, property, or the enumeration itself.

@@ -7,8 +7,7 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Identifies the kind of token a forward-only TOML reader is positioned on, mirroring the role of
-/// <see cref="System.Text.Json.JsonTokenType" /> for TOML.
+/// Identifies the kind of token a forward-only TOML reader is positioned on.
 /// </summary>
 /// <remarks>
 /// <para>

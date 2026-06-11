@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Designates a property or field that captures dictionary entries which do not map to any other member during
-/// deserialization, and whose entries are written back out during serialization. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonExtensionDataAttribute" />.
+/// deserialization, and whose entries are written back out during serialization.
 /// </summary>
 /// <remarks>
 /// <para>

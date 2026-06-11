@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Specifies whether the serializer replaces a member's value with a freshly created instance or populates the value
-/// already held by the member during deserialization. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonObjectCreationHandling" />.
+/// already held by the member during deserialization.
 /// </summary>
 /// <remarks>
 /// <see cref="Populate" /> applies to collection and dictionary members: the entries read from the input are added into

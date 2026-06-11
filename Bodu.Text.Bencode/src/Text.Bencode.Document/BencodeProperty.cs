@@ -7,8 +7,7 @@
 namespace Bodu.Text.Bencode.Document;
 
 /// <summary>
-/// Represents a single key/value pair within an object <see cref="BencodeElement" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonProperty" />. Instances are produced by
+/// Represents a single key/value pair within an object <see cref="BencodeElement" />. Instances are produced by
 /// <see cref="BencodeElement.ObjectEnumerator" />.
 /// </summary>
 /// <remarks>

@@ -15,8 +15,7 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Configures how values are serialized to and deserialized from TOML: the converters to use, the property naming
-/// policy, the default ignore condition, and the maximum nesting depth. Mirrors
-/// <see cref="System.Text.Json.JsonSerializerOptions" />.
+/// policy, the default ignore condition, and the maximum nesting depth.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -113,8 +112,7 @@ public sealed class TomlSerializerOptions
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlSerializerOptions" /> class with a base set of defaults
-    /// appropriate for the specified usage scenario. Mirrors the
-    /// <see cref="System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults)" /> constructor.
+    /// appropriate for the specified usage scenario.
     /// </summary>
     /// <param name="defaults">The base defaults to apply.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -178,7 +176,6 @@ public sealed class TomlSerializerOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.
-    /// Mirrors <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" />.
     /// </summary>
     /// <value>
     /// <see langword="true" /> to serialize and deserialize public fields; otherwise <see langword="false" />. The
@@ -187,8 +184,7 @@ public sealed class TomlSerializerOptions
     /// <returns>Whether public fields participate in serialization.</returns>
     /// <remarks>
     /// A public field annotated with <see cref="Serialization.TomlIncludeAttribute" /> participates regardless of this
-    /// setting, mirroring how <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" /> opts an individual
-    /// field in. Fields honor the property naming policy, name and order attributes, ignore conditions, and
+    /// setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
     /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
     /// assigned on read.
     /// </remarks>
@@ -236,8 +232,7 @@ public sealed class TomlSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
     /// reading, applied to every type that does not carry its own
-    /// <see cref="Serialization.TomlUnmappedMemberHandlingAttribute" />. Mirrors
-    /// <see cref="System.Text.Json.JsonSerializerOptions.UnmappedMemberHandling" />.
+    /// <see cref="Serialization.TomlUnmappedMemberHandlingAttribute" />.
     /// </summary>
     /// <value>The unmapped-member handling; <see cref="TomlUnmappedMemberHandling.Skip" /> by default.</value>
     /// <returns>The configured unmapped-member handling.</returns>
@@ -263,8 +258,7 @@ public sealed class TomlSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
     /// instance or populated when reading, applied to every type and member that does not carry its own
-    /// <see cref="Serialization.TomlObjectCreationHandlingAttribute" />. Mirrors
-    /// <see cref="System.Text.Json.JsonSerializerOptions.PreferredObjectCreationHandling" />.
+    /// <see cref="Serialization.TomlObjectCreationHandlingAttribute" />.
     /// </summary>
     /// <value>
     /// The preferred object-creation handling; <see cref="TomlObjectCreationHandling.Replace" /> by default.

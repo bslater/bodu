@@ -176,7 +176,7 @@ The parsed model retains comments, ordering, and whitespace, so a `Parse` → mu
 
 ## Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
 
-**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained, `System.Text.Json`-shaped libraries that map your own types to and from a format. They are deliberate twins — the same shape, member for member — and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
+**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained libraries that map your own types to and from a format. They are deliberate twins — the same shape, member for member — and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
 
 ```csharp
 using Bodu.Text.Toml;

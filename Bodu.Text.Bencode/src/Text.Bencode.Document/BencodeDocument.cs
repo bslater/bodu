@@ -12,9 +12,9 @@ using Bodu.Text.Bencode.Reader;
 namespace Bodu.Text.Bencode.Document;
 
 /// <summary>
-/// Provides a read-only, high-performance document object model over Bencode (BEP 3) bytes, mirroring the role of
-/// <see cref="System.Text.Json.JsonDocument" />. The source is parsed once into a flat metadata index and exposed
-/// through lightweight <see cref="BencodeElement" /> struct views; no node tree is materialized.
+/// Provides a read-only, high-performance document object model over Bencode (BEP 3) bytes. The source is parsed once
+/// into a flat metadata index and exposed through lightweight <see cref="BencodeElement" /> struct views; no node tree
+/// is materialized.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -216,7 +216,7 @@ public sealed partial class BencodeDocument
     /// Disposal is idempotent: calling it more than once has no further effect. After disposal, every element,
     /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />. For the
     /// non-pooled documents that back <see cref="BencodeElement.Clone" /> results, disposal is a no-op and the document
-    /// remains usable, mirroring <see cref="System.Text.Json.JsonElement.Clone" />.
+    /// remains usable.
     /// </remarks>
     public void Dispose()
     {

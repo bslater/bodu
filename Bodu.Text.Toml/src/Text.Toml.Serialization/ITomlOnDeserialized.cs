@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Defines a callback that the serializer invokes on an instance after all of its members have been populated from
-/// TOML, letting the instance validate or finalize its state. Mirrors
-/// <see cref="System.Text.Json.Serialization.IJsonOnDeserialized" />.
+/// TOML, letting the instance validate or finalize its state.
 /// </summary>
 /// <remarks>
 /// <see cref="OnDeserialized" /> is the last step of deserialization for the instance: it runs after every settable

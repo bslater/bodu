@@ -10,7 +10,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a TOML integer carrying its
-/// underlying numeric value. Mirrors <see cref="System.Text.Json.Serialization.JsonNumberEnumConverter{TEnum}" />.
+/// underlying numeric value.
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>

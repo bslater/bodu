@@ -11,9 +11,9 @@ using Bodu.Text.Toml.Reader;
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Provides a read-only, high-performance document object model over TOML text, mirroring the role of
-/// <see cref="System.Text.Json.JsonDocument" />. The source is parsed once into a flat metadata index and exposed
-/// through lightweight <see cref="TomlElement" /> struct views; no node tree is materialized.
+/// Provides a read-only, high-performance document object model over TOML text. The source is parsed once into a flat
+/// metadata index and exposed through lightweight <see cref="TomlElement" /> struct views; no node tree is
+/// materialized.
 /// </summary>
 /// <remarks>
 /// <para>

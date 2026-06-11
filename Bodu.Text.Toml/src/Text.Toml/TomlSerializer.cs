@@ -15,8 +15,7 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Provides static methods for serializing values to canonical TOML text and deserializing TOML back into values,
-/// mapping plain CLR objects to and from the format through configurable converters. Mirrors the role of
-/// <see cref="System.Text.Json.JsonSerializer" />.
+/// mapping plain CLR objects to and from the format through configurable converters.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -9,7 +9,6 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Specifies, for the annotated type, how the serializer treats a dictionary key that maps to no member during
 /// deserialization, overriding the serializer-wide <see cref="BencodeSerializerOptions.UnmappedMemberHandling" />.
-/// Mirrors <see cref="System.Text.Json.Serialization.JsonUnmappedMemberHandlingAttribute" />.
 /// </summary>
 /// <remarks>
 /// When a type carries this attribute, its <see cref="UnmappedMemberHandling" /> is used in place of the options-level

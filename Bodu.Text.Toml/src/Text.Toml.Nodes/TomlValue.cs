@@ -11,8 +11,7 @@ namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
 /// Represents a scalar TOML value within a node tree — one of the eight TOML scalar kinds: a string, a 64-bit integer,
-/// a floating-point number, a Boolean, or one of the four date-time kinds. Mirrors the role of
-/// <see cref="System.Text.Json.Nodes.JsonValue" /> for TOML.
+/// a floating-point number, a Boolean, or one of the four date-time kinds.
 /// </summary>
 /// <remarks>
 /// The stored kind is fixed at construction and reported by <see cref="GetValueKind" />. A scalar reads back as the CLR

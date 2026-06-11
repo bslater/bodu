@@ -7,8 +7,7 @@
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Defines the customizations applied when parsing a <see cref="TomlDocument" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonDocumentOptions" /> for TOML.
+/// Defines the customizations applied when parsing a <see cref="TomlDocument" />.
 /// </summary>
 /// <remarks>
 /// <para>

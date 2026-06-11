@@ -10,15 +10,13 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Produces a converter that serializes any enumeration as a TOML string holding its member name, applying an optional
-/// naming policy and honoring <see cref="TomlStringEnumMemberNameAttribute" /> on individual members. Mirrors the
-/// non-generic <see cref="System.Text.Json.Serialization.JsonStringEnumConverter" />.
+/// naming policy and honoring <see cref="TomlStringEnumMemberNameAttribute" /> on individual members.
 /// </summary>
 /// <remarks>
 /// Register the factory on <see cref="TomlSerializerOptions.Converters" /> to apply it to every enumeration, or use the
 /// generic <see cref="TomlStringEnumConverter{TEnum}" /> with <see cref="TomlConverterAttribute" /> to apply it to a
-/// single enumeration. The two constructors match those of
-/// <see cref="System.Text.Json.Serialization.JsonStringEnumConverter" />: a parameterless form that applies no naming
-/// policy and accepts integers on read, and a form that takes an explicit naming policy and integer-handling flag.
+/// single enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts
+/// integers on read, and a form that takes an explicit naming policy and integer-handling flag.
 /// </remarks>
 public sealed class TomlStringEnumConverter
     : TomlConverterFactory

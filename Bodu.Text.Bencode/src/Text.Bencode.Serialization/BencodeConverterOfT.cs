@@ -11,8 +11,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Converts a value of type <typeparamref name="T" /> to and from the Bencode reader and writer. This is the base
-/// authors derive to customize how a specific type is serialized, mirroring
-/// <see cref="System.Text.Json.Serialization.JsonConverter{T}" />.
+/// authors derive to customize how a specific type is serialized.
 /// </summary>
 /// <typeparam name="T">The type the converter handles.</typeparam>
 /// <example>

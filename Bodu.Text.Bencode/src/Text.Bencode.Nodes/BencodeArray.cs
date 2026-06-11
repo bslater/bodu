@@ -11,8 +11,7 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>
-/// Represents a mutable Bencode (BEP 3) list as an ordered, index-addressable collection of child nodes. Mirrors the
-/// role of <see cref="System.Text.Json.Nodes.JsonArray" /> for Bencode.
+/// Represents a mutable Bencode (BEP 3) list as an ordered, index-addressable collection of child nodes.
 /// </summary>
 /// <remarks>
 /// Elements are kept in insertion order, which is also the order in which they are serialized. An element may be

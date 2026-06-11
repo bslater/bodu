@@ -11,9 +11,8 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
-/// Converts a <see cref="BencodeNode" /> tree to and from Bencode, bridging the document object model to the serializer
-/// the way <see cref="System.Text.Json.Serialization.JsonConverter{T}" /> bridges
-/// <see cref="System.Text.Json.Nodes.JsonNode" /> to <see cref="System.Text.Json.JsonSerializer" />.
+/// Converts a <see cref="BencodeNode" /> tree to and from Bencode, bridging the document object model to the
+/// serializer.
 /// </summary>
 /// <remarks>
 /// The converter accepts every node type — <see cref="BencodeObject" />, <see cref="BencodeArray" />, and

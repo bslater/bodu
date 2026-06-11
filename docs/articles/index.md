@@ -23,8 +23,8 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Text.Formats — self-framing text document formats](../docs/formats/index.md)**
   Strongly-typed value models and span- and stream-friendly codecs for self-framing document formats. Ships **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), and **INI** (round-trippable, section- and comment-preserving) — each exposing the same modern shape: `Parse` / `Format` and `Try*` over spans, a typed value model, forward-only streaming readers and writers, and strict invariant enforcement.
 
-- **[Bodu.Text.Bencode & Bodu.Text.Toml — System.Text.Json-shaped serializers](../docs/serialization/index.md)**
-  Two self-contained, `System.Text.Json`-shaped libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3) and TOML. Deliberate twins, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, a low-level `Utf8…Reader` / `Utf8…Writer` ref-struct pair, and the full converter / attribute / callback / naming-policy surface.
+- **[Bodu.Text.Bencode & Bodu.Text.Toml — object-mapping serializers](../docs/serialization/index.md)**
+  Two self-contained libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3) and TOML. Deliberate twins, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, a low-level `Utf8…Reader` / `Utf8…Writer` ref-struct pair, and the full converter / attribute / callback / naming-policy surface.
 
 - **[Bodu.Text — encoding detection and text/byte conversion helpers](xref:Bodu.Text)**
   BOM-based `EncodingDetection` plus `EncodingExtensions` and `StringEncodingExtensions` — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of `System.Text.Encoding`. For binary-to-text codecs (Base16/32/58/64/85), see `Bodu.Text.Encoding`.

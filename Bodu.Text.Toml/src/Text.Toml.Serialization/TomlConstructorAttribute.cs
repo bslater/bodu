@@ -12,8 +12,7 @@ namespace Bodu.Text.Toml.Serialization;
 /// </summary>
 /// <remarks>
 /// When no constructor carries this attribute, the serializer uses a public parameterless constructor when one exists,
-/// otherwise the single declared constructor, otherwise the constructor with the most parameters. This mirrors
-/// <see cref="System.Text.Json.Serialization.JsonConstructorAttribute" />.
+/// otherwise the single declared constructor, otherwise the constructor with the most parameters.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
 public sealed class TomlConstructorAttribute
