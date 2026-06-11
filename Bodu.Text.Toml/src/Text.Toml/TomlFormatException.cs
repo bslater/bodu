@@ -92,13 +92,13 @@ public sealed class TomlFormatException
     public int? ColumnNumber { get; }
 
     /// <summary>
-    /// Gets the zero-based character offset from the start of the decoded source text at which the parse error was
-    /// detected, when available.
+    /// Gets the zero-based byte offset from the start of the UTF-8 source at which the parse error was detected,
+    /// when available.
     /// </summary>
-    /// <returns>The character offset, or <see langword="null" /> when no position is associated with the error.</returns>
+    /// <returns>The byte offset, or <see langword="null" /> when no position is associated with the error.</returns>
     /// <remarks>
-    /// The offset counts UTF-16 characters of the decoded document, not UTF-8 bytes; for ASCII-only documents the two
-    /// coincide.
+    /// The offset and <see cref="ColumnNumber" /> count UTF-8 bytes of the source document, not decoded characters;
+    /// for ASCII-only documents the two coincide.
     /// </remarks>
     public int? Offset { get; }
 }

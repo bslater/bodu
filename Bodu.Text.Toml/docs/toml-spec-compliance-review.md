@@ -273,6 +273,9 @@ offset but receives UTF-16 char offsets (`:1590` vs `TomlFormatException.cs:73`)
 *Recommendation:* document the representational limits and reconcile the offset units.
 ✅ **Addressed (documented):** `TomlFormatException.Offset` is documented as a character offset
 into the decoded text, and the representational limits are documented on `Utf8TomlReader`.
+✅ **Resolved (redesign Phase A):** the byte-native `TomlLexer`/`TomlDocumentBuilder` pipeline now
+reports byte-true offsets, columns, and lines, and `TomlFormatException.Offset` is documented —
+and implemented — as a byte offset into the UTF-8 source.
 
 ### INFORMATIONAL
 
@@ -291,6 +294,10 @@ into the decoded text, and the representational limits are documented on `Utf8To
   (M2), narrowing the idiom gap. A full architectural redesign (source-order lexer + document
   builder + normalized binding cursor) has since been assessed and designed — see
   [`utf8-toml-reader-redesign-assessment.md`](./utf8-toml-reader-redesign-assessment.md).
+  **Phase A of that redesign is delivered:** the UTF-16 decode pass, `TomlDocumentParser`, and
+  the up-front surrogate sweep are gone, replaced by the byte-native source-order `TomlLexer`
+  and the structural `TomlDocumentBuilder`; `Utf8TomlReader` keeps its documented normalized
+  token contract as a façade over the new pipeline until the Phase B public swap.
 - **I2 — `Skip()` is a no-op on `PropertyName`**, diverging from `Utf8JsonReader.Skip`
   (`Utf8TomlReader.cs:254`); document or align. ✅ **Addressed:** `Skip()` on a property name now
   advances past the property's value, matching `Utf8JsonReader.Skip`.

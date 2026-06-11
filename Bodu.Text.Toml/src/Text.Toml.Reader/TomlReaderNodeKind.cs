@@ -7,7 +7,7 @@
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Identifies the kind of a node in the intermediate value tree that <see cref="TomlDocumentParser" /> builds and
+/// Identifies the kind of a node in the intermediate value tree that <see cref="TomlDocumentBuilder" /> builds and
 /// <see cref="Utf8TomlReader" /> flattens into its normalized token stream.
 /// </summary>
 internal enum TomlReaderNodeKind

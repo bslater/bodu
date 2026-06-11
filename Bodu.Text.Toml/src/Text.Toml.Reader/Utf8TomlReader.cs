@@ -18,8 +18,9 @@ namespace Bodu.Text.Toml.Reader;
 /// <para>
 /// Unlike JSON, TOML cannot be tokenized in a single forward pass: out-of-line <c>[table]</c> and
 /// <c>[[array-of-tables]]</c> headers contribute to structure declared elsewhere in the document. The constructor
-/// therefore decodes and parses the entire document up front — enforcing TOML's key, value, table, and array-of-tables
-/// rules — and <see cref="Read" /> advances a cursor over the resulting, fully materialized token stream.
+/// therefore parses the entire document up front — scanning the UTF-8 bytes directly and enforcing TOML's key, value,
+/// table, and array-of-tables rules — and <see cref="Read" /> advances a cursor over the resulting, fully materialized
+/// token stream.
 /// </para>
 /// <para>
 /// The stream is normalized: the several TOML spellings of structure collapse to a single nested shape. A header table,
@@ -43,11 +44,6 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 public ref struct Utf8TomlReader
 {
-    /// <summary>
-    /// The UTF-8 encoding used to decode the source; invalid byte sequences are rejected rather than replaced.
-    /// </summary>
-    private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
-
     /// <summary>
     /// The fully materialized, normalized token stream.
     /// </summary>
@@ -91,8 +87,7 @@ public ref struct Utf8TomlReader
     {
         var maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
 
-        var source = Decode(utf8Toml);
-        TomlTableNode root = new TomlDocumentParser(source, options.SpecVersion, maxDepth).Parse();
+        TomlTableNode root = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
 
         _tokens = new List<TomlReaderToken>();
         Flatten(root);
@@ -273,24 +268,6 @@ public ref struct Utf8TomlReader
         while (_openDepth >= depth && Read())
         {
             // Read until the matching container end returns control to the original depth.
-        }
-    }
-
-    /// <summary>
-    /// Decodes the supplied bytes as UTF-8 text.
-    /// </summary>
-    /// <param name="utf8Toml">The bytes to decode.</param>
-    /// <returns>The decoded text.</returns>
-    /// <exception cref="TomlFormatException">Thrown when the bytes are not valid UTF-8.</exception>
-    private static string Decode(ReadOnlySpan<byte> utf8Toml)
-    {
-        try
-        {
-            return s_utf8.GetString(utf8Toml);
-        }
-        catch (DecoderFallbackException ex)
-        {
-            throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlInvalidUtf8, ex);
         }
     }
 

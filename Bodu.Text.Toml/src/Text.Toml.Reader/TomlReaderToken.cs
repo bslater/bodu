@@ -22,7 +22,7 @@ internal readonly struct TomlReaderToken
     /// </summary>
     /// <param name="tokenType">The kind of the token.</param>
     /// <param name="value">The value carried by the token, or <see langword="null" /> for a structural token.</param>
-    /// <param name="offset">The zero-based source character offset at which the token begins.</param>
+    /// <param name="offset">The zero-based source byte offset at which the token begins.</param>
     internal TomlReaderToken(TomlTokenType tokenType, object? value, int offset)
     {
         TokenType = tokenType;
@@ -46,7 +46,7 @@ internal readonly struct TomlReaderToken
     internal object? Value { get; }
 
     /// <summary>
-    /// Gets the zero-based source character offset at which the token begins.
+    /// Gets the zero-based source byte offset at which the token begins.
     /// </summary>
     /// <returns>The source offset.</returns>
     internal int Offset { get; }
