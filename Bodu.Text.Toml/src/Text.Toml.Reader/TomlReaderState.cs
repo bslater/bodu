@@ -7,18 +7,17 @@
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Carries the resumable state of a <see cref="Utf8TomlReader" /> between input blocks, mirroring the role of
-/// <see cref="System.Text.Json.JsonReaderState" />: an opaque snapshot that, together with the unconsumed bytes,
-/// lets a new reader continue exactly where the previous block's reader stopped.
+/// Carries the resumable state of a <see cref="Utf8TomlReader" /> between input blocks: an opaque snapshot that,
+/// together with the unconsumed bytes, lets a new reader continue exactly where the previous block's reader stopped.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The multi-block protocol matches <see cref="System.Text.Json.Utf8JsonReader" />: construct a reader over the
-/// available bytes with <c>isFinalBlock: false</c>; when <see cref="Utf8TomlReader.Read" /> returns
-/// <see langword="false" />, capture <see cref="Utf8TomlReader.CurrentState" />, carry the bytes from
-/// <see cref="Utf8TomlReader.BytesConsumed" /> onward into the next buffer together with the newly arrived data, and
-/// construct the next reader from that buffer and this state. A token never spans reader instances — the reader
-/// consumes input only in whole tokens — so the caller's buffer must eventually contain the largest single token.
+/// The multi-block protocol is as follows: construct a reader over the available bytes with <c>isFinalBlock: false</c>;
+/// when <see cref="Utf8TomlReader.Read" /> returns <see langword="false" />, capture
+/// <see cref="Utf8TomlReader.CurrentState" />, carry the bytes from <see cref="Utf8TomlReader.BytesConsumed" /> onward
+/// into the next buffer together with the newly arrived data, and construct the next reader from that buffer and this
+/// state. A token never spans reader instances — the reader consumes input only in whole tokens — so the caller's
+/// buffer must eventually contain the largest single token.
 /// </para>
 /// <para>
 /// The state preserves the grammar context (the scan state and the open-container stack), the line counter, and the

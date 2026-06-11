@@ -265,8 +265,7 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <param name="value">When this method returns <see langword="true" />, the single-precision value.</param>
     /// <returns>
-    /// <see langword="true" /> always; the method exists for parity with
-    /// <see cref="System.Text.Json.Utf8JsonReader.TryGetSingle" />. A magnitude beyond the
+    /// <see langword="true" /> always; the conversion cannot fail. A magnitude beyond the
     /// <see cref="float" /> range rounds to an infinity.
     /// </returns>
     /// <exception cref="InvalidOperationException">

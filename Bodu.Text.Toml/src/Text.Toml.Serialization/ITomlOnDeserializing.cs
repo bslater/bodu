@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Defines a callback that the serializer invokes on a freshly constructed instance before its members are populated
-/// from TOML, letting the instance establish state ahead of member assignment. Mirrors
-/// <see cref="System.Text.Json.Serialization.IJsonOnDeserializing" />.
+/// from TOML, letting the instance establish state ahead of member assignment.
 /// </summary>
 /// <remarks>
 /// <see cref="OnDeserializing" /> is called after the instance has been constructed and before any settable member or

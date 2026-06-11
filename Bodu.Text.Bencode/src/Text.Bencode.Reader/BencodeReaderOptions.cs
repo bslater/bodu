@@ -7,13 +7,11 @@
 namespace Bodu.Text.Bencode.Reader;
 
 /// <summary>
-/// Defines the customizations applied when creating a <see cref="Utf8BencodeReader" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonReaderOptions" /> for Bencode.
+/// Defines the customizations applied when creating a <see cref="Utf8BencodeReader" />.
 /// </summary>
 /// <remarks>
-/// Bencode has no comment syntax and no trailing-comma concept, so instead of the leniency knobs
-/// <see cref="System.Text.Json.JsonReaderOptions" /> carries for those, the options relax the two dictionary-key rules
-/// that older real-world encoders are known to violate: <see cref="AllowUnsortedKeys" /> and
+/// Bencode has no comment syntax and no trailing-comma concept; the options relax the two dictionary-key rules that
+/// older real-world encoders are known to violate: <see cref="AllowUnsortedKeys" /> and
 /// <see cref="AllowDuplicateKeys" />. Both default to the strict canonical behaviour.
 /// </remarks>
 public struct BencodeReaderOptions

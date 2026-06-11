@@ -11,8 +11,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
-/// Converts an enumeration value to and from a TOML integer carrying its underlying numeric value. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonNumberEnumConverter{TEnum}" />.
+/// Converts an enumeration value to and from a TOML integer carrying its underlying numeric value.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>

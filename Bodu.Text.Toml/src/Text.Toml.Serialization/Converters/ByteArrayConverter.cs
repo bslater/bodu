@@ -17,8 +17,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// On read the converter accepts both forms regardless of the configured handling: an array of integers is read back
-/// into a byte array, and a string is Base64-decoded. This mirrors the way
-/// <see cref="System.Text.Json.JsonSerializer" /> reads a byte array from a Base64 string.
+/// into a byte array, and a string is Base64-decoded.
 /// </remarks>
 internal sealed class ByteArrayConverter
     : TomlConverter<byte[]>

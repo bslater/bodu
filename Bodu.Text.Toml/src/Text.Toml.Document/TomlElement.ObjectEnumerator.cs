@@ -11,8 +11,7 @@ namespace Bodu.Text.Toml.Document;
 public readonly partial struct TomlElement
 {
     /// <summary>
-    /// Enumerates the key/value pairs of a table <see cref="TomlElement" /> in stored order, mirroring the role of
-    /// <see cref="System.Text.Json.JsonElement.ObjectEnumerator" />.
+    /// Enumerates the key/value pairs of a table <see cref="TomlElement" /> in stored order.
     /// </summary>
     /// <remarks>
     /// The enumerator walks the table's contiguous subtree rows, advancing from each pair to the next by skipping the

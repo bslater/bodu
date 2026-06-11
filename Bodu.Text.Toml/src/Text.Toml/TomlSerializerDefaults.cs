@@ -8,7 +8,7 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Specifies a base set of defaults applied when a <see cref="TomlSerializerOptions" /> instance is created for a
-/// particular usage scenario. Mirrors <see cref="System.Text.Json.JsonSerializerDefaults" />.
+/// particular usage scenario.
 /// </summary>
 public enum TomlSerializerDefaults
 {

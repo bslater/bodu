@@ -8,7 +8,7 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 
 For the high-level shape of the library, start with the [introduction](index.md).
 
-> **TOML** and **Bencode** live in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages as object-mapping serializers (POCO ↔ format) that follow a different, `System.Text.Json`-shaped model. This page is about the **document codecs** in `Bodu.Text.Formats`.
+> **TOML** and **Bencode** live in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages as object-mapping serializers (POCO ↔ format) that follow a different model. This page is about the **document codecs** in `Bodu.Text.Formats`.
 
 ## Format and codec
 

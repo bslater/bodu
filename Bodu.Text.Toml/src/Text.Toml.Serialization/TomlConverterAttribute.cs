@@ -13,7 +13,6 @@ namespace Bodu.Text.Toml.Serialization;
 /// <remarks>
 /// The referenced type must derive from <see cref="TomlConverter" /> and declare a public parameterless constructor.
 /// Applied to a member, the converter governs that member only; applied to a type, it governs every use of the type.
-/// This mirrors <see cref="System.Text.Json.Serialization.JsonConverterAttribute" />.
 /// </remarks>
 [AttributeUsage(
     AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum,

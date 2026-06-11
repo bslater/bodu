@@ -9,8 +9,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Specifies, for the annotated type or member, whether the serializer replaces the value with a freshly created
 /// instance or populates the value already held during deserialization, overriding the serializer-wide
-/// <see cref="BencodeSerializerOptions.PreferredObjectCreationHandling" />. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonObjectCreationHandlingAttribute" />.
+/// <see cref="BencodeSerializerOptions.PreferredObjectCreationHandling" />.
 /// </summary>
 /// <remarks>
 /// When applied to a member the attribute governs that member alone; when applied to a type it governs every member of

@@ -13,8 +13,7 @@ namespace Bodu.Text.Toml.Serialization;
 /// <remarks>
 /// Members are written in ascending <see cref="Order" />. Members without the attribute take the default order of zero
 /// and otherwise keep their declaration order. Because the TOML writer preserves the order in which members are
-/// presented, this order governs the on-the-wire sequence of the table's key/value lines. This mirrors
-/// <see cref="System.Text.Json.Serialization.JsonPropertyOrderAttribute" />.
+/// presented, this order governs the on-the-wire sequence of the table's key/value lines.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class TomlPropertyOrderAttribute

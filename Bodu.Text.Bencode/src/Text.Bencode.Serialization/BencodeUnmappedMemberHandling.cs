@@ -8,7 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Specifies how the serializer treats a dictionary key that maps to no member of the target type during
-/// deserialization. Mirrors <see cref="System.Text.Json.Serialization.JsonUnmappedMemberHandling" />.
+/// deserialization.
 /// </summary>
 /// <remarks>
 /// A type that declares an extension-data member captures unmapped keys into that member, which takes precedence over

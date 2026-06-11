@@ -17,8 +17,7 @@ namespace Bodu.Text.Bencode;
 /// source bytes, <see cref="BytesOffset" /> carries it.
 /// </para>
 /// <para>
-/// The split is a deliberate divergence from <see cref="System.Text.Json" />, which funnels both causes through
-/// <see cref="System.Text.Json.JsonException" />; catch both exception types when the handling should not distinguish
+/// The two causes are deliberately kept distinct; catch both exception types when the handling should not distinguish
 /// malformed bytes from unmappable values.
 /// </para>
 /// </remarks>

@@ -9,13 +9,11 @@ using Bodu.Text.Bencode.Document;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Identifies the kind of value a Bencode element represents, mirroring the role of
-/// <see cref="System.Text.Json.JsonValueKind" /> for Bencode.
+/// Identifies the kind of value a Bencode element represents.
 /// </summary>
 /// <remarks>
-/// Bencode (BEP 3) defines only four value kinds — dictionaries, lists, byte strings, and integers — so this
-/// enumeration omits the Boolean, null, and floating-point members that <see cref="System.Text.Json.JsonValueKind" />
-/// carries for JSON.
+/// Bencode (BEP 3) has no boolean, null, or floating-point values, so the enumeration defines only the four value kinds
+/// the format supports — dictionaries, lists, byte strings, and integers.
 /// </remarks>
 public enum BencodeValueKind
 {

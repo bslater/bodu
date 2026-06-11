@@ -7,8 +7,8 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Determines how a member's CLR name is translated to the dictionary key used in serialized TOML output. Mirrors
-/// <see cref="System.Text.Json.JsonNamingPolicy" />, exposing the common casing conventions as ready-made policies.
+/// Determines how a member's CLR name is translated to the dictionary key used in serialized TOML output, exposing the
+/// common casing conventions as ready-made policies.
 /// </summary>
 /// <remarks>
 /// A naming policy applies only when a member does not carry an explicit

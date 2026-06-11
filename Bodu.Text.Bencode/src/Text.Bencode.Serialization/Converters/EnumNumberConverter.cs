@@ -11,8 +11,7 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
-/// Converts an enumeration value to and from a Bencode integer carrying its underlying numeric value. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonNumberEnumConverter{TEnum}" />.
+/// Converts an enumeration value to and from a Bencode integer carrying its underlying numeric value.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>

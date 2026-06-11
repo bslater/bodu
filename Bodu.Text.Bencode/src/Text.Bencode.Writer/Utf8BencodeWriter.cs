@@ -12,10 +12,10 @@ using System.Text;
 namespace Bodu.Text.Bencode.Writer;
 
 /// <summary>
-/// Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an <see cref="IBufferWriter{T}" />,
-/// mirroring the role of <see cref="System.Text.Json.Utf8JsonWriter" />. Because the grammar requires dictionary keys
-/// in ascending bytewise order, the writer buffers each dictionary's entries and sorts them when the dictionary is
-/// closed; values at the root and inside lists stream directly to the destination.
+/// Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an <see cref="IBufferWriter{T}" />.
+/// Because the grammar requires dictionary keys in ascending bytewise order, the writer buffers each dictionary's
+/// entries and sorts them when the dictionary is closed; values at the root and inside lists stream directly to the
+/// destination.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -113,7 +113,7 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// Gets the current container nesting depth, mirroring <see cref="System.Text.Json.Utf8JsonWriter.CurrentDepth" />.
+    /// Gets the current container nesting depth.
     /// </summary>
     /// <returns>The number of open containers, where zero means the writer is at the document root.</returns>
     /// <remarks>
@@ -125,8 +125,7 @@ public ref struct Utf8BencodeWriter
         _frames.Count;
 
     /// <summary>
-    /// Gets the customizations the writer was created with, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonWriter.Options" />.
+    /// Gets the customizations the writer was created with.
     /// </summary>
     /// <returns>
     /// The effective options, with <see cref="BencodeWriterOptions.MaxDepth" /> carrying the resolved value rather than
@@ -384,8 +383,7 @@ public ref struct Utf8BencodeWriter
 
     /// <summary>
     /// Writes a property name and the start of a list as its value, combining <see cref="WritePropertyName(string)" />
-    /// and <see cref="WriteStartList()" /> in the style of
-    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteStartArray(string)" />.
+    /// and <see cref="WriteStartList()" />.
     /// </summary>
     /// <param name="name">The key text.</param>
     /// <exception cref="ArgumentNullException">
@@ -423,8 +421,7 @@ public ref struct Utf8BencodeWriter
 
     /// <summary>
     /// Writes a property name and the start of a dictionary as its value, combining
-    /// <see cref="WritePropertyName(string)" /> and <see cref="WriteStartDictionary()" /> in the style of
-    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteStartObject(string)" />.
+    /// <see cref="WritePropertyName(string)" /> and <see cref="WriteStartDictionary()" />.
     /// </summary>
     /// <param name="name">The key text.</param>
     /// <exception cref="ArgumentNullException">
@@ -461,8 +458,7 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// Writes a property name and an integer value in one call, in the style of
-    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteNumber(string, long)" />.
+    /// Writes a property name and an integer value in one call.
     /// </summary>
     /// <param name="name">The key text.</param>
     /// <param name="value">The integer value.</param>
@@ -563,8 +559,7 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// Writes a property name and a string value in one call, encoding both as UTF-8, in the style of
-    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteString(string, string)" />.
+    /// Writes a property name and a string value in one call, encoding both as UTF-8.
     /// </summary>
     /// <param name="name">The key text.</param>
     /// <param name="value">The string value.</param>
@@ -604,9 +599,8 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// Writes a pre-encoded Bencode value verbatim, mirroring
-    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />. Supports round-tripping
-    /// verified slices such as a torrent's <c>info</c> dictionary without re-encoding.
+    /// Writes a pre-encoded Bencode value verbatim. Supports round-tripping verified slices such as a torrent's
+    /// <c>info</c> dictionary without re-encoding.
     /// </summary>
     /// <param name="value">The complete, already-encoded Bencode value bytes.</param>
     /// <param name="skipInputValidation">

@@ -11,14 +11,12 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Produces a converter that serializes any enumeration as a Bencode byte string holding its member name, applying an
 /// optional naming policy and honoring <see cref="BencodeStringEnumMemberNameAttribute" /> on individual members.
-/// Mirrors the non-generic <see cref="System.Text.Json.Serialization.JsonStringEnumConverter" />.
 /// </summary>
 /// <remarks>
 /// Register the factory on <see cref="BencodeSerializerOptions.Converters" /> to apply it to every enumeration, or use
 /// the generic <see cref="BencodeStringEnumConverter{TEnum}" /> with <see cref="BencodeConverterAttribute" /> to apply
-/// it to a single enumeration. The two constructors match those of
-/// <see cref="System.Text.Json.Serialization.JsonStringEnumConverter" />: a parameterless form that applies no naming
-/// policy and accepts integers on read, and a form that takes an explicit naming policy and integer-handling flag.
+/// it to a single enumeration. Two constructors are provided: a parameterless form that applies no naming policy and
+/// accepts integers on read, and a form that takes an explicit naming policy and integer-handling flag.
 /// </remarks>
 public sealed class BencodeStringEnumConverter
     : BencodeConverterFactory

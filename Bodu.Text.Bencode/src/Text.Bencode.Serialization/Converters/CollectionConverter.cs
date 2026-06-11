@@ -26,9 +26,8 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// round-trips unchanged. For <see cref="Stack{T}" /> and
 /// <see cref="System.Collections.Concurrent.ConcurrentStack{T}" /> enumeration yields pop order (most recently pushed
 /// first), while reading pushes the document's elements in document order — so a serialize/deserialize round-trip
-/// reverses a stack, mirroring the behavior of <see cref="System.Text.Json.JsonSerializer" />.
-/// <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> makes no enumeration-order guarantee in either
-/// direction.
+/// reverses a stack. <see cref="System.Collections.Concurrent.ConcurrentBag{T}" /> makes no enumeration-order guarantee
+/// in either direction.
 /// </para>
 /// </remarks>
 internal sealed class CollectionConverter<TCollection, TElement>

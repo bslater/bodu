@@ -7,8 +7,8 @@
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Represents a single key/value pair within a table <see cref="TomlElement" />, mirroring the role of
-/// <see cref="System.Text.Json.JsonProperty" />. Instances are produced by <see cref="TomlElement.ObjectEnumerator" />.
+/// Represents a single key/value pair within a table <see cref="TomlElement" />. Instances are produced by
+/// <see cref="TomlElement.ObjectEnumerator" />.
 /// </summary>
 /// <remarks>
 /// The <see cref="Value" /> is a view onto the owning <see cref="TomlDocument" /> and is valid only for that document's

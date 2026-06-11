@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml.Serialization;
 /// <summary>
 /// Produces a <see cref="TomlConverter" /> for a family of types that cannot be served by a single
 /// <see cref="TomlConverter{T}" /> — for example every <see cref="Nullable{T}" />, every enumeration, or every
-/// collection. Mirrors <see cref="System.Text.Json.Serialization.JsonConverterFactory" />.
+/// collection.
 /// </summary>
 /// <remarks>
 /// The serializer calls <see cref="TomlConverter.CanConvert(Type)" /> to decide whether the factory applies, then

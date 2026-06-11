@@ -8,8 +8,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Defines a callback that the serializer invokes on a value immediately after its members have been written to
-/// Bencode, letting the value restore or release any state established for serialization. Mirrors
-/// <see cref="System.Text.Json.Serialization.IJsonOnSerialized" />.
+/// Bencode, letting the value restore or release any state established for serialization.
 /// </summary>
 /// <remarks>
 /// <see cref="OnSerialized" /> is called after the value's dictionary has been closed, so it observes the completed

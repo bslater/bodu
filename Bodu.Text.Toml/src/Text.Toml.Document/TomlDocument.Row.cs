@@ -11,8 +11,7 @@ public sealed partial class TomlDocument
     /// <summary>
     /// Represents a single entry in the flat metadata index that <see cref="TomlDocument" /> builds when parsing. Each
     /// row describes one TOML value — or one table key — and carries enough information to navigate the document
-    /// without re-reading the source, mirroring the database-row layout used internally by
-    /// <see cref="System.Text.Json.JsonDocument" />.
+    /// without re-reading the source.
     /// </summary>
     /// <remarks>
     /// <para>

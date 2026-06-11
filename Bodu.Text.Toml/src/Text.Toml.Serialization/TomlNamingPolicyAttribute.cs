@@ -8,9 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Specifies the <see cref="TomlNamingPolicy" /> applied to the annotated type's members, overriding the
-/// serializer-wide <see cref="TomlSerializerOptions.PropertyNamingPolicy" /> for that type. Mirrors the
-/// <c>System.Text.Json.Serialization.JsonNamingPolicyAttribute</c> in its
-/// <see cref="System.Text.Json.Serialization.JsonKnownNamingPolicy" /> form.
+/// serializer-wide <see cref="TomlSerializerOptions.PropertyNamingPolicy" /> for that type.
 /// </summary>
 /// <remarks>
 /// The policy is chosen from the <see cref="TomlKnownNamingPolicy" /> values, each of which maps to a static singleton

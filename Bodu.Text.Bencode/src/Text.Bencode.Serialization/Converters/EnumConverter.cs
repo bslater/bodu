@@ -14,7 +14,6 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// <summary>
 /// Converts an enumeration value to and from a Bencode byte string holding its member name, honoring a naming policy
 /// and any per-member <see cref="BencodeStringEnumMemberNameAttribute" />, and optionally accepting an integer on read.
-/// Mirrors the by-name behavior of <see cref="System.Text.Json.Serialization.JsonStringEnumConverter{TEnum}" />.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>

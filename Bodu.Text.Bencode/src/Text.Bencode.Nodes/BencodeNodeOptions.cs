@@ -7,8 +7,7 @@
 namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>
-/// Defines the customizations applied to a mutable Bencode (BEP 3) node tree, mirroring the role of
-/// <see cref="System.Text.Json.Nodes.JsonNodeOptions" /> for Bencode.
+/// Defines the customizations applied to a mutable Bencode (BEP 3) node tree.
 /// </summary>
 /// <remarks>
 /// The options govern in-memory behaviour only; they do not affect serialization, which always emits canonical Bencode

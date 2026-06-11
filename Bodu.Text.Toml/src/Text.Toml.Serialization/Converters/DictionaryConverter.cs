@@ -26,12 +26,11 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <see cref="Enum.ToString()" /> (decimal or comma-separated fallback for undefined or combined values, matched
 /// case-insensitively on read), <see cref="Guid" /> uses the hyphenated "D" format, <see cref="bool" /> uses
 /// <c>True</c>/<c>False</c>, and <see cref="char" /> uses a single-character string. Key stringification ignores naming
-/// policies and <see cref="TomlStringEnumMemberNameAttribute" />, mirroring how
-/// <see cref="System.Text.Json.JsonSerializer" /> treats dictionary keys independently of value converters. Entries are
-/// written in the dictionary's enumeration (insertion) order — TOML output preserves document order, so the stringified
-/// keys are <b>not</b> sorted, in contrast to the canonical bytewise key ordering of the Bencode twin. The writer
-/// quotes a stringified key only when it does not match the bare-key grammar. A key that cannot be parsed back surfaces
-/// as a <see cref="TomlSerializationException" />.
+/// policies and <see cref="TomlStringEnumMemberNameAttribute" /> — dictionary keys are converted independently of value
+/// converters. Entries are written in the dictionary's enumeration (insertion) order — TOML output preserves document
+/// order, so the stringified keys are <b>not</b> sorted, in contrast to the canonical bytewise key ordering of the
+/// Bencode twin. The writer quotes a stringified key only when it does not match the bare-key grammar. A key that
+/// cannot be parsed back surfaces as a <see cref="TomlSerializationException" />.
 /// </para>
 /// <para>
 /// TOML has no null, so an entry whose value is <see langword="null" /> is omitted from the output rather than written

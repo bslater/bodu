@@ -11,8 +11,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
-/// Represents a mutable TOML array as an ordered, index-addressable collection of child nodes. Mirrors the role of
-/// <see cref="System.Text.Json.Nodes.JsonArray" /> for TOML.
+/// Represents a mutable TOML array as an ordered, index-addressable collection of child nodes.
 /// </summary>
 /// <remarks>
 /// Elements are kept in insertion order, which is also the order in which they are serialized. An element may be

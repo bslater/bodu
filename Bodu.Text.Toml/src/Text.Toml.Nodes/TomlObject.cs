@@ -11,8 +11,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Nodes;
 
 /// <summary>
-/// Represents a mutable TOML table as a string-keyed collection of child nodes. Mirrors the role of
-/// <see cref="System.Text.Json.Nodes.JsonObject" /> for TOML.
+/// Represents a mutable TOML table as a string-keyed collection of child nodes.
 /// </summary>
 /// <remarks>
 /// Entries are kept in insertion order — including across removals — which is also the order in which they are

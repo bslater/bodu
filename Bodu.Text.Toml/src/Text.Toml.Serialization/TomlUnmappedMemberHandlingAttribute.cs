@@ -8,8 +8,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Specifies, for the annotated type, how the serializer treats a dictionary key that maps to no member during
-/// deserialization, overriding the serializer-wide <see cref="TomlSerializerOptions.UnmappedMemberHandling" />. Mirrors
-/// <see cref="System.Text.Json.Serialization.JsonUnmappedMemberHandlingAttribute" />.
+/// deserialization, overriding the serializer-wide <see cref="TomlSerializerOptions.UnmappedMemberHandling" />.
 /// </summary>
 /// <remarks>
 /// When a type carries this attribute, its <see cref="UnmappedMemberHandling" /> is used in place of the options-level

@@ -11,8 +11,7 @@ public sealed partial class BencodeDocument
     /// <summary>
     /// Represents a single entry in the flat metadata index that <see cref="BencodeDocument" /> builds when parsing.
     /// Each row describes one Bencode value — or one dictionary key — and carries enough information to navigate the
-    /// document without re-reading the source, mirroring the database-row layout used internally by
-    /// <see cref="System.Text.Json.JsonDocument" />.
+    /// document without re-reading the source.
     /// </summary>
     /// <remarks>
     /// <para>

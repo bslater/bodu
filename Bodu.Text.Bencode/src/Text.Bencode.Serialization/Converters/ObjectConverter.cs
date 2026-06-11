@@ -54,7 +54,7 @@ internal sealed class ObjectConverter<T>
                 if (options.AllowDuplicateKeys)
                 {
                     // Lenient duplicate handling binds last-wins, matching the dictionary converter's indexer
-                    // assignment and System.Text.Json's duplicate-property behaviour.
+                    // assignment.
                     values[property] = converted;
                 }
                 else if (!values.TryAdd(property, converted))
