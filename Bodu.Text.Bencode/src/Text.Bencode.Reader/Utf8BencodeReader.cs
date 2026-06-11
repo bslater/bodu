@@ -89,9 +89,9 @@ public ref struct Utf8BencodeReader
     private bool _intExceedsInt64;
 
     /// <summary>
-    /// The start offset of the current integer token, used to report range errors at the token position.
+    /// The start offset of the current token within the source bytes.
     /// </summary>
-    private int _intTokenStart;
+    private int _tokenStart;
 
     /// <summary>
     /// The start offset of the current byte-string token's content.
@@ -157,6 +157,14 @@ public ref struct Utf8BencodeReader
     public readonly int BytesConsumed => _position;
 
     /// <summary>
+    /// Gets the byte offset within the source where the current token begins, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonReader.TokenStartIndex" />. For a byte string or property name the offset
+    /// addresses the length prefix, not the content.
+    /// </summary>
+    /// <returns>The current token's start offset, or zero before the first token has been read.</returns>
+    public readonly int TokenStartIndex => _tokenStart;
+
+    /// <summary>
     /// Gets the raw content bytes of the current byte-string or property-name token.
     /// </summary>
     /// <returns>The byte-string content.</returns>
@@ -192,6 +200,7 @@ public ref struct Utf8BencodeReader
         }
 
         Frame? top = _frames.Count > 0 ? _frames[^1] : null;
+        _tokenStart = _position;
         var b = _data[_position];
 
         if (b == (byte)'e')
@@ -271,7 +280,7 @@ public ref struct Utf8BencodeReader
         if (_tokenType != BencodeTokenType.Integer)
             throw new InvalidOperationException();
         if (_intExceedsInt64)
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, _intTokenStart);
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, _tokenStart);
 
         return _intValue;
     }
@@ -293,7 +302,7 @@ public ref struct Utf8BencodeReader
         if (_tokenType != BencodeTokenType.Integer)
             throw new InvalidOperationException();
         if (!_intExceedsInt64 && _intValue < 0)
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, _intTokenStart);
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, _tokenStart);
 
         return _uintValue;
     }
@@ -321,6 +330,73 @@ public ref struct Utf8BencodeReader
         }
 
         value = _uintValue;
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to read the current integer token as a 64-bit signed integer, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonReader.TryGetInt64(out long)" />.
+    /// </summary>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the current integer token fits the signed 64-bit range; <see langword="false" />
+    /// when it exceeds <see cref="long.MaxValue" /> and is therefore readable only through <see cref="GetUInt64" />.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    public readonly bool TryGetInt64(out long value)
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+
+        if (_intExceedsInt64)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = _intValue;
+        return true;
+    }
+
+    /// <summary>
+    /// Reads the current integer token as a 32-bit signed integer, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonReader.GetInt32" />.
+    /// </summary>
+    /// <returns>The integer value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer token's value is outside the <see cref="int" /> range.
+    /// </exception>
+    public readonly int GetInt32()
+    {
+        if (!TryGetInt32(out var value))
+            throw Error(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfTypeRange, nameof(Int32)), _tokenStart);
+
+        return value;
+    }
+
+    /// <summary>
+    /// Attempts to read the current integer token as a 32-bit signed integer, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonReader.TryGetInt32(out int)" />.
+    /// </summary>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the current integer token fits the <see cref="int" /> range; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    public readonly bool TryGetInt32(out int value)
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+
+        if (_intExceedsInt64 || _intValue < int.MinValue || _intValue > int.MaxValue)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = (int)_intValue;
         return true;
     }
 
@@ -403,19 +479,18 @@ public ref struct Utf8BencodeReader
     /// </summary>
     /// <param name="text">The string to compare against, which may be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="text" /> is non-null and the token's raw content equals its UTF-8
-    /// encoding; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the token's raw content equals the UTF-8 encoding of <paramref name="text" />;
+    /// otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a byte string or property name.
     /// </exception>
-    public readonly bool ValueTextEquals(string? text)
-    {
-        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
-            throw new InvalidOperationException();
-
-        return text is not null && ValueTextEquals(text.AsSpan());
-    }
+    /// <remarks>
+    /// A <see langword="null" /> argument behaves as the empty string and therefore matches an empty byte string,
+    /// matching <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(string?)" />.
+    /// </remarks>
+    public readonly bool ValueTextEquals(string? text) =>
+        ValueTextEquals(text.AsSpan());
 
     /// <summary>
     /// Copies the current byte-string or property-name token's raw content into the supplied destination, mirroring
@@ -485,6 +560,22 @@ public ref struct Utf8BencodeReader
         {
             // Read until the matching container end returns control to the original depth.
         }
+    }
+
+    /// <summary>
+    /// Attempts to skip the current value, mirroring <see cref="System.Text.Json.Utf8JsonReader.TrySkip" />.
+    /// </summary>
+    /// <returns><see langword="true" /> always, because the reader operates over a complete buffer.</returns>
+    /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
+    /// <remarks>
+    /// <see cref="System.Text.Json.Utf8JsonReader.TrySkip" /> returns <see langword="false" /> only when a non-final
+    /// streaming block ends before the value completes. This reader has no streaming mode, so the method is equivalent
+    /// to <see cref="Skip" /> and exists for source compatibility with code ported from the JSON reader.
+    /// </remarks>
+    public bool TrySkip()
+    {
+        Skip();
+        return true;
     }
 
     /// <summary>
@@ -603,7 +694,6 @@ public ref struct Utf8BencodeReader
         }
 
         _position++;
-        _intTokenStart = start;
         _tokenType = BencodeTokenType.Integer;
     }
 

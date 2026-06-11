@@ -62,16 +62,21 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
-    /// Verifies that the <see langword="string" /> overload returns <see langword="false" /> for a
-    /// <see langword="null" /> argument, because Bencode has no null token to match.
+    /// Verifies that the <see langword="string" /> overload treats a <see langword="null" /> argument as the empty
+    /// string — matching an empty byte string and nothing else — exactly as
+    /// <see cref="System.Text.Json.Utf8JsonReader.ValueTextEquals(string?)" /> does.
     /// </summary>
     [TestMethod]
-    public void ValueTextEquals_WhenTextIsNull_ShouldReturnFalse()
+    public void ValueTextEquals_WhenTextIsNull_ShouldBehaveAsEmptyString()
     {
-        var reader = new Utf8BencodeReader(Bytes("4:spam"));
-        Assert.IsTrue(reader.Read());
+        var nonEmpty = new Utf8BencodeReader(Bytes("4:spam"));
+        Assert.IsTrue(nonEmpty.Read());
+        Assert.IsFalse(nonEmpty.ValueTextEquals((string?)null));
 
-        Assert.IsFalse(reader.ValueTextEquals((string?)null));
+        var empty = new Utf8BencodeReader(Bytes("0:"));
+        Assert.IsTrue(empty.Read());
+        Assert.IsTrue(empty.ValueTextEquals((string?)null));
+        Assert.IsTrue(empty.ValueTextEquals(string.Empty));
     }
 
     /// <summary>

@@ -280,6 +280,25 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Utf8BencodeReader.TrySkip" /> behaves as <see cref="Utf8BencodeReader.Skip" /> and
+    /// returns <see langword="true" />, the contract for a reader operating over a complete buffer.
+    /// </summary>
+    [TestMethod]
+    public void TrySkip_WhenOnContainerStart_ShouldSkipSubtreeAndReturnTrue()
+    {
+        byte[] bytes = Bytes("ld3:cow3:mooei7ee");
+        var reader = new Utf8BencodeReader(bytes);
+        Assert.IsTrue(reader.Read()); // StartList
+        Assert.IsTrue(reader.Read()); // StartDictionary
+
+        Assert.IsTrue(reader.TrySkip());
+
+        Assert.AreEqual(BencodeTokenType.EndDictionary, reader.TokenType);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(7L, reader.GetInt64());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Utf8BencodeReader.Skip" /> on a container end token is a no-op.
     /// </summary>
     [TestMethod]

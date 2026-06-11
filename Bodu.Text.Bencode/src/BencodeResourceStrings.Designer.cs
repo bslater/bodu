@@ -79,6 +79,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The bencoded integer cannot be represented as {0}..
+        /// </summary>
+        internal static string Format_Invalid_BencodeIntegerOutOfTypeRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeIntegerOutOfTypeRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Invalid bencoded integer..
         /// </summary>
         internal static string Format_Invalid_BencodeInvalidInteger {

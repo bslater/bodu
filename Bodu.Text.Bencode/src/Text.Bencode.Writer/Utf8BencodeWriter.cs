@@ -125,6 +125,21 @@ public ref struct Utf8BencodeWriter
         _frames.Count;
 
     /// <summary>
+    /// Gets the customizations the writer was created with, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonWriter.Options" />.
+    /// </summary>
+    /// <returns>
+    /// The effective options, with <see cref="BencodeWriterOptions.MaxDepth" /> carrying the resolved value rather than
+    /// a zero placeholder.
+    /// </returns>
+    public readonly BencodeWriterOptions Options =>
+        new()
+        {
+            MaxDepth = _maxDepth,
+            AllowMultipleRootValues = _allowMultipleRootValues,
+        };
+
+    /// <summary>
     /// Writes the start of a list.
     /// </summary>
     /// <exception cref="InvalidOperationException">
@@ -272,6 +287,21 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
+    /// Writes the name of the dictionary key whose value follows, encoding the characters as UTF-8.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WritePropertyName(ReadOnlySpan<char> name)
+    {
+        var utf8 = new byte[Encoding.UTF8.GetByteCount(name)];
+        _ = Encoding.UTF8.GetBytes(name, utf8);
+        WritePropertyName((ReadOnlySpan<byte>)utf8);
+    }
+
+    /// <summary>
     /// Writes an integer value.
     /// </summary>
     /// <param name="value">The integer value.</param>
@@ -350,6 +380,227 @@ public ref struct Utf8BencodeWriter
     {
         ThrowHelper.ThrowIfNull(value);
         WriteByteString(Encoding.UTF8.GetBytes(value));
+    }
+
+    /// <summary>
+    /// Writes a property name and the start of a list as its value, combining <see cref="WritePropertyName(string)" />
+    /// and <see cref="WriteStartList()" /> in the style of
+    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteStartArray(string)" />.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when opening the list would exceed the configured maximum nesting depth.
+    /// </exception>
+    public readonly void WriteStartList(string name)
+    {
+        WritePropertyName(name);
+        WriteStartList();
+    }
+
+    /// <summary>
+    /// Writes a property name and the start of a list as its value.
+    /// </summary>
+    /// <param name="name">The key bytes.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when opening the list would exceed the configured maximum nesting depth.
+    /// </exception>
+    public readonly void WriteStartList(ReadOnlySpan<byte> name)
+    {
+        WritePropertyName(name);
+        WriteStartList();
+    }
+
+    /// <summary>
+    /// Writes a property name and the start of a dictionary as its value, combining
+    /// <see cref="WritePropertyName(string)" /> and <see cref="WriteStartDictionary()" /> in the style of
+    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteStartObject(string)" />.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when opening the dictionary would exceed the configured maximum nesting depth.
+    /// </exception>
+    public readonly void WriteStartDictionary(string name)
+    {
+        WritePropertyName(name);
+        WriteStartDictionary();
+    }
+
+    /// <summary>
+    /// Writes a property name and the start of a dictionary as its value.
+    /// </summary>
+    /// <param name="name">The key bytes.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when opening the dictionary would exceed the configured maximum nesting depth.
+    /// </exception>
+    public readonly void WriteStartDictionary(ReadOnlySpan<byte> name)
+    {
+        WritePropertyName(name);
+        WriteStartDictionary();
+    }
+
+    /// <summary>
+    /// Writes a property name and an integer value in one call, in the style of
+    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteNumber(string, long)" />.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <param name="value">The integer value.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteInteger(string name, long value)
+    {
+        WritePropertyName(name);
+        WriteInteger(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and an integer value in one call.
+    /// </summary>
+    /// <param name="name">The key bytes.</param>
+    /// <param name="value">The integer value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteInteger(ReadOnlySpan<byte> name, long value)
+    {
+        WritePropertyName(name);
+        WriteInteger(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and an unsigned integer value in one call, permitting the full <see cref="ulong" />
+    /// range.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <param name="value">The unsigned integer value.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteInteger(string name, ulong value)
+    {
+        WritePropertyName(name);
+        WriteInteger(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and an unsigned integer value in one call, permitting the full <see cref="ulong" />
+    /// range.
+    /// </summary>
+    /// <param name="name">The key bytes.</param>
+    /// <param name="value">The unsigned integer value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteInteger(ReadOnlySpan<byte> name, ulong value)
+    {
+        WritePropertyName(name);
+        WriteInteger(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and a byte-string value in one call.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <param name="value">The byte-string content.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteByteString(string name, ReadOnlySpan<byte> value)
+    {
+        WritePropertyName(name);
+        WriteByteString(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and a byte-string value in one call.
+    /// </summary>
+    /// <param name="name">The key bytes.</param>
+    /// <param name="value">The byte-string content.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteByteString(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
+    {
+        WritePropertyName(name);
+        WriteByteString(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and a string value in one call, encoding both as UTF-8, in the style of
+    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteString(string, string)" />.
+    /// </summary>
+    /// <param name="name">The key text.</param>
+    /// <param name="value">The string value.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> or <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteString(string name, string value)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        WritePropertyName(name);
+        WriteString(value);
+    }
+
+    /// <summary>
+    /// Writes a property name and a string value in one call, encoding the value as UTF-8.
+    /// </summary>
+    /// <param name="name">The key bytes.</param>
+    /// <param name="value">The string value.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    public readonly void WriteString(ReadOnlySpan<byte> name, string value)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        WritePropertyName(name);
+        WriteString(value);
     }
 
     /// <summary>
