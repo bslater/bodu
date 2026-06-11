@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Text;
 
 namespace Bodu.Text.Toml.Reader;
@@ -61,6 +62,23 @@ public ref partial struct Utf8TomlReader
     private readonly int _maxDepth;
 
     /// <summary>
+    /// Whether the supplied bytes contain the final block of the document, so that running out of input mid-token is
+    /// an error rather than a request for more data.
+    /// </summary>
+    private readonly bool _isFinalBlock;
+
+    /// <summary>
+    /// Whether the reader is still positioned at the document start, where a byte-order mark may be skipped.
+    /// </summary>
+    private bool _atStart;
+
+    /// <summary>
+    /// Whether the last failed read stopped because the buffer ended mid-token and more data may follow, signalling
+    /// <see cref="Read" /> to restore the pre-read snapshot.
+    /// </summary>
+    private bool _needMoreData;
+
+    /// <summary>
     /// The cursor position within <see cref="_source" />.
     /// </summary>
     private int _pos;
@@ -78,7 +96,7 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// The lexical context the next <see cref="Read" /> resumes from.
     /// </summary>
-    private TomlReaderState _state;
+    private TomlScanState _state;
 
     /// <summary>
     /// The container context stack: one entry per open array or inline table, lazily allocated on first nesting.
@@ -204,19 +222,100 @@ public ref partial struct Utf8TomlReader
     /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
     /// </remarks>
     public Utf8TomlReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
+        : this(utf8Toml, isFinalBlock: true, new TomlReaderState(options))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over one block of a document, resuming
+    /// from the state captured at the end of the previous block.
+    /// </summary>
+    /// <param name="utf8Toml">The unconsumed bytes carried over from the previous block plus the newly arrived data.</param>
+    /// <param name="isFinalBlock">
+    /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
+    /// <see cref="Read" /> return <see langword="false" /> instead of throwing when the buffer ends mid-token.
+    /// </param>
+    /// <param name="state">
+    /// The continuation state: a new <see cref="TomlReaderState" /> for the first block, or the previous reader's
+    /// <see cref="CurrentState" /> thereafter.
+    /// </param>
+    public Utf8TomlReader(ReadOnlySpan<byte> utf8Toml, bool isFinalBlock, TomlReaderState state)
     {
         _source = utf8Toml;
-        _specVersion = options.SpecVersion;
-        _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
-        _line = 1;
-        _state = TomlReaderState.Expression;
-
-        if (utf8Toml.Length >= 3 && utf8Toml[0] == 0xEF && utf8Toml[1] == 0xBB && utf8Toml[2] == 0xBF)
-        {
-            _pos = 3;
-            _lineStart = 3;
-        }
+        _isFinalBlock = isFinalBlock;
+        _specVersion = state.Options.SpecVersion;
+        _maxDepth = state.Options.MaxDepth <= 0 ? 256 : state.Options.MaxDepth;
+        _state = state.ScanState;
+        _containers = state.Containers;
+        _containerCount = state.ContainerCount;
+        _inlineAfterComma = state.InlineAfterComma;
+        _headerIsArray = state.HeaderIsArray;
+        _line = state.LinesRead + 1;
+        _lineStart = -state.BytesInLine;
+        _atStart = !state.PastStart;
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over the supplied sequence, enforcing
+    /// strict TOML v1.0.0.
+    /// </summary>
+    /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
+    /// <remarks>
+    /// A single-segment sequence is read in place; a multi-segment sequence is copied once into a contiguous buffer
+    /// before reading.
+    /// </remarks>
+    public Utf8TomlReader(in System.Buffers.ReadOnlySequence<byte> utf8Toml)
+        : this(utf8Toml, default(TomlReaderOptions))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over the supplied sequence using the
+    /// supplied options.
+    /// </summary>
+    /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
+    /// <param name="options">
+    /// The reader options controlling the specification version and maximum bracket nesting depth.
+    /// </param>
+    /// <remarks>
+    /// A single-segment sequence is read in place; a multi-segment sequence is copied once into a contiguous buffer
+    /// before reading.
+    /// </remarks>
+    public Utf8TomlReader(in System.Buffers.ReadOnlySequence<byte> utf8Toml, TomlReaderOptions options)
+        : this(GetSpan(utf8Toml), isFinalBlock: true, new TomlReaderState(options))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over one block of a document supplied
+    /// as a sequence, resuming from the state captured at the end of the previous block.
+    /// </summary>
+    /// <param name="utf8Toml">The unconsumed bytes carried over from the previous block plus the newly arrived data.</param>
+    /// <param name="isFinalBlock">
+    /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
+    /// <see cref="Read" /> return <see langword="false" /> instead of throwing when the buffer ends mid-token.
+    /// </param>
+    /// <param name="state">
+    /// The continuation state: a new <see cref="TomlReaderState" /> for the first block, or the previous reader's
+    /// <see cref="CurrentState" /> thereafter.
+    /// </param>
+    /// <remarks>
+    /// A single-segment sequence is read in place; a multi-segment sequence is copied once into a contiguous buffer
+    /// before reading.
+    /// </remarks>
+    public Utf8TomlReader(in System.Buffers.ReadOnlySequence<byte> utf8Toml, bool isFinalBlock, TomlReaderState state)
+        : this(GetSpan(utf8Toml), isFinalBlock, state)
+    {
+    }
+
+    /// <summary>
+    /// Returns the contiguous bytes of <paramref name="utf8Toml" />, copying only when the sequence has multiple
+    /// segments.
+    /// </summary>
+    /// <param name="utf8Toml">The sequence to read.</param>
+    /// <returns>The contiguous source bytes.</returns>
+    private static ReadOnlySpan<byte> GetSpan(in System.Buffers.ReadOnlySequence<byte> utf8Toml) =>
+        utf8Toml.IsSingleSegment ? utf8Toml.FirstSpan : utf8Toml.ToArray();
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -297,6 +396,41 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
+    /// Gets a value indicating whether the supplied bytes contain the final block of the document.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when running out of input mid-token is an error; <see langword="false" /> when
+    /// <see cref="Read" /> instead returns <see langword="false" /> and the caller supplies more data.
+    /// </returns>
+    public readonly bool IsFinalBlock => _isFinalBlock;
+
+    /// <summary>
+    /// Gets the number of bytes of the current block the reader has fully processed.
+    /// </summary>
+    /// <returns>
+    /// The byte count. Because the reader consumes input only in whole tokens, the caller carries the bytes from this
+    /// offset onward into the next block's buffer when resuming.
+    /// </returns>
+    public readonly long BytesConsumed => _pos;
+
+    /// <summary>
+    /// Gets the resumable state to construct the next block's reader from.
+    /// </summary>
+    /// <returns>The continuation state capturing the grammar context, line counter, and options.</returns>
+    public readonly TomlReaderState CurrentState =>
+        new(new TomlReaderOptions { SpecVersion = _specVersion, MaxDepth = _maxDepth })
+        {
+            ScanState = _state,
+            Containers = _containers,
+            ContainerCount = _containerCount,
+            InlineAfterComma = _inlineAfterComma,
+            HeaderIsArray = _headerIsArray,
+            LinesRead = _line - 1,
+            BytesInLine = _pos - _lineStart,
+            PastStart = !_atStart,
+        };
+
+    /// <summary>
     /// Gets a value indicating whether the cursor is at the end of the source.
     /// </summary>
     /// <returns><see langword="true" /> when no bytes remain.</returns>
@@ -309,32 +443,64 @@ public ref partial struct Utf8TomlReader
     private readonly byte Current => _source[_pos];
 
     /// <summary>
-    /// Advances the lexer to the next token.
+    /// Advances the reader to the next token.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document.
+    /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document, or — when
+    /// <see cref="IsFinalBlock" /> is <see langword="false" /> — when the buffer ends mid-token and the caller must
+    /// supply more data before retrying.
     /// </returns>
     /// <exception cref="TomlFormatException">Thrown when the source is not lexically valid TOML.</exception>
+    /// <remarks>
+    /// When the method returns <see langword="false" /> on a non-final block, the reader is restored to its state
+    /// before the call: <see cref="BytesConsumed" /> covers only fully tokenized input, and the caller resumes by
+    /// constructing a new reader over the remaining bytes plus new data, passing <see cref="CurrentState" />.
+    /// </remarks>
     public bool Read()
     {
+        Utf8TomlReader snapshot = this;
+        if (ReadCore())
+            return true;
+
+        // A mid-token end of buffer rewinds wholly, so the incomplete token is re-scanned from the next block.
+        if (_needMoreData)
+            this = snapshot;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Runs the scan-state machine until a token is emitted, the input ends, or more data is required.
+    /// </summary>
+    /// <returns><see langword="true" /> when a token was read.</returns>
+    private bool ReadCore()
+    {
+        if (_atStart)
+        {
+            if (!TrySkipByteOrderMark())
+                return false;
+            _atStart = false;
+        }
+
         while (true)
         {
             switch (_state)
             {
-                case TomlReaderState.Expression:
+                case TomlScanState.Expression:
                 {
                     SkipInlineWhitespace();
                     if (Eof)
                     {
-                        _tokenType = TomlTokenType.None;
+                        if (_isFinalBlock)
+                            _tokenType = TomlTokenType.None;
                         return false;
                     }
 
                     if (Current == (byte)'#')
-                    {
-                        ScanComment();
-                        return true;
-                    }
+                        return TryScanComment();
+
+                    if (PendingCarriageReturn())
+                        return NeedMoreData();
 
                     if (AtNewline())
                     {
@@ -343,20 +509,21 @@ public ref partial struct Utf8TomlReader
                     }
 
                     if (Current == (byte)'[')
-                    {
-                        StartHeader();
-                        return true;
-                    }
+                        return TryStartHeader();
 
-                    _state = TomlReaderState.KeyPath;
+                    _state = TomlScanState.KeyPath;
                     continue;
                 }
 
-                case TomlReaderState.HeaderPath:
+                case TomlScanState.HeaderPath:
                 {
                     SkipInlineWhitespace();
-                    ScanKeySegment();
+                    if (!TryScanKeySegment())
+                        return false;
                     SkipInlineWhitespace();
+
+                    if (Eof && !_isFinalBlock)
+                        return NeedMoreData();
 
                     if (!Eof && Current == (byte)'.')
                     {
@@ -371,23 +538,29 @@ public ref partial struct Utf8TomlReader
 
                         if (_headerIsArray)
                         {
+                            if (Eof && !_isFinalBlock)
+                                return NeedMoreData();
                             if (Eof || Current != (byte)']')
                                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedTable);
                             Advance();
                         }
 
                         _isFinalKeySegment = true;
-                        _state = TomlReaderState.LineEnd;
+                        _state = TomlScanState.LineEnd;
                     }
 
                     return true;
                 }
 
-                case TomlReaderState.KeyPath:
+                case TomlScanState.KeyPath:
                 {
                     SkipInlineWhitespace();
-                    ScanKeySegment();
+                    if (!TryScanKeySegment())
+                        return false;
                     SkipInlineWhitespace();
+
+                    if (Eof && !_isFinalBlock)
+                        return NeedMoreData();
 
                     if (!Eof && Current == (byte)'.')
                     {
@@ -398,7 +571,7 @@ public ref partial struct Utf8TomlReader
                     {
                         Advance();
                         _isFinalKeySegment = true;
-                        _state = TomlReaderState.Value;
+                        _state = TomlScanState.Value;
                     }
                     else
                     {
@@ -408,24 +581,27 @@ public ref partial struct Utf8TomlReader
                     return true;
                 }
 
-                case TomlReaderState.Value:
+                case TomlScanState.Value:
                 {
                     SkipInlineWhitespace();
-                    ScanValue();
-                    return true;
+                    return TryScanValue();
                 }
 
-                case TomlReaderState.ArrayBody:
+                case TomlScanState.ArrayBody:
                 {
                     SkipInlineWhitespace();
                     if (Eof)
+                    {
+                        if (!_isFinalBlock)
+                            return NeedMoreData();
                         throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidArray);
+                    }
 
                     if (Current == (byte)'#')
-                    {
-                        ScanComment();
-                        return true;
-                    }
+                        return TryScanComment();
+
+                    if (PendingCarriageReturn())
+                        return NeedMoreData();
 
                     if (AtNewline())
                     {
@@ -439,20 +615,19 @@ public ref partial struct Utf8TomlReader
                         return true;
                     }
 
-                    ScanValue();
-                    return true;
+                    return TryScanValue();
                 }
 
-                case TomlReaderState.InlineBody:
+                case TomlScanState.InlineBody:
                 {
                     SkipInlineWhitespace();
                     if (_specVersion == TomlSpecVersion.V1_1)
                     {
                         if (!Eof && Current == (byte)'#')
-                        {
-                            ScanComment();
-                            return true;
-                        }
+                            return TryScanComment();
+
+                        if (PendingCarriageReturn())
+                            return NeedMoreData();
 
                         if (AtNewline())
                         {
@@ -460,6 +635,9 @@ public ref partial struct Utf8TomlReader
                             continue;
                         }
                     }
+
+                    if (Eof && !_isFinalBlock)
+                        return NeedMoreData();
 
                     if (!Eof && Current == (byte)'}')
                     {
@@ -470,15 +648,15 @@ public ref partial struct Utf8TomlReader
                         return true;
                     }
 
-                    _state = TomlReaderState.KeyPath;
+                    _state = TomlScanState.KeyPath;
                     continue;
                 }
 
-                case TomlReaderState.AfterValue:
+                case TomlScanState.AfterValue:
                 {
                     if (_containerCount == 0)
                     {
-                        _state = TomlReaderState.LineEnd;
+                        _state = TomlScanState.LineEnd;
                         continue;
                     }
 
@@ -487,13 +665,17 @@ public ref partial struct Utf8TomlReader
                         // Inside an array: the ws-comment-newline production separates elements.
                         SkipInlineWhitespace();
                         if (Eof)
+                        {
+                            if (!_isFinalBlock)
+                                return NeedMoreData();
                             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidArray);
+                        }
 
                         if (Current == (byte)'#')
-                        {
-                            ScanComment();
-                            return true;
-                        }
+                            return TryScanComment();
+
+                        if (PendingCarriageReturn())
+                            return NeedMoreData();
 
                         if (AtNewline())
                         {
@@ -504,7 +686,7 @@ public ref partial struct Utf8TomlReader
                         if (Current == (byte)',')
                         {
                             Advance();
-                            _state = TomlReaderState.ArrayBody;
+                            _state = TomlScanState.ArrayBody;
                             continue;
                         }
 
@@ -522,10 +704,10 @@ public ref partial struct Utf8TomlReader
                     if (_specVersion == TomlSpecVersion.V1_1)
                     {
                         if (!Eof && Current == (byte)'#')
-                        {
-                            ScanComment();
-                            return true;
-                        }
+                            return TryScanComment();
+
+                        if (PendingCarriageReturn())
+                            return NeedMoreData();
 
                         if (AtNewline())
                         {
@@ -535,13 +717,17 @@ public ref partial struct Utf8TomlReader
                     }
 
                     if (Eof)
+                    {
+                        if (!_isFinalBlock)
+                            return NeedMoreData();
                         throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidInlineTable);
+                    }
 
                     if (Current == (byte)',')
                     {
                         Advance();
                         _inlineAfterComma = true;
-                        _state = TomlReaderState.InlineBody;
+                        _state = TomlScanState.InlineBody;
                         continue;
                     }
 
@@ -554,32 +740,85 @@ public ref partial struct Utf8TomlReader
                     throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidInlineTable);
                 }
 
-                case TomlReaderState.LineEnd:
+                case TomlScanState.LineEnd:
                 default:
                 {
                     SkipInlineWhitespace();
                     if (Eof)
                     {
-                        _state = TomlReaderState.Expression;
+                        if (!_isFinalBlock)
+                        {
+                            // The expression is complete; pause in LineEnd so a continuation block may not start a
+                            // new expression on the same line.
+                            return false;
+                        }
+
+                        _state = TomlScanState.Expression;
                         continue;
                     }
 
                     if (Current == (byte)'#')
-                    {
-                        ScanComment();
-                        return true;
-                    }
+                        return TryScanComment();
+
+                    if (PendingCarriageReturn())
+                        return NeedMoreData();
 
                     if (!AtNewline())
                         throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedNewline);
 
                     ConsumeNewline();
-                    _state = TomlReaderState.Expression;
+                    _state = TomlScanState.Expression;
                     continue;
                 }
             }
         }
     }
+
+    /// <summary>
+    /// Skips a leading UTF-8 byte-order mark at the document start.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when scanning may proceed; <see langword="false" /> when the buffer ends inside a
+    /// possible byte-order mark and more data is required.
+    /// </returns>
+    private bool TrySkipByteOrderMark()
+    {
+        ReadOnlySpan<byte> bom = [0xEF, 0xBB, 0xBF];
+        if (_source.Length >= 3)
+        {
+            if (_source.StartsWith(bom))
+            {
+                _pos = 3;
+                _lineStart = 3;
+            }
+
+            return true;
+        }
+
+        if (!_isFinalBlock && bom[.._source.Length].SequenceEqual(_source))
+            return NeedMoreData();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Records that the buffer ended mid-token while more data may follow, so that <see cref="Read" /> restores the
+    /// pre-read snapshot.
+    /// </summary>
+    /// <returns><see langword="false" />, for use as the failing return value at the detection site.</returns>
+    private bool NeedMoreData()
+    {
+        _needMoreData = true;
+        return false;
+    }
+
+    /// <summary>
+    /// Indicates whether the cursor sits on a carriage return at the end of a non-final buffer, where the next block
+    /// may complete a CRLF newline.
+    /// </summary>
+    /// <returns><see langword="true" /> when the byte's meaning cannot be decided without more data.</returns>
+    private readonly bool PendingCarriageReturn() =>
+        !_isFinalBlock && !Eof && Current == (byte)'\r' && _pos + 1 >= _source.Length;
 
     /// <summary>
     /// Reads the current token's text as a string, decoding escape sequences when present.
@@ -694,8 +933,15 @@ public ref partial struct Utf8TomlReader
     /// has no effect.
     /// </remarks>
     /// <exception cref="TomlFormatException">Thrown when the skipped source is not lexically valid TOML.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="IsFinalBlock" /> is <see langword="false" />; use <see cref="TrySkip" /> on partial
+    /// data, mirroring <see cref="System.Text.Json.Utf8JsonReader.Skip" />.
+    /// </exception>
     public void Skip()
     {
+        if (!_isFinalBlock)
+            throw new InvalidOperationException();
+
         if (TokenType == TomlTokenType.Key)
         {
             while (!_isFinalKeySegment)
@@ -716,17 +962,56 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Attempts to skip the current value in source order.
     /// </summary>
-    /// <returns><see langword="true" /> when the value was skipped.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was skipped; <see langword="false" /> when the buffer ends inside the
+    /// value on a non-final block, in which case the reader is restored to its position before the call.
+    /// </returns>
     /// <remarks>
-    /// The method exists for parity with <see cref="System.Text.Json.Utf8JsonReader.TrySkip" />, where a skip can fail
-    /// when the input is not yet complete. This reader always holds the final block, so the method behaves exactly
-    /// like <see cref="Skip" /> and always returns <see langword="true" />; lexically invalid skipped source still
-    /// raises <see cref="TomlFormatException" />.
+    /// On the final block the method behaves exactly like <see cref="Skip" /> and always returns
+    /// <see langword="true" />; lexically invalid skipped source still raises <see cref="TomlFormatException" />.
     /// </remarks>
     /// <exception cref="TomlFormatException">Thrown when the skipped source is not lexically valid TOML.</exception>
     public bool TrySkip()
     {
-        Skip();
+        if (_isFinalBlock)
+        {
+            Skip();
+            return true;
+        }
+
+        Utf8TomlReader restore = this;
+
+        if (TokenType == TomlTokenType.Key)
+        {
+            while (!_isFinalKeySegment)
+            {
+                if (!Read())
+                {
+                    this = restore;
+                    return false;
+                }
+            }
+
+            if (!Read())
+            {
+                this = restore;
+                return false;
+            }
+        }
+
+        if (TokenType is not (TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
+            return true;
+
+        var depth = _containerCount;
+        while (_containerCount >= depth)
+        {
+            if (!Read())
+            {
+                this = restore;
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -804,10 +1089,17 @@ public ref partial struct Utf8TomlReader
     /// Begins a header at the opening bracket, emitting a <see cref="TomlTokenType.TableHeader" /> or
     /// <see cref="TomlTokenType.ArrayTableHeader" /> token and switching to header-path context.
     /// </summary>
-    private void StartHeader()
+    /// <returns>
+    /// <see langword="true" /> when the header token was emitted; <see langword="false" /> when more data is required
+    /// to distinguish a table header from an array-of-tables header.
+    /// </returns>
+    private bool TryStartHeader()
     {
         BeginToken();
         Advance();
+
+        if (Eof && !_isFinalBlock)
+            return NeedMoreData();
 
         _headerIsArray = !Eof && Current == (byte)'[';
         if (_headerIsArray)
@@ -815,45 +1107,71 @@ public ref partial struct Utf8TomlReader
 
         _tokenType = _headerIsArray ? TomlTokenType.ArrayTableHeader : TomlTokenType.TableHeader;
         SetValueSpan(_tokenStart, 0);
-        _state = TomlReaderState.HeaderPath;
+        _state = TomlScanState.HeaderPath;
+        return true;
     }
 
     /// <summary>
     /// Scans a value of any TOML type at the cursor, emitting its first token and updating the lexical state.
     /// </summary>
-    private void ScanValue()
+    /// <returns><see langword="true" /> when a token was emitted; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanValue()
     {
         if (Eof)
+        {
+            if (!_isFinalBlock)
+                return NeedMoreData();
             throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
+        }
 
         BeginToken();
         switch (Current)
         {
             case (byte)'"':
+                // Two quotes at the end of a non-final buffer are ambiguous between an empty string and the opening
+                // of a multi-line delimiter.
+                if (!_isFinalBlock && Peek(1) == (byte)'"' && _pos + 2 >= _source.Length)
+                    return NeedMoreData();
+
                 if (Peek(1) == (byte)'"' && Peek(2) == (byte)'"')
-                    ScanMultilineBasicString();
-                else
-                    ScanBasicString();
+                {
+                    if (!TryScanMultilineBasicString())
+                        return false;
+                }
+                else if (!TryScanBasicString())
+                {
+                    return false;
+                }
+
                 _tokenType = TomlTokenType.String;
-                _state = TomlReaderState.AfterValue;
-                break;
+                _state = TomlScanState.AfterValue;
+                return true;
 
             case (byte)'\'':
+                if (!_isFinalBlock && Peek(1) == (byte)'\'' && _pos + 2 >= _source.Length)
+                    return NeedMoreData();
+
                 if (Peek(1) == (byte)'\'' && Peek(2) == (byte)'\'')
-                    ScanMultilineLiteralString();
-                else
-                    ScanLiteralString();
+                {
+                    if (!TryScanMultilineLiteralString())
+                        return false;
+                }
+                else if (!TryScanLiteralString())
+                {
+                    return false;
+                }
+
                 _tokenType = TomlTokenType.String;
-                _state = TomlReaderState.AfterValue;
-                break;
+                _state = TomlScanState.AfterValue;
+                return true;
 
             case (byte)'[':
                 Advance();
                 PushContainer(isInlineTable: false);
                 _tokenType = TomlTokenType.StartArray;
                 SetValueSpan(_tokenStart, 0);
-                _state = TomlReaderState.ArrayBody;
-                break;
+                _state = TomlScanState.ArrayBody;
+                return true;
 
             case (byte)'{':
                 Advance();
@@ -861,19 +1179,21 @@ public ref partial struct Utf8TomlReader
                 _inlineAfterComma = false;
                 _tokenType = TomlTokenType.StartInlineTable;
                 SetValueSpan(_tokenStart, 0);
-                _state = TomlReaderState.InlineBody;
-                break;
+                _state = TomlScanState.InlineBody;
+                return true;
 
             case (byte)'t':
             case (byte)'f':
-                ScanBoolean();
-                _state = TomlReaderState.AfterValue;
-                break;
+                if (!TryScanBoolean())
+                    return false;
+                _state = TomlScanState.AfterValue;
+                return true;
 
             default:
-                ScanNumberOrDateTime();
-                _state = TomlReaderState.AfterValue;
-                break;
+                if (!TryScanNumberOrDateTime())
+                    return false;
+                _state = TomlScanState.AfterValue;
+                return true;
         }
     }
 
@@ -881,34 +1201,48 @@ public ref partial struct Utf8TomlReader
     /// Scans a single bare, basic-quoted, or literal-quoted key segment, emitting a
     /// <see cref="TomlTokenType.Key" /> token.
     /// </summary>
-    private void ScanKeySegment()
+    /// <returns><see langword="true" /> when the key was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanKeySegment()
     {
         if (Eof)
+        {
+            if (!_isFinalBlock)
+                return NeedMoreData();
             throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedKey);
+        }
 
         BeginToken();
         var b = Current;
         if (b == (byte)'"')
         {
+            if (!_isFinalBlock && Peek(1) == (byte)'"' && _pos + 2 >= _source.Length)
+                return NeedMoreData();
             if (Peek(1) == (byte)'"' && Peek(2) == (byte)'"')
                 throw Error(TomlResourceStrings.Format_Invalid_TomlMultilineKey);
-            ScanBasicString();
+            if (!TryScanBasicString())
+                return false;
             _tokenType = TomlTokenType.Key;
-            return;
+            return true;
         }
 
         if (b == (byte)'\'')
         {
+            if (!_isFinalBlock && Peek(1) == (byte)'\'' && _pos + 2 >= _source.Length)
+                return NeedMoreData();
             if (Peek(1) == (byte)'\'' && Peek(2) == (byte)'\'')
                 throw Error(TomlResourceStrings.Format_Invalid_TomlMultilineKey);
-            ScanLiteralString();
+            if (!TryScanLiteralString())
+                return false;
             _tokenType = TomlTokenType.Key;
-            return;
+            return true;
         }
 
         var start = _pos;
         while (!Eof && IsBareKeyByte(Current))
             Advance();
+
+        if (Eof && !_isFinalBlock)
+            return NeedMoreData();
 
         if (_pos == start)
             throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedKey);
@@ -916,6 +1250,7 @@ public ref partial struct Utf8TomlReader
         SetValueSpan(start, _pos - start);
         _textKind = TomlScalarTextKind.Verbatim;
         _tokenType = TomlTokenType.Key;
+        return true;
     }
 
     /// <summary>
@@ -926,14 +1261,28 @@ public ref partial struct Utf8TomlReader
     /// Both TOML v1.0.0 and the v1.1.0 draft prohibit control characters other than tab (U+0000–U+0008,
     /// U+000A–U+001F, U+007F) inside a comment, so the rule is applied unconditionally.
     /// </remarks>
-    private void ScanComment()
+    /// <returns><see langword="true" /> when the comment was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanComment()
     {
         BeginToken();
         Advance();
 
         var start = _pos;
-        while (!Eof && !AtNewline())
+        while (true)
         {
+            if (Eof)
+            {
+                if (!_isFinalBlock)
+                    return NeedMoreData();
+                break;
+            }
+
+            if (PendingCarriageReturn())
+                return NeedMoreData();
+
+            if (AtNewline())
+                break;
+
             var b = Current;
             if (b == (byte)'\r')
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
@@ -941,14 +1290,19 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
 
             if (b < 0x80)
+            {
                 Advance();
-            else
-                ConsumeUtf8Sequence();
+            }
+            else if (!TryConsumeUtf8Sequence())
+            {
+                return false;
+            }
         }
 
         SetValueSpan(start, _pos - start);
         _textKind = TomlScalarTextKind.Verbatim;
         _tokenType = TomlTokenType.Comment;
+        return true;
     }
 
     /// <summary>
@@ -964,7 +1318,7 @@ public ref partial struct Utf8TomlReader
         _containerCount--;
         _tokenType = endToken;
         SetValueSpan(_tokenStart, 0);
-        _state = TomlReaderState.AfterValue;
+        _state = TomlScanState.AfterValue;
     }
 
     /// <summary>
@@ -1070,13 +1424,24 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Validates and consumes one multi-byte UTF-8 sequence at the cursor.
     /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the sequence was consumed; <see langword="false" /> when the buffer ends inside a
+    /// possibly valid sequence and more data is required.
+    /// </returns>
     /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid UTF-8 sequence.</exception>
-    private void ConsumeUtf8Sequence()
+    private bool TryConsumeUtf8Sequence()
     {
-        if (Rune.DecodeFromUtf8(_source[_pos..], out _, out var consumed) != System.Buffers.OperationStatus.Done)
-            throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidUtf8);
+        var status = Rune.DecodeFromUtf8(_source[_pos..], out _, out var consumed);
+        if (status == System.Buffers.OperationStatus.Done)
+        {
+            _pos += consumed;
+            return true;
+        }
 
-        _pos += consumed;
+        if (status == System.Buffers.OperationStatus.NeedMoreData && !_isFinalBlock)
+            return NeedMoreData();
+
+        throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidUtf8);
     }
 
     /// <summary>

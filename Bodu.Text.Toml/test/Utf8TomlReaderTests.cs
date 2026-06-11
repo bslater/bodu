@@ -220,25 +220,30 @@ public sealed partial class Utf8TomlReaderTests
     {
         var tokens = new List<string>();
         while (lexer.Read())
-        {
-            var entry = lexer.TokenType switch
-            {
-                TomlTokenType.Key => $"Key({lexer.GetString()}){(lexer.IsFinalKeySegment ? "!" : string.Empty)}",
-                TomlTokenType.String => $"String({lexer.GetString()})",
-                TomlTokenType.Comment => $"Comment({lexer.GetString()})",
-                TomlTokenType.Integer => $"Integer({lexer.GetInt64().ToString(CultureInfo.InvariantCulture)})",
-                TomlTokenType.Float => $"Float({lexer.GetDouble().ToString("R", CultureInfo.InvariantCulture)})",
-                TomlTokenType.Boolean => $"Boolean({(lexer.GetBoolean() ? "true" : "false")})",
-                TomlTokenType.OffsetDateTime => $"OffsetDateTime({lexer.GetDateTimeOffset().ToString("o", CultureInfo.InvariantCulture)})",
-                TomlTokenType.LocalDateTime => $"LocalDateTime({lexer.GetDateTime().ToString("o", CultureInfo.InvariantCulture)})",
-                TomlTokenType.LocalDate => $"LocalDate({lexer.GetDateOnly().ToString("o", CultureInfo.InvariantCulture)})",
-                TomlTokenType.LocalTime => $"LocalTime({lexer.GetTimeOnly().ToString("o", CultureInfo.InvariantCulture)})",
-                _ => lexer.TokenType.ToString(),
-            };
-
-            tokens.Add(entry);
-        }
+            tokens.Add(FormatToken(ref lexer));
 
         return tokens;
     }
+
+    /// <summary>
+    /// Formats the reader's current token as <c>TokenType(value)</c> — with a trailing <c>!</c> marking a final key
+    /// segment — for exact token-sequence assertions.
+    /// </summary>
+    /// <param name="lexer">The reader positioned on the token to format.</param>
+    /// <returns>The formatted token entry.</returns>
+    private static string FormatToken(ref Utf8TomlReader lexer) =>
+        lexer.TokenType switch
+        {
+            TomlTokenType.Key => $"Key({lexer.GetString()}){(lexer.IsFinalKeySegment ? "!" : string.Empty)}",
+            TomlTokenType.String => $"String({lexer.GetString()})",
+            TomlTokenType.Comment => $"Comment({lexer.GetString()})",
+            TomlTokenType.Integer => $"Integer({lexer.GetInt64().ToString(CultureInfo.InvariantCulture)})",
+            TomlTokenType.Float => $"Float({lexer.GetDouble().ToString("R", CultureInfo.InvariantCulture)})",
+            TomlTokenType.Boolean => $"Boolean({(lexer.GetBoolean() ? "true" : "false")})",
+            TomlTokenType.OffsetDateTime => $"OffsetDateTime({lexer.GetDateTimeOffset().ToString("o", CultureInfo.InvariantCulture)})",
+            TomlTokenType.LocalDateTime => $"LocalDateTime({lexer.GetDateTime().ToString("o", CultureInfo.InvariantCulture)})",
+            TomlTokenType.LocalDate => $"LocalDate({lexer.GetDateOnly().ToString("o", CultureInfo.InvariantCulture)})",
+            TomlTokenType.LocalTime => $"LocalTime({lexer.GetTimeOnly().ToString("o", CultureInfo.InvariantCulture)})",
+            _ => lexer.TokenType.ToString(),
+        };
 }

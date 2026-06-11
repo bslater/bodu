@@ -14,7 +14,8 @@ public ref partial struct Utf8TomlReader
     /// Scans a single-line basic string (its opening quote at the cursor), validating escapes, control characters,
     /// and UTF-8 without materializing the value.
     /// </summary>
-    private void ScanBasicString()
+    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanBasicString()
     {
         Advance();
 
@@ -22,7 +23,17 @@ public ref partial struct Utf8TomlReader
         var escapes = false;
         while (true)
         {
-            if (Eof || AtNewline())
+            if (Eof)
+            {
+                if (!_isFinalBlock)
+                    return NeedMoreData();
+                throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
+            }
+
+            if (PendingCarriageReturn())
+                return NeedMoreData();
+
+            if (AtNewline())
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
 
             var b = Current;
@@ -37,7 +48,8 @@ public ref partial struct Utf8TomlReader
             {
                 escapes = true;
                 Advance();
-                ValidateEscape();
+                if (!TryValidateEscape())
+                    return false;
                 continue;
             }
 
@@ -45,26 +57,42 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
 
             if (b < 0x80)
+            {
                 Advance();
-            else
-                ConsumeUtf8Sequence();
+            }
+            else if (!TryConsumeUtf8Sequence())
+            {
+                return false;
+            }
         }
 
         _textKind = TomlScalarTextKind.Basic;
         _hasEscapes = escapes;
+        return true;
     }
 
     /// <summary>
     /// Scans a single-line literal string (its opening apostrophe at the cursor).
     /// </summary>
-    private void ScanLiteralString()
+    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanLiteralString()
     {
         Advance();
 
         var start = _pos;
         while (true)
         {
-            if (Eof || AtNewline())
+            if (Eof)
+            {
+                if (!_isFinalBlock)
+                    return NeedMoreData();
+                throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
+            }
+
+            if (PendingCarriageReturn())
+                return NeedMoreData();
+
+            if (AtNewline())
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
 
             var b = Current;
@@ -79,22 +107,30 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
 
             if (b < 0x80)
+            {
                 Advance();
-            else
-                ConsumeUtf8Sequence();
+            }
+            else if (!TryConsumeUtf8Sequence())
+            {
+                return false;
+            }
         }
 
         _textKind = TomlScalarTextKind.Verbatim;
         _hasEscapes = false;
+        return true;
     }
 
     /// <summary>
     /// Scans a multi-line basic string (its opening triple quote at the cursor). The content range starts after the
     /// trimmed leading newline; raw newline bytes inside the content are preserved as written.
     /// </summary>
-    private void ScanMultilineBasicString()
+    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanMultilineBasicString()
     {
         _pos += 3;
+        if (PendingCarriageReturn())
+            return NeedMoreData();
         if (AtNewline())
             ConsumeNewline();
 
@@ -103,12 +139,21 @@ public ref partial struct Utf8TomlReader
         while (true)
         {
             if (Eof)
+            {
+                if (!_isFinalBlock)
+                    return NeedMoreData();
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
+            }
 
             var b = Current;
             if (b == (byte)'"')
             {
                 var run = CountRun((byte)'"');
+
+                // A quote run touching the end of a non-final buffer may still grow.
+                if (!_isFinalBlock && _pos + run >= _source.Length)
+                    return NeedMoreData();
+
                 if (run >= 3)
                 {
                     if (run - 3 > 2)
@@ -133,10 +178,18 @@ public ref partial struct Utf8TomlReader
                     continue;
                 }
 
+                // Whitespace after the backslash that reaches the buffer end may become a line-ending backslash.
+                if (!_isFinalBlock && IsPotentialLineEndingBackslash())
+                    return NeedMoreData();
+
                 Advance();
-                ValidateEscape();
+                if (!TryValidateEscape())
+                    return false;
                 continue;
             }
+
+            if (PendingCarriageReturn())
+                return NeedMoreData();
 
             if (AtNewline())
             {
@@ -148,22 +201,30 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
 
             if (b < 0x80)
+            {
                 Advance();
-            else
-                ConsumeUtf8Sequence();
+            }
+            else if (!TryConsumeUtf8Sequence())
+            {
+                return false;
+            }
         }
 
         _textKind = TomlScalarTextKind.MultilineBasic;
         _hasEscapes = escapes;
+        return true;
     }
 
     /// <summary>
     /// Scans a multi-line literal string (its opening triple apostrophe at the cursor). The content range starts
     /// after the trimmed leading newline, so decoding is a direct transcode.
     /// </summary>
-    private void ScanMultilineLiteralString()
+    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanMultilineLiteralString()
     {
         _pos += 3;
+        if (PendingCarriageReturn())
+            return NeedMoreData();
         if (AtNewline())
             ConsumeNewline();
 
@@ -171,12 +232,21 @@ public ref partial struct Utf8TomlReader
         while (true)
         {
             if (Eof)
+            {
+                if (!_isFinalBlock)
+                    return NeedMoreData();
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
+            }
 
             var b = Current;
             if (b == (byte)'\'')
             {
                 var run = CountRun((byte)'\'');
+
+                // An apostrophe run touching the end of a non-final buffer may still grow.
+                if (!_isFinalBlock && _pos + run >= _source.Length)
+                    return NeedMoreData();
+
                 if (run >= 3)
                 {
                     if (run - 3 > 2)
@@ -192,6 +262,9 @@ public ref partial struct Utf8TomlReader
                 continue;
             }
 
+            if (PendingCarriageReturn())
+                return NeedMoreData();
+
             if (AtNewline())
             {
                 ConsumeNewline();
@@ -202,23 +275,33 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
 
             if (b < 0x80)
+            {
                 Advance();
-            else
-                ConsumeUtf8Sequence();
+            }
+            else if (!TryConsumeUtf8Sequence())
+            {
+                return false;
+            }
         }
 
         _textKind = TomlScalarTextKind.Verbatim;
         _hasEscapes = false;
+        return true;
     }
 
     /// <summary>
     /// Validates and consumes the escape sequence beginning at the cursor (which is positioned just after the
     /// backslash).
     /// </summary>
-    private void ValidateEscape()
+    /// <returns><see langword="true" /> when the escape is valid; <see langword="false" /> when more data is required.</returns>
+    private bool TryValidateEscape()
     {
         if (Eof)
+        {
+            if (!_isFinalBlock)
+                return NeedMoreData();
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidEscape);
+        }
 
         var e = Current;
 
@@ -237,22 +320,19 @@ public ref partial struct Utf8TomlReader
             case (byte)'r':
             case (byte)'e':
                 Advance();
-                break;
+                return true;
 
             case (byte)'x':
                 Advance();
-                ValidateUnicodeEscape(2);
-                break;
+                return TryValidateUnicodeEscape(2);
 
             case (byte)'u':
                 Advance();
-                ValidateUnicodeEscape(4);
-                break;
+                return TryValidateUnicodeEscape(4);
 
             case (byte)'U':
                 Advance();
-                ValidateUnicodeEscape(8);
-                break;
+                return TryValidateUnicodeEscape(8);
 
             default:
                 throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidEscape);
@@ -264,10 +344,15 @@ public ref partial struct Utf8TomlReader
     /// scalar values.
     /// </summary>
     /// <param name="digits">The number of hexadecimal digits to read.</param>
-    private void ValidateUnicodeEscape(int digits)
+    /// <returns><see langword="true" /> when the escape is valid; <see langword="false" /> when more data is required.</returns>
+    private bool TryValidateUnicodeEscape(int digits)
     {
         if (_pos + digits > _source.Length)
+        {
+            if (!_isFinalBlock)
+                return NeedMoreData();
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidEscape);
+        }
 
         long value = 0;
         for (var i = 0; i < digits; i++)
@@ -282,6 +367,23 @@ public ref partial struct Utf8TomlReader
 
         if (value > 0x10FFFF || (value >= 0xD800 && value <= 0xDFFF))
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidEscape);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Indicates whether the backslash at the cursor, followed only by whitespace up to the end of the buffer (or by
+    /// whitespace and a trailing carriage return), might become a line-ending backslash once more data arrives.
+    /// </summary>
+    /// <returns><see langword="true" /> when the classification needs more data.</returns>
+    private readonly bool IsPotentialLineEndingBackslash()
+    {
+        var j = _pos + 1;
+        while (j < _source.Length && (_source[j] == (byte)' ' || _source[j] == (byte)'\t'))
+            j++;
+        if (j >= _source.Length)
+            return true;
+        return _source[j] == (byte)'\r' && j + 1 >= _source.Length;
     }
 
     /// <summary>

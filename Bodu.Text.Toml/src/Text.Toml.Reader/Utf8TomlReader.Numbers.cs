@@ -13,40 +13,66 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a boolean literal, caching its value.
     /// </summary>
-    private void ScanBoolean()
+    /// <returns><see langword="true" /> when the literal was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanBoolean()
     {
-        if (TryConsumeKeyword("true"u8))
+        if (TryMatchKeyword("true"u8, out var incomplete))
         {
             _boolValue = true;
         }
-        else if (TryConsumeKeyword("false"u8))
+        else if (!incomplete && TryMatchKeyword("false"u8, out incomplete))
         {
             _boolValue = false;
         }
         else
         {
+            if (incomplete)
+                return NeedMoreData();
             throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
         }
 
         _tokenType = TomlTokenType.Boolean;
         SetValueSpan(_tokenStart, _pos - _tokenStart);
+        return true;
     }
 
     /// <summary>
     /// Consumes <paramref name="keyword" /> when it appears at the cursor followed by a value terminator.
     /// </summary>
     /// <param name="keyword">The keyword bytes to match.</param>
+    /// <param name="incomplete">
+    /// Set to <see langword="true" /> when the buffer ends inside a possible match on a non-final block, so the
+    /// decision needs more data.
+    /// </param>
     /// <returns><see langword="true" /> when the keyword was consumed.</returns>
-    private bool TryConsumeKeyword(ReadOnlySpan<byte> keyword)
+    private bool TryMatchKeyword(ReadOnlySpan<byte> keyword, out bool incomplete)
     {
-        if (_pos + keyword.Length > _source.Length)
-            return false;
-        if (!_source.Slice(_pos, keyword.Length).SequenceEqual(keyword))
+        incomplete = false;
+
+        var available = Math.Min(keyword.Length, _source.Length - _pos);
+        if (!_source.Slice(_pos, available).SequenceEqual(keyword[..available]))
             return false;
 
-        var after = _pos + keyword.Length;
-        if (after < _source.Length && !IsValueTerminator(_source[after]))
+        if (available < keyword.Length)
+        {
+            incomplete = !_isFinalBlock;
             return false;
+        }
+
+        var after = _pos + keyword.Length;
+        if (after >= _source.Length)
+        {
+            // The terminator is unseen; on a non-final block the bare token may still grow.
+            if (!_isFinalBlock)
+            {
+                incomplete = true;
+                return false;
+            }
+        }
+        else if (!IsValueTerminator(_source[after]))
+        {
+            return false;
+        }
 
         _pos = after;
         return true;
@@ -55,31 +81,31 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a numeric value, or a date-time value when the cursor matches an RFC 3339 prefix.
     /// </summary>
-    private void ScanNumberOrDateTime()
+    /// <returns><see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanNumberOrDateTime()
     {
         if (IsDigit(Peek(0)) && IsDigit(Peek(1)) && IsDigit(Peek(2)) && IsDigit(Peek(3)) && Peek(4) == (byte)'-')
-        {
-            ScanDateTime();
-            return;
-        }
+            return TryScanDateTime();
 
         if (IsDigit(Peek(0)) && IsDigit(Peek(1)) && Peek(2) == (byte)':')
-        {
-            ScanLocalTime();
-            return;
-        }
+            return TryScanLocalTime();
 
-        ScanNumber();
+        return TryScanNumber();
     }
 
     /// <summary>
     /// Scans an integer or float token, validating its grammar and caching the decoded value.
     /// </summary>
-    private void ScanNumber()
+    /// <returns><see langword="true" /> when the number was scanned; <see langword="false" /> when more data is required.</returns>
+    private bool TryScanNumber()
     {
         var start = _pos;
         while (!Eof && !IsValueTerminator(Current))
             Advance();
+
+        // A bare token reaching the end of a non-final buffer may still grow.
+        if (Eof && !_isFinalBlock)
+            return NeedMoreData();
 
         ReadOnlySpan<byte> token = _source[start.._pos];
         if (token.Length == 0)
@@ -90,19 +116,19 @@ public ref partial struct Utf8TomlReader
         if (token.SequenceEqual("inf"u8) || token.SequenceEqual("+inf"u8))
         {
             SetFloat(double.PositiveInfinity);
-            return;
+            return true;
         }
 
         if (token.SequenceEqual("-inf"u8))
         {
             SetFloat(double.NegativeInfinity);
-            return;
+            return true;
         }
 
         if (token.SequenceEqual("nan"u8) || token.SequenceEqual("+nan"u8) || token.SequenceEqual("-nan"u8))
         {
             SetFloat(double.NaN);
-            return;
+            return true;
         }
 
         if (token.Length >= 2 && token[0] == (byte)'0')
@@ -111,15 +137,15 @@ public ref partial struct Utf8TomlReader
             {
                 case (byte)'x':
                     SetInteger(ParseRadixInteger(token[2..], 16));
-                    return;
+                    return true;
 
                 case (byte)'o':
                     SetInteger(ParseRadixInteger(token[2..], 8));
-                    return;
+                    return true;
 
                 case (byte)'b':
                     SetInteger(ParseRadixInteger(token[2..], 2));
-                    return;
+                    return true;
             }
         }
 
@@ -128,6 +154,7 @@ public ref partial struct Utf8TomlReader
             SetFloat(ParseFloat(token));
         else
             SetInteger(ParseDecimalInteger(token));
+        return true;
     }
 
     /// <summary>

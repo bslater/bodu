@@ -98,6 +98,39 @@ public ref struct TomlDocumentReader
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied sequence,
+    /// enforcing strict TOML v1.0.0.
+    /// </summary>
+    /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
+    /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
+    /// <remarks>
+    /// A single-segment sequence is parsed in place; a multi-segment sequence is copied once into a contiguous buffer
+    /// before parsing.
+    /// </remarks>
+    public TomlDocumentReader(in System.Buffers.ReadOnlySequence<byte> utf8Toml)
+        : this(utf8Toml, default)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied sequence using
+    /// the supplied options.
+    /// </summary>
+    /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
+    /// <param name="options">
+    /// The reader options controlling the specification version and maximum nesting depth.
+    /// </param>
+    /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
+    /// <remarks>
+    /// A single-segment sequence is parsed in place; a multi-segment sequence is copied once into a contiguous buffer
+    /// before parsing.
+    /// </remarks>
+    public TomlDocumentReader(in System.Buffers.ReadOnlySequence<byte> utf8Toml, TomlReaderOptions options)
+        : this(utf8Toml.IsSingleSegment ? utf8Toml.FirstSpan : System.Buffers.BuffersExtensions.ToArray(utf8Toml), options)
+    {
+    }
+
+    /// <summary>
     /// Gets the kind of the current token.
     /// </summary>
     /// <returns>
