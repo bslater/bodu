@@ -18,7 +18,8 @@ namespace Bodu.Text.Toml.Nodes;
 /// Entries are kept in insertion order, which is also the order in which they are serialized: the TOML writer emits a
 /// table's members in document order rather than re-sorting them. A value may be <see langword="null" /> in memory, but
 /// a table containing a <see langword="null" /> value cannot be written because TOML has no null token. Adding a node
-/// that already belongs to another container throws an <see cref="InvalidOperationException" />.
+/// that already belongs to another container throws an <see cref="InvalidOperationException" />; removing or replacing
+/// a value detaches it, clearing its <see cref="TomlNode.Parent" /> so it can be added to another container.
 /// </remarks>
 public sealed class TomlObject
     : TomlNode, IDictionary<string, TomlNode?>
@@ -102,6 +103,9 @@ public sealed class TomlObject
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to another container.
     /// </exception>
+    /// <remarks>
+    /// Assigning over an existing entry detaches the replaced node, clearing its <see cref="TomlNode.Parent" />.
+    /// </remarks>
     public new TomlNode? this[string key]
     {
         get => _properties[key];
@@ -109,6 +113,10 @@ public sealed class TomlObject
         {
             ThrowHelper.ThrowIfNull(key);
             value?.AssignParent(this);
+
+            if (_properties.TryGetValue(key, out TomlNode? existing) && existing is not null && !ReferenceEquals(existing, value))
+                existing.Parent = null;
+
             _properties[key] = value;
         }
     }
@@ -130,8 +138,16 @@ public sealed class TomlObject
         Add(item.Key, item.Value);
 
     /// <inheritdoc />
-    public void Clear() =>
+    public void Clear()
+    {
+        foreach (TomlNode? child in _properties.Values)
+        {
+            if (child is not null)
+                child.Parent = null;
+        }
+
         _properties.Clear();
+    }
 
     /// <inheritdoc />
     public bool Contains(KeyValuePair<string, TomlNode?> item) =>
@@ -150,12 +166,28 @@ public sealed class TomlObject
         _properties.GetEnumerator();
 
     /// <inheritdoc />
-    public bool Remove(string key) =>
-        _properties.Remove(key);
+    public bool Remove(string key)
+    {
+        if (!_properties.Remove(key, out TomlNode? removed))
+            return false;
+
+        if (removed is not null)
+            removed.Parent = null;
+
+        return true;
+    }
 
     /// <inheritdoc />
-    public bool Remove(KeyValuePair<string, TomlNode?> item) =>
-        ((ICollection<KeyValuePair<string, TomlNode?>>)_properties).Remove(item);
+    public bool Remove(KeyValuePair<string, TomlNode?> item)
+    {
+        if (!((ICollection<KeyValuePair<string, TomlNode?>>)_properties).Remove(item))
+            return false;
+
+        if (item.Value is not null)
+            item.Value.Parent = null;
+
+        return true;
+    }
 
     /// <inheritdoc />
     public bool TryGetValue(string key, out TomlNode? value) =>

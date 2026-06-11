@@ -18,7 +18,8 @@ namespace Bodu.Text.Toml.Nodes;
 /// Elements are kept in insertion order, which is also the order in which they are serialized. An element may be
 /// <see langword="null" /> in memory, but an array containing a <see langword="null" /> element cannot be written
 /// because TOML has no null token. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />.
+/// <see cref="InvalidOperationException" />; removing or replacing an element detaches it, clearing its
+/// <see cref="TomlNode.Parent" /> so it can be added to another container.
 /// </remarks>
 public sealed class TomlArray
     : TomlNode, IList<TomlNode?>
@@ -75,12 +76,20 @@ public sealed class TomlArray
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to another container.
     /// </exception>
+    /// <remarks>
+    /// Assigning over an existing element detaches the replaced node, clearing its <see cref="TomlNode.Parent" />.
+    /// </remarks>
     public new TomlNode? this[int index]
     {
         get => _items[index];
         set
         {
+            TomlNode? existing = _items[index];
             value?.AssignParent(this);
+
+            if (existing is not null && !ReferenceEquals(existing, value))
+                existing.Parent = null;
+
             _items[index] = value;
         }
     }
@@ -97,8 +106,16 @@ public sealed class TomlArray
     }
 
     /// <inheritdoc />
-    public void Clear() =>
+    public void Clear()
+    {
+        foreach (TomlNode? item in _items)
+        {
+            if (item is not null)
+                item.Parent = null;
+        }
+
         _items.Clear();
+    }
 
     /// <inheritdoc />
     public bool Contains(TomlNode? item) =>
@@ -124,12 +141,26 @@ public sealed class TomlArray
     }
 
     /// <inheritdoc />
-    public bool Remove(TomlNode? item) =>
-        _items.Remove(item);
+    public bool Remove(TomlNode? item)
+    {
+        if (!_items.Remove(item))
+            return false;
+
+        if (item is not null)
+            item.Parent = null;
+
+        return true;
+    }
 
     /// <inheritdoc />
-    public void RemoveAt(int index) =>
+    public void RemoveAt(int index)
+    {
+        TomlNode? removed = _items[index];
         _items.RemoveAt(index);
+
+        if (removed is not null)
+            removed.Parent = null;
+    }
 
     /// <inheritdoc />
     public override void WriteTo(Utf8TomlWriter writer)

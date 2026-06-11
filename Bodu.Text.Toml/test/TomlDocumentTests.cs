@@ -14,7 +14,7 @@ namespace Bodu.Text.Toml;
 /// <see cref="TomlProperty" />), the <see cref="System.Text.Json.JsonDocument" /> analogue for TOML.
 /// </summary>
 [TestClass]
-public class TomlDocumentTests
+public partial class TomlDocumentTests
 {
     /// <summary>
     /// A representative document exercising a header table, nested keys, an array, and one of each scalar kind.

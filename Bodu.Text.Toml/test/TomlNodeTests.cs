@@ -15,7 +15,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// <see cref="TomlSerializer" />.
 /// </summary>
 [TestClass]
-public class TomlNodeTests
+public partial class TomlNodeTests
 {
     /// <summary>
     /// Verifies that parsing a table document yields a <see cref="TomlObject" /> whose entries are readable through the
