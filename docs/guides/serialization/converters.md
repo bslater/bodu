@@ -6,7 +6,7 @@ title: Writing converters
 
 A converter customises how a single type is read and written: derive `TomlConverter<T>` (<xref:Bodu.Text.Toml.Serialization.TomlConverter`1>) or `BencodeConverter<T>` (<xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>), and read or write values through the format's reader and writer. A TOML converter reads through <xref:Bodu.Text.Toml.Reader.TomlDocumentReader> and writes through <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter>; a Bencode converter reads through <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and writes through <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter>.
 
-Because each library is self-contained, a converter is written against one format's reader/writer. The pattern is identical across the two; only the prefix and the reader/writer types differ.
+Because each library is self-contained, a converter is written against one format's reader/writer. The pattern is identical across the two; only the prefix and the reader/writer types differ. The set of converters each library already ships — and therefore the types you never need to write one for — is listed in the [built-in converter catalog](builtin-converters.md).
 
 ## Pattern 1 — Convert a value type
 
@@ -80,7 +80,7 @@ The factory itself never reads or writes a value: the serializer calls `CanConve
 
 ## Pattern 5 — Map a type the format cannot represent
 
-Some BCL types have no native form in a format and are rejected unless a converter maps them: Booleans, floating-point, and date-times in **Bencode**; `decimal` and `TimeSpan` in **TOML**. A converter bridges the gap — for example, writing a `bool` as a Bencode integer:
+Some BCL types have no native form in a format and are rejected unless a converter maps them: in **Bencode** that is Booleans, floating-point types, `char`, `Guid`, `Uri`, `Version`, `TimeSpan`, and the date-time types — by design, the library never invents a lossy representation implicitly. (TOML has built-in mappings for all of these, including `decimal` and `TimeSpan`; see the [built-in converter catalog](builtin-converters.md).) A converter bridges the gap — for example, writing a `bool` as a Bencode integer:
 
 ```csharp
 using Bodu.Text.Bencode.Reader;

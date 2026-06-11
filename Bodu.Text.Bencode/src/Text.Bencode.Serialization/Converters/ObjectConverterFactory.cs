@@ -15,7 +15,9 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// interfaces, abstract types, and the well-known framework scalar types Bencode cannot natively represent (for example
 /// <see cref="DateTime" />, <see cref="Guid" />, <see cref="TimeSpan" />, and <see cref="Uri" />) — so that an
 /// unsupported type surfaces as a missing-converter error rather than being mapped to a dictionary of its incidental
-/// public properties, which would lose data or recurse on self-referential members.
+/// public properties, which would lose data or recurse on self-referential members. <see cref="object" /> has a
+/// dedicated built-in converter earlier in the resolution order, so its rejection here is unreachable through the
+/// default list and guards only against a reordering.
 /// </remarks>
 internal sealed class ObjectConverterFactory
     : BencodeConverterFactory

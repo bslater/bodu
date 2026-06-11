@@ -312,3 +312,5 @@
       href: serialization/attributes.md
     - name: Writing converters
       href: serialization/converters.md
+    - name: Built-in converter catalog
+      href: serialization/builtin-converters.md

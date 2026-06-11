@@ -102,6 +102,11 @@ public sealed class TomlSerializerOptions
     private TomlByteArrayHandling _byteArrayHandling = TomlByteArrayHandling.IntegerArray;
 
     /// <summary>
+    /// The representation used when writing a decimal value.
+    /// </summary>
+    private TomlDecimalHandling _decimalHandling = TomlDecimalHandling.Float;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="TomlSerializerOptions" /> class with default (general-purpose)
     /// settings.
     /// </summary>
@@ -344,6 +349,30 @@ public sealed class TomlSerializerOptions
     }
 
     /// <summary>
+    /// Gets or sets the representation used when writing a <see cref="decimal" /> value.
+    /// </summary>
+    /// <value>The decimal handling; <see cref="TomlDecimalHandling.Float" /> by default.</value>
+    /// <returns>The configured decimal handling.</returns>
+    /// <remarks>
+    /// The setting controls only how a decimal is written; on read the serializer accepts a TOML float, integer, or
+    /// string regardless of this value. <see cref="TomlDecimalHandling.Float" /> maps to TOML's native float form but
+    /// loses precision beyond what an IEEE 754 binary64 value can hold; <see cref="TomlDecimalHandling.String" />
+    /// preserves the value exactly at the cost of a quoted representation.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public TomlDecimalHandling DecimalHandling
+    {
+        get => _decimalHandling;
+        set
+        {
+            VerifyMutable();
+            ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+            _decimalHandling = value;
+        }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the options have become read-only.
     /// </summary>
     /// <returns><see langword="true" /> once the options have been used; otherwise <see langword="false" />.</returns>
@@ -394,11 +423,16 @@ public sealed class TomlSerializerOptions
     /// The classification resolves the type's converter and inspects its kind, so a user converter that produces a
     /// table is accepted at the root and a scalar, array, or enumeration converter is rejected. A
     /// <see cref="Nodes.TomlNode" /> root is also accepted, deferring the table-root check to the node, which enforces
-    /// it when written.
+    /// it when written; a <see cref="Document.TomlElement" />, <see cref="Document.TomlDocument" />, or
+    /// <see cref="object" /> root likewise defers to the writer's own root state machine, because the written kind is
+    /// known only at write time.
     /// </remarks>
     internal bool RootMapsToTable(Type type)
     {
         if (typeof(Nodes.TomlNode).IsAssignableFrom(type))
+            return true;
+
+        if (type == typeof(Document.TomlElement) || type == typeof(Document.TomlDocument) || type == typeof(object))
             return true;
 
         TomlConverter converter = GetConverter(type);

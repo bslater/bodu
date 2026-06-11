@@ -233,6 +233,102 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Memory{T}" /> and <see cref="ReadOnlyMemory{T}" /> of <see cref="byte" /> serialize to
+    /// the native length-prefixed byte string and round-trip losslessly, including binary payloads and the empty
+    /// memory.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemoryOfByte_ShouldRoundTripAsByteString()
+    {
+        Memory<byte> payload = new byte[] { 0x00, 0x61, 0xff };
+
+        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<Memory<byte>> { Value = payload });
+        byte[] expected = [.. Encoding.Latin1.GetBytes("d5:Value3:"), 0x00, 0x61, 0xff, (byte)'e'];
+        CollectionAssert.AreEqual(expected, bytes);
+
+        Memory<byte> roundTripped = BencodeSerializer.Deserialize<SingleValueModel<Memory<byte>>>(bytes).Value;
+        CollectionAssert.AreEqual(payload.ToArray(), roundTripped.ToArray());
+
+        byte[] readOnly = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = payload });
+        CollectionAssert.AreEqual(expected, readOnly);
+
+        byte[] empty = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = ReadOnlyMemory<byte>.Empty });
+        Assert.AreEqual("d5:Value0:e", Encoding.Latin1.GetString(empty));
+        Assert.AreEqual(0, BencodeSerializer.Deserialize<SingleValueModel<ReadOnlyMemory<byte>>>(empty).Value.Length);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a non-byte-string token into a memory-of-byte member throws
+    /// <see cref="BencodeSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerIntoMemoryOfByte_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei5ee");
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<SingleValueModel<Memory<byte>>>(bytes);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Int128" /> values within the signed 64-bit surface and <see cref="UInt128" /> values
+    /// within the unsigned 64-bit surface round-trip to the canonical <c>i…e</c> form, including at the boundaries.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_When128BitWithin64BitSurface_ShouldRoundTrip()
+    {
+        byte[] signed = BencodeSerializer.Serialize(new SingleValueModel<Int128> { Value = long.MinValue });
+        Assert.AreEqual("d5:Valuei-9223372036854775808ee", Encoding.Latin1.GetString(signed));
+        Assert.AreEqual((Int128)long.MinValue, BencodeSerializer.Deserialize<SingleValueModel<Int128>>(signed).Value);
+
+        byte[] unsigned = BencodeSerializer.Serialize(new SingleValueModel<UInt128> { Value = ulong.MaxValue });
+        Assert.AreEqual("d5:Valuei18446744073709551615ee", Encoding.Latin1.GetString(unsigned));
+        Assert.AreEqual((UInt128)ulong.MaxValue, BencodeSerializer.Deserialize<SingleValueModel<UInt128>>(unsigned).Value);
+    }
+
+    /// <summary>
+    /// Verifies that serializing an <see cref="Int128" /> outside the signed 64-bit surface or a
+    /// <see cref="UInt128" /> outside the unsigned 64-bit surface throws
+    /// <see cref="BencodeSerializationException" /> carrying the checked-conversion <see cref="OverflowException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_When128BitExceeds64BitSurface_ShouldThrowBencodeSerializationException()
+    {
+        var signedEx = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(new SingleValueModel<Int128> { Value = Int128.MaxValue });
+        });
+
+        Assert.IsNotNull(signedEx.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(signedEx.InnerException);
+
+        var unsignedEx = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(new SingleValueModel<UInt128> { Value = (UInt128)ulong.MaxValue + 1 });
+        });
+
+        Assert.IsNotNull(unsignedEx.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(unsignedEx.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a negative Bencode integer into a <see cref="UInt128" /> member throws
+    /// <see cref="BencodeSerializationException" />, matching the overflow contract of <see cref="ulong" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerIntoUInt128_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<SingleValueModel<UInt128>>(bytes);
+        });
+    }
+
+    /// <summary>
     /// Verifies that a defined enumeration value serializes to its member-name byte string and round-trips.
     /// </summary>
     [TestMethod]

@@ -9,6 +9,11 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <summary>
 /// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width integer types.
 /// </summary>
+/// <remarks>
+/// The 128-bit types are included even though TOML integers are 64-bit signed: the converter's checked conversions
+/// confine them to the storable range, so a value outside that range surfaces as a serialization error on write rather
+/// than wrapping, and every stored integer reads back exactly.
+/// </remarks>
 internal sealed class IntegerConverterFactory
     : TomlConverterFactory
 {
@@ -27,6 +32,8 @@ internal sealed class IntegerConverterFactory
         typeof(ulong),
         typeof(nint),
         typeof(nuint),
+        typeof(Int128),
+        typeof(UInt128),
     ];
 
     /// <inheritdoc />

@@ -170,6 +170,16 @@ public ref struct Utf8BencodeReader
     public readonly ReadOnlySpan<byte> ValueSpan => _data.Slice(_valueStart, _valueLength);
 
     /// <summary>
+    /// Gets the raw input bytes between the supplied absolute offsets, used by the serializer's document bridges to
+    /// capture a value subtree's complete encoded form.
+    /// </summary>
+    /// <param name="start">The inclusive start offset.</param>
+    /// <param name="end">The exclusive end offset.</param>
+    /// <returns>The raw input slice.</returns>
+    internal readonly ReadOnlySpan<byte> Slice(int start, int end) =>
+        _data[start..end];
+
+    /// <summary>
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>

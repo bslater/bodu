@@ -13,7 +13,9 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <remarks>
 /// The factory deliberately declines primitive and special scalar types — <see cref="decimal" />, enumerations,
 /// interfaces, abstract types, and the like — so that an unsupported type surfaces as a missing-converter error rather
-/// than being mapped to an empty dictionary.
+/// than being mapped to an empty dictionary. <see cref="decimal" /> and <see cref="object" /> have dedicated built-in
+/// converters earlier in the resolution order, so their rejections here are unreachable through the default list and
+/// guard only against a reordering.
 /// </remarks>
 internal sealed class ObjectConverterFactory
     : TomlConverterFactory

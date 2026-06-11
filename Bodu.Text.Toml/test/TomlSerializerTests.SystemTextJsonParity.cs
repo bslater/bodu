@@ -96,6 +96,98 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="Version" /> serializes to the same string content as
+    /// <see cref="System.Text.Json.JsonSerializer" /> and that both reject the same padded input on read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenVersion_ShouldMatchSystemTextJsonStringForm()
+    {
+        var value = Version.Parse("1.2.3.4");
+
+        string json = JsonSerializer.Serialize(new ValueModel<Version> { Value = value });
+        string toml = TomlSerializer.Serialize(new ValueModel<Version> { Value = value });
+
+        Assert.IsTrue(json.Contains("\"1.2.3.4\"", StringComparison.Ordinal), "System.Text.Json emitted the component string.");
+        Assert.IsTrue(toml.Contains("\"1.2.3.4\"", StringComparison.Ordinal), "TomlSerializer should emit the same component string.");
+
+        _ = Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<ValueModel<Version>>("{\"Value\":\" 1.2.3\"}"));
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() => TomlSerializer.Deserialize<ValueModel<Version>>("Value = \" 1.2.3\"\n"));
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TimeSpan" /> serializes to the same constant-format string content as
+    /// <see cref="System.Text.Json.JsonSerializer" /> and round-trips through both serializers to the same value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenTimeSpan_ShouldMatchSystemTextJsonConstantFormat()
+    {
+        TimeSpan value = new TimeSpan(1, 2, 3, 4, 567);
+
+        string json = JsonSerializer.Serialize(new ValueModel<TimeSpan> { Value = value });
+        string toml = TomlSerializer.Serialize(new ValueModel<TimeSpan> { Value = value });
+
+        Assert.IsTrue(json.Contains("\"1.02:03:04.5670000\"", StringComparison.Ordinal), "System.Text.Json emitted the constant format.");
+        Assert.IsTrue(toml.Contains("\"1.02:03:04.5670000\"", StringComparison.Ordinal), "TomlSerializer should emit the same constant format.");
+
+        Assert.AreEqual(
+            JsonSerializer.Deserialize<ValueModel<TimeSpan>>(json)!.Value,
+            TomlSerializer.Deserialize<ValueModel<TimeSpan>>(toml).Value);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Half" /> round-trips through both serializers to the same value, each through its
+    /// native numeric form.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenHalf_ShouldRoundTripLikeSystemTextJson()
+    {
+        var value = (Half)1.5;
+
+        string json = JsonSerializer.Serialize(new ValueModel<Half> { Value = value });
+        string toml = TomlSerializer.Serialize(new ValueModel<Half> { Value = value });
+
+        Assert.AreEqual(
+            JsonSerializer.Deserialize<ValueModel<Half>>(json)!.Value,
+            TomlSerializer.Deserialize<ValueModel<Half>>(toml).Value);
+    }
+
+    /// <summary>
+    /// Verifies that a full-precision <see cref="decimal" /> under <see cref="TomlDecimalHandling.String" /> preserves
+    /// the same digit text <see cref="System.Text.Json.JsonSerializer" /> emits as a JSON number, and that both
+    /// round-trip the value exactly.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenDecimalStringHandling_ShouldPreservePrecisionLikeSystemTextJson()
+    {
+        const decimal value = 0.1234567890123456789012345678m;
+
+        string json = JsonSerializer.Serialize(new ValueModel<decimal> { Value = value });
+        var tomlOptions = new TomlSerializerOptions { DecimalHandling = TomlDecimalHandling.String };
+        string toml = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value }, tomlOptions);
+
+        Assert.IsTrue(json.Contains("0.1234567890123456789012345678", StringComparison.Ordinal), "System.Text.Json preserved the digits as a JSON number.");
+        Assert.IsTrue(toml.Contains("0.1234567890123456789012345678", StringComparison.Ordinal), "TomlSerializer should preserve the same digits in its string form.");
+
+        Assert.AreEqual(
+            JsonSerializer.Deserialize<ValueModel<decimal>>(json)!.Value,
+            TomlSerializer.Deserialize<ValueModel<decimal>>(toml, tomlOptions).Value);
+    }
+
+    /// <summary>
+    /// Verifies that an <see cref="object" />-typed member dispatches on its runtime type in both serializers, emitting
+    /// the boxed value's native form rather than an empty object.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenObjectMemberHoldsBoxedValue_ShouldDispatchLikeSystemTextJson()
+    {
+        string json = JsonSerializer.Serialize(new ValueModel<object> { Value = 5 });
+        string toml = TomlSerializer.Serialize(new ValueModel<object> { Value = 5 });
+
+        Assert.IsTrue(json.Contains(":5", StringComparison.Ordinal), "System.Text.Json wrote the boxed integer through its runtime type.");
+        Assert.IsTrue(toml.Contains("Value = 5", StringComparison.Ordinal), "TomlSerializer should write the boxed integer through its runtime type.");
+    }
+
+    /// <summary>
     /// A model with two Pascal-cased members used to compare naming-policy output across serializers.
     /// </summary>
     private sealed class ParityModel

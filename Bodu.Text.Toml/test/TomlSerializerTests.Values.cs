@@ -16,7 +16,8 @@ namespace Bodu.Text.Toml;
 /// Verifies the native scalar value model of <see cref="TomlSerializer" />: integers (including the range-checked
 /// boundaries and overflow on read), floats (fractional, exponent, and the <c>inf</c>/<c>-inf</c>/<c>nan</c>
 /// sentinels), the four date-time kinds, Booleans, strings with escaping, characters, <see cref="Guid" />,
-/// <see cref="Uri" />, byte arrays under both handlings, and the types TOML cannot natively represent.
+/// <see cref="Uri" />, <see cref="Version" />, <see cref="TimeSpan" />, <see cref="Half" />, the 128-bit integers,
+/// byte arrays and memory-of-byte under both handlings, and the precedence of a registered converter over a built-in.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -260,6 +261,65 @@ public partial class TomlSerializerTests
         Assert.AreEqual(long.MaxValue, RoundTrip(long.MaxValue));
         Assert.AreEqual((nint)42, RoundTrip<nint>(42));
         Assert.AreEqual((nuint)42, RoundTrip<nuint>(42));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Int128" /> and <see cref="UInt128" /> values within the signed 64-bit range TOML can
+    /// store round-trip exactly, including at the boundaries.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_When128BitWithinInt64Range_ShouldRoundTrip()
+    {
+        Assert.AreEqual((Int128)long.MaxValue, RoundTrip((Int128)long.MaxValue));
+        Assert.AreEqual((Int128)long.MinValue, RoundTrip((Int128)long.MinValue));
+        Assert.AreEqual((UInt128)long.MaxValue, RoundTrip((UInt128)long.MaxValue));
+        Assert.AreEqual((Int128)0, RoundTrip((Int128)0));
+        Assert.AreEqual((UInt128)0, RoundTrip((UInt128)0));
+    }
+
+    /// <summary>
+    /// Verifies that serializing an <see cref="Int128" /> outside the signed 64-bit range TOML can store throws
+    /// <see cref="TomlSerializationException" /> carrying the checked-conversion <see cref="OverflowException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenInt128ExceedsInt64Range_ShouldThrowTomlSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = Serialize(Int128.MaxValue);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see cref="UInt128" /> outside the signed 64-bit range TOML can store throws
+    /// <see cref="TomlSerializationException" /> carrying the checked-conversion <see cref="OverflowException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenUInt128ExceedsInt64Range_ShouldThrowTomlSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = Serialize((UInt128)long.MaxValue + 1);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that reading a negative TOML integer into a <see cref="UInt128" /> member throws
+    /// <see cref="TomlSerializationException" />, demonstrating the checked conversion on the read path.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntoUInt128_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<UInt128>>("Value = -1\n");
+        });
     }
 
     /// <summary>
@@ -514,34 +574,165 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing a <see cref="decimal" /> with no registered converter throws
-    /// <see cref="NotSupportedException" />, because TOML has no native form for it.
+    /// Verifies that a <see cref="Version" /> serializes to its component string form and round-trips, across the two-,
+    /// three-, and four-component shapes.
     /// </summary>
+    /// <param name="text">The version text under test.</param>
     [TestMethod]
-    public void Serialize_WhenDecimalAndNoConverter_ShouldThrowNotSupportedException()
+    [DataRow("1.2")]
+    [DataRow("1.2.3")]
+    [DataRow("10.20.30.40")]
+    public void SerializeDeserialize_WhenVersion_ShouldEmitStringAndRoundTrip(string text)
     {
-        Assert.ThrowsExactly<NotSupportedException>(() =>
+        var value = Version.Parse(text);
+
+        Assert.AreEqual($"Value = \"{text}\"\n", Serialize(value));
+        Assert.AreEqual(value, RoundTrip(value));
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="Version" /> from a string with leading or trailing whitespace throws
+    /// <see cref="TomlSerializationException" />, matching the strictness of the
+    /// <see cref="System.Text.Json" /> converter.
+    /// </summary>
+    /// <param name="padded">The padded version text under test.</param>
+    [TestMethod]
+    [DataRow(" 1.2.3")]
+    [DataRow("1.2.3 ")]
+    public void Deserialize_WhenVersionStringPadded_ShouldThrowTomlSerializationException(string padded)
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
-            _ = Serialize(1.5m);
+            _ = TomlSerializer.Deserialize<ValueModel<Version>>($"Value = \"{padded}\"\n");
         });
     }
 
     /// <summary>
-    /// Verifies that deserializing a <see cref="decimal" /> with no registered converter throws
-    /// <see cref="NotSupportedException" />, because TOML has no native form for it.
+    /// Verifies that reading a <see cref="Version" /> from a string that is not a parsable version throws
+    /// <see cref="TomlSerializationException" />.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenDecimalAndNoConverter_ShouldThrowNotSupportedException()
+    public void Deserialize_WhenVersionStringInvalid_ShouldThrowTomlSerializationException()
     {
-        Assert.ThrowsExactly<NotSupportedException>(() =>
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
-            _ = TomlSerializer.Deserialize<ValueModel<decimal>>("Value = 1.5\n");
+            _ = TomlSerializer.Deserialize<ValueModel<Version>>("Value = \"not-a-version\"\n");
         });
     }
 
     /// <summary>
-    /// Verifies that a custom converter registered for <see cref="decimal" /> supplies the otherwise-absent native form,
-    /// proving the escape hatch for a type TOML cannot represent.
+    /// Verifies that reading a <see cref="Version" /> from a non-string token throws
+    /// <see cref="TomlSerializationException" />, because the converter requires a string.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenVersionFromInteger_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Version>>("Value = 1\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TimeSpan" /> serializes to the invariant constant (<c>"c"</c>) string form and
+    /// round-trips, across the zero, negative, multi-day, and fractional-second shapes.
+    /// </summary>
+    /// <param name="days">The day component of the value under test.</param>
+    /// <param name="ticksWithinDay">The remaining ticks beyond whole days, carrying the sub-day component.</param>
+    /// <param name="expected">The expected canonical constant-format text.</param>
+    [TestMethod]
+    [DataRow(0, 0L, "00:00:00")]
+    [DataRow(0, -300_000_000L, "-00:00:30")]
+    [DataRow(1, 73_845_670_000L, "1.02:03:04.5670000")]
+    [DataRow(0, 335_400_000_000L, "09:19:00")]
+    public void SerializeDeserialize_WhenTimeSpan_ShouldEmitConstantFormatAndRoundTrip(int days, long ticksWithinDay, string expected)
+    {
+        TimeSpan value = TimeSpan.FromDays(days) + TimeSpan.FromTicks(ticksWithinDay);
+
+        Assert.AreEqual($"Value = \"{expected}\"\n", Serialize(value));
+        Assert.AreEqual(value, RoundTrip(value));
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="TimeSpan" /> from a string that does not match the constant format throws
+    /// <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTimeSpanStringInvalid_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<TimeSpan>>("Value = \"not-a-timespan\"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="TimeSpan" /> from a non-string token throws
+    /// <see cref="TomlSerializationException" />, because the converter requires the constant-format string.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTimeSpanFromInteger_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<TimeSpan>>("Value = 30\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Half" /> value serializes to a TOML float through the exact widening to
+    /// <see cref="double" />, including the <c>nan</c>, <c>inf</c>, and <c>-inf</c> sentinels.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenHalf_ShouldEmitFloatText()
+    {
+        Assert.AreEqual("Value = 1.5\n", Serialize((Half)1.5));
+        Assert.AreEqual("Value = 65504.0\n", Serialize(Half.MaxValue));
+        Assert.AreEqual("Value = nan\n", Serialize(Half.NaN));
+        Assert.AreEqual("Value = inf\n", Serialize(Half.PositiveInfinity));
+        Assert.AreEqual("Value = -inf\n", Serialize(Half.NegativeInfinity));
+    }
+
+    /// <summary>
+    /// Verifies that finite and non-finite <see cref="Half" /> values round-trip through TOML to equal values.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenHalf_ShouldRoundTrip()
+    {
+        Assert.AreEqual((Half)1.5, RoundTrip((Half)1.5));
+        Assert.AreEqual(Half.MaxValue, RoundTrip(Half.MaxValue));
+        Assert.AreEqual(Half.PositiveInfinity, RoundTrip(Half.PositiveInfinity));
+        Assert.IsTrue(Half.IsNaN(RoundTrip(Half.NaN)));
+    }
+
+    /// <summary>
+    /// Verifies that reading a finite TOML float outside the <see cref="Half" /> range saturates to infinity rather than
+    /// throwing, matching IEEE 754 narrowing and the behavior of the <see cref="float" /> converter.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenFloatExceedsHalfRange_ShouldSaturateToInfinity()
+    {
+        Half actual = TomlSerializer.Deserialize<ValueModel<Half>>("Value = 1e10\n").Value;
+
+        Assert.IsTrue(Half.IsPositiveInfinity(actual));
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see cref="Half" /> from a non-float token throws
+    /// <see cref="TomlSerializationException" />, mirroring the strictness of the <see cref="float" /> converter.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenHalfFromInteger_ShouldThrowTomlSerializationException()
+    {
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Half>>("Value = 1\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a custom converter registered for <see cref="decimal" /> takes precedence over the built-in
+    /// decimal converter, supplying its own string representation on both write and read.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenDecimalConverterRegistered_ShouldRoundTrip()
@@ -621,6 +812,65 @@ public partial class TomlSerializerTests
         {
             _ = TomlSerializer.Deserialize<ValueModel<byte[]>>("Value = \"!!!\"\n");
         });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Memory{T}" /> of <see cref="byte" /> serializes under both byte-array handlings and
+    /// round-trips, sharing the byte-array representation.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemoryOfByte_ShouldUseByteArrayFormsAndRoundTrip()
+    {
+        Memory<byte> value = new byte[] { 0x61, 0x62, 0x63 };
+
+        Assert.AreEqual("Value = [97, 98, 99]\n", Serialize(value));
+        CollectionAssert.AreEqual(value.ToArray(), RoundTrip(value).ToArray());
+
+        var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
+        string text = TomlSerializer.Serialize(new ValueModel<Memory<byte>> { Value = value }, options);
+        Assert.AreEqual("Value = \"YWJj\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="ReadOnlyMemory{T}" /> of <see cref="byte" /> serializes under both byte-array
+    /// handlings and round-trips, sharing the byte-array representation.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenReadOnlyMemoryOfByte_ShouldUseByteArrayFormsAndRoundTrip()
+    {
+        ReadOnlyMemory<byte> value = new byte[] { 0x61, 0x62, 0x63 };
+
+        Assert.AreEqual("Value = [97, 98, 99]\n", Serialize(value));
+        CollectionAssert.AreEqual(value.ToArray(), RoundTrip(value).ToArray());
+
+        var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
+        string text = TomlSerializer.Serialize(new ValueModel<ReadOnlyMemory<byte>> { Value = value }, options);
+        Assert.AreEqual("Value = \"YWJj\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a memory-of-byte member written as a Base64 string reads back under the default integer-array
+    /// handling, because the shared read path accepts either form.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenMemoryOfByteFromBase64UnderDefaultHandling_ShouldDecode()
+    {
+        Memory<byte> actual = TomlSerializer.Deserialize<ValueModel<Memory<byte>>>("Value = \"YWJj\"\n").Value;
+
+        CollectionAssert.AreEqual(new byte[] { 0x61, 0x62, 0x63 }, actual.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that an empty <see cref="ReadOnlyMemory{T}" /> of <see cref="byte" /> serializes to an empty TOML array
+    /// and round-trips to an empty memory.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemoryOfByteEmpty_ShouldRoundTripEmpty()
+    {
+        ReadOnlyMemory<byte> value = ReadOnlyMemory<byte>.Empty;
+
+        Assert.AreEqual("Value = []\n", Serialize(value));
+        Assert.AreEqual(0, RoundTrip(value).Length);
     }
 
     /// <summary>

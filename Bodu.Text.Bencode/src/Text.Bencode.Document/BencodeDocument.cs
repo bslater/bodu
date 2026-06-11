@@ -175,14 +175,15 @@ public sealed partial class BencodeDocument
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a non-pooled <see cref="BencodeDocument" /> whose disposal is a no-op,
-    /// backing the elements returned by <see cref="BencodeElement.Clone" />.
+    /// backing the elements returned by <see cref="BencodeElement.Clone" /> and the serializer's element bridge.
     /// </summary>
     /// <param name="data">The Bencode source bytes, which must form a single complete value.</param>
+    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
     /// <returns>A document over a private, plainly allocated copy of <paramref name="data" />.</returns>
-    internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data)
+    internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions = default)
     {
         byte[] buffer = data.ToArray();
-        return new BencodeDocument(buffer, ParseRows(buffer, default), pooled: false);
+        return new BencodeDocument(buffer, ParseRows(buffer, readerOptions), pooled: false);
     }
 
     /// <summary>
