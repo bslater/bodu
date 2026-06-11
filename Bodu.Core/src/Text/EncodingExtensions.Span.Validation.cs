@@ -38,7 +38,7 @@ public static partial class EncodingExtensions
         var required = encoding.GetByteCount(chars);
         if (destination.Length < required)
             throw new ArgumentException(
-                TextResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
+                ResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
                 paramName);
     }
 
@@ -70,7 +70,7 @@ public static partial class EncodingExtensions
         var required = encoding.GetCharCount(bytes);
         if (destination.Length < required)
             throw new ArgumentException(
-                TextResourceStrings.Arg_Invalid_DestinationTooSmallForDecoded,
+                ResourceStrings.Arg_Invalid_DestinationTooSmallForDecoded,
                 paramName);
     }
 }

@@ -126,7 +126,7 @@ public static partial class EncodingExtensions
             throw new ArgumentException(
                 string.Format(
                     System.Globalization.CultureInfo.CurrentCulture,
-                    TextResourceStrings.Arg_Invalid_ReplacementNotEncodable,
+                    ResourceStrings.Arg_Invalid_ReplacementNotEncodable,
                     replacement),
                 paramName,
                 ex);

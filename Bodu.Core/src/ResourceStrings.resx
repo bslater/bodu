@@ -165,8 +165,20 @@
   <data name="Arg_Invalid_CustomHasNoCanonicalWeekPattern" xml:space="preserve">
     <value>Custom has no canonical WeekPattern; pass a WeekPattern directly.</value>
   </data>
+  <data name="Arg_Invalid_DestinationNotExactSizeForDecoded" xml:space="preserve">
+    <value>Destination must be exactly the size required for the decoded characters.</value>
+  </data>
+  <data name="Arg_Invalid_DestinationNotExactSizeForEncoded" xml:space="preserve">
+    <value>Destination must be exactly the size required for the encoded bytes.</value>
+  </data>
   <data name="Arg_Invalid_DestinationTooSmall" xml:space="preserve">
     <value>The destination {0} must be at least as long as the source {1}.</value>
+  </data>
+  <data name="Arg_Invalid_DestinationTooSmallForDecoded" xml:space="preserve">
+    <value>Destination is too small to receive the decoded characters.</value>
+  </data>
+  <data name="Arg_Invalid_DestinationTooSmallForEncoded" xml:space="preserve">
+    <value>Destination is too small to receive the encoded characters.</value>
   </data>
   <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
@@ -251,6 +263,9 @@
   </data>
   <data name="Arg_Invalid_RankMultiDimensionArray" xml:space="preserve">
     <value>Only single-dimension arrays are supported.</value>
+  </data>
+  <data name="Arg_Invalid_ReplacementNotEncodable" xml:space="preserve">
+    <value>The replacement string '{0}' cannot be encoded by the specified encoding.</value>
   </data>
   <data name="Arg_Invalid_SingleSurrogateCharacter" xml:space="preserve">
     <value>The value is a single Unicode surrogate character, which must be written as a pair. Consider passing a character array instead.</value>
