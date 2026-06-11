@@ -89,6 +89,22 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a property with a public getter and a private setter that is not opted into serialization is not
+    /// assigned on read, so the constructed instance keeps the value its parameterless constructor produced rather than
+    /// the value in the input. This matches the documented <see cref="BencodeIncludeAttribute" /> rule that a non-public
+    /// setter binds only when opted in.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPrivateSetterProperty_ShouldNotAssignMember()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
+
+        var model = BencodeSerializer.Deserialize<PrivateSetterModel>(bytes);
+
+        Assert.AreEqual(0, model.Value);
+    }
+
+    /// <summary>
     /// Verifies that a property with a public getter and a private setter annotated with
     /// <see cref="BencodeIncludeAttribute" /> is both written and assigned on read, binding through the non-public
     /// setter.

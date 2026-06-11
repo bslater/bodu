@@ -171,6 +171,176 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
+    /// Verifies that a non-generic <see cref="BencodeStringEnumConverter" /> registered without a naming policy writes a
+    /// member as its unchanged CLR name and round-trips.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStringEnumConverterNoPolicy_ShouldUseMemberName()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter());
+
+        var model = new StatusModel { Status = Status.Active };
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
+
+        Assert.AreEqual("d6:Status6:Activee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        Assert.AreEqual(Status.Active, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="BencodeStringEnumConverter" /> matches a member name case-insensitively
+    /// on read, so a lower-cased wire string binds to a Pascal-case member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterReadsDifferentCase_ShouldMatchCaseInsensitively()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter());
+
+        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status6:activee");
+
+        var model = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+
+        Assert.AreEqual(Status.Active, model.Status);
+    }
+
+    /// <summary>
+    /// Verifies that the by-name converter reads a numeric byte string by parsing it through the runtime, so a member
+    /// stored as its decimal text still binds to the enumeration value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterReadsNumericString_ShouldParseToValue()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status1:2e");
+
+        var model = BencodeSerializer.Deserialize<StatusModel>(bytes);
+
+        Assert.AreEqual(Status.Archived, model.Status);
+    }
+
+    /// <summary>
+    /// Verifies that the generic <see cref="BencodeStringEnumConverter{TEnum}" /> registered with a camel-case naming
+    /// policy on the options writes a Pascal-case member as its camel-cased name and round-trips.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenGenericStringEnumConverterWithPolicy_ShouldCamelCaseAndRoundTrip()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter<Status>(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+
+        var model = new StatusModel { Status = Status.Active };
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
+
+        Assert.AreEqual("d6:Status6:activee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        Assert.AreEqual(Status.Active, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeNumberEnumConverter{TEnum}" /> registered on the options writes the enumeration
+    /// as a Bencode integer and round-trips.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenNumberEnumConverterRegistered_ShouldWriteIntegerAndRoundTrip()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeNumberEnumConverter<Status>());
+
+        var model = new StatusModel { Status = Status.Archived };
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
+
+        Assert.AreEqual("d6:Statusi2ee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        Assert.AreEqual(Status.Archived, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a property whose <see cref="BencodeNumberEnumConverter{TEnum}" /> reads a non-integer token throws
+    /// <see cref="BencodeSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNumberEnumConverterReadsByteString_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status8:Archivede");
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<NumberEnumModel>(bytes);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an undefined enumeration value, which corresponds to no member, is written by the by-name converter
+    /// as its decimal text and read back to the same undefined value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenUndefinedEnumValue_ShouldWriteDecimalTextAndRoundTrip()
+    {
+        var model = new StatusModel { Status = (Status)99 };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d6:Status2:99e", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes);
+        Assert.AreEqual((Status)99, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a combination of <see cref="FlagsEnum" /> values, which corresponds to no single member, is written
+    /// by the by-name converter as its comma-separated member list and read back to the same combined value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenCombinedFlags_ShouldWriteFlagListAndRoundTrip()
+    {
+        var model = new FlagsModel { Flags = FlagsEnum.Read | FlagsEnum.Write };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d5:Flags11:Read, Writee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
+        Assert.AreEqual(FlagsEnum.Read | FlagsEnum.Write, roundTripped.Flags);
+    }
+
+    /// <summary>
+    /// Verifies that a single <see cref="FlagsEnum" /> member is written as its member name and round-trips, confirming
+    /// the by-name path applies to flags enumerations whose value maps to one member.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenSingleFlag_ShouldWriteMemberNameAndRoundTrip()
+    {
+        var model = new FlagsModel { Flags = FlagsEnum.Write };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d5:Flags5:Writee", Encoding.Latin1.GetString(bytes));
+
+        var roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
+        Assert.AreEqual(FlagsEnum.Write, roundTripped.Flags);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeStringEnumMemberNameAttribute" /> takes precedence over a naming policy applied by
+    /// a <see cref="BencodeStringEnumConverter" />, so the explicit name is used unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberNameAttributeAndNamingPolicy_ShouldPreferAttribute()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+
+        var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
+
+        Assert.AreEqual("d6:Status9:not-founde", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
     /// An enumeration whose members map to byte-string names by default.
     /// </summary>
     private enum Status
@@ -257,5 +427,39 @@ public class BencodeEnumConverterTests
         /// <returns>The status.</returns>
         [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
         public Status Status { get; set; }
+    }
+
+    /// <summary>
+    /// A flags enumeration used to exercise the by-name converter's combined-value fallback.
+    /// </summary>
+    [Flags]
+    private enum FlagsEnum
+    {
+        /// <summary>
+        /// No flags, with underlying value <c>0</c>.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The read flag, with underlying value <c>1</c>.
+        /// </summary>
+        Read = 1,
+
+        /// <summary>
+        /// The write flag, with underlying value <c>2</c>.
+        /// </summary>
+        Write = 2,
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="FlagsEnum" /> value mapped to a member-name byte string by default.
+    /// </summary>
+    private sealed class FlagsModel
+    {
+        /// <summary>
+        /// Gets or sets the flags.
+        /// </summary>
+        /// <returns>The flags.</returns>
+        public FlagsEnum Flags { get; set; }
     }
 }

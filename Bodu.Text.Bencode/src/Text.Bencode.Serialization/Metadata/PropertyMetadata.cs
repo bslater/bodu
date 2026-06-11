@@ -24,6 +24,11 @@ internal sealed class PropertyMetadata
     private readonly PropertyInfo _property;
 
     /// <summary>
+    /// Whether the member is opted into binding through non-public accessors by <see cref="BencodeIncludeAttribute" />.
+    /// </summary>
+    private readonly bool _included;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="PropertyMetadata" /> class.
     /// </summary>
     /// <param name="property">The reflected property.</param>
@@ -40,6 +45,9 @@ internal sealed class PropertyMetadata
     /// <param name="defaultValue">
     /// The default value used when the member binds to a constructor parameter that is absent.
     /// </param>
+    /// <param name="included">
+    /// Whether the member is opted into binding through non-public accessors by <see cref="BencodeIncludeAttribute" />.
+    /// </param>
     internal PropertyMetadata(
         PropertyInfo property,
         string wireName,
@@ -48,9 +56,11 @@ internal sealed class PropertyMetadata
         int order,
         int constructorParameterIndex,
         bool isRequired,
-        object? defaultValue)
+        object? defaultValue,
+        bool included)
     {
         _property = property;
+        _included = included;
         WireName = wireName;
         Converter = converter;
         ConditionalIgnore = conditionalIgnore;
@@ -133,13 +143,14 @@ internal sealed class PropertyMetadata
     internal object? DefaultTypeValue { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the member can be assigned through its setter.
+    /// Gets a value indicating whether the member can be assigned during deserialization through its setter.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when the member has a setter (including an init-only setter); otherwise
-    /// <see langword="false" />.
+    /// <see langword="true" /> when the member has a public setter (which includes an init-only setter) or a non-public
+    /// setter opted in by <see cref="BencodeIncludeAttribute" />; otherwise <see langword="false" />. A property
+    /// exposed only through a non-public setter is therefore not assigned on read unless it carries that attribute.
     /// </returns>
-    internal bool CanSet => _property.SetMethod is not null;
+    internal bool CanSet => _property.SetMethod is not null && (_property.SetMethod.IsPublic || _included);
 
     /// <summary>
     /// Reads the member value from the specified target.
