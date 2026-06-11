@@ -20,6 +20,7 @@ We are mirroring the S.T.J test suite across both self-contained libraries — `
 | B2b‑p1 | Bencode serializer features part 1: PropertyName, NamingPolicy, PropertyOrder, PropertyVisibility | `1f9c1e91` | BVT 233 / Reg 382 |
 | **B2b‑p2** | Bencode serializer features part 2: Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters (+ src fix: non-public setter assigned on read only with `[BencodeInclude]`) | `80e24b22` | BVT 310 / Reg 459 |
 | **T2a** | TOML serializer values/collections/dictionaries/nullables | `5e297e68` | BVT 400 / Reg 529 |
+| **B3** | Bencode DOMs + exceptions: `BencodeDocument`/`BencodeElement` (Parse grammar/depth, accessor kind-matrix, enumerators, disposal), `BencodeNode`/`Object`/`Array`/`Value` (full collection surfaces, conversions, DeepEquals/DeepClone), exception ctor surfaces (+ src fixes: `BencodeNode.Parse` now rejects trailing bytes per its documented contract; `BencodeObject`/`BencodeArray` detach a removed/replaced child's `Parent`) | `23d8390e` | BVT 468 / Reg 680 |
 
 Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guards on the B2a KAT methods, and three src fixes (see §4).
 
@@ -27,12 +28,11 @@ Plus two retroactive fixes folded into the above: CA1062 `ThrowIfNull(kat)` guar
 
 | Pass | Scope | Est. new tests |
 |---|---|---|
-| **B3** | Bencode DOMs + exceptions: `BencodeDocument`/`BencodeElement` (read-only), `BencodeNode`/`Object`/`Array`/`Value` (mutable), exception types | ~80–110 |
 | **T2b** | TOML serializer features (mirror B2b‑p1 + B2b‑p2) | ~120–150 |
 | **T3** | TOML DOMs + exceptions (mirror B3) | ~90–120 |
 | **RICH** | Richness/parity enhancements (implementation + tests): Queue/Stack/Concurrent collections, non-string dictionary keys, `ulong`>`Int64`, field serialization | ~40–60 |
 
-**Suggested order:** B3 → T2b → T3 → RICH. (B3 finishes Bencode; T2b/T3 finish TOML; RICH last so tests pin current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
+**Suggested order:** T2b → T3 → RICH. (B3 ✅ finished Bencode; T2b/T3 finish TOML; RICH last so tests pin current behavior first.) The detailed specs for the already-completed B2b‑p2 (§5.1) and T2a (§5.3) are retained below as exemplars — the committed files (`BencodeSerializerTests.{Constructor,Required,…}.cs`, `TomlSerializerTests.{Values,…}.cs`) are the canonical patterns to copy for T2b.
 
 ---
 
@@ -248,7 +248,9 @@ Each pass: read the **src** types and the **existing committed tests** first; ex
 
 ---
 
-### 5.2 B3 — Bencode DOMs + exceptions
+### 5.2 B3 — Bencode DOMs + exceptions — ✅ DONE
+
+> Completed and committed (BVT 468 / Reg 680). The committed `BencodeDocumentTests.{Parse,Elements,Enumeration,Disposal}.cs`, `Bencode{Object,Array,Value}Tests.cs`, `BencodeNodeTests.{Parse,Conversions,DeepEquals}.cs`, and `BencodeExceptionTests.cs` are the exemplars to mirror for **T3**. Src fixes folded in: `BencodeNode.Parse` rejects trailing bytes (per its documented single-root contract), and `BencodeObject`/`BencodeArray` detach a removed/replaced child's `Parent` (single-parent rule; mirrors `JsonNode`).
 
 **Src:** `src/Text.Bencode.Document/` (`BencodeDocument`, `BencodeElement`, `BencodeProperty`, options) and `src/Text.Bencode.Nodes/` (`BencodeNode`, `BencodeObject`, `BencodeArray`, `BencodeValue`, node options). **Existing:** `BencodeDocumentTests` (17), `BencodeNodeTests` (21) — extend.
 

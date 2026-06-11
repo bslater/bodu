@@ -10,7 +10,6 @@
 ## Remaining passes (in order)
 | Pass | Scope | Spec |
 |---|---|---|
-| **B3** | Bencode DOMs (`BencodeDocument`/`Element`, `BencodeNode`/`Object`/`Array`/`Value`) + exceptions | plan §5.2 |
 | **T2b** | TOML serializer features (mirror committed Bencode B2b: Constructor, Required, ExtensionData, UnmappedMembers, ObjectCreation, Callbacks, ConverterResolution, MaxDepth, EnumConverters, PropertyName/NamingPolicy/PropertyVisibility/**PropertyOrder — note TOML honors order, Bencode does not**) | plan §5.4 |
 | **T3** | TOML DOMs (`TomlDocument`/`Element`, `TomlNode`/`Object`/`Array`/`Value`) + exceptions | plan §5.5 |
 | **RICH** | Parity *features* + tests: Queue/Stack/Concurrent collections, non-string dict keys, `ulong`>`Int64`, fields | plan §5.6 |
@@ -31,10 +30,10 @@ dotnet build Bodu.Text.<Lib>/test/Bodu.Text.<Lib>.Test.csproj -v q --nologo --no
 5. Commit scoped to the one project; push `git push -u origin claude/relaxed-rubin-m62s2x` (backoff retry). Update the plan §0 status table.
 
 ## Where we are now
-Committed & green: B1, B2a, T1, B2b (p1+p2), T2a.
-- Bencode: **BVT 310 / Regression 459**.
+Committed & green: B1, B2a, T1, B2b (p1+p2), T2a, B3.
+- Bencode: **BVT 468 / Regression 680** (complete — all passes done).
 - TOML: **BVT 400 / Regression 529**.
-Remaining: B3, T2b, T3, RICH.
+Remaining: T2b, T3, RICH.
 
 ## Watch-outs (full detail in plan §1)
 - **Incremental builds hide analyzer warnings** — always do the final check with `--no-incremental`.
