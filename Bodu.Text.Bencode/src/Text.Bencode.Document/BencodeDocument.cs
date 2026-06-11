@@ -79,7 +79,7 @@ public sealed partial class BencodeDocument
     /// Thrown when the bytes are not a single, canonical Bencode value.
     /// </exception>
     public static BencodeDocument Parse(ReadOnlySpan<byte> data) =>
-        Parse(data, 256);
+        Parse(data, default(BencodeReaderOptions));
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied options.
@@ -94,7 +94,7 @@ public sealed partial class BencodeDocument
     /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
     /// </remarks>
     public static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeDocumentOptions options) =>
-        Parse(data, options.MaxDepth <= 0 ? 256 : options.MaxDepth);
+        Parse(data, ToReaderOptions(options));
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" />.
@@ -111,7 +111,7 @@ public sealed partial class BencodeDocument
     {
         ThrowHelper.ThrowIfNull(data);
 
-        return Parse(data.AsSpan(), 256);
+        return Parse(data.AsSpan(), default(BencodeReaderOptions));
     }
 
     /// <summary>
@@ -133,27 +133,38 @@ public sealed partial class BencodeDocument
     {
         ThrowHelper.ThrowIfNull(data);
 
-        return Parse(data.AsSpan(), options.MaxDepth <= 0 ? 256 : options.MaxDepth);
+        return Parse(data.AsSpan(), ToReaderOptions(options));
     }
 
     /// <summary>
-    /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> enforcing the supplied maximum nesting
-    /// depth.
+    /// Translates document options into the equivalent reader options.
+    /// </summary>
+    /// <param name="options">The document options to translate.</param>
+    /// <returns>The reader options carrying the same depth and key-leniency settings.</returns>
+    private static BencodeReaderOptions ToReaderOptions(BencodeDocumentOptions options) =>
+        new()
+        {
+            MaxDepth = options.MaxDepth,
+            AllowUnsortedKeys = options.AllowUnsortedKeys,
+            AllowDuplicateKeys = options.AllowDuplicateKeys,
+        };
+
+    /// <summary>
+    /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied reader options.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
-    /// <param name="maxDepth">The maximum permitted container nesting depth.</param>
+    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
     /// <returns>A document over a private copy of <paramref name="data" />.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than
-    /// <paramref name="maxDepth" />.
+    /// Thrown when the bytes are not a single Bencode value acceptable under <paramref name="readerOptions" />.
     /// </exception>
-    private static BencodeDocument Parse(ReadOnlySpan<byte> data, int maxDepth)
+    private static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions)
     {
         byte[] buffer = ArrayPool<byte>.Shared.Rent(data.Length);
         try
         {
             data.CopyTo(buffer);
-            return new BencodeDocument(buffer, ParseRows(buffer.AsSpan(0, data.Length), maxDepth), pooled: true);
+            return new BencodeDocument(buffer, ParseRows(buffer.AsSpan(0, data.Length), readerOptions), pooled: true);
         }
         catch
         {
@@ -171,22 +182,21 @@ public sealed partial class BencodeDocument
     internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data)
     {
         byte[] buffer = data.ToArray();
-        return new BencodeDocument(buffer, ParseRows(buffer, 256), pooled: false);
+        return new BencodeDocument(buffer, ParseRows(buffer, default), pooled: false);
     }
 
     /// <summary>
     /// Parses the supplied bytes into the flat row index describing the document.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
-    /// <param name="maxDepth">The maximum permitted container nesting depth.</param>
+    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
     /// <returns>The completed row index.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than
-    /// <paramref name="maxDepth" />.
+    /// Thrown when the bytes are not a single Bencode value acceptable under <paramref name="readerOptions" />.
     /// </exception>
-    private static Row[] ParseRows(ReadOnlySpan<byte> data, int maxDepth)
+    private static Row[] ParseRows(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions)
     {
-        var reader = new Utf8BencodeReader(data, maxDepth);
+        var reader = new Utf8BencodeReader(data, readerOptions);
         if (!reader.Read())
             throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
 

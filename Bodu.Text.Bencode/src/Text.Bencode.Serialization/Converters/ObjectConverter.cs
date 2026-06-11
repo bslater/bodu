@@ -50,7 +50,14 @@ internal sealed class ObjectConverter<T>
 
             if (metadata.TryGetProperty(name, out PropertyMetadata? property) && property is not null)
             {
-                if (!values.TryAdd(property, property.Converter.ReadAsObject(ref reader, property.PropertyType, options)))
+                var converted = property.Converter.ReadAsObject(ref reader, property.PropertyType, options);
+                if (options.AllowDuplicateKeys)
+                {
+                    // Lenient duplicate handling binds last-wins, matching the dictionary converter's indexer
+                    // assignment and System.Text.Json's duplicate-property behaviour.
+                    values[property] = converted;
+                }
+                else if (!values.TryAdd(property, converted))
                 {
                     throw new BencodeSerializationException(
                         string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_DuplicateProperty, name),

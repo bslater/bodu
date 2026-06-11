@@ -142,7 +142,7 @@ public static class BencodeSerializer
 
     /// <summary>
     /// Deserializes a value of type <typeparamref name="T" /> from the supplied node tree, mirroring the
-    /// <see cref="System.Text.Json.Nodes.JsonNode" />-accepting <c>Deserialize</c> member of
+    /// <see cref="System.Text.Json.Nodes.JsonNode" /> -accepting <c>Deserialize</c> member of
     /// <see cref="System.Text.Json.JsonSerializer" />.
     /// </summary>
     /// <typeparam name="T">The type to deserialize.</typeparam>
@@ -208,7 +208,12 @@ public static class BencodeSerializer
     {
         BencodeSerializerOptions effective = options ?? new BencodeSerializerOptions();
 
-        var reader = new Utf8BencodeReader(data, effective.MaxDepth);
+        var reader = new Utf8BencodeReader(data, new BencodeReaderOptions
+        {
+            MaxDepth = effective.MaxDepth,
+            AllowUnsortedKeys = effective.AllowUnsortedKeys,
+            AllowDuplicateKeys = effective.AllowDuplicateKeys,
+        });
         return BencodeSerializerEngine.Deserialize<T>(ref reader, effective);
     }
 

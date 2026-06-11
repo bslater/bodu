@@ -188,11 +188,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Bencoded dictionary keys must be unique and sorted by raw byte order..
+        ///   Looks up a localized string similar to Bencoded dictionary keys must be sorted by raw byte order..
         /// </summary>
         internal static string Format_Invalid_BencodeUnorderedDictionaryKeys {
             get {
                 return ResourceManager.GetString("Format_Invalid_BencodeUnorderedDictionaryKeys", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bencoded dictionary keys must be unique..
+        /// </summary>
+        internal static string Format_Invalid_BencodeDuplicateDictionaryKeys {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeDuplicateDictionaryKeys", resourceCulture);
             }
         }
 

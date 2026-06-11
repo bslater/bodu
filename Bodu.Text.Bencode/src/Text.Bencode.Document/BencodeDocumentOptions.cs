@@ -11,8 +11,10 @@ namespace Bodu.Text.Bencode.Document;
 /// <see cref="System.Text.Json.JsonDocumentOptions" /> for Bencode.
 /// </summary>
 /// <remarks>
-/// Unlike <see cref="System.Text.Json.JsonDocumentOptions" />, Bencode has no comment syntax and no trailing-comma
-/// concept, so <see cref="MaxDepth" /> is the only configurable member.
+/// Bencode has no comment syntax and no trailing-comma concept, so instead of the leniency knobs
+/// <see cref="System.Text.Json.JsonDocumentOptions" /> carries for those, the options relax the two dictionary-key
+/// rules that older real-world encoders are known to violate: <see cref="AllowUnsortedKeys" /> and
+/// <see cref="AllowDuplicateKeys" />. Both default to the strict canonical behaviour.
 /// </remarks>
 public struct BencodeDocumentOptions
 {
@@ -22,4 +24,32 @@ public struct BencodeDocumentOptions
     /// <value>The maximum container nesting depth; <c>0</c> selects the default of 256.</value>
     /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 256.</returns>
     public int MaxDepth { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether dictionary keys may appear out of ascending bytewise order.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to accept unsorted keys; the default of <see langword="false" /> rejects them with
+    /// <see cref="BencodeFormatException" />.
+    /// </value>
+    /// <returns><see langword="true" /> when unsorted dictionary keys are accepted.</returns>
+    /// <remarks>
+    /// Object properties are exposed in stored order regardless of this option; lookups compare raw key bytes, so an
+    /// unsorted document resolves properties identically to a canonical one.
+    /// </remarks>
+    public bool AllowUnsortedKeys { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether a dictionary may contain more than one entry for the same key.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to accept duplicate keys; the default of <see langword="false" /> rejects them with
+    /// <see cref="BencodeFormatException" />.
+    /// </value>
+    /// <returns><see langword="true" /> when duplicate dictionary keys are accepted.</returns>
+    /// <remarks>
+    /// Every entry of a duplicated key is retained and visible through object enumeration; name lookups such as
+    /// <see cref="BencodeElement.GetProperty(string)" /> return the first match in document order.
+    /// </remarks>
+    public bool AllowDuplicateKeys { get; set; }
 }

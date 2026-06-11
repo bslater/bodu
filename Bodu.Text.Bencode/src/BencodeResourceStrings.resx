@@ -30,7 +30,8 @@
   <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve"><value>The bencoded value contains trailing data.</value></data>
   <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve"><value>Unexpected end of bencoded data.</value></data>
   <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve"><value>Unexpected bencode token '{0}' at offset {1}.</value></data>
-  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value></data>
+  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be sorted by raw byte order.</value></data>
+  <data name="Format_Invalid_BencodeDuplicateDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique.</value></data>
   <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve"><value>Unterminated bencoded dictionary.</value></data>
   <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve"><value>Unterminated bencoded integer.</value></data>
   <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>

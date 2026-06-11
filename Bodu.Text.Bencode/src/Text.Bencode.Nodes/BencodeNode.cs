@@ -216,9 +216,34 @@ public abstract class BencodeNode
     /// Every <see cref="BencodeObject" /> materialized while parsing adopts the comparison selected by
     /// <paramref name="options" />, so a case-insensitive parse yields a tree whose dictionary lookups ignore case.
     /// </remarks>
-    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options)
+    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options) =>
+        Parse(data, options, default);
+
+    /// <summary>
+    /// Parses a single Bencode document into a node tree, using the supplied node options for every object created
+    /// while parsing and the supplied document options for the parse itself, mirroring the
+    /// <see cref="System.Text.Json.Nodes.JsonNode" /> overload that accepts both option types.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes.</param>
+    /// <param name="options">The node options controlling property-name case sensitivity.</param>
+    /// <param name="documentOptions">The document options controlling depth and dictionary-key leniency.</param>
+    /// <returns>The root node of the parsed tree.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when <paramref name="data" /> is empty or is not a single Bencode value acceptable under
+    /// <paramref name="documentOptions" />.
+    /// </exception>
+    /// <remarks>
+    /// When <see cref="Document.BencodeDocumentOptions.AllowDuplicateKeys" /> is set, repeated keys collapse into the
+    /// dictionary-backed <see cref="BencodeObject" /> with the last occurrence winning.
+    /// </remarks>
+    public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options, Document.BencodeDocumentOptions documentOptions)
     {
-        var reader = new Utf8BencodeReader(data);
+        var reader = new Utf8BencodeReader(data, new BencodeReaderOptions
+        {
+            MaxDepth = documentOptions.MaxDepth,
+            AllowUnsortedKeys = documentOptions.AllowUnsortedKeys,
+            AllowDuplicateKeys = documentOptions.AllowDuplicateKeys,
+        });
         if (!reader.Read())
             throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
 

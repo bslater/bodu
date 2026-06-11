@@ -17,6 +17,7 @@ namespace Bodu.Text.Bencode.Reader;
 /// stack and cannot be boxed or captured; pass it by <see langword="ref" /> to thread it through a converter.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A call to <see cref="Read" /> advances to the next token and reports it through <see cref="TokenType" />. Integer
 /// and byte-string values are decoded on demand through <see cref="GetInt64" />, <see cref="GetUInt64" />,
 /// <see cref="ValueSpan" />, and <see cref="GetString" />. Integer tokens span the union of the signed and unsigned
@@ -26,6 +27,12 @@ namespace Bodu.Text.Bencode.Reader;
 /// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and a single root
 /// value with no trailing bytes — raising <see cref="BencodeFormatException" /> on any departure from that canonical
 /// form.
+/// </para>
+/// <para>
+/// Real-world documents produced by older encoders occasionally carry unsorted or duplicate dictionary keys. The opt-in
+/// <see cref="BencodeReaderOptions.AllowUnsortedKeys" /> and <see cref="BencodeReaderOptions.AllowDuplicateKeys" />
+/// options relax those two rules independently; every other grammar rule remains enforced.
+/// </para>
 /// </remarks>
 public ref struct Utf8BencodeReader
 {
@@ -38,6 +45,16 @@ public ref struct Utf8BencodeReader
     /// The maximum permitted container nesting depth.
     /// </summary>
     private readonly int _maxDepth;
+
+    /// <summary>
+    /// Whether dictionary keys may appear out of ascending bytewise order.
+    /// </summary>
+    private readonly bool _allowUnsortedKeys;
+
+    /// <summary>
+    /// Whether a dictionary may contain more than one entry for the same key.
+    /// </summary>
+    private readonly bool _allowDuplicateKeys;
 
     /// <summary>
     /// The stack of open containers, innermost last.
@@ -110,13 +127,15 @@ public ref struct Utf8BencodeReader
     /// supplied options.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
-    /// <param name="options">The reader options controlling the maximum nesting depth.</param>
+    /// <param name="options">The reader options controlling the maximum nesting depth and key leniency.</param>
     /// <remarks>
     /// A <see cref="BencodeReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
     /// </remarks>
     public Utf8BencodeReader(ReadOnlySpan<byte> data, BencodeReaderOptions options)
         : this(data, options.MaxDepth <= 0 ? 256 : options.MaxDepth)
     {
+        _allowUnsortedKeys = options.AllowUnsortedKeys;
+        _allowDuplicateKeys = options.AllowDuplicateKeys;
     }
 
     /// <summary>
@@ -218,13 +237,9 @@ public ref struct Utf8BencodeReader
                 ReadByteString();
                 if (inDictKey)
                 {
-                    if (top!.PreviousKeyStart >= 0 &&
-                        _data.Slice(_valueStart, _valueLength).SequenceCompareTo(_data.Slice(top.PreviousKeyStart, top.PreviousKeyLength)) <= 0)
-                    {
-                        throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, _valueStart);
-                    }
+                    ValidateDictionaryKey(top!);
 
-                    top.PreviousKeyStart = _valueStart;
+                    top!.PreviousKeyStart = _valueStart;
                     top.PreviousKeyLength = _valueLength;
                     top.ExpectKey = false;
                     _tokenType = BencodeTokenType.PropertyName;
@@ -473,6 +488,48 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
+    /// Validates the dictionary key just read against the ordering and uniqueness rules selected at construction.
+    /// </summary>
+    /// <param name="top">The enclosing dictionary's frame.</param>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the key repeats an earlier key and duplicates are not permitted, or precedes the previous key in
+    /// bytewise order and unsorted keys are not permitted.
+    /// </exception>
+    private readonly void ValidateDictionaryKey(Frame top)
+    {
+        ReadOnlySpan<byte> key = _data.Slice(_valueStart, _valueLength);
+
+        if (!_allowUnsortedKeys)
+        {
+            // Canonical order makes equal keys adjacent, so a single comparison against the previous key detects
+            // both unordered and duplicate keys.
+            if (top.PreviousKeyStart >= 0)
+            {
+                var comparison = key.SequenceCompareTo(_data.Slice(top.PreviousKeyStart, top.PreviousKeyLength));
+                if (comparison == 0 && !_allowDuplicateKeys)
+                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+                if (comparison < 0)
+                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, _valueStart);
+            }
+
+            return;
+        }
+
+        if (!_allowDuplicateKeys)
+        {
+            // Without an ordering guarantee duplicates can appear anywhere, so the frame remembers every key seen.
+            top.SeenKeys ??= [];
+            foreach ((var start, var length) in top.SeenKeys)
+            {
+                if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
+                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+            }
+
+            top.SeenKeys.Add((_valueStart, _valueLength));
+        }
+    }
+
+    /// <summary>
     /// Records entry into a container and enforces the maximum nesting depth.
     /// </summary>
     /// <param name="isDict">Whether the container is a dictionary.</param>
@@ -627,5 +684,12 @@ public ref struct Utf8BencodeReader
         /// </summary>
         /// <returns>The previous key's length.</returns>
         internal int PreviousKeyLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source offsets and lengths of every key read in this dictionary, populated only when
+        /// unsorted keys are permitted but duplicates are not, because order no longer makes duplicates adjacent.
+        /// </summary>
+        /// <returns>The keys seen so far, or <see langword="null" /> when tracking is not required.</returns>
+        internal List<(int Start, int Length)>? SeenKeys { get; set; }
     }
 }

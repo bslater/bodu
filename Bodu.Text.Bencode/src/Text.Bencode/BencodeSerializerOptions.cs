@@ -73,6 +73,16 @@ public sealed class BencodeSerializerOptions
     private bool _includeFields;
 
     /// <summary>
+    /// Whether deserialization accepts dictionaries whose keys are not in ascending bytewise order.
+    /// </summary>
+    private bool _allowUnsortedKeys;
+
+    /// <summary>
+    /// Whether deserialization accepts dictionaries carrying more than one entry for the same key.
+    /// </summary>
+    private bool _allowDuplicateKeys;
+
+    /// <summary>
     /// The serializer-wide default condition under which a member is omitted on write.
     /// </summary>
     private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
@@ -163,6 +173,55 @@ public sealed class BencodeSerializerOptions
         {
             VerifyMutable();
             _caseInsensitive = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether deserialization accepts dictionaries whose keys are not in ascending
+    /// bytewise order.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to accept unsorted keys; otherwise <see langword="false" />. The default is
+    /// <see langword="false" />, rejecting unsorted keys with <see cref="BencodeFormatException" />.
+    /// </value>
+    /// <returns>Whether unsorted dictionary keys are accepted when reading.</returns>
+    /// <remarks>
+    /// BEP 3 requires keys sorted by raw byte order, but documents produced by older encoders occasionally violate
+    /// this. The option affects reading only; output is always written in canonical key order.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public bool AllowUnsortedKeys
+    {
+        get => _allowUnsortedKeys;
+        set
+        {
+            VerifyMutable();
+            _allowUnsortedKeys = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether deserialization accepts dictionaries carrying more than one entry for
+    /// the same key.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to accept duplicate keys; otherwise <see langword="false" />. The default is
+    /// <see langword="false" />, rejecting duplicate keys with <see cref="BencodeFormatException" />.
+    /// </value>
+    /// <returns>Whether duplicate dictionary keys are accepted when reading.</returns>
+    /// <remarks>
+    /// When enabled, repeated keys bind last-wins: the final occurrence of a key determines the member or dictionary
+    /// entry value. The option affects reading only; the writer always rejects duplicate keys because canonical Bencode
+    /// forbids them.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    public bool AllowDuplicateKeys
+    {
+        get => _allowDuplicateKeys;
+        set
+        {
+            VerifyMutable();
+            _allowDuplicateKeys = value;
         }
     }
 
