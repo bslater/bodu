@@ -24,7 +24,7 @@ internal sealed class ByteArrayConverter
     : TomlConverter<byte[]>
 {
     /// <inheritdoc />
-    public override byte[] Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override byte[] Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType == TomlTokenType.String)
         {

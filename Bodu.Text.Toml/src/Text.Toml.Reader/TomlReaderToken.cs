@@ -7,7 +7,7 @@
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Represents a single entry in the flattened token stream a <see cref="Utf8TomlReader" /> advances over.
+/// Represents a single entry in the flattened token stream a <see cref="TomlDocumentReader" /> advances over.
 /// </summary>
 /// <remarks>
 /// Structural tokens (<see cref="TomlTokenType.StartTable" />, <see cref="TomlTokenType.EndTable" />,

@@ -54,7 +54,7 @@ public abstract class TomlConverter
     /// <param name="typeToConvert">The requested type.</param>
     /// <param name="options">The serializer options in effect.</param>
     /// <returns>The deserialized value, boxed.</returns>
-    internal abstract object? ReadAsObject(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options);
+    internal abstract object? ReadAsObject(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options);
 
     /// <summary>
     /// Writes a boxed value of the converter's type to the writer.

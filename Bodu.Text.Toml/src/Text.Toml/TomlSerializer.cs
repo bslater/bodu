@@ -156,7 +156,7 @@ public static class TomlSerializer
     {
         TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
 
-        var reader = new Utf8TomlReader(utf8Toml, new TomlReaderOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
+        var reader = new TomlDocumentReader(utf8Toml, new TomlReaderOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
         return TomlSerializerEngine.Deserialize<T>(ref reader, effective);
     }
 

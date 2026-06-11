@@ -38,7 +38,7 @@ public abstract class TomlConverterFactory
     public abstract TomlConverter CreateConverter(Type typeToConvert, TomlSerializerOptions options);
 
     /// <inheritdoc />
-    internal sealed override object? ReadAsObject(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+    internal sealed override object? ReadAsObject(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
         throw new InvalidOperationException();
 
     /// <inheritdoc />

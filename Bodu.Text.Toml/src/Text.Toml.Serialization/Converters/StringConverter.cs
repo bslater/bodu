@@ -17,7 +17,7 @@ internal sealed class StringConverter
     : TomlConverter<string>
 {
     /// <inheritdoc />
-    public override string Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override string Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.String)
         {

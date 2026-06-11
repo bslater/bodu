@@ -77,7 +77,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     }
 
     /// <inheritdoc />
-    public override TDictionary Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override TDictionary Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.StartTable)
         {

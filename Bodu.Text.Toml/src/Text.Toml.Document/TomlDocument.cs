@@ -18,7 +18,7 @@ namespace Bodu.Text.Toml.Document;
 /// <remarks>
 /// <para>
 /// A <see cref="TomlDocument" /> holds a flat array of row records describing the document structure. The underlying
-/// <see cref="Utf8TomlReader" /> parses and decodes the whole document up front, so each scalar row stores its already
+/// <see cref="TomlDocumentReader" /> parses and decodes the whole document up front, so each scalar row stores its already
 /// decoded CLR value and the document keeps no copy of the source bytes. Every <see cref="TomlElement" />, enumerator,
 /// and <see cref="TomlProperty" /> obtained from a document is valid only until the document is disposed.
 /// </para>
@@ -101,7 +101,7 @@ public sealed partial class TomlDocument
             MaxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : options.MaxDepth,
         };
 
-        var reader = new Utf8TomlReader(utf8Toml, readerOptions);
+        var reader = new TomlDocumentReader(utf8Toml, readerOptions);
         if (!reader.Read())
             throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
 
@@ -172,7 +172,7 @@ public sealed partial class TomlDocument
     /// <param name="reader">The reader, positioned on the value's first token.</param>
     /// <param name="rows">The growing flat metadata index to append to.</param>
     /// <exception cref="TomlFormatException">Thrown when the reader is positioned on an unexpected token.</exception>
-    private static void ReadValue(ref Utf8TomlReader reader, List<Row> rows)
+    private static void ReadValue(ref TomlDocumentReader reader, List<Row> rows)
     {
         switch (reader.TokenType)
         {

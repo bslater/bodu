@@ -30,7 +30,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteInteger(value);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "v");
         ExpectToken(ref reader, TomlTokenType.Integer);
@@ -60,7 +60,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteFloat(value);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "v");
         ExpectToken(ref reader, TomlTokenType.Float);
@@ -89,7 +89,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteString(value);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "v");
         ExpectToken(ref reader, TomlTokenType.String);
@@ -111,7 +111,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteString(value);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "v");
         ExpectToken(ref reader, TomlTokenType.String);
@@ -134,7 +134,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteOffsetDateTime(value);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "v");
         ExpectToken(ref reader, TomlTokenType.OffsetDateTime);
@@ -154,7 +154,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteInteger(1);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "a.b c");
         ExpectToken(ref reader, TomlTokenType.Integer);
@@ -184,7 +184,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
         ExpectToken(ref reader, TomlTokenType.StartTable);
 
         ExpectProperty(ref reader, "arr");

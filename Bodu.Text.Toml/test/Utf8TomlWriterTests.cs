@@ -298,7 +298,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
 
         ExpectToken(ref reader, TomlTokenType.StartTable);
 
@@ -387,7 +387,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
 
         ExpectToken(ref reader, TomlTokenType.StartTable);
 
@@ -445,7 +445,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteFloat(double.NaN);
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
 
         ExpectToken(ref reader, TomlTokenType.StartTable);
 
@@ -484,7 +484,7 @@ public sealed partial class Utf8TomlWriterTests
         writer.WriteEndTable();
         writer.WriteEndTable();
 
-        Utf8TomlReader reader = new(buffer.WrittenSpan);
+        TomlDocumentReader reader = new(buffer.WrittenSpan);
 
         ExpectToken(ref reader, TomlTokenType.StartTable);
         ExpectProperty(ref reader, "a");
@@ -551,7 +551,7 @@ public sealed partial class Utf8TomlWriterTests
     /// </summary>
     /// <param name="reader">The reader to advance.</param>
     /// <param name="expected">The expected property name.</param>
-    private static void ExpectProperty(ref Utf8TomlReader reader, string expected)
+    private static void ExpectProperty(ref TomlDocumentReader reader, string expected)
     {
         ExpectToken(ref reader, TomlTokenType.PropertyName);
         Assert.AreEqual(expected, reader.GetString());
@@ -562,7 +562,7 @@ public sealed partial class Utf8TomlWriterTests
     /// </summary>
     /// <param name="reader">The reader to advance.</param>
     /// <param name="expected">The expected token type.</param>
-    private static void ExpectToken(ref Utf8TomlReader reader, TomlTokenType expected)
+    private static void ExpectToken(ref TomlDocumentReader reader, TomlTokenType expected)
     {
         Assert.IsTrue(reader.Read(), $"Expected {expected} but the reader reported end of document.");
         Assert.AreEqual(expected, reader.TokenType);

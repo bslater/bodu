@@ -17,7 +17,7 @@ internal sealed class GuidConverter
     : TomlConverter<Guid>
 {
     /// <inheritdoc />
-    public override Guid Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override Guid Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.String)
         {

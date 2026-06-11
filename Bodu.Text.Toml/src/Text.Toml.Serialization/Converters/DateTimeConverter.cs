@@ -25,7 +25,7 @@ internal sealed class DateTimeConverter
     : TomlConverter<DateTime>
 {
     /// <inheritdoc />
-    public override DateTime Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override DateTime Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         return reader.TokenType switch
         {

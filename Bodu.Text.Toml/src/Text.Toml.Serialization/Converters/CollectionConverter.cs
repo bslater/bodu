@@ -61,7 +61,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     }
 
     /// <inheritdoc />
-    public override TCollection Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override TCollection Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.StartArray)
         {

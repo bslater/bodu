@@ -12,7 +12,7 @@ using Bodu.Text.Toml.Reader;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Runs the vendored <c>toml-lang/toml-test</c> conformance corpus against <see cref="Utf8TomlReader" /> in both the
+/// Runs the vendored <c>toml-lang/toml-test</c> conformance corpus against <see cref="TomlDocumentReader" /> in both the
 /// TOML v1.0.0 and v1.1.0 profiles: every valid document must parse and decode to the values pinned by its JSON
 /// expectation file, and every invalid document must be rejected with <see cref="TomlFormatException" />.
 /// </summary>
@@ -124,7 +124,7 @@ public sealed class TomlTestCorpusTests
         byte[] toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
         string expectationPath = Path.Combine(CorpusRoot, Path.ChangeExtension(kat.RelativePath, ".json"));
 
-        var reader = new Utf8TomlReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
+        var reader = new TomlDocumentReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
         Assert.IsTrue(reader.Read(), $"{kat.RelativePath}: the document produced no tokens.");
         object actual = BuildValue(ref reader);
 
@@ -142,7 +142,7 @@ public sealed class TomlTestCorpusTests
 
         var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            _ = new Utf8TomlReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
+            _ = new TomlDocumentReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
         });
 
         Assert.IsNotNull(ex.Message);
@@ -178,7 +178,7 @@ public sealed class TomlTestCorpusTests
     /// </summary>
     /// <param name="reader">The reader, positioned on the value's first token.</param>
     /// <returns>The comparison model.</returns>
-    private static object BuildValue(ref Utf8TomlReader reader)
+    private static object BuildValue(ref TomlDocumentReader reader)
     {
         switch (reader.TokenType)
         {

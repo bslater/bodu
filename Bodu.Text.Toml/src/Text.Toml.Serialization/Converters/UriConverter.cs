@@ -17,7 +17,7 @@ internal sealed class UriConverter
     : TomlConverter<Uri>
 {
     /// <inheritdoc />
-    public override Uri Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override Uri Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.String)
         {

@@ -17,7 +17,7 @@ internal sealed class DateOnlyConverter
     : TomlConverter<DateOnly>
 {
     /// <inheritdoc />
-    public override DateOnly Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override DateOnly Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.LocalDate)
         {

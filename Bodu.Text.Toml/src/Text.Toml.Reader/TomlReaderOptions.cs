@@ -7,7 +7,7 @@
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Defines the customizations applied when creating a <see cref="Utf8TomlReader" />, mirroring the role of
+/// Defines the customizations applied when creating a <see cref="TomlDocumentReader" />, mirroring the role of
 /// <see cref="System.Text.Json.JsonReaderOptions" /> for TOML.
 /// </summary>
 /// <remarks>

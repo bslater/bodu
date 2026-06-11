@@ -26,7 +26,7 @@ internal sealed class ObjectConverter<T>
     : TomlConverter<T>
 {
     /// <inheritdoc />
-    public override T Read(ref Utf8TomlReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override T Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
 

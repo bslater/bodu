@@ -52,7 +52,7 @@ internal static class TomlSerializerEngine
     /// <exception cref="TomlSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
-    internal static T Deserialize<T>(ref Utf8TomlReader reader, TomlSerializerOptions options)
+    internal static T Deserialize<T>(ref TomlDocumentReader reader, TomlSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
 

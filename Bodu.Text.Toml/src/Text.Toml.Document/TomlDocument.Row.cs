@@ -27,7 +27,7 @@ public sealed partial class TomlDocument
     /// located by skipping the whole of the preceding subtree in constant time per hop.
     /// </para>
     /// <para>
-    /// Because the underlying <see cref="Reader.Utf8TomlReader" /> decodes every scalar to its concrete CLR type during
+    /// Because the underlying <see cref="Reader.TomlDocumentReader" /> decodes every scalar to its concrete CLR type during
     /// parsing, a scalar row stores that decoded value directly in <see cref="Value" /> — for example a
     /// <see cref="string" />, <see cref="long" />, <see cref="double" />, <see cref="bool" />,
     /// <see cref="DateTimeOffset" />, <see cref="DateTime" />, <see cref="DateOnly" />, or <see cref="TimeOnly" /> — so
