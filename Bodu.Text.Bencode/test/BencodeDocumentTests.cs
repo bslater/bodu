@@ -14,8 +14,15 @@ namespace Bodu.Text.Bencode;
 /// and <see cref="BencodeProperty" />) that mirrors <see cref="System.Text.Json.JsonDocument" />.
 /// </summary>
 [TestClass]
-public class BencodeDocumentTests
+public partial class BencodeDocumentTests
 {
+    /// <summary>
+    /// Decodes the supplied Latin-1 text to bytes so binary content survives unchanged.
+    /// </summary>
+    /// <param name="text">The Latin-1 text to decode.</param>
+    /// <returns>The decoded bytes.</returns>
+    private static byte[] Bytes(string text) => Encoding.Latin1.GetBytes(text);
+
     /// <summary>
     /// A representative torrent-shaped dictionary used across several tests.
     /// </summary>

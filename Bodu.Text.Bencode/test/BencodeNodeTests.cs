@@ -14,8 +14,15 @@ namespace Bodu.Text.Bencode.Nodes;
 /// through the <see cref="BencodeSerializer" />.
 /// </summary>
 [TestClass]
-public class BencodeNodeTests
+public partial class BencodeNodeTests
 {
+    /// <summary>
+    /// Decodes the supplied Latin-1 text to bytes so binary content survives unchanged.
+    /// </summary>
+    /// <param name="text">The Latin-1 text to decode.</param>
+    /// <returns>The decoded bytes.</returns>
+    private static byte[] Bytes(string text) => Encoding.Latin1.GetBytes(text);
+
     /// <summary>
     /// Verifies that parsing a dictionary document yields a <see cref="BencodeObject" /> whose entries are readable
     /// through the indexer and report the object value kind.

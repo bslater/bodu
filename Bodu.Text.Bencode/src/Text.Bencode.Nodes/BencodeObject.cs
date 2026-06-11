@@ -19,7 +19,8 @@ namespace Bodu.Text.Bencode.Nodes;
 /// emits entries in canonical ascending bytewise key order regardless of insertion order. A value may be
 /// <see langword="null" /> in memory, but an object containing a <see langword="null" /> value cannot be written
 /// because Bencode has no null token. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />.
+/// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
+/// <see cref="BencodeNode.Parent" /> so it can be added to another container.
 /// </remarks>
 public sealed class BencodeObject
     : BencodeNode, IDictionary<string, BencodeNode?>
@@ -103,6 +104,9 @@ public sealed class BencodeObject
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to another container.
     /// </exception>
+    /// <remarks>
+    /// Assigning over an existing entry detaches the replaced node, clearing its <see cref="BencodeNode.Parent" />.
+    /// </remarks>
     public new BencodeNode? this[string key]
     {
         get => _properties[key];
@@ -110,6 +114,10 @@ public sealed class BencodeObject
         {
             ThrowHelper.ThrowIfNull(key);
             value?.AssignParent(this);
+
+            if (_properties.TryGetValue(key, out BencodeNode? existing) && existing is not null && !ReferenceEquals(existing, value))
+                existing.Parent = null;
+
             _properties[key] = value;
         }
     }
@@ -131,8 +139,16 @@ public sealed class BencodeObject
         Add(item.Key, item.Value);
 
     /// <inheritdoc />
-    public void Clear() =>
+    public void Clear()
+    {
+        foreach (BencodeNode? child in _properties.Values)
+        {
+            if (child is not null)
+                child.Parent = null;
+        }
+
         _properties.Clear();
+    }
 
     /// <inheritdoc />
     public bool Contains(KeyValuePair<string, BencodeNode?> item) =>
@@ -151,12 +167,28 @@ public sealed class BencodeObject
         _properties.GetEnumerator();
 
     /// <inheritdoc />
-    public bool Remove(string key) =>
-        _properties.Remove(key);
+    public bool Remove(string key)
+    {
+        if (!_properties.Remove(key, out BencodeNode? removed))
+            return false;
+
+        if (removed is not null)
+            removed.Parent = null;
+
+        return true;
+    }
 
     /// <inheritdoc />
-    public bool Remove(KeyValuePair<string, BencodeNode?> item) =>
-        ((ICollection<KeyValuePair<string, BencodeNode?>>)_properties).Remove(item);
+    public bool Remove(KeyValuePair<string, BencodeNode?> item)
+    {
+        if (!((ICollection<KeyValuePair<string, BencodeNode?>>)_properties).Remove(item))
+            return false;
+
+        if (item.Value is not null)
+            item.Value.Parent = null;
+
+        return true;
+    }
 
     /// <inheritdoc />
     public bool TryGetValue(string key, out BencodeNode? value) =>

@@ -222,7 +222,12 @@ public abstract class BencodeNode
         if (!reader.Read())
             throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
 
-        return ReadFrom(ref reader, options);
+        BencodeNode node = ReadFrom(ref reader, options);
+
+        // The reader rejects trailing bytes on the next Read, completing single-root validation.
+        reader.Read();
+
+        return node;
     }
 
     /// <summary>

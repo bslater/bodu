@@ -18,7 +18,8 @@ namespace Bodu.Text.Bencode.Nodes;
 /// Elements are kept in insertion order, which is also the order in which they are serialized. An element may be
 /// <see langword="null" /> in memory, but a list containing a <see langword="null" /> element cannot be written because
 /// Bencode has no null token. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />.
+/// <see cref="InvalidOperationException" />; removing or replacing an element detaches it, clearing its
+/// <see cref="BencodeNode.Parent" /> so it can be added to another container.
 /// </remarks>
 public sealed class BencodeArray
     : BencodeNode, IList<BencodeNode?>
@@ -75,12 +76,20 @@ public sealed class BencodeArray
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to another container.
     /// </exception>
+    /// <remarks>
+    /// Assigning over an existing element detaches the replaced node, clearing its <see cref="BencodeNode.Parent" />.
+    /// </remarks>
     public new BencodeNode? this[int index]
     {
         get => _items[index];
         set
         {
+            BencodeNode? existing = _items[index];
             value?.AssignParent(this);
+
+            if (existing is not null && !ReferenceEquals(existing, value))
+                existing.Parent = null;
+
             _items[index] = value;
         }
     }
@@ -97,8 +106,16 @@ public sealed class BencodeArray
     }
 
     /// <inheritdoc />
-    public void Clear() =>
+    public void Clear()
+    {
+        foreach (BencodeNode? item in _items)
+        {
+            if (item is not null)
+                item.Parent = null;
+        }
+
         _items.Clear();
+    }
 
     /// <inheritdoc />
     public bool Contains(BencodeNode? item) =>
@@ -124,12 +141,26 @@ public sealed class BencodeArray
     }
 
     /// <inheritdoc />
-    public bool Remove(BencodeNode? item) =>
-        _items.Remove(item);
+    public bool Remove(BencodeNode? item)
+    {
+        if (!_items.Remove(item))
+            return false;
+
+        if (item is not null)
+            item.Parent = null;
+
+        return true;
+    }
 
     /// <inheritdoc />
-    public void RemoveAt(int index) =>
+    public void RemoveAt(int index)
+    {
+        BencodeNode? removed = _items[index];
         _items.RemoveAt(index);
+
+        if (removed is not null)
+            removed.Parent = null;
+    }
 
     /// <inheritdoc />
     public override void WriteTo(Utf8BencodeWriter writer)
