@@ -27,7 +27,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
   Two self-contained libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3) and TOML. Deliberate twins, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, a low-level `Utf8…Reader` / `Utf8…Writer` ref-struct pair, and the full converter / attribute / callback / naming-policy surface.
 
 - **[Bodu.Text — encoding detection and text/byte conversion helpers](xref:Bodu.Text)**
-  BOM-based `EncodingDetection` plus `EncodingExtensions` and `StringEncodingExtensions` — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of `System.Text.Encoding`. For binary-to-text codecs (Base16/32/58/64/85), see `Bodu.Text.Encoding`.
+  BOM-based `EncodingDetection` plus `EncodingExtensions` and `StringEncodingExtensions` — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of `System.Text.Encoding`, shipped in the `Bodu.Core` package. For binary-to-text codecs (Base16/32/58/64/85), see `Bodu.Text.Encoding`.
 
 - **[Bodu.Numerics — exact rational arithmetic and bounded intervals](xref:Bodu.Numerics)**
   `Fraction<T>` for canonical rational arithmetic over any `IBinaryInteger<T>` backing type, with `BigInteger`-promoted intermediates, the full `INumber<T>` / `ISignedNumber<T>` surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation. `Interval<T>` for closed / open / half-open intervals with intersection, union, and adjacency.

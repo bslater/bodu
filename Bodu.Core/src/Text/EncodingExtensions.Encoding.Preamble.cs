@@ -214,7 +214,7 @@ public static partial class EncodingExtensions
 
         if (destination.Length < total)
             throw new ArgumentException(
-                TextResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
+                ResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
                 nameof(destination));
 
         if (!preamble.IsEmpty) preamble.CopyTo(destination);

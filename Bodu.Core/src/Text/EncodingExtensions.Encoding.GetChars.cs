@@ -77,7 +77,7 @@ public static partial class EncodingExtensions
         return destination.Length == required
             ? encoding.GetChars(bytes, destination)
             : throw new ArgumentException(
-                TextResourceStrings.Arg_Invalid_DestinationNotExactSizeForDecoded,
+                ResourceStrings.Arg_Invalid_DestinationNotExactSizeForDecoded,
                 nameof(destination));
     }
 }

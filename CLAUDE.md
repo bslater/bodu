@@ -8,7 +8,7 @@ Guidance for AI assistants working in this repository. Read this file before mak
 
 | Project | Path | Responsibility |
 |---|---|---|
-| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, deque, evicting dictionary), extensions, text, XML, argument validation helpers (`ThrowHelper`), `WeekPattern`. |
+| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, deque, evicting dictionary), extensions, text-encoding utilities (`Bodu.Text` namespace: `EncodingDetection`, `EncodingExtensions`, `StringEncodingExtensions`), XML, argument validation helpers (`ThrowHelper`), `WeekPattern`. |
 | `Bodu.Test` | `Bodu.Test/` | Shared test infrastructure: KAT records (`Bodu.Test.Kat`), assertion helpers (`Bodu.Test.Assertions.ExceptionAssert`), reusable stream mocks (`Bodu.Test.IO`), test category constants (`TestCategories`). Referenced by other test projects. |
 | `Bodu.Numerics` | `Bodu.Numerics/` | `Fraction<T>` (rational arithmetic, parse/format, generic math, UTF-8). |
 | `Bodu.IO.Hashing` | `Bodu.IO.Hashing/` | Non-cryptographic hashing (Fletcher-16/32/64, full RevEng CRC catalogue, check-digit algorithms: Luhn, Damm, ABA, EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064). |
@@ -18,7 +18,6 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Text.Formats` | `Bodu.Text.Formats/` | Document formats: Delimited (RFC 4180 CSV/TSV), DotEnv, INI. |
 | `Bodu.Text.Bencode` | `Bodu.Text.Bencode/` | Self-contained Bencode (BEP 3) library shaped after the `System.Text.Json` BCL: ref-struct `Utf8BencodeReader`/`Utf8BencodeWriter` (+ `BencodeTokenType`/`BencodeValueKind`), the `BencodeSerializer` POCO mapper (converters, the full attribute family, options, naming policies, callbacks, enum converters), a mutable `JsonNode`-style DOM (`BencodeNode`/`BencodeObject`/`BencodeArray`/`BencodeValue`), and a read-only `JsonDocument`-style DOM (`BencodeDocument`/`BencodeElement`). Folders/namespaces follow the S.T.J source layout: `Bodu.Text.Bencode[.Reader/.Writer/.Document/.Nodes/.Serialization]`. |
 | `Bodu.Text.Toml` | `Bodu.Text.Toml/` | Self-contained TOML (v1.0.0 / v1.1.0) library, the same `System.Text.Json`-aligned shape and `Text.Toml.*` folder/namespace structure as `Bodu.Text.Bencode`: `Utf8TomlReader`/`Utf8TomlWriter`, the `TomlSerializer` POCO mapper, and the mutable (`TomlNode`) and read-only (`TomlDocument`) DOMs. TOML's richer value model adds native float, boolean, and the four RFC 3339 date-time kinds, plus `TomlSpecVersion` and `TomlByteArrayHandling`. |
-| `Bodu.Text` | `Bodu.Text/` | Text/encoding utilities: encoding detection (`EncodingDetection`) and string/byte encoding extensions (`EncodingExtensions`, `StringEncodingExtensions`). |
 | `Bodu.Extensions.Configuration.Text` | `Bodu.Extensions.Configuration.Text/` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. |
 | `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Resource-driven notable-date engine on the notable-date schema: rule model, date-calculation strategies and astronomical algorithms (`Algorithms`), range resolution (`RangeResolution`), observed-date adjustments, working-day extensions (`Bodu.Extensions`), and `NotableDateService`. |
 | `Bodu.Globalization.Calendar.Plugins` | `Bodu.Globalization.Calendar.Plugins/` | Trust-gated external plugin loading for assemblies contributing custom `INotableDateAlgorithm` implementations. |
@@ -27,7 +26,6 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | `Bodu.Globalization.Calendar.DependencyInjection` | `…Calendar.DependencyInjection/` | `IServiceCollection` extensions for registering calendar services. |
 | `Bodu.Financial` | `Bodu.Financial/` | Money and currency primitives: `Money` / `Money<TCurrency>`, the ISO 4217 `CurrencyCode` catalogue and per-currency `ICurrency` types, exchange rates (`ExchangeRate` / `ExchangeRate<TBase, TQuote>`, rate series and providers), allocation and rounding policies, and JSON converters. |
 | `Bodu.Financial.DependencyInjection` | `Bodu.Financial.DependencyInjection/` | `IServiceCollection` extensions for registering financial services (`IFinancialServiceBuilder`, named monetary contexts, `FinancialOptions`). |
-| `BouncyCastle.Crypto` | `bc-csharp/crypto/src/` | Third-party vendor reference (used by Cryptography tests for reference vectors). |
 | `docs` | `docs/` | DocFX documentation project. |
 
 A separate solution **`Bodu.CodeStyle/Bodu.CodeStyle.sln`** holds the Bodu code-style analyzers, code fixes, and XML-doc formatter (`Bodu.CodeStyle.XmlDocumentation.{Analyzers,CodeFixes,Core}` plus `Bodu.CodeStyle.Test.Common`). It is **not** referenced by `bodu.slnx` — treat it as an independent unit.
@@ -44,11 +42,13 @@ Each project has the layout:
 
 All projects target `net8.0`.
 
+Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
+
 Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled across all projects, including `Bodu.Core`. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
 
 ## Key Types
 
-- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey, TValue>`, `IndexedSet<T>`, `IndexedPriorityQueue<TElement, TPriority>`, `ConcurrentHashSet<T>`, `PooledBufferBuilder`, `WeekPattern`, `ThrowHelper`.
+- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey, TValue>`, `IndexedSet<T>`, `IndexedPriorityQueue<TElement, TPriority>`, `ConcurrentHashSet<T>`, `PooledBufferBuilder`, `WeekPattern`, `ThrowHelper`; text-encoding utilities in the `Bodu.Text` namespace (`EncodingDetection`, `EncodingExtensions`, `StringEncodingExtensions`).
 - **Bodu.Numerics**: `Fraction<T>`.
 - **Bodu.IO.Hashing**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`(s), `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`, check-digit algorithms (`LuhnCheckDigitAlgorithm`, `IbanCheckDigitAlgorithm`, etc.).
 - **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Skipjack`, `Blowfish`, `Twofish`, `CamelliaEcb`, `Ascon128`, `Skein256/512/1024`, `Blake2b`, `Blake3`, `Tiger`, `SipHash`, `FNV1a`, `Adler32`, `CryptoHelpers`, AEAD modes (EAX, OFB, GCM), block-cipher modes.
@@ -84,7 +84,7 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 ### SDK Bootstrap (Claude Code on the web)
 
-`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost.
+`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost. The repository-root `global.json` pins SDK resolution to the 10.0.1xx band, so once the hook has run, `dotnet build` / `dotnet test` pick up the installed SDK 10 automatically.
 
 The hook also repairs the `dotnet-dnceng` plugin that `.claude/settings.json` enables from the `dotnet/arcade-skills` marketplace (`extraKnownMarketplaces` / `enabledPlugins`): the upstream plugin manifest currently fails Claude Code's path validation (its `agents` entry lacks the required `./` prefix), so the hook patches the cached marketplace clone and installs the plugin. Its skills then load from the next session in the container. The repair is a no-op once the manifest is fixed upstream and can be removed at that point.
 
