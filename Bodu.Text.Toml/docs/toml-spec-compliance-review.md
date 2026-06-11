@@ -294,10 +294,14 @@ and implemented — as a byte offset into the UTF-8 source.
   (M2), narrowing the idiom gap. A full architectural redesign (source-order lexer + document
   builder + normalized binding cursor) has since been assessed and designed — see
   [`utf8-toml-reader-redesign-assessment.md`](./utf8-toml-reader-redesign-assessment.md).
-  **Phase A of that redesign is delivered:** the UTF-16 decode pass, `TomlDocumentParser`, and
-  the up-front surrogate sweep are gone, replaced by the byte-native source-order `TomlLexer`
-  and the structural `TomlDocumentBuilder`; `Utf8TomlReader` keeps its documented normalized
-  token contract as a façade over the new pipeline until the Phase B public swap.
+  **The redesign is delivered in full (Phases A and B):** the UTF-16 decode pass,
+  `TomlDocumentParser`, and the up-front surrogate sweep are gone; `Utf8TomlReader` is now a
+  true forward-only source-order reader over `ReadOnlySpan<byte>` (with `ValueSpan`,
+  `TokenStartIndex`, byte-true positions, lazy `GetString`, and per-token lexical errors from
+  `Read()`); the structural rules live in the internal `TomlDocumentBuilder`; and the
+  normalized binding cursor survives as the public `TomlDocumentReader`, which the
+  `TomlConverter<T>.Read` surface now takes. The `ref struct` shape and the `Utf8JsonReader`
+  framing are earned. This finding is resolved.
 - **I2 — `Skip()` is a no-op on `PropertyName`**, diverging from `Utf8JsonReader.Skip`
   (`Utf8TomlReader.cs:254`); document or align. ✅ **Addressed:** `Skip()` on a property name now
   advances past the property's value, matching `Utf8JsonReader.Skip`.

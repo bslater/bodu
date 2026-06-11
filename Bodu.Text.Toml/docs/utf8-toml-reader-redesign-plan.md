@@ -1,7 +1,14 @@
 # `Utf8TomlReader` Redesign — Implementation Plan
 
 **Date:** 2026-06-11
-**Status:** Plan — execution has not started.
+**Status:** Executed — Phases A and B are delivered on this branch (A1 `60766028`, A2/A3
+`9df3f109`, A4 `f9650e0e`, B1 `64074c62`, B2 `d3168a64`, B3/B4 `0d51f4c7`). Deviations from the
+plan as written: B3 and B4 landed as one commit (the public swap and the test port are not
+separately compilable); the `TomlDocumentReader` internal tree ctor was dropped (every entry
+point parses from bytes, so it had no consumer); the lexer enforces `MaxDepth` for bracket
+nesting itself, keeping `TomlReaderOptions.MaxDepth` meaningful on the public reader; and the
+internal source-order vocabulary/state enums shipped as `TomlReaderState`/`TomlScalarTextKind`
+with the public `TomlTokenType` extended directly.
 **Relates to:** [`utf8-toml-reader-redesign-assessment.md`](./utf8-toml-reader-redesign-assessment.md)
 (target design §4, phasing §6) and finding I1 of
 [`toml-spec-compliance-review.md`](./toml-spec-compliance-review.md).

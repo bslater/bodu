@@ -1,7 +1,7 @@
 # `Utf8TomlReader` Redesign — Assessment and Target Design
 
 **Date:** 2026-06-11
-**Status:** Assessment and design only — **no implementation ships with this document.**
+**Status:** Implemented — see the implementation plan for the delivered work items.
 **Implementation plan:** [`utf8-toml-reader-redesign-plan.md`](./utf8-toml-reader-redesign-plan.md)
 **Relates to:** finding I1 of [`toml-spec-compliance-review.md`](./toml-spec-compliance-review.md)
 **Decisions taken:** assessment covers both phases (UTF-8 span-native core *and* lexer/builder
