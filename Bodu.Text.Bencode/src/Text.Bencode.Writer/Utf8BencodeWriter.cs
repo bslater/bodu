@@ -333,6 +333,59 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
+    /// Writes a pre-encoded Bencode value verbatim, mirroring
+    /// <see cref="System.Text.Json.Utf8JsonWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />. Supports round-tripping
+    /// verified slices such as a torrent's <c>info</c> dictionary without re-encoding.
+    /// </summary>
+    /// <param name="value">The complete, already-encoded Bencode value bytes.</param>
+    /// <param name="skipInputValidation">
+    /// <see langword="true" /> to write the bytes without verifying they form a single complete Bencode value.
+    /// </param>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when validation is enabled and <paramref name="value" /> is not exactly one complete, canonical Bencode
+    /// value.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the value is written directly inside a dictionary before a property name has been written, or when a
+    /// complete root value has already been written and <see cref="BencodeWriterOptions.AllowMultipleRootValues" /> is
+    /// not set.
+    /// </exception>
+    /// <remarks>
+    /// Validation parses <paramref name="value" /> with a standalone <see cref="Reader.Utf8BencodeReader" /> using the
+    /// default maximum depth; the payload's nesting is not counted against this writer's configured
+    /// <see cref="BencodeWriterOptions.MaxDepth" />. When validation is skipped the caller is responsible for the bytes
+    /// being canonical — non-canonical bytes produce a document this library's reader rejects.
+    /// </remarks>
+    public readonly void WriteRawValue(ReadOnlySpan<byte> value, bool skipInputValidation = false)
+    {
+        if (!skipInputValidation)
+            ValidateRawValue(value);
+
+        EnsureValueAllowed();
+        CurrentSink().Write(value);
+        CompleteValue();
+    }
+
+    /// <summary>
+    /// Verifies that the supplied bytes form exactly one complete Bencode value.
+    /// </summary>
+    /// <param name="value">The bytes to validate.</param>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the bytes are empty, malformed, or carry trailing data after the first value.
+    /// </exception>
+    private static void ValidateRawValue(ReadOnlySpan<byte> value)
+    {
+        var reader = new Reader.Utf8BencodeReader(value);
+        if (!reader.Read())
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, 0);
+
+        // Skip consumes the whole subtree when the first token opens a container; the trailing Read then enforces
+        // that nothing follows the single root value.
+        reader.Skip();
+        _ = reader.Read();
+    }
+
+    /// <summary>
     /// Writes a byte string in canonical Bencode form to the supplied buffer.
     /// </summary>
     /// <param name="buffer">The destination buffer.</param>
