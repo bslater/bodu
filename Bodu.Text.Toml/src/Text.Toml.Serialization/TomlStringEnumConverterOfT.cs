@@ -19,6 +19,20 @@ namespace Bodu.Text.Toml.Serialization;
 /// <see cref="TomlConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
 /// parameterless constructor and applies to a single enumeration type.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [TomlConverter(typeof(TomlStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the TOML string "OnHold".
+///]]>
+/// </code>
+/// </example>
 public sealed class TomlStringEnumConverter<TEnum>
     : TomlConverterFactory
     where TEnum : struct, Enum

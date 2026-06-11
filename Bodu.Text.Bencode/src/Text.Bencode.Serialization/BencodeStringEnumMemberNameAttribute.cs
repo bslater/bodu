@@ -21,6 +21,22 @@ namespace Bodu.Text.Bencode.Serialization;
 /// Bencode serialization attribute family.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///
+///     [BencodeStringEnumMemberName("on-hold")]
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the byte string 7:on-hold.
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 public sealed class BencodeStringEnumMemberNameAttribute
     : BencodeAttribute

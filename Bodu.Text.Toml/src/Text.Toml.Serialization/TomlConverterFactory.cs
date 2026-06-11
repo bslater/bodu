@@ -19,6 +19,21 @@ namespace Bodu.Text.Toml.Serialization;
 /// <see cref="CreateConverter" /> to obtain the converter for the specific closed type being serialized. A factory is
 /// never asked to read or write a value itself.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class StackConverterFactory : TomlConverterFactory
+/// {
+///     public override bool CanConvert(Type typeToConvert) =>
+///         typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(Stack<>);
+///
+///     public override TomlConverter CreateConverter(Type typeToConvert, TomlSerializerOptions options) =>
+///         (TomlConverter)Activator.CreateInstance(
+///             typeof(StackConverter<>).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+/// }
+///]]>
+/// </code>
+/// </example>
 public abstract class TomlConverterFactory
     : TomlConverter
 {

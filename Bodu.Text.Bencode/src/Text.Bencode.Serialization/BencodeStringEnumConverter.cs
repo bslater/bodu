@@ -18,6 +18,16 @@ namespace Bodu.Text.Bencode.Serialization;
 /// it to a single enumeration. Two constructors are provided: a parameterless form that applies no naming policy and
 /// accepts integers on read, and a form that takes an explicit naming policy and integer-handling flag.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new BencodeSerializerOptions();
+/// options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+///
+/// // Status.OnHold now serializes as the byte string 7:on_hold.
+///]]>
+/// </code>
+/// </example>
 public sealed class BencodeStringEnumConverter
     : BencodeConverterFactory
 {

@@ -19,6 +19,20 @@ namespace Bodu.Text.Bencode.Serialization;
 /// a <see cref="BencodeConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a
 /// public parameterless constructor and applies to a single enumeration type.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
+/// public enum Status
+/// {
+///     Active,
+///     OnHold,
+/// }
+///
+/// // Status.OnHold serializes as the byte string 6:OnHold.
+///]]>
+/// </code>
+/// </example>
 public sealed class BencodeStringEnumConverter<TEnum>
     : BencodeConverterFactory
     where TEnum : struct, Enum

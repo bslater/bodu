@@ -18,6 +18,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// or register it on <see cref="TomlSerializerOptions.Converters" />. It exposes a public parameterless constructor so
 /// it can be used through the converter attribute.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class WorkItem
+/// {
+///     [TomlConverter(typeof(TomlNumberEnumConverter<Priority>))]
+///     public Priority Priority { get; set; }
+/// }
+///
+/// // Priority.High (underlying value 2) serializes as: Priority = 2
+///]]>
+/// </code>
+/// </example>
 public sealed class TomlNumberEnumConverter<TEnum>
     : TomlConverterFactory
     where TEnum : struct, Enum
