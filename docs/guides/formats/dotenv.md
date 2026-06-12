@@ -157,3 +157,4 @@ string output      = doc.FormatDotEnv();
 - [Delimited](delimited.md), [INI](ini.md) — the other formats in the package.
 - [`Bodu.Text.DotEnv` API reference](xref:Bodu.Text.DotEnv)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for hierarchical key / value configuration with sections.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

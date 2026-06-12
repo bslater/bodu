@@ -45,19 +45,32 @@ Each format pairs a typed value model with a codec: parse turns a span of text i
 
 </div>
 
-### `Bodu.Text.Formats` — I/O
+### `Bodu.Text.Formats` — I/O and policies
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="streaming.md">Streams and async I/O</a></h3>
-  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — sync and async reads and writes, cancellation, lifetime contracts, and input-size limits.</p>
+  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — sync and async reads and writes, cancellation, lifetime contracts, mid-stream errors, and input-size limits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../../docs/formats/parser-policies.md">Parser policies</a></h3>
+  <p>The strictness and conflict-resolution options across all three formats — duplicate headers and keys, malformed records, lenient opt-ins, and the shared <code>TextFormatException</code> diagnostic surface.</p>
 </div>
 
 </div>
+
+## Suggested reading path
+
+1. **[Introduction](../../docs/formats/index.md)** and **[core concepts](../../docs/formats/concepts.md)** — the codec mental model and vocabulary.
+2. The walk-through for your format — **[Delimited](delimited.md)**, **[DotEnv](dotenv.md)**, or **[INI](ini.md)**.
+3. **[Parser policies](../../docs/formats/parser-policies.md)** — when the defaults are too strict or too lenient for your input.
+4. **[Streams and async I/O](streaming.md)** — when the document no longer fits in memory.
 
 ## Where to go next
 
 - [Bodu.Text.Formats introduction](../../docs/formats/index.md) — mental model, headline types, scenarios.
 - [Core concepts](../../docs/formats/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Text.Formats getting started](../../docs/formats/getting-started.md) — install and minimal samples.
+- [Text & Serialization guides](../topics/text-and-serialization.md) — how the formats sit alongside the encodings and the object serializers.
