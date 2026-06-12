@@ -1,0 +1,607 @@
+# X25519 key-agreement known-answer vectors curated from Project Wycheproof.
+#
+# Source: https://github.com/C2SP/wycheproof, file testvectors_v1/x25519_test.json
+#         (schema xdh_comp_schema_v1.json, generator google-wycheproof version 0.9rc5),
+#         retrieved 2026-06-12 from the master branch.
+# Curated subset: all rows flagged Normal, Ktv, SmallPublicKey, LowOrderPublic, ZeroSharedSecret,
+#         NonCanonicalPublic, EdgeCasePrivateKey, or EdgeCaseShared, plus the first 15 Twist and
+#         first 15 EdgeCaseMultiplication rows not already selected. TcId values match the source file.
+#
+# Fields: Name (diagnostic label), Private (32-byte scalar, hex), Public (peer u-coordinate, hex),
+#         Shared (expected shared secret, hex), Reject (true when the strict RFC 7748 section 6.1
+#         all-zero check must reject the derivation with CryptographicException).
+
+Name = tcId 1 normal case
+Private = c8a9d5a91091ad851c668b0736c1c9a02936c0d3ad62670858088047ba057475
+Public = 504a36999f489cd2fdbc08baff3d88fa00569ba986cba22548ffde80f9806829
+Shared = 436a2c040cf45fea9b29a0cb81b1f41458f863d0d61b453d0a982720d6d61320
+Reject = false
+
+Name = tcId 2 public key on twist
+Private = d85d8c061a50804ac488ad774ac716c3f5ba714b2712e048491379a500211958
+Public = 63aa40c6e38346c5caf23a6df0a5e6c80889a08647e551b3563449befcfc9733
+Shared = 279df67a7c4611db4708a0e8282b195e5ac0ed6f4b2f292c6fbd0acac30d1332
+Reject = false
+
+Name = tcId 3 public key on twist
+Private = c8b45bfd32e55325d9fd648cb302848039000b390e44d521e58aab3b29a6964b
+Public = 0f83c36fded9d32fadf4efa3ae93a90bb5cfa66893bc412c43fa7287dbb99779
+Shared = 4bc7e01e7d83d6cf67632bf90033487a5fc29eba5328890ea7b1026d23b9a45f
+Reject = false
+
+Name = tcId 4 public key on twist
+Private = f876e34bcbe1f47fbc0fddfd7c1e1aa53d57bfe0f66d243067b424bb6210be51
+Public = 0b8211a2b6049097f6871c6c052d3c5fc1ba17da9e32ae458403b05bb283092a
+Shared = 119d37ed4b109cbd6418b1f28dea83c836c844715cdf98a3a8c362191debd514
+Reject = false
+
+Name = tcId 5 public key on twist
+Private = 006ac1f3a653a4cdb1d37bba94738f8b957a57beb24d646e994dc29a276aad45
+Public = 343ac20a3b9c6a27b1008176509ad30735856ec1c8d8fcae13912d08d152f46c
+Shared = cc4873aed3fcee4b3aaea7f0d20716b4276359081f634b7bea4b705bfc8a4d3e
+Reject = false
+
+Name = tcId 6 public key on twist
+Private = 08da77b26d06dff9d9f7fd4c5b3769f8cdd5b30516a5ab806be324ff3eb69e60
+Public = fa695fc7be8d1be5bf704898f388c452bafdd3b8eae805f8681a8d15c2d4e142
+Shared = b6f8e2fcb1affc79e2ff798319b2701139b95ad6dd07f05cbac78bd83edfd92e
+Reject = false
+
+Name = tcId 7 public key on twist
+Private = d03edde9f3e7b799045f9ac3793d4a9277dadeadc41bec0290f81f744f73775f
+Public = 0200000000000000000000000000000000000000000000000000000000000000
+Shared = b87a1722cc6c1e2feecb54e97abd5a22acc27616f78f6e315fd2b73d9f221e57
+Reject = false
+
+Name = tcId 8 public key on twist
+Private = e09d57a914e3c29036fd9a442ba526b5cdcdf28216153e636c10677acab6bd6a
+Public = 0300000000000000000000000000000000000000000000000000000000000000
+Shared = a29d8dad28d590cd3017aa97a4761f851bf1d3672b042a4256a45881e2ad9035
+Reject = false
+
+Name = tcId 9 public key on twist
+Private = e0ed78e6ee02f08bec1c15d66fbbe5b83ffc37ea14e1512cc1bd4b2ea6d8066f
+Public = ff00000000000000000000000000000000000000000000000000000000000000
+Shared = e703bc8aa94b7d87ba34e2678353d12cdaaa1a97b5ca3e1b8c060c4636087f07
+Reject = false
+
+Name = tcId 10 public key on twist
+Private = a8a1a2ec9fa9915ae7aace6a37c68591d39e15995c4ef5ebd3561c02f72dda41
+Public = ffff000000000000000000000000000000000000000000000000000000000000
+Shared = ff5cf041e924dbe1a64ac9bdba96bdcdfaf7d59d91c7e33e76ed0e4c8c836446
+Reject = false
+
+Name = tcId 11 public key on twist
+Private = a8c9df5820eb399d471dfa3215d96055b3c7d0f4ea49f8ab028d6a6e3194517b
+Public = 0000010000000000000000000000000000000000000000000000000000000000
+Shared = a92a96fa029960f9530e6fe37e2429cd113be4d8f3f4431f8546e6c76351475d
+Reject = false
+
+Name = tcId 12 public key on twist
+Private = d0d31c491cbd39271859b4a63a316826507b1db8c701709fd0ffe3eb21c4467c
+Public = ffffff0f00000000000000000000000000000000000000000000000000000000
+Shared = 9f8954868158ec62b6b586b8cae1d67d1b9f4c03d5b3ca0393cee71accc9ab65
+Reject = false
+
+Name = tcId 13 public key on twist
+Private = d053e7bf1902619cd61c9c739e09d54c4147f46d190720966f7de1d9cffbbd4e
+Public = ffffffff00000000000000000000000000000000000000000000000000000000
+Shared = 6cbf1dc9af97bc148513a18be4a257de1a3b065584df94e8b43c1ab89720b110
+Reject = false
+
+Name = tcId 14 public key on twist
+Private = a021d75009a4596e5a33f12921c10f3670933bc80dde3bba22881b6120582144
+Public = 0000000000001000000000000000000000000000000000000000000000000000
+Shared = 38284b7086095a9406028c1f800c071ea106039ad7a1d7f82fe00906fd90594b
+Reject = false
+
+Name = tcId 15 public key on twist
+Private = a89c6687f99bd569a01fd8bd438236160d15ce2c57c1d71ebaa3f2da88233863
+Public = 0000000000000001000000000000000000000000000000000000000000000000
+Shared = c721041df0244071794a8db06b9f7eaeec690c257265343666f4416f4166840f
+Reject = false
+
+Name = tcId 16 public key on twist
+Private = 68964bca51465bf0f5ba524b1482ceff0e960a1ed9f48dcc30f1608d0e501a50
+Public = ffffffffffffffff000000000000000000000000000000000000000000000000
+Shared = 25ff9a6631b143dbdbdc207b38e38f832ae079a52a618c534322e77345fd9049
+Reject = false
+
+Name = tcId 32 public key = 0
+Private = 88227494038f2bb811d47805bcdf04a2ac585ada7f2f23389bfd4658f9ddd45e
+Public = 0000000000000000000000000000000000000000000000000000000000000000
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 33 public key = 1
+Private = 48232e8972b61c7e61930eb9450b5070eae1c670475685541f0476217e48184f
+Public = 0100000000000000000000000000000000000000000000000000000000000000
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 63 public key with low order
+Private = e0f978dfcd3a8f1a5093418de54136a584c20b7b349afdf6c0520886f95b1272
+Public = e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 64 public key with low order
+Private = 387355d995616090503aafad49da01fb3dc3eda962704eaee6b86f9e20c92579
+Public = 5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 65 public key with low order
+Private = c8fe0df92ae68a03023fc0c9adb9557d31be7feed0d3ab36c558143daf4dbb40
+Public = ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 66 public key with low order
+Private = c8d74acde5934e64b9895d5ff7afbffd7f704f7dfccff7ac28fa62a1e6410347
+Public = e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b880
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 67 public key with low order
+Private = b85649d5120e01e8ccaf7b2fb8d81b62e8ad6f3d5c0553fdde1906cb9d79c050
+Public = 5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f11d7
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 68 public key with low order
+Private = 2064b2f4c9dc97ec7cf58932fdfa3265ba6ea4d11f0259b8efc8afb35db88c48
+Public = ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 69 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = 0000000000000000000000000000000000000000000000000000000000000000
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 70 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = 0100000000000000000000000000000000000000000000000000000000000000
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 71 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 72 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = 5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 73 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 74 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 75 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 76 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = 0000000000000000000000000000000000000000000000000000000000000080
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 77 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = 0100000000000000000000000000000000000000000000000000000000000080
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 78 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 79 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = 5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f11d7
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 80 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b880
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 81 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 82 public key with low order
+Private = 786a33a4f7af297a20e7642925932bf509e7070fa1bc36986af1eb13f4f50b55
+Public = eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 83 public key == 0
+Private = 40ff586e73d61f0960dc2d763ac19e98225f1194f6fe43d5dd97ad55b3d35961
+Public = edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 84 public key == 0
+Private = 7887889bac4c629a101d3724f2ed8b98d936fde79e1a1f77d86779626bf8f263
+Public = 0000000000000000000000000000000000000000000000000000000000000080
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 85 public key == 1
+Private = 584fceaebae944bfe93b2e0d0a575f706ce5ada1da2b1311c3b421f9186c7a6f
+Public = eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 86 public key == 1
+Private = e07971ee820e48b0b266d8be3cdbbb5e900a43f59ee8535c6572418615de4962
+Public = 0100000000000000000000000000000000000000000000000000000000000080
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 87 non-canonical public key
+Private = 0016b62af5cabde8c40938ebf2108e05d27fa0533ed85d70015ad4ad39762d54
+Public = efffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = b4d10e832714972f96bd3382e4d082a21a8333a16315b3ffb536061d2482360d
+Reject = false
+
+Name = tcId 88 non-canonical public key
+Private = d83650ba7cec115881916255e3fa5fa0d6b8dcf968731bd2c9d2aec3f561f649
+Public = f0ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 515eac8f1ed0b00c70762322c3ef86716cd2c51fe77cec3d31b6388bc6eea336
+Reject = false
+
+Name = tcId 89 non-canonical public key
+Private = 88dd14e2711ebd0b0026c651264ca965e7e3da5082789fbab7e24425e7b4377e
+Public = f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 6919992d6a591e77b3f2bacbd74caf3aea4be4802b18b2bc07eb09ade3ad6662
+Reject = false
+
+Name = tcId 90 non-canonical public key
+Private = 98c2b08cbac14e15953154e3b558d42bb1268a365b0ef2f22725129d8ac5cb7f
+Public = ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 9c034fcd8d3bf69964958c0105161fcb5d1ea5b8f8abb371491e42a7684c2322
+Reject = false
+
+Name = tcId 91 non-canonical public key
+Private = c0697b6f05e0f3433b44ea352f20508eb0623098a7770853af5ca09727340c4e
+Public = 0200000000000000000000000000000000000000000000000000000000000080
+Shared = ed18b06da512cab63f22d2d51d77d99facd3c4502e4abf4e97b094c20a9ddf10
+Reject = false
+
+Name = tcId 92 non-canonical public key
+Private = 18422b58a18e0f4519b7a887b8cfb649e0bfe4b34d75963350a9944e5b7f5b7e
+Public = 0300000000000000000000000000000000000000000000000000000000000080
+Shared = 448ce410fffc7e6149c5abec0ad5f3607dfde8a34e2ac3243c3009176168b432
+Reject = false
+
+Name = tcId 93 non-canonical public key
+Private = 20620d82487707bedf9ee3549e95cb9390d2618f50cf6acba47ffaa103224a6f
+Public = 0400000000000000000000000000000000000000000000000000000000000080
+Shared = 03a633df01480d0d5048d92f51b20dc1d11f73e9515c699429b90a4f6903122a
+Reject = false
+
+Name = tcId 94 non-canonical public key
+Private = 285a6a7ceeb7122f2c78d99c53b2a902b490892f7dff326f89d12673c3101b53
+Public = daffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 9b01287717d72f4cfb583ec85f8f936849b17d978dbae7b837db56a62f100a68
+Reject = false
+
+Name = tcId 95 non-canonical public key
+Private = c8e0330ae9dceeff887fba761225879a4bd2e0db08799244136e4721b2c88970
+Public = dbffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = dfe60831c9f4f96c816e51048804dbdc27795d760eced75ef575cbe3b464054b
+Reject = false
+
+Name = tcId 96 non-canonical public key
+Private = 10db6210fc1fb13382472fa1787b004b5d11868ab3a79510e0cee30f4a6df26b
+Public = dcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 50bfa826ca77036dd2bbfd092c3f78e2e4a1f980d7c8e78f2f14dca3cce5cc3c
+Reject = false
+
+Name = tcId 97 non-canonical public key
+Private = 9041c6e044a277df8466275ca8b5ee0da7bc028648054ade5c592add3057474e
+Public = eaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 13da5695a4c206115409b5277a934782fe985fa050bc902cba5616f9156fe277
+Reject = false
+
+Name = tcId 98 non-canonical public key
+Private = b8d499041a6713c0f6f876db7406587fdb44582f9542356ae89cfa958a34d266
+Public = ebffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = 63483b5d69236c63cddbed33d8e22baecc2b0ccf886598e863c844d2bf256704
+Reject = false
+
+Name = tcId 99 non-canonical public key
+Private = c85f08e60c845f82099141a66dc4583d2b1040462c544d33d0453b20b1a6377e
+Public = ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+Shared = e9db74bc88d0d9bf046ddd13f943bccbe6dbb47d49323f8dfeedc4a694991a3c
+Reject = false
+
+Name = tcId 100 RFC 7748
+Private = a046e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449a44
+Public = e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c
+Shared = c3da55379de9c6908e94ea4df28d084f32eccf03491c71f754b4075577a28552
+Reject = false
+
+Name = tcId 101 RFC 7748
+Private = 4866e9d4d1b4673c5ad22691957d6af5c11b6421e0ea01d42ca4169e7918ba4d
+Public = e5210f12786811d3f4b7959d0538ae2c31dbe7106fc03c3efc4cd549c715a413
+Shared = 95cbde9476e8907d7aade45cb4b873f88b595a68799fa152e6f8f7647aac7957
+Reject = false
+
+Name = tcId 102 RFC 8037, Section A.6
+Private = 77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a
+Public = de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f
+Shared = 4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742
+Reject = false
+
+Name = tcId 103 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = b7b6d39c765cb60c0c8542f4f3952ffb51d3002d4aeb9f8ff988b192043e6d0a
+Shared = 0200000000000000000000000000000000000000000000000000000000000000
+Reject = false
+
+Name = tcId 104 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 3b18df1e50b899ebd588c3161cbd3bf98ebcc2c1f7df53b811bd0e91b4d5153d
+Shared = 0900000000000000000000000000000000000000000000000000000000000000
+Reject = false
+
+Name = tcId 105 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = cab6f9e7d8ce00dfcea9bbd8f069ef7fb2ac504abf83b87db601b5ae0a7f7615
+Shared = 1000000000000000000000000000000000000000000000000000000000000000
+Reject = false
+
+Name = tcId 106 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 4977d0d897e1ba566590f60f2eb0db6f7b24c13d436918ccfd32708dfad7e247
+Shared = feffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
+Reject = false
+
+Name = tcId 107 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 98730bc03e29e8b057fb1d20ef8c0bffc822485d3db7f45f4e3cc2c3c6d1d14c
+Shared = fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
+Reject = false
+
+Name = tcId 108 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 97b4fff682df7f096cd1756569e252db482d45406a3198a1aff282a5da474c49
+Shared = f9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
+Reject = false
+
+Name = tcId 109 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 317781b0163bae74accc06c0d44ef9a911a22b0d37faf7726621591f9343ea2f
+Shared = f3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
+Reject = false
+
+Name = tcId 110 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 7e26f8f24cb590027f9d1bc49b0e1a242c7d8f43624d3e8fab28ee08e02cb45e
+Shared = ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff03
+Reject = false
+
+Name = tcId 111 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = e96d2780e5469a74620ab5aa2f62151d140c473320dbe1b028f1a48f8e76f95f
+Shared = e5ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Reject = false
+
+Name = tcId 112 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 8d612c5831aa64b057300e7e310f3aa332af34066fefcab2b089c9592878f832
+Shared = e3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Reject = false
+
+Name = tcId 113 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 8d44108d05d940d3dfe5647ea7a87be24d0d036c9f0a95a2386b839e7b7bf145
+Shared = ddffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Reject = false
+
+Name = tcId 114 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 21a35d5db1b6237c739b56345a930aeee373cdcfb4701266782a8ac594913b29
+Shared = dbffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Reject = false
+
+Name = tcId 115 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 3e5efb63c352ce942762482bc9337a5d35ba55664743ac5e93d11f957336cb10
+Shared = 0000000000000000000000000000000000000000000000000000000000000002
+Reject = false
+
+Name = tcId 116 edge case for shared secret
+Private = 60a3a4f130b98a5be4b1cedb7cb85584a3520e142d474dc9ccb909a073a9767f
+Public = 8e41f05ea3c76572be104ad8788e970863c6e2ca3daae64d1c2f46decfffa571
+Shared = 0000000000000000000000000000000000000000000000000000000000008000
+Reject = false
+
+Name = tcId 117 special case public key
+Private = c8d07c46bbfb827753b92c70e49583ce8bfa44641a7382258ea903d6a832c96b
+Public = 0000000000000000000000000000000000000000000000000000000000000000
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 118 special case public key
+Private = 90b7ef237a055f348dcb4c4364a59d7d31edc7ab78f2ca254e2c810975c3f543
+Public = 0100000000000000000000000000000000000000000000000000000000000000
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 119 special case public key
+Private = e0a8be63315c4f0f0a3fee607f44d30a55be63f09561d9af93e0a1c9cf0ed751
+Public = 0200000000000000000000000000000000000000000000000000000000000000
+Shared = 0c50ac2bfb6815b47d0734c5981379882a24a2de6166853c735329d978baee4d
+Reject = false
+
+Name = tcId 120 special case public key
+Private = 0840a8af5bc4c48da8850e973d7e14220f45c192cea4020d377eecd25c7c3643
+Public = 1200000000000000000000000000000000000000000000000000000000000000
+Shared = 77557137a2a2a651c49627a9b239ac1f2bf78b8a3e72168ccecc10a51fc5ae66
+Reject = false
+
+Name = tcId 121 special case public key
+Private = 0092229c753a71284d0853909470ad847ab62f439ea51482fb41d30cc3b44743
+Public = 1400000000000000000000000000000000000000000000000000000000000000
+Shared = c88e719ae5c2248b5f90da346a92ae214f44a5d129fd4e9c26cf6a0da1efe077
+Reject = false
+
+Name = tcId 122 special case public key
+Private = b8da2bd2d7cf25a3e54e5f87ee15911effb9ff86baec4076d56c8e953670bf5b
+Public = 0000000000000000000000000080000000000000000000000000000000000000
+Shared = 4bf6789c7ea036f973cde0af02d6fdb9b64a0b957022111439570fad7d7a453f
+Reject = false
+
+Name = tcId 123 special case public key
+Private = 684cd420af41abb3d10c61e773238cf729c2155f941ac27e15f4c37f49b29576
+Public = ffffffffffffffffffffffffffff000000000000000000000000000000000000
+Shared = bcac235ae15cc7148372e11f9315e3bc76ceb904b3d2a8246bd9d9be2082bb62
+Reject = false
+
+Name = tcId 124 special case public key
+Private = 38cfacaa4460796b4de434bdd6739f0d043671f97fa829517511e6b47aa93474
+Public = 0100000000000000000000000000010000000000000000000000000000000000
+Shared = 5dd7d16fff25cc5fdf9e03c3157cb0a235cea17d618f36e6f13461567edeb943
+Reject = false
+
+Name = tcId 125 special case public key
+Private = 30832e8cb627ac195f77b1105258e4bb18b99a5ed944404bfacb3a039fbdb14b
+Public = 0000000000000000000000000000000000000000000000000000004000000000
+Shared = 2816fd031d51d6750f9225ede950625cca47441ca97e43092650396991afcb6d
+Reject = false
+
+Name = tcId 126 special case public key
+Private = d818fd6971e546447f361d33d3dbb3eadcf02fb28f246f1d5107b9073a93cd4f
+Public = 0000000000000000000000000000000000000000000000000000008000000000
+Shared = 7ed8f2d5424e7ebb3edbdf4abe455447e5a48b658e64abd06c218f33bd151f64
+Reject = false
+
+Name = tcId 127 special case public key
+Private = 1021cd8682bdc3f5da9100adff5b2230b3acd836b3a455db8352a2c27e69d17e
+Public = ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000
+Shared = e8620ed5ca89c72c5ea5503e6dcd01131cd5e875c30e13d5dc619ce28ec7d559
+Reject = false
+
+Name = tcId 128 special case public key
+Private = 20e4c9247102292655d6765d7d84c6fce5309b8004045daea6d7d7dcad462871
+Public = 0100000000000000000000000000000000000000000000000000000001000000
+Shared = ceadb264379dcadd6e3bb8ad24dd653d2a609dd703d41da6caf3ad00f001862c
+Reject = false
+
+Name = tcId 129 special case public key
+Private = 90b150d462de512056d5bd55173074969b496f262fb6916b733f6263a8078971
+Public = a8b9c7372118a53a9de9eaf0868e3b1a3d88e81cb2e407ff7125e9f5c5088715
+Shared = f86cc7bf1be49574fc97a074282e9bb5cd238e002bc8e9a7b8552b2d60eccb52
+Reject = false
+
+Name = tcId 130 special case public key
+Private = 9887286b3261c8d857a16f6db21277f75d88d4e861b3ebe7596699047e816668
+Public = aab9c7372118a53a9de9eaf0868e3b1a3d88e81cb2e407ff7125e9f5c5088715
+Shared = ccbb8fd9dee165a398b2dbd7c8396f81736c1b3da36b35fbec8f326f38f92767
+Reject = false
+
+Name = tcId 131 special case public key
+Private = 20ca2c85cc8762e96b7047bf15c71c050ffe0ed1616040a953ae32a1297ad871
+Public = 585007a5930d77623cf29756038ca197d3ebfd9e4c80a69585efe0274092c115
+Shared = 46add6f48ffff461777d4f89b6fdf1155aa051a96387d45f3e5e371a236b6e52
+Reject = false
+
+Name = tcId 132 special case public key
+Private = d027656605b10bf18dea28bc52546f9f1f08cef06cafd200fc84f87dbb4ebe46
+Public = fbffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1f
+Shared = 1adbe32207e21f71e1af53884d2a2276481e298e557f4dacb3720f2458e3082d
+Reject = false
+
+Name = tcId 133 special case public key
+Private = 4867a83ee9d01b7510840867db1af6a6049bdbb056b74443f70c358e162c8867
+Public = 0000000000000000000000000000000000000000000000000000000000000020
+Shared = e12cc58fbeb70a5e35c861c33710be6516a6a92e52376060211b2487db542b4f
+Reject = false
+
+Name = tcId 154 special case public key
+Private = 18630f93598637c35da623a74559cf944374a559114c7937811041fc8605564a
+Public = ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 165 D = 0 in multiplication by 2
+Private = 5891c9272cf9a197735b701e5715268d36d7436b7e351a3e997a0862e4807d4d
+Public = e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 166 D = 0 in multiplication by 2
+Private = c0f9c60aea73731d92ab5ed9f4cea122f9a6eb2577bda72f94948fea4d4cc65d
+Public = 5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157
+Shared = 0000000000000000000000000000000000000000000000000000000000000000
+Reject = true
+
+Name = tcId 511 private key == -1 (mod order)
+Private = a023cdd083ef5bb82f10d62e59e15a6800000000000000000000000000000050
+Public = 6c05871352a451dbe182ed5e6ba554f2034456ffe041a054ff9cc56b8e946376
+Shared = 6c05871352a451dbe182ed5e6ba554f2034456ffe041a054ff9cc56b8e946376
+Reject = false
+
+Name = tcId 513 special case private key
+Private = 4855555555555555555555555555555555555555555555555555555555555555
+Public = 3e3e7708ef72a6dd78d858025089765b1c30a19715ac19e8d917067d208e0666
+Shared = 63ef7d1c586476ec78bb7f747e321e01102166bf967a9ea9ba9741f49d439510
+Reject = false
+
+Name = tcId 514 special case private key
+Private = 4855555555555555555555555555555555555555555555555555555555555555
+Public = 9f40bb30f68ab67b1c4b8b664982fdab04ff385cd850deac732f7fb705e6013a
+Shared = 8b98ef4d6bf30df7f88e58d51505d37ed6845a969fe598747c033dcd08014065
+Reject = false
+
+Name = tcId 515 special case private key
+Private = 4855555555555555555555555555555555555555555555555555555555555555
+Public = be3b3edeffaf83c54ae526379b23dd79f1cb41446e3687fef347eb9b5f0dc308
+Shared = cfa83e098829fe82fd4c14355f70829015219942c01e2b85bdd9ac4889ec2921
+Reject = false
+
+Name = tcId 516 special case private key
+Private = b8aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6a
+Public = 3e3e7708ef72a6dd78d858025089765b1c30a19715ac19e8d917067d208e0666
+Shared = 4782036d6b136ca44a2fd7674d8afb0169943230ac8eab5160a212376c06d778
+Reject = false
+
+Name = tcId 517 special case private key
+Private = b8aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6a
+Public = 9f40bb30f68ab67b1c4b8b664982fdab04ff385cd850deac732f7fb705e6013a
+Shared = 65fc1e7453a3f8c7ebcd577ade4b8efe1035efc181ab3bdb2fcc7484cbcf1e4e
+Reject = false
+
+Name = tcId 518 special case private key
+Private = b8aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6a
+Public = be3b3edeffaf83c54ae526379b23dd79f1cb41446e3687fef347eb9b5f0dc308
+Shared = e3c649beae7cc4a0698d519a0a61932ee5493cbb590dbe14db0274cc8611f914
+Reject = false
+

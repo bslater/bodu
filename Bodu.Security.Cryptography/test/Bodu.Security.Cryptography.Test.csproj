@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Security.Cryptography\AsconAead128.LWC_AEAD_KAT_128_128.txt" />
+    <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
   </ItemGroup>
 
   <ItemGroup>

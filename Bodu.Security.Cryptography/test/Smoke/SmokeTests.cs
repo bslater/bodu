@@ -242,4 +242,23 @@ public sealed class SmokeTests
 
         CollectionAssert.AreEqual(plaintext, roundTrip);
     }
+
+    /// <summary>
+    /// Verifies that two freshly generated <see cref="Bodu.Security.Cryptography.X25519" /> parties derive the same
+    /// shared secret from each other's public keys.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void X25519_DeriveSharedSecret_BothSidesShouldAgree()
+    {
+        using var alice = Bodu.Security.Cryptography.X25519.Create();
+        using var bob = Bodu.Security.Cryptography.X25519.Create();
+        alice.GenerateKey();
+        bob.GenerateKey();
+
+        var aliceShared = alice.DeriveSharedSecret(bob.ExportPublicKey());
+        var bobShared = bob.DeriveSharedSecret(alice.ExportPublicKey());
+
+        CollectionAssert.AreEqual(aliceShared, bobShared);
+    }
 }

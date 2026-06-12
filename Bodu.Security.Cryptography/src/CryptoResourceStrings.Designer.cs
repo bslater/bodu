@@ -86,7 +86,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_CtsInputTooShort", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The destination buffer must be exactly {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_DestinationLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DestinationLength", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Input must be at least {0} bytes (the tag size)..
         /// </summary>
@@ -138,6 +147,15 @@ namespace Bodu {
         internal static string Arg_Invalid_PearsonTable {
             get {
                 return ResourceManager.GetString("Arg_Invalid_PearsonTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The imported {0} key must be exactly {1} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_RawKeyLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RawKeyLength", resourceCulture);
             }
         }
         
@@ -410,6 +428,24 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_NonCompliantFipsAlgorithm", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation requires a private key, but none is present on this instance..
+        /// </summary>
+        internal static string Crypt_Invalid_NoPrivateKey {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_NoPrivateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation requires a public key, but none is present on this instance..
+        /// </summary>
+        internal static string Crypt_Invalid_NoPublicKey {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_NoPublicKey", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to The output buffer is too small. At least {0} bytes are required..
@@ -534,6 +570,15 @@ namespace Bodu {
         internal static string Crypt_Invalid_UnsupportedPaddingMode {
             get {
                 return ResourceManager.GetString("Crypt_Invalid_UnsupportedPaddingMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The X25519 shared secret is all zero; the peer public key is a low-order point..
+        /// </summary>
+        internal static string Crypt_Invalid_X25519AllZeroSharedSecret {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_X25519AllZeroSharedSecret", resourceCulture);
             }
         }
         
