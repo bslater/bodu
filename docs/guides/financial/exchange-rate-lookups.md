@@ -359,5 +359,4 @@ the dated provider directly and read the
 - [Bodu.Financial — Core concepts](../../docs/financial/concepts.md) — the vocabulary these pages assume.
 - Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult).
 - Providers — [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter).
-</content>
-</invoke>
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

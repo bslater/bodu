@@ -157,3 +157,4 @@ The converter reads via `Fraction<T>.Parse(text, CultureInfo.InvariantCulture)`;
 - [Bodu.Numerics core concepts](../../docs/numerics/concepts.md) — canonical form, mixed-number, Unicode vulgar fraction.
 - <xref:Bodu.Numerics.Fraction`1> — API reference.
 - <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1> — JSON converter reference.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

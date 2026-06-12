@@ -46,28 +46,50 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   multi-pair / multi-provider import workflows that produce
   immutable snapshots.
 
-## Articles
+## Guides
 
-- [Working with `Money<TCurrency>`](money.md) — type-parameter
-  currency, allocation, conversion, exact-arithmetic chains,
-  formatting and parsing.
-- [Working with exchange rates](exchange-rates.md) — the FX provider
-  stack: timeless vs. dated contracts, the audit-grade
-  `ExchangeRateLookupResult`, the composite fallback stack, the
-  `TypedMoneyConversionResult<,>` audit record, and the
-  `ExchangeRateSeriesBuilder` + `ExchangeRateTableBuilder` editing surface.
-- [Exchange-rate types — a usage-scenario catalogue](exchange-types.md) —
-  every FX type mapped to the scenario it was defined for, with a
-  one-line "reach for this when…" map and a decision walk-through.
-- [Exchange-rate lookups on a known dataset](exchange-rate-lookups.md) —
-  one fixed dataset run through every `ExchangeRateDateResolution`
-  policy, tolerance window, and the inverse / identity switches, with a
-  results matrix showing exactly how each option changes the answer.
-- [Dependency injection](dependency-injection.md) — register the
-  financial stack with `AddBoduFinancial(...)`: currency lookups,
-  monetary contexts, FX providers, JSON converters, and options binding.
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="money.md">Working with <code>Money&lt;TCurrency&gt;</code></a></h3>
+  <p>Type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, and the runtime-tagged <code>Money</code> / <code>MoneyBag</code> companions.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="exchange-rates.md">Working with exchange rates</a></h3>
+  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>ExchangeRateLookupResult</code>, the composite fallback stack, and the <code>ExchangeRateSeriesBuilder</code> + <code>ExchangeRateTableBuilder</code> editing surface.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="exchange-types.md">Exchange-rate types — a usage-scenario catalogue</a></h3>
+  <p>Every FX type mapped to the scenario it was defined for, with a one-line "reach for this when…" map and a decision walk-through.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="exchange-rate-lookups.md">Exchange-rate lookups on a known dataset</a></h3>
+  <p>One fixed dataset run through every <code>ExchangeRateDateResolution</code> policy, tolerance window, and the inverse / identity switches, with a results matrix.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="dependency-injection.md">Dependency injection</a></h3>
+  <p>Register the financial stack with <code>AddBoduFinancial(...)</code> — currency lookups, named monetary contexts, FX providers, JSON converters, and options binding.</p>
+</div>
+
+</div>
+
+## Reading path
+
+1. **[Working with `Money<TCurrency>`](money.md)** — the monetary core; everything else builds on it.
+2. **[Working with exchange rates](exchange-rates.md)** — the provider contracts and editing surface for crossing currencies.
+3. **[Exchange-rate types](exchange-types.md)** and **[lookups on a known dataset](exchange-rate-lookups.md)** — reference material; dip in when choosing a type or tuning a lookup policy.
+4. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
 
 ## See also
+
+- [Bodu.Financial introduction](../../docs/financial/index.md) — namespaces, headline types, scenarios.
+- [Bodu.Financial getting started](../../docs/financial/getting-started.md) — install + minimal samples.
+- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — every guide in the topic on one page.
+- [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
 - [`Money` API reference](xref:Bodu.Financial.Money)

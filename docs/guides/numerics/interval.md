@@ -302,3 +302,4 @@ Console.WriteLine(a.GetHashCode() == b.GetHashCode());  // True
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

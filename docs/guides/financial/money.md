@@ -697,3 +697,4 @@ arbitrary-precision number support.
 - [`ICurrency` interface](xref:Bodu.Financial.ICurrency)
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1) — the
   exact-arithmetic escape hatch.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
