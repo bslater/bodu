@@ -14,6 +14,21 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <see cref="OnDeserialized" /> is the last step of deserialization for the instance: it runs after every settable
 /// member and any extension-data entry has been assigned, so it observes the fully materialized object.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class TrackerConfig : IBencodeOnDeserialized
+/// {
+///     public int Port { get; set; }
+///
+///     void IBencodeOnDeserialized.OnDeserialized()
+///     {
+///         if (Port is < 1 or > 65535) throw new InvalidOperationException("Port is out of range.");
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface IBencodeOnDeserialized
 {
     /// <summary>

@@ -32,10 +32,12 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// string text = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
 /// ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(text);
 ///]]>
+/// </code>
 /// </example>
 public static class TomlSerializer
 {

@@ -14,6 +14,20 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <see cref="OnSerialized" /> is called after the value's dictionary has been closed, so it observes the completed
 /// write rather than influencing the emitted output.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Snapshot : IBencodeOnSerialized
+/// {
+///     [BencodeIgnore]
+///     public int WriteCount { get; private set; }
+///
+///     void IBencodeOnSerialized.OnSerialized() =>
+///         WriteCount++;   // observes the completed write; the emitted output is unaffected
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface IBencodeOnSerialized
 {
     /// <summary>

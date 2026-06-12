@@ -14,6 +14,15 @@ namespace Bodu.Text.Bencode;
 /// A naming policy applies only when a member does not carry an explicit
 /// <see cref="Bodu.Text.Bencode.Serialization.BencodePropertyNameAttribute" />, which always wins.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.SnakeCaseLower };
+///
+/// // A MaxRetryCount property now serializes under the dictionary key: 15:max_retry_count
+///]]>
+/// </code>
+/// </example>
 public abstract class BencodeNamingPolicy
 {
     /// <summary>

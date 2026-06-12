@@ -14,6 +14,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// <see cref="OnSerializing" /> is called after a non-<see langword="null" /> value has been selected for writing and
 /// before the opening of its dictionary, so any mutation it performs is reflected in the emitted output.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Snapshot : ITomlOnSerializing
+/// {
+///     public DateTime SavedAt { get; set; }
+///
+///     void ITomlOnSerializing.OnSerializing() =>
+///         SavedAt = DateTime.UtcNow;   // stamped before members are written, so it appears in the output
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface ITomlOnSerializing
 {
     /// <summary>

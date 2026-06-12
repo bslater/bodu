@@ -14,6 +14,20 @@ namespace Bodu.Text.Toml.Serialization;
 /// <see cref="OnSerialized" /> is called after the value's dictionary has been closed, so it observes the completed
 /// write rather than influencing the emitted output.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Snapshot : ITomlOnSerialized
+/// {
+///     [TomlIgnore]
+///     public int WriteCount { get; private set; }
+///
+///     void ITomlOnSerialized.OnSerialized() =>
+///         WriteCount++;   // observes the completed write; the emitted output is unaffected
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface ITomlOnSerialized
 {
     /// <summary>
