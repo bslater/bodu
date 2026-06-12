@@ -100,3 +100,4 @@ Base45.IsBase45Digit('a');    // false
 - **[Base62 guide](base62.md)** — compact identifiers without QR-specific constraints.
 - **[Base64 guide](base64.md)** — when density matters less than ubiquity.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — Base45 is registered as `BinaryEncodings.Base45` for runtime selection.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

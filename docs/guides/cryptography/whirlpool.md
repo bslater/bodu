@@ -89,3 +89,4 @@ byte[] hash = hasher.Hash!;
 - [Composing primitives](composing-primitives.md) — encrypt-then-MAC, HMAC, KDFs.
 - [`Bodu.Security.Cryptography.Whirlpool` API reference](xref:Bodu.Security.Cryptography.Whirlpool)
 - [`Bodu.Security.Cryptography.WhirlpoolVersion` API reference](xref:Bodu.Security.Cryptography.WhirlpoolVersion)
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

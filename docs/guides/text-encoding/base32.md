@@ -166,3 +166,4 @@ string code = Base32.Encode(randomBytes, Base32Variant.Crockford);
 - **[Base64 guide](base64.md)** — when you need denser packing.
 - **[Base16 guide](base16.md)** — when you need explicit byte boundaries.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

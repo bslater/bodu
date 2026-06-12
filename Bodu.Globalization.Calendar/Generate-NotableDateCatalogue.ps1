@@ -419,6 +419,11 @@ function New-Footer {
         '[Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); ' +
         'for the API, the <xref:Bodu.Globalization.Calendar> namespace.')
     [void]$l.Add('')
+    [void]$l.Add('## See also')
+    [void]$l.Add('')
+    [void]$l.Add('- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.')
+    [void]$l.Add('- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.')
+    [void]$l.Add('')
     return , $l
 }
 
@@ -751,35 +756,38 @@ $tocEntries = @(
     [pscustomobject]@{ Name = 'Europe region packs'; Href = 'region-europe.md' }
     [pscustomobject]@{ Name = 'Cross-region comparison matrix'; Href = 'comparison-matrix.md' }
 )
+# The guides TOC nests libraries under topic nodes: the calendar library sits at 4-space indent below
+# 'Globalization & Calendars', and the generated catalogue group is one of its 8-space-indented children.
 $groupName = 'Bodu.Globalization.Calendar — Notable-date catalogue'
 $grp = [System.Collections.Generic.List[string]]::new()
-[void]$grp.Add("    - name: $groupName")
-[void]$grp.Add('      items:')
+[void]$grp.Add("        - name: $groupName")
+[void]$grp.Add('          items:')
 foreach ($e in $tocEntries) {
-    [void]$grp.Add("        - name: $($e.Name)")
-    [void]$grp.Add("          href: calendar/catalogue/$($e.Href)")
+    [void]$grp.Add("            - name: $($e.Name)")
+    [void]$grp.Add("              href: calendar/catalogue/$($e.Href)")
 }
 
 $tocLines = [System.Collections.Generic.List[string]](Get-Content -LiteralPath $TocPath)
-# Remove any prior generated group (sentinel = the group name line through to the next line at <=4-space indent).
+# Remove any prior generated group (sentinel = the group name line through to the next node at <=8-space indent).
 $startIdx = -1
-for ($i = 0; $i -lt $tocLines.Count; $i++) { if ($tocLines[$i].TrimEnd() -eq "    - name: $groupName") { $startIdx = $i; break } }
+for ($i = 0; $i -lt $tocLines.Count; $i++) { if ($tocLines[$i].TrimEnd() -eq "        - name: $groupName") { $startIdx = $i; break } }
 if ($startIdx -ge 0) {
     $endIdx = $tocLines.Count
     for ($i = $startIdx + 1; $i -lt $tocLines.Count; $i++) {
         $line = $tocLines[$i]
-        if ($line -match '^\S' -or $line -match '^    - name: ' -or $line -match '^- name: ') { $endIdx = $i; break }
+        if ($line -match '^\S' -or $line -match '^ {0,8}- name: ') { $endIdx = $i; break }
     }
     $tocLines.RemoveRange($startIdx, $endIdx - $startIdx)
 } else { $startIdx = -1 }
 
-# Insert after the calendar Data.* node: find "- name: Bodu.Globalization.Calendar" top-level node, then the next
-# top-level "- name:" sibling, and insert just before it (end of the calendar node's children).
+# Insert at the end of the calendar library node's children: find the 4-space-indented
+# '- name: Bodu.Globalization.Calendar' node, then the next sibling at <=4-space indent,
+# and insert just before it.
 $calNode = -1
-for ($i = 0; $i -lt $tocLines.Count; $i++) { if ($tocLines[$i] -eq '- name: Bodu.Globalization.Calendar') { $calNode = $i; break } }
+for ($i = 0; $i -lt $tocLines.Count; $i++) { if ($tocLines[$i].TrimEnd() -eq '    - name: Bodu.Globalization.Calendar') { $calNode = $i; break } }
 if ($calNode -lt 0) { throw "Could not find the 'Bodu.Globalization.Calendar' node in $TocPath." }
 $insertAt = $tocLines.Count
-for ($i = $calNode + 1; $i -lt $tocLines.Count; $i++) { if ($tocLines[$i] -match '^- name: ') { $insertAt = $i; break } }
+for ($i = $calNode + 1; $i -lt $tocLines.Count; $i++) { if ($tocLines[$i] -match '^ {0,4}- name: ') { $insertAt = $i; break } }
 $tocLines.InsertRange($insertAt, $grp)
 Set-Content -LiteralPath $TocPath -Value (($tocLines -join "`n") + "`n") -Encoding utf8 -NoNewline
 Write-Host "  updated $TocPath"

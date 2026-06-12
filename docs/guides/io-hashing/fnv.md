@@ -117,3 +117,4 @@ fnv.Reset();                          // back to FNV offset basis
 - [Using Adler](adler.md) — twin-accumulator checksum with the same `NonCryptographicHashAlgorithm` shape.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when FNV is not enough.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

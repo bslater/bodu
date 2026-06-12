@@ -99,3 +99,4 @@ The practical implication is that you should **not** build a new `Blowfish` inst
 - [Cipher block modes](cipher-modes.md) — CFB, OFB, ECB also work with Blowfish.
 - [Padding](padding.md) — which padding scheme pairs with which mode.
 - [Using Skipjack](skipjack.md) — the other 64-bit-block cipher in the library.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

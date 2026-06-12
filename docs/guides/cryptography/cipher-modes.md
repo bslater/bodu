@@ -193,3 +193,4 @@ Each `XtsModeTransform` is bound to a single sector number — construct a fresh
 - [Padding](padding.md) — which padding scheme to pair with which mode.
 - [Encryption basics](encryption-basics.md) — Key/IV/Tweak lifecycle, disposal, and common pitfalls.
 - Per-algorithm: [Threefish-256](threefish-256.md) · [Skipjack](skipjack.md) · [Blowfish](blowfish.md).
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

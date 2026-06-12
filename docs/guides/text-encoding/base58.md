@@ -185,3 +185,4 @@ if (Base58Check.TryDecode(encoded, destination, out int written))
 - **[Base32 guide](base32.md)** — when you want human-friendly encoding but power-of-two radix.
 - **[Base85 guide](base85.md)** — when you need the densest possible ASCII-safe encoding.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

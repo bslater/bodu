@@ -141,3 +141,4 @@ For AEAD constructions — where authentication is part of the cipher rather tha
 - [AEAD modes](aead-modes.md) — GCM, CCM, OCB, EAX, SIV, GCM-SIV.
 - [Composing primitives](composing-primitives.md) — encrypt-then-MAC, key derivation, nonce management.
 - [Bodu.Security.Cryptography landing page](xref:Bodu.Security.Cryptography).
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

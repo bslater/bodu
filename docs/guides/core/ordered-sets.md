@@ -141,3 +141,4 @@ bool dup = ci.Add("ALPHA");   // false — same key under the comparer
 - [Multiset](multiset.md) — when duplicates should be *retained* as multiplicity rather than rejected.
 - [Concurrent collections](concurrent-collections.md) — `ConcurrentHashSet<T>` for thread-safe set membership.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

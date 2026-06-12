@@ -83,3 +83,4 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 - [Cipher block modes](cipher-modes.md) — CFB / OFB / ECB also work with `Threefish1024`.
 - [Padding](padding.md) — which padding scheme pairs with which mode.
 - Other variants: [Threefish-256](threefish-256.md), [Threefish-512](threefish-512.md).
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

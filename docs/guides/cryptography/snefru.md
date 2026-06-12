@@ -69,3 +69,4 @@ For everything else, pick a modern digest. The [hashing overview](hashing.md) li
 - [Using Tiger](tiger.md) — another classic cryptographic hash with wider deployment.
 - [Using CubeHash](cubehash.md) — a modern, highly tunable cryptographic hash (SHA-3 finalist).
 - [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography).
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

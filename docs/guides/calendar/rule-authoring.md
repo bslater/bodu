@@ -285,3 +285,4 @@ Typical errors include a duplicate concept or rule id, an unknown adjustment `po
 - [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
 - [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific resources, built from these same imports.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

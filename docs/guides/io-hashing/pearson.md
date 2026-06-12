@@ -125,3 +125,4 @@ Pearson is **not cryptographic**. Choosing a different table does not make it ad
 - [Classic string hashes](string-hashes.md) — Bernstein, BKDR, SDBM, Elf64, and siblings with a similar "one-liner" feel.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when Pearson is not enough.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

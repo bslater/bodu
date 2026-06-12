@@ -108,3 +108,4 @@ OperationStatus status = enc.EncodeChunk(charSpan, byteDestination, isFinal: tru
 - [The IBinaryEncoding interface](binary-encodings-interface.md) — the binary-encoding contract (Base16–Base85).
 - [Bodu.Text.Encoding overview](index.md) — the full namespace map.
 - [Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding) — full namespace overview.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

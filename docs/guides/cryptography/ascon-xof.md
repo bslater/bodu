@@ -245,3 +245,4 @@ called again on the reset instance.
 - [ASCON hashing](ascon-hashing.md) — fixed-length 256-bit digest patterns.
 - [ASCON AEAD](ascon-aead.md) — authenticated encryption with `AsconAead128`.
 - API reference: <xref:Bodu.Security.Cryptography.AsconXof128> · <xref:Bodu.Security.Cryptography.AsconCxof128>
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

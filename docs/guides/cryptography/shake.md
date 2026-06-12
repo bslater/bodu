@@ -118,3 +118,4 @@ This is *not* a real KMAC — KMAC has specific encoding rules for the domain, k
 - [BLAKE](blake.md), [Tiger](tiger.md), [Skein](skein.md), [Whirlpool](whirlpool.md) — other cryptographic digests in the package.
 - [Composing primitives](composing-primitives.md) — encrypt-then-MAC, key derivation patterns.
 - [`Bodu.Security.Cryptography.Shake` API reference](xref:Bodu.Security.Cryptography.Shake)
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

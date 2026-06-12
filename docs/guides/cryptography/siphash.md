@@ -133,3 +133,4 @@ See the [hashing overview](hashing.md#pattern-4--verifying-a-hash) for the gener
 - [Using Tiger](tiger.md) — a keyless cryptographic digest when you don't have a secret to carry around.
 - [Using Poly1305](poly1305.md) — one-time authenticator that pairs with a stream cipher (the classic Poly1305/ChaCha20 AEAD construction).
 - [Bodu.IO.Hashing — FNV, CityHash, Adler](../io-hashing/index.md) — the non-keyed, non-adversarial alternatives for trusted inputs.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

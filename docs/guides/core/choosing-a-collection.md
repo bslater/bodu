@@ -124,3 +124,4 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 - [Circular buffer](circular-buffer.md), [Deque](deque.md), [Evicting dictionary](evicting-dictionary.md), [Range dictionary](range-dictionary.md), [Indexed priority queue](indexed-priority-queue.md) — per-type walk-throughs.
 - [Concurrent collections](concurrent-collections.md) — the thread-safe variants in detail.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

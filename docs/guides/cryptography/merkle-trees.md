@@ -129,3 +129,4 @@ For a single end-to-end file digest where partial verification is not a requirem
 - [Hashing overview](hashing.md) — where Merkle trees sit alongside the other families.
 - [Using Tiger](tiger.md) — a common leaf-hash choice for content-addressed systems.
 - <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

@@ -187,3 +187,4 @@ static bool TryRoundTrip(ReadOnlySpan<byte> data)
 - **[Base32 guide](base32.md)** — when human readability beats density.
 - **[Base85 guide](base85.md)** — when 25 % expansion matters more than alphabet familiarity.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

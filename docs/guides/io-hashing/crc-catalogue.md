@@ -206,3 +206,8 @@ pwsh ./tools/Generate-CrcCatalogTests.ps1   # regenerates CrcTests.Catalog.cs
 pwsh ./tools/Generate-CrcDocs.ps1           # regenerates this page
 ```
 
+
+## See also
+
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- **[Bodu.IO.Hashing guides overview](index.md)** — every guide in this library.

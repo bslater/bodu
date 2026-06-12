@@ -122,3 +122,4 @@ For general-purpose fingerprinting where quality and speed both matter, **`CityH
 - [Using Pearson](pearson.md) — table-driven classic hash with configurable output width.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when a classic hash is not enough.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

@@ -8,14 +8,16 @@ Recipe-style walk-throughs for **Bodu.Core**, organized by namespace. Each guide
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Core introduction](../../docs/core/index.md) and the [getting-started page](../../docs/core/getting-started.md). New to the many collection types? Read **[Choosing a collection](choosing-a-collection.md)** — a decision guide that maps requirements to the correct type. For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](xref:Bodu.Collections.Generic).
 
+Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../topics/core-foundations.md) places these guides alongside the rest of the topic, and the [topic overview](../../docs/topics/core-foundations.md) carries the package map and install command.
+
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) |
-| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`. | (covered in [Circular buffer](circular-buffer.md#pattern-5--concurrent-access-with-concurrentcircularbuffer)) |
+| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) |
+| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`. | [Concurrent collections](concurrent-collections.md) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
-| `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | (no dedicated guide yet — see API reference) |
+| `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
 | `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `IComparableExtensions`. | (no dedicated guide yet — see API reference) |
 | `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | — |
 
@@ -24,6 +26,11 @@ If you have not yet installed the package or want the high-level shape of the li
 ### `Bodu.Collections.Generic`
 
 <div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="choosing-a-collection.md">Choosing a collection</a></h3>
+  <p>The decision guide — quick decision tree, per-axis tables, real-world scenarios, and the anti-patterns that come up when picking between similar types.</p>
+</div>
 
 <div class="bodu-card">
   <h3><a href="circular-buffer.md">Circular buffer</a></h3>
@@ -72,6 +79,28 @@ If you have not yet installed the package or want the high-level shape of the li
 
 </div>
 
+### `Bodu.Collections.Generic.Concurrent`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
+  <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring) and lock-striped <code>ConcurrentHashSet&lt;T&gt;</code>.</p>
+</div>
+
+</div>
+
+### `Bodu.Buffers`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="pooled-buffer-builder.md">Pooled buffer builder</a></h3>
+  <p><code>ArrayPool&lt;T&gt;</code>-backed accumulation into a single contiguous result — implements <code>IBufferWriter&lt;T&gt;</code> for span-based writers.</p>
+</div>
+
+</div>
+
 ### `Bodu` (root namespace)
 
 <div class="bodu-cards">
@@ -85,6 +114,8 @@ If you have not yet installed the package or want the high-level shape of the li
 
 ## Where to go next
 
+- [Core Foundations guides](../topics/core-foundations.md) — these guides in the context of the full topic.
+- [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install command.
 - [Bodu.Core introduction](../../docs/core/index.md) — namespaces, headline types, scenarios.
 - [Bodu.Core getting started](../../docs/core/getting-started.md) — install and minimal samples.
 - [Project introduction](../../docs/introduction.md) — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries.

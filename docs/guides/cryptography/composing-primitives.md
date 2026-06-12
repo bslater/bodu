@@ -172,3 +172,4 @@ Debug.Assert(direct.SequenceEqual(viaAlg));
 - [AEAD modes](aead-modes.md) — for authenticated encryption (AES-only, via `AesBlockCipher`).
 - [Padding](padding.md) — PKCS7 / Zeros / None and when each is safe.
 - API reference: [<xref:Bodu.Security.Cryptography.IBlockCipher>] · [<xref:Bodu.Security.Cryptography.BlockCipherModeFactory>] · [<xref:Bodu.Security.Cryptography.PaddingFactory>] · [<xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>].
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

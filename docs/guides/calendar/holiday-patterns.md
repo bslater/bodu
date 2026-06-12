@@ -324,3 +324,4 @@ IReadOnlyList<NotableDate> nsw2030 = service.Resolve(2030, "AU-NSW");   // outsi
 - [Authoring notable date rules](rule-authoring.md) — assembling whole documents, importing the common catalogues, and overrides.
 - [Date calculation algorithms](algorithms.md) — the six strategies and the built-in `<Algorithm>` keys.
 - [Working with non-Gregorian calendars](non-gregorian-calendars.md) — fixed dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
