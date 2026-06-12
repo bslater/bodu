@@ -154,3 +154,4 @@ The `Relaxed` profile is the right starting point for code-style validators and 
 - [Parsing and profiles](parsing-and-profiles.md) — how `DiagnosticMode` interacts with the profile defaults.
 - [Views and resolution](views-and-resolution.md) — `ConfigurationView`, key projection, typed lookup.
 - [`Bodu.Text.Configuration` API reference](xref:Bodu.Text.Configuration).
+- **[Configuration guides](../topics/configuration.md)** — every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.
