@@ -7,97 +7,131 @@
   href: getting-started.md
 - name: Licensing
   href: licensing.md
-- name: Bodu.Core
+- name: Core Foundations
+  href: topics/core-foundations.md
   items:
-    - name: Introduction
-      href: core/index.md
-    - name: Core concepts
-      href: core/concepts.md
-    - name: Getting started
-      href: core/getting-started.md
-- name: Bodu.Extensions.Configuration.Text
+    - name: Topic concepts
+      href: topics/core-foundations-concepts.md
+    - name: Bodu.Core
+      items:
+        - name: Introduction
+          href: core/index.md
+        - name: Core concepts
+          href: core/concepts.md
+        - name: Getting started
+          href: core/getting-started.md
+    - name: Bodu.Text (namespace)
+      items:
+        - name: Introduction
+          href: text/index.md
+- name: Hashing & Cryptography
+  href: topics/hashing-and-cryptography.md
   items:
-    - name: Introduction
-      href: extensions-configuration-text/index.md
-    - name: Core concepts
-      href: extensions-configuration-text/concepts.md
-    - name: Getting started
-      href: extensions-configuration-text/getting-started.md
-- name: Bodu.Financial
+    - name: Topic concepts
+      href: topics/hashing-and-cryptography-concepts.md
+    - name: Bodu.IO.Hashing
+      items:
+        - name: Introduction
+          href: io-hashing/index.md
+        - name: Core concepts
+          href: io-hashing/concepts.md
+        - name: Getting started
+          href: io-hashing/getting-started.md
+    - name: Bodu.Security.Cryptography
+      items:
+        - name: Introduction
+          href: cryptography/index.md
+        - name: Core concepts
+          href: cryptography/concepts.md
+        - name: Getting started
+          href: cryptography/getting-started.md
+- name: Globalization & Calendars
+  href: topics/globalization-and-calendars.md
   items:
-    - name: Introduction
-      href: financial/index.md
-    - name: Core concepts
-      href: financial/concepts.md
-    - name: Getting started
-      href: financial/getting-started.md
-- name: Bodu.Globalization.Calendar
+    - name: Topic concepts
+      href: topics/globalization-and-calendars-concepts.md
+    - name: Bodu.Globalization.Calendar
+      items:
+        - name: Introduction
+          href: calendar/index.md
+        - name: Core concepts
+          href: calendar/concepts.md
+        - name: Getting started
+          href: calendar/getting-started.md
+- name: Text & Serialization
+  href: topics/text-and-serialization.md
   items:
-    - name: Introduction
-      href: calendar/index.md
-    - name: Core concepts
-      href: calendar/concepts.md
-    - name: Getting started
-      href: calendar/getting-started.md
-- name: Bodu.IO.Hashing
+    - name: Topic concepts
+      href: topics/text-and-serialization-concepts.md
+    - name: Bodu.Text.Encoding
+      items:
+        - name: Introduction
+          href: text-encoding/index.md
+        - name: Core concepts
+          href: text-encoding/concepts.md
+        - name: Getting started
+          href: text-encoding/getting-started.md
+    - name: Bodu.Text.Formats
+      items:
+        - name: Introduction
+          href: formats/index.md
+        - name: Core concepts
+          href: formats/concepts.md
+        - name: Getting started
+          href: formats/getting-started.md
+        - name: Parser policies
+          href: formats/parser-policies.md
+    - name: Bodu.Text.Bencode & Bodu.Text.Toml
+      items:
+        - name: Serializers introduction
+          href: serialization/index.md
+        - name: Bodu.Text.Bencode
+          href: serialization/bencode.md
+        - name: Bodu.Text.Toml
+          href: serialization/toml.md
+        - name: Core concepts
+          href: serialization/concepts.md
+        - name: Getting started
+          href: serialization/getting-started.md
+- name: Configuration
+  href: topics/configuration.md
   items:
-    - name: Introduction
-      href: io-hashing/index.md
-    - name: Core concepts
-      href: io-hashing/concepts.md
-    - name: Getting started
-      href: io-hashing/getting-started.md
-- name: Bodu.Numerics
+    - name: Topic concepts
+      href: topics/configuration-concepts.md
+    - name: Bodu.Text.Configuration
+      items:
+        - name: Introduction
+          href: text-configuration/index.md
+        - name: Core concepts
+          href: text-configuration/concepts.md
+        - name: Getting started
+          href: text-configuration/getting-started.md
+    - name: Bodu.Extensions.Configuration.Text
+      items:
+        - name: Introduction
+          href: extensions-configuration-text/index.md
+        - name: Core concepts
+          href: extensions-configuration-text/concepts.md
+        - name: Getting started
+          href: extensions-configuration-text/getting-started.md
+- name: Numerics & Financial
+  href: topics/numerics-and-financial.md
   items:
-    - name: Introduction
-      href: numerics/index.md
-    - name: Core concepts
-      href: numerics/concepts.md
-    - name: Getting started
-      href: numerics/getting-started.md
-- name: Bodu.Security.Cryptography
-  items:
-    - name: Introduction
-      href: cryptography/index.md
-    - name: Core concepts
-      href: cryptography/concepts.md
-    - name: Getting started
-      href: cryptography/getting-started.md
-- name: Bodu.Text
-  items:
-    - name: Introduction
-      href: text/index.md
-- name: Bodu.Text.Configuration
-  items:
-    - name: Introduction
-      href: text-configuration/index.md
-    - name: Core concepts
-      href: text-configuration/concepts.md
-    - name: Getting started
-      href: text-configuration/getting-started.md
-- name: Bodu.Text.Encoding
-  items:
-    - name: Introduction
-      href: text-encoding/index.md
-    - name: Core concepts
-      href: text-encoding/concepts.md
-    - name: Getting started
-      href: text-encoding/getting-started.md
-- name: Bodu.Text.Formats
-  items:
-    - name: Introduction
-      href: formats/index.md
-    - name: Core concepts
-      href: formats/concepts.md
-    - name: Getting started
-      href: formats/getting-started.md
-    - name: Parser policies
-      href: formats/parser-policies.md
-- name: Bodu.Text.Bencode & Bodu.Text.Toml
-  items:
-    - name: Introduction
-      href: serialization/index.md
-    - name: Core concepts
-      href: serialization/concepts.md
-    - name: Getting started
-      href: serialization/getting-started.md
+    - name: Topic concepts
+      href: topics/numerics-and-financial-concepts.md
+    - name: Bodu.Numerics
+      items:
+        - name: Introduction
+          href: numerics/index.md
+        - name: Core concepts
+          href: numerics/concepts.md
+        - name: Getting started
+          href: numerics/getting-started.md
+    - name: Bodu.Financial
+      items:
+        - name: Introduction
+          href: financial/index.md
+        - name: Core concepts
+          href: financial/concepts.md
+        - name: Getting started
+          href: financial/getting-started.md
