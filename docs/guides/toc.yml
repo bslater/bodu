@@ -1,318 +1,336 @@
 - name: Overview
   href: index.md
-- name: Bodu.Core
+- name: Core Foundations
+  href: topics/core-foundations.md
   items:
-    - name: Overview
-      href: core/index.md
-    - name: Choosing a collection
-      href: core/choosing-a-collection.md
-    - name: Bodu.Collections.Generic
+    - name: Bodu.Core
       items:
-        - name: Circular buffer
-          href: core/circular-buffer.md
-        - name: Deque
-          href: core/deque.md
-        - name: Evicting dictionary
-          href: core/evicting-dictionary.md
-        - name: Indexed priority queue
-          href: core/indexed-priority-queue.md
-        - name: Indexed and ordered sets
-          href: core/ordered-sets.md
-        - name: Multiset
-          href: core/multiset.md
-        - name: Multi-value dictionary
-          href: core/multi-value-dictionary.md
-        - name: Segmented buffer
-          href: core/segmented-buffer.md
-        - name: Range-keyed lookups
-          href: core/range-dictionary.md
-    - name: Bodu.Collections.Generic.Concurrent
-      items:
-        - name: Concurrent collections
-          href: core/concurrent-collections.md
-    - name: Bodu.Buffers
-      items:
-        - name: Pooled buffer builder
-          href: core/pooled-buffer-builder.md
-    - name: Bodu (root namespace)
-      items:
-        - name: WeekPattern
-          href: core/week-pattern.md
-- name: Bodu.Extensions.Configuration.Text
+        - name: Overview
+          href: core/index.md
+        - name: Choosing a collection
+          href: core/choosing-a-collection.md
+        - name: Bodu.Collections.Generic
+          items:
+            - name: Circular buffer
+              href: core/circular-buffer.md
+            - name: Deque
+              href: core/deque.md
+            - name: Evicting dictionary
+              href: core/evicting-dictionary.md
+            - name: Indexed priority queue
+              href: core/indexed-priority-queue.md
+            - name: Indexed and ordered sets
+              href: core/ordered-sets.md
+            - name: Multiset
+              href: core/multiset.md
+            - name: Multi-value dictionary
+              href: core/multi-value-dictionary.md
+            - name: Segmented buffer
+              href: core/segmented-buffer.md
+            - name: Range-keyed lookups
+              href: core/range-dictionary.md
+        - name: Bodu.Collections.Generic.Concurrent
+          items:
+            - name: Concurrent collections
+              href: core/concurrent-collections.md
+        - name: Bodu.Buffers
+          items:
+            - name: Pooled buffer builder
+              href: core/pooled-buffer-builder.md
+        - name: Bodu (root namespace)
+          items:
+            - name: WeekPattern
+              href: core/week-pattern.md
+- name: Hashing & Cryptography
+  href: topics/hashing-and-cryptography.md
   items:
-    - name: Overview
-      href: extensions-configuration-text/index.md
-    - name: Configuration sources
-      href: extensions-configuration-text/configuration-sources.md
-- name: Bodu.Financial
+    - name: Bodu.IO.Hashing
+      items:
+        - name: Overview
+          href: io-hashing/index.md
+        - name: Bodu.IO.Hashing — Fingerprints
+          items:
+            - name: Using FNV
+              href: io-hashing/fnv.md
+            - name: Using CityHash
+              href: io-hashing/cityhash.md
+            - name: Using MurmurHash3
+              href: io-hashing/murmurhash3.md
+            - name: Using Pearson
+              href: io-hashing/pearson.md
+            - name: Classic string hashes
+              href: io-hashing/string-hashes.md
+        - name: Bodu.IO.Hashing.Checksums
+          items:
+            - name: Using CRC
+              href: io-hashing/crc.md
+            - name: CRC catalogue
+              href: io-hashing/crc-catalogue.md
+            - name: Using Fletcher
+              href: io-hashing/fletcher.md
+            - name: Using Adler
+              href: io-hashing/adler.md
+        - name: Bodu.IO.Hashing.CheckDigits
+          items:
+            - name: Check digits overview
+              href: io-hashing/check-digits.md
+    - name: Bodu.Security.Cryptography
+      items:
+        - name: Overview
+          href: cryptography/index.md
+        - name: Foundations
+          items:
+            - name: Encryption basics
+              href: cryptography/encryption-basics.md
+            - name: Cipher block modes
+              href: cryptography/cipher-modes.md
+            - name: Padding
+              href: cryptography/padding.md
+            - name: Composing primitives
+              href: cryptography/composing-primitives.md
+        - name: Symmetric ciphers — Standard
+          items:
+            - name: AES-family block ciphers
+              href: cryptography/aes-family.md
+            - name: Using Skipjack
+              href: cryptography/skipjack.md
+            - name: Using Blowfish
+              href: cryptography/blowfish.md
+        - name: Symmetric ciphers — Tweakable
+          items:
+            - name: Using Threefish-256
+              href: cryptography/threefish-256.md
+            - name: Using Threefish-512
+              href: cryptography/threefish-512.md
+            - name: Using Threefish-1024
+              href: cryptography/threefish-1024.md
+        - name: Symmetric ciphers — Stream
+          items:
+            - name: Using stream ciphers
+              href: cryptography/stream-ciphers.md
+        - name: Symmetric ciphers — AEAD
+          items:
+            - name: AEAD modes (AES + transform)
+              href: cryptography/aead-modes.md
+        - name: Cryptographic hashes
+          items:
+            - name: Hashing overview
+              href: cryptography/hashing.md
+            - name: Using BLAKE
+              href: cryptography/blake.md
+            - name: Using Skein
+              href: cryptography/skein.md
+            - name: Using Tiger
+              href: cryptography/tiger.md
+            - name: Using CubeHash
+              href: cryptography/cubehash.md
+            - name: Using Snefru
+              href: cryptography/snefru.md
+            - name: Using Whirlpool
+              href: cryptography/whirlpool.md
+            - name: Using SHAKE (XOF)
+              href: cryptography/shake.md
+            - name: Using Merkle trees
+              href: cryptography/merkle-trees.md
+        - name: Keyed hashes (MAC)
+          items:
+            - name: Using SipHash
+              href: cryptography/siphash.md
+            - name: Using Poly1305
+              href: cryptography/poly1305.md
+        - name: ASCON family
+          items:
+            - name: ASCON overview
+              href: cryptography/ascon.md
+            - name: ASCON hashing
+              href: cryptography/ascon-hashing.md
+            - name: ASCON extendable output (XOF)
+              href: cryptography/ascon-xof.md
+            - name: ASCON authenticated encryption (AEAD)
+              href: cryptography/ascon-aead.md
+        - name: Key derivation
+          items:
+            - name: Using Argon2
+              href: cryptography/argon2.md
+            - name: Using scrypt
+              href: cryptography/scrypt.md
+- name: Globalization & Calendars
+  href: topics/globalization-and-calendars.md
   items:
-    - name: Overview
-      href: financial/index.md
-    - name: Working with Money<TCurrency>
-      href: financial/money.md
-    - name: Working with exchange rates
-      href: financial/exchange-rates.md
-    - name: Exchange-rate types (usage catalogue)
-      href: financial/exchange-types.md
-    - name: Exchange-rate lookups (worked dataset)
-      href: financial/exchange-rate-lookups.md
-    - name: Dependency injection
-      href: financial/dependency-injection.md
-- name: Bodu.Globalization.Calendar
+    - name: Bodu.Globalization.Calendar
+      items:
+        - name: Overview
+          href: calendar/index.md
+        - name: Bodu.Globalization.Calendar — Service
+          items:
+            - name: Using NotableDateService
+              href: calendar/notable-dates.md
+            - name: Authoring notable date rules
+              href: calendar/rule-authoring.md
+            - name: Authoring with the notable-date builder
+              href: calendar/notable-date-builder.md
+        - name: Bodu.Globalization.Calendar — Reference
+          items:
+            - name: NotableDateRule and adjustment-policy reference
+              href: calendar/rule-reference.md
+            - name: Territories and regional composition
+              href: calendar/territories.md
+            - name: Observance adjustment rules
+              href: calendar/adjustment-rules.md
+            - name: The resolution pipeline
+              href: calendar/resolution-pipeline.md
+            - name: Rule identity, priority, and observed-date resolution
+              href: calendar/identity-and-resolution.md
+            - name: Working with non-Gregorian calendars
+              href: calendar/non-gregorian-calendars.md
+        - name: Bodu.Globalization.Calendar — Patterns
+          items:
+            - name: Holiday patterns and examples
+              href: calendar/holiday-patterns.md
+            - name: Working-day arithmetic
+              href: calendar/working-days.md
+            - name: Building and extending the service
+              href: calendar/building-the-service.md
+            - name: Dependency injection
+              href: calendar/dependency-injection.md
+        - name: Bodu.Globalization.Calendar.Algorithms
+          items:
+            - name: Date calculation algorithms
+              href: calendar/algorithms.md
+        - name: Bodu.Globalization.Calendar.Data.* — Data packs
+          items:
+            - name: Calendar data packs
+              href: calendar/data-packs.md
+        - name: Bodu.Globalization.Calendar — Notable-date catalogue
+          items:
+            - name: Catalogue overview
+              href: calendar/catalogue/index.md
+            - name: Civil and Christian catalogues
+              href: calendar/catalogue/theme-civil-and-christian.md
+            - name: Non-Gregorian religious catalogues
+              href: calendar/catalogue/theme-religious-non-gregorian.md
+            - name: Cultural, family, and remembrance catalogues
+              href: calendar/catalogue/theme-cultural-and-family.md
+            - name: Awareness and themed observances
+              href: calendar/catalogue/theme-awareness.md
+            - name: Aggregate and utility catalogues
+              href: calendar/catalogue/theme-aggregates.md
+            - name: Americas region packs
+              href: calendar/catalogue/region-americas.md
+            - name: Asia-Pacific region packs
+              href: calendar/catalogue/region-asia-pacific.md
+            - name: Europe region packs
+              href: calendar/catalogue/region-europe.md
+            - name: Cross-region comparison matrix
+              href: calendar/catalogue/comparison-matrix.md
+- name: Text & Serialization
+  href: topics/text-and-serialization.md
   items:
-    - name: Overview
-      href: calendar/index.md
-    - name: Bodu.Globalization.Calendar — Service
+    - name: Bodu.Text.Encoding
       items:
-        - name: Using NotableDateService
-          href: calendar/notable-dates.md
-        - name: Authoring notable date rules
-          href: calendar/rule-authoring.md
-        - name: Authoring with the notable-date builder
-          href: calendar/notable-date-builder.md
-    - name: Bodu.Globalization.Calendar — Reference
+        - name: Overview
+          href: text-encoding/index.md
+        - name: Bodu.Text.Encoding — Encodings
+          items:
+            - name: Using Base16 (hexadecimal)
+              href: text-encoding/base16.md
+            - name: Using Base32
+              href: text-encoding/base32.md
+            - name: Using Base64
+              href: text-encoding/base64.md
+            - name: Using Base58
+              href: text-encoding/base58.md
+            - name: Using Base85 (Ascii85 and Z85)
+              href: text-encoding/base85.md
+            - name: Using Base45 (QR codes)
+              href: text-encoding/base45.md
+            - name: Using Base62
+              href: text-encoding/base62.md
+            - name: Using Bech32 and Bech32m
+              href: text-encoding/bech32.md
+        - name: Bodu.Text.Encoding — Patterns
+          items:
+            - name: The IBinaryEncoding interface
+              href: text-encoding/binary-encodings-interface.md
+            - name: Encoding helpers and BOM detection
+              href: text-encoding/encoding-helpers.md
+    - name: Bodu.Text.Formats
       items:
-        - name: NotableDateRule and adjustment-policy reference
-          href: calendar/rule-reference.md
-        - name: Territories and regional composition
-          href: calendar/territories.md
-        - name: Observance adjustment rules
-          href: calendar/adjustment-rules.md
-        - name: The resolution pipeline
-          href: calendar/resolution-pipeline.md
-        - name: Rule identity, priority, and observed-date resolution
-          href: calendar/identity-and-resolution.md
-        - name: Working with non-Gregorian calendars
-          href: calendar/non-gregorian-calendars.md
-    - name: Bodu.Globalization.Calendar — Patterns
+        - name: Overview
+          href: formats/index.md
+        - name: Bodu.Text.Formats — Codec
+          items:
+            - name: Using delimited (CSV / TSV)
+              href: formats/delimited.md
+            - name: Using DotEnv
+              href: formats/dotenv.md
+            - name: Using INI
+              href: formats/ini.md
+        - name: Bodu.Text.Formats — I/O
+          items:
+            - name: Streams and async I/O
+              href: formats/streaming.md
+    - name: Bodu.Text.Bencode & Bodu.Text.Toml
       items:
-        - name: Holiday patterns and examples
-          href: calendar/holiday-patterns.md
-        - name: Working-day arithmetic
-          href: calendar/working-days.md
-        - name: Building and extending the service
-          href: calendar/building-the-service.md
+        - name: Overview
+          href: serialization/index.md
+        - name: Using TOML
+          href: serialization/toml.md
+        - name: Using Bencode
+          href: serialization/bencode.md
+        - name: Mapping attributes
+          href: serialization/attributes.md
+        - name: Writing converters
+          href: serialization/converters.md
+        - name: Serialization callbacks
+          href: serialization/callbacks.md
+        - name: Built-in converter catalog
+          href: serialization/builtin-converters.md
+- name: Configuration
+  href: topics/configuration.md
+  items:
+    - name: Bodu.Text.Configuration
+      items:
+        - name: Overview
+          href: text-configuration/index.md
+        - name: Parsing and profiles
+          href: text-configuration/parsing-and-profiles.md
+        - name: Views and resolution
+          href: text-configuration/views-and-resolution.md
+        - name: Diagnostics
+          href: text-configuration/diagnostics.md
+    - name: Bodu.Extensions.Configuration.Text
+      items:
+        - name: Overview
+          href: extensions-configuration-text/index.md
+        - name: Configuration sources
+          href: extensions-configuration-text/configuration-sources.md
+- name: Numerics & Financial
+  href: topics/numerics-and-financial.md
+  items:
+    - name: Bodu.Numerics
+      items:
+        - name: Overview
+          href: numerics/index.md
+        - name: Working with Fraction<T>
+          href: numerics/fraction.md
+        - name: Formatting and parsing Fraction<T>
+          href: numerics/formatting-and-parsing.md
+        - name: Working with Interval<T>
+          href: numerics/interval.md
+        - name: JSON serialization
+          href: numerics/json-serialization.md
+    - name: Bodu.Financial
+      items:
+        - name: Overview
+          href: financial/index.md
+        - name: Working with Money<TCurrency>
+          href: financial/money.md
+        - name: Working with exchange rates
+          href: financial/exchange-rates.md
+        - name: Exchange-rate types (usage catalogue)
+          href: financial/exchange-types.md
+        - name: Exchange-rate lookups (worked dataset)
+          href: financial/exchange-rate-lookups.md
         - name: Dependency injection
-          href: calendar/dependency-injection.md
-    - name: Bodu.Globalization.Calendar.Algorithms
-      items:
-        - name: Date calculation algorithms
-          href: calendar/algorithms.md
-    - name: Bodu.Globalization.Calendar.Data.* — Data packs
-      items:
-        - name: Calendar data packs
-          href: calendar/data-packs.md
-    - name: Bodu.Globalization.Calendar — Notable-date catalogue
-      items:
-        - name: Catalogue overview
-          href: calendar/catalogue/index.md
-        - name: Civil and Christian catalogues
-          href: calendar/catalogue/theme-civil-and-christian.md
-        - name: Non-Gregorian religious catalogues
-          href: calendar/catalogue/theme-religious-non-gregorian.md
-        - name: Cultural, family, and remembrance catalogues
-          href: calendar/catalogue/theme-cultural-and-family.md
-        - name: Awareness and themed observances
-          href: calendar/catalogue/theme-awareness.md
-        - name: Aggregate and utility catalogues
-          href: calendar/catalogue/theme-aggregates.md
-        - name: Americas region packs
-          href: calendar/catalogue/region-americas.md
-        - name: Asia-Pacific region packs
-          href: calendar/catalogue/region-asia-pacific.md
-        - name: Europe region packs
-          href: calendar/catalogue/region-europe.md
-        - name: Cross-region comparison matrix
-          href: calendar/catalogue/comparison-matrix.md
-- name: Bodu.IO.Hashing
-  items:
-    - name: Overview
-      href: io-hashing/index.md
-    - name: Bodu.IO.Hashing — Fingerprints
-      items:
-        - name: Using FNV
-          href: io-hashing/fnv.md
-        - name: Using CityHash
-          href: io-hashing/cityhash.md
-        - name: Using MurmurHash3
-          href: io-hashing/murmurhash3.md
-        - name: Using Pearson
-          href: io-hashing/pearson.md
-        - name: Classic string hashes
-          href: io-hashing/string-hashes.md
-    - name: Bodu.IO.Hashing.Checksums
-      items:
-        - name: Using CRC
-          href: io-hashing/crc.md
-        - name: CRC catalogue
-          href: io-hashing/crc-catalogue.md
-        - name: Using Fletcher
-          href: io-hashing/fletcher.md
-        - name: Using Adler
-          href: io-hashing/adler.md
-    - name: Bodu.IO.Hashing.CheckDigits
-      items:
-        - name: Check digits overview
-          href: io-hashing/check-digits.md
-- name: Bodu.Numerics
-  items:
-    - name: Overview
-      href: numerics/index.md
-    - name: Working with Fraction<T>
-      href: numerics/fraction.md
-    - name: Formatting and parsing Fraction<T>
-      href: numerics/formatting-and-parsing.md
-    - name: Working with Interval<T>
-      href: numerics/interval.md
-    - name: JSON serialization
-      href: numerics/json-serialization.md
-- name: Bodu.Security.Cryptography
-  items:
-    - name: Overview
-      href: cryptography/index.md
-    - name: Foundations
-      items:
-        - name: Encryption basics
-          href: cryptography/encryption-basics.md
-        - name: Cipher block modes
-          href: cryptography/cipher-modes.md
-        - name: Padding
-          href: cryptography/padding.md
-        - name: Composing primitives
-          href: cryptography/composing-primitives.md
-    - name: Symmetric ciphers — Standard
-      items:
-        - name: AES-family block ciphers
-          href: cryptography/aes-family.md
-        - name: Using Skipjack
-          href: cryptography/skipjack.md
-        - name: Using Blowfish
-          href: cryptography/blowfish.md
-    - name: Symmetric ciphers — Tweakable
-      items:
-        - name: Using Threefish-256
-          href: cryptography/threefish-256.md
-        - name: Using Threefish-512
-          href: cryptography/threefish-512.md
-        - name: Using Threefish-1024
-          href: cryptography/threefish-1024.md
-    - name: Symmetric ciphers — Stream
-      items:
-        - name: Using stream ciphers
-          href: cryptography/stream-ciphers.md
-    - name: Symmetric ciphers — AEAD
-      items:
-        - name: AEAD modes (AES + transform)
-          href: cryptography/aead-modes.md
-    - name: Cryptographic hashes
-      items:
-        - name: Hashing overview
-          href: cryptography/hashing.md
-        - name: Using BLAKE
-          href: cryptography/blake.md
-        - name: Using Skein
-          href: cryptography/skein.md
-        - name: Using Tiger
-          href: cryptography/tiger.md
-        - name: Using CubeHash
-          href: cryptography/cubehash.md
-        - name: Using Snefru
-          href: cryptography/snefru.md
-        - name: Using Whirlpool
-          href: cryptography/whirlpool.md
-        - name: Using SHAKE (XOF)
-          href: cryptography/shake.md
-        - name: Using Merkle trees
-          href: cryptography/merkle-trees.md
-    - name: Keyed hashes (MAC)
-      items:
-        - name: Using SipHash
-          href: cryptography/siphash.md
-        - name: Using Poly1305
-          href: cryptography/poly1305.md
-    - name: ASCON family
-      items:
-        - name: ASCON overview
-          href: cryptography/ascon.md
-        - name: ASCON hashing
-          href: cryptography/ascon-hashing.md
-        - name: ASCON extendable output (XOF)
-          href: cryptography/ascon-xof.md
-        - name: ASCON authenticated encryption (AEAD)
-          href: cryptography/ascon-aead.md
-    - name: Key derivation
-      items:
-        - name: Using Argon2
-          href: cryptography/argon2.md
-        - name: Using scrypt
-          href: cryptography/scrypt.md
-- name: Bodu.Text.Configuration
-  items:
-    - name: Overview
-      href: text-configuration/index.md
-    - name: Parsing and profiles
-      href: text-configuration/parsing-and-profiles.md
-    - name: Views and resolution
-      href: text-configuration/views-and-resolution.md
-    - name: Diagnostics
-      href: text-configuration/diagnostics.md
-- name: Bodu.Text.Encoding
-  items:
-    - name: Overview
-      href: text-encoding/index.md
-    - name: Bodu.Text.Encoding — Encodings
-      items:
-        - name: Using Base16 (hexadecimal)
-          href: text-encoding/base16.md
-        - name: Using Base32
-          href: text-encoding/base32.md
-        - name: Using Base64
-          href: text-encoding/base64.md
-        - name: Using Base58
-          href: text-encoding/base58.md
-        - name: Using Base85 (Ascii85 and Z85)
-          href: text-encoding/base85.md
-        - name: Using Base45 (QR codes)
-          href: text-encoding/base45.md
-        - name: Using Base62
-          href: text-encoding/base62.md
-        - name: Using Bech32 and Bech32m
-          href: text-encoding/bech32.md
-    - name: Bodu.Text.Encoding — Patterns
-      items:
-        - name: The IBinaryEncoding interface
-          href: text-encoding/binary-encodings-interface.md
-        - name: Encoding helpers and BOM detection
-          href: text-encoding/encoding-helpers.md
-- name: Bodu.Text.Formats
-  items:
-    - name: Overview
-      href: formats/index.md
-    - name: Bodu.Text.Formats — Codec
-      items:
-        - name: Using delimited (CSV / TSV)
-          href: formats/delimited.md
-        - name: Using DotEnv
-          href: formats/dotenv.md
-        - name: Using INI
-          href: formats/ini.md
-    - name: Bodu.Text.Formats — I/O
-      items:
-        - name: Streams and async I/O
-          href: formats/streaming.md
-- name: Bodu.Text.Bencode & Bodu.Text.Toml
-  items:
-    - name: Overview
-      href: serialization/index.md
-    - name: Using TOML
-      href: serialization/toml.md
-    - name: Using Bencode
-      href: serialization/bencode.md
-    - name: Mapping attributes
-      href: serialization/attributes.md
-    - name: Writing converters
-      href: serialization/converters.md
-    - name: Serialization callbacks
-      href: serialization/callbacks.md
-    - name: Built-in converter catalog
-      href: serialization/builtin-converters.md
+          href: financial/dependency-injection.md

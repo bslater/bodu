@@ -4,7 +4,7 @@ title: Bodu.Globalization.Calendar — Introduction
 
 # Bodu.Globalization.Calendar
 
-**Bodu.Globalization.Calendar** resolves authored calendar rules into concrete notable dates such as public holidays, observances, religious festivals, and regional events. Consumers query dates by year, date, or range and territory, optionally filter by category, tag, or duration, and use the resolved dates for working-day-aware arithmetic.
+**Bodu.Globalization.Calendar** resolves authored calendar rules into concrete notable dates such as public holidays, observances, religious festivals, and regional events. Consumers query dates by year, date, or range and territory, optionally filter by category, tag, or duration, and use the resolved dates for working-day-aware arithmetic. It anchors the **[Globalization & Calendars](../topics/globalization-and-calendars.md)** topic.
 
 Rules are authored on the notable-date schema as XML or JSON, import from a set of bundled common catalogues, and load eagerly into an immutable, validated resource. More advanced scenarios extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and trust-gated plugins.
 
@@ -160,3 +160,4 @@ Plugin loading is intentionally isolated in the separate **`Bodu.Globalization.C
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — using `NotableDateService`, algorithms, rule authoring, working-day arithmetic, territories, data packs.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
 - **[Calendar data packs](../../guides/calendar/data-packs.md)** — region-specific resources (`AmericasCalendarData`, `AsiaPacificCalendarData`, `EuropeCalendarData`, `AfricaCalendarData`, `MiddleEastCalendarData`).
+- **[Globalization & Calendars topic](../topics/globalization-and-calendars.md)** — the runtime together with its companion packages (Builder, DependencyInjection, Plugins) and the regional data packs.

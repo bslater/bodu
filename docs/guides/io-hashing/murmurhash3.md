@@ -152,3 +152,4 @@ Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with
 - [Using Pearson](pearson.md) — configurable output width from 8 to 2048 bits.
 - [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — when to use a fingerprint vs a checksum vs a check digit.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

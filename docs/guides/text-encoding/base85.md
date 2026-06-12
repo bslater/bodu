@@ -186,3 +186,4 @@ part of the encoding itself.)
 - **[Base58 guide](base58.md)** — when the use case is blockchain or human-typed identifiers.
 - **[Base64 guide](base64.md)** — when familiarity beats density.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

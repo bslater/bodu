@@ -6,6 +6,8 @@ title: Bodu.Globalization.Calendar guides
 
 Recipe-style walk-throughs for **Bodu.Globalization.Calendar**, organized by namespace.
 
+Part of the **[Globalization & Calendars](../topics/globalization-and-calendars.md)** topic.
+
 If you are new to the library, start with the [introduction](../../docs/calendar/index.md), the [Core concepts](../../docs/calendar/concepts.md) glossary, and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](xref:Bodu.Globalization.Calendar).
 
 > **Looking for the data?** The [Notable-date catalogue](catalogue/index.md) lists what notable dates the calendar resources include and how regions and territories differ — generated from the XML, organized by theme and by region, with a cross-region comparison matrix.
@@ -132,3 +134,4 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 - [Core concepts](../../docs/calendar/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Globalization.Calendar getting started](../../docs/calendar/getting-started.md) — install and minimal samples.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full namespace overview.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

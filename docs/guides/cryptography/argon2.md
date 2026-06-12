@@ -125,3 +125,4 @@ The right cost is "as high as your latency budget allows." Pick a target verific
 - [Using scrypt](scrypt.md) — the other memory-hard password KDF, when you want RFC 7914 compatibility or an established pre-Argon2 design.
 - [Hashing overview](hashing.md) — where password KDFs sit relative to cryptographic digests and keyed MACs.
 - [Bodu.Security.Cryptography namespace](xref:Bodu.Security.Cryptography) — the generated API reference.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

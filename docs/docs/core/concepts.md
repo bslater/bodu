@@ -6,6 +6,8 @@ title: Bodu.Core — Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the [getting-started samples](getting-started.md) or the [guides](../../guides/core/index.md), and refer back whenever a term feels imprecise.
 
+Part of the **[Core Foundations](../topics/core-foundations.md)** topic.
+
 For the high-level shape of the library and the namespace map, start with the [introduction](index.md).
 
 ## Fixed-capacity collection
@@ -154,3 +156,4 @@ These types are pure data carriers. The actual algorithms live on the extension 
 - **[Getting started](getting-started.md)** — install + runnable minimal samples for each scenario.
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for circular buffers, deques, evicting dictionaries, and `WeekPattern`.
 - **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full type-by-type docs.
+- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside the `Bodu.Text` namespace utilities; the [topic concepts](../topics/core-foundations-concepts.md) page collects the shared vocabulary.

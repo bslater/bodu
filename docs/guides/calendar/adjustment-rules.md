@@ -350,3 +350,4 @@ The `handlerKey` on `<Trigger>` is looked up in the trigger registry; the `handl
 - [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) — emission modes and observed-date range inclusion in depth.
 - [Holiday patterns and examples](holiday-patterns.md) — complete worked examples for UK, US, AU, Easter, and lunar holidays.
 - [Building and extending the service](building-the-service.md) — wiring the handler and trigger registries into a `NotableDateService`.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

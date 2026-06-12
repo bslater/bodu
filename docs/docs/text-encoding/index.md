@@ -12,6 +12,8 @@ encoding at runtime. Three special-purpose encodings sit alongside them — **Ba
 **Base62** (compact identifiers), and **Bech32 / Bech32m** (BIP 173 / 350, checksummed addresses) — plus the
 convenience wrappers **Base58Check** and **Base64Url**.
 
+Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
+
 It fills two gaps that `System.Convert` and `System.Buffers.Text.Base64` leave open:
 
 1. **Variants** the BCL does not cover — base32hex, Crockford Base32, z-base-32, Base58 (Bitcoin / Flickr / Ripple), Ascii85, Z85, Base45, Base62, Bech32 / Bech32m.
@@ -135,3 +137,4 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 - **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
 - **Special-purpose guides** — [Base45](../../guides/text-encoding/base45.md) (QR codes), [Base62](../../guides/text-encoding/base62.md) (compact IDs), [Bech32](../../guides/text-encoding/bech32.md) (checksummed addresses).
 - **For structured document formats** (Bencode, INI, TOML) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md).
+- **[Text & Serialization topic](../topics/text-and-serialization.md)** — this package alongside its siblings Bodu.Text.Formats and the Bencode / TOML serializers.

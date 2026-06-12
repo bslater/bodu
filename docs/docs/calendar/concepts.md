@@ -6,6 +6,8 @@ title: Bodu.Globalization.Calendar — Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the [getting-started samples](getting-started.md) or the [guides](../../guides/calendar/index.md), and refer back to it whenever a term feels imprecise.
 
+Part of the **[Globalization & Calendars](../topics/globalization-and-calendars.md)** topic.
+
 For the high-level shape of the library and the resolution pipeline diagram, start with the [introduction](index.md).
 
 ## The pipeline in one line
@@ -144,3 +146,4 @@ See [Working-day arithmetic](../../guides/calendar/working-days.md) for the oper
 - **[Introduction](index.md)** — the high-level shape of the library.
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — deep-dive walk-throughs for every concept above.
+- **[Globalization & Calendars topic](../topics/globalization-and-calendars.md)** — the runtime, its companion packages, and the regional data packs; the [topic concepts](../topics/globalization-and-calendars-concepts.md) page collects the shared vocabulary.

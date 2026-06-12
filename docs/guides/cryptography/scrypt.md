@@ -90,3 +90,4 @@ Hold `r = 8` and `p = 1`, then raise `N` (always a power of two) until verificat
 - [Using Argon2](argon2.md) — the memory-hard KDF recommended for new password-hashing deployments.
 - [Hashing overview](hashing.md) — how password KDFs relate to digests and keyed MACs.
 - [Bodu.Security.Cryptography namespace](xref:Bodu.Security.Cryptography) — the generated API reference.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

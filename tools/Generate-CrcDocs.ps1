@@ -203,6 +203,14 @@ if ($skipped.Count -gt 0) {
 [void]$lines.Add('```')
 [void]$lines.Add('')
 
+# Closing cross-links — the overview label depends on which guide folder this copy lands in.
+$overviewLabel = if ($OutputPath -match 'io-hashing') { 'Bodu.IO.Hashing guides overview' } else { 'Bodu.Security.Cryptography guides overview' }
+[void]$lines.Add('## See also')
+[void]$lines.Add('')
+[void]$lines.Add('- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.')
+[void]$lines.Add("- **[$overviewLabel](index.md)** — every guide in this library.")
+[void]$lines.Add('')
+
 Set-Content -LiteralPath $OutputPath -Value ($lines -join "`n") -Encoding utf8
 Write-Host "Wrote $OutputPath"
 Write-Host "  Supported listed: $($supported.Count)"

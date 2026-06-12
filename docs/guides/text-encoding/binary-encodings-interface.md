@@ -182,3 +182,4 @@ The interface is a convenience for the runtime-selection use case. Skip it when:
   **[Base58 guide](base58.md)**, **[Base85 guide](base85.md)** — the static-class entry points with the full
   option set.
 - **[Core concepts](../../docs/text-encoding/concepts.md)** — vocabulary refresher.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

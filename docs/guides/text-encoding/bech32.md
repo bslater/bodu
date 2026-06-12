@@ -132,3 +132,4 @@ int length = Bech32.GetEncodedLength(hrpLength: 2, dataLength: 33);
 - **[Base58 guide](base58.md)** — the legacy Bitcoin address encoding and `Base58Check`.
 - **[Base32 guide](base32.md)** — the plain 5-bit encoding Bech32's data part is built on.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — the runtime registry for the flat-byte encodings (Bech32 stays outside it).
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

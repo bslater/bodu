@@ -103,3 +103,4 @@ For anything else, reach for AES or Threefish.
 - [Cipher block modes](cipher-modes.md) — CFB, OFB, ECB also work with Skipjack.
 - [Padding](padding.md) — which padding scheme pairs with which mode.
 - [Using Blowfish](blowfish.md) — another 64-bit-block cipher with a variable key size.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

@@ -154,3 +154,4 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 - [Calendar dependency injection](dependency-injection.md) — registering a pack resource through `IServiceCollection`.
 - [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

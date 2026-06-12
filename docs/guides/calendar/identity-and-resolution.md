@@ -197,3 +197,4 @@ catch (NotableDateValidationException ex)
 - [The resolution pipeline](resolution-pipeline.md) — how identity, priority, and emission are applied end to end.
 - [Observance adjustment rules](adjustment-rules.md) — emission modes, triggers, actions, and custom handlers.
 - [RangeResolution API reference](xref:Bodu.Globalization.Calendar.RangeResolution) — the policy enums in full.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

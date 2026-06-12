@@ -7,6 +7,8 @@ title: Bodu.Text.Configuration — Core concepts
 This page is the vocabulary the rest of the documentation assumes. Read it once before the
 [getting-started samples](getting-started.md), and refer back whenever a term feels imprecise.
 
+Part of the **[Configuration](../topics/configuration.md)** topic.
+
 For the high-level shape of the library and the pipeline diagram, start with the [introduction](index.md).
 
 ## Document and view
@@ -230,3 +232,4 @@ emits canonical formatting, so the round-trip is semantically stable but may rea
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Introduction](index.md)** — the high-level shape of the library.
+- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Extensions.Configuration.Text; the [topic concepts](../topics/configuration-concepts.md) page collects the shared vocabulary.

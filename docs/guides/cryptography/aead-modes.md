@@ -254,3 +254,4 @@ On the wire, a failed tag check is indistinguishable from an attack; treat every
 - [Stream ciphers § authenticated stream ciphers](stream-ciphers.md#authenticated-stream-ciphers--poly1305-aead) — the ready-made `XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, and NaCl `secretbox` (`XSalsa20Poly1305`) constructions when you want AEAD over a stream cipher rather than AES.
 - [ASCON AEAD](ascon-aead.md) — lightweight authenticated encryption.
 - API reference: [<xref:Bodu.Security.Cryptography.AesBlockCipher>] · [<xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform>] · [<xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions>].
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

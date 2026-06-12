@@ -4,7 +4,7 @@ title: Bodu serializers — Introduction
 
 # Bodu serializers (Bencode and TOML)
 
-**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained libraries that map your own types (POCOs, records, collections) to and from a document format. Each is a standalone package with no shared engine — every type a serializer needs lives inside its own assembly:
+**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each is a standalone package with no shared engine — every type a serializer needs lives inside its own assembly:
 
 | Package | Namespace | Format | Entry point |
 |---|---|---|---|
@@ -12,6 +12,15 @@ title: Bodu serializers — Introduction
 | **Bodu.Text.Toml** | <xref:Bodu.Text.Toml> | [TOML](https://toml.io/) v1.0.0 / v1.1.0 (text) | <xref:Bodu.Text.Toml.TomlSerializer> |
 
 The two libraries are deliberate twins: they expose the same shape, member for member, so anything you learn for one transfers directly to the other — the only adjustment is the `Bencode` / `Toml` prefix.
+
+## The two members
+
+This page is the family parent: it describes everything the twins share. What is *specific* to each format lives on its own introduction:
+
+| Library | Introduction | In one line |
+|---|---|---|
+| **Bodu.Text.Bencode** | [Bodu.Text.Bencode](bencode.md) | The binary BEP 3 format — byte strings as first-class values, canonical dictionary ordering, and the converter bridge for the kinds Bencode cannot represent. |
+| **Bodu.Text.Toml** | [Bodu.Text.Toml](toml.md) | The human-readable configuration format — a rich native value model (floats, Booleans, RFC 3339 date-times), spec-version selection (v1.0.0 / v1.1.0), and positional parse diagnostics. |
 
 ## Core mental model
 
@@ -59,6 +68,8 @@ Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a 
 
 ## Where to go next
 
+- **Member introductions** — [Bodu.Text.Bencode](bencode.md) and [Bodu.Text.Toml](toml.md) for what is specific to each format.
 - **[Core concepts](concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam.
 - **[Getting started](getting-started.md)** — install and the first round trip in each format.
 - **Guides** — [Using TOML](../../guides/serialization/toml.md), [Using Bencode](../../guides/serialization/bencode.md), and [writing converters](../../guides/serialization/converters.md).
+- **[Text & Serialization topic](../topics/text-and-serialization.md)** — how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.

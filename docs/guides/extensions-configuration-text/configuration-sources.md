@@ -110,6 +110,47 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 The delegate overload mirrors the `AddJsonFile(source => …)` pattern from `Microsoft.Extensions.Configuration.Json`. Set every property up front rather than choosing the right `AddBoduConfiguration*` overload for the combination you need.
 
+## Pattern 7 — binding to `IOptions<T>`
+
+Because the bridge surfaces standard colon-delimited keys, the values bind to typed options classes through the ordinary `Microsoft.Extensions.Options` pipeline. `ConfigurationOptionsExtensions.AddConfigurationOptions<TOptions>` is a discoverable shim over `services.Configure<TOptions>(section)` — either call produces the same registration:
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+public sealed class LoggingOptions
+{
+    public string Level { get; init; } = "Information";
+    public bool   IncludeScopes { get; init; }
+}
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddBoduConfigurationFile("appsettings.boduconfig");
+
+// Bind by section name against the configuration root…
+builder.Services.AddConfigurationOptions<LoggingOptions>(
+    builder.Configuration, sectionName: "logging");
+
+// …or bind a pre-resolved section directly.
+builder.Services.AddConfigurationOptions<LoggingOptions>(
+    builder.Configuration.GetSection("logging"));
+```
+
+Consume the bound options through constructor injection as usual:
+
+```csharp
+public sealed class RequestLogger
+{
+    private readonly LoggingOptions _options;
+
+    public RequestLogger(IOptions<LoggingOptions> options) =>
+        _options = options.Value;   // e.g. _options.Level == "Debug"
+}
+```
+
+So an INI source containing `logging.level = Debug` flattens to the key `"logging:level"`, the `"logging"` section binds onto `LoggingOptions`, and `options.Value.Level` reads `"Debug"`. Callers comfortable with the BCL surface can keep calling `services.Configure<LoggingOptions>(section)` directly — the helper exists purely to keep the call site short.
+
 ## How the bridge surfaces values
 
 ```
@@ -151,6 +192,43 @@ When `reloadOnChange: true` on a file-backed source, the `TextConfigurationProvi
 
 Subscribers to `ChangeToken.OnChange(...)` see the new values without re-instantiating the configuration root. The reload is atomic from the consumer's perspective — there is no window in which the configuration is half-loaded.
 
+Reload composes with options binding through the standard monitor surface — `IOptionsMonitor<T>` re-binds on every reload, where `IOptions<T>` is a one-shot snapshot taken at first resolution:
+
+```csharp
+public sealed class RequestLogger
+{
+    public RequestLogger(IOptionsMonitor<LoggingOptions> monitor)
+    {
+        // CurrentValue tracks the file: edit appsettings.ini and the next
+        // read reflects the re-parsed, re-resolved values.
+        string level = monitor.CurrentValue.Level;
+
+        monitor.OnChange(updated => Console.WriteLine($"level → {updated.Level}"));
+    }
+}
+```
+
+Stream and pre-parsed-document sources have no file to watch, so they never reload — re-add the source and rebuild the root to pick up new data.
+
+## Layering with other providers
+
+A Bodu source participates in the standard `IConfiguration` precedence rules: providers are consulted in registration order, and for any key supplied by more than one source, **the last-registered source wins**. A common shape is a JSON baseline with a Bodu-formatted override file on top:
+
+```csharp
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false)               // baseline
+    .AddBoduConfigurationFile("overrides.ini", optional: true)      // wins on conflict
+    .AddEnvironmentVariables()                                      // wins over both
+    .Build();
+
+// appsettings.json:  { "logging": { "level": "Information" } }
+// overrides.ini:     logging.level = Debug
+
+configuration["logging:level"];   // "Debug" — the Bodu source is later
+```
+
+Reverse the order to make the JSON file the override layer. Because both sources flatten to the same colon-delimited key space, no key translation is needed — a `logging.level` INI entry and a nested `"logging": { "level": … }` JSON property occupy the same key, `"logging:level"`.
+
 ## When *not* to use the bridge
 
 - **You only need the codec.** Reach for [`Bodu.Text.Formats.Ini`](../formats/ini.md) for codec-only access without the bridge or the resolve layer.
@@ -159,7 +237,11 @@ Subscribers to `ChangeToken.OnChange(...)` see the new values without re-instant
 
 ## See also
 
+- [`Bodu.Extensions.Configuration.Text` guides](index.md) — the member overview for this package.
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — the underlying parse / view layer.
 - [Parsing and profiles](../text-configuration/parsing-and-profiles.md) — the parse-time options surfaced via `ParseOptions`.
 - [Views and resolution](../text-configuration/views-and-resolution.md) — the resolve-time options surfaced via `ResolveOptions` and `TargetPath`.
+- [Configuration topic guides](../topics/configuration.md) — every guide in the Configuration topic.
+- [Configuration topic overview](../../docs/topics/configuration.md) — the pipeline and package boundaries.
+- [`TextConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource) · [`TextStreamConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource) · [`ConfigurationOptionsExtensions`](xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions)
 - [`Bodu.Extensions.Configuration.Text` API reference](xref:Bodu.Extensions.Configuration.Text).

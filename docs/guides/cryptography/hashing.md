@@ -154,3 +154,4 @@ For large inputs where you want to overlap leaf hashing with tree reduction, use
 - [Cipher block modes](cipher-modes.md) — ECB / CBC / CFB / OFB / CTR with worked examples.
 - [Bodu.IO.Hashing guides](../io-hashing/index.md) — CRC, Fletcher, Adler, FNV, CityHash, and the classic string hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm`.
 - <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

@@ -87,3 +87,4 @@ Both are **non-cryptographic** — neither resists a motivated adversary. If you
 
 - [Using CRC](crc.md) — the other checksum family in this package.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

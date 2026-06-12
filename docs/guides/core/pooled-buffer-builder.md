@@ -160,3 +160,4 @@ The function allocates exactly one array — the final result. Every intermediat
 - [`PooledBufferBuilder<T>` API reference](xref:Bodu.Buffers.PooledBufferBuilder`1)
 - [`Bodu.Buffers` namespace landing](xref:Bodu.Buffers)
 - [`Bodu.Collections.Generic.SegmentedBuffer<T>`](xref:Bodu.Collections.Generic.SegmentedBuffer`1) — for streaming scenarios where the total length is unknown and the result is consumed in segments.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

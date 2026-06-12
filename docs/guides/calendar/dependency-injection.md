@@ -113,3 +113,4 @@ The provider is also registered as <xref:Bodu.Globalization.Calendar.INotableDat
 - **[Calendar data packs](data-packs.md)** — composing an Americas / Asia-Pacific / Europe pack resource through `AddNotableDateService`.
 - **[Using NotableDateService](notable-dates.md)** — query patterns and working-day arithmetic.
 - **[Bodu.Globalization.Calendar.DependencyInjection API reference](xref:Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions)** — the registration surface.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

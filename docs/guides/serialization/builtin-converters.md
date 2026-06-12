@@ -4,7 +4,7 @@ title: Built-in converter catalog
 
 # Built-in converter catalog
 
-Every type the serializers handle without a user converter is served by a **built-in converter**. This page catalogs that set for each library — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in [Writing converters](converters.md).
+Every type that <xref:Bodu.Text.Toml.TomlSerializer> and <xref:Bodu.Text.Bencode.BencodeSerializer> handle without a user converter is served by a **built-in converter** — internally an ordinary <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> / <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>. This page catalogs that set for each library — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in [Writing converters](converters.md).
 
 Both libraries follow the same design: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.
 
@@ -104,3 +104,12 @@ Bencode (BEP 3) has exactly two scalar forms — integers and byte strings — a
 | Types served only by a user converter | none in common use | `bool`, floats, `char`, `Guid`, `Uri`, `Version`, `TimeSpan`, date-times |
 | Document root | must map to a table | any value kind |
 | `object` / element / document bridges | yes | yes |
+
+## See also
+
+- [Writing converters](converters.md) — overriding a built-in, factories, and resolution order.
+- [Using TOML](toml.md) and [Using Bencode](bencode.md) — the per-format walk-throughs the tables above back up.
+- [Mapping attributes](attributes.md) — the declarative layer over the converters.
+- [Core concepts](../../docs/serialization/concepts.md) — the value-mapping summary in the family vocabulary.
+- [Text & Serialization guides](../topics/text-and-serialization.md) and the [topic overview](../../docs/topics/text-and-serialization.md).
+- API reference — <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>, <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>, <xref:Bodu.Text.Toml.TomlByteArrayHandling>, <xref:Bodu.Text.Toml.TomlDecimalHandling>.

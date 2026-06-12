@@ -309,4 +309,4 @@ line of provenance per source currency alongside the total.
 - [Working with exchange rates](exchange-rates.md) — the provider-stack walkthrough and editing surface.
 - [Working with `Money<TCurrency>`](money.md) — the money types these rates convert.
 - [Bodu.Financial — Core concepts](../../docs/financial/concepts.md) — the shared vocabulary.
-</content>
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

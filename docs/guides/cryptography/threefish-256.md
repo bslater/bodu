@@ -155,3 +155,4 @@ alg.Decrypt(src, dst, bufferSize: 8192);
 - [Cipher block modes](cipher-modes.md) — CFB / OFB / ECB also work with `Threefish256`.
 - [Padding](padding.md) — when to set `PaddingMode.None` vs `PKCS7`.
 - Other variants: [Threefish-512](threefish-512.md), [Threefish-1024](threefish-1024.md).
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

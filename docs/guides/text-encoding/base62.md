@@ -99,3 +99,4 @@ Base62.IsBase62Digit('+');    // false
 - **[Base58 guide](base58.md)** — the ambiguity-free sibling, plus `Base58Check`.
 - **[Base64 guide](base64.md)** — when interop with existing Base64 tooling matters more than path-safety.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — Base62 is registered as `BinaryEncodings.Base62` for runtime selection.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

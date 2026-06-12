@@ -194,3 +194,4 @@ string output         = doc.FormatDelimited();
 - [DotEnv](dotenv.md), [INI](ini.md) — the other formats in the package.
 - [`Bodu.Text.Delimited` API reference](xref:Bodu.Text.Delimited)
 - [Streams and async I/O](streaming.md) — buffer-lifecycle details for stream-based pipelines.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

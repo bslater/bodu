@@ -134,3 +134,4 @@ using var alg = new Threefish256();
 - [Cipher block modes](cipher-modes.md) — ECB, CBC, CFB, OFB, CTR side by side.
 - [Padding](padding.md) — which scheme for which situation.
 - Per-algorithm: [Threefish-256](threefish-256.md) · [Threefish-512](threefish-512.md) · [Threefish-1024](threefish-1024.md) · [Skipjack](skipjack.md) · [Blowfish](blowfish.md).
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

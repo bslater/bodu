@@ -202,3 +202,4 @@ Every method takes a territory `string`. Because territories are hierarchical, a
 - **[Territories and regional composition](territories.md)** — how the territory argument composes national and regional rules.
 - **[Observance adjustment rules](adjustment-rules.md)** — how a rule's nominal date becomes the observed non-working day that working-day arithmetic ultimately skips.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — `NotableDateOnlyExtensions`, `NotableDateTimeExtensions`, `NotableDateTimeOffsetExtensions`, `NotableDateFiscalExtensions`.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

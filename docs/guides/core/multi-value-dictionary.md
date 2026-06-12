@@ -117,3 +117,4 @@ IReadOnlyList<string> accept = headers["ACCEPT"];   // both values, case-insensi
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide.
 - [Multiset](multiset.md) — when you need value *counts* rather than value *lists*.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

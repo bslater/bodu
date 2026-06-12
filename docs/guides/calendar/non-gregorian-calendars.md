@@ -250,3 +250,4 @@ When authoring a `<Fixed>` rule against a non-Gregorian calendar:
 - [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference, including `<Applicability calendar="...">`.
 - [Date calculation algorithms](algorithms.md) — the `<Algorithm>` keys for computed lunisolar festivals.
 - [The resolution pipeline](resolution-pipeline.md) — territory scoping, adjustment chains, and the optional filter gate.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

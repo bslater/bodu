@@ -8,6 +8,8 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 [getting-started samples](getting-started.md) or the [guides](../../guides/text-encoding/index.md), and refer back
 whenever a term feels imprecise.
 
+Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
+
 For the high-level shape of the library and the type map, start with the [introduction](index.md).
 
 ## Encoding and variant
@@ -207,3 +209,4 @@ needs those should keep using the static classes directly.
 - **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
 - **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
 - **[Introduction](index.md)** — type map, scenarios, where each encoding fits.
+- **[Text & Serialization topic](../topics/text-and-serialization.md)** — this package alongside Bodu.Text.Formats and the Bencode / TOML serializers; the [topic concepts](../topics/text-and-serialization-concepts.md) page collects the shared vocabulary.

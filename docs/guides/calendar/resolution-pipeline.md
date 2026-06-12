@@ -172,3 +172,4 @@ A range query that spans late December includes both because the observed dates 
 - [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) — duplicate / collision settlement and observed-date range inclusion.
 - [Date calculation algorithms](algorithms.md) — strategy resolution and reference cycle detection.
 - [Building and extending the service](building-the-service.md) — registries, the reloadable provider, and the plugin system.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

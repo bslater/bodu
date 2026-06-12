@@ -150,3 +150,4 @@ for (int i = 0; i < 10_000; i++)
 - [Evicting dictionary](evicting-dictionary.md) — fixed-capacity key-value cache with LRU / LFU / FIFO eviction.
 - [Bodu.Core overview](index.md) — all key types at a glance.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

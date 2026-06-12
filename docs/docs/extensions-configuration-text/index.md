@@ -5,7 +5,8 @@ title: Bodu.Extensions.Configuration.Text — Introduction
 # Bodu.Extensions.Configuration.Text
 
 **Bodu.Extensions.Configuration.Text** is the bridge between
-[`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`. It exposes a
+[`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`, and one half of
+the **[Configuration](../topics/configuration.md)** topic. It exposes a
 single conventional entry point — `IConfigurationBuilder.AddBoduConfigurationFile(...)` — that adds a Bodu Text
 Configuration file (or stream, or pre-parsed document) as a configuration source alongside JSON, INI, XML, and
 environment variables.
@@ -119,3 +120,4 @@ called, and the stream lifetime ends with that parse. For dynamic stream-backed 
 - **[Getting started](getting-started.md)** — install + minimal samples for the file overload, the stream overload, conventional probe, options binding.
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view model.
 - **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
+- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Text.Configuration side by side.

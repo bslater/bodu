@@ -296,3 +296,4 @@ See the [Plugins package reference](xref:Bodu.Globalization.Calendar.Plugins) fo
 - [Observance adjustment rules](adjustment-rules.md) — triggers, actions, and custom adjustment handlers.
 - [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

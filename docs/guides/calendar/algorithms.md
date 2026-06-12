@@ -292,3 +292,4 @@ See [Authoring notable date rules](rule-authoring.md) for imports and overrides,
 - [The resolution pipeline](resolution-pipeline.md) — resolution ordering and reference cycle detection.
 - [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
 - [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms) — full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

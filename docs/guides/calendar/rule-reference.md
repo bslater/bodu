@@ -356,3 +356,4 @@ There is no `Name` property (use `DisplayName`) and no `WasAdjusted` property (u
 - [Observance adjustment rules](adjustment-rules.md) — the full `<AdjustmentPolicy>` trigger / action / emission catalogues and custom handlers.
 - [Holiday patterns and examples](holiday-patterns.md) — end-to-end worked examples for common holiday types.
 - [The resolution pipeline](resolution-pipeline.md) — how these elements are processed to produce `NotableDate` results.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

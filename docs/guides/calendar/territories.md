@@ -190,3 +190,4 @@ See [Calendar data packs](data-packs.md) for the per-pack helpers.
 - **[Authoring notable date rules](rule-authoring.md)** — full authoring workflow with worked examples.
 - **[Calendar data packs](data-packs.md)** — region-specific bundled rule sets.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — generated API surface.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

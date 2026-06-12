@@ -130,3 +130,4 @@ bool hasB = lru.ContainsKey("b");   // false — evicted
 - [WeekPattern](week-pattern.md) — immutable bitmask value type for sets of days of the week.
 - [Bodu.Core overview](index.md) — all key types at a glance.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

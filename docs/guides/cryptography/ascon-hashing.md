@@ -206,3 +206,4 @@ need to identify the algorithm used.
 - [ASCON AEAD](ascon-aead.md) — for authenticated encryption (`AsconAead128`).
 - [Hashing overview](hashing.md) — how ASCON sits alongside SipHash, Tiger, CubeHash, and the non-cryptographic families.
 - API reference: <xref:Bodu.Security.Cryptography.AsconHash256> · <xref:Bodu.Security.Cryptography.AsconHashA256>
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

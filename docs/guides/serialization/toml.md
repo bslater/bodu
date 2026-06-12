@@ -4,7 +4,7 @@ title: Using TOML
 
 # Using TOML
 
-<xref:Bodu.Text.Toml.TomlSerializer> maps your types to and from [TOML](https://toml.io/) (v1.0.0 / v1.1.0). The document root must map to a table, so the type you serialize at the root maps to an object — a top-level scalar or array throws.
+<xref:Bodu.Text.Toml.TomlSerializer> maps your types to and from [TOML](https://toml.io/) (v1.0.0 / v1.1.0). Behavior is configured through <xref:Bodu.Text.Toml.TomlSerializerOptions>; when you do not want a POCO, the same documents are served by the mutable <xref:Bodu.Text.Toml.Nodes.TomlNode> DOM and the read-only <xref:Bodu.Text.Toml.Document.TomlDocument> DOM. The document root must map to a table, so the type you serialize at the root maps to an object — a top-level scalar or array throws.
 
 ## Pattern 1 — Round-trip a configuration type
 
@@ -15,7 +15,7 @@ string text = TomlSerializer.Serialize(config);
 ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 ```
 
-`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[TomlPropertyOrder]` is honored.
+`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[TomlPropertyOrder]` is honored. See [Pattern 8](#pattern-8--streams-and-async) for the stream surface.
 
 ## Pattern 2 — Know the type mapping
 
@@ -49,7 +49,74 @@ var options = new TomlSerializerOptions
 };
 ```
 
-## Pattern 3 — Rename members
+## Pattern 3 — Worked example: nested tables and arrays of tables
+
+A nested object becomes a `[table]`; a collection of objects becomes an `[[array of tables]]`. The full configuration shape round-trips through one model:
+
+```csharp
+using Bodu.Text.Toml;
+
+public sealed class AppConfig
+{
+    public string? Title { get; set; }
+    public ServerConfig? Server { get; set; }
+    public List<EndpointConfig>? Endpoints { get; set; }
+}
+
+public sealed class ServerConfig
+{
+    public string? Host { get; set; }
+    public int Port { get; set; }
+}
+
+public sealed class EndpointConfig
+{
+    public string? Path { get; set; }
+    public bool AllowAnonymous { get; set; }
+}
+
+var config = new AppConfig
+{
+    Title = "demo",
+    Server = new ServerConfig { Host = "localhost", Port = 8080 },
+    Endpoints =
+    [
+        new EndpointConfig { Path = "/health", AllowAnonymous = true },
+        new EndpointConfig { Path = "/admin", AllowAnonymous = false },
+    ],
+};
+
+string text = TomlSerializer.Serialize(config);
+```
+
+The emitted document is the TOML a person would write — top-level keys first, then each table:
+
+```toml
+Title = "demo"
+
+[Server]
+Host = "localhost"
+Port = 8080
+
+[[Endpoints]]
+Path = "/health"
+AllowAnonymous = true
+
+[[Endpoints]]
+Path = "/admin"
+AllowAnonymous = false
+```
+
+Deserializing the same text restores the full graph:
+
+```csharp
+AppConfig back = TomlSerializer.Deserialize<AppConfig>(text);
+// back.Endpoints[1].Path → "/admin"
+```
+
+To emit lowercase keys (`title`, `[server]`, …) apply a naming policy ([Pattern 4](#pattern-4--rename-members)); to reorder the lines, use `[TomlPropertyOrder]` ([Mapping attributes](attributes.md)).
+
+## Pattern 4 — Rename members
 
 ```csharp
 var options = new TomlSerializerOptions
@@ -62,7 +129,7 @@ Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `Keb
 
 Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
-## Pattern 4 — Select the spec version
+## Pattern 5 — Select the spec version
 
 ```csharp
 var options = new TomlSerializerOptions { SpecVersion = TomlSpecVersion.V1_1 };
@@ -71,31 +138,96 @@ var doc = TomlSerializer.Deserialize<MyDoc>(text, options);
 
 The default is strict **v1.0.0**. Opting in to **v1.1.0** additionally accepts the `\e` and `\xHH` escapes, time values without seconds, and multi-line and trailing-comma inline tables. The writer always emits output valid under both versions.
 
-## Pattern 5 — Use a document model instead of a type
+## Pattern 6 — Edit a document with the mutable DOM
 
-When you do not want a POCO, parse to one of the two DOMs.
-
-Mutable DOM — parse, edit, and write back:
+When you do not want a POCO, parse to <xref:Bodu.Text.Toml.Nodes.TomlNode> — index into the tree, mutate values, and write the document back:
 
 ```csharp
 using Bodu.Text.Toml.Nodes;
 
-TomlNode node = TomlNode.Parse(utf8Toml)!;
-node["server"]!["port"] = 9090;
+TomlNode node = TomlNode.Parse(utf8Toml)!;   // the UTF-8 bytes of the document in Pattern 3
+node["Server"]!["Port"] = 9090;
+
 byte[] back = node.ToUtf8Bytes();
 ```
 
-Read-only DOM — a low-allocation view walked through `RootElement`:
+The re-emitted document keeps the same canonical layout with only the value changed:
+
+```toml
+[Server]
+Host = "localhost"
+Port = 9090
+```
+
+`Parse` takes UTF-8 bytes (`ReadOnlySpan<byte>`); for a `string` in hand, convert with `Encoding.UTF8.GetBytes(text)` first.
+
+## Pattern 7 — Inspect a document with the read-only DOM
+
+The read-only counterpart is a low-allocation view walked through `RootElement`:
 
 ```csharp
 using Bodu.Text.Toml.Document;
 
 using TomlDocument doc = TomlDocument.Parse(utf8Toml);
-TomlElement port = doc.RootElement.GetProperty("server").GetProperty("port");
+TomlElement port = doc.RootElement.GetProperty("Server").GetProperty("Port");
+// port.GetInt64() → 8080
 ```
 
-## Pattern 6 — Process tokens by hand
+`TomlDocument.Parse` accepts a `string` as well as UTF-8 bytes. A document you parse (or deserialize as a member) is caller-owned — dispose it (the `using` above) when finished. Typed access goes through `GetString` / `GetInt64` / `GetDouble` / `GetBoolean` / `GetDateTimeOffset` and friends on <xref:Bodu.Text.Toml.Document.TomlElement>.
+
+## Pattern 8 — Streams and async
+
+Both directions work over a `Stream`, synchronously on read and asynchronously in both directions, so a configuration file never has to materialize as a `string` first:
+
+```csharp
+await using FileStream output = File.Create("app.toml");
+await TomlSerializer.SerializeAsync(output, config, cancellationToken: ct);
+```
+
+```csharp
+await using FileStream input = File.OpenRead("app.toml");
+AppConfig config = await TomlSerializer.DeserializeAsync<AppConfig>(input, cancellationToken: ct);
+```
+
+The synchronous `Deserialize<T>(Stream, …)` overload has the same shape without the token. Both async members accept an optional `TomlSerializerOptions` before the `CancellationToken`. Stream content is UTF-8.
+
+## Pattern 9 — Process tokens by hand
 
 For full control with no allocations, drive the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> ref-struct pair directly. This is the same surface a [converter](converters.md) receives.
 
-Malformed input raises <xref:Bodu.Text.Toml.TomlFormatException> with the line, column, and offset; a value that cannot bind raises <xref:Bodu.Text.Toml.TomlSerializationException>.
+## Error handling
+
+Two exception types separate "the text is not TOML" from "the TOML does not fit your type":
+
+- <xref:Bodu.Text.Toml.TomlFormatException> — malformed input. Because TOML files are edited by hand, the exception carries the position: `LineNumber`, `ColumnNumber`, and byte `Offset`.
+- <xref:Bodu.Text.Toml.TomlSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value the format cannot represent on write.
+
+```csharp
+try
+{
+    AppConfig config = TomlSerializer.Deserialize<AppConfig>(text);
+}
+catch (TomlFormatException ex)
+{
+    // Not valid TOML, e.g. an unterminated string:
+    // "The string is not terminated." at line 1, column 14.
+    log.Warn($"Parse error at {ex.LineNumber}:{ex.ColumnNumber}: {ex.Message}");
+}
+catch (TomlSerializationException ex)
+{
+    // Valid TOML that does not match the model,
+    // e.g. "Expected a string but found 'Integer'."
+    log.Warn($"Document does not bind: {ex.Message}");
+}
+```
+
+`TryParse`-style members do not exist on the serializer; wrap `Deserialize` as above when reading untrusted input.
+
+## See also
+
+- [Using Bencode](bencode.md) — the twin library; every pattern above transfers with the `Bencode` prefix.
+- [Mapping attributes](attributes.md), [Writing converters](converters.md), [Serialization callbacks](callbacks.md), [Built-in converter catalog](builtin-converters.md) — the customization guides.
+- [Bodu.Text.Toml introduction](../../docs/serialization/toml.md) — what is specific to the TOML format, including the value model and spec versions.
+- [Bodu serializers introduction](../../docs/serialization/index.md) and [core concepts](../../docs/serialization/concepts.md) — the family shape and vocabulary.
+- [Text & Serialization guides](../topics/text-and-serialization.md) and the [topic overview](../../docs/topics/text-and-serialization.md).
+- API reference — <xref:Bodu.Text.Toml.TomlSerializer>, <xref:Bodu.Text.Toml.TomlSerializerOptions>, <xref:Bodu.Text.Toml.Nodes.TomlNode>, <xref:Bodu.Text.Toml.Document.TomlDocument>.

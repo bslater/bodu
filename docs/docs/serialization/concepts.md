@@ -6,12 +6,14 @@ title: Bodu serializers — Core concepts
 
 **Bodu.Text.Bencode** and **Bodu.Text.Toml** share the same vocabulary and member-for-member shape — only the `Bencode` / `Toml` prefix changes between them. This page uses the neutral `…` placeholder to describe a concept once for both libraries.
 
+Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
+
 ## The serializer
 
 The static `…Serializer` (<xref:Bodu.Text.Bencode.BencodeSerializer>, <xref:Bodu.Text.Toml.TomlSerializer>) is the high-level entry point. `Serialize<T>` writes an object graph to the format; `Deserialize<T>` binds the format back to a type. Each has overloads over the format's natural surfaces:
 
 - **Bencode** — `Serialize` to `byte[]` / `IBufferWriter<byte>` / `Stream`; `Deserialize<T>` from `ReadOnlySpan<byte>` / `byte[]` / `Stream`. Async stream variants are provided.
-- **TOML** — `Serialize` to `string` / `IBufferWriter<byte>` (UTF-8) / `Stream`; `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream`. Async stream variants are provided.
+- **TOML** — `Serialize` to `string` / `IBufferWriter<byte>` (UTF-8), or to a `Stream` via `SerializeAsync`; `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream` (with `DeserializeAsync`).
 
 ## Options
 

@@ -223,3 +223,4 @@ To go from the parsed `ConfigurationDocument` to a resolved typed view — inclu
 - [`Bodu.Text.Configuration` API reference](xref:Bodu.Text.Configuration).
 - [`Bodu.Text.Formats.Ini`](../formats/ini.md) — the underlying codec.
 - [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/index.md) — bridge to `Microsoft.Extensions.Configuration`.
+- **[Configuration guides](../topics/configuration.md)** — every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.

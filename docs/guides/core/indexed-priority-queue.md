@@ -164,3 +164,4 @@ The auxiliary element-to-index map doubles memory cost compared to a plain heap 
 - [`Bodu.Collections.Generic` namespace landing](xref:Bodu.Collections.Generic)
 - [Range-keyed lookups](range-dictionary.md) — the other "lookup-by-key" collection family.
 - [Concurrent collections](concurrent-collections.md) — for thread-safe queue scenarios.
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

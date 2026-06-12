@@ -6,6 +6,8 @@ title: Bodu.Security.Cryptography guides
 
 Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organized by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → stream ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.
 
+Part of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic.
+
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? The introduction's *shape of the library* section maps the six subfamilies and explains how they differ.
 
 For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/index.md).
@@ -183,3 +185,4 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 - [Bodu.Security.Cryptography getting started](../../docs/cryptography/getting-started.md) — install and minimal samples per subfamily.
 - [Bodu.IO.Hashing guides](../io-hashing/index.md) — non-cryptographic checksums and fingerprints.
 - [Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography) — full type-by-type docs.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

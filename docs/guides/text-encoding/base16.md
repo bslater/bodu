@@ -186,3 +186,4 @@ byte[] ParseHexInput(string input) =>
 - **[Base32 guide](base32.md)** — when 60 % expansion is enough and you need a smaller alphabet.
 - **[Base64 guide](base64.md)** — when 33 % expansion matters more than human readability.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

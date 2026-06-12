@@ -235,3 +235,4 @@ See [The resolution pipeline](resolution-pipeline.md) for the full walk-through 
 - [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
 - [Date calculation algorithms](algorithms.md) — the built-in keys and how to implement a custom algorithm.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

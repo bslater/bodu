@@ -87,6 +87,73 @@ public sealed class Snapshot : ITomlOnSerialized
 }
 ```
 
+## Pattern 5 — End to end: a self-describing, validated manifest
+
+The hooks combine naturally: `OnSerializing` keeps a computed member fresh at the moment of writing, and `OnDeserialized` rejects a document where the same invariant does not hold. Throw the format's serialization exception (<xref:Bodu.Text.Toml.TomlSerializationException>) so callers handle validation failures in the same catch clause as every other binding error:
+
+```csharp
+using Bodu.Text.Toml;
+using Bodu.Text.Toml.Serialization;
+
+public sealed class Manifest : ITomlOnSerializing, ITomlOnDeserialized
+{
+    public List<string> Files { get; set; } = [];
+
+    public int FileCount { get; set; }
+
+    void ITomlOnSerializing.OnSerializing() =>
+        FileCount = Files.Count;   // refreshed on every write — never stale
+
+    void ITomlOnDeserialized.OnDeserialized()
+    {
+        if (FileCount != Files.Count)
+            throw new TomlSerializationException("FileCount does not match the number of entries in Files.");
+    }
+}
+```
+
+Serializing recomputes the count before the members are written:
+
+```csharp
+string text = TomlSerializer.Serialize(new Manifest { Files = ["a.txt", "b.txt", "c.txt"] });
+// → Files = ["a.txt", "b.txt", "c.txt"]
+//   FileCount = 3
+```
+
+Deserializing validates the fully materialized instance — a document whose count disagrees with its list fails, and a consistent one binds:
+
+```csharp
+TomlSerializer.Deserialize<Manifest>("FileCount = 2");
+// → throws TomlSerializationException: FileCount does not match the number of entries in Files.
+
+Manifest ok = TomlSerializer.Deserialize<Manifest>("""
+    Files = ["x.txt"]
+    FileCount = 1
+    """);
+// ok.FileCount → 1
+```
+
+## Invocation order
+
+Where each hook sits in the pipeline, relative to the converter work the serializer performs for the members:
+
+| Phase | Deserialization | Serialization |
+|---|---|---|
+| 1 | Member values are read from the document, each through its member converter. | A non-null value is selected for writing. |
+| 2 | Required members are checked; the instance is constructed (parameterless or the bound parameterized constructor). | **`OnSerializing`** fires. |
+| 3 | **`OnDeserializing`** fires — after construction, before any member is assigned. | The table/dictionary is opened. |
+| 4 | Settable members are assigned from the values read in phase 1. | Members are written, each through its member converter; extension data follows. |
+| 5 | Extension data is populated. | The table/dictionary is closed. |
+| 6 | **`OnDeserialized`** fires on the fully materialized instance. | **`OnSerialized`** fires. |
+
+Two consequences worth noting. On read, the member *converters* run before `OnDeserializing` — the hook cannot influence how values are parsed, only what happens to the instance before they are assigned. On write, `OnSerializing` runs before the value's table or dictionary is opened, so mutations it makes are always reflected in the output.
+
+## Interplay with custom converters
+
+The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a table/dictionary. A type claimed by a *custom* converter (via `[TomlConverter]` / `[BencodeConverter]` or `options.Converters`) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so **none of the callbacks fire for that type, even when it implements the interfaces**. If a converter-handled type needs lifecycle behavior, perform it inside the converter's `Read` / `Write`.
+
+Member-level converters and callbacks compose, however: a callback-bearing type whose *members* use custom converters still fires all four hooks — the custom converters simply do the per-member reading and writing in phases 1 and 4 above.
+
 ## Scope and ordering
 
 - The callbacks apply to values written as tables/dictionaries through the object mapping — the path a plain class or struct takes. A value claimed by a scalar converter has no member-writing phase and no callbacks.
@@ -95,3 +162,12 @@ public sealed class Snapshot : ITomlOnSerialized
 - The hooks pair naturally: state established in `OnSerializing` can be torn down in `OnSerialized`, and defaults set in `OnDeserializing` can be validated in `OnDeserialized`.
 
 The same four hooks with the same semantics exist for Bencode: <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerialized>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserializing>, and <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserialized>.
+
+## See also
+
+- [Mapping attributes](attributes.md) — `[TomlRequired]` and friends; declarative presence checks that the callbacks complement with value validation.
+- [Writing converters](converters.md) — the customization seam that *replaces* the object mapping (and with it, the callbacks) for a type.
+- [Using TOML](toml.md) and [Using Bencode](bencode.md) — the per-format walk-throughs, including the error-handling pattern that catches the exception thrown from `OnDeserialized`.
+- [Core concepts](../../docs/serialization/concepts.md) — where the callbacks sit in the family vocabulary.
+- [Text & Serialization guides](../topics/text-and-serialization.md) and the [topic overview](../../docs/topics/text-and-serialization.md).
+- API reference — <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized>.

@@ -102,3 +102,4 @@ CityHash is **not cryptographic**. An attacker who can choose inputs can constru
 - [Using Adler](adler.md), [Using CRC](crc.md), [Using Fletcher](fletcher.md) — the checksum families.
 - [Cryptography hashing guide](../cryptography/hashing.md) — when you need SipHash's adversarial resistance or a cryptographic digest.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

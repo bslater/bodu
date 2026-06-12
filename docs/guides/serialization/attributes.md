@@ -232,3 +232,8 @@ When several settings could govern the same member, the closest one wins:
 3. the serializer options (`PropertyNamingPolicy`, `Converters`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
 
 The same ladder applies to the `Bencode` family.
+
+## See also
+
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Bodu serializer guides](index.md)** — the full guide index for the Bencode and TOML serializers.

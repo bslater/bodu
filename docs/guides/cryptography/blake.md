@@ -142,3 +142,4 @@ The BLAKE3 spec defines a keyed-hash mode and a key-derivation mode. Both requir
 - [`Bodu.Security.Cryptography.Blake2b` API reference](xref:Bodu.Security.Cryptography.Blake2b)
 - [`Bodu.Security.Cryptography.Blake2s` API reference](xref:Bodu.Security.Cryptography.Blake2s)
 - [`Bodu.Security.Cryptography.Blake3` API reference](xref:Bodu.Security.Cryptography.Blake3)
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

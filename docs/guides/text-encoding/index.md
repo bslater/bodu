@@ -9,6 +9,8 @@ package, start with the **[Introduction](../../docs/text-encoding/index.md)** an
 **[Core concepts](../../docs/text-encoding/concepts.md)** pages first — the guides below assume you know the
 vocabulary (alphabet, variant, terminal quantum, padding, decoration, OperationStatus).
 
+Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
+
 ## How the library works
 
 ![Encode and decode pipeline — binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
@@ -77,3 +79,4 @@ guides drill into the variant-specific options:
 - **[Bech32 guide](bech32.md)** — Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding pattern.
 - **[Encoding helpers and BOM detection](encoding-helpers.md)** — `System.Text.Encoding` helpers: `string`↔`byte[]` conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

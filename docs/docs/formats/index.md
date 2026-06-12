@@ -4,7 +4,7 @@ title: Bodu.Text.Formats — Introduction
 
 # Bodu.Text.Formats
 
-**Bodu.Text.Formats** decodes and encodes self-framing document formats — formats whose structure is described inline by the bytes themselves, rather than by an external schema. The library ships three format families, each with a strongly-typed value model and a span- and stream-friendly codec:
+**Bodu.Text.Formats** decodes and encodes self-framing document formats — formats whose structure is described inline by the bytes themselves, rather than by an external schema. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, the library ships three format families, each with a strongly-typed value model and a span- and stream-friendly codec:
 
 | Format | Namespace | Source | Use when |
 |---|---|---|---|
@@ -55,6 +55,8 @@ A single document traces the typed-model pipeline end-to-end:
 | Round-trip an INI file preserving comments | `Ini.Parse(source)` → mutate → `Ini.Format(doc)` |
 | Parse without throwing on malformed input | the `Try…` overload for the format |
 | Stream a large delimited file | `DelimitedReader` / `DelimitedWriter` |
+| Read a typed value from a row or entry | `GetValue<T>` / `TryGetValue<T>` on the row, entry, or section |
+| Write a model back out as text | `Format(document)` on the format's codec |
 | Catch any format's parse failure uniformly | `catch (TextFormatException)` |
 
 ## Main types per format
@@ -95,4 +97,5 @@ Every format follows the same shape — a static codec, a typed value model, a f
 - **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — using each codec, the value models, and stream support.
 - **Per-format guides** — [Delimited](../../guides/formats/delimited.md), [DotEnv](../../guides/formats/dotenv.md), [INI](../../guides/formats/ini.md), [Streaming](../../guides/formats/streaming.md).
 - **API reference** — per-namespace pages: [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini).
+- **[Text & Serialization topic overview](../topics/text-and-serialization.md)** — where the document codecs sit between the binary-to-text encodings and the POCO serializers.
 - **For EditorConfig-style configuration layering on `IniDocument`**, see [Bodu.Text.Configuration](../text-configuration/index.md).

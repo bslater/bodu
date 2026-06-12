@@ -137,3 +137,4 @@ well-provisioned servers.
 - [ASCON authenticated encryption (AEAD)](ascon-aead.md) — all patterns for `AsconAead128`.
 - [NIST SP 800-232](https://doi.org/10.6028/NIST.SP.800-232) — the normative specification.
 - API reference: <xref:Bodu.Security.Cryptography.AsconHash256> · <xref:Bodu.Security.Cryptography.AsconXof128> · <xref:Bodu.Security.Cryptography.AsconAead128>
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

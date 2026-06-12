@@ -263,3 +263,4 @@ the library's `GcmModeTransform` when throughput on AES-NI hardware is the prior
 - [ASCON XOF](ascon-xof.md) — variable-length output with `AsconXof128` and `AsconCxof128`.
 - [AEAD modes guide](aead-modes.md) — AES-based AEAD (GCM, CCM, OCB3, SIV, GCM-SIV).
 - API reference: <xref:Bodu.Security.Cryptography.AsconAead128> · <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform>
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

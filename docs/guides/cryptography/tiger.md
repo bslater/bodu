@@ -121,3 +121,4 @@ For new work without an interoperability constraint, prefer SHA-2 or SHA-3 from 
 - [Merkle trees guide](merkle-trees.md) — build a Tiger Tree Hash over a stream.
 - [Using SipHash](siphash.md) — keyed short-input hash, for hash-table DoS resistance.
 - [Using CubeHash](cubehash.md), [Using Snefru](snefru.md) — other cryptographic digests in this package.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

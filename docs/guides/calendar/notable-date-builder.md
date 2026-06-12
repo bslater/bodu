@@ -143,3 +143,4 @@ NotableDateDocumentBuilder copy = builder.Clone();   // deep, independent copy
 - [Date calculation algorithms](algorithms.md) — the six strategies and the `<Algorithm>` keys.
 - [Using NotableDateService](notable-dates.md) — resolving the documents you build.
 - [`Bodu.Globalization.Calendar.Builder` API reference](xref:Bodu.Globalization.Calendar.Builder) — the full type list.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

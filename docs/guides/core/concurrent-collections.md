@@ -153,3 +153,4 @@ Reach for the approximate properties when reading the count on a hot path; reach
 - [`ConcurrentHashSet<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1)
 - [Circular buffer guide](circular-buffer.md) — the non-concurrent peer.
 - [`Bodu.Collections.Generic.Concurrent` namespace landing](xref:Bodu.Collections.Generic.Concurrent)
+- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

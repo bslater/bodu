@@ -4,13 +4,19 @@ title: Guides
 
 # Guides
 
-Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite. Each library's guide section is organized by **namespace**, with one walk-through per headline type.
+Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite, organized by the suite's **six topics**. Each topic has its own guides landing page that maps the member libraries' guide sections, and each library's section below is organized by **namespace**, with one walk-through per headline type.
 
 If you are new to Bodu, start with the [introduction](../docs/introduction.md) for the project overview, or the [getting-started page](../docs/getting-started.md) for install commands. To choose between hashing or cryptography types that sound similar, see the [Bodu.IO.Hashing](../docs/io-hashing/index.md) and [Bodu.Security.Cryptography](../docs/cryptography/index.md) introductions.
 
-## Bodu.Core
+**Topic guide landings:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md)
 
-General-purpose building blocks: bounded collections, eviction-aware caches, day-of-week patterns, date and numeric extensions.
+## Core Foundations
+
+General-purpose building blocks every other package depends on — see the **[Core Foundations guides landing](topics/core-foundations.md)**.
+
+### Bodu.Core
+
+Bounded collections, eviction-aware caches, day-of-week patterns, date and numeric extensions.
 
 <div class="bodu-cards">
 
@@ -45,7 +51,11 @@ General-purpose building blocks: bounded collections, eviction-aware caches, day
 
 ---
 
-## Bodu.IO.Hashing
+## Hashing & Cryptography
+
+Non-cryptographic hashing on one side, a formal adversary model on the other — see the **[Hashing & Cryptography guides landing](topics/hashing-and-cryptography.md)** for the combined map.
+
+### Bodu.IO.Hashing
 
 Non-cryptographic hashing — fingerprints, checksums, and check digits — built on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract. Nothing here is safe against an adversary; everything is fast and portable.
 
@@ -58,7 +68,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 
 </div>
 
-### `Bodu.IO.Hashing` — Fingerprints
+#### `Bodu.IO.Hashing` — Fingerprints
 
 <div class="bodu-cards">
 
@@ -91,7 +101,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 
 > For xxHash specifically, use `System.IO.Hashing.XxHash32` / `XxHash64` / `XxHash3` / `XxHash128` from the BCL — Bodu does not duplicate them.
 
-### `Bodu.IO.Hashing.Checksums` — Checksums
+#### `Bodu.IO.Hashing.Checksums` — Checksums
 
 <div class="bodu-cards">
 
@@ -117,7 +127,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 
 </div>
 
-### `Bodu.IO.Hashing.CheckDigits`
+#### `Bodu.IO.Hashing.CheckDigits`
 
 <div class="bodu-cards">
 
@@ -130,9 +140,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 
 [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing)
 
----
-
-## Bodu.Security.Cryptography
+### Bodu.Security.Cryptography
 
 Cryptographic primitives with a formal adversary model — block ciphers, stream ciphers, AEAD constructions, keyed and unkeyed hashes — derived from the standard BCL base classes (`SymmetricAlgorithm`, `HashAlgorithm`).
 
@@ -145,7 +153,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-### Foundations
+#### Foundations
 
 <div class="bodu-cards">
 
@@ -171,7 +179,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-### Symmetric ciphers — Standard
+#### Symmetric ciphers — Standard
 
 <div class="bodu-cards">
 
@@ -189,7 +197,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 `Camellia`, `Twofish`, and `Serpent128` follow the same `SymmetricAlgorithm` lifecycle — see the [Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography) for their parameters.
 
-### Symmetric ciphers — Tweakable
+#### Symmetric ciphers — Tweakable
 
 <div class="bodu-cards">
 
@@ -212,7 +220,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 `Serpent256` / `Serpent512` / `Serpent1024` are wide-block tweakable Serpent constructions — non-standard, see the [API reference](xref:Bodu.Security.Cryptography) for their parameters.
 
-### Symmetric ciphers — Stream
+#### Symmetric ciphers — Stream
 
 <div class="bodu-cards">
 
@@ -223,7 +231,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-### Symmetric ciphers — AEAD
+#### Symmetric ciphers — AEAD
 
 <div class="bodu-cards">
 
@@ -234,7 +242,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-### Cryptographic hashes
+#### Cryptographic hashes
 
 <div class="bodu-cards">
 
@@ -267,7 +275,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256` / `Skein512` / `Skein1024`, and `Shake` ship without dedicated walk-throughs — consult the [API reference](xref:Bodu.Security.Cryptography) directly.
 
-### Keyed hashes (MAC)
+#### Keyed hashes (MAC)
 
 <div class="bodu-cards">
 
@@ -283,7 +291,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 </div>
 
-### ASCON family
+#### ASCON family
 
 <div class="bodu-cards">
 
@@ -313,7 +321,11 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 ---
 
-## Bodu.Globalization.Calendar
+## Globalization & Calendars
+
+The notable-date runtime, its companions, and the regional data packs — see the **[Globalization & Calendars guides landing](topics/globalization-and-calendars.md)** for the full map including the notable-date catalogue.
+
+### Bodu.Globalization.Calendar
 
 Rule-driven notable-date (public holiday, observance, festival) resolution for any year, territory, or calendar system.
 
@@ -350,7 +362,11 @@ Rule-driven notable-date (public holiday, observance, festival) resolution for a
 
 ---
 
-## Bodu.Text.Encoding
+## Text & Serialization
+
+Binary-to-text codecs, document formats, and object serializers — see the **[Text & Serialization guides landing](topics/text-and-serialization.md)** for the disambiguation between the three jobs.
+
+### Bodu.Text.Encoding
 
 Binary-to-text encoders for **Base16**, **Base32**, **Base64**, **Base58**, and **Base85** with every common
 variant — span- and UTF-8-friendly, `OperationStatus`-aware, with a unified `IBinaryEncoding` interface for
@@ -395,9 +411,7 @@ runtime-pluggable encoding choice.
 
 </div>
 
----
-
-## Bodu.Text.Formats
+### Bodu.Text.Formats
 
 Self-framing text document formats with a strongly-typed value model and a span- and stream-friendly codec.
 The package ships three sibling namespaces — Delimited (CSV / TSV), DotEnv, and Ini — each with strict
@@ -432,7 +446,7 @@ invariant enforcement and `Try*` overloads.
 
 </div>
 
-## Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
+### Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
 
 Two self-contained serializers that map your own types to and from a format.
 Deliberate twins — the same shape, member for member — for Bencode (BEP 3) and TOML.
@@ -460,3 +474,135 @@ Deliberate twins — the same shape, member for member — for Bencode (BEP 3) a
 </div>
 
 </div>
+
+---
+
+## Configuration
+
+Layered, EditorConfig-style configuration and its `Microsoft.Extensions.Configuration` bridge — see the **[Configuration guides landing](topics/configuration.md)**.
+
+### Bodu.Text.Configuration
+
+Parse a configuration document under one of the four profiles, resolve it for a target path, and read typed values back out.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="text-configuration/index.md">Overview</a></h3>
+  <p>Namespace map, the parse → resolve → view pipeline, and where each guide fits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-configuration/parsing-and-profiles.md">Parsing and profiles</a></h3>
+  <p><code>ConfigurationDocument.Parse</code>, <code>ConfigurationParseOptions</code>, and the four profile presets — inline comments, duplicate handling, length limits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-configuration/views-and-resolution.md">Views and resolution</a></h3>
+  <p><code>Resolve</code> → <code>ConfigurationView</code>: glob matching against a target path, key projection, typed getters, missing-key fallbacks.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-configuration/diagnostics.md">Diagnostics</a></h3>
+  <p>The structured diagnostic surface — modes, severities, and the full <code>ConfigurationDiagnosticCode</code> catalogue.</p>
+</div>
+
+</div>
+
+[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)
+
+### Bodu.Extensions.Configuration.Text
+
+Surface a parsed and resolved document through the standard `IConfiguration` pipeline that ASP.NET Core and Generic Host already consume.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="extensions-configuration-text/index.md">Overview</a></h3>
+  <p>Namespace map — builder extensions, file and stream sources and providers, DI options helpers.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="extensions-configuration-text/configuration-sources.md">Configuration sources</a></h3>
+  <p><code>AddBoduConfigurationFile</code> / <code>AddBoduConfigurationStream</code>, the conventional file probe, reload-on-change, target-path anchoring, and <code>IOptions&lt;T&gt;</code> binding.</p>
+</div>
+
+</div>
+
+[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)
+
+---
+
+## Numerics & Financial
+
+Exact arithmetic and the monetary primitives built on it — see the **[Numerics & Financial guides landing](topics/numerics-and-financial.md)**.
+
+### Bodu.Numerics
+
+Generic-math value primitives — exact rational arithmetic and bounded intervals.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="numerics/index.md">Overview</a></h3>
+  <p>The two value types, their generic-math surfaces, and where each guide fits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="numerics/fraction.md">Working with Fraction&lt;T&gt;</a></h3>
+  <p>Canonical form, GCD reduction, <code>BigInteger</code> promotion, the <code>INumber&lt;T&gt;</code> surface, approximation.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="numerics/formatting-and-parsing.md">Formatting and parsing</a></h3>
+  <p>Format specifiers, mixed numbers, vulgar fractions, culture handling, parse shapes.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="numerics/interval.md">Working with Interval&lt;T&gt;</a></h3>
+  <p>Closed / open / half-open bounds, containment, intersection, union, adjacency.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="numerics/json-serialization.md">JSON serialization</a></h3>
+  <p>The System.Text.Json converters, wire shapes, and round-tripping <code>Fraction&lt;BigInteger&gt;</code>.</p>
+</div>
+
+</div>
+
+[Bodu.Numerics API reference](xref:Bodu.Numerics)
+
+### Bodu.Financial
+
+Type-safe money, the ISO 4217 currency catalogue, exchange rates, allocation, and cash rounding.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="financial/index.md">Overview</a></h3>
+  <p>The money types, the currency catalogue, and where each guide fits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="financial/money.md">Working with Money&lt;TCurrency&gt;</a></h3>
+  <p>Compile-time currency safety, arithmetic, allocation, rounding, and the runtime <code>Money</code> form.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="financial/exchange-rates.md">Working with exchange rates</a></h3>
+  <p><code>ExchangeRate</code> and <code>ExchangeRate&lt;TBase, TQuote&gt;</code> — conversion, inversion, composition.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="financial/exchange-rate-lookups.md">Exchange-rate lookups</a></h3>
+  <p>Dated providers, lookup results, provenance, and fallback stacks over a worked dataset.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="financial/dependency-injection.md">Dependency injection</a></h3>
+  <p><code>AddBoduFinancial</code> — registering currency lookup, monetary contexts, and rate providers.</p>
+</div>
+
+</div>
+
+[Bodu.Financial API reference](xref:Bodu.Financial)

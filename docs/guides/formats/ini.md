@@ -184,3 +184,4 @@ A rough decision tree:
 - [Delimited](delimited.md), [DotEnv](dotenv.md) — the other formats in the package.
 - [`Bodu.Text.Ini` API reference](xref:Bodu.Text.Ini)
 - [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for the resolved / view-projecting / `IConfiguration`-bridging surface built on this codec.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
