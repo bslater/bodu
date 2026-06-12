@@ -6,19 +6,20 @@ _disableBreadcrumb: true
 
 <style>
   .bodu-hero { margin: 1.5rem 0 2.5rem; }
-  .bodu-hero h1 { margin: 0 0 .25rem; font-size: 2.2rem; letter-spacing: .5px; }
-  .bodu-hero p.tagline { font-size: 1.15rem; opacity: .85; margin: 0 0 .5rem; max-width: 56rem; }
-  .bodu-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .bodu-hero h1 { margin: 0 0 .25rem; font-size: clamp(1.75rem, 1.3rem + 2vw, 2.6rem); letter-spacing: .5px; }
+  .bodu-hero p.tagline { font-size: clamp(1rem, .92rem + .4vw, 1.25rem); line-height: 1.5; opacity: .85; margin: 0 0 .5rem; max-width: 56rem; }
+  .bodu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
   .bodu-card { border: 1px solid var(--theme-border, #334155); border-radius: 10px; padding: 1rem 1.1rem; background: var(--theme-card-bg, rgba(59, 130, 246, 0.04)); }
-  .bodu-card h3 { margin: 0 0 .4rem; font-size: 1.05rem; }
-  .bodu-card p { margin: 0 0 .6rem; opacity: .9; font-size: .95rem; }
-  .bodu-card .bodu-card-links a { margin-right: .9rem; font-size: .9rem; }
-  .bodu-card .bodu-card-status { display: inline-block; margin-left: .5rem; padding: .05rem .45rem; font-size: .7rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; border-radius: 4px; vertical-align: middle; }
+  .bodu-card h3 { margin: 0 0 .4rem; font-size: clamp(1rem, .96rem + .2vw, 1.15rem); overflow-wrap: anywhere; }
+  .bodu-card p { margin: 0 0 .6rem; opacity: .9; font-size: clamp(.9rem, .87rem + .15vw, 1rem); line-height: 1.55; }
+  .bodu-card code { overflow-wrap: anywhere; }
+  .bodu-card .bodu-card-links a { margin-right: .9rem; font-size: clamp(.85rem, .83rem + .1vw, .95rem); }
+  .bodu-card .bodu-card-status { display: inline-block; margin-left: .5rem; padding: .05rem .45rem; font-size: clamp(.65rem, .62rem + .15vw, .78rem); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; border-radius: 4px; vertical-align: middle; }
   .bodu-card .bodu-card-status.preview { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
-  .bodu-card img { display: block; width: 100%; height: auto; border-radius: 6px; margin-bottom: .6rem; }
-  .bodu-topic > p.bodu-topic-lede { margin: .25rem 0 0; opacity: .85; max-width: 56rem; }
+  .bodu-card img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 220; border-radius: 6px; margin-bottom: .6rem; }
+  .bodu-topic > p.bodu-topic-lede { margin: .25rem 0 0; opacity: .85; max-width: 56rem; font-size: clamp(.95rem, .9rem + .25vw, 1.1rem); line-height: 1.5; }
   .bodu-install pre { margin: .25rem 0; }
-  .bodu-nav { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: 1rem 0 0; font-size: .95rem; }
+  .bodu-nav { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: 1rem 0 0; font-size: clamp(.9rem, .87rem + .15vw, 1rem); }
 </style>
 
 <div class="bodu-hero">
