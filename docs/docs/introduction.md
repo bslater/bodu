@@ -6,22 +6,61 @@ title: Introduction
 
 **Bodu** is a solution that ships a family of independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own — and most are self-contained, with the few cross-package dependencies listed below — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
 
-If you are new to Bodu, start with the **library introductions** below to understand what each package is for. Each links to a dedicated introduction page that maps its namespaces and headline types, and to the matching getting-started page.
+The suite is organized into **six topics**. Each topic groups the packages that solve related problems, and each has a dedicated overview page explaining the collective purpose of its members and how they fit together. If you are new to Bodu, start with the topic that matches your problem, then drill into the member library's introduction.
 
-## The libraries at a glance
+## The suite in six topics
+
+### [Core Foundations](topics/core-foundations.md)
+
+The foundation every other package builds on — collections, buffers, extensions, argument validation, and text-encoding utilities.
 
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.Core](core/index.md)** | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), a day-of-week `WeekPattern` value type, pooled buffers, and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0` |
+| **[Bodu.Text](text/index.md)** *(namespace in Bodu.Core)* | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` — BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0` |
+
+### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
+
+Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other.
+
+| Package | What it provides | Target framework |
+|---|---|---|
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
 | **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
-| **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
+
+### [Globalization & Calendars](topics/globalization-and-calendars.md)
+
+A resource-driven notable-date engine plus an ecosystem of opt-in companions (fluent authoring, dependency injection, trust-gated plugins) and per-region holiday data packs.
+
+| Package | What it provides | Target framework |
+|---|---|---|
+| **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. Companion packages add fluent authoring (`…Builder`), `IServiceCollection` registration (`…DependencyInjection`), plugin loading (`…Plugins`), and five regional data packs. | `net8.0` |
+
+### [Text & Serialization](topics/text-and-serialization.md)
+
+Three different jobs that all sound like "text": binary-to-text codecs, document formats, and object serializers.
+
+| Package | What it provides | Target framework |
+|---|---|---|
 | **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0` |
 | **[Bodu.Text.Formats](formats/index.md)** | Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships three sibling namespaces — **Delimited** (CSV / TSV), **DotEnv**, and **Ini** — each with `Parse` / `Format` and `Try*` overloads, a typed value model, and strict invariant enforcement. | `net8.0` |
-| **[Bodu.Text.Bencode](serialization/index.md)** · **[Bodu.Text.Toml](serialization/index.md)** | Two self-contained serializers that map your own types to and from a format. Deliberate twins — the same shape, member for member — each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair, with the full converter / attribute / naming-policy surface. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0. | `net8.0` |
+| **[Bodu.Text.Bencode](serialization/bencode.md)** · **[Bodu.Text.Toml](serialization/toml.md)** | Two self-contained serializers that map your own types to and from a format. Deliberate twins — the same shape, member for member — each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair, with the full converter / attribute / naming-policy surface. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0. See the [shared family introduction](serialization/index.md). | `net8.0` |
+
+### [Configuration](topics/configuration.md)
+
+Layered, EditorConfig-style configuration — a parser/resolver plus a bridge into the `Microsoft.Extensions.Configuration` pipeline.
+
+| Package | What it provides | Target framework |
+|---|---|---|
 | **[Bodu.Text.Configuration](text-configuration/index.md)** | EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited `ConfigurationView` with typed accessors (`GetInt32`, `GetEnum<T>`, `GetValue<T>`). Profile presets, optional diagnostic collection, and byte-faithful round-trip save. | `net8.0` |
 | **[Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md)** | Bridges `Bodu.Text.Configuration` to `Microsoft.Extensions.Configuration`. Adds `AddBoduConfiguration*` entry points on `IConfigurationBuilder` — mirroring `AddJsonFile` / `AddJsonStream` — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support. | `net8.0` |
-| **[Bodu.Text](text/index.md)** | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` — BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0` |
+
+### [Numerics & Financial](topics/numerics-and-financial.md)
+
+Exact arithmetic — rational numbers and intervals, and the money, currency, and exchange-rate primitives built on top of them.
+
+| Package | What it provides | Target framework |
+|---|---|---|
 | **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives — `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates, and `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency. | `net8.0` |
 | **[Bodu.Financial](financial/index.md)** | Type-safe monetary primitives — `Money<TCurrency>` (currency as type parameter, so cross-currency arithmetic fails the build), `Money` for runtime-tagged scenarios, `MoneyBag` for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding. | `net8.0` |
 
@@ -29,7 +68,9 @@ Each package is versioned and released independently — take the one you need a
 
 ## Library introductions
 
-Each library has a dedicated introduction page that explains its namespaces, the role of each headline type, and the scenarios it is designed for. Pair it with the matching getting-started page for install commands and a minimal sample.
+Each library has a dedicated introduction page that explains its namespaces, the role of each headline type, and the scenarios it is designed for. Pair it with the matching getting-started page for install commands and a minimal sample. The cards below follow the six-topic order.
+
+### Core Foundations
 
 <div class="bodu-cards">
 
@@ -43,6 +84,21 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="xref:Bodu.Collections.Generic">API reference</a>
   </div>
 </div>
+
+<div class="bodu-card">
+  <h3><a href="text/index.md">Bodu.Text</a></h3>
+  <p>Encoding detection and ergonomic text / byte conversion over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus span-, UTF-8-, and pooled-buffer-friendly <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code>.</p>
+  <div class="bodu-card-links">
+    <a href="text/index.md">Introduction</a>
+    <a href="xref:Bodu.Text">API reference</a>
+  </div>
+</div>
+
+</div>
+
+### Hashing & Cryptography
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="io-hashing/index.md">Bodu.IO.Hashing</a></h3>
@@ -66,6 +122,12 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
+</div>
+
+### Globalization & Calendars
+
+<div class="bodu-cards">
+
 <div class="bodu-card">
   <h3><a href="calendar/index.md">Bodu.Globalization.Calendar</a></h3>
   <p>Notable-date resolution and dynamic calendar calculators driven from pluggable XML or JSON rule sources, with an observance-adjustment pipeline, plugin host, and territory filtering.</p>
@@ -76,6 +138,12 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="xref:Bodu.Globalization.Calendar">API reference</a>
   </div>
 </div>
+
+</div>
+
+### Text & Serialization
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="text-encoding/index.md">Bodu.Text.Encoding</a></h3>
@@ -102,10 +170,18 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <p>Two self-contained serializers — POCO ↔ format — for Bencode (BEP 3) and TOML. Deliberate twins, each with a serializer, a mutable and a read-only DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair.</p>
   <div class="bodu-card-links">
     <a href="serialization/index.md">Introduction</a>
+    <a href="serialization/bencode.md">Bencode</a>
+    <a href="serialization/toml.md">TOML</a>
     <a href="serialization/getting-started.md">Getting started</a>
     <a href="../guides/serialization/index.md">Guides</a>
   </div>
 </div>
+
+</div>
+
+### Configuration
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="text-configuration/index.md">Bodu.Text.Configuration</a></h3>
@@ -129,14 +205,11 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
-<div class="bodu-card">
-  <h3><a href="text/index.md">Bodu.Text</a></h3>
-  <p>Encoding detection and ergonomic text / byte conversion over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus span-, UTF-8-, and pooled-buffer-friendly <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code>.</p>
-  <div class="bodu-card-links">
-    <a href="text/index.md">Introduction</a>
-    <a href="xref:Bodu.Text">API reference</a>
-  </div>
 </div>
+
+### Numerics & Financial
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="numerics/index.md">Bodu.Numerics</a></h3>
@@ -177,6 +250,8 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 
 ## Where to go next
 
+- **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
+- **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).

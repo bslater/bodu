@@ -16,18 +16,23 @@ _disableBreadcrumb: true
   .bodu-card .bodu-card-status { display: inline-block; margin-left: .5rem; padding: .05rem .45rem; font-size: .7rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; border-radius: 4px; vertical-align: middle; }
   .bodu-card .bodu-card-status.preview { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
   .bodu-card img { display: block; width: 100%; height: auto; border-radius: 6px; margin-bottom: .6rem; }
+  .bodu-topic > p.bodu-topic-lede { margin: .25rem 0 0; opacity: .85; max-width: 56rem; }
   .bodu-install pre { margin: .25rem 0; }
   .bodu-nav { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: 1rem 0 0; font-size: .95rem; }
 </style>
 
 <div class="bodu-hero">
   <h1>Bodu</h1>
-  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, and self-framing binary formats.</p>
+  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, document formats, serialization, configuration, numerics, and money.</p>
 </div>
 
-A family of focused primary libraries — collections and utilities, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, document formats, configuration, text-encoding helpers, numerics, and financial primitives — alongside companion packages for dependency-injection bridges, regional calendar data packs, fluent calendar authoring, plugin loading, and financial service registration. Every package shares a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+A family of focused primary libraries organized into **six topics** — alongside companion packages for dependency-injection bridges, regional calendar data packs, fluent calendar authoring, plugin loading, and financial service registration. Every package shares a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
-## Libraries
+## Core Foundations
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">The foundation every other package builds on — collections, buffers, extensions, argument validation, and text-encoding utilities. <a href="docs/topics/core-foundations.md">Topic overview →</a></p>
+</div>
 
 <div class="bodu-cards">
 
@@ -41,6 +46,26 @@ A family of focused primary libraries — collections and utilities, non-cryptog
     <a href="xref:Bodu.Collections.Generic">API reference</a>
   </div>
 </div>
+
+<div class="bodu-card">
+  <img src="images/hero-text.svg" alt="Bodu.Text" />
+  <h3>Bodu.Text</h3>
+  <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. Ships in the <code>Bodu.Core</code> package.</p>
+  <div class="bodu-card-links">
+    <a href="docs/text/index.md">Introduction</a>
+    <a href="xref:Bodu.Text">API reference</a>
+  </div>
+</div>
+
+</div>
+
+## Hashing & Cryptography
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">Two packages split by a single question — <em>is there an adversary?</em> Fast fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other. <a href="docs/topics/hashing-and-cryptography.md">Topic overview →</a></p>
+</div>
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <img src="images/hero-io.svg" alt="Bodu.IO.Hashing" />
@@ -64,6 +89,16 @@ A family of focused primary libraries — collections and utilities, non-cryptog
   </div>
 </div>
 
+</div>
+
+## Globalization & Calendars
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">A resource-driven notable-date engine plus opt-in companions — fluent authoring, dependency injection, trust-gated plugins — and per-region holiday data packs. <a href="docs/topics/globalization-and-calendars.md">Topic overview →</a></p>
+</div>
+
+<div class="bodu-cards">
+
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
@@ -74,6 +109,16 @@ A family of focused primary libraries — collections and utilities, non-cryptog
     <a href="xref:Bodu.Globalization.Calendar">API reference</a>
   </div>
 </div>
+
+</div>
+
+## Text & Serialization
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">Three different jobs that all sound like "text" — binary-to-text codecs, document formats, and object serializers. <a href="docs/topics/text-and-serialization.md">Topic overview →</a></p>
+</div>
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <img src="images/hero-text.svg" alt="Bodu.Text.Encoding" />
@@ -89,35 +134,36 @@ A family of focused primary libraries — collections and utilities, non-cryptog
 <div class="bodu-card">
   <img src="images/hero-formats.svg" alt="Bodu.Text.Formats" />
   <h3>Bodu.Text.Formats</h3>
-  <p>Self-framing text and binary document formats with strongly-typed value models and span- and stream-friendly codecs. Ships <strong>Bencode</strong> (BitTorrent BEP 3), <strong>Delimited</strong> (RFC 4180 CSV/TSV with a row-oriented parser), <strong>DotEnv</strong> (<code>.env</code> key/value), <strong>INI</strong> (round-trippable section/comment-preserving documents), and <strong>TOML</strong> (v1.0.0 / v1.1.0 with tables, arrays, and first-class date-time values). Every format exposes the same modern shape: static <code>Parse</code> / <code>Format</code> / <code>Try*</code> entry points, typed value models, sync and async <code>Stream</code> overloads, and explicit canonicality enforcement.</p>
+  <p>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships <strong>Delimited</strong> (RFC 4180 CSV/TSV with a row-oriented parser), <strong>DotEnv</strong> (<code>.env</code> key/value), and <strong>INI</strong> (round-trippable section/comment-preserving documents). Every format exposes the same modern shape: static <code>Parse</code> / <code>Format</code> / <code>Try*</code> entry points, typed value models, sync and async <code>Stream</code> overloads, and explicit canonicality enforcement.</p>
   <div class="bodu-card-links">
     <a href="docs/formats/index.md">Introduction</a>
     <a href="guides/formats/index.md">Guides</a>
-    <a href="xref:Bodu.Text.Bencode">API reference</a>
+    <a href="xref:Bodu.Text.Delimited">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
-  <h3>Bodu.Numerics</h3>
-  <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation — plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
+  <img src="images/hero-toml.svg" alt="Bodu.Text.Bencode and Bodu.Text.Toml" />
+  <h3>Bodu.Text.Bencode &amp; Bodu.Text.Toml <span class="bodu-card-status preview">Preview</span></h3>
+  <p>Two self-contained serializers that map your own types to and from a format — deliberate twins with the same shape, member for member. Each ships a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair, with the full converter / attribute / naming-policy surface. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0.</p>
   <div class="bodu-card-links">
-    <a href="docs/numerics/index.md">Introduction</a>
-    <a href="guides/numerics/index.md">Guides</a>
-    <a href="xref:Bodu.Numerics">API reference</a>
+    <a href="docs/serialization/index.md">Introduction</a>
+    <a href="docs/serialization/bencode.md">Bencode</a>
+    <a href="docs/serialization/toml.md">TOML</a>
+    <a href="guides/serialization/index.md">Guides</a>
+    <a href="xref:Bodu.Text.Toml">API reference</a>
   </div>
 </div>
 
-<div class="bodu-card">
-  <img src="images/hero-financial.svg" alt="Bodu.Financial" />
-  <h3>Bodu.Financial</h3>
-  <p>Type-safe monetary primitives: <code>Money&lt;TCurrency&gt;</code> where the currency is encoded as the type parameter so cross-currency arithmetic fails the build, <code>Money</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, a shipped catalogue of ~185 ISO 4217 currencies (active and historic), an audit-grade exchange-rate provider stack with both timeless and dated lookup, fair allocation, cash rounding, sub-minor-unit-precise <code>Fraction&lt;BigInteger&gt;</code> interop, and three JSON wire shapes (strict / lenient / compact).</p>
-  <div class="bodu-card-links">
-    <a href="docs/financial/index.md">Introduction</a>
-    <a href="guides/financial/index.md">Guides</a>
-    <a href="xref:Bodu.Financial">API reference</a>
-  </div>
 </div>
+
+## Configuration
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">Layered, EditorConfig-style configuration — a parser/resolver plus a bridge into the <code>Microsoft.Extensions.Configuration</code> pipeline. <a href="docs/topics/configuration.md">Topic overview →</a></p>
+</div>
+
+<div class="bodu-cards">
 
 <div class="bodu-card">
   <img src="images/hero-configuration.svg" alt="Bodu.Text.Configuration" />
@@ -141,13 +187,35 @@ A family of focused primary libraries — collections and utilities, non-cryptog
   </div>
 </div>
 
+</div>
+
+## Numerics & Financial
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">Exact arithmetic — rational numbers and intervals, and the money, currency, and exchange-rate primitives built on top of them. <a href="docs/topics/numerics-and-financial.md">Topic overview →</a></p>
+</div>
+
+<div class="bodu-cards">
+
 <div class="bodu-card">
-  <img src="images/hero-text.svg" alt="Bodu.Text" />
-  <h3>Bodu.Text</h3>
-  <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. Ships in the <code>Bodu.Core</code> package.</p>
+  <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
+  <h3>Bodu.Numerics <span class="bodu-card-status preview">Preview</span></h3>
+  <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation — plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
   <div class="bodu-card-links">
-    <a href="docs/text/index.md">Introduction</a>
-    <a href="xref:Bodu.Text">API reference</a>
+    <a href="docs/numerics/index.md">Introduction</a>
+    <a href="guides/numerics/index.md">Guides</a>
+    <a href="xref:Bodu.Numerics">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <img src="images/hero-financial.svg" alt="Bodu.Financial" />
+  <h3>Bodu.Financial <span class="bodu-card-status preview">Preview</span></h3>
+  <p>Type-safe monetary primitives: <code>Money&lt;TCurrency&gt;</code> where the currency is encoded as the type parameter so cross-currency arithmetic fails the build, <code>Money</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, a shipped catalogue of ~185 ISO 4217 currencies (active and historic), an audit-grade exchange-rate provider stack with both timeless and dated lookup, fair allocation, cash rounding, sub-minor-unit-precise <code>Fraction&lt;BigInteger&gt;</code> interop, and three JSON wire shapes (strict / lenient / compact).</p>
+  <div class="bodu-card-links">
+    <a href="docs/financial/index.md">Introduction</a>
+    <a href="guides/financial/index.md">Guides</a>
+    <a href="xref:Bodu.Financial">API reference</a>
   </div>
 </div>
 
@@ -164,6 +232,8 @@ dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
+dotnet add package Bodu.Text.Toml
+dotnet add package Bodu.Text.Bencode
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Numerics
@@ -187,6 +257,7 @@ dotnet add package Bodu.Financial
   <a href="docs/introduction.md">Introduction</a>
   <a href="docs/package-matrix.md">Package matrix</a>
   <a href="docs/getting-started.md">Getting started</a>
+  <a href="guides/index.md">Guides</a>
   <a href="articles/index.md">Articles</a>
   <a href="xref:Bodu">API reference</a>
 </div>

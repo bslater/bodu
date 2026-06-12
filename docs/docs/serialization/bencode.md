@@ -29,7 +29,7 @@ The writer always emits canonical BEP 3: dictionary entries appear in ascending 
 
 ## What Bencode cannot represent
 
-Because the format has only four kinds, several everyday .NET types have **no native Bencode form**. The serializer refuses to guess: serializing such a member raises <xref:Bodu.Text.Bencode.BencodeSerializationException> unless a converter supplies a representation.
+Because the format has only four kinds, several everyday .NET types have **no native Bencode form**. The serializer refuses to guess: serializing such a member fails with `NotSupportedException` ("No converter is configured for type '…'") unless a converter supplies a representation.
 
 | .NET kind | Native form | Bridge |
 |---|---|---|

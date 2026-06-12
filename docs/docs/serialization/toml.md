@@ -36,7 +36,7 @@ TOML files are edited by hand, so parse failures must point at the offending lin
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Toml.TomlSerializer> | `Serialize` / `Deserialize<T>` over `string`, `ReadOnlySpan<byte>` (UTF-8), `IBufferWriter<byte>`, and `Stream` (with async variants). |
+| <xref:Bodu.Text.Toml.TomlSerializer> | `Serialize` to `string` / `IBufferWriter<byte>` (UTF-8), or to a `Stream` via `SerializeAsync`; `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream` (with `DeserializeAsync`). |
 | <xref:Bodu.Text.Toml.TomlSerializerOptions> | Converters, naming policy, ignore conditions, `SpecVersion`, `ByteArrayHandling`, `DecimalHandling`, depth. |
 | <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> | Base class for a custom converter over the reader/writer pair. |
 | <xref:Bodu.Text.Toml.Nodes.TomlNode> | Mutable DOM — `Parse`, index, mutate, write back. |
