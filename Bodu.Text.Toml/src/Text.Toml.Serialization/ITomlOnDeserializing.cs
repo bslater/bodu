@@ -15,6 +15,19 @@ namespace Bodu.Text.Toml.Serialization;
 /// extension-data entry is assigned. For a type built through a parameterized constructor the instance does not exist
 /// any earlier, so the callback necessarily runs after the constructor has consumed its bound arguments.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class ServerConfig : ITomlOnDeserializing
+/// {
+///     public int Port { get; set; }
+///
+///     void ITomlOnDeserializing.OnDeserializing() =>
+///         Port = 8080;   // the default that survives when the input omits the key
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface ITomlOnDeserializing
 {
     /// <summary>

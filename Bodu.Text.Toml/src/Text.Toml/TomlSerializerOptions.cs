@@ -28,6 +28,21 @@ namespace Bodu.Text.Toml;
 /// member whose value is <see langword="null" /> is omitted regardless of that setting.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Configure once and reuse across calls; resolved converters are cached on the instance.
+/// var options = new TomlSerializerOptions
+/// {
+///     PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
+///     DefaultIgnoreCondition = TomlIgnoreCondition.WhenWritingDefault,
+/// };
+/// options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+///
+/// string text = TomlSerializer.Serialize(config, options);
+///]]>
+/// </code>
+/// </example>
 public sealed class TomlSerializerOptions
 {
     /// <summary>

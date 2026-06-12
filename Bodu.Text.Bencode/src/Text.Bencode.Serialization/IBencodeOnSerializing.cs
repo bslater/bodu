@@ -14,6 +14,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <see cref="OnSerializing" /> is called after a non-<see langword="null" /> value has been selected for writing and
 /// before the opening of its dictionary, so any mutation it performs is reflected in the emitted output.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Snapshot : IBencodeOnSerializing
+/// {
+///     public long SavedAt { get; set; }
+///
+///     void IBencodeOnSerializing.OnSerializing() =>
+///         SavedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();   // stamped before members are written
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface IBencodeOnSerializing
 {
     /// <summary>

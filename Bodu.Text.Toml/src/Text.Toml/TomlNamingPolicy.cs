@@ -14,6 +14,15 @@ namespace Bodu.Text.Toml;
 /// A naming policy applies only when a member does not carry an explicit
 /// <see cref="Bodu.Text.Toml.Serialization.TomlPropertyNameAttribute" />, which always wins.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower };
+///
+/// // A MaxRetryCount property now serializes as: max_retry_count = 5
+///]]>
+/// </code>
+/// </example>
 public abstract class TomlNamingPolicy
 {
     /// <summary>

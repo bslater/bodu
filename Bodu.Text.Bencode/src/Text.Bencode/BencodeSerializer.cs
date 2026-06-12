@@ -29,6 +29,14 @@ namespace Bodu.Text.Bencode;
 /// declaration order of the corresponding members.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// byte[] bytes = BencodeSerializer.Serialize(new Torrent { Name = "demo", PieceLength = 262144 });
+/// Torrent torrent = BencodeSerializer.Deserialize<Torrent>(bytes);
+///]]>
+/// </code>
+/// </example>
 public static class BencodeSerializer
 {
     /// <summary>

@@ -28,6 +28,21 @@ namespace Bodu.Text.Bencode;
 /// a member whose value is <see langword="null" /> is omitted regardless of that setting.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Configure once and reuse across calls; resolved converters are cached on the instance.
+/// var options = new BencodeSerializerOptions
+/// {
+///     PropertyNamingPolicy = BencodeNamingPolicy.SnakeCaseLower,
+///     DefaultIgnoreCondition = BencodeIgnoreCondition.WhenWritingDefault,
+/// };
+/// options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+///
+/// byte[] bytes = BencodeSerializer.Serialize(value, options);
+///]]>
+/// </code>
+/// </example>
 public sealed class BencodeSerializerOptions
 {
     /// <summary>
