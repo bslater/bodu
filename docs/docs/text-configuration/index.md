@@ -4,7 +4,8 @@ title: Bodu.Text.Configuration — Introduction
 
 # Bodu.Text.Configuration
 
-**Bodu.Text.Configuration** is the configuration-layering package of the Bodu suite. It reads a single text file in the
+**Bodu.Text.Configuration** is the configuration-layering package of the Bodu suite, and one half of the
+**[Configuration](../topics/configuration.md)** topic. It reads a single text file in the
 familiar **INI / EditorConfig** shape — preamble, named sections, `key = value` properties — and projects it into a
 flattened, target-aware **view** keyed by colon-delimited configuration keys. The result drops directly into the same
 shape `Microsoft.Extensions.Configuration` expects, without taking a dependency on that package: the bridge lives in
@@ -144,3 +145,4 @@ The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration, options binding, file probing.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocumentBase` model that `ConfigurationDocument` inherits.
+- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Extensions.Configuration.Text side by side.

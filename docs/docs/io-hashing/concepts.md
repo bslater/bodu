@@ -6,6 +6,8 @@ title: Bodu.IO.Hashing — Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the [getting-started samples](getting-started.md) or the [guides](../../guides/io-hashing/index.md), and refer back whenever a term feels imprecise.
 
+Part of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic.
+
 For the high-level shape of the library and the family map, start with the [introduction](index.md).
 
 ## Adversary model
@@ -173,3 +175,4 @@ When you compare digests across platforms or against published test vectors, con
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — per-algorithm walk-throughs.
 - **For keyed and cryptographic hashes** — SipHash, Poly1305, Tiger, ASCON, Merkle trees — see [Bodu.Security.Cryptography](../cryptography/index.md).
+- **[Hashing & Cryptography topic](../topics/hashing-and-cryptography.md)** — this package and its sibling Bodu.Security.Cryptography; the [topic concepts](../topics/hashing-and-cryptography-concepts.md) page collects the shared vocabulary.

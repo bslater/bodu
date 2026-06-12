@@ -7,6 +7,8 @@ title: Bodu.Extensions.Configuration.Text — Core concepts
 This page is the vocabulary the rest of the documentation assumes. Read it once before the
 [getting-started samples](getting-started.md), and refer back whenever a term feels imprecise.
 
+Part of the **[Configuration](../topics/configuration.md)** topic.
+
 For the high-level shape of the library, start with the [introduction](index.md).
 
 ## Source vs provider vs loader
@@ -175,3 +177,4 @@ patches).
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.
 - **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
 - **[Introduction](index.md)** — the high-level shape of the library.
+- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Text.Configuration; the [topic concepts](../topics/configuration-concepts.md) page collects the shared vocabulary.

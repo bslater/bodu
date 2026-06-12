@@ -4,7 +4,7 @@ title: Bodu.IO.Hashing — Introduction
 
 # Bodu.IO.Hashing
 
-**Bodu.IO.Hashing** is the non-cryptographic hashing package of the Bodu suite. Everything in the package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle (`Append` / `GetCurrentHash` / `Reset`) is identical regardless of which algorithm you pick.
+**Bodu.IO.Hashing** is the non-cryptographic hashing package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic. Everything in the package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle (`Append` / `GetCurrentHash` / `Reset`) is identical regardless of which algorithm you pick.
 
 > **Adversary model: none.** Nothing in this library is safe against an attacker who can choose inputs. Use it for error detection, distribution, fingerprinting, and identifier validation — for anything security-sensitive, see [Bodu.Security.Cryptography](../cryptography/index.md).
 
@@ -152,3 +152,4 @@ Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalize a st
 - **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — recipe-style walk-throughs per algorithm.
 - **[Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing)** — full type-by-type docs.
 - **For keyed and cryptographic hashes** (SipHash, Poly1305, Tiger, ASCON, Merkle trees), see [Bodu.Security.Cryptography](../cryptography/index.md).
+- **[Hashing & Cryptography topic](../topics/hashing-and-cryptography.md)** — this package and its sibling Bodu.Security.Cryptography side by side.

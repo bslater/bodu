@@ -4,7 +4,7 @@ title: Bodu.Security.Cryptography — Introduction
 
 # Bodu.Security.Cryptography
 
-**Bodu.Security.Cryptography** is the cryptographic primitives package of the Bodu suite — managed block ciphers, authenticated encryption, keyed hashes, and cryptographic digests with a formal adversary model. Everything plugs into the standard BCL contracts (<xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, and Bodu's own `IBlockCipher` / `TweakableSymmetricAlgorithm`), so any code that already speaks .NET cryptography can adopt these types without changes.
+**Bodu.Security.Cryptography** is the cryptographic primitives package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic — managed block ciphers, authenticated encryption, keyed hashes, and cryptographic digests with a formal adversary model. Everything plugs into the standard BCL contracts (<xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, and Bodu's own `IBlockCipher` / `TweakableSymmetricAlgorithm`), so any code that already speaks .NET cryptography can adopt these types without changes.
 
 The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives, and `Bodu.Security.Cryptography.Extensions` for ergonomic helpers.
 
@@ -186,3 +186,4 @@ Random key/IV/tweak generation, padding helpers, and secure-clear helpers ship a
 - **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — recipe-style walk-throughs.
 - **[Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography)** — full type-by-type docs.
 - **For non-cryptographic checksums and fingerprints** (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3), see [Bodu.IO.Hashing](../io-hashing/index.md).
+- **[Hashing & Cryptography topic](../topics/hashing-and-cryptography.md)** — this package and its sibling Bodu.IO.Hashing side by side.

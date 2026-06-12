@@ -6,6 +6,8 @@ title: Bodu serializers — Core concepts
 
 **Bodu.Text.Bencode** and **Bodu.Text.Toml** share the same vocabulary and member-for-member shape — only the `Bencode` / `Toml` prefix changes between them. This page uses the neutral `…` placeholder to describe a concept once for both libraries.
 
+Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic.
+
 ## The serializer
 
 The static `…Serializer` (<xref:Bodu.Text.Bencode.BencodeSerializer>, <xref:Bodu.Text.Toml.TomlSerializer>) is the high-level entry point. `Serialize<T>` writes an object graph to the format; `Deserialize<T>` binds the format back to a type. Each has overloads over the format's natural surfaces:

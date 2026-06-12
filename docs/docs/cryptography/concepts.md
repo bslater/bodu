@@ -6,6 +6,8 @@ title: Bodu.Security.Cryptography — Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the [getting-started samples](getting-started.md) or the [guides](../../guides/cryptography/index.md), and refer back whenever a term feels imprecise.
 
+Part of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic.
+
 For the high-level shape of the library, the algorithm taxonomy, and the I/O model, start with the [introduction](index.md).
 
 ## Adversary model
@@ -186,3 +188,4 @@ The `ICryptoTransform` objects returned from `CreateEncryptor()` / `CreateDecryp
 - **[Getting started](getting-started.md)** — install + minimal sample for each subfamily.
 - **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — deep-dive walk-throughs for cipher modes, padding, AEAD, hashing, Merkle trees.
 - **For non-cryptographic checksums and fingerprints** (CRC, Fletcher, Adler, FNV, CityHash), see [Bodu.IO.Hashing](../io-hashing/index.md).
+- **[Hashing & Cryptography topic](../topics/hashing-and-cryptography.md)** — this package and its sibling Bodu.IO.Hashing; the [topic concepts](../topics/hashing-and-cryptography-concepts.md) page collects the shared vocabulary.

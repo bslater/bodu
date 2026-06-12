@@ -6,7 +6,7 @@ title: Bodu.Financial — Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the [getting-started samples](getting-started.md) or the [guides](../../guides/financial/index.md), and refer back whenever a term feels imprecise.
 
-For the high-level shape of the library and the namespace map, start with the [introduction](index.md).
+For the high-level shape of the library and the namespace map, start with the [introduction](index.md). `Bodu.Financial` is part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic; the [topic concepts page](../topics/numerics-and-financial-concepts.md) covers the vocabulary shared across both libraries.
 
 ## Currency tag
 
@@ -195,4 +195,6 @@ For example, `DEM.IsHistoric => true`, `DEM.DemonetizedOn => 2002-02-28`, `DEM.S
 - **[Introduction](index.md)** — the high-level shape of the library.
 - **[Getting started](getting-started.md)** — install + runnable minimal samples for every concept above.
 - **[Bodu.Financial guides](../../guides/financial/index.md)** — deep-dive walk-throughs for typed money, allocation, FX, and serialisation.
+- **[Numerics & Financial topic overview](../topics/numerics-and-financial.md)** — how this package and `Bodu.Numerics` fit together.
+- **[Numerics & Financial topic concepts](../topics/numerics-and-financial-concepts.md)** — the vocabulary shared across both libraries.
 - **[Bodu.Numerics introduction](../numerics/index.md)** — the rational-arithmetic library that backs `Money<T>.ToFraction()`.

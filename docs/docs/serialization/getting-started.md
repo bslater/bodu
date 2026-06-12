@@ -72,6 +72,8 @@ Or pin a single member's name with `[TomlPropertyName]` (and `[BencodePropertyNa
 
 ## Edit a document without a model
 
+When you need to change a value but do not want a POCO, parse to the **mutable DOM**:
+
 ```csharp
 using Bodu.Text.Toml.Nodes;
 
@@ -80,8 +82,75 @@ node["server"]!["port"] = 9090;
 byte[] back = node.ToUtf8Bytes();
 ```
 
-## Next
+## Read a document without a model
 
+For inspection only, the **read-only DOM** is the lighter choice — a low-allocation view over the parsed buffer, walked through `RootElement`:
+
+```csharp
+using Bodu.Text.Toml.Document;
+
+string toml = """
+[server]
+host = "localhost"
+port = 8080
+""";
+
+using TomlDocument doc = TomlDocument.Parse(toml);
+
+TomlElement server = doc.RootElement.GetProperty("server");
+string host = server.GetProperty("host").GetString();   // "localhost"
+long   port = server.GetProperty("port").GetInt64();    // 8080
+```
+
+`TomlDocument` is disposable — wrap it in `using` and copy out any values that must outlive it. The same shape exists for Bencode (`BencodeDocument.Parse(payload)` and its `RootElement`).
+
+## Round-trip through a Stream
+
+Both serializers read and write `Stream` directly, with async variants:
+
+```csharp
+using Bodu.Text.Toml;
+
+await using (FileStream stream = File.Create("server.toml"))
+{
+    await TomlSerializer.SerializeAsync(stream, config);
+}
+
+await using (FileStream stream = File.OpenRead("server.toml"))
+{
+    ServerConfig loaded = await TomlSerializer.DeserializeAsync<ServerConfig>(stream);
+}
+```
+
+`BencodeSerializer` exposes the identical `SerializeAsync` / `DeserializeAsync` pair over `Stream`, plus synchronous `Stream` overloads on both libraries.
+
+## When something goes wrong
+
+Failures split into two exception types per library, so you can tell *bad input* apart from *wrong type*:
+
+- A **malformed document** — input the grammar rejects — raises <xref:Bodu.Text.Toml.TomlFormatException> or <xref:Bodu.Text.Bencode.BencodeFormatException>. The TOML exception carries the **line, column, and offset** of the failure, since TOML files are edited by hand.
+- A document that **parses but cannot bind** to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <xref:Bodu.Text.Toml.TomlSerializationException> or <xref:Bodu.Text.Bencode.BencodeSerializationException>.
+
+```csharp
+try
+{
+    ServerConfig loaded = TomlSerializer.Deserialize<ServerConfig>(text);
+}
+catch (TomlFormatException ex)
+{
+    Console.Error.WriteLine($"Malformed TOML at line {ex.LineNumber}, column {ex.ColumnNumber}: {ex.Message}");
+}
+catch (TomlSerializationException ex)
+{
+    Console.Error.WriteLine($"Document does not match ServerConfig: {ex.Message}");
+}
+```
+
+## Where to go next
+
+- **[Bodu.Text.Toml introduction](toml.md)** — what is specific to TOML: the rich value model, spec versions, positioned diagnostics.
+- **[Bodu.Text.Bencode introduction](bencode.md)** — what is specific to Bencode: byte strings, canonical output, the kinds it cannot represent.
 - **[Using TOML](../../guides/serialization/toml.md)** — type mapping, spec versions, the DOMs, and streams.
 - **[Using Bencode](../../guides/serialization/bencode.md)** — byte strings, canonical ordering, and unsupported kinds.
 - **[Writing converters](../../guides/serialization/converters.md)** — custom shapes with `BencodeConverter<T>` / `TomlConverter<T>`.
+- **[Text & Serialization topic overview](../topics/text-and-serialization.md)** — where the serializer twins sit among the codecs and document formats.

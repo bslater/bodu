@@ -4,7 +4,7 @@ title: Bodu.Core — Introduction
 
 # Bodu.Core
 
-**Bodu.Core** is the foundation package of the Bodu suite — a collection of high-performance, framework-style building blocks for .NET applications. Several other Bodu packages share its primitives: `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
+**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic — a collection of high-performance, framework-style building blocks for .NET applications. Several other Bodu packages share its primitives: `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
 
 The library is organized around eight focused namespaces, each with a clear responsibility.
 
@@ -114,3 +114,4 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 - **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
 - **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
 - **[Project introduction](../introduction.md)** — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).
+- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside its sibling member, the `Bodu.Text` namespace utilities.

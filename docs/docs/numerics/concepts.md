@@ -6,7 +6,7 @@ title: Bodu.Numerics — Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the [getting-started samples](getting-started.md) or the [guides](../../guides/numerics/index.md), and refer back whenever a term feels imprecise.
 
-For the high-level shape of the library and the type map, start with the [introduction](index.md).
+For the high-level shape of the library and the type map, start with the [introduction](index.md). `Bodu.Numerics` is part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic; the [topic concepts page](../topics/numerics-and-financial-concepts.md) covers the vocabulary shared across both libraries.
 
 ## Canonical form
 
@@ -201,4 +201,6 @@ var q4 = Interval<int>.ClosedOpen(273, 365);
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
+- **[Numerics & Financial topic overview](../topics/numerics-and-financial.md)** — how this package and `Bodu.Financial` fit together.
+- **[Numerics & Financial topic concepts](../topics/numerics-and-financial-concepts.md)** — the vocabulary shared across both libraries.
 - **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.
