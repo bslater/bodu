@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReaderTests.Sequence.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Ctor_WhenSingleSegmentSequence_ShouldMatchSpanTokenStream()
     {
-        byte[] data = Encoding.UTF8.GetBytes(TortureDocument);
+        var data = Encoding.UTF8.GetBytes(TortureDocument);
 
         Utf8TomlReader spanReader = Create(TortureDocument);
         List<string> expected = Drain(ref spanReader);
@@ -34,7 +34,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Ctor_WhenMultiSegmentSequence_ShouldMatchSpanTokenStream()
     {
-        byte[] data = Encoding.UTF8.GetBytes(TortureDocument);
+        var data = Encoding.UTF8.GetBytes(TortureDocument);
 
         Utf8TomlReader spanReader = Create(TortureDocument);
         List<string> expected = Drain(ref spanReader);
@@ -50,7 +50,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Ctor_WhenSequence_ForTomlDocumentReader_ShouldYieldNormalizedStream()
     {
-        byte[] data = Encoding.UTF8.GetBytes("[a]\nb = 1\n");
+        var data = Encoding.UTF8.GetBytes("[a]\nb = 1\n");
 
         foreach (var segmentSize in new[] { int.MaxValue, 3 })
         {

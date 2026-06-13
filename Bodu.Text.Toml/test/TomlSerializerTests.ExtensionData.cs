@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.ExtensionData.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public partial class TomlSerializerTests
     {
         var model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nzzz = 9\nalpha = 1\n");
 
-        string rewritten = TomlSerializer.Serialize(model);
+        var rewritten = TomlSerializer.Serialize(model);
 
         // The declared member Name comes first, then the extension entries in their captured order.
         Assert.AreEqual("Name = \"n\"\nzzz = 9\nalpha = 1\n", rewritten);
@@ -132,7 +132,7 @@ public partial class TomlSerializerTests
         var extra = new TomlObject { ["zeta"] = TomlValue.Create(1L), ["alpha"] = TomlValue.Create("a") };
         var model = new ObjectExtensionDataModel { Name = "n", Extra = extra };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         // Unlike Bencode's canonical key sort, the entries keep their insertion order: zeta before alpha.
         Assert.AreEqual("Name = \"n\"\nzeta = 1\nalpha = \"a\"\n", text);

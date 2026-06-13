@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlArrayTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Ctor_WhenItemBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        TomlValue owned = TomlValue.Create(1L);
+        var owned = TomlValue.Create(1L);
         var owner = new TomlArray();
         owner.Add(owned);
 
@@ -102,7 +102,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Indexer_WhenSetReplacesElement_ShouldDetachPreviousElement()
     {
-        TomlValue replaced = TomlValue.Create(1L);
+        var replaced = TomlValue.Create(1L);
         var array = new TomlArray();
         array.Add(replaced);
 
@@ -120,7 +120,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Indexer_WhenSetSameNodeOverItself_ShouldKeepParent()
     {
-        TomlValue value = TomlValue.Create(1L);
+        var value = TomlValue.Create(1L);
         var array = new TomlArray();
         array.Add(value);
 
@@ -136,7 +136,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Indexer_WhenAssignedNodeBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        TomlValue owned = TomlValue.Create(1L);
+        var owned = TomlValue.Create(1L);
         var owner = new TomlArray();
         owner.Add(owned);
 
@@ -209,7 +209,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Remove_WhenItemPresentOrAbsent_ShouldRemoveFirstOccurrenceAndDetach()
     {
-        TomlValue item = TomlValue.Create(1L);
+        var item = TomlValue.Create(1L);
         var array = new TomlArray();
         array.Add(item);
         array.Add(2);
@@ -227,7 +227,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Remove_WhenItemRemoved_ShouldAllowAdoptionByAnotherContainer()
     {
-        TomlValue item = TomlValue.Create(1L);
+        var item = TomlValue.Create(1L);
         var array = new TomlArray();
         array.Add(item);
 
@@ -244,7 +244,7 @@ public class TomlArrayTests
     [TestMethod]
     public void RemoveAt_WhenIndexValid_ShouldRemoveAndDetach()
     {
-        TomlValue item = TomlValue.Create(2L);
+        var item = TomlValue.Create(2L);
         var array = new TomlArray();
         array.Add(1);
         array.Add(item);
@@ -279,8 +279,8 @@ public class TomlArrayTests
     [TestMethod]
     public void Clear_WhenCalled_ShouldRemoveAllElementsAndDetachChildren()
     {
-        TomlValue first = TomlValue.Create(1L);
-        TomlValue second = TomlValue.Create("x");
+        var first = TomlValue.Create(1L);
+        var second = TomlValue.Create("x");
         var array = new TomlArray();
         array.Add(first);
         array.Add(second);
@@ -299,7 +299,7 @@ public class TomlArrayTests
     [TestMethod]
     public void Contains_WhenItemPresentOrAbsent_ShouldReportMembership()
     {
-        TomlValue item = TomlValue.Create(1L);
+        var item = TomlValue.Create(1L);
         var array = new TomlArray();
         array.Add(item);
         array.Add(null);
@@ -316,7 +316,7 @@ public class TomlArrayTests
     [TestMethod]
     public void IndexOf_WhenItemPresentOrAbsent_ShouldReturnExpectedIndex()
     {
-        TomlValue item = TomlValue.Create(1L);
+        var item = TomlValue.Create(1L);
         var array = new TomlArray();
         array.Add(0);
         array.Add(item);
@@ -333,8 +333,8 @@ public class TomlArrayTests
     [TestMethod]
     public void CopyTo_WhenCalled_ShouldCopyElementsFromArrayIndex()
     {
-        TomlValue first = TomlValue.Create(1L);
-        TomlValue second = TomlValue.Create(2L);
+        var first = TomlValue.Create(1L);
+        var second = TomlValue.Create(2L);
         var array = new TomlArray();
         array.Add(first);
         array.Add(second);

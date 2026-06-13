@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TorrentFixtureTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Read_WhenTorrentFixture_ShouldRecoverBinaryPiecesLosslessly()
     {
-        byte[] data = LoadFixture();
+        var data = LoadFixture();
         byte[]? pieces = null;
 
         var reader = new Utf8BencodeReader(data);
@@ -74,8 +74,8 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Parse_WhenTorrentFixture_ShouldComputeKnownInfoHashFromRawBytes()
     {
-        byte[] data = LoadFixture();
-        using BencodeDocument document = BencodeDocument.Parse(data);
+        var data = LoadFixture();
+        using var document = BencodeDocument.Parse(data);
         BencodeElement root = document.RootElement;
 
         Assert.AreEqual("http://tracker.example.com:6969/announce", root.GetProperty("announce").GetString());
@@ -98,9 +98,9 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Parse_WhenTorrentFixtureAsNodeTree_ShouldRoundTripExactBytes()
     {
-        byte[] data = LoadFixture();
+        var data = LoadFixture();
 
-        BencodeNode? node = BencodeNode.Parse(data);
+        var node = BencodeNode.Parse(data);
 
         Assert.IsNotNull(node);
         Assert.AreEqual("sample.bin", node["info"]!["name"]!.GetValue<string>());
@@ -114,7 +114,7 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Deserialize_WhenTorrentFixture_ShouldBindPocoAndRoundTripExactBytes()
     {
-        byte[] data = LoadFixture();
+        var data = LoadFixture();
 
         TorrentModel torrent = BencodeSerializer.Deserialize<TorrentModel>(data);
 

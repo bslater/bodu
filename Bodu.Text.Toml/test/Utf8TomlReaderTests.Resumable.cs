@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReaderTests.Resumable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -118,7 +118,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void CurrentState_WhenResumedOnLaterLine_ShouldPreserveLinePositions()
     {
-        byte[] doc = Encoding.UTF8.GetBytes("a = 1\nb = 2\nlong");
+        var doc = Encoding.UTF8.GetBytes("a = 1\nb = 2\nlong");
         var reader = new Utf8TomlReader(doc, isFinalBlock: false, new TomlReaderState());
         while (reader.Read())
         {
@@ -213,7 +213,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenMultiByteCharacterSplitAcrossBlocks_ShouldResumeCleanly()
     {
-        byte[] e1 = Encoding.UTF8.GetBytes("s = \"é\"\n");
+        var e1 = Encoding.UTF8.GetBytes("s = \"é\"\n");
 
         var first = new Utf8TomlReader(e1.AsSpan(0, 6), isFinalBlock: false, new TomlReaderState());
         Assert.IsTrue(first.Read());
@@ -246,7 +246,7 @@ public sealed partial class Utf8TomlReaderTests
     /// <returns>The formatted token entries in read order.</returns>
     private static List<string> DrainChunked(string toml, int chunkSize, TomlSpecVersion specVersion = TomlSpecVersion.V1_0)
     {
-        byte[] data = Encoding.UTF8.GetBytes(toml);
+        var data = Encoding.UTF8.GetBytes(toml);
         var tokens = new List<string>();
         var state = new TomlReaderState(new TomlReaderOptions { SpecVersion = specVersion });
 

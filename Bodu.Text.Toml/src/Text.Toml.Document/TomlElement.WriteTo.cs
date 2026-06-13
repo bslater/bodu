@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlElement.WriteTo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Provides the <see cref="WriteTo" /> surface of <see cref="TomlElement" />, which re-serializes an element's value
-/// to a <see cref="Utf8TomlWriter" />.
+/// Provides the <see cref="WriteTo" /> surface of <see cref="TomlElement" />, which re-serializes an element's value to
+/// a <see cref="Utf8TomlWriter" />.
 /// </summary>
 public readonly partial struct TomlElement
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Required.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredKeywordMemberPresent_ShouldRoundTrip()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name5:Alicee");
+        var bytes = Encoding.Latin1.GetBytes("d4:Name5:Alicee");
 
         var model = BencodeSerializer.Deserialize<RequiredKeywordModel>(bytes);
 
@@ -37,7 +37,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredKeywordMemberMissing_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("de");
+        var bytes = Encoding.Latin1.GetBytes("de");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -54,7 +54,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredAttributeMemberPresent_ShouldRoundTrip()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d2:idi42ee");
+        var bytes = Encoding.Latin1.GetBytes("d2:idi42ee");
 
         var model = BencodeSerializer.Deserialize<RequiredAttributeModel>(bytes);
 
@@ -68,7 +68,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredAttributeMemberMissing_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("de");
+        var bytes = Encoding.Latin1.GetBytes("de");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -85,7 +85,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredAttributeMemberMissing_ShouldReportWireNameInMessage()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("de");
+        var bytes = Encoding.Latin1.GetBytes("de");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -103,7 +103,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterWithoutDefaultMissing_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("de");
+        var bytes = Encoding.Latin1.GetBytes("de");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -120,7 +120,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterWithoutDefaultPresent_ShouldRoundTrip()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<RequiredConstructorParameterModel>(bytes);
 
@@ -134,7 +134,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterWithDefaultMissing_ShouldNotThrow()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("de");
+        var bytes = Encoding.Latin1.GetBytes("de");
 
         var model = BencodeSerializer.Deserialize<DefaultedConstructorParameterModel>(bytes);
 
@@ -148,7 +148,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenOneOfMultipleRequiredMembersMissing_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:First1:ae");
+        var bytes = Encoding.Latin1.GetBytes("d5:First1:ae");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -162,7 +162,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenAllRequiredMembersPresent_ShouldRoundTrip()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:First1:a6:Second1:be");
+        var bytes = Encoding.Latin1.GetBytes("d5:First1:a6:Second1:be");
 
         var model = BencodeSerializer.Deserialize<TwoRequiredMembersModel>(bytes);
 

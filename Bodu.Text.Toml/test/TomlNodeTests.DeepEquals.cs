@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlNodeTests.DeepEquals.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class TomlNodeTests
     [TestMethod]
     public void DeepEquals_WhenOneNull_ShouldReturnFalse()
     {
-        TomlValue node = TomlValue.Create(1L);
+        var node = TomlValue.Create(1L);
 
         Assert.IsFalse(TomlNode.DeepEquals(node, null));
         Assert.IsFalse(TomlNode.DeepEquals(null, node));
@@ -64,8 +64,8 @@ public partial class TomlNodeTests
     [TestMethod]
     public void DeepEquals_WhenDateTimeKindsDiffer_ShouldReturnFalse()
     {
-        TomlValue offset = TomlValue.Create(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero));
-        TomlValue local = TomlValue.Create(new DateTime(1979, 5, 27, 7, 32, 0));
+        var offset = TomlValue.Create(new DateTimeOffset(1979, 5, 27, 7, 32, 0, TimeSpan.Zero));
+        var local = TomlValue.Create(new DateTime(1979, 5, 27, 7, 32, 0));
 
         Assert.IsFalse(TomlNode.DeepEquals(offset, local));
     }

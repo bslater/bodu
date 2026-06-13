@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReader.Numbers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,7 +13,9 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a boolean literal, caching its value.
     /// </summary>
-    /// <returns><see langword="true" /> when the literal was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the literal was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanBoolean()
     {
         if (TryMatchKeyword("true"u8, out var incomplete))
@@ -81,7 +83,9 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a numeric value, or a date-time value when the cursor matches an RFC 3339 prefix.
     /// </summary>
-    /// <returns><see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanNumberOrDateTime()
     {
         if (IsDigit(Peek(0)) && IsDigit(Peek(1)) && IsDigit(Peek(2)) && IsDigit(Peek(3)) && Peek(4) == (byte)'-')
@@ -96,7 +100,9 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans an integer or float token, validating its grammar and caching the decoded value.
     /// </summary>
-    /// <returns><see langword="true" /> when the number was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the number was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanNumber()
     {
         var start = _pos;
@@ -247,8 +253,8 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Parses a hexadecimal, octal, or binary integer body, enforcing underscore placement and the
-    /// <see cref="long" /> range.
+    /// Parses a hexadecimal, octal, or binary integer body, enforcing underscore placement and the <see cref="long" />
+    /// range.
     /// </summary>
     /// <param name="body">The token bytes after the radix prefix.</param>
     /// <param name="radix">The numeric base (16, 8, or 2).</param>

@@ -78,7 +78,7 @@ public partial class MoneyOfTCurrencyTests
         var ok = Money<USD>.TryParse((string?)null, CultureInfo.InvariantCulture, out Money<USD> result);
 
         Assert.IsFalse(ok);
-        Assert.AreEqual(default(Money<USD>), result);
+        Assert.AreEqual(default, result);
     }
 
     /// <summary>

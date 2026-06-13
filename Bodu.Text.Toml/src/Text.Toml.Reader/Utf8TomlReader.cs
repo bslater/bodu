@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,13 +19,12 @@ namespace Bodu.Text.Toml.Reader;
 /// <remarks>
 /// <para>
 /// The reader validates lexical well-formedness only: UTF-8 validity, string termination and escapes, number and
-/// date-time grammar, newline discipline, control characters, the bracket nesting bound, and the grammar features
-/// gated by <see cref="TomlSpecVersion" />. It enforces no structural semantics — duplicate keys, table redefinition,
+/// date-time grammar, newline discipline, control characters, the bracket nesting bound, and the grammar features gated
+/// by <see cref="TomlSpecVersion" />. It enforces no structural semantics — duplicate keys, table redefinition,
 /// dotted-key rules, arrays of tables, and inline-table closedness are whole-document rules applied by the parsing
 /// entry points (<c>TomlSerializer</c>, <c>TomlNode.Parse</c>, <c>TomlDocument.Parse</c>, and the binding cursor
 /// <see cref="TomlDocumentReader" />). A document can therefore read cleanly here and still be rejected by those
-/// surfaces, and lexical errors are raised from <see cref="Read" /> as scanning reaches them, not from the
-/// constructor.
+/// surfaces, and lexical errors are raised from <see cref="Read" /> as scanning reaches them, not from the constructor.
 /// </para>
 /// <para>
 /// Scalar values are validated and decoded as part of <see cref="Read" /> — a malformed number or date-time raises
@@ -61,8 +60,8 @@ public ref partial struct Utf8TomlReader
     private readonly int _maxDepth;
 
     /// <summary>
-    /// Whether the supplied bytes contain the final block of the document, so that running out of input mid-token is
-    /// an error rather than a request for more data.
+    /// Whether the supplied bytes contain the final block of the document, so that running out of input mid-token is an
+    /// error rather than a request for more data.
     /// </summary>
     private readonly bool _isFinalBlock;
 
@@ -200,8 +199,8 @@ public ref partial struct Utf8TomlReader
     private TimeOnly _timeOnlyValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over the supplied bytes, enforcing
-    /// strict TOML v1.0.0.
+    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over the supplied bytes, enforcing strict
+    /// TOML v1.0.0.
     /// </summary>
     /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
     public Utf8TomlReader(ReadOnlySpan<byte> utf8Toml)
@@ -229,7 +228,9 @@ public ref partial struct Utf8TomlReader
     /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over one block of a document, resuming
     /// from the state captured at the end of the previous block.
     /// </summary>
-    /// <param name="utf8Toml">The unconsumed bytes carried over from the previous block plus the newly arrived data.</param>
+    /// <param name="utf8Toml">
+    /// The unconsumed bytes carried over from the previous block plus the newly arrived data.
+    /// </param>
     /// <param name="isFinalBlock">
     /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
     /// <see cref="Read" /> return <see langword="false" /> instead of throwing when the buffer ends mid-token.
@@ -264,7 +265,7 @@ public ref partial struct Utf8TomlReader
     /// before reading.
     /// </remarks>
     public Utf8TomlReader(in System.Buffers.ReadOnlySequence<byte> utf8Toml)
-        : this(utf8Toml, default(TomlReaderOptions))
+        : this(utf8Toml, default)
     {
     }
 
@@ -286,10 +287,12 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over one block of a document supplied
-    /// as a sequence, resuming from the state captured at the end of the previous block.
+    /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over one block of a document supplied as
+    /// a sequence, resuming from the state captured at the end of the previous block.
     /// </summary>
-    /// <param name="utf8Toml">The unconsumed bytes carried over from the previous block plus the newly arrived data.</param>
+    /// <param name="utf8Toml">
+    /// The unconsumed bytes carried over from the previous block plus the newly arrived data.
+    /// </param>
     /// <param name="isFinalBlock">
     /// <see langword="true" /> when no further data follows this block; <see langword="false" /> to make
     /// <see cref="Read" /> return <see langword="false" /> instead of throwing when the buffer ends mid-token.
@@ -347,8 +350,8 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <returns>
     /// The content slice: the text inside a string's quotes (with a multi-line string's leading newline already
-    /// trimmed), the characters of a bare key, the bytes after a comment's <c>#</c>, or the full token text of a
-    /// scalar literal. Empty for structural tokens.
+    /// trimmed), the characters of a bare key, the bytes after a comment's <c>#</c>, or the full token text of a scalar
+    /// literal. Empty for structural tokens.
     /// </returns>
     public readonly ReadOnlySpan<byte> ValueSpan => _source.Slice(_valueStart, _valueLength);
 
@@ -360,12 +363,12 @@ public ref partial struct Utf8TomlReader
     public readonly bool HasEscapes => _hasEscapes;
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="TomlTokenType.Key" /> token is the final segment of
-    /// its dotted path.
+    /// Gets a value indicating whether the current <see cref="TomlTokenType.Key" /> token is the final segment of its
+    /// dotted path.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when no further <see cref="TomlTokenType.Key" /> segment follows in the same header
-    /// or key/value path.
+    /// <see langword="true" /> when no further <see cref="TomlTokenType.Key" /> segment follows in the same header or
+    /// key/value path.
     /// </returns>
     public readonly bool IsFinalKeySegment => _isFinalKeySegment;
 
@@ -374,8 +377,8 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <returns>
     /// The depth, where zero is outside any value. A <see cref="TomlTokenType.StartArray" /> or
-    /// <see cref="TomlTokenType.StartInlineTable" /> token reports the depth of its enclosing context, and the
-    /// matching end token likewise.
+    /// <see cref="TomlTokenType.StartInlineTable" /> token reports the depth of its enclosing context, and the matching
+    /// end token likewise.
     /// </returns>
     /// <remarks>
     /// The depth counts only lexical bracket nesting. <c>[table]</c> and <c>[[array-of-tables]]</c> headers describe
@@ -823,8 +826,8 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <returns>The decoded string value of a string, key, or comment token.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the current token is not a <see cref="TomlTokenType.String" />,
-    /// <see cref="TomlTokenType.Key" />, or <see cref="TomlTokenType.Comment" />.
+    /// Thrown when the current token is not a <see cref="TomlTokenType.String" />, <see cref="TomlTokenType.Key" />, or
+    /// <see cref="TomlTokenType.Comment" />.
     /// </exception>
     public readonly string GetString()
     {
@@ -924,16 +927,15 @@ public ref partial struct Utf8TomlReader
     /// Skips the current value in source order.
     /// </summary>
     /// <remarks>
-    /// When the reader is positioned on a <see cref="TomlTokenType.Key" />, it advances over the remaining key
-    /// segments onto the value and then skips it, finishing on the value's last token. When it is positioned on a
+    /// When the reader is positioned on a <see cref="TomlTokenType.Key" />, it advances over the remaining key segments
+    /// onto the value and then skips it, finishing on the value's last token. When it is positioned on a
     /// <see cref="TomlTokenType.StartArray" /> or <see cref="TomlTokenType.StartInlineTable" />, it advances to the
-    /// matching end token, reading — and lexically validating — everything in between. On any other token the call
-    /// has no effect.
+    /// matching end token, reading — and lexically validating — everything in between. On any other token the call has
+    /// no effect.
     /// </remarks>
     /// <exception cref="TomlFormatException">Thrown when the skipped source is not lexically valid TOML.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <see cref="IsFinalBlock" /> is <see langword="false" />; use <see cref="TrySkip" /> on partial
-    /// data.
+    /// Thrown when <see cref="IsFinalBlock" /> is <see langword="false" />; use <see cref="TrySkip" /> on partial data.
     /// </exception>
     public void Skip()
     {
@@ -1111,7 +1113,9 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a value of any TOML type at the cursor, emitting its first token and updating the lexical state.
     /// </summary>
-    /// <returns><see langword="true" /> when a token was emitted; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a token was emitted; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanValue()
     {
         if (Eof)
@@ -1195,10 +1199,12 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Scans a single bare, basic-quoted, or literal-quoted key segment, emitting a
-    /// <see cref="TomlTokenType.Key" /> token.
+    /// Scans a single bare, basic-quoted, or literal-quoted key segment, emitting a <see cref="TomlTokenType.Key" />
+    /// token.
     /// </summary>
-    /// <returns><see langword="true" /> when the key was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the key was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanKeySegment()
     {
         if (Eof)
@@ -1251,14 +1257,16 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Scans a comment from the <c>#</c> to the end of the line, emitting a <see cref="TomlTokenType.Comment" />
-    /// token and rejecting disallowed control characters.
+    /// Scans a comment from the <c>#</c> to the end of the line, emitting a <see cref="TomlTokenType.Comment" /> token
+    /// and rejecting disallowed control characters.
     /// </summary>
     /// <remarks>
-    /// Both TOML v1.0.0 and the v1.1.0 draft prohibit control characters other than tab (U+0000–U+0008,
-    /// U+000A–U+001F, U+007F) inside a comment, so the rule is applied unconditionally.
+    /// Both TOML v1.0.0 and the v1.1.0 draft prohibit control characters other than tab (U+0000–U+0008, U+000A–U+001F,
+    /// U+007F) inside a comment, so the rule is applied unconditionally.
     /// </remarks>
-    /// <returns><see langword="true" /> when the comment was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the comment was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanComment()
     {
         BeginToken();
@@ -1319,8 +1327,8 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Pushes an array or inline-table context onto the container stack, growing it as needed and enforcing the
-    /// maximum bracket nesting depth.
+    /// Pushes an array or inline-table context onto the container stack, growing it as needed and enforcing the maximum
+    /// bracket nesting depth.
     /// </summary>
     /// <param name="isInlineTable">
     /// <see langword="true" /> for an inline table; <see langword="false" /> for an array.

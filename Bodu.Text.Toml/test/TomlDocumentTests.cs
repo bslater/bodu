@@ -227,7 +227,7 @@ public partial class TomlDocumentTests
     {
         using var document = TomlDocument.Parse("title = \"Example\"\n");
 
-        bool found = document.RootElement.TryGetProperty("missing", out TomlElement value);
+        var found = document.RootElement.TryGetProperty("missing", out TomlElement value);
 
         Assert.IsFalse(found);
         Assert.AreEqual(default, value);
@@ -242,7 +242,7 @@ public partial class TomlDocumentTests
     {
         using var document = TomlDocument.Parse("title = \"Example\"\n");
 
-        bool found = document.RootElement.TryGetProperty("title", out TomlElement value);
+        var found = document.RootElement.TryGetProperty("title", out TomlElement value);
 
         Assert.IsTrue(found);
         Assert.AreEqual("Example", value.GetString());
@@ -315,7 +315,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenGivenUtf8Bytes_ShouldReadValues()
     {
-        byte[] utf8 = Encoding.UTF8.GetBytes("name = \"x\"\nport = 8080\n");
+        var utf8 = Encoding.UTF8.GetBytes("name = \"x\"\nport = 8080\n");
 
         using var document = TomlDocument.Parse(utf8.AsSpan());
 

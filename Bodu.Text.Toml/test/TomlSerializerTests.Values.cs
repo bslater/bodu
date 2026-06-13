@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Values.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -124,8 +124,8 @@ public partial class TomlSerializerTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        string text = Serialize(kat.Input);
-        double actual = TomlSerializer.Deserialize<ValueModel<double>>(text).Value;
+        var text = Serialize(kat.Input);
+        var actual = TomlSerializer.Deserialize<ValueModel<double>>(text).Value;
 
         if (double.IsNaN(kat.Input))
             Assert.IsTrue(double.IsNaN(actual));
@@ -140,8 +140,8 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenSingleValue_ShouldRoundTrip()
     {
-        string text = Serialize(0.1f);
-        float actual = TomlSerializer.Deserialize<ValueModel<float>>(text).Value;
+        var text = Serialize(0.1f);
+        var actual = TomlSerializer.Deserialize<ValueModel<float>>(text).Value;
 
         Assert.AreEqual(0.1f, actual);
     }
@@ -153,8 +153,8 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenSingleMaxValue_ShouldRoundTrip()
     {
-        string text = Serialize(float.MaxValue);
-        float actual = TomlSerializer.Deserialize<ValueModel<float>>(text).Value;
+        var text = Serialize(float.MaxValue);
+        var actual = TomlSerializer.Deserialize<ValueModel<float>>(text).Value;
 
         Assert.AreEqual(float.MaxValue, actual);
     }
@@ -184,8 +184,8 @@ public partial class TomlSerializerTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        string text = Serialize(kat.Input);
-        string actual = TomlSerializer.Deserialize<ValueModel<string>>(text).Value;
+        var text = Serialize(kat.Input);
+        var actual = TomlSerializer.Deserialize<ValueModel<string>>(text).Value;
 
         Assert.AreEqual(kat.Input, actual);
     }
@@ -515,7 +515,7 @@ public partial class TomlSerializerTests
         var value = new DateTime(2026, 6, 10, 9, 30, 0, DateTimeKind.Local);
         var expectedOffset = new DateTimeOffset(value);
 
-        string text = Serialize(value);
+        var text = Serialize(value);
 
         Assert.AreEqual($"Value = {ExpectedOffsetText(expectedOffset)}\n", text);
     }
@@ -530,7 +530,7 @@ public partial class TomlSerializerTests
     {
         var value = new DateTime(2026, 6, 10, 9, 30, 0, DateTimeKind.Utc);
 
-        string text = Serialize(value);
+        var text = Serialize(value);
         DateTimeOffset actual = TomlSerializer.Deserialize<ValueModel<DateTimeOffset>>(text).Value;
 
         Assert.AreEqual(new DateTimeOffset(value), actual);
@@ -740,10 +740,10 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions();
         options.Converters.Add(new DecimalStringConverter());
 
-        string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = 19.95m }, options);
+        var text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = 19.95m }, options);
         Assert.AreEqual("Value = \"19.95\"\n", text);
 
-        decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
+        var actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
         Assert.AreEqual(19.95m, actual);
     }
 
@@ -769,10 +769,10 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
         byte[] value = [0x61, 0x62, 0x63];
 
-        string text = TomlSerializer.Serialize(new ValueModel<byte[]> { Value = value }, options);
+        var text = TomlSerializer.Serialize(new ValueModel<byte[]> { Value = value }, options);
         Assert.AreEqual("Value = \"YWJj\"\n", text);
 
-        byte[] actual = TomlSerializer.Deserialize<ValueModel<byte[]>>(text, options).Value;
+        var actual = TomlSerializer.Deserialize<ValueModel<byte[]>>(text, options).Value;
         CollectionAssert.AreEqual(value, actual);
     }
 
@@ -783,7 +783,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenByteArrayBase64UnderDefaultHandling_ShouldDecode()
     {
-        byte[] actual = TomlSerializer.Deserialize<ValueModel<byte[]>>("Value = \"YWJj\"\n").Value;
+        var actual = TomlSerializer.Deserialize<ValueModel<byte[]>>("Value = \"YWJj\"\n").Value;
 
         CollectionAssert.AreEqual(new byte[] { 0x61, 0x62, 0x63 }, actual);
     }
@@ -827,7 +827,7 @@ public partial class TomlSerializerTests
         CollectionAssert.AreEqual(value.ToArray(), RoundTrip(value).ToArray());
 
         var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
-        string text = TomlSerializer.Serialize(new ValueModel<Memory<byte>> { Value = value }, options);
+        var text = TomlSerializer.Serialize(new ValueModel<Memory<byte>> { Value = value }, options);
         Assert.AreEqual("Value = \"YWJj\"\n", text);
     }
 
@@ -844,7 +844,7 @@ public partial class TomlSerializerTests
         CollectionAssert.AreEqual(value.ToArray(), RoundTrip(value).ToArray());
 
         var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
-        string text = TomlSerializer.Serialize(new ValueModel<ReadOnlyMemory<byte>> { Value = value }, options);
+        var text = TomlSerializer.Serialize(new ValueModel<ReadOnlyMemory<byte>> { Value = value }, options);
         Assert.AreEqual("Value = \"YWJj\"\n", text);
     }
 
@@ -927,11 +927,11 @@ public partial class TomlSerializerTests
     /// <returns>The expected canonical TOML offset date-time text.</returns>
     private static string ExpectedOffsetText(DateTimeOffset value)
     {
-        string body = value.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture);
+        var body = value.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture);
         if (value.Offset == TimeSpan.Zero)
             return body + "Z";
 
-        char sign = value.Offset < TimeSpan.Zero ? '-' : '+';
+        var sign = value.Offset < TimeSpan.Zero ? '-' : '+';
         return body + sign + value.Offset.Duration().ToString("hh':'mm", CultureInfo.InvariantCulture);
     }
 

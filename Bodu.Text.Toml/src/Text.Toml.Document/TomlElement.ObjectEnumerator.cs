@@ -75,7 +75,7 @@ public readonly partial struct TomlElement
         {
             get
             {
-                (string name, int valueRow, _) = _document.GetPair(_currentKeyRow);
+                (var name, var valueRow, _) = _document.GetPair(_currentKeyRow);
                 return new TomlProperty(name, new TomlElement(_document, valueRow));
             }
         }

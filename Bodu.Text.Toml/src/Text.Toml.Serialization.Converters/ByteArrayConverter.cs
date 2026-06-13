@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ByteArrayConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// On read the converter accepts both forms regardless of the configured handling: an array of integers is read back
-/// into a byte array, and a string is Base64-decoded. The <see cref="ReadCore" /> and <see cref="WriteCore" />
-/// helpers carry the shared logic so the memory-of-byte converters apply identical semantics.
+/// into a byte array, and a string is Base64-decoded. The <see cref="ReadCore" /> and <see cref="WriteCore" /> helpers
+/// carry the shared logic so the memory-of-byte converters apply identical semantics.
 /// </remarks>
 internal sealed class ByteArrayConverter
     : TomlConverter<byte[]>
@@ -106,7 +106,7 @@ internal sealed class ByteArrayConverter
         }
 
         writer.WriteStartArray();
-        foreach (byte b in value)
+        foreach (var b in value)
             writer.WriteInteger(b);
 
         writer.WriteEndArray();

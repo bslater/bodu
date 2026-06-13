@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlScanState.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// Identifies the lexical context a <see cref="Utf8TomlReader" /> resumes from on its next read, which determines whether
-/// the bytes at the cursor are interpreted as a key, a value, or structural punctuation.
+/// Identifies the lexical context a <see cref="Utf8TomlReader" /> resumes from on its next read, which determines
+/// whether the bytes at the cursor are interpreted as a key, a value, or structural punctuation.
 /// </summary>
 /// <remarks>
 /// TOML is lexically context-sensitive: the same bytes lex as a bare key in key position and as an integer in value

@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
         DayOfWeek first = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
         DayOfWeek second = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
 
-        Assert.IsTrue(Enum.IsDefined(typeof(DayOfWeek), first), $"Result {first} is not a defined DayOfWeek value.");
+        Assert.IsTrue(Enum.IsDefined(first), $"Result {first} is not a defined DayOfWeek value.");
         Assert.AreEqual(first, second, "GetDayOfWeekForJanuary1 should be deterministic.");
     }
 

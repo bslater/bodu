@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.ObjectValues.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberHoldsBareObject_ShouldWriteEmptyDictionary()
     {
-        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = new object() });
+        var bytes = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = new object() });
 
         Assert.AreEqual("d5:Valuedee", Encoding.Latin1.GetString(bytes));
     }
@@ -60,7 +60,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberNull_ShouldOmitMember()
     {
-        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = null });
+        var bytes = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = null });
 
         Assert.AreEqual("de", Encoding.Latin1.GetString(bytes));
     }
@@ -78,9 +78,9 @@ public partial class BencodeSerializerTests
     [DataRow("d5:Valued1:Ai1eee", BencodeValueKind.Object, DisplayName = "dictionary")]
     public void Deserialize_WhenObjectMember_ShouldSurfaceBencodeElement(string encoded, BencodeValueKind kind)
     {
-        byte[] bytes = Encoding.Latin1.GetBytes(encoded);
+        var bytes = Encoding.Latin1.GetBytes(encoded);
 
-        object actual = BencodeSerializer.Deserialize<SingleValueModel<object>>(bytes).Value!;
+        var actual = BencodeSerializer.Deserialize<SingleValueModel<object>>(bytes).Value!;
 
         Assert.IsInstanceOfType<BencodeElement>(actual);
         Assert.AreEqual(kind, ((BencodeElement)actual).ValueKind);
@@ -93,9 +93,9 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenObjectMember_ShouldRoundTripThroughElement()
     {
-        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = new[] { 1, 2, 3 } });
-        object element = BencodeSerializer.Deserialize<SingleValueModel<object>>(bytes).Value!;
-        byte[] again = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = element });
+        var bytes = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = new[] { 1, 2, 3 } });
+        var element = BencodeSerializer.Deserialize<SingleValueModel<object>>(bytes).Value!;
+        var again = BencodeSerializer.Serialize(new SingleValueModel<object> { Value = element });
 
         CollectionAssert.AreEqual(bytes, again);
     }
@@ -107,9 +107,9 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenObjectRoot_ShouldSurfaceDictionaryElement()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:Ai1ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:Ai1ee");
 
-        object actual = BencodeSerializer.Deserialize<object>(bytes);
+        var actual = BencodeSerializer.Deserialize<object>(bytes);
 
         Assert.IsInstanceOfType<BencodeElement>(actual);
 
@@ -125,7 +125,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectRootHoldsScalar_ShouldWriteScalar()
     {
-        byte[] bytes = BencodeSerializer.Serialize<object>(5);
+        var bytes = BencodeSerializer.Serialize<object>(5);
 
         Assert.AreEqual("i5e", Encoding.Latin1.GetString(bytes));
     }

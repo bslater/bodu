@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CollectionConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -118,7 +118,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized collection.</returns>
     private static TCollection MaterializeConcrete(List<TElement> items)
     {
-        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var instance = Activator.CreateInstance<TCollection>()!;
         var collection = (ICollection<TElement>)instance;
         foreach (TElement element in items)
             collection.Add(element);
@@ -133,7 +133,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized queue.</returns>
     private static TCollection MaterializeQueue(List<TElement> items)
     {
-        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var instance = Activator.CreateInstance<TCollection>()!;
         var queue = (Queue<TElement>)(object)instance;
         foreach (TElement element in items)
             queue.Enqueue(element);
@@ -149,7 +149,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized stack.</returns>
     private static TCollection MaterializeStack(List<TElement> items)
     {
-        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var instance = Activator.CreateInstance<TCollection>()!;
         var stack = (Stack<TElement>)(object)instance;
         foreach (TElement element in items)
             stack.Push(element);
@@ -165,7 +165,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized queue.</returns>
     private static TCollection MaterializeConcurrentQueue(List<TElement> items)
     {
-        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var instance = Activator.CreateInstance<TCollection>()!;
         var queue = (System.Collections.Concurrent.ConcurrentQueue<TElement>)(object)instance;
         foreach (TElement element in items)
             queue.Enqueue(element);
@@ -181,7 +181,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized stack.</returns>
     private static TCollection MaterializeConcurrentStack(List<TElement> items)
     {
-        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var instance = Activator.CreateInstance<TCollection>()!;
         var stack = (System.Collections.Concurrent.ConcurrentStack<TElement>)(object)instance;
         foreach (TElement element in items)
             stack.Push(element);
@@ -197,7 +197,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized bag.</returns>
     private static TCollection MaterializeConcurrentBag(List<TElement> items)
     {
-        var instance = (TCollection)Activator.CreateInstance(typeof(TCollection)) !;
+        var instance = Activator.CreateInstance<TCollection>()!;
         var bag = (System.Collections.Concurrent.ConcurrentBag<TElement>)(object)instance;
         foreach (TElement element in items)
             bag.Add(element);

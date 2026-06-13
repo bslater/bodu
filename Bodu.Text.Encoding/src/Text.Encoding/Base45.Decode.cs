@@ -52,9 +52,16 @@ public static partial class Base45
     /// <param name="count">The number of characters.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range.</exception>
-    /// <exception cref="ArgumentException">Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the available range of <paramref name="chars" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="chars" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="chars" />.
+    /// </exception>
     /// <exception cref="FormatException">Thrown when the input is not valid Base45.</exception>
     public static byte[] Decode(char[] chars, int offset, int count, BaseFormatStyles styles = BaseFormatStyles.None)
     {

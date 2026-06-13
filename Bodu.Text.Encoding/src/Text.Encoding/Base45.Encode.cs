@@ -13,7 +13,9 @@ public static partial class Base45
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>A Base45 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public static string Encode(byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(bytes);
@@ -50,9 +52,16 @@ public static partial class Base45
     /// <param name="offset">The starting offset.</param>
     /// <param name="count">The number of bytes to encode.</param>
     /// <returns>A Base45 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range.</exception>
-    /// <exception cref="ArgumentException">Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the available range of <paramref name="bytes" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="bytes" />.
+    /// </exception>
     public static string Encode(byte[] bytes, int offset, int count)
     {
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);

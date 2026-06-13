@@ -331,7 +331,7 @@ public sealed partial class ConfigurationView
         where TEnum : struct, Enum
     {
         var raw = GetString(key);
-        if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(typeof(TEnum), value))
+        if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, typeof(TEnum).Name);
@@ -359,7 +359,7 @@ public sealed partial class ConfigurationView
         if (raw is null)
             return fallback;
 
-        if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(typeof(TEnum), value))
+        if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, typeof(TEnum).Name);
@@ -382,7 +382,7 @@ public sealed partial class ConfigurationView
     {
         ThrowHelper.ThrowIfNull(key);
         var raw = LookupValue(key);
-        if (raw is not null && Enum.TryParse(raw, ignoreCase: true, out value) && Enum.IsDefined(typeof(TEnum), value))
+        if (raw is not null && Enum.TryParse(raw, ignoreCase: true, out value) && Enum.IsDefined(value))
             return true;
 
         value = default;

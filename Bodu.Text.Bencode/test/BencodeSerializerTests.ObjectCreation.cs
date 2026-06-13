@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.ObjectCreation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDefaultHandlingAndSeededList_ShouldReplace()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<SettableListModel>(bytes);
 
@@ -41,7 +41,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenOptionsPopulateAndSeededList_ShouldAppendToExisting()
     {
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<SettableListModel>(bytes, options);
 
@@ -56,7 +56,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenOptionsPopulateAndGetOnlyList_ShouldPopulateExisting()
     {
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<GetOnlyListModel>(bytes, options);
 
@@ -71,7 +71,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenMemberPopulateAttributeAndOptionsDefault_ShouldAppendToExisting()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<MemberPopulateModel>(bytes);
 
@@ -86,7 +86,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenMemberReplaceAttributeAndOptionsPopulate_ShouldReplace()
     {
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<MemberReplaceModel>(bytes, options);
 
@@ -100,7 +100,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenTypePopulateAttribute_ShouldAppendToExisting()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<TypePopulateModel>(bytes);
 
@@ -114,7 +114,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenMemberReplaceOverridesTypePopulate_ShouldReplace()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<TypePopulateWithMemberReplaceModel>(bytes);
 
@@ -129,7 +129,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenPopulateAndSeededDictionary_ShouldMergeEntries()
     {
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Countsd1:bi9e1:ci3eee");
+        var bytes = Encoding.Latin1.GetBytes("d6:Countsd1:bi9e1:ci3eee");
 
         var model = BencodeSerializer.Deserialize<SeededDictionaryModel>(bytes, options);
 
@@ -147,7 +147,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenPopulateAndNullExistingValue_ShouldFallBackToReplace()
     {
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
         var model = BencodeSerializer.Deserialize<NullSeedListModel>(bytes, options);
 

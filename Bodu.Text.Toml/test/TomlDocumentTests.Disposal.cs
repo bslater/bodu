@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentTests.Disposal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public partial class TomlDocumentTests
     [DataRow("LocalTime")]
     public void ScalarAccessors_WhenDocumentDisposed_ShouldThrowObjectDisposedException(string key)
     {
-        TomlDocument document = TomlDocument.Parse(AllKindsToml);
+        var document = TomlDocument.Parse(AllKindsToml);
         TomlElement element = document.RootElement.GetProperty(key);
         document.Dispose();
 
@@ -65,7 +65,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetArrayLength_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = [1]\n");
+        var document = TomlDocument.Parse("a = [1]\n");
         TomlElement element = document.RootElement.GetProperty("a");
         document.Dispose();
 
@@ -82,7 +82,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = [1]\n");
+        var document = TomlDocument.Parse("a = [1]\n");
         TomlElement element = document.RootElement.GetProperty("a");
         document.Dispose();
 
@@ -99,7 +99,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = 1\n");
+        var document = TomlDocument.Parse("a = 1\n");
         TomlElement element = document.RootElement;
         document.Dispose();
 
@@ -116,7 +116,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetProperty_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = 1\n");
+        var document = TomlDocument.Parse("a = 1\n");
         TomlElement element = document.RootElement;
         document.Dispose();
 
@@ -133,7 +133,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = 1\n");
+        var document = TomlDocument.Parse("a = 1\n");
         TomlElement element = document.RootElement;
         document.Dispose();
 
@@ -150,7 +150,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Indexer_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = [1]\n");
+        var document = TomlDocument.Parse("a = [1]\n");
         TomlElement element = document.RootElement.GetProperty("a");
         document.Dispose();
 
@@ -167,7 +167,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void ToString_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = 1\n");
+        var document = TomlDocument.Parse("a = 1\n");
         TomlElement element = document.RootElement.GetProperty("a");
         document.Dispose();
 
@@ -184,7 +184,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Current_WhenDocumentDisposedAfterEnumeratorCreated_ShouldThrowOnElementAccess()
     {
-        TomlDocument document = TomlDocument.Parse("a = [1]\n");
+        var document = TomlDocument.Parse("a = [1]\n");
         TomlElement.ArrayEnumerator enumerator = document.RootElement.GetProperty("a").EnumerateArray();
         document.Dispose();
 
@@ -203,7 +203,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void MoveNext_WhenDocumentDisposedAfterObjectEnumeratorCreated_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("a = 1\n");
+        var document = TomlDocument.Parse("a = 1\n");
         TomlElement.ObjectEnumerator enumerator = document.RootElement.EnumerateObject();
         document.Dispose();
 

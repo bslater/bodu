@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.WriteTo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,8 +23,8 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void WriteTo_WhenWritingWholeDocument_ShouldRoundTripExactBytes()
     {
-        byte[] source = Bytes(TorrentSource);
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        var source = Bytes(TorrentSource);
+        using var document = BencodeDocument.Parse(source);
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
 
@@ -40,7 +40,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void WriteTo_WhenElementEmbeddedAsDictionaryValue_ShouldEmitExactSlice()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        using var document = BencodeDocument.Parse(Bytes(TorrentSource));
         BencodeElement info = document.RootElement.GetProperty("info");
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
@@ -60,7 +60,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void WriteTo_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        var document = BencodeDocument.Parse(Bytes(TorrentSource));
         BencodeElement root = document.RootElement;
         document.Dispose();
         var buffer = new ArrayBufferWriter<byte>();

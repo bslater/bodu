@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,9 +9,9 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Reader;
 
 /// <summary>
-/// The authoritative TOML structural parser: consumes the source-order token stream of a <see cref="Utf8TomlReader" /> and
-/// materializes the document into a <see cref="TomlTableNode" /> value tree, enforcing the specification's key, value,
-/// table, and array-of-tables rules for the configured <see cref="TomlSpecVersion" />.
+/// The authoritative TOML structural parser: consumes the source-order token stream of a <see cref="Utf8TomlReader" />
+/// and materializes the document into a <see cref="TomlTableNode" /> value tree, enforcing the specification's key,
+/// value, table, and array-of-tables rules for the configured <see cref="TomlSpecVersion" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -142,8 +142,7 @@ internal sealed class TomlDocumentBuilder
     }
 
     /// <summary>
-    /// Reads the remaining segments of a dotted key path whose first <see cref="TomlTokenType.Key" /> token is
-    /// current.
+    /// Reads the remaining segments of a dotted key path whose first <see cref="TomlTokenType.Key" /> token is current.
     /// </summary>
     /// <param name="lexer">The lexer to read from.</param>
     /// <returns>The key segments in order.</returns>
@@ -373,7 +372,9 @@ internal sealed class TomlDocumentBuilder
     /// <param name="parent">The table the child will be added under.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     /// <returns>The created table.</returns>
-    /// <exception cref="TomlFormatException">Thrown when the child would exceed the configured maximum depth.</exception>
+    /// <exception cref="TomlFormatException">
+    /// Thrown when the child would exceed the configured maximum depth.
+    /// </exception>
     private TomlTableNode CreateChildTable(TomlTableNode parent, ref Utf8TomlReader lexer)
     {
         if (parent.Depth >= _maxDepth)

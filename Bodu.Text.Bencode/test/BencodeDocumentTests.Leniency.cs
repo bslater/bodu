@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.Leniency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,14 +24,14 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenKeysUnsorted_ShouldRequireAllowUnsortedKeys()
     {
-        byte[] data = Bytes("d1:bi1e1:ai2ee");
+        var data = Bytes("d1:bi1e1:ai2ee");
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument strict = BencodeDocument.Parse(data);
+            using var strict = BencodeDocument.Parse(data);
         });
 
-        using BencodeDocument document = BencodeDocument.Parse(data, new BencodeDocumentOptions { AllowUnsortedKeys = true });
+        using var document = BencodeDocument.Parse(data, new BencodeDocumentOptions { AllowUnsortedKeys = true });
 
         Assert.AreEqual(1L, document.RootElement.GetProperty("b").GetInt64());
         Assert.AreEqual(2L, document.RootElement.GetProperty("a").GetInt64());
@@ -44,8 +44,8 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenDuplicateKeysAllowed_ShouldLookUpFirstMatchAndEnumerateAll()
     {
-        byte[] data = Bytes("d1:ai1e1:ai2ee");
-        using BencodeDocument document = BencodeDocument.Parse(data, new BencodeDocumentOptions { AllowDuplicateKeys = true });
+        var data = Bytes("d1:ai1e1:ai2ee");
+        using var document = BencodeDocument.Parse(data, new BencodeDocumentOptions { AllowDuplicateKeys = true });
 
         Assert.AreEqual(1L, document.RootElement.GetProperty("a").GetInt64());
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlNodeTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,7 @@ public partial class TomlNodeTests
     public void Parse_WhenInputMalformed_ShouldThrowTomlFormatException(InvalidKat<string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
-        byte[] bytes = Encoding.UTF8.GetBytes(kat.Input);
+        var bytes = Encoding.UTF8.GetBytes(kat.Input);
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -70,7 +70,7 @@ public partial class TomlNodeTests
     [TestMethod]
     public void Parse_WhenInputEmpty_ShouldReturnEmptyObjectRoot()
     {
-        TomlNode? node = TomlNode.Parse(ReadOnlySpan<byte>.Empty);
+        var node = TomlNode.Parse(ReadOnlySpan<byte>.Empty);
 
         TomlObject root = node!.AsObject();
         Assert.AreEqual(0, root.Count);
@@ -95,7 +95,7 @@ public partial class TomlNodeTests
     [DataRow("a = {x = 1}\n", TomlValueKind.Table)]
     public void Parse_WhenMemberKindVaries_ShouldMaterializeMatchingNodeKind(string toml, TomlValueKind expectedKind)
     {
-        TomlNode? node = TomlNode.Parse(Encoding.UTF8.GetBytes(toml));
+        var node = TomlNode.Parse(Encoding.UTF8.GetBytes(toml));
 
         Assert.AreEqual(expectedKind, node!.AsObject()["a"]!.GetValueKind());
     }
@@ -117,9 +117,9 @@ public partial class TomlNodeTests
     public void Parse_WhenInputCanonical_ShouldRoundTripThroughToUtf8Bytes(string testName, string input)
     {
         _ = testName;
-        byte[] bytes = Encoding.UTF8.GetBytes(input);
+        var bytes = Encoding.UTF8.GetBytes(input);
 
-        byte[] roundTripped = TomlNode.Parse(bytes)!.ToUtf8Bytes();
+        var roundTripped = TomlNode.Parse(bytes)!.ToUtf8Bytes();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }
@@ -131,7 +131,7 @@ public partial class TomlNodeTests
     [TestMethod]
     public void Parse_WhenInputNested_ShouldBuildParentLinks()
     {
-        TomlNode? root = TomlNode.Parse(Encoding.UTF8.GetBytes("list = [1]\n"));
+        var root = TomlNode.Parse(Encoding.UTF8.GetBytes("list = [1]\n"));
 
         TomlNode list = root!.AsObject()["list"]!;
         TomlNode leaf = list.AsArray()[0]!;
@@ -149,7 +149,7 @@ public partial class TomlNodeTests
     [TestMethod]
     public void Parse_WhenArrayOfTables_ShouldMaterializeArrayOfObjects()
     {
-        TomlNode? root = TomlNode.Parse(Encoding.UTF8.GetBytes("[[p]]\nname = \"a\"\n\n[[p]]\nname = \"b\"\n"));
+        var root = TomlNode.Parse(Encoding.UTF8.GetBytes("[[p]]\nname = \"a\"\n\n[[p]]\nname = \"b\"\n"));
 
         TomlArray products = root!.AsObject()["p"]!.AsArray();
         Assert.AreEqual(2, products.Count);

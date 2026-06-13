@@ -9,9 +9,9 @@ using Bodu.Test.Kat;
 namespace Bodu.Text.Formats.Contracts;
 
 /// <summary>
-/// Represents a known-answer test row for a parse/format text-document format such as CSV, DotEnv, or INI. A
-/// row pairs the raw source text with the expected parsed document and (optionally) the parser/formatter options that
-/// produced it.
+/// Represents a known-answer test row for a parse/format text-document format such as CSV, DotEnv, or INI. A row pairs
+/// the raw source text with the expected parsed document and (optionally) the parser/formatter options that produced
+/// it.
 /// </summary>
 /// <typeparam name="TDocument">The parsed document type.</typeparam>
 /// <typeparam name="TOptions">

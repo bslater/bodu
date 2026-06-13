@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base62Tests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public sealed partial class Base62Tests
     [TestMethod]
     public void RoundTrip_WhenAsciiPayload_ShouldRecoverBytes()
     {
-        byte[] payload = "Hello, Base62!"u8.ToArray();
+        var payload = "Hello, Base62!"u8.ToArray();
 
         CollectionAssert.AreEqual(payload, Base62.Decode(Base62.Encode(payload)));
     }

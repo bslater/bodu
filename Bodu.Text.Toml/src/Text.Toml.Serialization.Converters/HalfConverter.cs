@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HalfConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <see cref="double" /> at the format boundary.
 /// </summary>
 /// <remarks>
-/// Widening to <see cref="double" /> on write is exact for every finite <see cref="Half" /> and maps the
-/// not-a-number and infinity values to TOML's <c>nan</c>, <c>inf</c>, and <c>-inf</c> forms. Narrowing on read is
-/// saturating, matching IEEE 754 conversion and the behavior of the <see cref="float" /> converter: a finite TOML
-/// float outside the <see cref="Half" /> range reads back as positive or negative infinity rather than throwing.
+/// Widening to <see cref="double" /> on write is exact for every finite <see cref="Half" /> and maps the not-a-number
+/// and infinity values to TOML's <c>nan</c>, <c>inf</c>, and <c>-inf</c> forms. Narrowing on read is saturating,
+/// matching IEEE 754 conversion and the behavior of the <see cref="float" /> converter: a finite TOML float outside the
+/// <see cref="Half" /> range reads back as positive or negative infinity rather than throwing.
 /// </remarks>
 internal sealed class HalfConverter
     : TomlConverter<Half>

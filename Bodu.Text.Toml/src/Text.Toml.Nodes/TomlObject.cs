@@ -15,10 +15,11 @@ namespace Bodu.Text.Toml.Nodes;
 /// </summary>
 /// <remarks>
 /// Entries are kept in insertion order — including across removals — which is also the order in which they are
-/// serialized: the TOML writer emits a table's members in document order rather than re-sorting them. A value may be <see langword="null" /> in memory, but
-/// a table containing a <see langword="null" /> value cannot be written because TOML has no null token. Adding a node
-/// that already belongs to another container throws an <see cref="InvalidOperationException" />; removing or replacing
-/// a value detaches it, clearing its <see cref="TomlNode.Parent" /> so it can be added to another container.
+/// serialized: the TOML writer emits a table's members in document order rather than re-sorting them. A value may be
+/// <see langword="null" /> in memory, but a table containing a <see langword="null" /> value cannot be written because
+/// TOML has no null token. Adding a node that already belongs to another container throws an
+/// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
+/// <see cref="TomlNode.Parent" /> so it can be added to another container.
 /// </remarks>
 public sealed class TomlObject
     : TomlNode, IDictionary<string, TomlNode?>
@@ -88,12 +89,16 @@ public sealed class TomlObject
     }
 
     /// <inheritdoc />
-    /// <remarks>The collection is a read-only snapshot in insertion order.</remarks>
+    /// <remarks>
+    /// The collection is a read-only snapshot in insertion order.
+    /// </remarks>
     public ICollection<string> Keys =>
         _order.AsReadOnly();
 
     /// <inheritdoc />
-    /// <remarks>The collection is a read-only snapshot in insertion order.</remarks>
+    /// <remarks>
+    /// The collection is a read-only snapshot in insertion order.
+    /// </remarks>
     public ICollection<TomlNode?> Values =>
         _order.Select(key => _properties[key]).ToList().AsReadOnly();
 
@@ -193,10 +198,12 @@ public sealed class TomlObject
     }
 
     /// <inheritdoc />
-    /// <remarks>Entries are enumerated in insertion order.</remarks>
+    /// <remarks>
+    /// Entries are enumerated in insertion order.
+    /// </remarks>
     public IEnumerator<KeyValuePair<string, TomlNode?>> GetEnumerator()
     {
-        foreach (string key in _order)
+        foreach (var key in _order)
             yield return new KeyValuePair<string, TomlNode?>(key, _properties[key]);
     }
 
@@ -232,7 +239,7 @@ public sealed class TomlObject
     /// <param name="key">The property name to remove.</param>
     private void RemoveFromOrder(string key)
     {
-        int index = _order.FindIndex(entry => _comparer.Equals(entry, key));
+        var index = _order.FindIndex(entry => _comparer.Equals(entry, key));
         if (index >= 0)
             _order.RemoveAt(index);
     }

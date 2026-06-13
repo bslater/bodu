@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.PropertyOrder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,8 +25,8 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenPropertyOrderAttributePresent_ShouldEmitSameCanonicalBytesAsWithout()
     {
-        byte[] ordered = BencodeSerializer.Serialize(new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
-        byte[] unordered = BencodeSerializer.Serialize(new UnorderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
+        var ordered = BencodeSerializer.Serialize(new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
+        var unordered = BencodeSerializer.Serialize(new UnorderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
 
         CollectionAssert.AreEqual(unordered, ordered);
     }
@@ -40,7 +40,7 @@ public partial class BencodeSerializerTests
     public void Serialize_WhenPropertyOrderReversesDeclaredKeys_ShouldStillEmitCanonicalKeyOrder()
     {
         // Alpha is ordered last (10) and Charlie first (-10), the reverse of canonical key order; output must ignore it.
-        byte[] bytes = BencodeSerializer.Serialize(new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
+        var bytes = BencodeSerializer.Serialize(new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
 
         Assert.AreEqual("d5:Alphai1e5:Bravoi2e7:Charliei3ee", Encoding.Latin1.GetString(bytes));
     }
@@ -54,7 +54,7 @@ public partial class BencodeSerializerTests
     {
         var original = new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 };
 
-        byte[] bytes = BencodeSerializer.Serialize(original);
+        var bytes = BencodeSerializer.Serialize(original);
         var roundTripped = BencodeSerializer.Deserialize<OrderedTrioModel>(bytes);
 
         Assert.AreEqual(1, roundTripped.Alpha);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReader.Strings.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,10 +11,12 @@ namespace Bodu.Text.Toml.Reader;
 public ref partial struct Utf8TomlReader
 {
     /// <summary>
-    /// Scans a single-line basic string (its opening quote at the cursor), validating escapes, control characters,
-    /// and UTF-8 without materializing the value.
+    /// Scans a single-line basic string (its opening quote at the cursor), validating escapes, control characters, and
+    /// UTF-8 without materializing the value.
     /// </summary>
-    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanBasicString()
     {
         Advance();
@@ -74,7 +76,9 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a single-line literal string (its opening apostrophe at the cursor).
     /// </summary>
-    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanLiteralString()
     {
         Advance();
@@ -125,7 +129,9 @@ public ref partial struct Utf8TomlReader
     /// Scans a multi-line basic string (its opening triple quote at the cursor). The content range starts after the
     /// trimmed leading newline; raw newline bytes inside the content are preserved as written.
     /// </summary>
-    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanMultilineBasicString()
     {
         _pos += 3;
@@ -216,10 +222,12 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Scans a multi-line literal string (its opening triple apostrophe at the cursor). The content range starts
-    /// after the trimmed leading newline, so decoding is a direct transcode.
+    /// Scans a multi-line literal string (its opening triple apostrophe at the cursor). The content range starts after
+    /// the trimmed leading newline, so decoding is a direct transcode.
     /// </summary>
-    /// <returns><see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the string was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanMultilineLiteralString()
     {
         _pos += 3;
@@ -293,7 +301,9 @@ public ref partial struct Utf8TomlReader
     /// Validates and consumes the escape sequence beginning at the cursor (which is positioned just after the
     /// backslash).
     /// </summary>
-    /// <returns><see langword="true" /> when the escape is valid; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the escape is valid; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryValidateEscape()
     {
         if (Eof)
@@ -344,7 +354,9 @@ public ref partial struct Utf8TomlReader
     /// scalar values.
     /// </summary>
     /// <param name="digits">The number of hexadecimal digits to read.</param>
-    /// <returns><see langword="true" /> when the escape is valid; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the escape is valid; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryValidateUnicodeEscape(int digits)
     {
         if (_pos + digits > _source.Length)

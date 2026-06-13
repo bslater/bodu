@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Dictionaries.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class TomlSerializerTests
     {
         var model = new DictionaryModel { Counts = new() { ["z"] = 1, ["a"] = 2, ["m"] = 3 } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Counts]\nz = 1\na = 2\nm = 3\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<DictionaryModel>(text);
@@ -43,7 +43,7 @@ public partial class TomlSerializerTests
     {
         var model = new DictionaryModel { Counts = new() { ["a key"] = 1 } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("[Counts]\n\"a key\" = 1\n", text);
     }
@@ -56,7 +56,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("a = 1\nb = 2\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<string, int>>(text);
@@ -85,7 +85,7 @@ public partial class TomlSerializerTests
     {
         var model = new SortedDictionaryModel { Counts = new() { ["b"] = 2, ["a"] = 1 } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Counts]\na = 1\nb = 2\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<SortedDictionaryModel>(text);
@@ -103,7 +103,7 @@ public partial class TomlSerializerTests
     {
         var model = new DictionaryModel { Counts = new() };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Counts]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<DictionaryModel>(text);
@@ -120,7 +120,7 @@ public partial class TomlSerializerTests
     {
         var model = new NestedDictionaryModel { Groups = new() { ["x"] = new() { ["a"] = 1 } } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Groups]\n\n[Groups.x]\na = 1\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<NestedDictionaryModel>(text);
@@ -136,7 +136,7 @@ public partial class TomlSerializerTests
     {
         var model = new DictionaryOfListModel { Groups = new() { ["a"] = [1, 2] } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Groups]\na = [1, 2]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<DictionaryOfListModel>(text);
@@ -152,7 +152,7 @@ public partial class TomlSerializerTests
     {
         var model = new NullableValueDictionaryModel { Names = new() { ["a"] = "x", ["b"] = null } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("[Names]\na = \"x\"\n", text);
     }
@@ -166,7 +166,7 @@ public partial class TomlSerializerTests
     {
         var model = new IntKeyedDictionaryModel { Lookup = new() { [1] = "a" } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Lookup]\n1 = \"a\"\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<IntKeyedDictionaryModel>(text);
@@ -183,7 +183,7 @@ public partial class TomlSerializerTests
     {
         var model = new CountByIdModel { Counts = new() { [2] = 20, [10] = 100 } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("[Counts]\n2 = 20\n10 = 100\n", text);
     }
@@ -197,7 +197,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<int, string> { [1] = "a" };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("1 = \"a\"\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<int, string>>(text);
@@ -213,7 +213,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<int, int> { [-5] = 1 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("-5 = 1\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<int, int>>(text);
@@ -230,7 +230,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<ulong, int> { [ulong.MaxValue] = 1 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("18446744073709551615 = 1\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<ulong, int>>(text);
@@ -246,7 +246,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<Status, int> { [Status.Archived] = 1, [Status.Active] = 2 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Archived = 1\nActive = 2\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<Status, int>>(text);
@@ -264,7 +264,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<PermissionFlags, int> { [PermissionFlags.Read | PermissionFlags.Write] = 1 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("\"Read, Write\" = 1\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<PermissionFlags, int>>(text);
@@ -281,7 +281,7 @@ public partial class TomlSerializerTests
         var key = new Guid("08314FA2-B1FE-4792-BCD1-6E62338AC7F3");
         var model = new Dictionary<Guid, int> { [key] = 1 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("08314fa2-b1fe-4792-bcd1-6e62338ac7f3 = 1\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<Guid, int>>(text);
@@ -297,7 +297,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<bool, int> { [true] = 1, [false] = 2 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("True = 1\nFalse = 2\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<bool, int>>(text);
@@ -314,7 +314,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<char, int> { ['a'] = 1, ['#'] = 2 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("a = 1\n\"#\" = 2\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<Dictionary<char, int>>(text);
@@ -331,7 +331,7 @@ public partial class TomlSerializerTests
     {
         var model = new NestedIntKeyedDictionaryModel { Groups = new() { [1] = new() { [2] = 3 } } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
         Assert.AreEqual("[Groups]\n\n[Groups.1]\n2 = 3\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<NestedIntKeyedDictionaryModel>(text);
@@ -411,7 +411,7 @@ public partial class TomlSerializerTests
     {
         var model = new DoubleKeyedDictionaryModel { Lookup = new() { [1.5] = "a" } };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("[[Lookup]]\nKey = 1.5\nValue = \"a\"\n", text);
     }

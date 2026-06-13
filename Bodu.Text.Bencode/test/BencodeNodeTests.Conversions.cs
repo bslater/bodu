@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNodeTests.Conversions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -151,7 +151,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Root_WhenNodeHasNoParent_ShouldReturnSelf()
     {
-        BencodeValue node = BencodeValue.Create(1L);
+        var node = BencodeValue.Create(1L);
 
         Assert.IsNull(node.Parent);
         Assert.AreSame(node, node.Root);

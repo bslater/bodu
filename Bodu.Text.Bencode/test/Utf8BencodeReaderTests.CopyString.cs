@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderTests.CopyString.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void CopyString_WhenDestinationIsChars_ShouldDecodeUtf8Content()
     {
-        byte[] data = "5:café"u8.ToArray();
+        var data = "5:café"u8.ToArray();
         var reader = new Utf8BencodeReader(data);
         Assert.IsTrue(reader.Read());
         Span<char> destination = stackalloc char[8];

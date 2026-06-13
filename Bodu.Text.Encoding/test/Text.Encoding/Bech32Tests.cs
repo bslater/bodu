@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bech32Tests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -76,11 +76,11 @@ public sealed partial class Bech32Tests
     public void EncodeDecode_WhenBip173SegWitV0Example_ShouldMatchPublishedAddress()
     {
         const string Address = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4";
-        byte[] program = Convert.FromHexString("751e76e8199196d454941c45d1b3a323f1433bd6");
+        var program = Convert.FromHexString("751e76e8199196d454941c45d1b3a323f1433bd6");
 
         // Data part = witness version (0) followed by the program repacked from 8-bit to 5-bit groups.
-        byte[] programGroups = Bech32.ConvertBits(program, 8, 5, pad: true)!;
-        byte[] data = new byte[1 + programGroups.Length];
+        var programGroups = Bech32.ConvertBits(program, 8, 5, pad: true)!;
+        var data = new byte[1 + programGroups.Length];
         programGroups.CopyTo(data, 1);
 
         var encoded = Bech32.Encode("bc", data, Bech32Encoding.Bech32);

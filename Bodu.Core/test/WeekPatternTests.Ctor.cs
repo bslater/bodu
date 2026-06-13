@@ -22,7 +22,7 @@ public partial class WeekPatternTests
 
         Assert.AreEqual(7, pattern.Count);
 
-        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
             Assert.IsTrue(pattern.Contains(day), $"{day} should be selected.");
     }
 

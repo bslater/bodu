@@ -28,8 +28,8 @@ namespace Bodu.Text.Toml;
 /// <see cref="StartTable" />.
 /// </para>
 /// <para>
-/// The scalar members are shared by both readers; the header, key, comment, and inline-table members appear only in
-/// the source-order stream, and the table and property-name members only in the normalized stream.
+/// The scalar members are shared by both readers; the header, key, comment, and inline-table members appear only in the
+/// source-order stream, and the table and property-name members only in the normalized stream.
 /// </para>
 /// </remarks>
 public enum TomlTokenType
@@ -40,8 +40,7 @@ public enum TomlTokenType
     None,
 
     /// <summary>
-    /// The start of a table in the normalized stream (a header-defined table, a dotted-key table, or an inline
-    /// table).
+    /// The start of a table in the normalized stream (a header-defined table, a dotted-key table, or an inline table).
     /// </summary>
     StartTable,
 
@@ -51,8 +50,8 @@ public enum TomlTokenType
     EndTable,
 
     /// <summary>
-    /// The start of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose
-    /// elements are tables.
+    /// The start of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
+    /// are tables.
     /// </summary>
     StartArray,
 
@@ -113,8 +112,8 @@ public enum TomlTokenType
     TableHeader,
 
     /// <summary>
-    /// An <c>[[array-of-tables]]</c> header in the source-order stream, emitted before the header's
-    /// <see cref="Key" /> segments.
+    /// An <c>[[array-of-tables]]</c> header in the source-order stream, emitted before the header's <see cref="Key" />
+    /// segments.
     /// </summary>
     ArrayTableHeader,
 

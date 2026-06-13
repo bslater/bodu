@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public sealed class TomlDocumentBuilderTests
     [DataRow("a.b = 1\na.b.c = 2\n", DisplayName = "dotted key through scalar")]
     public void Parse_WhenStructurallyInvalid_ShouldLexCleanlyAndFailInBuilder(string toml)
     {
-        byte[] source = Encoding.UTF8.GetBytes(toml);
+        var source = Encoding.UTF8.GetBytes(toml);
 
         // The lexer accepts the document: the rule under test is structural, not lexical.
         var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });

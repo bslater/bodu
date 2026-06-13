@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Nullables.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenNullableValueTypePresent_ShouldDelegateToUnderlying()
     {
-        string text = TomlSerializer.Serialize(new NullableValueModel { Number = 5, Flag = true, When = new DateOnly(2026, 6, 10) });
+        var text = TomlSerializer.Serialize(new NullableValueModel { Number = 5, Flag = true, When = new DateOnly(2026, 6, 10) });
 
         Assert.AreEqual("Number = 5\nFlag = true\nWhen = 2026-06-10\n", text);
     }
@@ -48,7 +48,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenNullableValueTypeNull_ShouldOmitMember()
     {
-        string text = TomlSerializer.Serialize(new NullableValueModel { Number = 7, Flag = null, When = null });
+        var text = TomlSerializer.Serialize(new NullableValueModel { Number = 7, Flag = null, When = null });
 
         Assert.AreEqual("Number = 7\n", text);
     }
@@ -59,7 +59,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenAllNullableValueTypesNull_ShouldEmitEmptyDocument()
     {
-        string text = TomlSerializer.Serialize(new NullableValueModel { Number = null, Flag = null, When = null });
+        var text = TomlSerializer.Serialize(new NullableValueModel { Number = null, Flag = null, When = null });
 
         Assert.AreEqual(string.Empty, text);
     }
@@ -97,7 +97,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenNullableReferenceType_ShouldOmitNullAndRoundTripPresent()
     {
-        string text = TomlSerializer.Serialize(new NullableReferenceModel { Present = "here", Absent = null });
+        var text = TomlSerializer.Serialize(new NullableReferenceModel { Present = "here", Absent = null });
 
         Assert.AreEqual("Present = \"here\"\n", text);
 

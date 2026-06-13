@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.Enumeration.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenEnumeratedTwice_ShouldYieldSameSequence()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ei2ei3ee"));
+        using var document = BencodeDocument.Parse(Bytes("li1ei2ei3ee"));
         BencodeElement.ArrayEnumerator enumerable = document.RootElement.EnumerateArray();
 
         List<long> first = [];
@@ -44,7 +44,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenNestedForeachOverSameArray_ShouldWalkIndependently()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ei2ee"));
+        using var document = BencodeDocument.Parse(Bytes("li1ei2ee"));
         BencodeElement root = document.RootElement;
 
         List<string> pairs = [];
@@ -64,7 +64,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenNestedForeachOverSameObject_ShouldWalkIndependently()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ai1e1:bi2ee"));
+        using var document = BencodeDocument.Parse(Bytes("d1:ai1e1:bi2ee"));
         BencodeElement root = document.RootElement;
 
         List<string> pairs = [];
@@ -84,7 +84,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenMoveNextCalledPastEnd_ShouldKeepReturningFalse()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ee"));
+        using var document = BencodeDocument.Parse(Bytes("li1ee"));
         BencodeElement.ArrayEnumerator enumerator = document.RootElement.EnumerateArray();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -99,7 +99,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenMoveNextCalledPastEnd_ShouldKeepReturningFalse()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ai1ee"));
+        using var document = BencodeDocument.Parse(Bytes("d1:ai1ee"));
         BencodeElement.ObjectEnumerator enumerator = document.RootElement.EnumerateObject();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -114,7 +114,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenReset_ShouldRestartFromFirstElement()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ei2ee"));
+        using var document = BencodeDocument.Parse(Bytes("li1ei2ee"));
         BencodeElement.ArrayEnumerator enumerator = document.RootElement.EnumerateArray();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -132,7 +132,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenReset_ShouldRestartFromFirstPair()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ai1e1:bi2ee"));
+        using var document = BencodeDocument.Parse(Bytes("d1:ai1e1:bi2ee"));
         BencodeElement.ObjectEnumerator enumerator = document.RootElement.EnumerateObject();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -149,7 +149,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenArrayEmpty_ShouldYieldNothing()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("le"));
+        using var document = BencodeDocument.Parse(Bytes("le"));
 
         var count = 0;
         foreach (BencodeElement element in document.RootElement.EnumerateArray())
@@ -164,7 +164,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenObjectEmpty_ShouldYieldNothing()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
+        using var document = BencodeDocument.Parse(Bytes("de"));
 
         var count = 0;
         foreach (BencodeProperty property in document.RootElement.EnumerateObject())
@@ -180,7 +180,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenValuesAreContainers_ShouldSkipSubtreesBetweenPairs()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ali1ei2ee1:bd1:xi3ee1:ci4ee"));
+        using var document = BencodeDocument.Parse(Bytes("d1:ali1ei2ee1:bd1:xi3ee1:ci4ee"));
 
         List<string> names = [];
         List<BencodeValueKind> kinds = [];

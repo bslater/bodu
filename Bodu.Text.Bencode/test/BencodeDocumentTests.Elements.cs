@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.Elements.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class BencodeDocumentTests
     [DataRow("de")]
     public void GetInt64_WhenElementIsNotInteger_ShouldThrowInvalidOperationException(string input)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -48,7 +48,7 @@ public partial class BencodeDocumentTests
     [DataRow("de")]
     public void GetString_WhenElementIsNotByteString_ShouldThrowInvalidOperationException(string input)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -68,7 +68,7 @@ public partial class BencodeDocumentTests
     [DataRow("de")]
     public void GetBytes_WhenElementIsNotByteString_ShouldThrowInvalidOperationException(string input)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -88,7 +88,7 @@ public partial class BencodeDocumentTests
     [DataRow("de")]
     public void GetArrayLength_WhenElementIsNotArray_ShouldThrowInvalidOperationException(string input)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -104,7 +104,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenElementIsNotArray_ShouldThrowInvalidOperationException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
+        using var document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -120,7 +120,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenElementIsNotObject_ShouldThrowInvalidOperationException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("le"));
+        using var document = BencodeDocument.Parse(Bytes("le"));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -136,7 +136,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Indexer_WhenElementIsNotArray_ShouldThrowInvalidOperationException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
+        using var document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -152,7 +152,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenElementIsNotObject_ShouldThrowInvalidOperationException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("le"));
+        using var document = BencodeDocument.Parse(Bytes("le"));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -168,7 +168,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetProperty_WhenPropertyNameIsNull_ShouldThrowArgumentNullException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
+        using var document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement root = document.RootElement;
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
@@ -185,7 +185,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenPropertyNameIsNull_ShouldThrowArgumentNullException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
+        using var document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement root = document.RootElement;
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
@@ -201,7 +201,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Indexer_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ee"));
+        using var document = BencodeDocument.Parse(Bytes("li1ee"));
         BencodeElement root = document.RootElement;
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
@@ -225,7 +225,7 @@ public partial class BencodeDocumentTests
     [DataRow("de", "Object")]
     public void ToString_WhenElementKindVaries_ShouldRenderKindSpecificText(string input, string expected)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
 
         Assert.AreEqual(expected, document.RootElement.ToString());
     }
@@ -240,7 +240,7 @@ public partial class BencodeDocumentTests
     [DataRow("i-9223372036854775808e", long.MinValue)]
     public void GetInt64_WhenElementIsInt64Extreme_ShouldReturnOriginalValue(string input, long expected)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
 
         Assert.AreEqual(expected, document.RootElement.GetInt64());
     }
@@ -254,7 +254,7 @@ public partial class BencodeDocumentTests
     {
         byte[] payload = [0x00, 0x01, 0x7F, 0x80, 0xFF];
         byte[] source = [.. Bytes("5:"), .. payload];
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        using var document = BencodeDocument.Parse(source);
 
         CollectionAssert.AreEqual(payload, document.RootElement.GetBytes());
     }
@@ -266,7 +266,7 @@ public partial class BencodeDocumentTests
     public void GetString_WhenByteStringContainsMultiByteUtf8_ShouldDecode()
     {
         byte[] source = [.. Bytes("6:"), .. Encoding.UTF8.GetBytes("héllo")];
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        using var document = BencodeDocument.Parse(source);
 
         Assert.AreEqual("héllo", document.RootElement.GetString());
     }
@@ -279,7 +279,7 @@ public partial class BencodeDocumentTests
     public void GetProperty_WhenKeyIsMultiByteUtf8_ShouldMatch()
     {
         byte[] source = [.. Bytes("d"), .. Bytes("2:"), .. Encoding.UTF8.GetBytes("é"), .. Bytes("i1ee")];
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        using var document = BencodeDocument.Parse(source);
 
         Assert.AreEqual(1L, document.RootElement.GetProperty("é").GetInt64());
     }
@@ -290,7 +290,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetArrayLength_WhenArrayEmpty_ShouldReturnZero()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("le"));
+        using var document = BencodeDocument.Parse(Bytes("le"));
 
         Assert.AreEqual(0, document.RootElement.GetArrayLength());
     }
@@ -302,7 +302,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Indexer_WhenArrayContainsMixedKinds_ShouldSkipNestedSubtrees()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("li1ed1:a1:beli2ee4:spame"));
+        using var document = BencodeDocument.Parse(Bytes("li1ed1:a1:beli2ee4:spame"));
         BencodeElement root = document.RootElement;
 
         Assert.AreEqual(4, root.GetArrayLength());
@@ -319,11 +319,11 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetBytes_WhenCalledTwice_ShouldReturnIndependentCopies()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("4:spam"));
+        using var document = BencodeDocument.Parse(Bytes("4:spam"));
 
-        byte[] first = document.RootElement.GetBytes();
+        var first = document.RootElement.GetBytes();
         first[0] = (byte)'X';
-        byte[] second = document.RootElement.GetBytes();
+        var second = document.RootElement.GetBytes();
 
         Assert.AreEqual((byte)'s', second[0]);
     }

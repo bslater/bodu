@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenSingleInteger_ShouldReportIntegerTokenThenEnd()
     {
-        byte[] bytes = Bytes("i42e");
+        var bytes = Bytes("i42e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -61,7 +61,7 @@ public partial class Utf8BencodeReaderTests
     [DataRow("i-9223372036854775808e", long.MinValue)]
     public void Read_WhenInteger_ShouldDecodeValue(string text, long expected)
     {
-        byte[] bytes = Bytes(text);
+        var bytes = Bytes(text);
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -77,7 +77,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenEmptyByteString_ShouldReportZeroLengthValue()
     {
-        byte[] bytes = Bytes("0:");
+        var bytes = Bytes("0:");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -96,7 +96,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenAsciiByteString_ShouldReportContent()
     {
-        byte[] bytes = Bytes("4:spam");
+        var bytes = Bytes("4:spam");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -114,7 +114,7 @@ public partial class Utf8BencodeReaderTests
     public void Read_WhenUtf8MultibyteByteString_ShouldDecodeText()
     {
         const string Text = "hélloé中";
-        byte[] content = Encoding.UTF8.GetBytes(Text);
+        var content = Encoding.UTF8.GetBytes(Text);
         byte[] bytes = [.. Encoding.ASCII.GetBytes($"{content.Length}:"), .. content];
         var reader = new Utf8BencodeReader(bytes);
 
@@ -165,7 +165,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenLongByteString_ShouldReadEntireContent()
     {
-        byte[] content = new byte[5000];
+        var content = new byte[5000];
         for (var i = 0; i < content.Length; i++)
             content[i] = (byte)(i % 251);
 
@@ -186,7 +186,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenEmptyList_ShouldReportStartThenEnd()
     {
-        byte[] bytes = Bytes("le");
+        var bytes = Bytes("le");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -209,7 +209,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenListOfScalars_ShouldReportElementsInOrder()
     {
-        byte[] bytes = Bytes("li1e3:abci-2ee");
+        var bytes = Bytes("li1e3:abci-2ee");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -239,7 +239,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenNestedLists_ShouldTrackDepth()
     {
-        byte[] bytes = Bytes("lli1eee");
+        var bytes = Bytes("lli1eee");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -272,7 +272,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenEmptyDictionary_ShouldReportStartThenEnd()
     {
-        byte[] bytes = Bytes("de");
+        var bytes = Bytes("de");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -293,7 +293,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenSingleEntryDictionary_ShouldReportPropertyNameAndValue()
     {
-        byte[] bytes = Bytes("d3:cow3:mooe");
+        var bytes = Bytes("d3:cow3:mooe");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -321,7 +321,7 @@ public partial class Utf8BencodeReaderTests
     public void Read_WhenDictionaryWithMixedValues_ShouldReportEachValueKind()
     {
         // Keys in canonical ascending order: dct, int, lst, str.
-        byte[] bytes = Bytes("d3:dctde3:inti7e3:lstle3:str3:abce");
+        var bytes = Bytes("d3:dctde3:inti7e3:lstle3:str3:abce");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -369,7 +369,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenNestedDictionaries_ShouldTrackDepth()
     {
-        byte[] bytes = Bytes("d1:ad1:bi1eee");
+        var bytes = Bytes("d1:ad1:bi1eee");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -410,7 +410,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenWalkingDocument_ShouldReportBytesConsumedAtEachToken()
     {
-        byte[] bytes = Bytes("d3:cow3:moo4:spam4:eggse");
+        var bytes = Bytes("d3:cow3:moo4:spam4:eggse");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -448,7 +448,7 @@ public partial class Utf8BencodeReaderTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        byte[] bytes = Bytes(kat.Input);
+        var bytes = Bytes(kat.Input);
         var reader = new Utf8BencodeReader(bytes);
 
         var actual = new List<BencodeTokenType>();
@@ -466,7 +466,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenCalledRepeatedlyAfterEnd_ShouldKeepReturningFalse()
     {
-        byte[] bytes = Bytes("i1e");
+        var bytes = Bytes("i1e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -497,7 +497,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TokenType_WhenBeforeFirstRead_ShouldBeNone()
     {
-        byte[] bytes = Bytes("i1e");
+        var bytes = Bytes("i1e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.AreEqual(BencodeTokenType.None, reader.TokenType);
@@ -512,7 +512,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetInt64_WhenTokenIsByteString_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("3:abc");
+        var bytes = Bytes("3:abc");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -529,7 +529,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetInt64_WhenTokenIsStartList_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("le");
+        var bytes = Bytes("le");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -546,7 +546,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetInt64_WhenTokenIsNone_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("i1e");
+        var bytes = Bytes("i1e");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -562,7 +562,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetString_WhenTokenIsInteger_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("i5e");
+        var bytes = Bytes("i5e");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -579,7 +579,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetBytes_WhenTokenIsInteger_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("i5e");
+        var bytes = Bytes("i5e");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -596,7 +596,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetString_WhenTokenIsNone_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("i5e");
+        var bytes = Bytes("i5e");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -614,7 +614,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetString_WhenTokenIsPropertyName_ShouldReturnKey()
     {
-        byte[] bytes = Bytes("d3:cow3:mooe");
+        var bytes = Bytes("d3:cow3:mooe");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read());
         Assert.IsTrue(reader.Read());

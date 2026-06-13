@@ -31,10 +31,10 @@ public class TomlSerializerAlignmentTests
     {
         var options = new TomlSerializerOptions { DefaultIgnoreCondition = TomlIgnoreCondition.WhenWritingDefault };
 
-        string zeroCount = TomlSerializer.Serialize(new CountModel { Count = 0, Label = "x" }, options);
+        var zeroCount = TomlSerializer.Serialize(new CountModel { Count = 0, Label = "x" }, options);
         Assert.AreEqual("Label = \"x\"\n", zeroCount);
 
-        string nonZeroCount = TomlSerializer.Serialize(new CountModel { Count = 7, Label = "x" }, options);
+        var nonZeroCount = TomlSerializer.Serialize(new CountModel { Count = 7, Label = "x" }, options);
         Assert.AreEqual("Count = 7\nLabel = \"x\"\n", nonZeroCount);
     }
 
@@ -45,7 +45,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Serialize_WhenDefaultIgnoreConditionIsNever_ShouldKeepDefaultValuedMembers()
     {
-        string text = TomlSerializer.Serialize(new CountModel { Count = 0, Label = "x" });
+        var text = TomlSerializer.Serialize(new CountModel { Count = 0, Label = "x" });
 
         Assert.AreEqual("Count = 0\nLabel = \"x\"\n", text);
     }
@@ -86,7 +86,7 @@ public class TomlSerializerAlignmentTests
     {
         var original = new RequiredMemberModel { Name = "server", Optional = "o" };
 
-        string text = TomlSerializer.Serialize(original);
+        var text = TomlSerializer.Serialize(original);
         var roundTripped = TomlSerializer.Deserialize<RequiredMemberModel>(text);
 
         Assert.AreEqual("server", roundTripped.Name);
@@ -102,7 +102,7 @@ public class TomlSerializerAlignmentTests
     {
         var original = new IncludedModel(42);
 
-        string text = TomlSerializer.Serialize(original);
+        var text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 42\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<IncludedModel>(text);
@@ -142,7 +142,7 @@ public class TomlSerializerAlignmentTests
             },
         };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Name = \"test\"\na = 1\nz = 9\n", text);
     }
@@ -156,7 +156,7 @@ public class TomlSerializerAlignmentTests
     {
         var options = new TomlSerializerOptions(TomlSerializerDefaults.Web);
 
-        string text = TomlSerializer.Serialize(new CountModel { Count = 3, Label = "y" }, options);
+        var text = TomlSerializer.Serialize(new CountModel { Count = 3, Label = "y" }, options);
         Assert.AreEqual("count = 3\nlabel = \"y\"\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<CountModel>(text, options);
@@ -338,7 +338,7 @@ public class TomlSerializerAlignmentTests
     {
         var options = new TomlSerializerOptions { PropertyNamingPolicy = null };
 
-        string text = TomlSerializer.Serialize(new CamelCaseTypeModel { FirstName = "a", LastName = "b" }, options);
+        var text = TomlSerializer.Serialize(new CamelCaseTypeModel { FirstName = "a", LastName = "b" }, options);
 
         Assert.AreEqual("firstName = \"a\"\nlastName = \"b\"\n", text);
     }
@@ -352,7 +352,7 @@ public class TomlSerializerAlignmentTests
     {
         var model = new StatusModel { Status = Status.Active };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = \"Active\"\n", text);
 
@@ -369,7 +369,7 @@ public class TomlSerializerAlignmentTests
     {
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = \"not-found\"\n", text);
 
@@ -386,7 +386,7 @@ public class TomlSerializerAlignmentTests
     {
         var model = new NumberEnumModel { Status = Status.Archived };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = 2\n", text);
 
@@ -404,7 +404,7 @@ public class TomlSerializerAlignmentTests
         var options = new TomlSerializerOptions();
         options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
 
-        string text = TomlSerializer.Serialize(new StatusModel { Status = Status.Active }, options);
+        var text = TomlSerializer.Serialize(new StatusModel { Status = Status.Active }, options);
         Assert.AreEqual("Status = \"active\"\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<StatusModel>("Status = 2\n", options);

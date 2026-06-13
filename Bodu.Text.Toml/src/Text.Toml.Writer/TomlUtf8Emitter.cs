@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlUtf8Emitter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,8 +55,8 @@ internal ref struct TomlUtf8Emitter
     }
 
     /// <summary>
-    /// Gets a value indicating whether any byte has been emitted, used to decide blank-line separation before a
-    /// section header.
+    /// Gets a value indicating whether any byte has been emitted, used to decide blank-line separation before a section
+    /// header.
     /// </summary>
     /// <returns><see langword="true" /> once any byte has been written.</returns>
     internal readonly bool HasContent => _hasContent;

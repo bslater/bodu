@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -219,8 +219,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WritePropertyName(string name)
     {
@@ -337,9 +337,9 @@ public ref partial struct Utf8TomlWriter
     /// </exception>
     private static void ThrowIfUnpairedSurrogate(string value, [System.Runtime.CompilerServices.CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
-        for (int i = 0; i < value.Length; i++)
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (char.IsHighSurrogate(c))
             {
                 if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))

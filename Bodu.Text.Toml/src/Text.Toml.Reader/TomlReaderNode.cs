@@ -12,8 +12,8 @@ namespace Bodu.Text.Toml.Reader;
 /// <remarks>
 /// TOML cannot be tokenized in a single forward pass, because out-of-line <c>[table]</c> and <c>[[array-of-tables]]</c>
 /// headers contribute to structure defined elsewhere in the document. The builder therefore materializes the whole
-/// document into this tree, applying TOML's merge, redefinition, and ordering rules, and <see cref="TomlDocumentReader" />
-/// walks the tree depth-first to emit a normalized token stream.
+/// document into this tree, applying TOML's merge, redefinition, and ordering rules, and
+/// <see cref="TomlDocumentReader" /> walks the tree depth-first to emit a normalized token stream.
 /// </remarks>
 internal abstract class TomlReaderNode
 {

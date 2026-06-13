@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlExceptionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -92,7 +92,7 @@ public class TomlExceptionTests
     {
         TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            using Document.TomlDocument document = Document.TomlDocument.Parse("a = 1\nb = = 2\n");
+            using var document = Document.TomlDocument.Parse("a = 1\nb = = 2\n");
         });
 
         Assert.AreEqual(2, ex.LineNumber);

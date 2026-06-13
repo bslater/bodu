@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlWriterTests.Keys.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestCategory("Regression")]
     public void Write_WhenKey_ShouldQuoteOnlyWhenRequired(string key, string expectedKey)
     {
-        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName(key);
@@ -44,7 +44,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenKeyContainsReservedCharacter_ShouldEscapeWithinQuotes()
     {
-        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("a\"b");
@@ -62,7 +62,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenSubTableHeaderHasMixedSegments_ShouldQuotePerSegment()
     {
-        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("server");

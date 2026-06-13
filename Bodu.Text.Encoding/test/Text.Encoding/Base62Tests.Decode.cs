@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base62Tests.Decode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public sealed partial class Base62Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespace_ShouldSkipWhitespace()
     {
-        byte[] expected = Base62.Decode("48");
+        var expected = Base62.Decode("48");
 
         CollectionAssert.AreEqual(expected, Base62.Decode("4 8", BaseFormatStyles.IgnoreWhitespace));
     }

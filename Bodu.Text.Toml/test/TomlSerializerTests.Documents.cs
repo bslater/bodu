@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Documents.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual(kind, element.ValueKind);
 
-        string text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
+        var text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
         TomlElement again = TomlSerializer.Deserialize<ValueModel<TomlElement>>(text).Value;
         Assert.AreEqual(kind, again.ValueKind);
     }
@@ -60,10 +60,10 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenTomlElementFromParsedDocument_ShouldEmitViewedValue()
     {
-        using TomlDocument document = TomlDocument.Parse("Inner = 5\n");
+        using var document = TomlDocument.Parse("Inner = 5\n");
         TomlElement element = document.RootElement.GetProperty("Inner");
 
-        string text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
+        var text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
 
         Assert.AreEqual("Value = 5\n", text);
     }
@@ -134,7 +134,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenTomlElementFromDisposedDocument_ShouldThrowObjectDisposedException()
     {
-        TomlDocument document = TomlDocument.Parse("A = 1\n");
+        var document = TomlDocument.Parse("A = 1\n");
         TomlElement element = document.RootElement;
         document.Dispose();
 
@@ -167,7 +167,7 @@ public partial class TomlSerializerTests
     {
         const string toml = "S = \"x\"\nI = 5\nF = 1.5\nB = true\nOdt = 2026-06-10T09:30:00Z\nLdt = 2026-06-10T09:30:00\nLd = 2026-06-10\nLt = 09:30:00\nA = [1, 2]\nT = { N = 1 }\n";
         const string expected = "S = \"x\"\nI = 5\nF = 1.5\nB = true\nOdt = 2026-06-10T09:30:00Z\nLdt = 2026-06-10T09:30:00\nLd = 2026-06-10\nLt = 09:30:00\nA = [1, 2]\n\n[T]\nN = 1\n";
-        using TomlDocument document = TomlDocument.Parse(toml);
+        using var document = TomlDocument.Parse(toml);
 
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8TomlWriter(buffer);

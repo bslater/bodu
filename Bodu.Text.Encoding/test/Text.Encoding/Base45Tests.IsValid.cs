@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45Tests.IsValid.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -81,7 +81,7 @@ public sealed partial class Base45Tests
     public void BinaryEncodingsBase45_WhenRoundTripped_ShouldReturnOriginalBytes()
     {
         IBinaryEncoding encoding = BinaryEncodings.Base45;
-        byte[] payload = "base-45"u8.ToArray();
+        var payload = "base-45"u8.ToArray();
 
         var encoded = encoding.Encode(payload);
 

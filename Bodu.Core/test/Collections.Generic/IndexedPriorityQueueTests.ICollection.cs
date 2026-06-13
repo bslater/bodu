@@ -94,7 +94,7 @@ public partial class IndexedPriorityQueueTests
         var destination = new KeyValuePair<string, int>[3];
         collection.CopyTo(destination, 1);
 
-        Assert.AreEqual(default(KeyValuePair<string, int>), destination[0]);
+        Assert.AreEqual(default, destination[0]);
         Assert.IsTrue(destination[1].Key is "a" or "b");
         Assert.IsTrue(destination[2].Key is "a" or "b");
     }

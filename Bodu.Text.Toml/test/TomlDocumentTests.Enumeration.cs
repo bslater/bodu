@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentTests.Enumeration.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenEnumeratedTwice_ShouldYieldSameSequence()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1, 2, 3]\n");
+        using var document = TomlDocument.Parse("a = [1, 2, 3]\n");
         TomlElement.ArrayEnumerator enumerable = document.RootElement.GetProperty("a").EnumerateArray();
 
         List<long> first = [];
@@ -44,7 +44,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenNestedForeachOverSameArray_ShouldWalkIndependently()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1, 2]\n");
+        using var document = TomlDocument.Parse("a = [1, 2]\n");
         TomlElement array = document.RootElement.GetProperty("a");
 
         List<string> pairs = [];
@@ -64,7 +64,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenNestedForeachOverSameTable_ShouldWalkIndependently()
     {
-        using TomlDocument document = TomlDocument.Parse("a = 1\nb = 2\n");
+        using var document = TomlDocument.Parse("a = 1\nb = 2\n");
         TomlElement root = document.RootElement;
 
         List<string> pairs = [];
@@ -84,7 +84,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenMoveNextCalledPastEnd_ShouldKeepReturningFalse()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1]\n");
+        using var document = TomlDocument.Parse("a = [1]\n");
         TomlElement.ArrayEnumerator enumerator = document.RootElement.GetProperty("a").EnumerateArray();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -99,7 +99,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenMoveNextCalledPastEnd_ShouldKeepReturningFalse()
     {
-        using TomlDocument document = TomlDocument.Parse("a = 1\n");
+        using var document = TomlDocument.Parse("a = 1\n");
         TomlElement.ObjectEnumerator enumerator = document.RootElement.EnumerateObject();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -114,7 +114,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenReset_ShouldRestartFromFirstElement()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1, 2]\n");
+        using var document = TomlDocument.Parse("a = [1, 2]\n");
         TomlElement.ArrayEnumerator enumerator = document.RootElement.GetProperty("a").EnumerateArray();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -132,7 +132,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenReset_ShouldRestartFromFirstPair()
     {
-        using TomlDocument document = TomlDocument.Parse("a = 1\nb = 2\n");
+        using var document = TomlDocument.Parse("a = 1\nb = 2\n");
         TomlElement.ObjectEnumerator enumerator = document.RootElement.EnumerateObject();
 
         Assert.IsTrue(enumerator.MoveNext());
@@ -149,7 +149,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenArrayEmpty_ShouldYieldNothing()
     {
-        using TomlDocument document = TomlDocument.Parse("a = []\n");
+        using var document = TomlDocument.Parse("a = []\n");
 
         var count = 0;
         foreach (TomlElement element in document.RootElement.GetProperty("a").EnumerateArray())
@@ -164,7 +164,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenTableEmpty_ShouldYieldNothing()
     {
-        using TomlDocument document = TomlDocument.Parse("a = {}\n");
+        using var document = TomlDocument.Parse("a = {}\n");
 
         var count = 0;
         foreach (TomlProperty property in document.RootElement.GetProperty("a").EnumerateObject())
@@ -180,7 +180,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenValuesAreContainers_ShouldSkipSubtreesBetweenPairs()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1, 2]\nb = {x = 3}\nc = 4\n");
+        using var document = TomlDocument.Parse("a = [1, 2]\nb = {x = 3}\nc = 4\n");
 
         List<string> names = [];
         List<TomlValueKind> kinds = [];
@@ -203,7 +203,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenArrayOfTables_ShouldYieldTablesInDocumentOrder()
     {
-        using TomlDocument document = TomlDocument.Parse(
+        using var document = TomlDocument.Parse(
             "[[p]]\nname = \"first\"\nsize = 1\n\n[[p]]\nname = \"second\"\n");
 
         List<string> names = [];

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentTests.Elements.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public partial class TomlDocumentTests
     [DynamicData(nameof(AccessorKindMismatches))]
     public void Accessors_WhenElementKindMismatched_ShouldThrowInvalidOperationException(string accessor, string elementKind)
     {
-        using TomlDocument document = TomlDocument.Parse(AllKindsToml);
+        using var document = TomlDocument.Parse(AllKindsToml);
         TomlElement element = document.RootElement.GetProperty(elementKind);
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -83,7 +83,7 @@ public partial class TomlDocumentTests
 
         foreach (KeyValuePair<string, string> entry in requiredKind)
         {
-            foreach (string kind in kinds)
+            foreach (var kind in kinds)
             {
                 if (!string.Equals(kind, entry.Value, StringComparison.Ordinal))
                     yield return [entry.Key, kind];
@@ -123,7 +123,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Accessors_WhenElementKindMatches_ShouldReturnDecodedValues()
     {
-        using TomlDocument document = TomlDocument.Parse(AllKindsToml);
+        using var document = TomlDocument.Parse(AllKindsToml);
         TomlElement root = document.RootElement;
 
         Assert.AreEqual("x", root.GetProperty("String").GetString());
@@ -143,7 +143,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetDateTime_WhenLocalDateTime_ShouldReportUnspecifiedKind()
     {
-        using TomlDocument document = TomlDocument.Parse("stamp = 1979-05-27T07:32:00\n");
+        using var document = TomlDocument.Parse("stamp = 1979-05-27T07:32:00\n");
 
         Assert.AreEqual(DateTimeKind.Unspecified, document.RootElement.GetProperty("stamp").GetDateTime().Kind);
     }
@@ -159,7 +159,7 @@ public partial class TomlDocumentTests
     [DataRow("a = 0\n", 0L)]
     public void GetInt64_WhenElementIsInt64Extreme_ShouldReturnOriginalValue(string input, long expected)
     {
-        using TomlDocument document = TomlDocument.Parse(input);
+        using var document = TomlDocument.Parse(input);
 
         Assert.AreEqual(expected, document.RootElement.GetProperty("a").GetInt64());
     }
@@ -170,7 +170,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetDouble_WhenElementIsSpecialFloat_ShouldReturnSpecialValue()
     {
-        using TomlDocument document = TomlDocument.Parse("pi = inf\nni = -inf\nn = nan\n");
+        using var document = TomlDocument.Parse("pi = inf\nni = -inf\nn = nan\n");
         TomlElement root = document.RootElement;
 
         Assert.AreEqual(double.PositiveInfinity, root.GetProperty("pi").GetDouble());
@@ -185,7 +185,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetProperty_WhenPropertyNameIsNull_ShouldThrowArgumentNullException()
     {
-        using TomlDocument document = TomlDocument.Parse("a = 1\n");
+        using var document = TomlDocument.Parse("a = 1\n");
         TomlElement root = document.RootElement;
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
@@ -202,7 +202,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenPropertyNameIsNull_ShouldThrowArgumentNullException()
     {
-        using TomlDocument document = TomlDocument.Parse("a = 1\n");
+        using var document = TomlDocument.Parse("a = 1\n");
         TomlElement root = document.RootElement;
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
@@ -218,7 +218,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Indexer_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1]\n");
+        using var document = TomlDocument.Parse("a = [1]\n");
         TomlElement array = document.RootElement.GetProperty("a");
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
@@ -233,7 +233,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenNameDiffersByCase_ShouldReturnFalse()
     {
-        using TomlDocument document = TomlDocument.Parse("Name = 1\n");
+        using var document = TomlDocument.Parse("Name = 1\n");
 
         Assert.IsFalse(document.RootElement.TryGetProperty("name", out _));
         Assert.IsTrue(document.RootElement.TryGetProperty("Name", out _));
@@ -246,7 +246,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetProperty_WhenKeyIsMultiByteUtf8_ShouldMatch()
     {
-        using TomlDocument document = TomlDocument.Parse("\"héllo\" = 1\n");
+        using var document = TomlDocument.Parse("\"héllo\" = 1\n");
 
         Assert.AreEqual(1L, document.RootElement.GetProperty("héllo").GetInt64());
     }
@@ -257,7 +257,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetArrayLength_WhenArrayEmpty_ShouldReturnZero()
     {
-        using TomlDocument document = TomlDocument.Parse("a = []\n");
+        using var document = TomlDocument.Parse("a = []\n");
 
         Assert.AreEqual(0, document.RootElement.GetProperty("a").GetArrayLength());
     }
@@ -269,7 +269,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Indexer_WhenArrayContainsMixedKinds_ShouldSkipNestedSubtrees()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1, {x = \"b\"}, [2], \"spam\"]\n");
+        using var document = TomlDocument.Parse("a = [1, {x = \"b\"}, [2], \"spam\"]\n");
         TomlElement array = document.RootElement.GetProperty("a");
 
         Assert.AreEqual(4, array.GetArrayLength());
@@ -286,7 +286,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void GetProperty_WhenPrecedingSiblingIsContainer_ShouldSkipSubtree()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [1, 2]\nb = {x = 1}\nc = 3\n");
+        using var document = TomlDocument.Parse("a = [1, 2]\nb = {x = 1}\nc = 3\n");
 
         Assert.AreEqual(3L, document.RootElement.GetProperty("c").GetInt64());
     }
@@ -310,7 +310,7 @@ public partial class TomlDocumentTests
     [DataRow("Table", "Table")]
     public void ToString_WhenElementKindVaries_ShouldRenderKindSpecificText(string key, string expected)
     {
-        using TomlDocument document = TomlDocument.Parse(AllKindsToml);
+        using var document = TomlDocument.Parse(AllKindsToml);
 
         Assert.AreEqual(expected, document.RootElement.GetProperty(key).ToString());
     }
@@ -321,7 +321,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void ToString_WhenCalledOnProperty_ShouldReturnName()
     {
-        using TomlDocument document = TomlDocument.Parse("title = \"x\"\n");
+        using var document = TomlDocument.Parse("title = \"x\"\n");
 
         foreach (TomlProperty property in document.RootElement.EnumerateObject())
             Assert.AreEqual("title", property.ToString());

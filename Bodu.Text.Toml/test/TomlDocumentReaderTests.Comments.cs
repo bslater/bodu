@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentReaderTests.Comments.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -73,7 +73,7 @@ public sealed partial class TomlDocumentReaderTests
     public void Read_WhenCommentContainsControlCharacter_ShouldThrowTomlFormatException()
     {
         // Embed a NUL (U+0000) in the comment; TOML forbids control characters other than tab in comments.
-        string source = "v = 1 # bad" + (char)0x00 + "comment\n";
+        var source = "v = 1 # bad" + (char)0x00 + "comment\n";
 
         Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -88,7 +88,7 @@ public sealed partial class TomlDocumentReaderTests
     [TestMethod]
     public void Read_WhenCommentContainsBareCarriageReturn_ShouldThrowTomlFormatException()
     {
-        string source = "v = 1 # bad\rcomment\n";
+        var source = "v = 1 # bad\rcomment\n";
 
         Assert.ThrowsExactly<TomlFormatException>(() =>
         {

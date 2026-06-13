@@ -201,7 +201,7 @@ public partial class FractionTests
     {
         Span<char> destination = stackalloc char[1];
 
-        Assert.IsFalse(new Fraction<int>(123, 457).TryFormat(destination, out int charsWritten, [], CultureInfo.InvariantCulture));
+        Assert.IsFalse(new Fraction<int>(123, 457).TryFormat(destination, out var charsWritten, [], CultureInfo.InvariantCulture));
         Assert.AreEqual(0, charsWritten);
     }
 }

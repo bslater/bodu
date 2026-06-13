@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.ConverterResolution.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class TomlSerializerTests
     {
         var model = new MemberConverterModel { Code = new Code(5) };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         // The member-level integer converter writes 5; the type-level converter would have written "code:5".
         Assert.AreEqual("Code = 5\n", text);
@@ -43,7 +43,7 @@ public partial class TomlSerializerTests
     {
         var model = new TypeConverterHostModel { Code = new Code(5) };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         // The type-level converter writes the string "code:5".
         Assert.AreEqual("Code = \"code:5\"\n", text);
@@ -60,7 +60,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new RegisteredCodeConverter());
 
         var model = new TypeConverterHostModel { Code = new Code(5) };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         // The type-level attribute writes "code:5"; the registered converter would have written 5.
         Assert.AreEqual("Code = \"code:5\"\n", text);
@@ -77,7 +77,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new RegisteredPlainCodeConverter());
 
         var model = new PlainCodeHostModel { Code = new PlainCode(5) };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         // The registered converter writes 5 for a type with no attribute and no built-in scalar mapping.
         Assert.AreEqual("Code = 5\n", text);
@@ -92,7 +92,7 @@ public partial class TomlSerializerTests
     {
         var model = new BuiltInHostModel { Number = 7 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Number = 7\n", text);
     }
@@ -109,7 +109,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new AlternatePlainCodeConverter());
 
         var model = new PlainCodeHostModel { Code = new PlainCode(5) };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         // The first registered converter writes 5; the second would have written "code:5".
         Assert.AreEqual("Code = 5\n", text);

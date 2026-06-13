@@ -35,7 +35,7 @@ public partial class WeekPatternTests
                 Assert.IsTrue(pattern.Contains(day),
                     $"Enumerator yielded {day} for mask {mask}, but Contains returned false.");
 
-            foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+            foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
                 if (!pattern.Contains(day))
                     CollectionAssert.DoesNotContain(pattern.ToList(), day,
                         $"Contains returned false for {day} (mask {mask}), but enumerator yielded it.");

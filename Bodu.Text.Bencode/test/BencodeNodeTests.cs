@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNodeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,9 +31,9 @@ public partial class BencodeNodeTests
     [TestCategory("Smoke")]
     public void Parse_WhenInputIsDictionary_ShouldReturnReadableObject()
     {
-        byte[] data = Encoding.UTF8.GetBytes("d3:cow3:moo4:spam4:eggse");
+        var data = Encoding.UTF8.GetBytes("d3:cow3:moo4:spam4:eggse");
 
-        BencodeNode? node = BencodeNode.Parse(data);
+        var node = BencodeNode.Parse(data);
 
         Assert.IsInstanceOfType<BencodeObject>(node);
         Assert.AreEqual(BencodeValueKind.Object, node!.GetValueKind());
@@ -55,7 +55,7 @@ public partial class BencodeNodeTests
         o["len"] = 5L;
         o["list"] = new BencodeArray(1, 2, 3);
 
-        byte[] bytes = o.ToByteArray();
+        var bytes = o.ToByteArray();
 
         Assert.AreEqual("d3:leni5e4:listli1ei2ei3ee4:name1:xe", Encoding.Latin1.GetString(bytes));
     }
@@ -66,9 +66,9 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void ToByteArray_WhenRoundTrippingCanonicalInput_ShouldBeByteEqual()
     {
-        byte[] bytes = Encoding.UTF8.GetBytes("d8:announce17:http://tracker.tx4:infod6:lengthi1024e4:name4:testee");
+        var bytes = Encoding.UTF8.GetBytes("d8:announce17:http://tracker.tx4:infod6:lengthi1024e4:name4:testee");
 
-        byte[] roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
+        var roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }
@@ -121,7 +121,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void GetValue_WhenByteStringReadAsInt64_ShouldThrowInvalidOperationException()
     {
-        BencodeValue value = BencodeValue.Create("hello");
+        var value = BencodeValue.Create("hello");
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -135,7 +135,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void GetValue_WhenIntegerReadAsString_ShouldThrowInvalidOperationException()
     {
-        BencodeValue value = BencodeValue.Create(7L);
+        var value = BencodeValue.Create(7L);
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -150,9 +150,9 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void TryGetValue_WhenByteStringReadAsInt64_ShouldReturnFalse()
     {
-        BencodeValue value = BencodeValue.Create("hello");
+        var value = BencodeValue.Create("hello");
 
-        bool result = value.TryGetValue(out long converted);
+        var result = value.TryGetValue(out long converted);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0L, converted);
@@ -164,7 +164,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void GetValue_WhenIntegerInRangeOfNarrowerType_ShouldConvert()
     {
-        BencodeValue value = BencodeValue.Create(200L);
+        var value = BencodeValue.Create(200L);
 
         Assert.AreEqual((byte)200, value.GetValue<byte>());
         Assert.AreEqual(200, value.GetValue<int>());
@@ -176,7 +176,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void GetValue_WhenIntegerOutOfRangeOfNarrowerType_ShouldThrowInvalidOperationException()
     {
-        BencodeValue value = BencodeValue.Create(40000L);
+        var value = BencodeValue.Create(40000L);
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -242,7 +242,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Add_WhenNodeAlreadyHasParent_ShouldThrowInvalidOperationException()
     {
-        BencodeValue shared = BencodeValue.Create(1L);
+        var shared = BencodeValue.Create(1L);
         var first = new BencodeArray();
         first.Add(shared);
 
@@ -294,7 +294,7 @@ public partial class BencodeNodeTests
     {
         var root = new BencodeObject();
         var middle = new BencodeArray();
-        BencodeValue leaf = BencodeValue.Create(1L);
+        var leaf = BencodeValue.Create(1L);
         middle.Add(leaf);
         root["items"] = middle;
 
@@ -326,7 +326,7 @@ public partial class BencodeNodeTests
         o["announce"] = "http://t";
         o["length"] = 1024L;
 
-        byte[] serialized = BencodeSerializer.Serialize((BencodeNode)o);
+        var serialized = BencodeSerializer.Serialize((BencodeNode)o);
 
         CollectionAssert.AreEqual(o.ToByteArray(), serialized);
     }
@@ -338,7 +338,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Deserialize_WhenTargetIsBencodeObject_ShouldReturnEqualTree()
     {
-        byte[] bytes = Encoding.UTF8.GetBytes("d8:announce8:http://t6:lengthi1024ee");
+        var bytes = Encoding.UTF8.GetBytes("d8:announce8:http://t6:lengthi1024ee");
 
         BencodeObject deserialized = BencodeSerializer.Deserialize<BencodeObject>(bytes);
 

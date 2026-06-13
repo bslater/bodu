@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Nullables.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class BencodeSerializerTests
     {
         var model = new NullableScalarsModel { Count = 42 };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Counti42ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
@@ -41,7 +41,7 @@ public partial class BencodeSerializerTests
     {
         var model = new NullableEnumModel { Color = Color.Blue };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Color4:Bluee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<NullableEnumModel>(bytes);
@@ -57,7 +57,7 @@ public partial class BencodeSerializerTests
     {
         var model = new NullableScalarsModel { Count = null };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("de", Encoding.Latin1.GetString(bytes));
     }
 
@@ -67,7 +67,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenNullableMemberAbsent_ShouldReadNull()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("de");
+        var bytes = Encoding.Latin1.GetBytes("de");
 
         var model = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
 
@@ -84,7 +84,7 @@ public partial class BencodeSerializerTests
     {
         var model = new NullableScalarsModel { Count = null, Flag = Color.Green };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d4:Flag5:Greene", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
@@ -102,13 +102,13 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions();
         options.Converters.Add(new BooleanConverter());
 
-        byte[] present = BencodeSerializer.Serialize(new NullableBoolModel { Flag = true }, options);
+        var present = BencodeSerializer.Serialize(new NullableBoolModel { Flag = true }, options);
         Assert.AreEqual("d4:Flagi1ee", Encoding.Latin1.GetString(present));
 
         var roundTripped = BencodeSerializer.Deserialize<NullableBoolModel>(present, options);
         Assert.IsTrue(roundTripped.Flag);
 
-        byte[] absent = BencodeSerializer.Serialize(new NullableBoolModel { Flag = null }, options);
+        var absent = BencodeSerializer.Serialize(new NullableBoolModel { Flag = null }, options);
         Assert.AreEqual("de", Encoding.Latin1.GetString(absent));
 
         var absentRoundTripped = BencodeSerializer.Deserialize<NullableBoolModel>(absent, options);

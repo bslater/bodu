@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Values.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public partial class BencodeSerializerTests
     {
         var model = new StringModel { Value = string.Empty };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Value0:e", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<StringModel>(bytes);
@@ -42,7 +42,7 @@ public partial class BencodeSerializerTests
     {
         var model = new StringModel { Value = "hello" };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Value5:helloe", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<StringModel>(bytes);
@@ -59,7 +59,7 @@ public partial class BencodeSerializerTests
         // "héllo" — the 'é' is two UTF-8 bytes, so the byte length is six for five characters.
         var model = new StringModel { Value = "héllo" };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         // The length prefix is the UTF-8 byte count (6), not the character count (5).
         CollectionAssert.AreEqual(Encoding.UTF8.GetBytes("d5:Value6:héllo" + "e"), bytes);
@@ -76,7 +76,7 @@ public partial class BencodeSerializerTests
     {
         var model = new BytesModel { Value = [] };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Value0:e", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<BytesModel>(bytes);
@@ -93,7 +93,7 @@ public partial class BencodeSerializerTests
         byte[] payload = [0x00, 0x01, 0x7f, 0x80, 0xff];
         var model = new BytesModel { Value = payload };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         // Header "d5:Value5:" then the five raw payload bytes then the trailing 'e'.
         byte[] expected = [.. Encoding.Latin1.GetBytes("d5:Value5:"), 0x00, 0x01, 0x7f, 0x80, 0xff, (byte)'e'];
         CollectionAssert.AreEqual(expected, bytes);
@@ -115,13 +115,13 @@ public partial class BencodeSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         // Each row carries the boxed model and its expected canonical encoding; the helper round-trips by runtime type.
-        byte[] bytes = SerializeBoxed(kat.Input);
+        var bytes = SerializeBoxed(kat.Input);
         Assert.AreEqual(kat.Expected, Encoding.Latin1.GetString(bytes));
 
         // Round-trip by re-serializing the deserialized model: equal bytes confirm the integer value survived intact
         // without comparing the distinct boxed model instances by reference.
-        object roundTripped = DeserializeBoxed(kat.Input.GetType(), bytes);
-        byte[] reserialized = SerializeBoxed(roundTripped);
+        var roundTripped = DeserializeBoxed(kat.Input.GetType(), bytes);
+        var reserialized = SerializeBoxed(roundTripped);
         CollectionAssert.AreEqual(bytes, reserialized);
     }
 
@@ -134,7 +134,7 @@ public partial class BencodeSerializerTests
     {
         var model = new ULongModel { Value = long.MaxValue };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Valuei9223372036854775807ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<ULongModel>(bytes);
@@ -157,7 +157,7 @@ public partial class BencodeSerializerTests
         _ = name;
         var model = new ULongModel { Value = value };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual(encoded, Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<ULongModel>(bytes);
@@ -172,7 +172,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenNegativeIntegerIntoUInt64_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -193,7 +193,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenIntegerOverflowsByte_ShouldThrowBencodeSerializationException(string name, string encoded)
     {
         _ = name;
-        byte[] bytes = Encoding.Latin1.GetBytes(encoded);
+        var bytes = Encoding.Latin1.GetBytes(encoded);
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -209,7 +209,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenIntegerExceedsInt64RangeIntoInt64_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551615ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551615ee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -224,7 +224,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenIntegerExceedsUInt64Range_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551616ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551616ee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -242,17 +242,17 @@ public partial class BencodeSerializerTests
     {
         Memory<byte> payload = new byte[] { 0x00, 0x61, 0xff };
 
-        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<Memory<byte>> { Value = payload });
+        var bytes = BencodeSerializer.Serialize(new SingleValueModel<Memory<byte>> { Value = payload });
         byte[] expected = [.. Encoding.Latin1.GetBytes("d5:Value3:"), 0x00, 0x61, 0xff, (byte)'e'];
         CollectionAssert.AreEqual(expected, bytes);
 
         Memory<byte> roundTripped = BencodeSerializer.Deserialize<SingleValueModel<Memory<byte>>>(bytes).Value;
         CollectionAssert.AreEqual(payload.ToArray(), roundTripped.ToArray());
 
-        byte[] readOnly = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = payload });
+        var readOnly = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = payload });
         CollectionAssert.AreEqual(expected, readOnly);
 
-        byte[] empty = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = ReadOnlyMemory<byte>.Empty });
+        var empty = BencodeSerializer.Serialize(new SingleValueModel<ReadOnlyMemory<byte>> { Value = ReadOnlyMemory<byte>.Empty });
         Assert.AreEqual("d5:Value0:e", Encoding.Latin1.GetString(empty));
         Assert.AreEqual(0, BencodeSerializer.Deserialize<SingleValueModel<ReadOnlyMemory<byte>>>(empty).Value.Length);
     }
@@ -264,7 +264,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenIntegerIntoMemoryOfByte_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei5ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei5ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -279,11 +279,11 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void SerializeDeserialize_When128BitWithin64BitSurface_ShouldRoundTrip()
     {
-        byte[] signed = BencodeSerializer.Serialize(new SingleValueModel<Int128> { Value = long.MinValue });
+        var signed = BencodeSerializer.Serialize(new SingleValueModel<Int128> { Value = long.MinValue });
         Assert.AreEqual("d5:Valuei-9223372036854775808ee", Encoding.Latin1.GetString(signed));
         Assert.AreEqual((Int128)long.MinValue, BencodeSerializer.Deserialize<SingleValueModel<Int128>>(signed).Value);
 
-        byte[] unsigned = BencodeSerializer.Serialize(new SingleValueModel<UInt128> { Value = ulong.MaxValue });
+        var unsigned = BencodeSerializer.Serialize(new SingleValueModel<UInt128> { Value = ulong.MaxValue });
         Assert.AreEqual("d5:Valuei18446744073709551615ee", Encoding.Latin1.GetString(unsigned));
         Assert.AreEqual((UInt128)ulong.MaxValue, BencodeSerializer.Deserialize<SingleValueModel<UInt128>>(unsigned).Value);
     }
@@ -320,7 +320,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenNegativeIntegerIntoUInt128_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -336,7 +336,7 @@ public partial class BencodeSerializerTests
     {
         var model = new ColorModel { Color = Color.Green };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Color5:Greene", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<ColorModel>(bytes);
@@ -352,7 +352,7 @@ public partial class BencodeSerializerTests
     {
         var model = new PermissionModel { Permissions = Permissions.Read | Permissions.Write };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d11:Permissions11:Read, Writee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<PermissionModel>(bytes);
@@ -368,7 +368,7 @@ public partial class BencodeSerializerTests
     {
         var model = new ColorModel { Color = (Color)99 };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Color2:99e", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<ColorModel>(bytes);
@@ -419,7 +419,7 @@ public partial class BencodeSerializerTests
 
         var model = new FlagModel { Enabled = true, Disabled = false };
 
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
         Assert.AreEqual("d8:Disabledi0e7:Enabledi1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<FlagModel>(bytes, options);
@@ -440,7 +440,7 @@ public partial class BencodeSerializerTests
 
         var model = new RatioModel { Ratio = 1.5 };
 
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
         Assert.AreEqual("d5:Ratio3:1.5e", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<RatioModel>(bytes, options);
@@ -503,7 +503,7 @@ public partial class BencodeSerializerTests
         // unsupported type, so the exception surfaces directly rather than wrapped by reflection.
         static object[] Row<T>(string name, string encoded)
         {
-            byte[] document = Encoding.Latin1.GetBytes(encoded);
+            var document = Encoding.Latin1.GetBytes(encoded);
             return
             [
                 new UnsupportedTypeKat(

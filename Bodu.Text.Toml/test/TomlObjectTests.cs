@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlObjectTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -54,7 +54,7 @@ public class TomlObjectTests
     [TestMethod]
     public void Ctor_WhenItemValueBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        TomlValue owned = TomlValue.Create(1L);
+        var owned = TomlValue.Create(1L);
         var owner = new TomlArray();
         owner.Add(owned);
 
@@ -131,7 +131,7 @@ public class TomlObjectTests
     public void Indexer_WhenSetExistingKey_ShouldDetachPreviousValue()
     {
         var obj = new TomlObject();
-        TomlValue replaced = TomlValue.Create(1L);
+        var replaced = TomlValue.Create(1L);
         obj["k"] = replaced;
 
         obj["k"] = 2L;
@@ -149,7 +149,7 @@ public class TomlObjectTests
     public void Indexer_WhenSetSameNodeOverItself_ShouldKeepParent()
     {
         var obj = new TomlObject();
-        TomlValue value = TomlValue.Create(1L);
+        var value = TomlValue.Create(1L);
         obj["k"] = value;
 
         obj["k"] = value;
@@ -165,7 +165,7 @@ public class TomlObjectTests
     [TestMethod]
     public void Indexer_WhenAssignedNodeBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        TomlValue owned = TomlValue.Create(1L);
+        var owned = TomlValue.Create(1L);
         var owner = new TomlObject();
         owner["k"] = owned;
 
@@ -231,7 +231,7 @@ public class TomlObjectTests
     public void Remove_WhenValueRemoved_ShouldDetachFromParent()
     {
         var obj = new TomlObject();
-        TomlValue value = TomlValue.Create(1L);
+        var value = TomlValue.Create(1L);
         obj["k"] = value;
 
         _ = obj.Remove("k");
@@ -250,7 +250,7 @@ public class TomlObjectTests
     public void Remove_WhenPairMatches_ShouldRemoveAndDetach()
     {
         var obj = new TomlObject();
-        TomlValue value = TomlValue.Create(1L);
+        var value = TomlValue.Create(1L);
         obj["k"] = value;
 
         Assert.IsFalse(obj.Remove(new KeyValuePair<string, TomlNode?>("k", TomlValue.Create(9L))));
@@ -268,8 +268,8 @@ public class TomlObjectTests
     public void Clear_WhenCalled_ShouldRemoveAllEntriesAndDetachChildren()
     {
         var obj = new TomlObject();
-        TomlValue first = TomlValue.Create(1L);
-        TomlValue second = TomlValue.Create("x");
+        var first = TomlValue.Create(1L);
+        var second = TomlValue.Create("x");
         obj["a"] = first;
         obj["b"] = second;
 
@@ -318,7 +318,7 @@ public class TomlObjectTests
     public void Contains_WhenPairMatchesKeyAndValue_ShouldReturnTrue()
     {
         var obj = new TomlObject();
-        TomlValue value = TomlValue.Create(1L);
+        var value = TomlValue.Create(1L);
         obj["k"] = value;
 
         Assert.IsTrue(obj.Contains(new KeyValuePair<string, TomlNode?>("k", value)));
@@ -352,8 +352,8 @@ public class TomlObjectTests
     public void KeysAndValues_WhenEntriesAdded_ShouldExposeAllEntries()
     {
         var obj = new TomlObject();
-        TomlValue first = TomlValue.Create(1L);
-        TomlValue second = TomlValue.Create(2L);
+        var first = TomlValue.Create(1L);
+        var second = TomlValue.Create(2L);
         obj["a"] = first;
         obj["b"] = second;
 

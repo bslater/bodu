@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReader.DateTimes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,9 @@ public ref partial struct Utf8TomlReader
     /// Scans a date or date-time value beginning with a four-digit year, caching the decoded value as a local date,
     /// local date-time, or offset date-time.
     /// </summary>
-    /// <returns><see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanDateTime()
     {
         if (!TryReadDateDigits(4, out var year) || !TryExpectDateByte((byte)'-')
@@ -88,8 +90,8 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Indicates whether the bytes after the space at the cursor are a truncated prefix of the
-    /// <c>DD:</c> time-of-day pattern, so the date/date-time decision needs more data.
+    /// Indicates whether the bytes after the space at the cursor are a truncated prefix of the <c>DD:</c> time-of-day
+    /// pattern, so the date/date-time decision needs more data.
     /// </summary>
     /// <returns><see langword="true" /> when every available byte matches the pattern.</returns>
     private readonly bool MatchesSpaceTimePrefix()
@@ -107,7 +109,9 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Scans a bare local-time value beginning with a two-digit hour, caching the decoded value.
     /// </summary>
-    /// <returns><see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value was scanned; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryScanLocalTime()
     {
         if (!TryReadPartialTime(out var time))
@@ -123,7 +127,9 @@ public ref partial struct Utf8TomlReader
     /// Reads the <c>HH:MM[:SS[.fraction]]</c> portion of a time value.
     /// </summary>
     /// <param name="time">The hour, minute, second, and fractional ticks.</param>
-    /// <returns><see langword="true" /> when the time was read; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the time was read; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryReadPartialTime(out (int Hour, int Minute, int Second, long FractionTicks) time)
     {
         time = default;
@@ -167,7 +173,9 @@ public ref partial struct Utf8TomlReader
     /// Reads the fractional-seconds digits and converts them to ticks, truncating beyond 100-nanosecond precision.
     /// </summary>
     /// <param name="ticks">The fractional-second value in ticks.</param>
-    /// <returns><see langword="true" /> when the digits were read; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the digits were read; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryReadFractionTicks(out long ticks)
     {
         ticks = 0;
@@ -192,7 +200,9 @@ public ref partial struct Utf8TomlReader
     /// Reads a time-zone offset (<c>Z</c> or <c>±HH:MM</c>).
     /// </summary>
     /// <param name="offset">The offset.</param>
-    /// <returns><see langword="true" /> when the offset was read; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the offset was read; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryReadTimeOffset(out TimeSpan offset)
     {
         offset = TimeSpan.Zero;
@@ -221,7 +231,9 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <param name="count">The digit count.</param>
     /// <param name="value">The parsed integer.</param>
-    /// <returns><see langword="true" /> when the digits were read; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the digits were read; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryReadDateDigits(int count, out int value)
     {
         value = 0;
@@ -248,7 +260,9 @@ public ref partial struct Utf8TomlReader
     /// Consumes the expected separator byte within a date-time value.
     /// </summary>
     /// <param name="expected">The expected byte.</param>
-    /// <returns><see langword="true" /> when the byte was consumed; <see langword="false" /> when more data is required.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the byte was consumed; <see langword="false" /> when more data is required.
+    /// </returns>
     private bool TryExpectDateByte(byte expected)
     {
         if (Eof)

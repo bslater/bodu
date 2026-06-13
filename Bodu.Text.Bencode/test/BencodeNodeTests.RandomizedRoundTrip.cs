@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNodeTests.RandomizedRoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,8 +27,8 @@ public partial class BencodeNodeTests
         {
             BencodeNode original = CreateRandomNode(random, depth: 0);
 
-            byte[] encoded = original.ToByteArray();
-            BencodeNode? reparsed = BencodeNode.Parse(encoded);
+            var encoded = original.ToByteArray();
+            var reparsed = BencodeNode.Parse(encoded);
 
             Assert.IsTrue(BencodeNode.DeepEquals(original, reparsed), $"Iteration {iteration} did not round-trip.");
             CollectionAssert.AreEqual(encoded, reparsed!.ToByteArray(), $"Iteration {iteration} bytes diverged.");

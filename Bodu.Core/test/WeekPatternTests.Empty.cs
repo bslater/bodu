@@ -23,7 +23,7 @@ public partial class WeekPatternTests
     public void Empty_WhenAccessed_ShouldHaveNoDaysSelected()
     {
         WeekPattern pattern = WeekPattern.Empty;
-        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
             Assert.IsFalse(pattern.Contains(day), $"{day} should not be selected in Empty.");
     }
 

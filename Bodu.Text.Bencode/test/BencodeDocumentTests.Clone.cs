@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.Clone.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Clone_WhenSourceDocumentDisposed_ShouldRemainReadable()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        var document = BencodeDocument.Parse(Bytes(TorrentSource));
         BencodeElement clone = document.RootElement.GetProperty("info").Clone();
         document.Dispose();
 
@@ -35,7 +35,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Clone_WhenElementCloned_ShouldPreserveRawBytes()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        using var document = BencodeDocument.Parse(Bytes(TorrentSource));
         BencodeElement info = document.RootElement.GetProperty("info");
 
         BencodeElement clone = info.Clone();
@@ -51,7 +51,7 @@ public partial class BencodeDocumentTests
     public void Clone_WhenCloneBackingDocumentDisposed_ShouldRemainReadable()
     {
         BencodeElement clone;
-        using (BencodeDocument document = BencodeDocument.Parse(Bytes("li1ei2ee")))
+        using (var document = BencodeDocument.Parse(Bytes("li1ei2ee")))
         {
             clone = document.RootElement.Clone();
         }
@@ -69,7 +69,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Clone_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        var document = BencodeDocument.Parse(Bytes(TorrentSource));
         BencodeElement root = document.RootElement;
         document.Dispose();
 

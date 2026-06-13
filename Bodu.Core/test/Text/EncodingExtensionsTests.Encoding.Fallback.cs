@@ -17,8 +17,8 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding strict = System.Text.Encoding.ASCII.WithExceptionFallbacks();
 
-        Assert.IsInstanceOfType(strict.EncoderFallback, typeof(System.Text.EncoderExceptionFallback));
-        Assert.IsInstanceOfType(strict.DecoderFallback, typeof(System.Text.DecoderExceptionFallback));
+        Assert.IsInstanceOfType<System.Text.EncoderExceptionFallback>(strict.EncoderFallback);
+        Assert.IsInstanceOfType<System.Text.DecoderExceptionFallback>(strict.DecoderFallback);
         Assert.ThrowsExactly<System.Text.EncoderFallbackException>(() =>
         {
             _ = strict.GetBytes("é");
@@ -39,7 +39,7 @@ public sealed partial class EncodingExtensionsTests
 
         _ = source.WithExceptionFallbacks();
 
-        Assert.IsInstanceOfType(source.EncoderFallback, typeof(System.Text.EncoderReplacementFallback));
+        Assert.IsInstanceOfType<System.Text.EncoderReplacementFallback>(source.EncoderFallback);
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public sealed partial class EncodingExtensionsTests
 
         Assert.AreEqual("encoderReplacement", ex.ParamName);
         Assert.IsNotNull(ex.InnerException);
-        Assert.IsInstanceOfType(ex.InnerException, typeof(System.Text.EncoderFallbackException));
+        Assert.IsInstanceOfType<System.Text.EncoderFallbackException>(ex.InnerException);
     }
 
     /// <summary>

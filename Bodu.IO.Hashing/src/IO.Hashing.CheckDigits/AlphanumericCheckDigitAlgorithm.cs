@@ -20,16 +20,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </para>
 /// <para>
 /// Like the rest of this family, the type is intentionally separate from the byte-stream oriented
-/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm" /> and does <b>not</b> derive from it. A non-cryptographic
-/// hash produces a fixed-length opaque <em>byte</em> digest over arbitrary input; a check character performs error
-/// detection over a constrained ASCII text alphabet and emits a single <see cref="char" />. The families are kept
-/// distinct by design rather than unified under one base type.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm" /> and does <b>not</b> derive from it. A
+/// non-cryptographic hash produces a fixed-length opaque <em>byte</em> digest over arbitrary input; a check character
+/// performs error detection over a constrained ASCII text alphabet and emits a single <see cref="char" />. The families
+/// are kept distinct by design rather than unified under one base type.
 /// </para>
 /// <para>
 /// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and
-/// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm:
-/// input is accumulated, the computation can be restarted, and reading the current check character is non-destructive
-/// and idempotent. That resemblance is incidental convenience, not a shared contract. Concrete implementations document
+/// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm: input
+/// is accumulated, the computation can be restarted, and reading the current check character is non-destructive and
+/// idempotent. That resemblance is incidental convenience, not a shared contract. Concrete implementations document
 /// their empty-body behavior.
 /// </para>
 /// <para>
@@ -52,8 +52,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// CheckDigitOutputAlphabet outputs = algo.OutputAlphabet;
 ///]]>
 /// </example>
-/// <seealso cref="CheckDigitAlgorithm" />
-/// <seealso cref="MultiCharCheckDigitAlgorithm" />
+/// <seealso cref="CheckDigitAlgorithm" /> <seealso cref="MultiCharCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />
 public abstract class AlphanumericCheckDigitAlgorithm
 {

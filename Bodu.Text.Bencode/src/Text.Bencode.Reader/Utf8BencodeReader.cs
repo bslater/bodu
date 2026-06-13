@@ -467,7 +467,7 @@ public ref struct Utf8BencodeReader
         if (byteCount != _valueLength)
             return false;
 
-        byte[] rented = ArrayPool<byte>.Shared.Rent(byteCount);
+        var rented = ArrayPool<byte>.Shared.Rent(byteCount);
         try
         {
             _ = Encoding.UTF8.GetBytes(text, rented);

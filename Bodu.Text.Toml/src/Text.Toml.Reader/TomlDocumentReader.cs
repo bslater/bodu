@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,9 +37,9 @@ namespace Bodu.Text.Toml.Reader;
 /// <para>
 /// Date-time values map onto the CLR date and time types, which imposes three deliberate deviations from the RFC 3339
 /// grammar that TOML incorporates by reference: a leap second (<c>23:59:60</c>) is rejected because
-/// <see cref="DateTime" /> and <see cref="TimeOnly" /> cannot represent second 60; year <c>0000</c> is rejected
-/// because the CLR calendar begins at year 1; and offsets beyond ±14:00 are rejected by
-/// <see cref="DateTimeOffset" />. Each surfaces as a <see cref="TomlFormatException" />.
+/// <see cref="DateTime" /> and <see cref="TimeOnly" /> cannot represent second 60; year <c>0000</c> is rejected because
+/// the CLR calendar begins at year 1; and offsets beyond ±14:00 are rejected by <see cref="DateTimeOffset" />. Each
+/// surfaces as a <see cref="TomlFormatException" />.
 /// </para>
 /// </remarks>
 public ref struct TomlDocumentReader
@@ -61,8 +61,8 @@ public ref struct TomlDocumentReader
     private int _openDepth;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied bytes, enforcing strict
-    /// TOML v1.0.0.
+    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied bytes, enforcing
+    /// strict TOML v1.0.0.
     /// </summary>
     /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
     /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
@@ -97,8 +97,8 @@ public ref struct TomlDocumentReader
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied sequence,
-    /// enforcing strict TOML v1.0.0.
+    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied sequence, enforcing
+    /// strict TOML v1.0.0.
     /// </summary>
     /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
     /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
@@ -112,8 +112,8 @@ public ref struct TomlDocumentReader
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied sequence using
-    /// the supplied options.
+    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied sequence using the
+    /// supplied options.
     /// </summary>
     /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
     /// <param name="options">

@@ -301,7 +301,7 @@ public abstract class TomlNode
                     var obj = new TomlObject(options);
                     while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
                     {
-                        string key = reader.GetString();
+                        var key = reader.GetString();
                         reader.Read();
                         obj[key] = ReadFrom(ref reader, options);
                     }
@@ -593,7 +593,7 @@ public abstract class TomlNode
         if (left.Count != right.Count)
             return false;
 
-        for (int i = 0; i < left.Count; i++)
+        for (var i = 0; i < left.Count; i++)
         {
             if (!DeepEquals(left[i], right[i]))
                 return false;

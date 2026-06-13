@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SivModeTransformCoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed class SivModeTransformCoverageTests
     public void EncryptThenDecrypt_ViaAssociatedDataBridge_WithEmptyPlaintext_ShouldRoundTrip()
     {
         byte[] associatedData = { 1, 2, 3 };
-        byte[] plaintext = Array.Empty<byte>();
+        var plaintext = Array.Empty<byte>();
         var output = new byte[16];
 
         int written;

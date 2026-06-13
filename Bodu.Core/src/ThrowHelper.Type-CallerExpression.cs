@@ -43,7 +43,7 @@ public static partial class ThrowHelper
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where TEnum : struct, Enum
     {
-        if (!Enum.IsDefined(typeof(TEnum), value))
+        if (!Enum.IsDefined(value))
             throw new ArgumentOutOfRangeException(
                 paramName,
                 string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeEnumValue, typeof(TEnum).Name, value));
@@ -63,7 +63,7 @@ public static partial class ThrowHelper
         StringComparison comparison,
         [CallerArgumentExpression(nameof(comparison))] string? paramName = null)
     {
-        if (!Enum.IsDefined(typeof(StringComparison), comparison))
+        if (!Enum.IsDefined(comparison))
             throw new ArgumentException(ResourceStrings.Arg_Invalid_StringComparison, paramName);
     }
 

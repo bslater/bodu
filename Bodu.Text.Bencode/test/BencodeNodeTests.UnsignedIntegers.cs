@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNodeTests.UnsignedIntegers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,9 +19,9 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenIntegerExceedsInt64_ShouldRoundTripThroughUInt64()
     {
-        byte[] data = "i9223372036854775808e"u8.ToArray();
+        var data = "i9223372036854775808e"u8.ToArray();
 
-        BencodeNode? node = BencodeNode.Parse(data);
+        var node = BencodeNode.Parse(data);
 
         Assert.IsNotNull(node);
         Assert.AreEqual(9223372036854775808UL, node.GetValue<ulong>());

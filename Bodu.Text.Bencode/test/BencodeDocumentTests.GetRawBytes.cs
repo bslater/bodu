@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.GetRawBytes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,8 +22,8 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetRawBytes_WhenOnRootElement_ShouldReturnEntireDocument()
     {
-        byte[] source = Bytes(TorrentSource);
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        var source = Bytes(TorrentSource);
+        using var document = BencodeDocument.Parse(source);
 
         CollectionAssert.AreEqual(source, document.RootElement.GetRawBytes());
     }
@@ -35,9 +35,9 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetRawBytes_WhenOnNestedDictionary_ShouldReturnExactEncodedSlice()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        using var document = BencodeDocument.Parse(Bytes(TorrentSource));
 
-        byte[] raw = document.RootElement.GetProperty("info").GetRawBytes();
+        var raw = document.RootElement.GetProperty("info").GetRawBytes();
 
         Assert.AreEqual("d6:lengthi1024e4:name4:teste", Encoding.Latin1.GetString(raw));
     }
@@ -49,9 +49,9 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetRawBytes_WhenOnInteger_ShouldIncludeFraming()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        using var document = BencodeDocument.Parse(Bytes(TorrentSource));
 
-        byte[] raw = document.RootElement.GetProperty("info").GetProperty("length").GetRawBytes();
+        var raw = document.RootElement.GetProperty("info").GetProperty("length").GetRawBytes();
 
         Assert.AreEqual("i1024e", Encoding.Latin1.GetString(raw));
     }
@@ -64,9 +64,9 @@ public partial class BencodeDocumentTests
     public void GetRawBytes_WhenOnBinaryByteString_ShouldIncludeLengthPrefixAndPreserveBytes()
     {
         byte[] source = [(byte)'l', (byte)'2', (byte)':', 0xFF, 0x00, (byte)'e'];
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        using var document = BencodeDocument.Parse(source);
 
-        byte[] raw = document.RootElement[0].GetRawBytes();
+        var raw = document.RootElement[0].GetRawBytes();
 
         CollectionAssert.AreEqual(new byte[] { (byte)'2', (byte)':', 0xFF, 0x00 }, raw);
     }
@@ -78,9 +78,9 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetRawBytes_WhenOnList_ShouldReturnEncodedListWithDelimiters()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ali1ei2ee1:bi3ee"));
+        using var document = BencodeDocument.Parse(Bytes("d1:ali1ei2ee1:bi3ee"));
 
-        byte[] raw = document.RootElement.GetProperty("a").GetRawBytes();
+        var raw = document.RootElement.GetProperty("a").GetRawBytes();
 
         Assert.AreEqual("li1ei2ee", Encoding.Latin1.GetString(raw));
     }
@@ -92,7 +92,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetRawBytes_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes(TorrentSource));
+        var document = BencodeDocument.Parse(Bytes(TorrentSource));
         BencodeElement root = document.RootElement;
         document.Dispose();
 

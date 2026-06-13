@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Collections.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class BencodeSerializerTests
     {
         int[] value = [3, 1, 2];
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("li3ei1ei2ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<int[]>(bytes);
@@ -44,7 +44,7 @@ public partial class BencodeSerializerTests
     {
         var value = new List<int>();
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("le", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<List<int>>(bytes);
@@ -59,7 +59,7 @@ public partial class BencodeSerializerTests
     {
         var value = new List<string> { "a", "bb", "ccc" };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("l1:a2:bb3:ccce", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<List<string>>(bytes);
@@ -74,7 +74,7 @@ public partial class BencodeSerializerTests
     {
         var value = new List<byte[]> { new byte[] { 0x01, 0x02 }, Array.Empty<byte>() };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         // l {2: 0x01 0x02}{0:} e — each byte-string element carries the raw bytes after its length prefix.
         byte[] expected = [.. Encoding.Latin1.GetBytes("l2:"), 0x01, 0x02, .. Encoding.Latin1.GetBytes("0:e")];
         CollectionAssert.AreEqual(expected, bytes);
@@ -94,7 +94,7 @@ public partial class BencodeSerializerTests
     {
         var value = new List<Color> { Color.Red, Color.Blue };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("l3:Red4:Bluee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<List<Color>>(bytes);
@@ -113,7 +113,7 @@ public partial class BencodeSerializerTests
             new() { Id = 2, Label = "b" },
         };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("ld2:Idi1e5:Label1:aed2:Idi2e5:Label1:bee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<List<Item>>(bytes);
@@ -133,7 +133,7 @@ public partial class BencodeSerializerTests
     {
         var value = new List<List<int>> { new() { 1, 2 }, new() { 3 } };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("lli1ei2eeli3eee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<List<List<int>>>(bytes);
@@ -150,7 +150,7 @@ public partial class BencodeSerializerTests
     {
         int[] value = [5, 4, 3, 2, 1];
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         var roundTripped = BencodeSerializer.Deserialize<List<int>>(bytes);
 
         CollectionAssert.AreEqual(value, roundTripped);
@@ -164,7 +164,7 @@ public partial class BencodeSerializerTests
     {
         var value = new HashSet<int> { 1, 2, 3 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         var roundTripped = BencodeSerializer.Deserialize<HashSet<int>>(bytes);
         Assert.IsInstanceOfType<HashSet<int>>(roundTripped);
@@ -214,10 +214,10 @@ public partial class BencodeSerializerTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        byte[] bytes = kat.Serialize();
+        var bytes = kat.Serialize();
         Assert.AreEqual("li1ei2ei3ee", Encoding.Latin1.GetString(bytes));
 
-        object roundTripped = kat.Deserialize(Encoding.Latin1.GetBytes("li1ei2ei3ee"));
+        var roundTripped = kat.Deserialize(Encoding.Latin1.GetBytes("li1ei2ei3ee"));
         Assert.IsInstanceOfType(roundTripped, kat.ExpectedConcreteType);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, ((IEnumerable<int>)roundTripped).ToArray());
     }
@@ -234,7 +234,7 @@ public partial class BencodeSerializerTests
         value.Enqueue(2);
         value.Enqueue(3);
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("li1ei2ei3ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Queue<int>>(bytes);
@@ -254,7 +254,7 @@ public partial class BencodeSerializerTests
         value.Push(2);
         value.Push(3);
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         Assert.AreEqual("li3ei2ei1ee", Encoding.Latin1.GetString(bytes));
     }
@@ -266,7 +266,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenStack_ShouldPushElementsInDocumentOrder()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("li1ei2ei3ee");
+        var bytes = Encoding.Latin1.GetBytes("li1ei2ei3ee");
 
         var stack = BencodeSerializer.Deserialize<Stack<int>>(bytes);
 
@@ -286,7 +286,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Stack<int>(new[] { 1, 2 });
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         var roundTripped = BencodeSerializer.Deserialize<Stack<int>>(bytes);
 
         CollectionAssert.AreEqual(value.Reverse().ToArray(), roundTripped.ToArray());
@@ -304,7 +304,7 @@ public partial class BencodeSerializerTests
         value.Enqueue(2);
         value.Enqueue(3);
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("li1ei2ei3ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<System.Collections.Concurrent.ConcurrentQueue<int>>(bytes);
@@ -325,7 +325,7 @@ public partial class BencodeSerializerTests
         value.Push(1);
         value.Push(2);
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("li2ei1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<System.Collections.Concurrent.ConcurrentStack<int>>(bytes);
@@ -342,7 +342,7 @@ public partial class BencodeSerializerTests
     {
         var value = new System.Collections.Concurrent.ConcurrentBag<int> { 1, 2, 3 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         var roundTripped = BencodeSerializer.Deserialize<System.Collections.Concurrent.ConcurrentBag<int>>(bytes);
         CollectionAssert.AreEquivalent(value.ToList(), roundTripped.ToList());

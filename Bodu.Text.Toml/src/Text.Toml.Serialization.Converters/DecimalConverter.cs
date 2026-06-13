@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DecimalConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -54,7 +54,7 @@ internal sealed class DecimalConverter
 
             case TomlTokenType.String:
                 var text = reader.GetString();
-                return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value)
+                return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value)
                     ? value
                     : throw new TomlSerializationException(
                         string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_TypeConversion, text, typeof(decimal)));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlWriter.WriteProperties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,8 +24,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WritePropertyName(ReadOnlySpan<char> name) =>
         WritePropertyName(name.ToString());
@@ -34,12 +34,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes the name of the table key whose value follows from UTF-8 text.
     /// </summary>
     /// <param name="utf8Name">The UTF-8 key text.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="utf8Name" /> is not valid UTF-8.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="utf8Name" /> is not valid UTF-8.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or the key has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or the key has already been written to the current table.
     /// </exception>
     public readonly void WritePropertyName(ReadOnlySpan<byte> utf8Name) =>
         WritePropertyName(DecodeUtf8(utf8Name));
@@ -61,9 +59,7 @@ public ref partial struct Utf8TomlWriter
     /// Writes a string value from UTF-8 text.
     /// </summary>
     /// <param name="utf8Value">The UTF-8 string value.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="utf8Value" /> is not valid UTF-8.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="utf8Value" /> is not valid UTF-8.</exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the document is already complete or the enclosing table has no pending property name.
     /// </exception>
@@ -84,8 +80,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when opening the table would exceed the configured maximum nesting depth.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteStartTable(string name)
     {
@@ -107,8 +103,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when opening the array would exceed the configured maximum nesting depth.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteStartArray(string name)
     {
@@ -128,8 +124,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> or <paramref name="value" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteString(string name, string value)
     {
@@ -149,8 +145,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteInteger(string name, long value)
     {
@@ -170,8 +166,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteFloat(string name, double value)
     {
@@ -191,8 +187,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteBoolean(string name, bool value)
     {
@@ -212,8 +208,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteOffsetDateTime(string name, DateTimeOffset value)
     {
@@ -233,8 +229,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteLocalDateTime(string name, DateTime value)
     {
@@ -254,8 +250,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteLocalDate(string name, DateOnly value)
     {
@@ -275,8 +271,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="name" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete, the innermost open container is not a table, another property
-    /// name is already pending, or <paramref name="name" /> has already been written to the current table.
+    /// Thrown when the document is already complete, the innermost open container is not a table, another property name
+    /// is already pending, or <paramref name="name" /> has already been written to the current table.
     /// </exception>
     public readonly void WriteLocalTime(string name, TimeOnly value)
     {
@@ -290,9 +286,7 @@ public ref partial struct Utf8TomlWriter
     /// <param name="utf8Text">The UTF-8 bytes to decode.</param>
     /// <param name="paramName">The name of the parameter being decoded.</param>
     /// <returns>The decoded text.</returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="utf8Text" /> is not valid UTF-8.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="utf8Text" /> is not valid UTF-8.</exception>
     private static string DecodeUtf8(ReadOnlySpan<byte> utf8Text, [System.Runtime.CompilerServices.CallerArgumentExpression(nameof(utf8Text))] string? paramName = null)
     {
         try

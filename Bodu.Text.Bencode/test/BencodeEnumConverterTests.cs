@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeEnumConverterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public class BencodeEnumConverterTests
     {
         var model = new StatusModel { Status = Status.Active };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d6:Status6:Activee", Encoding.Latin1.GetString(bytes));
 
@@ -42,7 +42,7 @@ public class BencodeEnumConverterTests
     [TestMethod]
     public void Serialize_WhenRootEnumValue_ShouldWriteMemberNameByteString()
     {
-        byte[] bytes = BencodeSerializer.Serialize(Status.Pending);
+        var bytes = BencodeSerializer.Serialize(Status.Pending);
 
         Assert.AreEqual("7:Pending", Encoding.Latin1.GetString(bytes));
     }
@@ -56,7 +56,7 @@ public class BencodeEnumConverterTests
     {
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d6:Status9:not-founde", Encoding.Latin1.GetString(bytes));
 
@@ -75,7 +75,7 @@ public class BencodeEnumConverterTests
         options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d6:Status6:activee", Encoding.Latin1.GetString(bytes));
 
@@ -93,7 +93,7 @@ public class BencodeEnumConverterTests
         var options = new BencodeSerializerOptions();
         options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
 
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Statusi2ee");
+        var bytes = Encoding.Latin1.GetBytes("d6:Statusi2ee");
 
         var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
 
@@ -110,7 +110,7 @@ public class BencodeEnumConverterTests
         var options = new BencodeSerializerOptions();
         options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
 
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status7:unknowne");
+        var bytes = Encoding.Latin1.GetBytes("d6:Status7:unknowne");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -128,7 +128,7 @@ public class BencodeEnumConverterTests
         var options = new BencodeSerializerOptions();
         options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
 
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Statusi2ee");
+        var bytes = Encoding.Latin1.GetBytes("d6:Statusi2ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -145,7 +145,7 @@ public class BencodeEnumConverterTests
     {
         var model = new NumberEnumModel { Status = Status.Archived };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d6:Statusi2ee", Encoding.Latin1.GetString(bytes));
 
@@ -163,7 +163,7 @@ public class BencodeEnumConverterTests
     {
         var model = new StringEnumModel { Status = Status.Pending };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d6:Status7:Pendinge", Encoding.Latin1.GetString(bytes));
 
@@ -182,7 +182,7 @@ public class BencodeEnumConverterTests
         options.Converters.Add(new BencodeStringEnumConverter());
 
         var model = new StatusModel { Status = Status.Active };
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d6:Status6:Activee", Encoding.Latin1.GetString(bytes));
 
@@ -200,7 +200,7 @@ public class BencodeEnumConverterTests
         var options = new BencodeSerializerOptions();
         options.Converters.Add(new BencodeStringEnumConverter());
 
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status6:activee");
+        var bytes = Encoding.Latin1.GetBytes("d6:Status6:activee");
 
         var model = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
 
@@ -214,7 +214,7 @@ public class BencodeEnumConverterTests
     [TestMethod]
     public void Deserialize_WhenStringEnumConverterReadsNumericString_ShouldParseToValue()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status1:2e");
+        var bytes = Encoding.Latin1.GetBytes("d6:Status1:2e");
 
         var model = BencodeSerializer.Deserialize<StatusModel>(bytes);
 
@@ -232,7 +232,7 @@ public class BencodeEnumConverterTests
         options.Converters.Add(new BencodeStringEnumConverter<Status>(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d6:Status6:activee", Encoding.Latin1.GetString(bytes));
 
@@ -251,7 +251,7 @@ public class BencodeEnumConverterTests
         options.Converters.Add(new BencodeNumberEnumConverter<Status>());
 
         var model = new StatusModel { Status = Status.Archived };
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d6:Statusi2ee", Encoding.Latin1.GetString(bytes));
 
@@ -266,7 +266,7 @@ public class BencodeEnumConverterTests
     [TestMethod]
     public void Deserialize_WhenNumberEnumConverterReadsByteString_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d6:Status8:Archivede");
+        var bytes = Encoding.Latin1.GetBytes("d6:Status8:Archivede");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -283,7 +283,7 @@ public class BencodeEnumConverterTests
     {
         var model = new StatusModel { Status = (Status)99 };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d6:Status2:99e", Encoding.Latin1.GetString(bytes));
 
@@ -300,7 +300,7 @@ public class BencodeEnumConverterTests
     {
         var model = new FlagsModel { Flags = FlagsEnum.Read | FlagsEnum.Write };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d5:Flags11:Read, Writee", Encoding.Latin1.GetString(bytes));
 
@@ -317,7 +317,7 @@ public class BencodeEnumConverterTests
     {
         var model = new FlagsModel { Flags = FlagsEnum.Write };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d5:Flags5:Writee", Encoding.Latin1.GetString(bytes));
 
@@ -336,7 +336,7 @@ public class BencodeEnumConverterTests
         options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
-        byte[] bytes = BencodeSerializer.Serialize(model, options);
+        var bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d6:Status9:not-founde", Encoding.Latin1.GetString(bytes));
     }

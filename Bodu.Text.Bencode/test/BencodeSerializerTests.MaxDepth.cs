@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.MaxDepth.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
         var shallow = new RecursiveModel { Child = new RecursiveModel() };
 
-        byte[] bytes = BencodeSerializer.Serialize(shallow, options);
+        var bytes = BencodeSerializer.Serialize(shallow, options);
 
         Assert.AreEqual("d5:Childdee", Encoding.Latin1.GetString(bytes));
     }
@@ -56,7 +56,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenInputExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Childd5:Childdeeee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Childd5:Childdeeee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -72,7 +72,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenInputWithinMaxDepth_ShouldSucceed()
     {
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Childdee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Childdee");
 
         var model = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
 

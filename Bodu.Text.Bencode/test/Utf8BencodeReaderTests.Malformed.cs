@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderTests.Malformed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -82,7 +82,7 @@ public partial class Utf8BencodeReaderTests
     public void Read_WhenInputMalformed_ShouldThrowBencodeFormatException(string testName, string input)
     {
         _ = testName;
-        byte[] bytes = Bytes(input);
+        var bytes = Bytes(input);
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -102,7 +102,7 @@ public partial class Utf8BencodeReaderTests
     public void Read_WhenStringLengthCountsCharactersNotBytes_ShouldThrowBencodeFormatException()
     {
         // "café" is four characters but five UTF-8 bytes; a buggy encoder that counts characters writes "4:".
-        byte[] bytes = "4:café"u8.ToArray();
+        var bytes = "4:café"u8.ToArray();
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -123,7 +123,7 @@ public partial class Utf8BencodeReaderTests
     {
         // U+1F600 encodes as F0 9F 98 80 and U+FFFD as EF BF BD: byte order requires U+FFFD first, while .NET
         // ordinal string comparison (UTF-16 code units, where the surrogate D83D precedes FFFD) orders U+1F600 first.
-        byte[] bytes = "d4:😀1:x3:�1:ye"u8.ToArray();
+        var bytes = "d4:😀1:x3:�1:ye"u8.ToArray();
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -144,7 +144,7 @@ public partial class Utf8BencodeReaderTests
     {
         // 'B' (0x42) precedes 'a' (0x61) in raw bytes although most text orderings reverse them, and U+FFFD
         // (EF BF BD) precedes U+1F600 (F0 9F 98 80) although UTF-16 code-unit order reverses them.
-        byte[] bytes = "d1:B1:x1:a1:y3:�1:z4:😀1:we"u8.ToArray();
+        var bytes = "d1:B1:x1:a1:y3:�1:z4:😀1:we"u8.ToArray();
 
         var reader = new Utf8BencodeReader(bytes);
         var names = 0;
@@ -164,7 +164,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenNestingExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Bytes("llleee"); // depth 3
+        var bytes = Bytes("llleee"); // depth 3
         var options = new BencodeReaderOptions { MaxDepth = 2 };
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
@@ -183,7 +183,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenNestingEqualsMaxDepth_ShouldNotThrow()
     {
-        byte[] bytes = Bytes("llee"); // depth 2
+        var bytes = Bytes("llee"); // depth 2
         var options = new BencodeReaderOptions { MaxDepth = 2 };
 
         var reader = new Utf8BencodeReader(bytes, options);
@@ -229,7 +229,7 @@ public partial class Utf8BencodeReaderTests
     public void Read_WhenInputMalformed_ShouldRecordOffset(string testName, string input, int expectedOffset)
     {
         _ = testName;
-        byte[] bytes = Bytes(input);
+        var bytes = Bytes(input);
 
         var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -262,7 +262,7 @@ public partial class Utf8BencodeReaderTests
     public void Read_WhenInputCanonicalEdgeCase_ShouldNotThrow(string testName, string input)
     {
         _ = testName;
-        byte[] bytes = Bytes(input);
+        var bytes = Bytes(input);
 
         var reader = new Utf8BencodeReader(bytes);
         while (reader.Read())

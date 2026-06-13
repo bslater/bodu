@@ -374,7 +374,7 @@ public partial class MoneyTests
         var ok = runtime.TryAs(out Money<USD> result);
 
         Assert.IsFalse(ok);
-        Assert.AreEqual(default(Money<USD>), result);
+        Assert.AreEqual(default, result);
     }
 
     /// <summary>

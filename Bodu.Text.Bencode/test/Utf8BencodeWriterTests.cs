@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -126,7 +126,7 @@ public partial class Utf8BencodeWriterTests
     public void WriteString_WhenMultibyteText_ShouldEmitUtf8WithByteLength()
     {
         const string Text = "héllo";
-        byte[] content = Encoding.UTF8.GetBytes(Text);
+        var content = Encoding.UTF8.GetBytes(Text);
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
 

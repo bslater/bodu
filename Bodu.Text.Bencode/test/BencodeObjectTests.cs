@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeObjectTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ public class BencodeObjectTests
     [TestMethod]
     public void Ctor_WhenItemValueBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        BencodeValue owned = BencodeValue.Create(1L);
+        var owned = BencodeValue.Create(1L);
         var owner = new BencodeArray();
         owner.Add(owned);
 
@@ -133,7 +133,7 @@ public class BencodeObjectTests
     public void Indexer_WhenSetExistingKey_ShouldDetachPreviousValue()
     {
         var obj = new BencodeObject();
-        BencodeValue replaced = BencodeValue.Create(1L);
+        var replaced = BencodeValue.Create(1L);
         obj["k"] = replaced;
 
         obj["k"] = 2L;
@@ -151,7 +151,7 @@ public class BencodeObjectTests
     [TestMethod]
     public void Indexer_WhenAssignedNodeBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        BencodeValue owned = BencodeValue.Create(1L);
+        var owned = BencodeValue.Create(1L);
         var owner = new BencodeObject();
         owner["k"] = owned;
 
@@ -218,7 +218,7 @@ public class BencodeObjectTests
     public void Remove_WhenValueRemoved_ShouldDetachFromParent()
     {
         var obj = new BencodeObject();
-        BencodeValue value = BencodeValue.Create(1L);
+        var value = BencodeValue.Create(1L);
         obj["k"] = value;
 
         _ = obj.Remove("k");
@@ -237,7 +237,7 @@ public class BencodeObjectTests
     public void Remove_WhenPairMatches_ShouldRemoveAndDetach()
     {
         var obj = new BencodeObject();
-        BencodeValue value = BencodeValue.Create(1L);
+        var value = BencodeValue.Create(1L);
         obj["k"] = value;
 
         Assert.IsFalse(obj.Remove(new KeyValuePair<string, BencodeNode?>("k", BencodeValue.Create(9L))));
@@ -255,8 +255,8 @@ public class BencodeObjectTests
     public void Clear_WhenCalled_ShouldRemoveAllEntriesAndDetachChildren()
     {
         var obj = new BencodeObject();
-        BencodeValue first = BencodeValue.Create(1L);
-        BencodeValue second = BencodeValue.Create("x");
+        var first = BencodeValue.Create(1L);
+        var second = BencodeValue.Create("x");
         obj["a"] = first;
         obj["b"] = second;
 
@@ -305,7 +305,7 @@ public class BencodeObjectTests
     public void Contains_WhenPairMatchesKeyAndValue_ShouldReturnTrue()
     {
         var obj = new BencodeObject();
-        BencodeValue value = BencodeValue.Create(1L);
+        var value = BencodeValue.Create(1L);
         obj["k"] = value;
 
         Assert.IsTrue(obj.Contains(new KeyValuePair<string, BencodeNode?>("k", value)));
@@ -339,8 +339,8 @@ public class BencodeObjectTests
     public void KeysAndValues_WhenEntriesAdded_ShouldExposeAllEntries()
     {
         var obj = new BencodeObject();
-        BencodeValue first = BencodeValue.Create(1L);
-        BencodeValue second = BencodeValue.Create(2L);
+        var first = BencodeValue.Create(1L);
+        var second = BencodeValue.Create(2L);
         obj["a"] = first;
         obj["b"] = second;
 
@@ -392,7 +392,7 @@ public class BencodeObjectTests
         obj["Z"] = 3L;
         obj["a"] = 4L;
 
-        byte[] bytes = obj.ToByteArray();
+        var bytes = obj.ToByteArray();
 
         Assert.AreEqual("d1:Zi3e1:ai4e2:aai2e1:bi1ee", Encoding.Latin1.GetString(bytes));
     }

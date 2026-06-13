@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlValueTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public class TomlValueTests
     [TestMethod]
     public void Create_WhenString_ShouldReportStringKind()
     {
-        TomlValue value = TomlValue.Create("héllo");
+        var value = TomlValue.Create("héllo");
 
         Assert.AreEqual(TomlValueKind.String, value.GetValueKind());
         Assert.AreEqual("héllo", value.GetValue<string>());
@@ -50,7 +50,7 @@ public class TomlValueTests
     [TestMethod]
     public void Create_WhenInt64_ShouldReportIntegerKind()
     {
-        TomlValue value = TomlValue.Create(long.MaxValue);
+        var value = TomlValue.Create(long.MaxValue);
 
         Assert.AreEqual(TomlValueKind.Integer, value.GetValueKind());
         Assert.AreEqual(long.MaxValue, value.GetValue<long>());
@@ -62,7 +62,7 @@ public class TomlValueTests
     [TestMethod]
     public void Create_WhenInt32_ShouldStoreAsInteger()
     {
-        TomlValue value = TomlValue.Create(42);
+        var value = TomlValue.Create(42);
 
         Assert.AreEqual(TomlValueKind.Integer, value.GetValueKind());
         Assert.AreEqual(42L, value.GetValue<long>());
@@ -75,7 +75,7 @@ public class TomlValueTests
     [TestMethod]
     public void Create_WhenDouble_ShouldReportFloatKind()
     {
-        TomlValue value = TomlValue.Create(1.5d);
+        var value = TomlValue.Create(1.5d);
 
         Assert.AreEqual(TomlValueKind.Float, value.GetValueKind());
         Assert.AreEqual(1.5d, value.GetValue<double>());
@@ -88,7 +88,7 @@ public class TomlValueTests
     [TestMethod]
     public void Create_WhenBoolean_ShouldReportBooleanKind()
     {
-        TomlValue value = TomlValue.Create(true);
+        var value = TomlValue.Create(true);
 
         Assert.AreEqual(TomlValueKind.Boolean, value.GetValueKind());
         Assert.IsTrue(value.GetValue<bool>());
@@ -122,7 +122,7 @@ public class TomlValueTests
     [TestMethod]
     public void GetValue_WhenIntegerInRangeOfEveryWidth_ShouldConvert()
     {
-        TomlValue value = TomlValue.Create(42L);
+        var value = TomlValue.Create(42L);
 
         Assert.AreEqual((sbyte)42, value.GetValue<sbyte>());
         Assert.AreEqual((byte)42, value.GetValue<byte>());
@@ -141,7 +141,7 @@ public class TomlValueTests
     [TestMethod]
     public void GetValue_WhenIntegerOutOfRangeOfNarrowerType_ShouldThrowInvalidOperationException()
     {
-        TomlValue value = TomlValue.Create(300L);
+        var value = TomlValue.Create(300L);
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -156,7 +156,7 @@ public class TomlValueTests
     [TestMethod]
     public void GetValue_WhenNegativeIntegerReadAsUInt64_ShouldThrowInvalidOperationException()
     {
-        TomlValue value = TomlValue.Create(-1L);
+        var value = TomlValue.Create(-1L);
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -171,7 +171,7 @@ public class TomlValueTests
     [TestMethod]
     public void GetValue_WhenFloatReadAsDoubleOrSingle_ShouldConvert()
     {
-        TomlValue value = TomlValue.Create(1.5d);
+        var value = TomlValue.Create(1.5d);
 
         Assert.AreEqual(1.5d, value.GetValue<double>());
         Assert.AreEqual(1.5f, value.GetValue<float>());
@@ -213,7 +213,7 @@ public class TomlValueTests
     [TestMethod]
     public void GetValue_WhenStringReadAsInt64_ShouldThrowInvalidOperationException()
     {
-        TomlValue value = TomlValue.Create("hello");
+        var value = TomlValue.Create("hello");
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -268,7 +268,7 @@ public class TomlValueTests
         root["ld"] = TomlValue.Create(new DateOnly(1979, 5, 27));
         root["lt"] = TomlValue.Create(new TimeOnly(7, 32, 0));
 
-        string expected =
+        var expected =
             "s = \"x\"\n" +
             "i = -7\n" +
             "f = 1.5\n" +
@@ -304,7 +304,7 @@ public class TomlValueTests
     public void DeepClone_WhenScalarCloned_ShouldCopyKindAndPayload()
     {
         var owner = new TomlArray();
-        TomlValue original = TomlValue.Create(new DateOnly(1979, 5, 27));
+        var original = TomlValue.Create(new DateOnly(1979, 5, 27));
         owner.Add(original);
 
         TomlValue clone = original.DeepClone().AsValue();

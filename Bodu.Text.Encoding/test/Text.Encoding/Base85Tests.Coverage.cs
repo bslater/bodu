@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85Tests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class Base85Tests
     public void Decode_WithOffsetAndCount_ShouldRoundTrip()
     {
         byte[] data = { 1, 2, 3, 4 };
-        char[] encoded = Base85.Encode(data).ToCharArray();
+        var encoded = Base85.Encode(data).ToCharArray();
 
         var decoded = Base85.Decode(encoded, 0, encoded.Length);
 
@@ -32,7 +32,7 @@ public partial class Base85Tests
     public void TryDecode_WhenDestinationTooSmall_ShouldReturnFalse()
     {
         byte[] data = { 1, 2, 3, 4 };
-        char[] encoded = Base85.Encode(data).ToCharArray();
+        var encoded = Base85.Encode(data).ToCharArray();
 
         Assert.IsFalse(Base85.TryDecode(encoded, Span<byte>.Empty, out _));
     }

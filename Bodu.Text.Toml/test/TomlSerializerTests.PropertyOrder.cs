@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.PropertyOrder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenNoOrderAttributes_ShouldEmitDeclarationOrder()
     {
-        string text = TomlSerializer.Serialize(new UnorderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
+        var text = TomlSerializer.Serialize(new UnorderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
 
         Assert.AreEqual("Alpha = 1\nBravo = 2\nCharlie = 3\n", text);
     }
@@ -36,7 +36,7 @@ public partial class TomlSerializerTests
     public void Serialize_WhenPropertyOrderReversesDeclaration_ShouldEmitAttributeOrder()
     {
         // Alpha is declared first but ordered last (10); Charlie is declared last but ordered first (-10).
-        string text = TomlSerializer.Serialize(new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
+        var text = TomlSerializer.Serialize(new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 });
 
         Assert.AreEqual("Charlie = 3\nBravo = 2\nAlpha = 1\n", text);
     }
@@ -48,7 +48,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenNegativeOrderOnLastDeclaredMember_ShouldEmitMemberFirst()
     {
-        string text = TomlSerializer.Serialize(new BeforeDefaultOrderModel { First = 1, Second = 2, Promoted = 3 });
+        var text = TomlSerializer.Serialize(new BeforeDefaultOrderModel { First = 1, Second = 2, Promoted = 3 });
 
         Assert.AreEqual("Promoted = 3\nFirst = 1\nSecond = 2\n", text);
     }
@@ -60,7 +60,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenPositiveOrderOnFirstDeclaredMember_ShouldEmitMemberLast()
     {
-        string text = TomlSerializer.Serialize(new AfterDefaultOrderModel { Demoted = 1, First = 2, Second = 3 });
+        var text = TomlSerializer.Serialize(new AfterDefaultOrderModel { Demoted = 1, First = 2, Second = 3 });
 
         Assert.AreEqual("First = 2\nSecond = 3\nDemoted = 1\n", text);
     }
@@ -72,7 +72,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenOrderValuesTie_ShouldBreakTiesByDeclarationOrder()
     {
-        string text = TomlSerializer.Serialize(new TiedOrderModel { A = 1, B = 2, C = 3, D = 4 });
+        var text = TomlSerializer.Serialize(new TiedOrderModel { A = 1, B = 2, C = 3, D = 4 });
 
         // A and C share order 1 and keep declaration order; B and D share the default order 0 and precede them.
         Assert.AreEqual("B = 2\nD = 4\nA = 1\nC = 3\n", text);
@@ -87,7 +87,7 @@ public partial class TomlSerializerTests
     {
         var original = new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 };
 
-        string text = TomlSerializer.Serialize(original);
+        var text = TomlSerializer.Serialize(original);
         var roundTripped = TomlSerializer.Deserialize<OrderedTrioModel>(text);
 
         Assert.AreEqual(1, roundTripped.Alpha);

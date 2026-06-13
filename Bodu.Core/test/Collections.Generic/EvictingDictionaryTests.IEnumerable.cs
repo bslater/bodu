@@ -109,7 +109,7 @@ public partial class EvictingDictionaryTests
 
         while (enumerator.MoveNext())
         {
-            Assert.IsInstanceOfType(enumerator.Current, typeof(KeyValuePair<string, string>));
+            Assert.IsInstanceOfType<KeyValuePair<string, string>>(enumerator.Current);
             actual.Add((KeyValuePair<string, string>)enumerator.Current);
         }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.Disposal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetInt64_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("i1e"));
+        var document = BencodeDocument.Parse(Bytes("i1e"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -39,7 +39,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetString_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("4:spam"));
+        var document = BencodeDocument.Parse(Bytes("4:spam"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -56,7 +56,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetBytes_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("4:spam"));
+        var document = BencodeDocument.Parse(Bytes("4:spam"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -73,7 +73,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetArrayLength_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("le"));
+        var document = BencodeDocument.Parse(Bytes("le"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -90,7 +90,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("le"));
+        var document = BencodeDocument.Parse(Bytes("le"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -107,7 +107,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("de"));
+        var document = BencodeDocument.Parse(Bytes("de"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -124,7 +124,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetProperty_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ai1ee"));
+        var document = BencodeDocument.Parse(Bytes("d1:ai1ee"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -141,7 +141,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("d1:ai1ee"));
+        var document = BencodeDocument.Parse(Bytes("d1:ai1ee"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -158,7 +158,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Current_WhenDocumentDisposedAfterEnumeratorCreated_ShouldThrowOnElementAccess()
     {
-        BencodeDocument document = BencodeDocument.Parse(Bytes("li1ee"));
+        var document = BencodeDocument.Parse(Bytes("li1ee"));
         BencodeElement.ArrayEnumerator enumerator = document.RootElement.EnumerateArray();
         document.Dispose();
 

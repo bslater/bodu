@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.SystemTextJsonParity.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,10 +27,10 @@ public partial class TomlSerializerTests
         var model = new ParityModel { ServerName = "alpha", MaxConnections = 5 };
 
         var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        string json = JsonSerializer.Serialize(model, jsonOptions);
+        var json = JsonSerializer.Serialize(model, jsonOptions);
 
         var tomlOptions = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
-        string toml = TomlSerializer.Serialize(model, tomlOptions);
+        var toml = TomlSerializer.Serialize(model, tomlOptions);
 
         Assert.IsTrue(json.Contains("\"serverName\"", StringComparison.Ordinal), "System.Text.Json emitted camelCase key.");
         Assert.IsTrue(toml.Contains("serverName = ", StringComparison.Ordinal), "TomlSerializer should emit the same camelCase key.");
@@ -48,10 +48,10 @@ public partial class TomlSerializerTests
         var model = new NullableParityModel { Present = "value", Absent = null };
 
         var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-        string json = JsonSerializer.Serialize(model, jsonOptions);
+        var json = JsonSerializer.Serialize(model, jsonOptions);
 
         var tomlOptions = new TomlSerializerOptions { DefaultIgnoreCondition = TomlIgnoreCondition.WhenWritingNull };
-        string toml = TomlSerializer.Serialize(model, tomlOptions);
+        var toml = TomlSerializer.Serialize(model, tomlOptions);
 
         Assert.IsFalse(json.Contains("Absent", StringComparison.Ordinal), "System.Text.Json omitted the null member.");
         Assert.IsFalse(toml.Contains("Absent", StringComparison.Ordinal), "TomlSerializer should omit the null member as well.");
@@ -86,10 +86,10 @@ public partial class TomlSerializerTests
         var model = new AttributeOverrideModel { Value = 7 };
 
         var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        string json = JsonSerializer.Serialize(model, jsonOptions);
+        var json = JsonSerializer.Serialize(model, jsonOptions);
 
         var tomlOptions = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
-        string toml = TomlSerializer.Serialize(model, tomlOptions);
+        var toml = TomlSerializer.Serialize(model, tomlOptions);
 
         Assert.IsTrue(json.Contains("\"explicit_name\"", StringComparison.Ordinal), "System.Text.Json honored the attribute over the policy.");
         Assert.IsTrue(toml.Contains("explicit_name = ", StringComparison.Ordinal), "TomlSerializer should honor the attribute over the policy.");
@@ -104,8 +104,8 @@ public partial class TomlSerializerTests
     {
         var value = Version.Parse("1.2.3.4");
 
-        string json = JsonSerializer.Serialize(new ValueModel<Version> { Value = value });
-        string toml = TomlSerializer.Serialize(new ValueModel<Version> { Value = value });
+        var json = JsonSerializer.Serialize(new ValueModel<Version> { Value = value });
+        var toml = TomlSerializer.Serialize(new ValueModel<Version> { Value = value });
 
         Assert.IsTrue(json.Contains("\"1.2.3.4\"", StringComparison.Ordinal), "System.Text.Json emitted the component string.");
         Assert.IsTrue(toml.Contains("\"1.2.3.4\"", StringComparison.Ordinal), "TomlSerializer should emit the same component string.");
@@ -121,10 +121,10 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenTimeSpan_ShouldMatchSystemTextJsonConstantFormat()
     {
-        TimeSpan value = new TimeSpan(1, 2, 3, 4, 567);
+        var value = new TimeSpan(1, 2, 3, 4, 567);
 
-        string json = JsonSerializer.Serialize(new ValueModel<TimeSpan> { Value = value });
-        string toml = TomlSerializer.Serialize(new ValueModel<TimeSpan> { Value = value });
+        var json = JsonSerializer.Serialize(new ValueModel<TimeSpan> { Value = value });
+        var toml = TomlSerializer.Serialize(new ValueModel<TimeSpan> { Value = value });
 
         Assert.IsTrue(json.Contains("\"1.02:03:04.5670000\"", StringComparison.Ordinal), "System.Text.Json emitted the constant format.");
         Assert.IsTrue(toml.Contains("\"1.02:03:04.5670000\"", StringComparison.Ordinal), "TomlSerializer should emit the same constant format.");
@@ -143,8 +143,8 @@ public partial class TomlSerializerTests
     {
         var value = (Half)1.5;
 
-        string json = JsonSerializer.Serialize(new ValueModel<Half> { Value = value });
-        string toml = TomlSerializer.Serialize(new ValueModel<Half> { Value = value });
+        var json = JsonSerializer.Serialize(new ValueModel<Half> { Value = value });
+        var toml = TomlSerializer.Serialize(new ValueModel<Half> { Value = value });
 
         Assert.AreEqual(
             JsonSerializer.Deserialize<ValueModel<Half>>(json)!.Value,
@@ -161,9 +161,9 @@ public partial class TomlSerializerTests
     {
         const decimal value = 0.1234567890123456789012345678m;
 
-        string json = JsonSerializer.Serialize(new ValueModel<decimal> { Value = value });
+        var json = JsonSerializer.Serialize(new ValueModel<decimal> { Value = value });
         var tomlOptions = new TomlSerializerOptions { DecimalHandling = TomlDecimalHandling.String };
-        string toml = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value }, tomlOptions);
+        var toml = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value }, tomlOptions);
 
         Assert.IsTrue(json.Contains("0.1234567890123456789012345678", StringComparison.Ordinal), "System.Text.Json preserved the digits as a JSON number.");
         Assert.IsTrue(toml.Contains("0.1234567890123456789012345678", StringComparison.Ordinal), "TomlSerializer should preserve the same digits in its string form.");
@@ -180,8 +180,8 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberHoldsBoxedValue_ShouldDispatchLikeSystemTextJson()
     {
-        string json = JsonSerializer.Serialize(new ValueModel<object> { Value = 5 });
-        string toml = TomlSerializer.Serialize(new ValueModel<object> { Value = 5 });
+        var json = JsonSerializer.Serialize(new ValueModel<object> { Value = 5 });
+        var toml = TomlSerializer.Serialize(new ValueModel<object> { Value = 5 });
 
         Assert.IsTrue(json.Contains(":5", StringComparison.Ordinal), "System.Text.Json wrote the boxed integer through its runtime type.");
         Assert.IsTrue(toml.Contains("Value = 5", StringComparison.Ordinal), "TomlSerializer should write the boxed integer through its runtime type.");

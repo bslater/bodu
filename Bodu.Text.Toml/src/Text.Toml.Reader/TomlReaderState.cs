@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReaderState.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -70,8 +70,8 @@ public struct TomlReaderState
     internal int BytesInLine;
 
     /// <summary>
-    /// Whether the reader has moved past the document start, where a byte-order mark may be skipped. Stored inverted
-    /// so that a default-initialized state describes the document start.
+    /// Whether the reader has moved past the document start, where a byte-order mark may be skipped. Stored inverted so
+    /// that a default-initialized state describes the document start.
     /// </summary>
     internal bool PastStart;
 

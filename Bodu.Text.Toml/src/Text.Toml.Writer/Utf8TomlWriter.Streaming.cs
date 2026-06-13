@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlWriter.Streaming.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,9 +31,7 @@ public ref partial struct Utf8TomlWriter
     /// stream, using the supplied options.
     /// </summary>
     /// <param name="utf8Toml">The writable destination stream.</param>
-    /// <param name="options">
-    /// The writer options controlling the maximum nesting depth.
-    /// </param>
+    /// <param name="options">The writer options controlling the maximum nesting depth.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="utf8Toml" /> is <see langword="null" />.
     /// </exception>
@@ -71,9 +69,9 @@ public ref partial struct Utf8TomlWriter
     /// Gets the number of rendered bytes buffered for a stream destination and not yet flushed.
     /// </summary>
     /// <returns>
-    /// The pending byte count. Always zero for a buffer-writer destination, where bytes are delivered as the root
-    /// table closes; for a stream destination the count becomes non-zero when the document completes and returns to
-    /// zero on <see cref="Flush" />.
+    /// The pending byte count. Always zero for a buffer-writer destination, where bytes are delivered as the root table
+    /// closes; for a stream destination the count becomes non-zero when the document completes and returns to zero on
+    /// <see cref="Flush" />.
     /// </returns>
     public readonly long BytesPending => _byteCounts[1];
 
@@ -114,8 +112,8 @@ public ref partial struct Utf8TomlWriter
     /// Resets the writer so a new document can be written to the same destination.
     /// </summary>
     /// <remarks>
-    /// Open containers, the buffered value tree, any unflushed stream output, and the
-    /// <see cref="BytesCommitted" /> / <see cref="BytesPending" /> counts are all cleared.
+    /// Open containers, the buffered value tree, any unflushed stream output, and the <see cref="BytesCommitted" /> /
+    /// <see cref="BytesPending" /> counts are all cleared.
     /// </remarks>
     public readonly void Reset()
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegerConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,9 +13,9 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// The 128-bit types are included even though this implementation reads and writes integers through the 64-bit
-/// surfaces: checked conversions confine <see cref="Int128" /> to the signed and <see cref="UInt128" /> to the
-/// unsigned 64-bit range, so an unstorable value surfaces as a serialization error on write rather than wrapping, and
-/// every stored integer reads back exactly.
+/// surfaces: checked conversions confine <see cref="Int128" /> to the signed and <see cref="UInt128" /> to the unsigned
+/// 64-bit range, so an unstorable value surfaces as a serialization error on write rather than wrapping, and every
+/// stored integer reads back exactly.
 /// </remarks>
 internal sealed class IntegerConverterFactory
     : BencodeConverterFactory

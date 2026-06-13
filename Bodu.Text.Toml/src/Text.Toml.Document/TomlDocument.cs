@@ -18,17 +18,17 @@ namespace Bodu.Text.Toml.Document;
 /// <remarks>
 /// <para>
 /// A <see cref="TomlDocument" /> holds a flat array of row records describing the document structure. The underlying
-/// <see cref="TomlDocumentReader" /> parses and decodes the whole document up front, so each scalar row stores its already
-/// decoded CLR value and the document keeps no copy of the source bytes. Every <see cref="TomlElement" />, enumerator,
-/// and <see cref="TomlProperty" /> obtained from a document is valid only until the document is disposed.
+/// <see cref="TomlDocumentReader" /> parses and decodes the whole document up front, so each scalar row stores its
+/// already decoded CLR value and the document keeps no copy of the source bytes. Every <see cref="TomlElement" />,
+/// enumerator, and <see cref="TomlProperty" /> obtained from a document is valid only until the document is disposed.
 /// </para>
 /// <para>
 /// Call <see cref="Dispose" /> when finished to release the index. After disposal, any operation on an element
 /// belonging to the document throws <see cref="ObjectDisposedException" />.
 /// </para>
 /// <para>
-/// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" />
-/// or its overloads <see cref="RootElement" /> always reports <see cref="TomlValueKind.Table" />. A document produced
+/// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" /> or
+/// its overloads <see cref="RootElement" /> always reports <see cref="TomlValueKind.Table" />. A document produced
 /// internally over a single value subtree may root any value kind.
 /// </para>
 /// </remarks>
@@ -232,9 +232,9 @@ public sealed partial class TomlDocument
 
             case TomlTokenType.StartArray:
                 {
-                    int self = rows.Count;
+                    var self = rows.Count;
                     rows.Add(default);
-                    int count = 0;
+                    var count = 0;
                     while (reader.Read() && reader.TokenType != TomlTokenType.EndArray)
                     {
                         ReadValue(ref reader, rows);
@@ -247,9 +247,9 @@ public sealed partial class TomlDocument
 
             case TomlTokenType.StartTable:
                 {
-                    int self = rows.Count;
+                    var self = rows.Count;
                     rows.Add(default);
-                    int pairs = 0;
+                    var pairs = 0;
                     while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
                     {
                         // The key surfaces as a property-name token; store it as a key row preceding its value subtree.
@@ -337,8 +337,8 @@ public sealed partial class TomlDocument
         // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
         ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, "index");
 
-        int child = index + 1;
-        for (int i = 0; i < elementIndex; i++)
+        var child = index + 1;
+        for (var i = 0; i < elementIndex; i++)
             child += rows[child].NumberOfRows;
 
         return child;
@@ -393,9 +393,9 @@ public sealed partial class TomlDocument
     internal (string Name, int ValueRow, int NextPairRow) GetPair(int keyRow)
     {
         Row[] rows = EnsureNotDisposed();
-        string name = (string)rows[keyRow].Value!;
-        int valueRow = keyRow + 1;
-        int nextPairRow = valueRow + rows[valueRow].NumberOfRows;
+        var name = (string)rows[keyRow].Value!;
+        var valueRow = keyRow + 1;
+        var nextPairRow = valueRow + rows[valueRow].NumberOfRows;
         return (name, valueRow, nextPairRow);
     }
 
@@ -417,10 +417,10 @@ public sealed partial class TomlDocument
         if (table.Kind != TomlValueKind.Table)
             throw KindMismatch(TomlValueKind.Table, table.Kind);
 
-        int cur = tableIndex + 1;
-        for (int i = 0; i < table.ChildCount; i++)
+        var cur = tableIndex + 1;
+        for (var i = 0; i < table.ChildCount; i++)
         {
-            int valueRowCandidate = cur + 1;
+            var valueRowCandidate = cur + 1;
             if (string.Equals((string)rows[cur].Value!, name, StringComparison.Ordinal))
             {
                 valueRow = valueRowCandidate;

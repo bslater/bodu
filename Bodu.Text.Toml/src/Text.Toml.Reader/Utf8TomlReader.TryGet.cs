@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReader.TryGet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,16 +17,16 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the value does not fit in a <see cref="byte" />.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="byte" />.</exception>
     public readonly byte GetByte() =>
         TryGetByte(out var value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as an 8-bit unsigned integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the narrowed value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the narrowed value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value fits in a <see cref="byte" />.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
@@ -51,16 +51,16 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the value does not fit in an <see cref="sbyte" />.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the value does not fit in an <see cref="sbyte" />.</exception>
     public readonly sbyte GetSByte() =>
         TryGetSByte(out var value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as an 8-bit signed integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the narrowed value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the narrowed value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value fits in an <see cref="sbyte" />.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
@@ -85,16 +85,16 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the value does not fit in a <see cref="short" />.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="short" />.</exception>
     public readonly short GetInt16() =>
         TryGetInt16(out var value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 16-bit signed integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the narrowed value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the narrowed value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value fits in a <see cref="short" />.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
@@ -119,16 +119,16 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the value does not fit in an <see cref="int" />.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the value does not fit in an <see cref="int" />.</exception>
     public readonly int GetInt32() =>
         TryGetInt32(out var value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 32-bit signed integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the narrowed value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the narrowed value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value fits in an <see cref="int" />.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
@@ -153,16 +153,16 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the value does not fit in a <see cref="ushort" />.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="ushort" />.</exception>
     public readonly ushort GetUInt16() =>
         TryGetUInt16(out var value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 16-bit unsigned integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the narrowed value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the narrowed value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value fits in a <see cref="ushort" />.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
@@ -187,16 +187,16 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the value does not fit in a <see cref="uint" />.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="uint" />.</exception>
     public readonly uint GetUInt32() =>
         TryGetUInt32(out var value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 32-bit unsigned integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the narrowed value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the narrowed value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value fits in a <see cref="uint" />.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
@@ -228,14 +228,16 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Attempts to read the current token as a 64-bit unsigned integer.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the converted value; otherwise zero.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the converted value; otherwise zero.
+    /// </param>
     /// <returns><see langword="true" /> when the value is non-negative.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
     /// <remarks>
-    /// TOML integers are 64-bit signed, so a value above <see cref="long.MaxValue" /> cannot appear in a document;
-    /// only a negative value fails the conversion.
+    /// TOML integers are 64-bit signed, so a value above <see cref="long.MaxValue" /> cannot appear in a document; only
+    /// a negative value fails the conversion.
     /// </remarks>
     public readonly bool TryGetUInt64(out ulong value)
     {
@@ -265,8 +267,8 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <param name="value">When this method returns <see langword="true" />, the single-precision value.</param>
     /// <returns>
-    /// <see langword="true" /> always; the conversion cannot fail. A magnitude beyond the
-    /// <see cref="float" /> range rounds to an infinity.
+    /// <see langword="true" /> always; the conversion cannot fail. A magnitude beyond the <see cref="float" /> range
+    /// rounds to an infinity.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
@@ -325,16 +327,14 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Reads the current token as a <see cref="Guid" />, parsed from a string token in the 36-character
-    /// hyphenated (<c>D</c>) format.
+    /// Reads the current token as a <see cref="Guid" />, parsed from a string token in the 36-character hyphenated (
+    /// <c>D</c>) format.
     /// </summary>
     /// <returns>The parsed GUID.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a <see cref="TomlTokenType.String" />.
     /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the string is not a GUID in the <c>D</c> format.
-    /// </exception>
+    /// <exception cref="FormatException">Thrown when the string is not a GUID in the <c>D</c> format.</exception>
     public readonly Guid GetGuid() =>
         TryGetGuid(out var value) ? value : throw new FormatException();
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlWriterOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,9 +14,8 @@ namespace Bodu.Text.Toml.Writer;
 /// TOML output always uses a normalized layout — keys are emitted in insertion order, sub-tables surface as
 /// <c>[header]</c> blocks, arrays of tables as <c>[[header]]</c> blocks, and every value uses its shortest
 /// round-trippable spelling — so there is no indentation or encoder option. The layout is deterministic for a given
-/// insertion order, but two semantically equal documents
-/// built in different orders serialize to different bytes; it is not a canonical form suitable for hashing or
-/// signing.
+/// insertion order, but two semantically equal documents built in different orders serialize to different bytes; it is
+/// not a canonical form suitable for hashing or signing.
 /// </para>
 /// <para>
 /// The writer always emits text that is valid under both TOML v1.0.0 and v1.1.0, so <see cref="SpecVersion" /> has no
@@ -32,8 +31,8 @@ public struct TomlWriterOptions
     /// <returns>The target specification version.</returns>
     /// <remarks>
     /// The property is currently inert: the writer emits canonical output that is valid under both TOML v1.0.0 and
-    /// v1.1.0 regardless of the value. It is reserved for a future version in which the emitted grammar differs
-    /// between specification versions.
+    /// v1.1.0 regardless of the value. It is reserved for a future version in which the emitted grammar differs between
+    /// specification versions.
     /// </remarks>
     public TomlSpecVersion SpecVersion { get; set; }
 

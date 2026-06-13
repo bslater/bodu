@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.MaxDepth.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = 2 };
         var shallow = new RecursiveModel { Child = new RecursiveModel() };
 
-        string text = TomlSerializer.Serialize(shallow, options);
+        var text = TomlSerializer.Serialize(shallow, options);
 
         Assert.AreEqual("[Child]\n", text);
     }

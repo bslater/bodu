@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Dictionaries.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d1:ai1e1:bi2ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<string, int>>(bytes);
@@ -43,7 +43,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<string, int> { ["zebra"] = 1, ["apple"] = 2, ["mango"] = 3 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         Assert.AreEqual("d5:applei2e5:mangoi3e5:zebrai1ee", Encoding.Latin1.GetString(bytes));
     }
@@ -57,7 +57,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<string, int>();
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("de", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<string, int>>(bytes);
@@ -73,7 +73,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<string, byte[]> { ["a"] = [0x01, 0x02], ["b"] = [] };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         // d {1:a}{2: 0x01 0x02} {1:b}{0:} e — keys sort ascending, byte-string values carry the raw bytes.
         byte[] expected = [.. Encoding.Latin1.GetBytes("d1:a2:"), 0x01, 0x02, .. Encoding.Latin1.GetBytes("1:b0:e")];
@@ -96,7 +96,7 @@ public partial class BencodeSerializerTests
             ["x"] = new() { Id = 1, Label = "a" },
         };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d1:xd2:Idi1e5:Label1:aee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<string, Item>>(bytes);
@@ -116,7 +116,7 @@ public partial class BencodeSerializerTests
             ["outer"] = new() { ["b"] = 2, ["a"] = 1 },
         };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d5:outerd1:ai1e1:bi2eee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(bytes);
@@ -133,7 +133,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<string, string?> { ["a"] = null, ["b"] = "x" };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         Assert.AreEqual("d1:b1:xe", Encoding.Latin1.GetString(bytes));
     }
@@ -150,10 +150,10 @@ public partial class BencodeSerializerTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        byte[] bytes = kat.Serialize();
+        var bytes = kat.Serialize();
         Assert.AreEqual("d1:ai1e1:bi2ee", Encoding.Latin1.GetString(bytes));
 
-        object roundTripped = kat.Deserialize(Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee"));
+        var roundTripped = kat.Deserialize(Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee"));
         Assert.IsInstanceOfType(roundTripped, kat.ExpectedConcreteType);
 
         var entries = ((IEnumerable<KeyValuePair<string, int>>)roundTripped)
@@ -175,7 +175,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<int, int> { [1] = 2 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d1:1i2ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<int, int>>(bytes);
@@ -191,7 +191,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<int, int> { [2] = 20, [10] = 100 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         Assert.AreEqual("d2:10i100e1:2i20ee", Encoding.Latin1.GetString(bytes));
     }
@@ -205,7 +205,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<ulong, int> { [ulong.MaxValue] = 1 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d20:18446744073709551615i1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<ulong, int>>(bytes);
@@ -221,7 +221,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<Color, int> { [Color.Red] = 1, [Color.Blue] = 2 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d4:Bluei2e3:Redi1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<Color, int>>(bytes);
@@ -238,7 +238,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<Permissions, int> { [Permissions.Read | Permissions.Write] = 1 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d11:Read, Writei1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<Permissions, int>>(bytes);
@@ -255,7 +255,7 @@ public partial class BencodeSerializerTests
         var key = new Guid("08314FA2-B1FE-4792-BCD1-6E62338AC7F3");
         var value = new Dictionary<Guid, int> { [key] = 1 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d36:08314fa2-b1fe-4792-bcd1-6e62338ac7f3i1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<Guid, int>>(bytes);
@@ -271,7 +271,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<bool, int> { [true] = 1, [false] = 2 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d5:Falsei2e4:Truei1ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<bool, int>>(bytes);
@@ -287,7 +287,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<char, int> { ['b'] = 2, ['a'] = 1 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
         Assert.AreEqual("d1:ai1e1:bi2ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<Dictionary<char, int>>(bytes);
@@ -302,7 +302,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenInt32KeyedIDictionary_ShouldMaterializeDictionary()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:1i2ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:1i2ee");
 
         IDictionary<int, int> roundTripped = BencodeSerializer.Deserialize<IDictionary<int, int>>(bytes);
 
@@ -317,7 +317,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenIntegerKeyTextInvalid_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:xi1ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:xi1ee");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -335,7 +335,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenGuidKeyTextNotHyphenatedFormat_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d38:{00000000-0000-0000-0000-000000000000}i1ee");
+        var bytes = Encoding.Latin1.GetBytes("d38:{00000000-0000-0000-0000-000000000000}i1ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -358,7 +358,7 @@ public partial class BencodeSerializerTests
     {
         var value = new Dictionary<Item, int> { [new Item { Id = 1, Label = "a" }] = 2 };
 
-        byte[] bytes = BencodeSerializer.Serialize(value);
+        var bytes = BencodeSerializer.Serialize(value);
 
         Assert.AreEqual("ld3:Keyd2:Idi1e5:Label1:ae5:Valuei2eee", Encoding.Latin1.GetString(bytes));
     }
@@ -371,7 +371,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDictionaryKeyIsUnsupportedType_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:1i2ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:1i2ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {

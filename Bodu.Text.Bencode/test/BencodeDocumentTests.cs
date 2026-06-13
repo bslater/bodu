@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public partial class BencodeDocumentTests
     [TestCategory("Smoke")]
     public void Parse_WhenInputIsDictionary_ShouldExposeReadableElements()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes(TorrentSource));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes(TorrentSource));
 
         BencodeElement root = document.RootElement;
 
@@ -52,7 +52,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetString_WhenElementIsByteString_ShouldReturnDecodedText()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes(TorrentSource));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes(TorrentSource));
 
         BencodeElement name = document.RootElement.GetProperty("info").GetProperty("name");
 
@@ -66,9 +66,9 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetBytes_WhenElementIsByteString_ShouldReturnRawBytes()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
 
-        byte[] bytes = document.RootElement.GetBytes();
+        var bytes = document.RootElement.GetBytes();
 
         CollectionAssert.AreEqual(Encoding.UTF8.GetBytes("spam"), bytes);
     }
@@ -79,7 +79,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateObject_WhenElementIsObject_ShouldYieldPairsInOrder()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d3:cow3:moo4:spam4:eggse"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d3:cow3:moo4:spam4:eggse"));
 
         List<string> names = [];
         List<string> values = [];
@@ -99,7 +99,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void EnumerateArray_WhenElementIsArray_ShouldYieldElementsInOrder()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1e3:twoe"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1e3:twoe"));
 
         List<BencodeValueKind> kinds = [];
         List<string> rendered = [];
@@ -119,7 +119,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Indexer_WhenElementIsArray_ShouldReturnElementAtPosition()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1e3:twoe"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1e3:twoe"));
 
         BencodeElement array = document.RootElement;
 
@@ -135,7 +135,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetInt64_WhenElementIsByteString_ShouldThrowInvalidOperationException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
 
         BencodeElement element = document.RootElement;
 
@@ -152,7 +152,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetProperty_WhenElementIsArray_ShouldThrowInvalidOperationException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1ee"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1ee"));
 
         BencodeElement element = document.RootElement;
 
@@ -169,7 +169,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetProperty_WhenNameIsAbsent_ShouldThrowKeyNotFoundException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d3:cow3:mooe"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d3:cow3:mooe"));
 
         BencodeElement root = document.RootElement;
 
@@ -186,7 +186,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void TryGetProperty_WhenNameIsAbsent_ShouldReturnFalse()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d3:cow3:mooe"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d3:cow3:mooe"));
 
         BencodeElement root = document.RootElement;
 
@@ -203,7 +203,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Indexer_WhenIndexOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1ee"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("li1ee"));
 
         BencodeElement array = document.RootElement;
 
@@ -220,7 +220,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void ValueKind_WhenDocumentDisposed_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
+        var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 
@@ -236,7 +236,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("i1e"));
+        var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("i1e"));
 
         document.Dispose();
         document.Dispose();
@@ -263,7 +263,7 @@ public partial class BencodeDocumentTests
     {
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("i1"));
+            using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("i1"));
         });
     }
 
@@ -273,7 +273,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetInt64_WhenElementIsNegativeInteger_ShouldReturnOriginalValue()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("i-42e"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("i-42e"));
 
         Assert.AreEqual(-42L, document.RootElement.GetInt64());
     }
@@ -285,7 +285,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void RootElement_WhenDocumentIsNested_ShouldReadOriginalValues()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d4:listli1ei2ei3ee3:str5:helloe"));
+        using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("d4:listli1ei2ei3ee3:str5:helloe"));
 
         BencodeElement root = document.RootElement;
 

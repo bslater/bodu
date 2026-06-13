@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderWriterTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,7 +80,7 @@ public partial class Utf8BencodeReaderWriterTests
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
         kat.Write(writer);
-        byte[] bytes = buffer.WrittenSpan.ToArray();
+        var bytes = buffer.WrittenSpan.ToArray();
 
         var reader = new Utf8BencodeReader(bytes);
         var actual = new List<BencodeTokenType>();
@@ -111,9 +111,9 @@ public partial class Utf8BencodeReaderWriterTests
     [DataRow("d1:a2:aae")]
     public void RoundTrip_WhenCanonicalInputRewritten_ShouldBeByteEqual(string input)
     {
-        byte[] original = Encoding.Latin1.GetBytes(input);
+        var original = Encoding.Latin1.GetBytes(input);
 
-        byte[] rewritten = Rewrite(original);
+        var rewritten = Rewrite(original);
 
         CollectionAssert.AreEqual(original, rewritten);
     }

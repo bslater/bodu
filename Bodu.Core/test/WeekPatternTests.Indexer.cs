@@ -49,7 +49,7 @@ public partial class WeekPatternTests
 
     private static IEnumerable<object[]> GetValidDays()
     {
-        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
             yield return new object[] { day };
     }
 

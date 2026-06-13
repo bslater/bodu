@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Constructor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -75,7 +75,7 @@ public partial class TomlSerializerTests
     {
         var original = new PointRecord(4, 5);
 
-        string text = TomlSerializer.Serialize(original);
+        var text = TomlSerializer.Serialize(original);
         Assert.AreEqual("X = 4\nY = 5\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<PointRecord>(text);
@@ -160,7 +160,7 @@ public partial class TomlSerializerTests
     {
         var original = new RenamedConstructorMember(11);
 
-        string text = TomlSerializer.Serialize(original);
+        var text = TomlSerializer.Serialize(original);
         Assert.AreEqual("id = 11\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<RenamedConstructorMember>(text);

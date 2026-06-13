@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.PropertyName.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenCaseInsensitiveDefaultAndKeyCasingDiffers_ShouldBindMember()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:VALUEi7ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:VALUEi7ee");
 
         var model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes);
 
@@ -39,7 +39,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenCaseSensitiveAndKeyCasingDiffers_ShouldNotBindMember()
     {
         var options = new BencodeSerializerOptions { PropertyNameCaseInsensitive = false };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:VALUEi7ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:VALUEi7ee");
 
         var model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes, options);
 
@@ -54,7 +54,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenCaseSensitiveAndKeyMatchesExactly_ShouldBindMember()
     {
         var options = new BencodeSerializerOptions { PropertyNameCaseInsensitive = false };
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes, options);
 
@@ -72,7 +72,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
         var original = new ExplicitNameModel { FirstName = "a", LastName = "b" };
 
-        byte[] bytes = BencodeSerializer.Serialize(original, options);
+        var bytes = BencodeSerializer.Serialize(original, options);
         // FirstName follows the camel-case policy; LastName keeps its explicit wire name "surname".
         Assert.AreEqual("d9:firstName1:a7:surname1:be", Encoding.Latin1.GetString(bytes));
 
@@ -89,7 +89,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenKeyMatchesClrNameNotWireName_ShouldNotBindMember()
     {
         // The wire name is "id"; a key of "Identifier" (the CLR name) must not bind.
-        byte[] bytes = Encoding.Latin1.GetBytes("d10:Identifieri5ee");
+        var bytes = Encoding.Latin1.GetBytes("d10:Identifieri5ee");
 
         var model = BencodeSerializer.Deserialize<RenamedKeyModel>(bytes);
 
@@ -103,7 +103,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenKeyMatchesWireName_ShouldBindMember()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d2:idi5ee");
+        var bytes = Encoding.Latin1.GetBytes("d2:idi5ee");
 
         var model = BencodeSerializer.Deserialize<RenamedKeyModel>(bytes);
 
@@ -169,7 +169,7 @@ public partial class BencodeSerializerTests
     {
         var model = new CaseOnlyWireNameModel { Lower = 1, Upper = 2 };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d2:IDi2e2:idi1ee", Encoding.Latin1.GetString(bytes));
     }

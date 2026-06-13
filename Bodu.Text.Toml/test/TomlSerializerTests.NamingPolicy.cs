@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.NamingPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public partial class TomlSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         var options = new TomlSerializerOptions { PropertyNamingPolicy = kat.Input };
-        string text = TomlSerializer.Serialize(new TwoWordModel { FirstName = "x" }, options);
+        var text = TomlSerializer.Serialize(new TwoWordModel { FirstName = "x" }, options);
 
         Assert.AreEqual($"{kat.Expected} = \"x\"\n", text);
     }
@@ -50,7 +50,7 @@ public partial class TomlSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         var options = new TomlSerializerOptions { PropertyNamingPolicy = kat.Input };
-        string text = TomlSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
+        var text = TomlSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
 
         var roundTripped = TomlSerializer.Deserialize<TwoWordModel>(text, options);
         Assert.AreEqual("value", roundTripped.FirstName);
@@ -107,7 +107,7 @@ public partial class TomlSerializerTests
         // The options select kebab-lower, but the type selects snake-lower; the type policy must win.
         var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.KebabCaseLower };
 
-        string text = TomlSerializer.Serialize(new SnakeTypeModel { FirstName = "x" }, options);
+        var text = TomlSerializer.Serialize(new SnakeTypeModel { FirstName = "x" }, options);
 
         Assert.AreEqual("first_name = \"x\"\n", text);
     }
@@ -121,7 +121,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
 
-        string text = TomlSerializer.Serialize(new UnspecifiedTypeModel { FirstName = "x" }, options);
+        var text = TomlSerializer.Serialize(new UnspecifiedTypeModel { FirstName = "x" }, options);
 
         Assert.AreEqual("firstName = \"x\"\n", text);
     }

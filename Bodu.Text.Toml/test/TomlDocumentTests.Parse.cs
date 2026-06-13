@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -86,7 +86,7 @@ public partial class TomlDocumentTests
 
         TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            using TomlDocument document = TomlDocument.Parse(kat.Input);
+            using var document = TomlDocument.Parse(kat.Input);
         });
 
         Assert.IsNotNull(ex.LineNumber);
@@ -126,7 +126,7 @@ public partial class TomlDocumentTests
     public void Parse_WhenInputCoversValueKinds_ShouldReportMemberKind(string testName, string input, string key, TomlValueKind expectedKind)
     {
         _ = testName;
-        using TomlDocument document = TomlDocument.Parse(input);
+        using var document = TomlDocument.Parse(input);
 
         Assert.AreEqual(expectedKind, document.RootElement.GetProperty(key).ValueKind);
     }
@@ -138,7 +138,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenInputEmpty_ShouldExposeEmptyRootTable()
     {
-        using TomlDocument document = TomlDocument.Parse(string.Empty);
+        using var document = TomlDocument.Parse(string.Empty);
 
         Assert.AreEqual(TomlValueKind.Table, document.RootElement.ValueKind);
         Assert.AreEqual(0, document.RootElement.EnumerateObject().Count());
@@ -150,7 +150,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenInputIsCommentOnly_ShouldExposeEmptyRootTable()
     {
-        using TomlDocument document = TomlDocument.Parse("# only a comment\n");
+        using var document = TomlDocument.Parse("# only a comment\n");
 
         Assert.AreEqual(TomlValueKind.Table, document.RootElement.ValueKind);
         Assert.AreEqual(0, document.RootElement.EnumerateObject().Count());
@@ -163,7 +163,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenNestingEqualsMaxDepth_ShouldSucceed()
     {
-        using TomlDocument document = TomlDocument.Parse("a = [[1]]\n", new TomlDocumentOptions { MaxDepth = 2 });
+        using var document = TomlDocument.Parse("a = [[1]]\n", new TomlDocumentOptions { MaxDepth = 2 });
 
         Assert.AreEqual(TomlValueKind.Array, document.RootElement.GetProperty("a").ValueKind);
     }
@@ -177,7 +177,7 @@ public partial class TomlDocumentTests
     {
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            using TomlDocument document = TomlDocument.Parse("a = [[[1]]]\n", new TomlDocumentOptions { MaxDepth = 2 });
+            using var document = TomlDocument.Parse("a = [[[1]]]\n", new TomlDocumentOptions { MaxDepth = 2 });
         });
     }
 
@@ -191,7 +191,7 @@ public partial class TomlDocumentTests
     [DataRow(-1)]
     public void Parse_WhenMaxDepthNotPositive_ShouldUseDefaultDepth(int maxDepth)
     {
-        using TomlDocument document = TomlDocument.Parse("a = [[[1]]]\n", new TomlDocumentOptions { MaxDepth = maxDepth });
+        using var document = TomlDocument.Parse("a = [[[1]]]\n", new TomlDocumentOptions { MaxDepth = maxDepth });
 
         Assert.AreEqual(TomlValueKind.Array, document.RootElement.GetProperty("a").ValueKind);
     }
@@ -203,9 +203,9 @@ public partial class TomlDocumentTests
     [TestCategory("Regression")]
     public void Parse_WhenNestingAtDefaultMaxDepth_ShouldParseDocument()
     {
-        string atLimit = "a = " + new string('[', 256) + "1" + new string(']', 256) + "\n";
+        var atLimit = "a = " + new string('[', 256) + "1" + new string(']', 256) + "\n";
 
-        using TomlDocument document = TomlDocument.Parse(atLimit);
+        using var document = TomlDocument.Parse(atLimit);
 
         Assert.AreEqual(TomlValueKind.Array, document.RootElement.GetProperty("a").ValueKind);
     }
@@ -218,11 +218,11 @@ public partial class TomlDocumentTests
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowTomlFormatException()
     {
-        string beyondLimit = "a = " + new string('[', 257) + "1" + new string(']', 257) + "\n";
+        var beyondLimit = "a = " + new string('[', 257) + "1" + new string(']', 257) + "\n";
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            using TomlDocument deep = TomlDocument.Parse(beyondLimit);
+            using var deep = TomlDocument.Parse(beyondLimit);
         });
     }
 
@@ -234,7 +234,7 @@ public partial class TomlDocumentTests
     {
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
-            using TomlDocument rejected = TomlDocument.Parse("a = \"\\e\"\n");
+            using var rejected = TomlDocument.Parse("a = \"\\e\"\n");
         });
     }
 
@@ -245,7 +245,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenEscapeSequenceEscape_ForV11_ShouldDecodeEscapeCharacter()
     {
-        using TomlDocument document = TomlDocument.Parse("a = \"\\e\"\n", new TomlDocumentOptions { SpecVersion = TomlSpecVersion.V1_1 });
+        using var document = TomlDocument.Parse("a = \"\\e\"\n", new TomlDocumentOptions { SpecVersion = TomlSpecVersion.V1_1 });
 
         Assert.AreEqual("\u001b", document.RootElement.GetProperty("a").GetString());
     }
@@ -260,7 +260,7 @@ public partial class TomlDocumentTests
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            using TomlDocument document = TomlDocument.Parse((string)null!, new TomlDocumentOptions { MaxDepth = 4 });
+            using var document = TomlDocument.Parse((string)null!, new TomlDocumentOptions { MaxDepth = 4 });
         }, "toml");
     }
 
@@ -271,8 +271,8 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenSourceMutatedAfterParse_ShouldNotAffectDocument()
     {
-        byte[] source = Encoding.UTF8.GetBytes("name = \"spam\"\n");
-        using TomlDocument document = TomlDocument.Parse(source.AsSpan());
+        var source = Encoding.UTF8.GetBytes("name = \"spam\"\n");
+        using var document = TomlDocument.Parse(source.AsSpan());
 
         source[9] = (byte)'X';
 
@@ -285,7 +285,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenDottedKeyDeclared_ShouldExposeNestedTable()
     {
-        using TomlDocument document = TomlDocument.Parse("server.port = 8080\n");
+        using var document = TomlDocument.Parse("server.port = 8080\n");
 
         TomlElement server = document.RootElement.GetProperty("server");
         Assert.AreEqual(TomlValueKind.Table, server.ValueKind);

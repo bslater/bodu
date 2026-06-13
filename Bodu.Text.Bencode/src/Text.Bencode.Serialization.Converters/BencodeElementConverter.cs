@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeElementConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ internal sealed class BencodeElementConverter
     {
         ThrowHelper.ThrowIfNull(options);
 
-        int start = reader.TokenStartIndex;
+        var start = reader.TokenStartIndex;
         reader.Skip();
 
         BencodeReaderOptions readerOptions = new()

@@ -18,7 +18,7 @@ public partial class WeekPatternTests
     {
         WeekPattern pattern = WeekPattern.Empty;
 
-        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
             Assert.IsFalse(pattern.Contains(day), $"{day} should not be contained in Empty.");
     }
 
@@ -31,7 +31,7 @@ public partial class WeekPatternTests
     {
         WeekPattern pattern = WeekPattern.Weekdays;
 
-        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
             Assert.AreEqual(pattern[day], pattern.Contains(day),
                 $"Contains and indexer should agree for {day}.");
     }

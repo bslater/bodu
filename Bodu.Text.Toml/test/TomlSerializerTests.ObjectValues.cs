@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.ObjectValues.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class TomlSerializerTests
     [DataRow(true, "true", DisplayName = "boxed bool")]
     public void Serialize_WhenObjectMemberHoldsScalar_ShouldDispatchToRuntimeType(object value, string expected)
     {
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = value });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = value });
 
         Assert.AreEqual($"Value = {expected}\n", text);
     }
@@ -41,7 +41,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberHoldsArray_ShouldWriteArray()
     {
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = new[] { 1, 2, 3 } });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = new[] { 1, 2, 3 } });
 
         Assert.AreEqual("Value = [1, 2, 3]\n", text);
     }
@@ -55,7 +55,7 @@ public partial class TomlSerializerTests
     {
         var value = new Dictionary<string, int> { ["A"] = 1 };
 
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = value });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = value });
 
         Assert.AreEqual("[Value]\nA = 1\n", text);
     }
@@ -67,7 +67,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberHoldsPoco_ShouldWriteTable()
     {
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = new ValueModel<int> { Value = 7 } });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = new ValueModel<int> { Value = 7 } });
 
         Assert.AreEqual("[Value]\nValue = 7\n", text);
     }
@@ -80,7 +80,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberHoldsBareObject_ShouldWriteEmptyTable()
     {
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = new object() });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = new object() });
 
         Assert.AreEqual("[Value]\n", text);
     }
@@ -92,7 +92,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenObjectMemberNull_ShouldOmitMember()
     {
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = null! });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = null! });
 
         Assert.AreEqual(string.Empty, text);
     }
@@ -112,7 +112,7 @@ public partial class TomlSerializerTests
     [DataRow("Value = { A = 1 }\n", TomlValueKind.Table, DisplayName = "table")]
     public void Deserialize_WhenObjectMember_ShouldSurfaceTomlElement(string toml, TomlValueKind kind)
     {
-        object actual = TomlSerializer.Deserialize<ValueModel<object>>(toml).Value;
+        var actual = TomlSerializer.Deserialize<ValueModel<object>>(toml).Value;
 
         Assert.IsInstanceOfType<TomlElement>(actual);
         Assert.AreEqual(kind, ((TomlElement)actual).ValueKind);
@@ -125,9 +125,9 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenObjectMember_ShouldRoundTripThroughElement()
     {
-        string text = TomlSerializer.Serialize(new ValueModel<object> { Value = new[] { 1, 2, 3 } });
-        object element = TomlSerializer.Deserialize<ValueModel<object>>(text).Value;
-        string again = TomlSerializer.Serialize(new ValueModel<object> { Value = element });
+        var text = TomlSerializer.Serialize(new ValueModel<object> { Value = new[] { 1, 2, 3 } });
+        var element = TomlSerializer.Deserialize<ValueModel<object>>(text).Value;
+        var again = TomlSerializer.Serialize(new ValueModel<object> { Value = element });
 
         Assert.AreEqual(text, again);
     }
@@ -139,7 +139,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenObjectRoot_ShouldSurfaceTableElement()
     {
-        object actual = TomlSerializer.Deserialize<object>("A = 1\n");
+        var actual = TomlSerializer.Deserialize<object>("A = 1\n");
 
         Assert.IsInstanceOfType<TomlElement>(actual);
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlTableWriterNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,8 +50,8 @@ internal sealed class TomlTableWriterNode
     /// <param name="key">The property key.</param>
     /// <param name="value">The buffered value node.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="key" /> has already been written to the table; duplicate keys would make the
-    /// emitted document invalid TOML.
+    /// Thrown when <paramref name="key" /> has already been written to the table; duplicate keys would make the emitted
+    /// document invalid TOML.
     /// </exception>
     internal void Add(string key, TomlWriterNode value)
     {

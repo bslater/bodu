@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeArrayTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -51,7 +51,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void Ctor_WhenItemBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        BencodeValue owned = BencodeValue.Create(1L);
+        var owned = BencodeValue.Create(1L);
         var owner = new BencodeArray();
         owner.Add(owned);
 
@@ -104,7 +104,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void Indexer_WhenSetReplacesElement_ShouldDetachPreviousElement()
     {
-        BencodeValue replaced = BencodeValue.Create(1L);
+        var replaced = BencodeValue.Create(1L);
         var array = new BencodeArray();
         array.Add(replaced);
 
@@ -123,7 +123,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void Indexer_WhenAssignedNodeBelongsToAnotherContainer_ShouldThrowInvalidOperationException()
     {
-        BencodeValue owned = BencodeValue.Create(1L);
+        var owned = BencodeValue.Create(1L);
         var owner = new BencodeArray();
         owner.Add(owned);
 
@@ -194,7 +194,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void Remove_WhenItemPresentOrAbsent_ShouldRemoveFirstOccurrenceAndDetach()
     {
-        BencodeValue item = BencodeValue.Create(1L);
+        var item = BencodeValue.Create(1L);
         var array = new BencodeArray();
         array.Add(item);
         array.Add(2);
@@ -211,7 +211,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void RemoveAt_WhenIndexValid_ShouldRemoveAndDetach()
     {
-        BencodeValue item = BencodeValue.Create(2L);
+        var item = BencodeValue.Create(2L);
         var array = new BencodeArray();
         array.Add(1);
         array.Add(item);
@@ -246,8 +246,8 @@ public class BencodeArrayTests
     [TestMethod]
     public void Clear_WhenCalled_ShouldRemoveAllElementsAndDetachChildren()
     {
-        BencodeValue first = BencodeValue.Create(1L);
-        BencodeValue second = BencodeValue.Create("x");
+        var first = BencodeValue.Create(1L);
+        var second = BencodeValue.Create("x");
         var array = new BencodeArray();
         array.Add(first);
         array.Add(second);
@@ -266,7 +266,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void Contains_WhenItemPresentOrAbsent_ShouldReportMembership()
     {
-        BencodeValue item = BencodeValue.Create(1L);
+        var item = BencodeValue.Create(1L);
         var array = new BencodeArray();
         array.Add(item);
         array.Add(null);
@@ -283,7 +283,7 @@ public class BencodeArrayTests
     [TestMethod]
     public void IndexOf_WhenItemPresentOrAbsent_ShouldReturnExpectedIndex()
     {
-        BencodeValue item = BencodeValue.Create(1L);
+        var item = BencodeValue.Create(1L);
         var array = new BencodeArray();
         array.Add(0);
         array.Add(item);
@@ -300,8 +300,8 @@ public class BencodeArrayTests
     [TestMethod]
     public void CopyTo_WhenCalled_ShouldCopyElementsFromArrayIndex()
     {
-        BencodeValue first = BencodeValue.Create(1L);
-        BencodeValue second = BencodeValue.Create(2L);
+        var first = BencodeValue.Create(1L);
+        var second = BencodeValue.Create(2L);
         var array = new BencodeArray();
         array.Add(first);
         array.Add(second);
@@ -351,7 +351,7 @@ public class BencodeArrayTests
     {
         var array = new BencodeArray(3, 1, 2);
 
-        byte[] bytes = array.ToByteArray();
+        var bytes = array.ToByteArray();
 
         Assert.AreEqual("li3ei1ei2ee", Encoding.Latin1.GetString(bytes));
     }

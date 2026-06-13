@@ -31,10 +31,10 @@ public class BencodeSerializerAlignmentTests
     {
         var options = new BencodeSerializerOptions { DefaultIgnoreCondition = BencodeIgnoreCondition.WhenWritingDefault };
 
-        byte[] zeroCount = BencodeSerializer.Serialize(new CountModel { Count = 0, Label = "x" }, options);
+        var zeroCount = BencodeSerializer.Serialize(new CountModel { Count = 0, Label = "x" }, options);
         Assert.AreEqual("d5:Label1:xe", Encoding.Latin1.GetString(zeroCount));
 
-        byte[] nonZeroCount = BencodeSerializer.Serialize(new CountModel { Count = 7, Label = "x" }, options);
+        var nonZeroCount = BencodeSerializer.Serialize(new CountModel { Count = 7, Label = "x" }, options);
         Assert.AreEqual("d5:Counti7e5:Label1:xe", Encoding.Latin1.GetString(nonZeroCount));
     }
 
@@ -45,7 +45,7 @@ public class BencodeSerializerAlignmentTests
     [TestMethod]
     public void Serialize_WhenDefaultIgnoreConditionIsNever_ShouldKeepDefaultValuedMembers()
     {
-        byte[] bytes = BencodeSerializer.Serialize(new CountModel { Count = 0, Label = "x" });
+        var bytes = BencodeSerializer.Serialize(new CountModel { Count = 0, Label = "x" });
 
         Assert.AreEqual("d5:Counti0e5:Label1:xe", Encoding.Latin1.GetString(bytes));
     }
@@ -72,7 +72,7 @@ public class BencodeSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenRequiredMemberMissing_ShouldThrowBencodeSerializationException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d8:Optional1:oe");
+        var bytes = Encoding.Latin1.GetBytes("d8:Optional1:oe");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -89,7 +89,7 @@ public class BencodeSerializerAlignmentTests
     {
         var original = new RequiredMemberModel { Name = "torrent", Optional = "o" };
 
-        byte[] bytes = BencodeSerializer.Serialize(original);
+        var bytes = BencodeSerializer.Serialize(original);
         var roundTripped = BencodeSerializer.Deserialize<RequiredMemberModel>(bytes);
 
         Assert.AreEqual("torrent", roundTripped.Name);
@@ -105,7 +105,7 @@ public class BencodeSerializerAlignmentTests
     {
         var original = new IncludedModel(42);
 
-        byte[] bytes = BencodeSerializer.Serialize(original);
+        var bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei42ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<IncludedModel>(bytes);
@@ -119,7 +119,7 @@ public class BencodeSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenExtraKeysPresent_ShouldCaptureIntoExtensionData()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name4:test1:ai1e1:zi9ee");
+        var bytes = Encoding.Latin1.GetBytes("d4:Name4:test1:ai1e1:zi9ee");
 
         var model = BencodeSerializer.Deserialize<ExtensionDataModel>(bytes);
 
@@ -147,7 +147,7 @@ public class BencodeSerializerAlignmentTests
             },
         };
 
-        byte[] bytes = BencodeSerializer.Serialize(model);
+        var bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d4:Name4:test1:ai1e1:zi9ee", Encoding.Latin1.GetString(bytes));
     }
@@ -162,7 +162,7 @@ public class BencodeSerializerAlignmentTests
     {
         var options = new BencodeSerializerOptions(BencodeSerializerDefaults.Web);
 
-        byte[] bytes = BencodeSerializer.Serialize(new CountModel { Count = 3, Label = "y" }, options);
+        var bytes = BencodeSerializer.Serialize(new CountModel { Count = 3, Label = "y" }, options);
         Assert.AreEqual("d5:counti3e5:label1:ye", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<CountModel>(bytes, options);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,11 +64,11 @@ public partial class BencodeDocumentTests
     public void Parse_WhenInputMalformed_ShouldThrowBencodeFormatException(string testName, string input)
     {
         _ = testName;
-        byte[] bytes = Bytes(input);
+        var bytes = Bytes(input);
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument document = BencodeDocument.Parse(bytes);
+            using var document = BencodeDocument.Parse(bytes);
         });
     }
 
@@ -92,7 +92,7 @@ public partial class BencodeDocumentTests
     public void Parse_WhenInputCanonicalEdgeCase_ShouldExposeRoot(string testName, string input, BencodeValueKind expectedKind)
     {
         _ = testName;
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
 
         Assert.AreEqual(expectedKind, document.RootElement.ValueKind);
     }
@@ -106,7 +106,7 @@ public partial class BencodeDocumentTests
     {
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument document = BencodeDocument.Parse(Bytes("i1e2:xx"));
+            using var document = BencodeDocument.Parse(Bytes("i1e2:xx"));
         });
     }
 
@@ -118,7 +118,7 @@ public partial class BencodeDocumentTests
     {
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument document = BencodeDocument.Parse([]);
+            using var document = BencodeDocument.Parse([]);
         });
     }
 
@@ -129,7 +129,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenNestingEqualsMaxDepth_ShouldSucceed()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("llee"), new BencodeDocumentOptions { MaxDepth = 2 });
+        using var document = BencodeDocument.Parse(Bytes("llee"), new BencodeDocumentOptions { MaxDepth = 2 });
 
         Assert.AreEqual(BencodeValueKind.Array, document.RootElement.ValueKind);
         Assert.AreEqual(1, document.RootElement.GetArrayLength());
@@ -145,7 +145,7 @@ public partial class BencodeDocumentTests
     [DataRow(-1)]
     public void Parse_WhenMaxDepthNotPositive_ShouldUseDefaultDepth(int maxDepth)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("llleee"), new BencodeDocumentOptions { MaxDepth = maxDepth });
+        using var document = BencodeDocument.Parse(Bytes("llleee"), new BencodeDocumentOptions { MaxDepth = maxDepth });
 
         Assert.AreEqual(BencodeValueKind.Array, document.RootElement.ValueKind);
     }
@@ -158,15 +158,15 @@ public partial class BencodeDocumentTests
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowBencodeFormatException()
     {
-        byte[] atLimit = Bytes(new string('l', 256) + new string('e', 256));
-        byte[] beyondLimit = Bytes(new string('l', 257) + new string('e', 257));
+        var atLimit = Bytes(new string('l', 256) + new string('e', 256));
+        var beyondLimit = Bytes(new string('l', 257) + new string('e', 257));
 
-        using BencodeDocument document = BencodeDocument.Parse(atLimit);
+        using var document = BencodeDocument.Parse(atLimit);
         Assert.AreEqual(BencodeValueKind.Array, document.RootElement.ValueKind);
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument deep = BencodeDocument.Parse(beyondLimit);
+            using var deep = BencodeDocument.Parse(beyondLimit);
         });
     }
 
@@ -191,8 +191,8 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenSourceMutatedAfterParse_ShouldNotAffectDocument()
     {
-        byte[] source = Bytes("4:spam");
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        var source = Bytes("4:spam");
+        using var document = BencodeDocument.Parse(source);
 
         source[2] = (byte)'X';
 

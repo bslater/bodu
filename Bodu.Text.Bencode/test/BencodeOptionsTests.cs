@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public class BencodeOptionsTests
     [TestCategory("Smoke")]
     public void ReaderOptions_WhenDocumentExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("llleee");
+        var bytes = Encoding.Latin1.GetBytes("llleee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -48,7 +48,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void ReaderOptions_WhenDocumentWithinMaxDepth_ShouldReadToCompletion()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("llee");
+        var bytes = Encoding.Latin1.GetBytes("llee");
 
         var reader = new Utf8BencodeReader(bytes, new BencodeReaderOptions { MaxDepth = 2 });
         while (reader.Read())
@@ -101,11 +101,11 @@ public class BencodeOptionsTests
     [TestMethod]
     public void DocumentOptions_WhenDocumentExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("llee");
+        var bytes = Encoding.Latin1.GetBytes("llee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
-            using BencodeDocument document = BencodeDocument.Parse(bytes, new BencodeDocumentOptions { MaxDepth = 1 });
+            using var document = BencodeDocument.Parse(bytes, new BencodeDocumentOptions { MaxDepth = 1 });
         });
     }
 
@@ -116,9 +116,9 @@ public class BencodeOptionsTests
     [TestMethod]
     public void DocumentOptions_WhenDefaultDepth_ShouldParseNestedDocument()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("llee");
+        var bytes = Encoding.Latin1.GetBytes("llee");
 
-        using BencodeDocument document = BencodeDocument.Parse(bytes);
+        using var document = BencodeDocument.Parse(bytes);
 
         Assert.AreEqual(BencodeValueKind.Array, document.RootElement.ValueKind);
     }
@@ -131,7 +131,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void NodeOptions_WhenCaseInsensitive_ShouldResolvePropertyIgnoringCase()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
+        var bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
 
         BencodeObject obj = BencodeNode.Parse(bytes, new BencodeNodeOptions { PropertyNameCaseInsensitive = true })!.AsObject();
 
@@ -148,7 +148,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void NodeOptions_WhenDefault_ShouldResolvePropertyCaseSensitively()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
+        var bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
 
         BencodeObject obj = BencodeNode.Parse(bytes)!.AsObject();
 

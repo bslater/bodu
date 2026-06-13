@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Formatting.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -202,11 +202,11 @@ public partial class MoneyTests
         var money = new Money(1234.56m, "USD");
 
         Span<char> large = stackalloc char[32];
-        Assert.IsTrue(money.TryFormat(large, out int written, "N", CultureInfo.InvariantCulture));
+        Assert.IsTrue(money.TryFormat(large, out var written, "N", CultureInfo.InvariantCulture));
         Assert.AreEqual("1,234.56", large[..written].ToString());
 
         Span<char> tiny = stackalloc char[2];
-        Assert.IsFalse(money.TryFormat(tiny, out int none, "N", CultureInfo.InvariantCulture));
+        Assert.IsFalse(money.TryFormat(tiny, out var none, "N", CultureInfo.InvariantCulture));
         Assert.AreEqual(0, none);
     }
 
@@ -220,7 +220,7 @@ public partial class MoneyTests
         var money = new Money(1234.56m, "USD");
 
         Span<byte> buffer = stackalloc byte[32];
-        Assert.IsTrue(money.TryFormat(buffer, out int written, "N", CultureInfo.InvariantCulture));
+        Assert.IsTrue(money.TryFormat(buffer, out var written, "N", CultureInfo.InvariantCulture));
         Assert.AreEqual("1,234.56", System.Text.Encoding.UTF8.GetString(buffer[..written]));
     }
 }

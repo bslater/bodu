@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNodeTests.Leniency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,14 +21,14 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenKeysUnsorted_ShouldRequireAllowUnsortedKeys()
     {
-        byte[] data = "d1:bi1e1:ai2ee"u8.ToArray();
+        var data = "d1:bi1e1:ai2ee"u8.ToArray();
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
             _ = BencodeNode.Parse(data);
         });
 
-        BencodeNode? node = BencodeNode.Parse(data, default, new BencodeDocumentOptions { AllowUnsortedKeys = true });
+        var node = BencodeNode.Parse(data, default, new BencodeDocumentOptions { AllowUnsortedKeys = true });
 
         Assert.IsNotNull(node);
         Assert.AreEqual(1L, node["b"]!.GetValue<long>());
@@ -42,9 +42,9 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenDuplicateKeysAllowed_ShouldCollapseLastWins()
     {
-        byte[] data = "d1:ai1e1:ai2ee"u8.ToArray();
+        var data = "d1:ai1e1:ai2ee"u8.ToArray();
 
-        BencodeNode? node = BencodeNode.Parse(data, default, new BencodeDocumentOptions { AllowDuplicateKeys = true });
+        var node = BencodeNode.Parse(data, default, new BencodeDocumentOptions { AllowDuplicateKeys = true });
 
         Assert.IsNotNull(node);
         Assert.AreEqual(1, node.AsObject().Count);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlNodeTests.Conversions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -216,7 +216,7 @@ public partial class TomlNodeTests
     [TestMethod]
     public void Root_WhenNodeHasNoParent_ShouldReturnSelf()
     {
-        TomlValue node = TomlValue.Create(1L);
+        var node = TomlValue.Create(1L);
 
         Assert.IsNull(node.Parent);
         Assert.AreSame(node, node.Root);

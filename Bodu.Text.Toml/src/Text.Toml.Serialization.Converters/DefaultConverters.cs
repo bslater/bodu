@@ -25,13 +25,13 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <para>
 /// TOML can represent strings, integers, floats, Booleans, and the four date-time kinds natively, so the built-in set
 /// covers <see cref="string" />, <see cref="char" />, <see cref="Guid" />, <see cref="Uri" />, <see cref="Version" />,
-/// the fixed-width integer types, <see cref="double" />, <see cref="float" />, <see cref="Half" />, <see cref="bool" />,
-/// <see cref="System.DateTimeOffset" />, <see cref="System.DateTime" />, <see cref="System.DateOnly" />, and
+/// the fixed-width integer types, <see cref="double" />, <see cref="float" />, <see cref="Half" />, <see cref="bool" />
+/// , <see cref="System.DateTimeOffset" />, <see cref="System.DateTime" />, <see cref="System.DateOnly" />, and
 /// <see cref="System.TimeOnly" />, plus enumerations and the structural shapes. Types TOML has no native form for map
 /// to a defined representation instead: <see cref="decimal" /> writes as a float or lossless string per
 /// <see cref="TomlSerializerOptions.DecimalHandling" /> and reads from a float, integer, or string;
-/// <see cref="System.TimeSpan" /> maps to the invariant constant-format string; <see cref="Half" /> widens exactly to
-/// a float on write and narrows with IEEE 754 saturation on read; <see cref="Int128" /> and <see cref="UInt128" /> are
+/// <see cref="System.TimeSpan" /> maps to the invariant constant-format string; <see cref="Half" /> widens exactly to a
+/// float on write and narrows with IEEE 754 saturation on read; <see cref="Int128" /> and <see cref="UInt128" /> are
 /// confined by checked conversion to the signed 64-bit range TOML stores; and byte arrays and memory-of-byte map to an
 /// integer array or Base64 string per <see cref="TomlSerializerOptions.ByteArrayHandling" />.
 /// </para>

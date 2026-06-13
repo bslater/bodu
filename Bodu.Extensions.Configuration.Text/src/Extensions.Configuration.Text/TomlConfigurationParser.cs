@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlConfigurationParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ namespace Bodu.Extensions.Configuration.Text;
 /// configuration key and are rejected as a duplicate.
 /// </para>
 /// <para>
-/// The document is read through the read-only <see cref="TomlDocument" /> object model from the
-/// <c>Bodu.Text.Toml</c> library; each scalar is rendered with <see cref="CultureInfo.InvariantCulture" /> so the
-/// flattened representation is stable regardless of the ambient culture.
+/// The document is read through the read-only <see cref="TomlDocument" /> object model from the <c>Bodu.Text.Toml</c>
+/// library; each scalar is rendered with <see cref="CultureInfo.InvariantCulture" /> so the flattened representation is
+/// stable regardless of the ambient culture.
 /// </para>
 /// </remarks>
 internal static class TomlConfigurationParser
@@ -46,7 +46,7 @@ internal static class TomlConfigurationParser
     {
         ThrowHelper.ThrowIfNull(stream);
 
-        byte[] bytes = ReadToEnd(stream);
+        var bytes = ReadToEnd(stream);
 
         using TomlDocument document = TomlDocument.Parse(bytes);
         return Flatten(document.RootElement);
@@ -100,8 +100,8 @@ internal static class TomlConfigurationParser
     /// <param name="prefix">The key prefix accumulated so far.</param>
     private static void VisitArray(TomlElement array, IDictionary<string, string?> data, string prefix)
     {
-        int length = array.GetArrayLength();
-        for (int i = 0; i < length; i++)
+        var length = array.GetArrayLength();
+        for (var i = 0; i < length; i++)
             VisitValue(array[i], data, Combine(prefix, i.ToString(CultureInfo.InvariantCulture)));
     }
 

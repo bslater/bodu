@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Constructor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenSingleParameterizedConstructor_ShouldBindArgumentsByName()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d3:Agei30e4:Name5:Alicee");
+        var bytes = Encoding.Latin1.GetBytes("d3:Agei30e4:Name5:Alicee");
 
         var model = BencodeSerializer.Deserialize<ImmutablePerson>(bytes);
 
@@ -38,7 +38,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterCaseDiffersFromProperty_ShouldBindByName()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<LowerParameter>(bytes);
 
@@ -52,7 +52,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterBindsRenamedMember_ShouldReadFromWireName()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d2:idi9ee");
+        var bytes = Encoding.Latin1.GetBytes("d2:idi9ee");
 
         var model = BencodeSerializer.Deserialize<RenamedConstructorMember>(bytes);
 
@@ -67,7 +67,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenNamingPolicyAndParameterizedConstructor_ShouldBindFromPolicyWireName()
     {
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
-        byte[] bytes = Encoding.Latin1.GetBytes("d9:firstName5:Alicee");
+        var bytes = Encoding.Latin1.GetBytes("d9:firstName5:Alicee");
 
         var model = BencodeSerializer.Deserialize<ImmutableName>(bytes, options);
 
@@ -83,7 +83,7 @@ public partial class BencodeSerializerTests
     {
         var original = new PointRecord(4, 5);
 
-        byte[] bytes = BencodeSerializer.Serialize(original);
+        var bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d1:Xi4e1:Yi5ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<PointRecord>(bytes);
@@ -98,7 +98,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorAttributePresent_ShouldUseAttributedConstructor()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:ai3ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:ai3ee");
 
         var model = BencodeSerializer.Deserialize<AttributedConstructorModel>(bytes);
 
@@ -113,7 +113,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenParameterlessConstructorAvailable_ShouldPreferParameterlessAndSetMembers()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee");
 
         var model = BencodeSerializer.Deserialize<MixedConstructorModel>(bytes);
 
@@ -129,7 +129,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenMultipleParameterizedConstructors_ShouldUseGreatestArity()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee");
+        var bytes = Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee");
 
         var model = BencodeSerializer.Deserialize<GreatestArityModel>(bytes);
 
@@ -145,7 +145,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenOptionalConstructorParameterAbsent_ShouldUseParameterDefault()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name5:Alicee");
+        var bytes = Encoding.Latin1.GetBytes("d4:Name5:Alicee");
 
         var model = BencodeSerializer.Deserialize<OptionalParameterModel>(bytes);
 
@@ -160,7 +160,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenMemberNotBoundToConstructorParameter_ShouldSetThroughSetter()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name5:Alice5:Notes5:hello6:Statusi2ee");
+        var bytes = Encoding.Latin1.GetBytes("d4:Name5:Alice5:Notes5:hello6:Statusi2ee");
 
         var model = BencodeSerializer.Deserialize<PartiallyBoundModel>(bytes);
 
@@ -178,7 +178,7 @@ public partial class BencodeSerializerTests
     {
         var original = new RenamedConstructorMember(11);
 
-        byte[] bytes = BencodeSerializer.Serialize(original);
+        var bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d2:idi11ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<RenamedConstructorMember>(bytes);

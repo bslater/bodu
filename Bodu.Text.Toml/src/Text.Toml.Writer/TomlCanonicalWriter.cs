@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlCanonicalWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -223,7 +223,7 @@ internal static class TomlCanonicalWriter
     private static void WriteInlineArray(ref TomlUtf8Emitter emitter, TomlArrayWriterNode array)
     {
         emitter.Append((byte)'[');
-        for (int i = 0; i < array.Items.Count; i++)
+        for (var i = 0; i < array.Items.Count; i++)
         {
             if (i > 0)
                 emitter.Append(", "u8);
@@ -248,7 +248,7 @@ internal static class TomlCanonicalWriter
         }
 
         emitter.Append("{ "u8);
-        bool first = true;
+        var first = true;
         foreach (KeyValuePair<string, TomlWriterNode> pair in table.Items)
         {
             if (!first)
@@ -289,7 +289,7 @@ internal static class TomlCanonicalWriter
         if (key.Length == 0)
             return false;
 
-        foreach (char c in key)
+        foreach (var c in key)
         {
             if (!((c is >= 'A' and <= 'Z') || (c is >= 'a' and <= 'z') || (c is >= '0' and <= '9') || c == '_' || c == '-'))
                 return false;
@@ -310,9 +310,9 @@ internal static class TomlCanonicalWriter
     private static void WriteBasicString(ref TomlUtf8Emitter emitter, string value)
     {
         emitter.Append((byte)'"');
-        for (int i = 0; i < value.Length; i++)
+        for (var i = 0; i < value.Length; i++)
         {
-            char c = value[i];
+            var c = value[i];
             if (char.IsHighSurrogate(c))
             {
                 if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
@@ -434,7 +434,7 @@ internal static class TomlCanonicalWriter
     /// <param name="ticks">The tick count.</param>
     private static void WriteFraction(ref TomlUtf8Emitter emitter, long ticks)
     {
-        long fraction = ticks % TicksPerSecond;
+        var fraction = ticks % TicksPerSecond;
         if (fraction == 0)
             return;
 

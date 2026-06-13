@@ -244,7 +244,7 @@ public readonly partial struct BencodeElement
     {
         ThrowHelper.ThrowIfNull(propertyName);
 
-        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
+        if (_document.TryGetProperty(_index, propertyName, out var valueRow))
             return new BencodeElement(_document, valueRow);
 
         throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.IO_KeyNotFound_Property, propertyName));
@@ -271,7 +271,7 @@ public readonly partial struct BencodeElement
     {
         ThrowHelper.ThrowIfNull(propertyName);
 
-        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
+        if (_document.TryGetProperty(_index, propertyName, out var valueRow))
         {
             value = new BencodeElement(_document, valueRow);
             return true;
@@ -291,7 +291,7 @@ public readonly partial struct BencodeElement
     /// </exception>
     public ArrayEnumerator EnumerateArray()
     {
-        int length = _document.GetArrayLength(_index);
+        var length = _document.GetArrayLength(_index);
         return new ArrayEnumerator(_document, _index, length);
     }
 
@@ -305,7 +305,7 @@ public readonly partial struct BencodeElement
     /// </exception>
     public ObjectEnumerator EnumerateObject()
     {
-        int pairs = _document.GetObjectPairCount(_index);
+        var pairs = _document.GetObjectPairCount(_index);
         return new ObjectEnumerator(_document, _index, pairs);
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -88,7 +88,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        string expected =
+        var expected =
             "name = \"x\"\n" +
             "nums = [1, 2, 3]\n" +
             "\n" +
@@ -219,7 +219,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        string expected =
+        var expected =
             "s = \"hi\\tthere\"\n" +
             "i = -42\n" +
             "f = 1.5\n" +

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Documents.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,12 +30,12 @@ public partial class BencodeSerializerTests
     [DataRow("d5:Valued1:Ai1eee", BencodeValueKind.Object, DisplayName = "dictionary")]
     public void SerializeDeserialize_WhenBencodeElementMember_ShouldPreserveKindAndRoundTrip(string encoded, BencodeValueKind kind)
     {
-        byte[] bytes = Encoding.Latin1.GetBytes(encoded);
+        var bytes = Encoding.Latin1.GetBytes(encoded);
 
         BencodeElement element = BencodeSerializer.Deserialize<SingleValueModel<BencodeElement>>(bytes).Value;
         Assert.AreEqual(kind, element.ValueKind);
 
-        byte[] again = BencodeSerializer.Serialize(new SingleValueModel<BencodeElement> { Value = element });
+        var again = BencodeSerializer.Serialize(new SingleValueModel<BencodeElement> { Value = element });
         CollectionAssert.AreEqual(bytes, again);
     }
 
@@ -46,7 +46,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenBencodeElementMember_ShouldRemainReadableAfterwards()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valueli1ei2ei3eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valueli1ei2ei3eee");
 
         BencodeElement element = BencodeSerializer.Deserialize<SingleValueModel<BencodeElement>>(bytes).Value;
 
@@ -61,10 +61,10 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenBencodeElementFromParsedDocument_ShouldEmitViewedValue()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Encoding.Latin1.GetBytes("d5:Inneri5ee"));
+        using var document = BencodeDocument.Parse(Encoding.Latin1.GetBytes("d5:Inneri5ee"));
         BencodeElement element = document.RootElement.GetProperty("Inner");
 
-        byte[] bytes = BencodeSerializer.Serialize(new SingleValueModel<BencodeElement> { Value = element });
+        var bytes = BencodeSerializer.Serialize(new SingleValueModel<BencodeElement> { Value = element });
 
         Assert.AreEqual("d5:Valuei5ee", Encoding.Latin1.GetString(bytes));
     }
@@ -76,7 +76,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenBencodeDocumentRoot_ShouldRoundTripBytes()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d1:Ai1e1:B1:xe");
+        var bytes = Encoding.Latin1.GetBytes("d1:Ai1e1:B1:xe");
 
         using BencodeDocument document = BencodeSerializer.Deserialize<BencodeDocument>(bytes);
 
@@ -91,7 +91,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenBencodeElementRootIsScalar_ShouldRoundTripBytes()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("i42e");
+        var bytes = Encoding.Latin1.GetBytes("i42e");
 
         BencodeElement element = BencodeSerializer.Deserialize<BencodeElement>(bytes);
 
@@ -106,7 +106,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenUnsortedKeysAllowed_ShouldMaterializeElement()
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valued1:Bi1e1:Ai2eee");
+        var bytes = Encoding.Latin1.GetBytes("d5:Valued1:Bi1e1:Ai2eee");
         var options = new BencodeSerializerOptions { AllowUnsortedKeys = true };
 
         BencodeElement element = BencodeSerializer.Deserialize<SingleValueModel<BencodeElement>>(bytes, options).Value;
@@ -134,7 +134,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenBencodeElementFromDisposedDocument_ShouldThrowObjectDisposedException()
     {
-        BencodeDocument document = BencodeDocument.Parse(Encoding.Latin1.GetBytes("i1e"));
+        var document = BencodeDocument.Parse(Encoding.Latin1.GetBytes("i1e"));
         BencodeElement element = document.RootElement;
         document.Dispose();
 

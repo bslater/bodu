@@ -116,7 +116,7 @@ public partial class ConcurrentCircularBufferTests
             // Consume all items.
         }
 
-        Assert.AreEqual(default(TestItem), enumerator.Current);
+        Assert.AreEqual(default, enumerator.Current);
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(20));
 
         ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
-        Assert.AreEqual(default(TestItem), enumerator.Current);
+        Assert.AreEqual(default, enumerator.Current);
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Leniency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenKeysUnsorted_ShouldRequireAllowUnsortedKeys()
     {
-        byte[] data = Encoding.Latin1.GetBytes("d5:Label1:x2:Idi7ee");
+        var data = Encoding.Latin1.GetBytes("d5:Label1:x2:Idi7ee");
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -45,7 +45,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDuplicateKeysAllowed_ShouldBindLastOccurrence()
     {
-        byte[] data = Encoding.Latin1.GetBytes("d2:Idi1e2:Idi2ee");
+        var data = Encoding.Latin1.GetBytes("d2:Idi1e2:Idi2ee");
 
         LenientModel model = BencodeSerializer.Deserialize<LenientModel>(
             data,
@@ -61,7 +61,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDuplicateKeysAllowedForDictionary_ShouldBindLastOccurrence()
     {
-        byte[] data = Encoding.Latin1.GetBytes("d1:ai1e1:ai2ee");
+        var data = Encoding.Latin1.GetBytes("d1:ai1e1:ai2ee");
 
         Dictionary<string, long> map = BencodeSerializer.Deserialize<Dictionary<string, long>>(
             data,
@@ -80,7 +80,7 @@ public partial class BencodeSerializerTests
     {
         var options = new BencodeSerializerOptions { AllowUnsortedKeys = true, AllowDuplicateKeys = true };
 
-        byte[] bytes = BencodeSerializer.Serialize(new LenientModel { Id = 7, Label = "x" }, options);
+        var bytes = BencodeSerializer.Serialize(new LenientModel { Id = 7, Label = "x" }, options);
 
         Assert.AreEqual("d2:Idi7e5:Label1:xe", Encoding.Latin1.GetString(bytes));
     }

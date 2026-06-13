@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderTests.UnsignedIntegers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public partial class Utf8BencodeReaderTests
     [DataRow("i18446744073709551615e", ulong.MaxValue)]
     public void GetUInt64_WhenNonNegativeInteger_ShouldDecodeValue(string text, ulong expected)
     {
-        byte[] bytes = Bytes(text);
+        var bytes = Bytes(text);
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -48,7 +48,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetInt64_WhenIntegerExceedsInt64Range_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Bytes("i18446744073709551615e");
+        var bytes = Bytes("i18446744073709551615e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -66,7 +66,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetUInt64_WhenNegativeInteger_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Bytes("i-1e");
+        var bytes = Bytes("i-1e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -83,7 +83,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TryGetUInt64_WhenNonNegativeInteger_ShouldReturnTrueAndValue()
     {
-        byte[] bytes = Bytes("i18446744073709551615e");
+        var bytes = Bytes("i18446744073709551615e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -98,7 +98,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TryGetUInt64_WhenNegativeInteger_ShouldReturnFalse()
     {
-        byte[] bytes = Bytes("i-42e");
+        var bytes = Bytes("i-42e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -113,7 +113,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetUInt64_WhenTokenIsNotInteger_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("4:spam");
+        var bytes = Bytes("4:spam");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -130,7 +130,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TryGetUInt64_WhenTokenIsNotInteger_ShouldThrowInvalidOperationException()
     {
-        byte[] bytes = Bytes("le");
+        var bytes = Bytes("le");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -148,7 +148,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenIntegerExceedsUInt64Range_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Bytes("i18446744073709551616e");
+        var bytes = Bytes("i18446744073709551616e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

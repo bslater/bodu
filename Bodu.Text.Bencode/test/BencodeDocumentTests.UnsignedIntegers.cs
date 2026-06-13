@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeDocumentTests.UnsignedIntegers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class BencodeDocumentTests
     [DataRow("i18446744073709551615e", ulong.MaxValue)]
     public void GetUInt64_WhenValueExceedsInt64_ShouldReturnValue(string input, ulong expected)
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes(input));
+        using var document = BencodeDocument.Parse(Bytes(input));
 
         Assert.AreEqual(BencodeValueKind.Integer, document.RootElement.ValueKind);
         Assert.AreEqual(expected, document.RootElement.GetUInt64());
@@ -42,7 +42,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetInt64_WhenValueExceedsInt64_ShouldThrowBencodeFormatException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("i9223372036854775808e"));
+        using var document = BencodeDocument.Parse(Bytes("i9223372036854775808e"));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
@@ -62,7 +62,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void GetUInt64_WhenValueIsNegative_ShouldThrowBencodeFormatException()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("i-1e"));
+        using var document = BencodeDocument.Parse(Bytes("i-1e"));
         BencodeElement root = document.RootElement;
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
@@ -81,7 +81,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void TryGetUInt64_WhenValueWithinInt64Range_ShouldAgreeWithTryGetInt64()
     {
-        using BencodeDocument document = BencodeDocument.Parse(Bytes("d3:leni42ee"));
+        using var document = BencodeDocument.Parse(Bytes("d3:leni42ee"));
         BencodeElement length = document.RootElement.GetProperty("len");
 
         Assert.IsTrue(length.TryGetInt64(out var signed));
@@ -99,8 +99,8 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void WriteTo_WhenValueExceedsInt64_ShouldRoundTripExactBytes()
     {
-        byte[] source = Bytes("li18446744073709551615ee");
-        using BencodeDocument document = BencodeDocument.Parse(source);
+        var source = Bytes("li18446744073709551615ee");
+        using var document = BencodeDocument.Parse(source);
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
 

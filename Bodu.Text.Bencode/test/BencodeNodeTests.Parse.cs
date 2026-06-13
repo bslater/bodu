@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNodeTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public partial class BencodeNodeTests
     public void Parse_WhenInputMalformed_ShouldThrowBencodeFormatException(string testName, string input)
     {
         _ = testName;
-        byte[] bytes = Bytes(input);
+        var bytes = Bytes(input);
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -86,7 +86,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenTrailingBytesAfterRoot_ShouldThrowBencodeFormatException()
     {
-        byte[] bytes = Bytes("i1e2:xx");
+        var bytes = Bytes("i1e2:xx");
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -100,7 +100,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenInputIsInteger_ShouldReturnIntegerValue()
     {
-        BencodeNode? node = BencodeNode.Parse(Bytes("i-42e"));
+        var node = BencodeNode.Parse(Bytes("i-42e"));
 
         Assert.IsInstanceOfType<BencodeValue>(node);
         Assert.AreEqual(BencodeValueKind.Integer, node!.GetValueKind());
@@ -113,7 +113,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenInputIsByteString_ShouldReturnByteStringValue()
     {
-        BencodeNode? node = BencodeNode.Parse(Bytes("4:spam"));
+        var node = BencodeNode.Parse(Bytes("4:spam"));
 
         Assert.IsInstanceOfType<BencodeValue>(node);
         Assert.AreEqual(BencodeValueKind.ByteString, node!.GetValueKind());
@@ -127,7 +127,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenInputIsList_ShouldReturnArrayWithElementsInOrder()
     {
-        BencodeNode? node = BencodeNode.Parse(Bytes("li1e3:twoli3eee"));
+        var node = BencodeNode.Parse(Bytes("li1e3:twoli3eee"));
 
         BencodeArray array = node!.AsArray();
         Assert.AreEqual(3, array.Count);
@@ -153,9 +153,9 @@ public partial class BencodeNodeTests
     public void Parse_WhenInputCanonical_ShouldRoundTripThroughToByteArray(string testName, string input)
     {
         _ = testName;
-        byte[] bytes = Bytes(input);
+        var bytes = Bytes(input);
 
-        byte[] roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
+        var roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }
@@ -167,7 +167,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenInputNested_ShouldBuildParentLinks()
     {
-        BencodeNode? root = BencodeNode.Parse(Bytes("d4:listli1eee"));
+        var root = BencodeNode.Parse(Bytes("d4:listli1eee"));
 
         BencodeNode list = root!.AsObject()["list"]!;
         BencodeNode leaf = list.AsArray()[0]!;

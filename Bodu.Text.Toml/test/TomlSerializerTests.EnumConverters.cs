@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.EnumConverters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class TomlSerializerTests
     {
         var model = new StatusModel { Status = Status.Active };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = \"Active\"\n", text);
 
@@ -67,7 +67,7 @@ public partial class TomlSerializerTests
     {
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = \"not-found\"\n", text);
 
@@ -86,7 +86,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Status = \"active\"\n", text);
 
@@ -150,7 +150,7 @@ public partial class TomlSerializerTests
     {
         var model = new NumberEnumModel { Status = Status.Archived };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = 2\n", text);
 
@@ -168,7 +168,7 @@ public partial class TomlSerializerTests
     {
         var model = new StringEnumModel { Status = Status.Pending };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = \"Pending\"\n", text);
 
@@ -187,7 +187,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new TomlStringEnumConverter());
 
         var model = new StatusModel { Status = Status.Active };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Status = \"Active\"\n", text);
 
@@ -230,7 +230,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new TomlStringEnumConverter<Status>(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Status = \"active\"\n", text);
 
@@ -249,7 +249,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new TomlNumberEnumConverter<Status>());
 
         var model = new StatusModel { Status = Status.Archived };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Status = 2\n", text);
 
@@ -279,7 +279,7 @@ public partial class TomlSerializerTests
     {
         var model = new StatusModel { Status = (Status)99 };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Status = \"99\"\n", text);
 
@@ -296,7 +296,7 @@ public partial class TomlSerializerTests
     {
         var model = new FlagsModel { Flags = PermissionFlags.Read | PermissionFlags.Write };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Flags = \"Read, Write\"\n", text);
 
@@ -313,7 +313,7 @@ public partial class TomlSerializerTests
     {
         var model = new FlagsModel { Flags = PermissionFlags.Write };
 
-        string text = TomlSerializer.Serialize(model);
+        var text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Flags = \"Write\"\n", text);
 
@@ -332,7 +332,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
-        string text = TomlSerializer.Serialize(model, options);
+        var text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Status = \"not-found\"\n", text);
     }

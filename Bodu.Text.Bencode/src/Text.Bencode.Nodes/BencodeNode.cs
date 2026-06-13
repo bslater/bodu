@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -308,7 +308,7 @@ public abstract class BencodeNode
                 var obj = new BencodeObject(options);
                 while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
                 {
-                    string key = reader.GetString();
+                    var key = reader.GetString();
                     reader.Read();
                     obj[key] = ReadFrom(ref reader, options);
                 }
@@ -623,7 +623,7 @@ public abstract class BencodeNode
         if (left.Count != right.Count)
             return false;
 
-        for (int i = 0; i < left.Count; i++)
+        for (var i = 0; i < left.Count; i++)
         {
             if (!DeepEquals(left[i], right[i]))
                 return false;
