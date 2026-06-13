@@ -212,7 +212,7 @@ public sealed class ParallelMerkleTreeHash
         _algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
         _blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
                                                         nameof(blockSize),
-                                                        string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+                                                        string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
         _fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), CryptoResourceStrings.Arg_OutOfRange_FanOutMinimum);
         _blockBuffer = new byte[blockSize];
     }

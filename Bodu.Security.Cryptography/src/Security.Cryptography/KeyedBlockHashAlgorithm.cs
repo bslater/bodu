@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Bodu.Extensions;
@@ -153,6 +154,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
             if (value.Length != KeySizeValue / 8)
                 throw new CryptographicException(
                     string.Format(
+                        CultureInfo.CurrentCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         KeySizeValue));

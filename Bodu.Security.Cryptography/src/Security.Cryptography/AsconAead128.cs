@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -305,7 +306,7 @@ public sealed class AsconAead128
         var required = plaintext.Length + TagBytes;
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
 
         try
@@ -394,13 +395,13 @@ public sealed class AsconAead128
 
         if (ciphertextWithTag.Length < TagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
         var ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
                 nameof(output));
 
         try

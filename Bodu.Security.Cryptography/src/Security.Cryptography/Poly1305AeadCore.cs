@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -424,7 +425,7 @@ internal static class Poly1305AeadCore
         var required = checked(plaintext.Length + TagBytes);
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
     }
 
@@ -441,12 +442,12 @@ internal static class Poly1305AeadCore
     {
         if (ciphertextWithTag.Length < TagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
         if (output.Length < ciphertextWithTag.Length - TagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ciphertextWithTag.Length - TagBytes),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ciphertextWithTag.Length - TagBytes),
                 nameof(output));
     }
 }

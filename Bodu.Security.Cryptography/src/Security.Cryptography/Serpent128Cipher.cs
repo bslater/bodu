@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -96,7 +98,7 @@ public sealed class Serpent128Cipher
         if (key.Length is not 16 and not 24 and not 32)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, "128, 192, 256"),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, "128, 192, 256"),
                 nameof(key));
         }
 
@@ -116,7 +118,7 @@ public sealed class Serpent128Cipher
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
         }
 
         // Load the 128-bit plaintext block as four little-endian 32-bit words. This is the canonical Serpent bitslice
@@ -172,7 +174,7 @@ public sealed class Serpent128Cipher
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
         }
 
         // Load the 128-bit ciphertext block as four little-endian 32-bit words.
