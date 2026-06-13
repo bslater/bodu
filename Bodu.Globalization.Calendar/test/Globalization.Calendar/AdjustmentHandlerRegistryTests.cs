@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerRegistryTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,8 @@ public class AdjustmentHandlerRegistryTests
     /// <summary>
     /// A no-op adjustment handler used purely to populate the registry.
     /// </summary>
-    private sealed class NoOpHandler : IAdjustmentHandler
+    private sealed class NoOpHandler
+        : IAdjustmentHandler
     {
         /// <inheritdoc />
         public DateOnly? Adjust(AdjustmentHandlerContext context) => null;
@@ -25,7 +26,8 @@ public class AdjustmentHandlerRegistryTests
     /// <summary>
     /// A no-op trigger handler used purely to populate the registry.
     /// </summary>
-    private sealed class NoOpTrigger : IAdjustmentTriggerHandler
+    private sealed class NoOpTrigger
+        : IAdjustmentTriggerHandler
     {
         /// <inheritdoc />
         public bool ShouldAdjust(AdjustmentTriggerContext context) => false;

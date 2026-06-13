@@ -29,7 +29,8 @@ namespace Bodu.IO.Hashing;
 /// is not thread-safe, so concurrent reads and writes through the same <see cref="HashingStream" /> are not supported.
 /// </para>
 /// </remarks>
-public sealed class HashingStream : Stream
+public sealed class HashingStream
+    : Stream
 {
     /// <summary>
     /// The stream that bytes are transferred to or from.
