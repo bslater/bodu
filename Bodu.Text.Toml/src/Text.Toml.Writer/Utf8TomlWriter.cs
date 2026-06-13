@@ -84,6 +84,12 @@ public ref partial struct Utf8TomlWriter
     private readonly long[] _byteCounts;
 
     /// <summary>
+    /// The set of reference-typed values currently being written, used by the serializer to detect object cycles. Held
+    /// in a shared managed object so it survives a by-value copy of the writer, as <see cref="_frames" /> does.
+    /// </summary>
+    private readonly HashSet<object> _references;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Utf8TomlWriter" /> struct.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
@@ -99,6 +105,7 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = 256;
         _byteCounts = new long[2];
+        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
 
     /// <summary>
@@ -125,7 +132,26 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = options.MaxDepth <= 0 ? 256 : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
+        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
+
+    /// <summary>
+    /// Records that the specified reference-typed value is being written, reporting whether it was already in progress.
+    /// </summary>
+    /// <param name="value">The reference being entered.</param>
+    /// <returns>
+    /// <see langword="true" /> when the reference was newly recorded; <see langword="false" /> when it is already being
+    /// written, which indicates an object cycle.
+    /// </returns>
+    internal bool TryEnterReference(object value) =>
+        _references.Add(value);
+
+    /// <summary>
+    /// Removes the specified reference-typed value from the in-progress set once it has been fully written.
+    /// </summary>
+    /// <param name="value">The reference being exited.</param>
+    internal void ExitReference(object value) =>
+        _references.Remove(value);
 
     /// <summary>
     /// Writes the start of a table.

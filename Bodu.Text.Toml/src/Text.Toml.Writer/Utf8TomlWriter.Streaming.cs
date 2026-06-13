@@ -54,6 +54,7 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = options.MaxDepth <= 0 ? 256 : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
+        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
 
     /// <summary>

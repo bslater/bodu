@@ -101,7 +101,8 @@ public class TomlExceptionTests
     }
 
     /// <summary>
-    /// Verifies that a default-constructed <see cref="TomlSerializationException" /> carries no byte offset.
+    /// Verifies that a default-constructed <see cref="TomlSerializationException" /> carries no byte offset, member
+    /// path, or inner exception.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenDefault_ForTomlSerializationException_ShouldLeaveOffsetNull()
@@ -109,6 +110,7 @@ public class TomlExceptionTests
         var ex = new TomlSerializationException();
 
         Assert.IsNull(ex.Offset);
+        Assert.IsNull(ex.Path);
         Assert.IsNull(ex.InnerException);
     }
 

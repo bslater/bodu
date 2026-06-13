@@ -148,6 +148,16 @@ public ref struct TomlDocumentReader
     public readonly int CurrentDepth => _openDepth > 0 ? _openDepth - 1 : 0;
 
     /// <summary>
+    /// Gets the byte offset of the current token into the UTF-8 source, used to attach a position to a binding failure.
+    /// </summary>
+    /// <returns>
+    /// The zero-based byte offset of the current token, or <see langword="null" /> before the first or after the last
+    /// token.
+    /// </returns>
+    internal readonly int? CurrentOffset =>
+        _index >= 0 && _index < _tokens.Count ? _tokens[_index].Offset : null;
+
+    /// <summary>
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>

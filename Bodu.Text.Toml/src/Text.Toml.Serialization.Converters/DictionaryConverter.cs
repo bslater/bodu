@@ -87,9 +87,19 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
         Dictionary<TKey, TValue> entries = [];
         while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
         {
-            TKey key = ParseKey(reader.GetString());
+            var keyText = reader.GetString();
+            TKey key = ParseKey(keyText);
             reader.Read();
-            entries[key] = (TValue)_valueConverter.ReadAsObject(ref reader, typeof(TValue), options) !;
+            try
+            {
+                entries[key] = (TValue)_valueConverter.ReadAsObject(ref reader, typeof(TValue), options) !;
+            }
+            catch (TomlSerializationException ex)
+            {
+                ex.Path = TomlSerializationException.CombinePath(keyText, ex.Path);
+                ex.Offset ??= reader.CurrentOffset;
+                throw;
+            }
         }
 
         return Materialize(entries);
@@ -100,17 +110,36 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        writer.WriteStartTable();
-        foreach (KeyValuePair<TKey, TValue> entry in (IEnumerable<KeyValuePair<TKey, TValue>>)value)
+        if (!writer.TryEnterReference(value))
+            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(TDictionary)));
+
+        try
         {
-            if (entry.Value is null)
-                continue;
+            writer.WriteStartTable();
+            foreach (KeyValuePair<TKey, TValue> entry in (IEnumerable<KeyValuePair<TKey, TValue>>)value)
+            {
+                if (entry.Value is null)
+                    continue;
 
-            writer.WritePropertyName(FormatKey(entry.Key));
-            _valueConverter.WriteAsObject(writer, entry.Value, options);
+                var keyText = FormatKey(entry.Key);
+                writer.WritePropertyName(keyText);
+                try
+                {
+                    _valueConverter.WriteAsObject(writer, entry.Value, options);
+                }
+                catch (TomlSerializationException ex)
+                {
+                    ex.Path = TomlSerializationException.CombinePath(keyText, ex.Path);
+                    throw;
+                }
+            }
+
+            writer.WriteEndTable();
         }
-
-        writer.WriteEndTable();
+        finally
+        {
+            writer.ExitReference(value);
+        }
     }
 
     /// <summary>
