@@ -56,6 +56,14 @@
     <Project Path="Bodu.IO.Hashing\src\Bodu.IO.Hashing.csproj" />
     <Project Path="Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.IO.Compound/">
+    <Project Path="Bodu.IO.Compound/src/Bodu.IO.Compound.csproj" />
+    <Project Path="Bodu.IO.Compound/test/Bodu.IO.Compound.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Formats.Excel.Binary/">
+    <Project Path="Bodu.Formats.Excel.Binary/src/Bodu.Formats.Excel.Binary.csproj" />
+    <Project Path="Bodu.Formats.Excel.Binary/test/Bodu.Formats.Excel.Binary.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Numerics/">
     <Project Path="Bodu.Numerics\src\Bodu.Numerics.csproj" />
     <Project Path="Bodu.Numerics\test\Bodu.Numerics.Test.csproj" />
@@ -70,6 +78,14 @@
   <Folder Name="/Bodu.Financial.DependencyInjection/">
     <Project Path="Bodu.Financial.DependencyInjection/src/Bodu.Financial.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.DependencyInjection/test/Bodu.Financial.DependencyInjection.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Rba/">
+    <Project Path="Bodu.Financial.ExchangeRates.Rba/src/Bodu.Financial.ExchangeRates.Rba.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Rba/test/Bodu.Financial.ExchangeRates.Rba.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Rba.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/src/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/test/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
