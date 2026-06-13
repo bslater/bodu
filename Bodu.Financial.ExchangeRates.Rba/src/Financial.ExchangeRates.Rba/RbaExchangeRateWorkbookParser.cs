@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
 using Bodu.Formats.Excel.Binary;
 
 namespace Bodu.Financial.ExchangeRates.Rba;
@@ -231,7 +230,7 @@ internal static class RbaExchangeRateWorkbookParser
         List<RbaExchangeRateRow> rows = new(dataRows.Count);
         foreach (var row in dataRows)
         {
-            double serial = grid[(row, 0)].NumberValue!.Value;
+            var serial = grid[(row, 0)].NumberValue!.Value;
             if (!double.IsFinite(serial))
                 continue;
 
@@ -284,17 +283,20 @@ internal static class RbaExchangeRateWorkbookParser
     }
 
     /// <summary>
-    /// Recovers the exact published decimal from a workbook double by round-tripping through its shortest string form.
+    /// Recovers the published decimal rate from a workbook double.
     /// </summary>
     /// <param name="value">The cell value as a double.</param>
     /// <returns>The recovered decimal.</returns>
     /// <remarks>
-    /// RBA rates are published with limited precision (for example, <c>0.6828</c>). Converting the double through its
-    /// shortest round-trippable string recovers that published value without the trailing binary-to-decimal noise a
-    /// direct cast can introduce.
+    /// RBA rates are published with limited precision (for example, <c>0.6828</c>), yet the workbook stores each as an
+    /// 8-byte IEEE 754 double that can sit up to one unit in the last place away from that figure. The explicit
+    /// <see langword="double" />-to-<see langword="decimal" /> conversion rounds to 15 significant digits, which
+    /// absorbs that sub-15-digit binary noise and restores the published value; every RBA rate carries far fewer than
+    /// 15 significant digits, so none is truncated. A shortest-round-trip string conversion instead preserves the noise
+    /// — for example, yielding <c>6.6754999999999995</c> for a cell published as <c>6.6755</c>.
     /// </remarks>
-    private static decimal RecoverDecimal(double value) =>
-        decimal.Parse(value.ToString("R", CultureInfo.InvariantCulture), NumberStyles.Float, CultureInfo.InvariantCulture);
+    internal static decimal RecoverDecimal(double value) =>
+        (decimal)value;
 
     /// <summary>
     /// Reads the trimmed text of a cell, returning an empty string when the cell is absent, non-text, or the row is
