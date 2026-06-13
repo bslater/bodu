@@ -889,6 +889,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The value is not a valid hexadecimal string..
+        /// </summary>
+        internal static string Format_Invalid_HexString {
+            get {
+                return ResourceManager.GetString("Format_Invalid_HexString", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The scrypt cost parameter N must be greater than 1 and a power of two..
         /// </summary>
         internal static string Arg_OutOfRange_ScryptCostNotPowerOfTwo {
