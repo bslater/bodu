@@ -27,6 +27,21 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="FixedTimeEquals(SignatureValue)" /> compares the bytes only, in fixed time.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Record a signature together with the wire encoding its producer emitted.
+/// SignatureValue signature = SignatureValue.FromBytes(signatureBytes, SignatureFormat.P1363);
+///
+/// // Downstream code branches on the recorded format instead of guessing, avoiding the classic
+/// // failure of feeding a fixed-width P1363 signature to a verifier that expects ASN.1 DER.
+/// ReadOnlySpan<byte> bytes = signature.AsSpan();
+/// bool valid = signature.Format == SignatureFormat.Der
+///     ? VerifyDer(bytes)
+///     : VerifyP1363(bytes);
+///]]>
+/// </code>
+/// </example>
 public readonly struct SignatureValue
     : IEquatable<SignatureValue>
 {

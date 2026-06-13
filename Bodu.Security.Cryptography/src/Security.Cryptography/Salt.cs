@@ -21,6 +21,19 @@ namespace Bodu.Security.Cryptography;
 /// empty value: <see cref="Length" /> is <c>0</c> and <see cref="IsEmpty" /> is <see langword="true" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Generate a 16-byte salt for password hashing and persist it next to the derived value.
+/// Salt salt = Salt.Random(16);
+/// byte[] derived = Rfc2898DeriveBytes.Pbkdf2(
+///     password, salt.AsSpan(), iterations: 100_000, HashAlgorithmName.SHA256, outputLength: 32);
+///
+/// // The salt is not secret: reload it alongside the stored hash to recompute the value later.
+/// Salt reloaded = Salt.FromBytes(storedSaltBytes);
+///]]>
+/// </code>
+/// </example>
 public readonly struct Salt
     : IEquatable<Salt>
 {

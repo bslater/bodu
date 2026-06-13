@@ -28,6 +28,18 @@ namespace Bodu.Security.Cryptography;
 /// position of the first mismatching byte from the comparison time.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Capture the tag emitted by an AEAD encryption and store or transmit it with the ciphertext.
+/// AuthenticationTag tag = AuthenticationTag.FromBytes(producedTag);
+///
+/// // On the decrypt side, verify the recomputed tag in fixed time before trusting the plaintext.
+/// if (!tag.FixedTimeEquals(recomputedTag))
+///     throw new CryptographicException("Authentication failed; the message was altered.");
+///]]>
+/// </code>
+/// </example>
 public readonly struct AuthenticationTag
     : IEquatable<AuthenticationTag>
 {

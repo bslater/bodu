@@ -29,6 +29,20 @@ namespace Bodu.IO.Hashing;
 /// is not thread-safe, so concurrent reads and writes through the same <see cref="HashingStream" /> are not supported.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Compute a CRC-32 over a payload while streaming it to its destination — a single pass over the bytes.
+/// using var source = File.OpenRead("payload.bin");
+/// using var destination = File.Create("payload.copy");
+/// using var hashing = new HashingStream(source, new Crc32());
+///
+/// hashing.CopyTo(destination);   // every byte read from the source is fed to the CRC-32
+///
+/// byte[] checksum = hashing.GetCurrentHash();
+///]]>
+/// </code>
+/// </example>
 public sealed class HashingStream
     : Stream
 {
@@ -147,6 +161,23 @@ public sealed class HashingStream
     /// </summary>
     /// <returns>The digest accumulated since construction or the previous reset.</returns>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
+    /// <remarks>
+    /// Resetting between segments lets a single <see cref="HashingStream" /> produce an independent digest per framed
+    /// message over one connection, without allocating a new stream for each frame.
+    /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using var hashing = new HashingStream(connection, new Crc32(), leaveOpen: true);
+    /// foreach (var frame in frames)
+    /// {
+    ///     hashing.Write(frame);
+    ///     byte[] frameDigest = hashing.GetHashAndReset();   // digest of this frame only
+    ///     Send(frameDigest);
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public byte[] GetHashAndReset()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -359,8 +390,12 @@ public sealed class HashingStream
     /// <summary>
     /// Seeks within the stream. Not supported.
     /// </summary>
-    /// <param name="offset">Ignored.</param>
-    /// <param name="origin">Ignored.</param>
+    /// <param name="offset">
+    /// The byte offset relative to <paramref name="origin" />. Not used; the method always throws.
+    /// </param>
+    /// <param name="origin">
+    /// The reference point for <paramref name="offset" />. Not used; the method always throws.
+    /// </param>
     /// <returns>This method always throws.</returns>
     /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
     public override long Seek(long offset, SeekOrigin origin) =>
