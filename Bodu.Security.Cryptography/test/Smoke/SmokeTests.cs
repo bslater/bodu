@@ -278,4 +278,24 @@ public sealed class SmokeTests
 
         Assert.IsTrue(algorithm.VerifyData(message, signature));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.MLKem768" /> performs a successful encapsulate /
+    /// decapsulate round-trip under a freshly generated key pair.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void MLKem768_EncapsulateDecapsulateRoundTrip_ShouldAgreeOnSharedSecret()
+    {
+        using var receiver = Bodu.Security.Cryptography.MLKem768.Create();
+        receiver.GenerateKey();
+
+        using var sender = Bodu.Security.Cryptography.MLKem768.Create();
+        sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
+
+        (var ciphertext, var senderSecret) = sender.Encapsulate();
+        var receiverSecret = receiver.Decapsulate(ciphertext);
+
+        CollectionAssert.AreEqual(senderSecret, receiverSecret);
+    }
 }

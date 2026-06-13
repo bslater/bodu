@@ -15,6 +15,9 @@
     <EmbeddedResource Include="Security.Cryptography\AsconAead128.LWC_AEAD_KAT_128_128.txt" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
+    <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />
+    <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpEncapDecap.txt" />
+    <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyCheck.txt" />
   </ItemGroup>
 
   <ItemGroup>
