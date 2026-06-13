@@ -14,7 +14,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Provides static methods for serializing values to canonical TOML text and deserializing TOML back into values,
+/// Provides static methods for serializing values to normalized TOML text and deserializing TOML back into values,
 /// mapping plain CLR objects to and from the format through configurable converters.
 /// </summary>
 /// <remarks>
@@ -47,7 +47,7 @@ public static class TomlSerializer
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>
-    /// Serializes the specified value to canonical TOML text.
+    /// Serializes the specified value to normalized TOML text.
     /// </summary>
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
     /// <param name="value">The value to serialize.</param>

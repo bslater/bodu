@@ -2,10 +2,10 @@
 
 **Date:** 2026-06-11 · **Remediation completed:** 2026-06-11
 **Scope:** `Bodu.Text.Toml/src` and `Bodu.Text.Toml/test`
-**Specifications:** TOML v1.0.0 (final) and TOML v1.1.0 (draft)
+**Specifications:** TOML v1.0.0 (final) and TOML v1.1.0 (final, published 18 December 2025)
 **Alignment target:** `System.Text.Json` (functionality, API shape, and usage idiom)
 **Status:** **Remediated** — every Critical/Major/Minor recommendation below has been implemented
-(or, for m1, withdrawn against the authoritative v1.1.0 draft); the 16 findings tests are green,
+(or, for m1, withdrawn against the authoritative v1.1.0 specification); the 16 findings tests are green,
 the toml-test conformance corpus is vendored and passes 1,410/1,410 cases in both profiles, and
 the full suite stands at **2,584 passed / 0 failed**. Per-finding status is annotated inline.
 

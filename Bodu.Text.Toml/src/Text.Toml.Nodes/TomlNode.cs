@@ -18,7 +18,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// <remarks>
 /// <para>
 /// A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
-/// and any node can be re-serialized to canonical TOML through <see cref="WriteTo" /> or <see cref="ToUtf8Bytes" />.
+/// and any node can be re-serialized to normalized TOML through <see cref="WriteTo" /> or <see cref="ToUtf8Bytes" />.
 /// TOML defines eight scalar value kinds — a string, a 64-bit integer, a float, a Boolean, and the four date-time kinds
 /// — and has no null token, so the model defines no null node; a tree that still contains a <see langword="null" />
 /// entry cannot be written.
@@ -159,7 +159,7 @@ public abstract class TomlNode
         AsValue().GetValue<T>();
 
     /// <summary>
-    /// Writes the canonical TOML encoding of this node to the supplied writer.
+    /// Writes the normalized TOML encoding of this node to the supplied writer.
     /// </summary>
     /// <param name="writer">The destination writer.</param>
     /// <exception cref="TomlSerializationException">
@@ -169,12 +169,12 @@ public abstract class TomlNode
     /// <remarks>
     /// Because a TOML document's root must be a table, the writer produces a document only when the outermost node is a
     /// <see cref="TomlObject" />. Writing a node whose root is a scalar or array yields no document; use
-    /// <see cref="ToUtf8Bytes" /> to obtain the canonical bytes, which validates the table-root rule.
+    /// <see cref="ToUtf8Bytes" /> to obtain the normalized bytes, which validates the table-root rule.
     /// </remarks>
     public abstract void WriteTo(Utf8TomlWriter writer);
 
     /// <summary>
-    /// Serializes this node to a new canonical TOML byte array.
+    /// Serializes this node to a new normalized TOML byte array.
     /// </summary>
     /// <returns>The UTF-8 TOML encoding of this node.</returns>
     /// <exception cref="TomlSerializationException">

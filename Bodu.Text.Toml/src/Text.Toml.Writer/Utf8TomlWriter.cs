@@ -10,9 +10,9 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Writer;
 
 /// <summary>
-/// Provides a forward-only writer that emits canonical TOML bytes to an <see cref="IBufferWriter{T}" />. Because TOML's
-/// surface layout is a whole-document property, the writer buffers every value into an in-memory tree and serializes it
-/// when the root table is closed.
+/// Provides an append-only writer that emits normalized TOML bytes to an <see cref="IBufferWriter{T}" />. Because TOML's
+/// surface layout is a whole-document property, the writer is not progressive: it buffers every value into an in-memory
+/// tree and serializes it when the root table is closed.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,7 +23,7 @@ namespace Bodu.Text.Toml.Writer;
 /// tree.
 /// </para>
 /// <para>
-/// Canonical emission happens once, when the outermost table is closed by the root <see cref="WriteEndTable" />. A
+/// Normalized emission happens once, when the outermost table is closed by the root <see cref="WriteEndTable" />. A
 /// table's scalar and array members are written first as <c>key = value</c> lines, then its sub-tables as
 /// <c>[dotted.path]</c> block headers (depth-first, in document order); an array whose every element is a table is
 /// emitted as a run of <c>[[path]]</c> blocks. Arrays of non-table values are inline (<c>[1, 2, 3]</c>), and a table
@@ -181,7 +181,7 @@ public ref partial struct Utf8TomlWriter
     /// property name without a value.
     /// </exception>
     /// <remarks>
-    /// Closing the outermost table serializes the buffered value tree to canonical TOML and writes the resulting UTF-8
+    /// Closing the outermost table serializes the buffered value tree to normalized TOML and writes the resulting UTF-8
     /// bytes to the destination buffer writer.
     /// </remarks>
     public readonly void WriteEndTable()
@@ -408,7 +408,7 @@ public ref partial struct Utf8TomlWriter
     }
 
     /// <summary>
-    /// Serializes the completed root table to canonical TOML, emitting the UTF-8 bytes directly to the destination
+    /// Serializes the completed root table to normalized TOML, emitting the UTF-8 bytes directly to the destination
     /// buffer writer without an intermediate document-sized buffer.
     /// </summary>
     /// <param name="root">The completed root table.</param>

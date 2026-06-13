@@ -221,8 +221,8 @@ public sealed partial class TomlDocumentReaderTests
     }
 
     /// <summary>
-    /// Verifies that under the TOML v1.1.0 grammar a comment may not contain a control character other than tab: the
-    /// v1.1.0 draft retains the v1.0.0 prohibition (U+0000–U+0008, U+000A–U+001F, U+007F).
+    /// Verifies that under the TOML v1.1.0 grammar a comment may not contain a control character other than tab: v1.1.0
+    /// retains the v1.0.0 prohibition (U+0000–U+0008, U+000A–U+001F, U+007F).
     /// </summary>
     [TestMethod]
     public void Constructor_WhenCommentContainsControlCharacter_ForV11_ShouldThrowTomlFormatException()
