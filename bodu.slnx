@@ -87,6 +87,14 @@
     <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/src/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/test/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Ecb/">
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Ecb.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb.DependencyInjection/src/Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb.DependencyInjection/test/Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
