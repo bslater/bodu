@@ -87,6 +87,22 @@
     <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/src/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/test/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Ecb/">
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Ecb.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb.DependencyInjection/src/Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Ecb.DependencyInjection/test/Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Boe/">
+    <Project Path="Bodu.Financial.ExchangeRates.Boe/src/Bodu.Financial.ExchangeRates.Boe.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Boe/test/Bodu.Financial.ExchangeRates.Boe.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Boe.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Boe.DependencyInjection/src/Bodu.Financial.ExchangeRates.Boe.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Boe.DependencyInjection/test/Bodu.Financial.ExchangeRates.Boe.DependencyInjection.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial.ExchangeRates.Yahoo/">
     <Project Path="Bodu.Financial.ExchangeRates.Yahoo/src/Bodu.Financial.ExchangeRates.Yahoo.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Yahoo/test/Bodu.Financial.ExchangeRates.Yahoo.Test.csproj" />
