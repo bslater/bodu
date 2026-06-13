@@ -50,6 +50,12 @@ public ref struct TomlDocumentReader
     private readonly List<TomlReaderToken> _tokens;
 
     /// <summary>
+    /// The UTF-8 source bytes, retained so a token's byte offset can be mapped to a line and column on a binding
+    /// failure. Held as a span because the reader is a <see langword="ref struct" /> scoped to a single read.
+    /// </summary>
+    private readonly ReadOnlySpan<byte> _source;
+
+    /// <summary>
     /// The index of the current token, or <c>-1</c> before the first <see cref="Read" />.
     /// </summary>
     private int _index;
@@ -89,6 +95,7 @@ public ref struct TomlDocumentReader
 
         TomlTableNode root = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
 
+        _source = utf8Toml;
         _tokens = new List<TomlReaderToken>();
         Flatten(root);
 
@@ -148,14 +155,38 @@ public ref struct TomlDocumentReader
     public readonly int CurrentDepth => _openDepth > 0 ? _openDepth - 1 : 0;
 
     /// <summary>
-    /// Gets the byte offset of the current token into the UTF-8 source, used to attach a position to a binding failure.
+    /// Records the source position of the current token on a binding failure, setting the byte offset, line number, and
+    /// column number of the supplied exception when it does not already carry a position.
     /// </summary>
-    /// <returns>
-    /// The zero-based byte offset of the current token, or <see langword="null" /> before the first or after the last
-    /// token.
-    /// </returns>
-    internal readonly int? CurrentOffset =>
-        _index >= 0 && _index < _tokens.Count ? _tokens[_index].Offset : null;
+    /// <param name="exception">The exception to annotate with the current token's position.</param>
+    /// <remarks>
+    /// The guard on an existing offset ensures the innermost converter — closest to the offending value — wins as the
+    /// exception unwinds through the enclosing container converters. The line and column count UTF-8 bytes, matching
+    /// <see cref="TomlFormatException" />.
+    /// </remarks>
+    internal readonly void StampPosition(TomlSerializationException exception)
+    {
+        if (exception.Offset is not null || _index < 0 || _index >= _tokens.Count)
+            return;
+
+        var offset = _tokens[_index].Offset;
+
+        var line = 1;
+        var lineStart = 0;
+        var limit = Math.Min(offset, _source.Length);
+        for (var i = 0; i < limit; i++)
+        {
+            if (_source[i] == (byte)'\n')
+            {
+                line++;
+                lineStart = i + 1;
+            }
+        }
+
+        exception.Offset = offset;
+        exception.LineNumber = line;
+        exception.ColumnNumber = offset - lineStart + 1;
+    }
 
     /// <summary>
     /// Advances the reader to the next token.

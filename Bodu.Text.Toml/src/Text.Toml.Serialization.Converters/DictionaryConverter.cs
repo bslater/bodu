@@ -97,7 +97,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
             catch (TomlSerializationException ex)
             {
                 ex.Path = TomlSerializationException.CombinePath(keyText, ex.Path);
-                ex.Offset ??= reader.CurrentOffset;
+                reader.StampPosition(ex);
                 throw;
             }
         }

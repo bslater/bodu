@@ -57,7 +57,7 @@ internal sealed class ObjectConverter<T>
                 catch (TomlSerializationException ex)
                 {
                     ex.Path = TomlSerializationException.CombinePath(name, ex.Path);
-                    ex.Offset ??= reader.CurrentOffset;
+                    reader.StampPosition(ex);
                     throw;
                 }
 

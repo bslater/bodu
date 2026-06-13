@@ -79,7 +79,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
             catch (TomlSerializationException ex)
             {
                 ex.Path = TomlSerializationException.CombinePath("[" + index.ToString(CultureInfo.InvariantCulture) + "]", ex.Path);
-                ex.Offset ??= reader.CurrentOffset;
+                reader.StampPosition(ex);
                 throw;
             }
 

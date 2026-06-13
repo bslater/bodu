@@ -63,6 +63,22 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a binding failure on a nested member reports the 1-based line and byte column of the offending
+    /// value in the source.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNestedMemberTypeMismatches_ShouldReportLineAndColumn()
+    {
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<DiagnosticsOuter>("[Inner]\nValue = \"x\"\n");
+        });
+
+        Assert.AreEqual(2, ex.LineNumber);
+        Assert.AreEqual(9, ex.ColumnNumber);
+    }
+
+    /// <summary>
     /// Verifies that a binding failure on a nested element of an array reports a path that includes the array index.
     /// </summary>
     [TestMethod]
