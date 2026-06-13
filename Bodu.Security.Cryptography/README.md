@@ -1,6 +1,6 @@
 # Bodu.Security.Cryptography
 
-Managed implementations of modern and legacy cryptographic primitives for .NET 8. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, and the supporting transform infrastructure to compose them. All algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `KeyedHashAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`).
+Managed implementations of modern and legacy cryptographic primitives for .NET 8. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. All algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `KeyedHashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`).
 
 ## Security posture and limitations
 
@@ -12,7 +12,7 @@ Read this before using the library for anything that matters.
 - **AES delegates to the BCL.** `AesBlockCipher` wraps the platform `System.Security.Cryptography.Aes` (hardware-accelerated, constant-time, FIPS-validated). Everything else in the package is a bespoke managed implementation.
 - **This is a toolbox, not a safe-by-default API.** ECB, `NoPadding`, raw CBC, and unauthenticated stream ciphers are all first-class. Prefer an AEAD mode (GCM, EAX, OCB, or a nonce-misuse-resistant SIV / GCM-SIV) unless you have a specific reason not to, and read the per-type remarks for the failure modes.
 
-The primitives provided here exist mainly to cover what the BCL does not ship (Blake2/Blake3, Ascon, Skein, Poly1305, SipHash, Threefish, Serpent, Camellia, Blowfish, Skipjack, OCB / EAX / SIV / GCM-SIV modes, etc.).
+The primitives provided here exist mainly to cover what the BCL does not ship (Blake2/Blake3, Ascon, Skein, Poly1305, SipHash, Threefish, Serpent, Camellia, Blowfish, Skipjack, OCB / EAX / SIV / GCM-SIV modes, X25519 / Ed25519, the post-quantum ML-KEM / ML-DSA on .NET 8, etc.).
 
 ## Algorithm support matrix
 
@@ -51,6 +51,19 @@ The primitives provided here exist mainly to cover what the BCL does not ship (B
 | HC-128 | eSTREAM portfolio | 128 | 128 | Legacy / compat | |
 
 The AEAD stream constructions pair a stream cipher with Poly1305: `ChaCha20-Poly1305` (RFC 8439), `XChaCha20-Poly1305`, and `XSalsa20-Poly1305` (NaCl `secretbox`). Each is single-use per message and verifies the tag with `CryptographicOperations.FixedTimeEquals`.
+
+### Asymmetric algorithms
+
+All asymmetric types derive from `System.Security.Cryptography.AsymmetricAlgorithm` and support only the raw byte
+encodings of their defining specification (PKCS#8 / SubjectPublicKeyInfo DER import/export is not implemented).
+Private key material is zeroed on dispose and exports return defensive copies.
+
+| Algorithm | Kind | Standard | Key / output sizes (bytes) | Notes | KAT source |
+|---|---|---|---|---|---|
+| X25519 | key agreement | RFC 7748 | keys 32, shared secret 32 | Strict §6.1 all-zero rejection of low-order peer points; constant-time ladder | RFC 7748 + Wycheproof |
+| Ed25519 | signature | RFC 8032 (pure) | keys 32, signature 64 | Deterministic; rejects S ≥ L and non-canonical points; Ed25519ph/ctx not implemented | RFC 8032 + Wycheproof |
+| ML-KEM 512 / 768 / 1024 | post-quantum KEM | NIST FIPS 203 | ek 800/1184/1568, dk 1632/2400/3168, ct 768/1088/1568, secret 32 | Implicit rejection (tampered ciphertexts never throw); §7.2/§7.3 import checks | NIST ACVP |
+| ML-DSA 44 / 65 / 87 | post-quantum signature | NIST FIPS 204 | pk 1312/1952/2592, sk 2560/4032/4896, sig 2420/3309/4627 | Hedged by default with `DeterministicSigning` opt-in; context strings up to 255 bytes; HashML-DSA not implemented | NIST ACVP |
 
 ### Block cipher modes (unauthenticated)
 
@@ -115,4 +128,4 @@ dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.cspr
 dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings regression.runsettings
 ```
 
-The shared `AeadBlockCipherModeTests<TTest, TTransform>` base contains the lifecycle / reuse / failed-tag-poisoning suite that every AEAD mode inherits. The `HashAlgorithmTests<TTest, TAlgorithm, TVariant>` base (and its `BlockHashAlgorithmTests` / `KeyedBlockHashAlgorithmTests` specialisations) provides spec-driven KAT, boundary, and disposal coverage for every hash and MAC. Block ciphers extend `BlockCipherTests<TTest, TCipher, TVariant>`, and every stream cipher inherits `SymmetricStreamAlgorithmTests<TTest, TAlgorithm>` for key/nonce sizing, lifecycle, transform-reuse, overlap, and disposal coverage.
+The shared `AeadBlockCipherModeTests<TTest, TTransform>` base contains the lifecycle / reuse / failed-tag-poisoning suite that every AEAD mode inherits. The `HashAlgorithmTests<TTest, TAlgorithm, TVariant>` base (and its `BlockHashAlgorithmTests` / `KeyedBlockHashAlgorithmTests` specialisations) provides spec-driven KAT, boundary, and disposal coverage for every hash and MAC. Block ciphers extend `BlockCipherTests<TTest, TCipher, TVariant>`, and every stream cipher inherits `SymmetricStreamAlgorithmTests<TTest, TAlgorithm>` for key/nonce sizing, lifecycle, transform-reuse, overlap, and disposal coverage. The post-quantum families inherit `MLKemContractTests<TKem>` / `MLDsaContractTests<TDsa>`, and the asymmetric known-answer corpora (curated Wycheproof x25519/ed25519 subsets and NIST ACVP ML-KEM / ML-DSA vectors, each with a provenance header) are embedded in the test assembly and run in the Regression tier.
