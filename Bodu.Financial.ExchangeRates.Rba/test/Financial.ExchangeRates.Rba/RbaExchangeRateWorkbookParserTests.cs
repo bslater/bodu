@@ -14,7 +14,7 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// Verifies that <see cref="RbaExchangeRateWorkbookParser" /> interprets the RBA workbook layout correctly.
 /// </summary>
 [TestClass]
-public class RbaExchangeRateWorkbookParserTests
+public partial class RbaExchangeRateWorkbookParserTests
 {
     /// <summary>
     /// Parses the embedded sample workbook with default options.
