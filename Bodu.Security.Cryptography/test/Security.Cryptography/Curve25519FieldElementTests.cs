@@ -175,6 +175,26 @@ public class Curve25519FieldElementTests
         CollectionAssert.AreEqual(ToArray(z3), ToArray(left));
     }
 
+    /// <summary>
+    /// Verifies that negating a loose subtraction result after <see cref="Curve25519FieldElement.Reduce" /> yields
+    /// the correct additive inverse. Without the intermediate reduction the second subtraction underflows, which is
+    /// the failure mode originally hit by Ed25519 point decompression.
+    /// </summary>
+    [TestMethod]
+    public void Reduce_WhenNegatingLooseSubtractionResult_ShouldYieldAdditiveInverse()
+    {
+        Curve25519FieldElement a = Curve25519FieldElement.FromBytes(
+            Convert.FromHexString("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"));
+
+        // u = a² − 1 as a loose (unreduced) value, then −u via Reduce; u + (−u) must be zero.
+        Curve25519FieldElement u = Curve25519FieldElement.Subtract(
+            Curve25519FieldElement.Square(a), Curve25519FieldElement.One);
+        Curve25519FieldElement negated = Curve25519FieldElement.Subtract(
+            Curve25519FieldElement.Zero, Curve25519FieldElement.Reduce(u));
+
+        Assert.IsTrue(Curve25519FieldElement.Reduce(Curve25519FieldElement.Add(Curve25519FieldElement.Reduce(u), negated)).IsZeroConstantTime());
+    }
+
     // ── Constant-time helpers ─────────────────────────────────────────────────────────────────
 
     /// <summary>

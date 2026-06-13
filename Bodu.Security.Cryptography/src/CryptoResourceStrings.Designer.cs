@@ -151,6 +151,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The encoded {0} key is not a valid {1} encoding..
+        /// </summary>
+        internal static string Arg_Invalid_EncodedKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EncodedKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The imported {0} key must be exactly {1} bytes..
         /// </summary>
         internal static string Arg_Invalid_RawKeyLength {

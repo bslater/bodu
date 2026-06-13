@@ -361,4 +361,7 @@
   <data name="Crypt_Invalid_X25519AllZeroSharedSecret" xml:space="preserve">
     <value>The X25519 shared secret is all zero; the peer public key is a low-order point.</value>
   </data>
+  <data name="Arg_Invalid_EncodedKey" xml:space="preserve">
+    <value>The encoded {0} key is not a valid {1} encoding.</value>
+  </data>
 </root>

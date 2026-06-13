@@ -261,4 +261,21 @@ public sealed class SmokeTests
 
         CollectionAssert.AreEqual(aliceShared, bobShared);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Ed25519" /> performs a successful sign / verify
+    /// round-trip under a freshly generated key pair.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void Ed25519_SignVerifyRoundTrip_ShouldAcceptGenuineSignature()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Ed25519.Create();
+        algorithm.GenerateKey();
+
+        var message = Encoding.UTF8.GetBytes("Smoke test for Ed25519.");
+        var signature = algorithm.SignData(message);
+
+        Assert.IsTrue(algorithm.VerifyData(message, signature));
+    }
 }

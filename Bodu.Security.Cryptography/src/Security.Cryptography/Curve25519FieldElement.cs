@@ -265,6 +265,19 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
+    /// Carries a loosely accumulated element back into tight reduction, bringing every limb below 2^52.
+    /// </summary>
+    /// <param name="value">The element to normalize. Limbs may be as large as 2^63.</param>
+    /// <returns>An equivalent element with all limbs below 2^52.</returns>
+    /// <remarks>
+    /// Use this before handing an <see cref="Add" /> or <see cref="Subtract" /> result back into another addition or
+    /// subtraction, whose operand bound (limbs below 2^53) a chained loose value would otherwise violate.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static Curve25519FieldElement Reduce(in Curve25519FieldElement value) =>
+        CarryReduce(value.L0, value.L1, value.L2, value.L3, value.L4);
+
+    /// <summary>
     /// Computes the multiplicative inverse of a field element by raising it to p − 2.
     /// </summary>
     /// <param name="value">The element to invert. Limbs must be below 2^54.</param>
