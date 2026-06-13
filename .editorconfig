@@ -231,6 +231,13 @@ dotnet_diagnostic.CA1510.severity = none # Use ArgumentNullException.ThrowIfNull
 dotnet_diagnostic.CA1511.severity = none # Use ArgumentException.ThrowIf — prefer ThrowHelper
 dotnet_diagnostic.CA1512.severity = none # Use ArgumentOutOfRangeException.ThrowIfOutOfRange — prefer ThrowHelper
 
+# CA1863 suggests caching 'CompositeFormat' for format strings that are not constants. Every
+# flagged site formats a <Domain>ResourceStrings resx accessor on an exception/error path —
+# cold code that formats once per failure, where parse cost is noise next to the throw itself.
+# Caching would add per-message static state and freeze resource resolution at type-init,
+# against the documented resx + CurrentCulture convention (see CLAUDE.md, Static Text).
+dotnet_diagnostic.CA1863.severity = none # Use CompositeFormat — error paths are cold by construction
+
 # ---------------------------------------------------------------------------------------------------------------
 # Member ordering (StyleCop)
 # ---------------------------------------------------------------------------------------------------------------
