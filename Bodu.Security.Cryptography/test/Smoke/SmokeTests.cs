@@ -242,4 +242,77 @@ public sealed class SmokeTests
 
         CollectionAssert.AreEqual(plaintext, roundTrip);
     }
+
+    /// <summary>
+    /// Verifies that two freshly generated <see cref="Bodu.Security.Cryptography.X25519" /> parties derive the same
+    /// shared secret from each other's public keys.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void X25519_DeriveSharedSecret_BothSidesShouldAgree()
+    {
+        using var alice = Bodu.Security.Cryptography.X25519.Create();
+        using var bob = Bodu.Security.Cryptography.X25519.Create();
+        alice.GenerateKey();
+        bob.GenerateKey();
+
+        var aliceShared = alice.DeriveSharedSecret(bob.ExportPublicKey());
+        var bobShared = bob.DeriveSharedSecret(alice.ExportPublicKey());
+
+        CollectionAssert.AreEqual(aliceShared, bobShared);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.Ed25519" /> performs a successful sign / verify
+    /// round-trip under a freshly generated key pair.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void Ed25519_SignVerifyRoundTrip_ShouldAcceptGenuineSignature()
+    {
+        using var algorithm = Bodu.Security.Cryptography.Ed25519.Create();
+        algorithm.GenerateKey();
+
+        var message = Encoding.UTF8.GetBytes("Smoke test for Ed25519.");
+        var signature = algorithm.SignData(message);
+
+        Assert.IsTrue(algorithm.VerifyData(message, signature));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.MLKem768" /> performs a successful encapsulate /
+    /// decapsulate round-trip under a freshly generated key pair.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void MLKem768_EncapsulateDecapsulateRoundTrip_ShouldAgreeOnSharedSecret()
+    {
+        using var receiver = Bodu.Security.Cryptography.MLKem768.Create();
+        receiver.GenerateKey();
+
+        using var sender = Bodu.Security.Cryptography.MLKem768.Create();
+        sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
+
+        (var ciphertext, var senderSecret) = sender.Encapsulate();
+        var receiverSecret = receiver.Decapsulate(ciphertext);
+
+        CollectionAssert.AreEqual(senderSecret, receiverSecret);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.MLDsa65" /> performs a successful sign / verify
+    /// round-trip under a freshly generated key pair.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void MLDsa65_SignVerifyRoundTrip_ShouldAcceptGenuineSignature()
+    {
+        using var dsa = Bodu.Security.Cryptography.MLDsa65.Create();
+        dsa.GenerateKey();
+
+        var message = Encoding.UTF8.GetBytes("Smoke test for ML-DSA-65.");
+        var signature = dsa.SignData(message);
+
+        Assert.IsTrue(dsa.VerifyData(message, signature));
+    }
 }

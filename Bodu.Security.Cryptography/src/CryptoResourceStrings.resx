@@ -349,4 +349,28 @@
   <data name="Arg_OutOfRange_ScryptOutputLength" xml:space="preserve">
     <value>The scrypt output length must be between 1 and {0}.</value>
   </data>
+  <data name="Arg_Invalid_DestinationLength" xml:space="preserve">
+    <value>The destination buffer must be exactly {0} bytes.</value>
+  </data>
+  <data name="Arg_Invalid_RawKeyLength" xml:space="preserve">
+    <value>The imported {0} key must be exactly {1} bytes.</value>
+  </data>
+  <data name="Crypt_Invalid_NoPrivateKey" xml:space="preserve">
+    <value>The operation requires a private key, but none is present on this instance.</value>
+  </data>
+  <data name="Crypt_Invalid_NoPublicKey" xml:space="preserve">
+    <value>The operation requires a public key, but none is present on this instance.</value>
+  </data>
+  <data name="Crypt_Invalid_X25519AllZeroSharedSecret" xml:space="preserve">
+    <value>The X25519 shared secret is all zero; the peer public key is a low-order point.</value>
+  </data>
+  <data name="Arg_Invalid_EncodedKey" xml:space="preserve">
+    <value>The encoded {0} key is not a valid {1} encoding.</value>
+  </data>
+  <data name="Arg_Invalid_KemCiphertextLength" xml:space="preserve">
+    <value>The ciphertext must be exactly {0} bytes for {1}.</value>
+  </data>
+  <data name="Arg_Invalid_ContextTooLong" xml:space="preserve">
+    <value>The signature context must not exceed {0} bytes.</value>
+  </data>
 </root>

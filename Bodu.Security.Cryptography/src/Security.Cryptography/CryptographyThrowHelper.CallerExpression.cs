@@ -542,6 +542,90 @@ internal static partial class CryptographyThrowHelper
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentException" /> if the imported raw key material does not have the exact length
+    /// required by the algorithm.
+    /// </summary>
+    /// <param name="key">The raw key bytes to validate.</param>
+    /// <param name="expectedLength">The required key length, in bytes.</param>
+    /// <param name="keyDescription">A short label for the key kind used in the exception message, such as <c>"X25519 private"</c>.</param>
+    /// <param name="paramName">The name of the key parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentException">Thrown when <c>key.Length != expectedLength</c>.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfInvalidRawKeyLength(
+        ReadOnlySpan<byte> key, int expectedLength, string keyDescription,
+        [CallerArgumentExpression(nameof(key))] string? paramName = null)
+    {
+        if (key.Length != expectedLength)
+        {
+            throw new ArgumentException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    CryptoResourceStrings.Arg_Invalid_RawKeyLength,
+                    keyDescription,
+                    expectedLength),
+                paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentException" /> if a caller-supplied destination span does not have the exact
+    /// length the operation writes.
+    /// </summary>
+    /// <param name="destination">The destination span to validate.</param>
+    /// <param name="expectedLength">The required destination length, in bytes.</param>
+    /// <param name="paramName">The name of the destination parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentException">Thrown when <c>destination.Length != expectedLength</c>.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfInvalidDestinationLength(
+        Span<byte> destination, int expectedLength,
+        [CallerArgumentExpression(nameof(destination))] string? paramName = null)
+    {
+        if (destination.Length != expectedLength)
+        {
+            throw new ArgumentException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    CryptoResourceStrings.Arg_Invalid_DestinationLength,
+                    expectedLength),
+                paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if an asymmetric operation requires private key material that
+    /// is not present on the instance.
+    /// </summary>
+    /// <param name="hasPrivateKey">
+    /// <see langword="true" /> if private key material is present; <see langword="false" /> otherwise.
+    /// </param>
+    /// <exception cref="CryptographicException">
+    /// Thrown when <paramref name="hasPrivateKey" /> is <see langword="false" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNoPrivateKey(bool hasPrivateKey)
+    {
+        if (!hasPrivateKey)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_NoPrivateKey);
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if an asymmetric operation requires public key material that
+    /// is not present on the instance.
+    /// </summary>
+    /// <param name="hasPublicKey">
+    /// <see langword="true" /> if public key material is present; <see langword="false" /> otherwise.
+    /// </param>
+    /// <exception cref="CryptographicException">
+    /// Thrown when <paramref name="hasPublicKey" /> is <see langword="false" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNoPublicKey(bool hasPublicKey)
+    {
+        if (!hasPublicKey)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_NoPublicKey);
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentException" /> when an <see cref="IBlockCipher" /> does not have the block size
     /// required by a cipher mode.
     /// </summary>
