@@ -6,27 +6,11 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
 
 namespace Bodu.Text.Ini;
 
 public static partial class Ini
 {
-    private static readonly CompositeFormat s_iniDuplicateKey =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniDuplicateKey);
-
-    private static readonly CompositeFormat s_iniDuplicateSection =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniDuplicateSection);
-
-    private static readonly CompositeFormat s_iniGlobalKeyDisallowed =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniGlobalKeyDisallowed);
-
-    private static readonly CompositeFormat s_iniMalformedSectionHeader =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniMalformedSectionHeader);
-
-    private static readonly CompositeFormat s_iniMissingKey =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniMissingKey);
-
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a duplicate key.
     /// </summary>
@@ -35,7 +19,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_iniDuplicateKey, key, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_IniDuplicateKey, key, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a duplicate section name.
@@ -45,7 +29,7 @@ public static partial class Ini
     [DoesNotReturn]
     private static void ThrowDuplicateSection(string name, int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_iniDuplicateSection, name, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_IniDuplicateSection, name, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> when a key appears before the first section header and global
@@ -55,7 +39,7 @@ public static partial class Ini
     [DoesNotReturn]
     internal static void ThrowGlobalKeyDisallowed(int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_IniGlobalKeyDisallowed, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a malformed section header.
@@ -64,7 +48,7 @@ public static partial class Ini
     [DoesNotReturn]
     internal static void ThrowMalformedSectionHeader(int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_IniMalformedSectionHeader, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> for a property line with an empty key.
@@ -73,7 +57,7 @@ public static partial class Ini
     [DoesNotReturn]
     internal static void ThrowMissingKey(int lineNumber) =>
         throw new IniFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_iniMissingKey, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_IniMissingKey, lineNumber), lineNumber);
 
     /// <summary>
     /// Provides line-by-line INI parsing over a <see cref="ReadOnlySpan{T}" /> of characters.

@@ -458,6 +458,8 @@ Every project that throws exceptions, prints diagnostics, or otherwise exposes u
 
 Use `{0}`, `{1}`, … for format placeholders and combine via `string.Format(CultureInfo.CurrentCulture, …)` at the throw site. All user-facing resource text — exception messages, validation diagnostics, and similar display strings — is formatted with `CultureInfo.CurrentCulture`; reserve `CultureInfo.InvariantCulture` for wire/serialization, code generation, and round-trippable parsing where the format must not vary by culture. Diagnostics live in code, not in the resource string — keep messages short and free of conditional grammar; let the caller insert the dynamic context.
 
+Analyzer note: **CA1863** ("Use 'CompositeFormat'") is disabled repo-wide in `.editorconfig`. Every site it flags formats a resx accessor on an exception/error path that runs once per failure, so caching parsed formats buys nothing measurable and would freeze resource resolution at type-init. Format resource-backed messages with plain `string.Format(CultureInfo.CurrentCulture, <Domain>ResourceStrings.<Key>, …)` at the throw/error site; do not introduce cached `CompositeFormat` fields for them.
+
 **Cross-file ThrowHelper convention:**
 
 Mirror the partial-file pattern used by `FinancialThrowHelper`:

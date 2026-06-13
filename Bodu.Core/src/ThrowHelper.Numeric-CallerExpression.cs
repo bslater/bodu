@@ -11,30 +11,11 @@
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_PositiveMultipleOf" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidPositiveMultipleOf =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_PositiveMultipleOf);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_CountExceedsAvailable" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeCountExceedsAvailable =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_CountExceedsAvailable);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeSequenceRangeOverflow =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow);
-
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="count" /> is negative or exceeds
     /// <paramref name="available" />.
@@ -56,7 +37,7 @@ public static partial class ThrowHelper
         if (count < 0 || count > available)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeCountExceedsAvailable, available));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_CountExceedsAvailable, available));
     }
 
     /// <summary>
@@ -101,7 +82,7 @@ public static partial class ThrowHelper
         if (value <= T.Zero || value % divisor != T.Zero)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidPositiveMultipleOf, divisor));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_PositiveMultipleOf, divisor));
     }
 
     /// <summary>
@@ -186,7 +167,7 @@ public static partial class ThrowHelper
         if (count > 0 && start > int.MaxValue - (count - 1))
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeSequenceRangeOverflow, nameof(Int32)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow, nameof(Int32)));
     }
 
     /// <summary>
@@ -210,7 +191,7 @@ public static partial class ThrowHelper
         if (count > 0 && start > long.MaxValue - (count - 1))
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeSequenceRangeOverflow, nameof(Int64)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow, nameof(Int64)));
     }
 
     /// <summary>

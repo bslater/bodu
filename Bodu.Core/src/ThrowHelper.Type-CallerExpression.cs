@@ -10,24 +10,11 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_MustBeOfType" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidMustBeOfType =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_MustBeOfType);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_EnumValue" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeEnumValue =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_EnumValue);
-
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a defined member of
     /// <typeparamref name="TEnum" />.
@@ -46,7 +33,7 @@ public static partial class ThrowHelper
         if (!Enum.IsDefined(value))
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeEnumValue, typeof(TEnum).Name, value));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, typeof(TEnum).Name, value));
     }
 
     /// <summary>
@@ -92,13 +79,13 @@ public static partial class ThrowHelper
         {
             if (default(T) is not null)
                 throw new ArgumentException(
-                    string.Format(CultureInfo.CurrentCulture, s_argInvalidMustBeOfType, typeof(T)),
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_MustBeOfType, typeof(T)),
                     paramName);
         }
         else if (value is not T)
         {
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidMustBeOfType, typeof(T)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_MustBeOfType, typeof(T)),
                 paramName);
         }
     }

@@ -10,48 +10,11 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ArrayLength" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidArrayLength =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ArrayLength);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ArrayLengthMultipleOf" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidArrayLengthMultipleOf =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ArrayLengthMultipleOf);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ArrayOffset" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidArrayOffset =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ArrayOffset);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ArrayOffsetOrLength" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidArrayOffsetOrLength =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ArrayOffsetOrLength);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ArrayTooShort" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidArrayTooShort =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ArrayTooShort);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_IndexValidRange" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeIndexValidRange =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_IndexValidRange);
-
     /// <summary>
     /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, or an
     /// <see cref="ArgumentException" /> if it contains any non-numeric element.
@@ -171,7 +134,7 @@ public static partial class ThrowHelper
 
         if (array.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayLength, expectedLength),
                 paramName);
     }
 
@@ -206,7 +169,7 @@ public static partial class ThrowHelper
 
         if (array.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayTooShort, minimumLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayTooShort, minimumLength),
                 paramName);
     }
 
@@ -251,11 +214,11 @@ public static partial class ThrowHelper
         if (index < 0)
             throw new ArgumentOutOfRangeException(
                 indexParamName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeIndexValidRange, paramName));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, paramName));
 
         if (array.Length - index < requiredLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayTooShort, requiredLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayTooShort, requiredLength),
                 paramName);
     }
 
@@ -309,7 +272,7 @@ public static partial class ThrowHelper
         if (array.Length < minLength || array.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireBetweenInclusive, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
     }
 
     /// <summary>
@@ -335,7 +298,7 @@ public static partial class ThrowHelper
 
         if (array.Length == 0 || array.Length % divisor != 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayLengthMultipleOf, divisor),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayLengthMultipleOf, divisor),
                 paramName);
     }
 
@@ -370,18 +333,18 @@ public static partial class ThrowHelper
         if (offset < 0 || offset > array.Length)
             throw new ArgumentOutOfRangeException(
                 paramOffsetName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayOffset, paramOffsetName));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, paramOffsetName));
 
         if (count < 0 || count > array.Length)
             throw new ArgumentOutOfRangeException(
                 paramCountName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayOffset, paramCountName));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, paramCountName));
 
         if (count > array.Length - offset)
             throw new ArgumentException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    s_argInvalidArrayOffsetOrLength,
+                    ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
                     paramOffsetName,
                     paramCountName,
                     paramArrayName));
@@ -441,7 +404,7 @@ public static partial class ThrowHelper
         if (index < 0 || index >= array.LongLength)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeIndexValidRange, array.LongLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, array.LongLength));
     }
 }
 

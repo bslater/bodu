@@ -14,21 +14,6 @@ namespace Bodu.Text.DotEnv;
 
 public static partial class DotEnv
 {
-    private static readonly CompositeFormat s_duplicateKey =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvDuplicateKey);
-
-    private static readonly CompositeFormat s_invalidKey =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvInvalidKey);
-
-    private static readonly CompositeFormat s_malformedEntry =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvMalformedEntry);
-
-    private static readonly CompositeFormat s_unterminatedDoubleQuote =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote);
-
-    private static readonly CompositeFormat s_unterminatedSingleQuote =
-        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote);
-
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for a duplicate key.
     /// </summary>
@@ -37,7 +22,7 @@ public static partial class DotEnv
     [DoesNotReturn]
     private static void ThrowDuplicateKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_duplicateKey, key, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvDuplicateKey, key, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
@@ -47,7 +32,7 @@ public static partial class DotEnv
     [DoesNotReturn]
     internal static void ThrowInvalidKey(string key, int lineNumber) =>
         throw new DotEnvFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_invalidKey, key, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvInvalidKey, key, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.
@@ -56,7 +41,7 @@ public static partial class DotEnv
     [DoesNotReturn]
     internal static void ThrowMalformedEntry(int lineNumber) =>
         throw new DotEnvFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_malformedEntry, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvMalformedEntry, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.
@@ -65,7 +50,7 @@ public static partial class DotEnv
     [DoesNotReturn]
     internal static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_unterminatedDoubleQuote, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.
@@ -74,7 +59,7 @@ public static partial class DotEnv
     [DoesNotReturn]
     internal static void ThrowUnterminatedSingleQuote(int lineNumber) =>
         throw new DotEnvFormatException(
-            string.Format(CultureInfo.CurrentCulture, s_unterminatedSingleQuote, lineNumber), lineNumber);
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, lineNumber), lineNumber);
 
     /// <summary>
     /// Provides character-by-character DotEnv parsing over a <see cref="ReadOnlySpan{T}" /> of characters.

@@ -10,18 +10,11 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_CollectionTooSmall" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidCollectionTooSmall =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_CollectionTooSmall);
-
     /// <summary>
     /// Throws an <see cref="ArgumentException" /> if the collection has fewer than <paramref name="minCount" />
     /// elements.
@@ -42,7 +35,7 @@ public static partial class ThrowHelper
         ThrowIfNull(collection, paramName);
         if (collection.Count < minCount)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidCollectionTooSmall, minCount),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_CollectionTooSmall, minCount),
                 paramName);
     }
 
@@ -101,7 +94,7 @@ public static partial class ThrowHelper
             throw new ArgumentException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    s_argInvalidParameterRequiredIf,
+                    ResourceStrings.Arg_Invalid_ParameterRequiredIf,
                     paramName,
                     conditionalParamName,
                     conditionalValue),

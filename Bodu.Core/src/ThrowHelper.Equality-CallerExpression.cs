@@ -10,24 +10,11 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ValuesNotEqual" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidValuesNotEqual =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ValuesNotEqual);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_ValuesEqual" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeValuesEqual =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_ValuesEqual);
-
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> equals
     /// <paramref name="other" />.
@@ -48,7 +35,7 @@ public static partial class ThrowHelper
         if (value.Equals(other))
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeValuesEqual, other));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ValuesEqual, other));
     }
 
     /// <summary>
@@ -70,7 +57,7 @@ public static partial class ThrowHelper
     {
         if (!value.Equals(other))
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidValuesNotEqual, other),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ValuesNotEqual, other),
                 paramName);
     }
 }
