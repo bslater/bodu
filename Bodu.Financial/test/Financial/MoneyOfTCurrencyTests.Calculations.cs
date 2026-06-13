@@ -472,7 +472,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Abs" /> is idempotent and always non-negative.
+    /// Verifies that <c>Abs</c> is idempotent and always non-negative.
     /// </summary>
     [TestMethod]
     [DataRow(0.0)]

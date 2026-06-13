@@ -10,7 +10,7 @@ namespace Bodu.Financial;
 public partial class ExchangeRateLookupResultTests
 {
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateLookupResult.IsExactDate" /> is <see langword="true" /> when the offset is
+    /// Verifies that <c>IsExactDate</c> is <see langword="true" /> when the offset is
     /// zero days.
     /// </summary>
     [TestMethod]
@@ -24,7 +24,7 @@ public partial class ExchangeRateLookupResultTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRateLookupResult.IsExactDate" /> is <see langword="false" /> when the offset is
+    /// Verifies that <c>IsExactDate</c> is <see langword="false" /> when the offset is
     /// non-zero.
     /// </summary>
     [TestMethod]

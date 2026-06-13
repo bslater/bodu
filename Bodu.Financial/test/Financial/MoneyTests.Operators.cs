@@ -132,7 +132,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Sign" /> reports the sign of the amount.
+    /// Verifies that <c>Sign</c> reports the sign of the amount.
     /// </summary>
     [TestMethod]
     [DataRow(5, 1)]

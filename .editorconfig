@@ -240,6 +240,13 @@ dotnet_diagnostic.CA1512.severity = none # Use ArgumentOutOfRangeException.Throw
 # against the documented resx + CurrentCulture convention (see CLAUDE.md, Static Text).
 dotnet_diagnostic.CA1863.severity = none # Use CompositeFormat — error paths are cold by construction
 
+# CA1708 ("identifiers should differ by more than case") misfires on C# 14 extension blocks: each
+# `extension(Receiver) { ... }` block lowers to a compiler-generated skeleton member, so a class that
+# splits its extension members across several blocks (for example one per partial file) surfaces
+# multiple identically named `extension(...)` entries that the rule reads as case-only collisions.
+# These are not user-facing identifiers, so the warning carries no signal here.
+dotnet_diagnostic.CA1708.severity = none # Identifiers should differ by more than case — C# 14 extension-block skeletons
+
 # ---------------------------------------------------------------------------------------------------------------
 # Member ordering (StyleCop)
 # ---------------------------------------------------------------------------------------------------------------

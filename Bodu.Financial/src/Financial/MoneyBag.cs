@@ -148,7 +148,7 @@ public sealed partial class MoneyBag :
         if (string.IsNullOrEmpty(iso))
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyMissingIsoCode, nameof(amount));
 
-        if (amount.IsZero)
+        if (amount.Amount == 0m)
             return this;
 
         if (_balances.TryGetValue(iso, out var existing))
