@@ -110,7 +110,7 @@ public class RbaRateKnownAnswerTests
         DateOnly end = era.End ?? new DateOnly(2100, 1, 1);
 
         IReadOnlyList<ExchangeRate> series = await provider.GetRatesAsync("AUD", ResolveCurrency(currency), era.Start, end);
-        Assert.IsTrue(series.Count > 0);
+        Assert.IsNotEmpty(series);
 
         var byType = s_allRows
             .Where(row => row.SourceFileName == sourceFileName && string.Equals(row.Currency, currency, StringComparison.Ordinal))
@@ -143,7 +143,7 @@ public class RbaRateKnownAnswerTests
     {
         var knownFiles = RbaEra.Default.Select(era => era.FileName).ToHashSet(StringComparer.Ordinal);
 
-        Assert.IsTrue(s_allRows.Length > 0);
+        Assert.IsNotEmpty(s_allRows);
         Assert.IsTrue(
             s_allRows.All(row => knownFiles.Contains(row.SourceFileName)),
             "Every known-answer row must reference a workbook in the RBA era catalogue.");
