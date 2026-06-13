@@ -298,4 +298,21 @@ public sealed class SmokeTests
 
         CollectionAssert.AreEqual(senderSecret, receiverSecret);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bodu.Security.Cryptography.MLDsa65" /> performs a successful sign / verify
+    /// round-trip under a freshly generated key pair.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void MLDsa65_SignVerifyRoundTrip_ShouldAcceptGenuineSignature()
+    {
+        using var dsa = Bodu.Security.Cryptography.MLDsa65.Create();
+        dsa.GenerateKey();
+
+        var message = Encoding.UTF8.GetBytes("Smoke test for ML-DSA-65.");
+        var signature = dsa.SignData(message);
+
+        Assert.IsTrue(dsa.VerifyData(message, signature));
+    }
 }

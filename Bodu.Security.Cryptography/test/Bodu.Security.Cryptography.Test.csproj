@@ -18,6 +18,9 @@
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpEncapDecap.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyCheck.txt" />
+    <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpKeyGen.txt" />
+    <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpSigGen.txt" />
+    <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpSigVer.txt" />
   </ItemGroup>
 
   <ItemGroup>

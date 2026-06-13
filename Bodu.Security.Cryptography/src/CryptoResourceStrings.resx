@@ -367,4 +367,7 @@
   <data name="Arg_Invalid_KemCiphertextLength" xml:space="preserve">
     <value>The ciphertext must be exactly {0} bytes for {1}.</value>
   </data>
+  <data name="Arg_Invalid_ContextTooLong" xml:space="preserve">
+    <value>The signature context must not exceed {0} bytes.</value>
+  </data>
 </root>

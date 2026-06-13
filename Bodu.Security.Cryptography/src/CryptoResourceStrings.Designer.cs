@@ -88,6 +88,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The signature context must not exceed {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_ContextTooLong {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ContextTooLong", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The destination buffer must be exactly {0} bytes..
         /// </summary>
         internal static string Arg_Invalid_DestinationLength {
