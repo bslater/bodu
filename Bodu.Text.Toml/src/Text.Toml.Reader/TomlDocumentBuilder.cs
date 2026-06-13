@@ -36,6 +36,13 @@ internal sealed class TomlDocumentBuilder
     private readonly List<TomlReaderRow> _rows = [];
 
     /// <summary>
+    /// Per-depth scratch lists reused to collect the segments of a key path without allocating a list per key. Indexed
+    /// by the current nesting <see cref="_depth" />, so an outer key path is never overwritten by an inner path read
+    /// while the outer value is being materialized.
+    /// </summary>
+    private readonly List<List<string>> _pathScratch = [];
+
+    /// <summary>
     /// The TOML specification version whose grammar features the lexer enforces.
     /// </summary>
     private readonly TomlSpecVersion _specVersion;
@@ -78,8 +85,14 @@ internal sealed class TomlDocumentBuilder
     /// <param name="source">The UTF-8 TOML source bytes.</param>
     /// <returns>The flat row store describing the document.</returns>
     /// <exception cref="TomlFormatException">Thrown when the source is not valid TOML.</exception>
-    internal TomlReaderRow[] Parse(ReadOnlySpan<byte> source)
+    /// <remarks>
+    /// The store is returned without copying — the builder's own backing list becomes the document's store — and is
+    /// pre-sized from the source length so it grows without repeated doubling for typical documents.
+    /// </remarks>
+    internal List<TomlReaderRow> Parse(ReadOnlySpan<byte> source)
     {
+        _rows.EnsureCapacity(EstimateRowCapacity(source.Length));
+
         var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = _specVersion, MaxDepth = _maxDepth });
         while (lexer.Read())
         {
@@ -107,16 +120,30 @@ internal sealed class TomlDocumentBuilder
             }
         }
 
-        return _rows.ToArray();
+        return _rows;
     }
+
+    /// <summary>
+    /// Estimates the number of rows a document of the supplied byte length will produce, used to size the row store so it
+    /// grows without repeated doubling for typical documents.
+    /// </summary>
+    /// <param name="sourceLength">The UTF-8 source length in bytes.</param>
+    /// <returns>The initial row-store capacity.</returns>
+    /// <remarks>
+    /// Flat TOML produces roughly one row per dozen bytes of key/value text. The estimate is clamped to a ceiling so a
+    /// large but sparse document — for example one dominated by long string values — cannot over-allocate the store; such
+    /// a document simply grows it on demand instead.
+    /// </remarks>
+    private static int EstimateRowCapacity(int sourceLength) =>
+        Math.Clamp(sourceLength / 12, 4, 4096);
 
     /// <summary>
     /// Reads the key segments of a header whose <see cref="TomlTokenType.TableHeader" /> or
     /// <see cref="TomlTokenType.ArrayTableHeader" /> token is current.
     /// </summary>
     /// <param name="lexer">The lexer to read from.</param>
-    /// <returns>The key segments in order.</returns>
-    private static List<string> ReadHeaderPath(ref Utf8TomlReader lexer)
+    /// <returns>The key segments in order, held in the depth's reusable scratch list.</returns>
+    private List<string> ReadHeaderPath(ref Utf8TomlReader lexer)
     {
         _ = lexer.Read();
         return ReadKeyPath(ref lexer);
@@ -126,10 +153,15 @@ internal sealed class TomlDocumentBuilder
     /// Reads the remaining segments of a dotted key path whose first <see cref="TomlTokenType.Key" /> token is current.
     /// </summary>
     /// <param name="lexer">The lexer to read from.</param>
-    /// <returns>The key segments in order.</returns>
-    private static List<string> ReadKeyPath(ref Utf8TomlReader lexer)
+    /// <returns>The key segments in order, held in the depth's reusable scratch list.</returns>
+    /// <remarks>
+    /// The returned list is scratch reused for the next path read at the same depth, so the caller must consume it before
+    /// reading another path at that depth. The key strings it holds are independent and remain valid once extracted.
+    /// </remarks>
+    private List<string> ReadKeyPath(ref Utf8TomlReader lexer)
     {
-        var keys = new List<string> { lexer.GetString() };
+        List<string> keys = RentPath();
+        keys.Add(lexer.GetString());
         while (!lexer.IsFinalKeySegment)
         {
             _ = lexer.Read();
@@ -137,6 +169,20 @@ internal sealed class TomlDocumentBuilder
         }
 
         return keys;
+    }
+
+    /// <summary>
+    /// Returns a cleared scratch list for collecting the segments of a key path at the current nesting depth.
+    /// </summary>
+    /// <returns>A reusable, empty list scoped to <see cref="_depth" />.</returns>
+    private List<string> RentPath()
+    {
+        while (_pathScratch.Count <= _depth)
+            _pathScratch.Add([]);
+
+        List<string> path = _pathScratch[_depth];
+        path.Clear();
+        return path;
     }
 
     /// <summary>

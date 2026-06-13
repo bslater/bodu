@@ -51,7 +51,7 @@ public ref struct TomlDocumentReader
     /// <summary>
     /// The flat row store the cursor walks, with the document root at index 0.
     /// </summary>
-    private readonly TomlReaderRow[] _rows;
+    private readonly List<TomlReaderRow> _rows;
 
     /// <summary>
     /// The UTF-8 source bytes, retained so a token's byte offset can be mapped to a line and column on a binding
@@ -189,7 +189,7 @@ public ref struct TomlDocumentReader
     /// Gets the flat row store the cursor walks.
     /// </summary>
     /// <returns>The shared row store.</returns>
-    internal readonly TomlReaderRow[] Rows => _rows;
+    internal readonly List<TomlReaderRow> Rows => _rows;
 
     /// <summary>
     /// Gets the row index of the value the current token belongs to, so a subtree can be materialized over the shared

@@ -64,7 +64,7 @@ public sealed partial class TomlDocument
     /// The flat row store describing the parsed document, or <see langword="null" /> once the document has been
     /// disposed. The store may be shared with the owning read when this document is a subtree view.
     /// </summary>
-    private TomlReaderRow[]? _rows;
+    private List<TomlReaderRow>? _rows;
 
     /// <summary>
     /// The row index of this document's root within <see cref="_rows" />, which is zero for a parsed document and the
@@ -76,7 +76,7 @@ public sealed partial class TomlDocument
     /// Initializes a new instance of the <see cref="TomlDocument" /> class rooted at the start of the supplied store.
     /// </summary>
     /// <param name="rows">The flat row store describing the document.</param>
-    private TomlDocument(TomlReaderRow[] rows)
+    private TomlDocument(List<TomlReaderRow> rows)
         : this(rows, 0)
     {
     }
@@ -86,7 +86,7 @@ public sealed partial class TomlDocument
     /// </summary>
     /// <param name="rows">The flat row store, possibly shared with the owning read.</param>
     /// <param name="rootIndex">The row index of this document's root.</param>
-    private TomlDocument(TomlReaderRow[] rows, int rootIndex)
+    private TomlDocument(List<TomlReaderRow> rows, int rootIndex)
     {
         _rows = rows;
         _rootIndex = rootIndex;
@@ -129,7 +129,7 @@ public sealed partial class TomlDocument
     public static TomlDocument Parse(ReadOnlySpan<byte> utf8Toml, TomlDocumentOptions options)
     {
         var maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : options.MaxDepth;
-        TomlReaderRow[] rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
+        List<TomlReaderRow> rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
 
         return new TomlDocument(rows);
     }
@@ -216,7 +216,7 @@ public sealed partial class TomlDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal TomlValueKind GetKind(int index)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         return ToValueKind(rows[index]);
     }
 
@@ -231,7 +231,7 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not of the required kind.</exception>
     internal T GetScalar<T>(int index, TomlValueKind required)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         TomlValueKind kind = ToValueKind(rows[index]);
         if (kind != required)
             throw KindMismatch(required, kind);
@@ -248,7 +248,7 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not an array.</exception>
     internal int GetArrayLength(int index)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         if (rows[index].Kind != TomlReaderNodeKind.Array)
             throw KindMismatch(TomlValueKind.Array, ToValueKind(rows[index]));
 
@@ -268,7 +268,7 @@ public sealed partial class TomlDocument
     /// </exception>
     internal int GetArrayElementRow(int index, int elementIndex)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         if (rows[index].Kind != TomlReaderNodeKind.Array)
             throw KindMismatch(TomlValueKind.Array, ToValueKind(rows[index]));
 
@@ -291,7 +291,7 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not a table.</exception>
     internal int GetTablePairCount(int index)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         if (rows[index].Kind != TomlReaderNodeKind.Table)
             throw KindMismatch(TomlValueKind.Table, ToValueKind(rows[index]));
 
@@ -326,7 +326,7 @@ public sealed partial class TomlDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal (string Name, int ValueRow, int NextPairRow) GetPair(int pairRow)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         return ((string)rows[pairRow].Key!, pairRow, rows[pairRow].NextSibling);
     }
 
@@ -343,7 +343,7 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not a table.</exception>
     internal bool TryGetProperty(int tableIndex, string name, out int valueRow)
     {
-        TomlReaderRow[] rows = EnsureNotDisposed();
+        List<TomlReaderRow> rows = EnsureNotDisposed();
         if (rows[tableIndex].Kind != TomlReaderNodeKind.Table)
             throw KindMismatch(TomlValueKind.Table, ToValueKind(rows[tableIndex]));
 
@@ -391,7 +391,7 @@ public sealed partial class TomlDocument
     /// </summary>
     /// <returns>The flat row store.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    private TomlReaderRow[] EnsureNotDisposed() =>
+    private List<TomlReaderRow> EnsureNotDisposed() =>
         _rows ?? throw new ObjectDisposedException(nameof(TomlDocument));
 
     /// <summary>

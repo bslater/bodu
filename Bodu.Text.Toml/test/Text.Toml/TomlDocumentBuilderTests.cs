@@ -154,7 +154,7 @@ public sealed class TomlDocumentBuilderTests
     public void Parse_WhenMultiByteContent_ShouldCarryByteOffsets()
     {
         // Bytes: s(0) sp(1) =(2) sp(3) "(4) é(5,6) "(7) LF(8) i(9) sp(10) =(11) sp(12) 1(13) LF(14).
-        TomlReaderRow[] rows = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 256).Parse(Encoding.UTF8.GetBytes("s = \"é\"\ni = 1\n"));
+        List<TomlReaderRow> rows = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 256).Parse(Encoding.UTF8.GetBytes("s = \"é\"\ni = 1\n"));
 
         var first = rows[rows[0].FirstChild];
         var second = rows[first.NextSibling];

@@ -27,10 +27,12 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// The multiplier bounds are deliberately loose: they exist to catch order-of-magnitude regressions and to document the
-/// current baseline. The read-only document pipeline now builds a single flat row store directly — the intermediate
-/// node tree and the separate row copy are both gone — so <c>TomlDocument.Parse</c> drops from roughly forty-four times
-/// the input to about twenty-six. The serializer's bind path and the mutable node DOM build their own representations
-/// from the same store and are bounded separately; lowering those further needs lazy decoding over the retained source.
+/// current baseline. The structural parser now reuses a per-depth scratch list for key paths and hands its row list to
+/// the document without a final array copy, so the three paths that share the builder all fell sharply:
+/// <c>TomlDocument.Parse</c> to about ten times the input, the serializer's bind path to under thirty, and the mutable
+/// node DOM to about twenty-four. The serializer's bind path and the mutable node DOM still build their own
+/// representations from the shared store; lowering them further needs unboxed scalar storage and lazy decoding over the
+/// retained source.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -96,7 +98,7 @@ public sealed class TomlAllocationTests
             _ = document.RootElement;
         });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 36);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 14);
     }
 
     /// <summary>
@@ -131,7 +133,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlNode.Parse(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 48);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 32);
     }
 
     /// <summary>
@@ -162,7 +164,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 56);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 38);
     }
 
     /// <summary>
