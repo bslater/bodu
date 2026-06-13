@@ -25,8 +25,8 @@ public record NonCryptographicHashAlgorithmSpecification
     /// Gets the expected algorithm name string, when the concrete type exposes one via its own surface.
     /// </summary>
     /// <value>
-    /// The canonical algorithm name (for example, <c>Fletcher-16</c>), or <see langword="null" /> when the
-    /// algorithm does not publish a name and name checks should be skipped.
+    /// The canonical algorithm name (for example, <c>Fletcher-16</c>), or <see langword="null" /> when the algorithm
+    /// does not publish a name and name checks should be skipped.
     /// </value>
     public string? AlgorithmName { get; init; }
 
@@ -71,8 +71,8 @@ public record NonCryptographicHashAlgorithmSpecification
     /// operations performed on the instance.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> if the algorithm is entirely stateless; otherwise, <see langword="false" />.
-    /// Defaults to <see langword="false" />.
+    /// <see langword="true" /> if the algorithm is entirely stateless; otherwise, <see langword="false" />. Defaults to
+    /// <see langword="false" />.
     /// </value>
     public bool IsStateless { get; init; } = false;
 
@@ -80,9 +80,9 @@ public record NonCryptographicHashAlgorithmSpecification
     /// Gets the known-answer test vectors associated with this variant.
     /// </summary>
     /// <value>
-    /// A <see cref="NonCryptographicHashKnownAnswers" /> record carrying the expected digests for the shared
-    /// inputs and any algorithm-specific extension vectors. Defaults to an empty record, in which case the
-    /// harness emits no named-input assertions for this variant.
+    /// A <see cref="NonCryptographicHashKnownAnswers" /> record carrying the expected digests for the shared inputs and
+    /// any algorithm-specific extension vectors. Defaults to an empty record, in which case the harness emits no
+    /// named-input assertions for this variant.
     /// </value>
     public NonCryptographicHashKnownAnswers KnownAnswers { get; init; } = new();
 

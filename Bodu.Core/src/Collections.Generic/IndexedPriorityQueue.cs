@@ -13,9 +13,7 @@ namespace Bodu.Collections.Generic;
 /// Represents a binary min-heap priority queue keyed by element identity, supporting O(log n) re-prioritization
 /// (decrease- or increase-key) and removal of any element by value.
 /// </summary>
-/// <typeparam name="TElement">
-/// Specifies the element type used as the queue's identity. Must be non-null and unique within the queue.
-/// </typeparam>
+/// <typeparam name="TElement">Specifies the non-null element type used as the queue's identity.</typeparam>
 /// <typeparam name="TPriority">Specifies the priority type used for ordering.</typeparam>
 /// <remarks>
 /// <para>
@@ -28,9 +26,9 @@ namespace Bodu.Collections.Generic;
 /// n) — the operations Dijkstra's algorithm, Prim's algorithm, and A* require.
 /// </para>
 /// <para>
-/// The trade-off relative to the BCL <see cref="System.Collections.Generic.PriorityQueue{TElement, TPriority}" /> is
-/// that elements are unique. <see cref="Enqueue(TElement, TPriority)" /> throws <see cref="ArgumentException" /> if the
-/// element is already present; use <see cref="EnqueueOrUpdate(TElement, TPriority)" /> for set semantics.
+/// Elements must be non-null and unique within the queue. <see cref="Enqueue(TElement, TPriority)" /> throws
+/// <see cref="ArgumentNullException" /> if the element is null or <see cref="ArgumentException" /> if the element is
+/// already present; use <see cref="EnqueueOrUpdate(TElement, TPriority)" /> for set semantics.
 /// </para>
 /// <para>
 /// Ordering is determined by an <see cref="IComparer{TPriority}" />; smaller priorities are dequeued first (min-heap).
