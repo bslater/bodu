@@ -1,0 +1,7527 @@
+[
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "USD",
+    "Rate": 0.9175
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "JPY",
+    "Rate": 216.35
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "GBP",
+    "Rate": 0.6392
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "CHF",
+    "Rate": 1.9957
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "NZD",
+    "Rate": 1.4031
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "CAD",
+    "Rate": 1.1442
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "HKD",
+    "Rate": 7.1758
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "SGD",
+    "Rate": 1.9588
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "MYR",
+    "Rate": 2.112
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "TWD",
+    "Rate": 36.87
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "KRW",
+    "Rate": 732.44
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "IDR",
+    "Rate": 896
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "CNY",
+    "Rate": 1.8248
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-12",
+    "Currency": "SDR",
+    "Rate": 0.8807
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "DEM",
+    "Rate": 2.4852
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "FRF",
+    "Rate": 7.5657
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "ITL",
+    "Rate": 1504.22
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "NLG",
+    "Rate": 2.7859
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "First",
+    "Date": "1983-12-13",
+    "Currency": "BEF",
+    "Rate": 50.44
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "USD",
+    "Rate": 0.6648
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "JPY",
+    "Rate": 106.37
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "GBP",
+    "Rate": 0.4525
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "CHF",
+    "Rate": 1.0826
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "NZD",
+    "Rate": 1.2663
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "CAD",
+    "Rate": 0.9178
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "HKD",
+    "Rate": 5.1848
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "SGD",
+    "Rate": 1.4461
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "MYR",
+    "Rate": 1.7301
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "TWD",
+    "Rate": 23.6
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "KRW",
+    "Rate": 572.59
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "IDR",
+    "Rate": 1091
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "CNY",
+    "Rate": 2.4745
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "SDR",
+    "Rate": 0.5448
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "DEM",
+    "Rate": 1.2069
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "FRF",
+    "Rate": 4.2866
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "ITL",
+    "Rate": 900.8
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "NLG",
+    "Rate": 1.4626
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Last",
+    "Date": "1986-12-31",
+    "Currency": "BEF",
+    "Rate": 26.96
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "USD",
+    "Rate": 0.598
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "JPY",
+    "Rate": 92.24
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "GBP",
+    "Rate": 0.3998
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-09-02",
+    "Currency": "CHF",
+    "Rate": 0.9957
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1985-11-06",
+    "Currency": "NZD",
+    "Rate": 1.1334
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "CAD",
+    "Rate": 0.8261
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "HKD",
+    "Rate": 4.6677
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "SGD",
+    "Rate": 1.3007
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1985-04-22",
+    "Currency": "MYR",
+    "Rate": 1.551
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-08-25",
+    "Currency": "TWD",
+    "Rate": 22.39
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "KRW",
+    "Rate": 529.23
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-07-31",
+    "Currency": "IDR",
+    "Rate": 676
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1983-12-19",
+    "Currency": "CNY",
+    "Rate": 1.7443
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-08-25",
+    "Currency": "SDR",
+    "Rate": 0.498
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-12-10",
+    "Currency": "DEM",
+    "Rate": 1.1707
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-09-02",
+    "Currency": "FRF",
+    "Rate": 4.0463
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-09-02",
+    "Currency": "ITL",
+    "Rate": 852.27
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-09-02",
+    "Currency": "NLG",
+    "Rate": 1.3929
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Min",
+    "Date": "1986-09-02",
+    "Currency": "BEF",
+    "Rate": 25.57
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-03-15",
+    "Currency": "USD",
+    "Rate": 0.9653
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-02-16",
+    "Currency": "JPY",
+    "Rate": 220.94
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1985-01-14",
+    "Currency": "GBP",
+    "Rate": 0.7408
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1985-01-16",
+    "Currency": "CHF",
+    "Rate": 2.1978
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-11-29",
+    "Currency": "NZD",
+    "Rate": 1.7634
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-03-14",
+    "Currency": "CAD",
+    "Rate": 1.2296
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-03-15",
+    "Currency": "HKD",
+    "Rate": 7.5293
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-02-16",
+    "Currency": "SGD",
+    "Rate": 2.0153
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-02-16",
+    "Currency": "MYR",
+    "Rate": 2.2117
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-03-06",
+    "Currency": "TWD",
+    "Rate": 39.28
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-03-16",
+    "Currency": "KRW",
+    "Rate": 764.81
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1986-12-22",
+    "Currency": "IDR",
+    "Rate": 1111
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1986-12-22",
+    "Currency": "CNY",
+    "Rate": 2.5117
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-03-16",
+    "Currency": "SDR",
+    "Rate": 0.906
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-11-21",
+    "Currency": "DEM",
+    "Rate": 2.6674
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-12-03",
+    "Currency": "FRF",
+    "Rate": 8.1712
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-12-03",
+    "Currency": "ITL",
+    "Rate": 1646.99
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-12-03",
+    "Currency": "NLG",
+    "Rate": 3.0071
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Max",
+    "Date": "1984-12-03",
+    "Currency": "BEF",
+    "Rate": 53.64
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-09-30",
+    "Currency": "USD",
+    "Rate": 0.7077
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-07-08",
+    "Currency": "JPY",
+    "Rate": 166.88
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-06-27",
+    "Currency": "GBP",
+    "Rate": 0.5155
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-04-16",
+    "Currency": "CHF",
+    "Rate": 1.6972
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1984-06-19",
+    "Currency": "NZD",
+    "Rate": 1.3746
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-02-22",
+    "Currency": "CAD",
+    "Rate": 0.979
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1986-01-22",
+    "Currency": "HKD",
+    "Rate": 5.5188
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-08-20",
+    "Currency": "SGD",
+    "Rate": 1.5625
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-03-26",
+    "Currency": "MYR",
+    "Rate": 1.7856
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-11-01",
+    "Currency": "TWD",
+    "Rate": 28
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1986-02-25",
+    "Currency": "KRW",
+    "Rate": 626.24
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-02-12",
+    "Currency": "IDR",
+    "Rate": 816
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-10-04",
+    "Currency": "CNY",
+    "Rate": 2.1485
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-04-03",
+    "Currency": "SDR",
+    "Rate": 0.6775
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-07-02",
+    "Currency": "DEM",
+    "Rate": 2.017
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-07-08",
+    "Currency": "FRF",
+    "Rate": 6.1847
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-07-12",
+    "Currency": "ITL",
+    "Rate": 1314.09
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-07-31",
+    "Currency": "NLG",
+    "Rate": 2.2871
+  },
+  {
+    "SourceFileName": "1983-1986.xls",
+    "Type": "Median",
+    "Date": "1985-06-17",
+    "Currency": "BEF",
+    "Rate": 40.91
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "USD",
+    "Rate": 0.6674
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "JPY",
+    "Rate": 105.35
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "GBP",
+    "Rate": 0.4499
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "CHF",
+    "Rate": 1.0755
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "NZD",
+    "Rate": 1.2568
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "CAD",
+    "Rate": 0.9208
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "HKD",
+    "Rate": 5.1977
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "SGD",
+    "Rate": 1.4486
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "MYR",
+    "Rate": 1.7336
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "TWD",
+    "Rate": 23.69
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "KRW",
+    "Rate": 574.9
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "IDR",
+    "Rate": 1093
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "CNY",
+    "Rate": 2.4841
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "SDR",
+    "Rate": 0.5456
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "DEM",
+    "Rate": 1.2108
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "FRF",
+    "Rate": 4.253
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "ITL",
+    "Rate": 893.65
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "NLG",
+    "Rate": 1.4489
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "First",
+    "Date": "1987-01-02",
+    "Currency": "BEF",
+    "Rate": 26.7
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "USD",
+    "Rate": 0.7733
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "JPY",
+    "Rate": 104.34
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "GBP",
+    "Rate": 0.4031
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "CHF",
+    "Rate": 0.9902
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "NZD",
+    "Rate": 1.3134
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "CAD",
+    "Rate": 0.8971
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "HKD",
+    "Rate": 6.0317
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "SGD",
+    "Rate": 1.3452
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "MYR",
+    "Rate": 2.0879
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "TWD",
+    "Rate": 20.96
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "KRW",
+    "Rate": 553.99
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "IDR",
+    "Rate": 1470
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "CNY",
+    "Rate": 4.0382
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "SDR",
+    "Rate": 0.5472
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "DEM",
+    "Rate": 1.222
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "FRF",
+    "Rate": 3.9469
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "ITL",
+    "Rate": 873.06
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "NLG",
+    "Rate": 1.308
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Last",
+    "Date": "1990-12-31",
+    "Currency": "BEF",
+    "Rate": 23.89
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-01-14",
+    "Currency": "USD",
+    "Rate": 0.6425
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1988-01-04",
+    "Currency": "JPY",
+    "Rate": 88.1
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-11-10",
+    "Currency": "GBP",
+    "Rate": 0.3782
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-12-31",
+    "Currency": "CHF",
+    "Rate": 0.9237
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1988-02-02",
+    "Currency": "NZD",
+    "Rate": 1.0652
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1990-05-01",
+    "Currency": "CAD",
+    "Rate": 0.8696
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-01-14",
+    "Currency": "HKD",
+    "Rate": 4.9922
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1990-11-19",
+    "Currency": "SGD",
+    "Rate": 1.3049
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-01-14",
+    "Currency": "MYR",
+    "Rate": 1.6499
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1989-07-20",
+    "Currency": "TWD",
+    "Rate": 19.29
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1989-05-29",
+    "Currency": "KRW",
+    "Rate": 492.68
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-01-14",
+    "Currency": "IDR",
+    "Rate": 1047
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-01-14",
+    "Currency": "CNY",
+    "Rate": 2.3914
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-11-11",
+    "Currency": "SDR",
+    "Rate": 0.5004
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1990-09-10",
+    "Currency": "DEM",
+    "Rate": 1.1232
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1990-11-19",
+    "Currency": "FRF",
+    "Rate": 3.792
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1987-11-10",
+    "Currency": "ITL",
+    "Rate": 831.26
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1990-11-19",
+    "Currency": "NLG",
+    "Rate": 1.2662
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Min",
+    "Date": "1990-11-19",
+    "Currency": "BEF",
+    "Rate": 23.18
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "USD",
+    "Rate": 0.8937
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1990-08-24",
+    "Currency": "JPY",
+    "Rate": 123.29
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-08",
+    "Currency": "GBP",
+    "Rate": 0.5114
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-01",
+    "Currency": "CHF",
+    "Rate": 1.4229
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "NZD",
+    "Rate": 1.4673
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "CAD",
+    "Rate": 1.0622
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "HKD",
+    "Rate": 6.9716
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "SGD",
+    "Rate": 1.7269
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "MYR",
+    "Rate": 2.4404
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1988-11-30",
+    "Currency": "TWD",
+    "Rate": 24.71
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1987-04-15",
+    "Currency": "KRW",
+    "Rate": 609.38
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1990-08-24",
+    "Currency": "IDR",
+    "Rate": 1568
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1990-12-04",
+    "Currency": "CNY",
+    "Rate": 4.0523
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "SDR",
+    "Rate": 0.6835
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1988-12-06",
+    "Currency": "DEM",
+    "Rate": 1.6709
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "FRF",
+    "Rate": 5.6888
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "ITL",
+    "Rate": 1221.24
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-01",
+    "Currency": "NLG",
+    "Rate": 1.8867
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Max",
+    "Date": "1989-02-02",
+    "Currency": "BEF",
+    "Rate": 35
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1989-08-09",
+    "Currency": "USD",
+    "Rate": 0.7677
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1987-07-27",
+    "Currency": "JPY",
+    "Rate": 105.95
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1987-06-23",
+    "Currency": "GBP",
+    "Rate": 0.4502
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1990-06-21",
+    "Currency": "CHF",
+    "Rate": 1.1105
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1989-05-02",
+    "Currency": "NZD",
+    "Rate": 1.2837
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1988-04-14",
+    "Currency": "CAD",
+    "Rate": 0.9218
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1989-08-30",
+    "Currency": "HKD",
+    "Rate": 5.9871
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1988-04-12",
+    "Currency": "SGD",
+    "Rate": 1.4953
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1988-05-26",
+    "Currency": "MYR",
+    "Rate": 2.0662
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1987-08-20",
+    "Currency": "TWD",
+    "Rate": 21.48
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1988-04-29",
+    "Currency": "KRW",
+    "Rate": 561.75
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1988-08-05",
+    "Currency": "IDR",
+    "Rate": 1364
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1988-09-20",
+    "Currency": "CNY",
+    "Rate": 2.9248
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1990-06-01",
+    "Currency": "SDR",
+    "Rate": 0.5858
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1987-07-27",
+    "Currency": "DEM",
+    "Rate": 1.3069
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1987-10-13",
+    "Currency": "FRF",
+    "Rate": 4.3897
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1990-03-15",
+    "Currency": "ITL",
+    "Rate": 957.99
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1990-06-27",
+    "Currency": "NLG",
+    "Rate": 1.474
+  },
+  {
+    "SourceFileName": "1987-1990.xls",
+    "Type": "Median",
+    "Date": "1987-06-04",
+    "Currency": "BEF",
+    "Rate": 27.11
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "USD",
+    "Rate": 0.7725
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "JPY",
+    "Rate": 104.93
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "GBP",
+    "Rate": 0.4005
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "CHF",
+    "Rate": 0.9848
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "NZD",
+    "Rate": 1.3113
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "CAD",
+    "Rate": 0.8959
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "HKD",
+    "Rate": 6.0228
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "SGD",
+    "Rate": 1.3511
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "MYR",
+    "Rate": 2.0919
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "TWD",
+    "Rate": 20.94
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "KRW",
+    "Rate": 553.42
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "IDR",
+    "Rate": 1469
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "CNY",
+    "Rate": 4.0341
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "SDR",
+    "Rate": 0.543
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "DEM",
+    "Rate": 1.2357
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "FRF",
+    "Rate": 3.9301
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "ITL",
+    "Rate": 870.51
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "NLG",
+    "Rate": 1.3023
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1991-01-02",
+    "Currency": "BEF",
+    "Rate": 23.84
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "First",
+    "Date": "1993-04-16",
+    "Currency": "FIM",
+    "Rate": 4.0356
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "USD",
+    "Rate": 0.7768
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "JPY",
+    "Rate": 77.56
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "GBP",
+    "Rate": 0.4982
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "CHF",
+    "Rate": 1.0209
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "NZD",
+    "Rate": 1.2105
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "CAD",
+    "Rate": 1.0906
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "HKD",
+    "Rate": 6.0114
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "SGD",
+    "Rate": 1.1345
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "MYR",
+    "Rate": 1.9867
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "TWD",
+    "Rate": 20.45
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "KRW",
+    "Rate": 612.47
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "IDR",
+    "Rate": 1709
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "CNY",
+    "Rate": 6.5708
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "SDR",
+    "Rate": 0.5336
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "DEM",
+    "Rate": 0.9827
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "FRF",
+    "Rate": 4.1617
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "ITL",
+    "Rate": 1264.05
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "NLG",
+    "Rate": 1.3514
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "BEF",
+    "Rate": 24.72
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Last",
+    "Date": "1994-12-30",
+    "Currency": "FIM",
+    "Rate": 3.6811
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "USD",
+    "Rate": 0.6443
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-07",
+    "Currency": "JPY",
+    "Rate": 67.33
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1992-09-09",
+    "Currency": "GBP",
+    "Rate": 0.3577
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1992-09-30",
+    "Currency": "CHF",
+    "Rate": 0.8764
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "NZD",
+    "Rate": 1.17
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-02-11",
+    "Currency": "CAD",
+    "Rate": 0.8463
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "HKD",
+    "Rate": 4.9847
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-10-05",
+    "Currency": "SGD",
+    "Rate": 1.0179
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "MYR",
+    "Rate": 1.6383
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-01-21",
+    "Currency": "TWD",
+    "Rate": 16.96
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "KRW",
+    "Rate": 521.01
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "IDR",
+    "Rate": 1357
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "CNY",
+    "Rate": 3.7284
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1993-09-14",
+    "Currency": "SDR",
+    "Rate": 0.4526
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1994-12-30",
+    "Currency": "DEM",
+    "Rate": 0.9827
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1991-08-29",
+    "Currency": "FRF",
+    "Rate": 2.2811
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1992-09-09",
+    "Currency": "ITL",
+    "Rate": 762.94
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1992-09-09",
+    "Currency": "NLG",
+    "Rate": 1.1271
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1992-09-09",
+    "Currency": "BEF",
+    "Rate": 20.62
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Min",
+    "Date": "1994-10-26",
+    "Currency": "FIM",
+    "Rate": 3.3324
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-10-03",
+    "Currency": "USD",
+    "Rate": 0.8023
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-05-13",
+    "Currency": "JPY",
+    "Rate": 108.53
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-12-22",
+    "Currency": "GBP",
+    "Rate": 0.503
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-08-19",
+    "Currency": "CHF",
+    "Rate": 1.2255
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-10-23",
+    "Currency": "NZD",
+    "Rate": 1.4241
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-12-29",
+    "Currency": "CAD",
+    "Rate": 1.0922
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-10-03",
+    "Currency": "HKD",
+    "Rate": 6.2149
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-03-28",
+    "Currency": "SGD",
+    "Rate": 1.3926
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-09-18",
+    "Currency": "MYR",
+    "Rate": 2.2018
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-04-05",
+    "Currency": "TWD",
+    "Rate": 21.52
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-12-15",
+    "Currency": "KRW",
+    "Rate": 616.83
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-12-14",
+    "Currency": "IDR",
+    "Rate": 1709
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-12-14",
+    "Currency": "CNY",
+    "Rate": 6.6059
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-07-19",
+    "Currency": "SDR",
+    "Rate": 0.5978
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-05-31",
+    "Currency": "DEM",
+    "Rate": 1.4199
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-08-20",
+    "Currency": "FRF",
+    "Rate": 4.8098
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-12-21",
+    "Currency": "ITL",
+    "Rate": 1280.06
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-08-20",
+    "Currency": "NLG",
+    "Rate": 1.5989
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1991-08-20",
+    "Currency": "BEF",
+    "Rate": 29.25
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Max",
+    "Date": "1994-02-10",
+    "Currency": "FIM",
+    "Rate": 4.0863
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1994-08-01",
+    "Currency": "USD",
+    "Rate": 0.7379
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1992-12-18",
+    "Currency": "JPY",
+    "Rate": 85
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1992-12-01",
+    "Currency": "GBP",
+    "Rate": 0.4514
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1993-07-07",
+    "Currency": "CHF",
+    "Rate": 1.0226
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1993-01-12",
+    "Currency": "NZD",
+    "Rate": 1.3128
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-08-14",
+    "Currency": "CAD",
+    "Rate": 0.8954
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1994-08-01",
+    "Currency": "HKD",
+    "Rate": 5.7006
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1992-10-05",
+    "Currency": "SGD",
+    "Rate": 1.1412
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1994-09-19",
+    "Currency": "MYR",
+    "Rate": 1.9016
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1992-02-17",
+    "Currency": "TWD",
+    "Rate": 18.92
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-04-05",
+    "Currency": "KRW",
+    "Rate": 568.93
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-02-20",
+    "Currency": "IDR",
+    "Rate": 1508
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-07-02",
+    "Currency": "CNY",
+    "Rate": 4.1091
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1993-03-02",
+    "Currency": "SDR",
+    "Rate": 0.5128
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1993-09-23",
+    "Currency": "DEM",
+    "Rate": 1.1652
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1993-07-14",
+    "Currency": "FRF",
+    "Rate": 4.0016
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-08-16",
+    "Currency": "ITL",
+    "Rate": 1017.75
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-02-19",
+    "Currency": "NLG",
+    "Rate": 1.3181
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1991-02-21",
+    "Currency": "BEF",
+    "Rate": 24.22
+  },
+  {
+    "SourceFileName": "1991-1994.xls",
+    "Type": "Median",
+    "Date": "1993-04-28",
+    "Currency": "FIM",
+    "Rate": 3.8548
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "USD",
+    "Rate": 0.7768
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "JPY",
+    "Rate": 77.56
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "GBP",
+    "Rate": 0.4982
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-03",
+    "Currency": "CHF",
+    "Rate": 1.0208
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "NZD",
+    "Rate": 1.2105
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "CAD",
+    "Rate": 1.0906
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "HKD",
+    "Rate": 6.0114
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "SGD",
+    "Rate": 1.1345
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "MYR",
+    "Rate": 1.9867
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "TWD",
+    "Rate": 20.45
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "KRW",
+    "Rate": 612.47
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "IDR",
+    "Rate": 1709
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "CNY",
+    "Rate": 6.5708
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "SDR",
+    "Rate": 0.5321
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "DEM",
+    "Rate": 1.2065
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "FRF",
+    "Rate": 4.1617
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1998-08-21",
+    "Currency": "ESP",
+    "Rate": 89.75
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "ITL",
+    "Rate": 1264.05
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "NLG",
+    "Rate": 1.3514
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "BEF",
+    "Rate": 24.72
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1998-08-21",
+    "Currency": "ATS",
+    "Rate": 7.4394
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-02",
+    "Currency": "FIM",
+    "Rate": 3.6962
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1998-08-21",
+    "Currency": "PTE",
+    "Rate": 108.17
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1995-01-03",
+    "Currency": "IEP",
+    "Rate": 0.5021
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "First",
+    "Date": "1998-08-21",
+    "Currency": "GRD",
+    "Rate": 178.25
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "USD",
+    "Rate": 0.6139
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "JPY",
+    "Rate": 70.51
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "GBP",
+    "Rate": 0.3686
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "CHF",
+    "Rate": 0.8478
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "NZD",
+    "Rate": 1.1634
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "CAD",
+    "Rate": 0.9506
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "HKD",
+    "Rate": 4.7559
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "SGD",
+    "Rate": 1.019
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "MYR",
+    "Rate": 2.3328
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "TWD",
+    "Rate": 19.77
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "KRW",
+    "Rate": 730.85
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "IDR",
+    "Rate": 4868
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "CNY",
+    "Rate": 5.0823
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "SDR",
+    "Rate": 0.4364
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "DEM",
+    "Rate": 1.0302
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "FRF",
+    "Rate": 3.454
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "ESP",
+    "Rate": 87.73
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "ITL",
+    "Rate": 1020.89
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "NLG",
+    "Rate": 1.1606
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "BEF",
+    "Rate": 21.14
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "ATS",
+    "Rate": 7.2444
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "FIM",
+    "Rate": 3.1291
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "PTE",
+    "Rate": 105.63
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "IEP",
+    "Rate": 0.4121
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Last",
+    "Date": "1998-12-31",
+    "Currency": "GRD",
+    "Rate": 173.06
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-08-27",
+    "Currency": "USD",
+    "Rate": 0.5621
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1995-05-31",
+    "Currency": "JPY",
+    "Rate": 59.45
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-08-31",
+    "Currency": "GBP",
+    "Rate": 0.3401
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "CHF",
+    "Rate": 0.7823
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1995-07-04",
+    "Currency": "NZD",
+    "Rate": 1.0547
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-06-10",
+    "Currency": "CAD",
+    "Rate": 0.8533
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-08-27",
+    "Currency": "HKD",
+    "Rate": 4.3548
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "SGD",
+    "Rate": 0.9789
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1995-06-30",
+    "Currency": "MYR",
+    "Rate": 1.7283
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1995-05-31",
+    "Currency": "TWD",
+    "Rate": 18.27
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1995-07-04",
+    "Currency": "KRW",
+    "Rate": 537.05
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1995-06-30",
+    "Currency": "IDR",
+    "Rate": 1592
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-08-27",
+    "Currency": "CNY",
+    "Rate": 4.6541
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "SDR",
+    "Rate": 0.4219
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "DEM",
+    "Rate": 0.9514
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "FRF",
+    "Rate": 3.1895
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "ESP",
+    "Rate": 81.02
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "ITL",
+    "Rate": 940.97
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "NLG",
+    "Rate": 1.0726
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "BEF",
+    "Rate": 19.64
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "ATS",
+    "Rate": 6.6871
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "FIM",
+    "Rate": 2.898
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "PTE",
+    "Rate": 97.76
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-07",
+    "Currency": "IEP",
+    "Rate": 0.3822
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Min",
+    "Date": "1998-10-06",
+    "Currency": "GRD",
+    "Rate": 165.4
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1996-12-02",
+    "Currency": "USD",
+    "Rate": 0.8203
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-05-01",
+    "Currency": "JPY",
+    "Rate": 99.91
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1996-05-02",
+    "Currency": "GBP",
+    "Rate": 0.5325
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-03-05",
+    "Currency": "CHF",
+    "Rate": 1.1714
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1995-01-02",
+    "Currency": "NZD",
+    "Rate": 1.2105
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1996-12-02",
+    "Currency": "CAD",
+    "Rate": 1.1081
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1996-12-02",
+    "Currency": "HKD",
+    "Rate": 6.3428
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-02-02",
+    "Currency": "SGD",
+    "Rate": 1.1766
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-01-07",
+    "Currency": "MYR",
+    "Rate": 3.0666
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-01-28",
+    "Currency": "TWD",
+    "Rate": 23.1
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-12-23",
+    "Currency": "KRW",
+    "Rate": 1282.1
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-06-17",
+    "Currency": "IDR",
+    "Rate": 9770
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1996-12-02",
+    "Currency": "CNY",
+    "Rate": 6.8095
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-03-14",
+    "Currency": "SDR",
+    "Rate": 0.5818
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-08-07",
+    "Currency": "DEM",
+    "Rate": 1.3887
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-08-07",
+    "Currency": "FRF",
+    "Rate": 4.6826
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-11-25",
+    "Currency": "ESP",
+    "Rate": 92.9
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-08-07",
+    "Currency": "ITL",
+    "Rate": 1357.18
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-08-07",
+    "Currency": "NLG",
+    "Rate": 1.5638
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-08-07",
+    "Currency": "BEF",
+    "Rate": 28.66
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-11-25",
+    "Currency": "ATS",
+    "Rate": 7.6857
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-08-05",
+    "Currency": "FIM",
+    "Rate": 4.1425
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-11-25",
+    "Currency": "PTE",
+    "Rate": 112.22
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1997-05-02",
+    "Currency": "IEP",
+    "Rate": 0.5251
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Max",
+    "Date": "1998-11-25",
+    "Currency": "GRD",
+    "Rate": 183.42
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-11-22",
+    "Currency": "USD",
+    "Rate": 0.7416
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-05-21",
+    "Currency": "JPY",
+    "Rate": 84.82
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-03-01",
+    "Currency": "GBP",
+    "Rate": 0.4649
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-08-20",
+    "Currency": "CHF",
+    "Rate": 0.953
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1997-11-03",
+    "Currency": "NZD",
+    "Rate": 1.1396
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-10-23",
+    "Currency": "CAD",
+    "Rate": 1.0176
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-12-19",
+    "Currency": "HKD",
+    "Rate": 5.7373
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1997-12-01",
+    "Currency": "SGD",
+    "Rate": 1.0827
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-06-24",
+    "Currency": "MYR",
+    "Rate": 1.972
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1997-07-02",
+    "Currency": "TWD",
+    "Rate": 21.03
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-10-30",
+    "Currency": "KRW",
+    "Rate": 658.15
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-04-10",
+    "Currency": "IDR",
+    "Rate": 1853
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-08-11",
+    "Currency": "CNY",
+    "Rate": 6.1794
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1997-10-30",
+    "Currency": "SDR",
+    "Rate": 0.5068
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-01-16",
+    "Currency": "DEM",
+    "Rate": 1.1648
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-07-18",
+    "Currency": "FRF",
+    "Rate": 3.9527
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1998-10-13",
+    "Currency": "ESP",
+    "Rate": 87.26
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-11-19",
+    "Currency": "ITL",
+    "Rate": 1202.4
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-07-18",
+    "Currency": "NLG",
+    "Rate": 1.3102
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-01-24",
+    "Currency": "BEF",
+    "Rate": 24.01
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1998-10-14",
+    "Currency": "ATS",
+    "Rate": 7.2267
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1996-08-21",
+    "Currency": "FIM",
+    "Rate": 3.5524
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1998-10-13",
+    "Currency": "PTE",
+    "Rate": 105.34
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1995-10-05",
+    "Currency": "IEP",
+    "Rate": 0.4757
+  },
+  {
+    "SourceFileName": "1995-1998.xls",
+    "Type": "Median",
+    "Date": "1998-10-29",
+    "Currency": "GRD",
+    "Rate": 174.49
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "USD",
+    "Rate": 0.6138
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "EUR",
+    "Rate": 0.5175
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "JPY",
+    "Rate": 69.58
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "GBP",
+    "Rate": 0.3679
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "CHF",
+    "Rate": 0.8369
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "NZD",
+    "Rate": 1.1625
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "CAD",
+    "Rate": 0.9413
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "HKD",
+    "Rate": 4.7548
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "SGD",
+    "Rate": 1.0155
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "MYR",
+    "Rate": 2.3324
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "TWD",
+    "Rate": 19.78
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "KRW",
+    "Rate": 731.5
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "IDR",
+    "Rate": 4895
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "CNY",
+    "Rate": 5.0816
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "First",
+    "Date": "1999-01-04",
+    "Currency": "SDR",
+    "Rate": 0.4359
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "USD",
+    "Rate": 0.5662
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "EUR",
+    "Rate": 0.5403
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "JPY",
+    "Rate": 67.14
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "GBP",
+    "Rate": 0.3532
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "CHF",
+    "Rate": 0.7856
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "NZD",
+    "Rate": 1.0762
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "CAD",
+    "Rate": 0.8916
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "HKD",
+    "Rate": 4.4157
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "SGD",
+    "Rate": 0.9842
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "MYR",
+    "Rate": 2.1516
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "TWD",
+    "Rate": 19.69
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "KRW",
+    "Rate": 672.53
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "IDR",
+    "Rate": 5067
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "CNY",
+    "Rate": 4.6864
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Last",
+    "Date": "2002-12-31",
+    "Currency": "SDR",
+    "Rate": 0.418
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-04-03",
+    "Currency": "USD",
+    "Rate": 0.4833
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "1999-01-04",
+    "Currency": "EUR",
+    "Rate": 0.5175
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2000-10-19",
+    "Currency": "JPY",
+    "Rate": 55.82
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-09-27",
+    "Currency": "GBP",
+    "Rate": 0.3303
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-09-24",
+    "Currency": "CHF",
+    "Rate": 0.7724
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2002-12-31",
+    "Currency": "NZD",
+    "Rate": 1.0762
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-04-03",
+    "Currency": "CAD",
+    "Rate": 0.7627
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-04-03",
+    "Currency": "HKD",
+    "Rate": 3.7691
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-09-19",
+    "Currency": "SGD",
+    "Rate": 0.8537
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-04-03",
+    "Currency": "MYR",
+    "Rate": 1.84
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-04-03",
+    "Currency": "TWD",
+    "Rate": 15.91
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2000-10-31",
+    "Currency": "KRW",
+    "Rate": 587.62
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "1999-11-02",
+    "Currency": "IDR",
+    "Rate": 4299
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-04-03",
+    "Currency": "CNY",
+    "Rate": 4.0006
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Min",
+    "Date": "2001-09-27",
+    "Currency": "SDR",
+    "Rate": 0.376
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "USD",
+    "Rate": 0.6738
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "2000-05-05",
+    "Currency": "EUR",
+    "Rate": 0.6661
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "JPY",
+    "Rate": 82.88
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-07-08",
+    "Currency": "GBP",
+    "Rate": 0.4293
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "2000-01-28",
+    "Currency": "CHF",
+    "Rate": 1.0629
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "2000-09-01",
+    "Currency": "NZD",
+    "Rate": 1.3605
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-07-02",
+    "Currency": "CAD",
+    "Rate": 0.9824
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "HKD",
+    "Rate": 5.2238
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "SGD",
+    "Rate": 1.1517
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "MYR",
+    "Rate": 2.5604
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "TWD",
+    "Rate": 22.1
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-12",
+    "Currency": "KRW",
+    "Rate": 809.25
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "2001-04-26",
+    "Currency": "IDR",
+    "Rate": 6126
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-05-18",
+    "Currency": "CNY",
+    "Rate": 5.5781
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Max",
+    "Date": "1999-07-08",
+    "Currency": "SDR",
+    "Rate": 0.5034
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2000-09-11",
+    "Currency": "USD",
+    "Rate": 0.5585
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2001-06-05",
+    "Currency": "EUR",
+    "Rate": 0.5993
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "1999-12-15",
+    "Currency": "JPY",
+    "Rate": 65.78
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2001-01-25",
+    "Currency": "GBP",
+    "Rate": 0.374
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2000-12-19",
+    "Currency": "CHF",
+    "Rate": 0.9115
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "1999-06-17",
+    "Currency": "NZD",
+    "Rate": 1.2275
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2002-09-26",
+    "Currency": "CAD",
+    "Rate": 0.8586
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2000-09-11",
+    "Currency": "HKD",
+    "Rate": 4.3556
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2000-08-24",
+    "Currency": "SGD",
+    "Rate": 0.9848
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2002-07-12",
+    "Currency": "MYR",
+    "Rate": 2.1204
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2000-04-03",
+    "Currency": "TWD",
+    "Rate": 18.49
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2002-06-28",
+    "Currency": "KRW",
+    "Rate": 678.89
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "1999-09-03",
+    "Currency": "IDR",
+    "Rate": 5051
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2000-09-11",
+    "Currency": "CNY",
+    "Rate": 4.624
+  },
+  {
+    "SourceFileName": "1999-2002.xls",
+    "Type": "Median",
+    "Date": "2002-05-02",
+    "Currency": "SDR",
+    "Rate": 0.4254
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "USD",
+    "Rate": 0.5634
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "EUR",
+    "Rate": 0.538
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "JPY",
+    "Rate": 67.02
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "GBP",
+    "Rate": 0.3503
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "CHF",
+    "Rate": 0.7808
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "NZD",
+    "Rate": 1.0752
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "CAD",
+    "Rate": 0.8876
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "HKD",
+    "Rate": 4.3938
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "SGD",
+    "Rate": 0.982
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "MYR",
+    "Rate": 2.1409
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "TWD",
+    "Rate": 19.59
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "KRW",
+    "Rate": 669.94
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "IDR",
+    "Rate": 5040
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "CNY",
+    "Rate": 4.6633
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "First",
+    "Date": "2003-01-02",
+    "Currency": "SDR",
+    "Rate": 0.4159
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "USD",
+    "Rate": 0.7913
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "EUR",
+    "Rate": 0.6012
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "JPY",
+    "Rate": 94.13
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "GBP",
+    "Rate": 0.403
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "CHF",
+    "Rate": 0.9662
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "NZD",
+    "Rate": 1.1216
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "CAD",
+    "Rate": 0.9182
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "HKD",
+    "Rate": 6.1509
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "SGD",
+    "Rate": 1.2133
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "MYR",
+    "Rate": 2.7945
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "TWD",
+    "Rate": 25.79
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "KRW",
+    "Rate": 735.63
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "IDR",
+    "Rate": 7126
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "CNY",
+    "Rate": 6.1791
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Last",
+    "Date": "2006-12-29",
+    "Currency": "SDR",
+    "Rate": 0.5265
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-03",
+    "Currency": "USD",
+    "Rate": 0.5629
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "EUR",
+    "Rate": 0.538
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "JPY",
+    "Rate": 67.02
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "GBP",
+    "Rate": 0.3503
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "CHF",
+    "Rate": 0.7808
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2005-12-05",
+    "Currency": "NZD",
+    "Rate": 1.0448
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2006-06-13",
+    "Currency": "CAD",
+    "Rate": 0.8161
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-03",
+    "Currency": "HKD",
+    "Rate": 4.3898
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "SGD",
+    "Rate": 0.982
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-03",
+    "Currency": "MYR",
+    "Rate": 2.139
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "TWD",
+    "Rate": 19.59
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-02",
+    "Currency": "KRW",
+    "Rate": 669.94
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-03",
+    "Currency": "IDR",
+    "Rate": 5018
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-03",
+    "Currency": "CNY",
+    "Rate": 4.659
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Min",
+    "Date": "2003-01-06",
+    "Currency": "SDR",
+    "Rate": 0.4142
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-02-18",
+    "Currency": "USD",
+    "Rate": 0.7972
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2005-06-23",
+    "Currency": "EUR",
+    "Rate": 0.6418
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2006-12-29",
+    "Currency": "JPY",
+    "Rate": 94.13
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2005-07-25",
+    "Currency": "GBP",
+    "Rate": 0.439
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2005-10-04",
+    "Currency": "CHF",
+    "Rate": 0.9938
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2006-08-02",
+    "Currency": "NZD",
+    "Rate": 1.2436
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-02-20",
+    "Currency": "CAD",
+    "Rate": 1.0504
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2005-03-09",
+    "Currency": "HKD",
+    "Rate": 6.2172
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-02-18",
+    "Currency": "SGD",
+    "Rate": 1.3352
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-02-18",
+    "Currency": "MYR",
+    "Rate": 3.0294
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-02-18",
+    "Currency": "TWD",
+    "Rate": 26.39
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-01-23",
+    "Currency": "KRW",
+    "Rate": 923.82
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2005-08-30",
+    "Currency": "IDR",
+    "Rate": 8197
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2004-02-18",
+    "Currency": "CNY",
+    "Rate": 6.5986
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Max",
+    "Date": "2005-06-22",
+    "Currency": "SDR",
+    "Rate": 0.532
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2004-11-02",
+    "Currency": "USD",
+    "Rate": 0.7449
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2005-02-24",
+    "Currency": "EUR",
+    "Rate": 0.5953
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2004-01-07",
+    "Currency": "JPY",
+    "Rate": 81.58
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2003-07-28",
+    "Currency": "GBP",
+    "Rate": 0.4088
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2003-12-18",
+    "Currency": "CHF",
+    "Rate": 0.9297
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2005-07-20",
+    "Currency": "NZD",
+    "Rate": 1.1139
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2003-09-16",
+    "Currency": "CAD",
+    "Rate": 0.9092
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2006-10-09",
+    "Currency": "HKD",
+    "Rate": 5.7871
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2004-05-07",
+    "Currency": "SGD",
+    "Rate": 1.2159
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2006-05-04",
+    "Currency": "MYR",
+    "Rate": 2.7741
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2003-11-11",
+    "Currency": "TWD",
+    "Rate": 24.27
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2005-08-02",
+    "Currency": "KRW",
+    "Rate": 779.7
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2004-10-29",
+    "Currency": "IDR",
+    "Rate": 6781
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2006-05-22",
+    "Currency": "CNY",
+    "Rate": 6.0221
+  },
+  {
+    "SourceFileName": "2003-2006.xls",
+    "Type": "Median",
+    "Date": "2004-04-14",
+    "Currency": "SDR",
+    "Rate": 0.5071
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "USD",
+    "Rate": 0.7939
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "EUR",
+    "Rate": 0.5997
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "JPY",
+    "Rate": 94.27
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "GBP",
+    "Rate": 0.4039
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "CHF",
+    "Rate": 0.9644
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "NZD",
+    "Rate": 1.1209
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "CAD",
+    "Rate": 0.924
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "HKD",
+    "Rate": 6.1763
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "SGD",
+    "Rate": 1.2155
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "MYR",
+    "Rate": 2.8025
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "TWD",
+    "Rate": 25.78
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "KRW",
+    "Rate": 735.07
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "IDR",
+    "Rate": 7109
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "CNY",
+    "Rate": 6.1965
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "First",
+    "Date": "2007-01-02",
+    "Currency": "SDR",
+    "Rate": 0.5277
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "USD",
+    "Rate": 0.8969
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "EUR",
+    "Rate": 0.6241
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "JPY",
+    "Rate": 82.82
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "GBP",
+    "Rate": 0.5581
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "CHF",
+    "Rate": 0.9281
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "NZD",
+    "Rate": 1.2354
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "CAD",
+    "Rate": 0.9434
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "HKD",
+    "Rate": 6.9553
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "SGD",
+    "Rate": 1.2589
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "MYR",
+    "Rate": 3.0714
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "TWD",
+    "Rate": 28.84
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "KRW",
+    "Rate": 1045.86
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "IDR",
+    "Rate": 8429
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "CNY",
+    "Rate": 6.1228
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Last",
+    "Date": "2009-12-31",
+    "Currency": "SDR",
+    "Rate": 0.5742
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "USD",
+    "Rate": 0.6122
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-12-19",
+    "Currency": "EUR",
+    "Rate": 0.4806
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2009-02-02",
+    "Currency": "JPY",
+    "Rate": 56.64
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-16",
+    "Currency": "GBP",
+    "Rate": 0.3873
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "CHF",
+    "Rate": 0.7098
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2007-07-06",
+    "Currency": "NZD",
+    "Rate": 1.095
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-10",
+    "Currency": "CAD",
+    "Rate": 0.7631
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "HKD",
+    "Rate": 4.7452
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "SGD",
+    "Rate": 0.9264
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "MYR",
+    "Rate": 2.1981
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "TWD",
+    "Rate": 20.51
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2007-02-06",
+    "Currency": "KRW",
+    "Rate": 722.94
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-10",
+    "Currency": "IDR",
+    "Rate": 6392
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "CNY",
+    "Rate": 4.1893
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Min",
+    "Date": "2008-10-28",
+    "Currency": "SDR",
+    "Rate": 0.4142
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2008-07-16",
+    "Currency": "USD",
+    "Rate": 0.9786
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2007-07-26",
+    "Currency": "EUR",
+    "Rate": 0.6447
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2007-07-20",
+    "Currency": "JPY",
+    "Rate": 107.62
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2009-10-13",
+    "Currency": "GBP",
+    "Rate": 0.575
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2007-11-01",
+    "Currency": "CHF",
+    "Rate": 1.0798
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2008-07-24",
+    "Currency": "NZD",
+    "Rate": 1.2915
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2009-11-09",
+    "Currency": "CAD",
+    "Rate": 0.9893
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2008-07-16",
+    "Currency": "HKD",
+    "Rate": 7.6301
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2007-11-07",
+    "Currency": "SGD",
+    "Rate": 1.3533
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2008-07-22",
+    "Currency": "MYR",
+    "Rate": 3.1627
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2007-11-07",
+    "Currency": "TWD",
+    "Rate": 30.35
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2009-10-23",
+    "Currency": "KRW",
+    "Rate": 1096.91
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2008-05-27",
+    "Currency": "IDR",
+    "Rate": 9009
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2007-11-07",
+    "Currency": "CNY",
+    "Rate": 6.9776
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Max",
+    "Date": "2008-06-17",
+    "Currency": "SDR",
+    "Rate": 0.5972
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-09-14",
+    "Currency": "USD",
+    "Rate": 0.8398
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-01-05",
+    "Currency": "EUR",
+    "Rate": 0.5985
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-02-02",
+    "Currency": "JPY",
+    "Rate": 93.32
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2009-01-12",
+    "Currency": "GBP",
+    "Rate": 0.4579
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-03-07",
+    "Currency": "CHF",
+    "Rate": 0.95
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-10-30",
+    "Currency": "NZD",
+    "Rate": 1.1957
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-08-08",
+    "Currency": "CAD",
+    "Rate": 0.9036
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2009-09-01",
+    "Currency": "HKD",
+    "Rate": 6.526
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-04-10",
+    "Currency": "SGD",
+    "Rate": 1.2482
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2008-02-01",
+    "Currency": "MYR",
+    "Rate": 2.8952
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-04-16",
+    "Currency": "TWD",
+    "Rate": 27.56
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2008-12-18",
+    "Currency": "KRW",
+    "Rate": 914.42
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-08-09",
+    "Currency": "IDR",
+    "Rate": 8040
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-01-02",
+    "Currency": "CNY",
+    "Rate": 6.1965
+  },
+  {
+    "SourceFileName": "2007-2009.xls",
+    "Type": "Median",
+    "Date": "2007-04-26",
+    "Currency": "SDR",
+    "Rate": 0.5453
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "USD",
+    "Rate": 0.897
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "CNY",
+    "Rate": 6.1243
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "JPY",
+    "Rate": 83.19
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "EUR",
+    "Rate": 0.6277
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "KRW",
+    "Rate": 1036.21
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "GBP",
+    "Rate": 0.5575
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "SGD",
+    "Rate": 1.258
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "INR",
+    "Rate": 41.69
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "THB",
+    "Rate": 29.88
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "NZD",
+    "Rate": 1.2438
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "TWD",
+    "Rate": 28.58
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "MYR",
+    "Rate": 3.0655
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "IDR",
+    "Rate": 8387
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "VND",
+    "Rate": 16571
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "AED",
+    "Rate": 3.2942
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "PGK",
+    "Rate": 2.4243
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "HKD",
+    "Rate": 6.9587
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "CAD",
+    "Rate": 0.9385
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "ZAR",
+    "Rate": 6.6755
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "SAR",
+    "Rate": 3.3645
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "CHF",
+    "Rate": 0.9304
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "SEK",
+    "Rate": 6.4223
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2013-12-02",
+    "Currency": "PHP",
+    "Rate": 40
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "First",
+    "Date": "2010-01-04",
+    "Currency": "SDR",
+    "Rate": 0.5722
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "USD",
+    "Rate": 0.8948
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "CNY",
+    "Rate": 5.4147
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "JPY",
+    "Rate": 93.95
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "EUR",
+    "Rate": 0.6485
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "KRW",
+    "Rate": 939.54
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "GBP",
+    "Rate": 0.5429
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "SGD",
+    "Rate": 1.1323
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "INR",
+    "Rate": 55.38
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "THB",
+    "Rate": 29.35
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "NZD",
+    "Rate": 1.0879
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "TWD",
+    "Rate": 26.75
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "MYR",
+    "Rate": 2.9363
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "IDR",
+    "Rate": 10899
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "VND",
+    "Rate": 18894
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "AED",
+    "Rate": 3.2862
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "PGK",
+    "Rate": 2.1666
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "HKD",
+    "Rate": 6.9385
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "CAD",
+    "Rate": 0.9524
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "ZAR",
+    "Rate": 9.331
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "SAR",
+    "Rate": 3.3559
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "CHF",
+    "Rate": 0.7942
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-11-29",
+    "Currency": "SEK",
+    "Rate": 5.9461
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "PHP",
+    "Rate": 39.71
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Last",
+    "Date": "2013-12-31",
+    "Currency": "SDR",
+    "Rate": 0.5811
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-07",
+    "Currency": "USD",
+    "Rate": 0.8156
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-19",
+    "Currency": "CNY",
+    "Rate": 5.3657
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2011-10-04",
+    "Currency": "JPY",
+    "Rate": 72.87
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-01-04",
+    "Currency": "EUR",
+    "Rate": 0.6277
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-30",
+    "Currency": "KRW",
+    "Rate": 935.48
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-30",
+    "Currency": "GBP",
+    "Rate": 0.538
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-19",
+    "Currency": "SGD",
+    "Rate": 1.1166
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-08",
+    "Currency": "INR",
+    "Rate": 38.51
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-05-25",
+    "Currency": "THB",
+    "Rate": 26.62
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-17",
+    "Currency": "NZD",
+    "Rate": 1.0797
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-19",
+    "Currency": "TWD",
+    "Rate": 26.34
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-07-06",
+    "Currency": "MYR",
+    "Rate": 2.7092
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-07",
+    "Currency": "IDR",
+    "Rate": 7548
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-07",
+    "Currency": "VND",
+    "Rate": 15488
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-07",
+    "Currency": "AED",
+    "Rate": 2.9953
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-07-03",
+    "Currency": "PGK",
+    "Rate": 1.9963
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-07",
+    "Currency": "HKD",
+    "Rate": 6.3593
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-08",
+    "Currency": "CAD",
+    "Rate": 0.8643
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-08",
+    "Currency": "ZAR",
+    "Rate": 6.3768
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-06-07",
+    "Currency": "SAR",
+    "Rate": 3.0588
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2011-08-11",
+    "Currency": "CHF",
+    "Rate": 0.7515
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-08-28",
+    "Currency": "SEK",
+    "Rate": 5.7998
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2013-12-19",
+    "Currency": "PHP",
+    "Rate": 39.28
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Min",
+    "Date": "2010-05-25",
+    "Currency": "SDR",
+    "Rate": 0.555
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-07-28",
+    "Currency": "USD",
+    "Rate": 1.1055
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-07-28",
+    "Currency": "CNY",
+    "Rate": 7.1225
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2013-04-12",
+    "Currency": "JPY",
+    "Rate": 105
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-08-03",
+    "Currency": "EUR",
+    "Rate": 0.8597
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-02-28",
+    "Currency": "KRW",
+    "Rate": 1213.22
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2013-03-14",
+    "Currency": "GBP",
+    "Rate": 0.6944
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-02-17",
+    "Currency": "SGD",
+    "Rate": 1.3585
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2013-09-04",
+    "Currency": "INR",
+    "Rate": 61.25
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-02-07",
+    "Currency": "THB",
+    "Rate": 33.35
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-03-04",
+    "Currency": "NZD",
+    "Rate": 1.3729
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-10-28",
+    "Currency": "TWD",
+    "Rate": 31.89
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-07-31",
+    "Currency": "MYR",
+    "Rate": 3.3073
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2013-10-21",
+    "Currency": "IDR",
+    "Rate": 10983
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-07-28",
+    "Currency": "VND",
+    "Rate": 22762
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-07-28",
+    "Currency": "AED",
+    "Rate": 4.0599
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-04-28",
+    "Currency": "PGK",
+    "Rate": 2.7177
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-07-28",
+    "Currency": "HKD",
+    "Rate": 8.6145
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-02-09",
+    "Currency": "CAD",
+    "Rate": 1.0754
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2013-05-31",
+    "Currency": "ZAR",
+    "Rate": 9.732
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2011-07-28",
+    "Currency": "SAR",
+    "Rate": 4.1458
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-08-03",
+    "Currency": "CHF",
+    "Rate": 1.0329
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-02-07",
+    "Currency": "SEK",
+    "Rate": 7.2601
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2013-12-11",
+    "Currency": "PHP",
+    "Rate": 40.36
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Max",
+    "Date": "2012-08-09",
+    "Currency": "SDR",
+    "Rate": 0.7012
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-02-10",
+    "Currency": "USD",
+    "Rate": 1.0074
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2012-12-27",
+    "Currency": "CNY",
+    "Rate": 6.4595
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2010-12-17",
+    "Currency": "JPY",
+    "Rate": 83.13
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2010-12-08",
+    "Currency": "EUR",
+    "Rate": 0.7404
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-11-24",
+    "Currency": "KRW",
+    "Rate": 1126.17
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2012-05-03",
+    "Currency": "GBP",
+    "Rate": 0.6363
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-09-05",
+    "Currency": "SGD",
+    "Rate": 1.2778
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2012-03-12",
+    "Currency": "INR",
+    "Rate": 52.63
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-02-16",
+    "Currency": "THB",
+    "Rate": 30.68
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2010-11-18",
+    "Currency": "NZD",
+    "Rate": 1.2713
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2013-03-04",
+    "Currency": "TWD",
+    "Rate": 30.05
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-08-10",
+    "Currency": "MYR",
+    "Rate": 3.1097
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-12-22",
+    "Currency": "IDR",
+    "Rate": 9240
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-12-16",
+    "Currency": "VND",
+    "Rate": 20986
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-02-10",
+    "Currency": "AED",
+    "Rate": 3.6997
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2012-03-01",
+    "Currency": "PGK",
+    "Rate": 2.247
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2012-05-10",
+    "Currency": "HKD",
+    "Rate": 7.844
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-02-04",
+    "Currency": "CAD",
+    "Rate": 1.0093
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2012-02-07",
+    "Currency": "ZAR",
+    "Rate": 8.1568
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-02-10",
+    "Currency": "SAR",
+    "Rate": 3.7781
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2010-07-28",
+    "Currency": "CHF",
+    "Rate": 0.9479
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2010-06-16",
+    "Currency": "SEK",
+    "Rate": 6.7064
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2013-12-04",
+    "Currency": "PHP",
+    "Rate": 39.66
+  },
+  {
+    "SourceFileName": "2010-2013.xls",
+    "Type": "Median",
+    "Date": "2011-11-11",
+    "Currency": "SDR",
+    "Rate": 0.6481
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "USD",
+    "Rate": 0.8912
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "CNY",
+    "Rate": 5.3925
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "JPY",
+    "Rate": 93.83
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "EUR",
+    "Rate": 0.6483
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "KRW",
+    "Rate": 936.21
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "GBP",
+    "Rate": 0.5372
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "SGD",
+    "Rate": 1.1277
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "INR",
+    "Rate": 55.1
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "THB",
+    "Rate": 29.36
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "NZD",
+    "Rate": 1.0842
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "TWD",
+    "Rate": 26.6
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "MYR",
+    "Rate": 2.9245
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "IDR",
+    "Rate": 10849
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "VND",
+    "Rate": 18813
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "AED",
+    "Rate": 3.2729
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "PGK",
+    "Rate": 2.1579
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "HKD",
+    "Rate": 6.9107
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "CAD",
+    "Rate": 0.9478
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "ZAR",
+    "Rate": 9.3487
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "CHF",
+    "Rate": 0.7961
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "PHP",
+    "Rate": 39.51
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "First",
+    "Date": "2014-01-02",
+    "Currency": "SDR",
+    "Rate": 0.5787
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "USD",
+    "Rate": 0.78
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "CNY",
+    "Rate": 5.0842
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "JPY",
+    "Rate": 87.94
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "EUR",
+    "Rate": 0.653
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "KRW",
+    "Rate": 835.09
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "GBP",
+    "Rate": 0.5797
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "SGD",
+    "Rate": 1.0424
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "INR",
+    "Rate": 49.91
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "THB",
+    "Rate": 25.45
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "NZD",
+    "Rate": 1.0991
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "TWD",
+    "Rate": 23.16
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "MYR",
+    "Rate": 3.166
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "IDR",
+    "Rate": 10572
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "VND",
+    "Rate": 17713
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "AED",
+    "Rate": 2.8646
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "PGK",
+    "Rate": 2.5202
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "HKD",
+    "Rate": 6.0994
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "CAD",
+    "Rate": 0.9798
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2014-11-28",
+    "Currency": "ZAR",
+    "Rate": 9.3541
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "CHF",
+    "Rate": 0.7633
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2015-11-30",
+    "Currency": "PHP",
+    "Rate": 33.92
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Last",
+    "Date": "2017-12-29",
+    "Currency": "SDR",
+    "Rate": 0.549
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2016-01-20",
+    "Currency": "USD",
+    "Rate": 0.6867
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-07",
+    "Currency": "CNY",
+    "Rate": 4.4089
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2016-07-08",
+    "Currency": "JPY",
+    "Rate": 75.17
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-29",
+    "Currency": "EUR",
+    "Rate": 0.6169
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-10-28",
+    "Currency": "KRW",
+    "Rate": 805.9
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-08",
+    "Currency": "GBP",
+    "Rate": 0.4532
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2016-02-10",
+    "Currency": "SGD",
+    "Rate": 0.9833
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-29",
+    "Currency": "INR",
+    "Rate": 45.97
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2017-12-11",
+    "Currency": "THB",
+    "Rate": 24.52
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-04-21",
+    "Currency": "NZD",
+    "Rate": 1.0064
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2017-05-11",
+    "Currency": "TWD",
+    "Rate": 22.22
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-02-09",
+    "Currency": "MYR",
+    "Rate": 2.7629
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2016-02-10",
+    "Currency": "IDR",
+    "Rate": 9487
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2016-01-20",
+    "Currency": "VND",
+    "Rate": 15396
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2016-01-20",
+    "Currency": "AED",
+    "Rate": 2.5219
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-07",
+    "Currency": "PGK",
+    "Rate": 1.9422
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-07",
+    "Currency": "HKD",
+    "Rate": 5.3662
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-07",
+    "Currency": "CAD",
+    "Rate": 0.9183
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2014-01-02",
+    "Currency": "ZAR",
+    "Rate": 9.3487
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-08-25",
+    "Currency": "CHF",
+    "Rate": 0.6696
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-07",
+    "Currency": "PHP",
+    "Rate": 32.49
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Min",
+    "Date": "2015-09-07",
+    "Currency": "SDR",
+    "Rate": 0.494
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-07-02",
+    "Currency": "USD",
+    "Rate": 0.9458
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-06-23",
+    "Currency": "CNY",
+    "Rate": 5.8768
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-11-24",
+    "Currency": "JPY",
+    "Rate": 102.44
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2017-02-22",
+    "Currency": "EUR",
+    "Rate": 0.7294
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-03-27",
+    "Currency": "KRW",
+    "Rate": 990.14
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2016-10-26",
+    "Currency": "GBP",
+    "Rate": 0.6317
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-06-27",
+    "Currency": "SGD",
+    "Rate": 1.179
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-08-06",
+    "Currency": "INR",
+    "Rate": 57.06
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-06-27",
+    "Currency": "THB",
+    "Rate": 30.65
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2015-07-02",
+    "Currency": "NZD",
+    "Rate": 1.1425
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-05-14",
+    "Currency": "TWD",
+    "Rate": 28.37
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2017-07-27",
+    "Currency": "MYR",
+    "Rate": 3.4397
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-06-27",
+    "Currency": "IDR",
+    "Rate": 11420
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-07-02",
+    "Currency": "VND",
+    "Rate": 20174
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-07-02",
+    "Currency": "AED",
+    "Rate": 3.4735
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2017-09-08",
+    "Currency": "PGK",
+    "Rate": 2.5987
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-07-02",
+    "Currency": "HKD",
+    "Rate": 7.3302
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-04-14",
+    "Currency": "CAD",
+    "Rate": 1.0316
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-06-18",
+    "Currency": "ZAR",
+    "Rate": 10.1238
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-09-08",
+    "Currency": "CHF",
+    "Rate": 0.8733
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-04-10",
+    "Currency": "PHP",
+    "Rate": 41.9
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Max",
+    "Date": "2014-09-08",
+    "Currency": "SDR",
+    "Rate": 0.6227
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-08-05",
+    "Currency": "USD",
+    "Rate": 0.766
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-09-23",
+    "Currency": "CNY",
+    "Rate": 5.0939
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-10-23",
+    "Currency": "JPY",
+    "Rate": 87.47
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-05-20",
+    "Currency": "EUR",
+    "Rate": 0.6774
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-12-02",
+    "Currency": "KRW",
+    "Rate": 868.87
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-05-05",
+    "Currency": "GBP",
+    "Rate": 0.5494
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-05-05",
+    "Currency": "SGD",
+    "Rate": 1.0548
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-07-04",
+    "Currency": "INR",
+    "Rate": 50.43
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-05-05",
+    "Currency": "THB",
+    "Rate": 26.32
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-06-18",
+    "Currency": "NZD",
+    "Rate": 1.0778
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-06-11",
+    "Currency": "TWD",
+    "Rate": 23.98
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-05-02",
+    "Currency": "MYR",
+    "Rate": 3.0294
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-10-06",
+    "Currency": "IDR",
+    "Rate": 10146
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-05-11",
+    "Currency": "VND",
+    "Rate": 17099
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-08-05",
+    "Currency": "AED",
+    "Rate": 2.8131
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-08-06",
+    "Currency": "PGK",
+    "Rate": 2.2781
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-10-20",
+    "Currency": "HKD",
+    "Rate": 5.9503
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-04-22",
+    "Currency": "CAD",
+    "Rate": 0.9857
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-02-18",
+    "Currency": "ZAR",
+    "Rate": 9.8241
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2016-07-14",
+    "Currency": "CHF",
+    "Rate": 0.7494
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2014-12-16",
+    "Currency": "PHP",
+    "Rate": 36.86
+  },
+  {
+    "SourceFileName": "2014-2017.xls",
+    "Type": "Median",
+    "Date": "2015-02-18",
+    "Currency": "SDR",
+    "Rate": 0.5525
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "USD",
+    "Rate": 0.7837
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "CNY",
+    "Rate": 5.0948
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "JPY",
+    "Rate": 88.33
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "EUR",
+    "Rate": 0.6522
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "KRW",
+    "Rate": 831.98
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "GBP",
+    "Rate": 0.5799
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "SGD",
+    "Rate": 1.0449
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "INR",
+    "Rate": 49.92
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "THB",
+    "Rate": 25.47
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "NZD",
+    "Rate": 1.1016
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "TWD",
+    "Rate": 23.19
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "MYR",
+    "Rate": 3.1599
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "IDR",
+    "Rate": 10614
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "VND",
+    "Rate": 17798
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "AED",
+    "Rate": 2.8781
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "PGK",
+    "Rate": 2.5321
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "HKD",
+    "Rate": 6.1257
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "CAD",
+    "Rate": 0.9824
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "CHF",
+    "Rate": 0.7631
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2022-12-29",
+    "Currency": "PHP",
+    "Rate": 37.64
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "First",
+    "Date": "2018-01-02",
+    "Currency": "SDR",
+    "Rate": 0.5503
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "USD",
+    "Rate": 0.6775
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "CNY",
+    "Rate": 4.7141
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "JPY",
+    "Rate": 89.88
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "EUR",
+    "Rate": 0.6359
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "KRW",
+    "Rate": 857.38
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "GBP",
+    "Rate": 0.5625
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "SGD",
+    "Rate": 0.9102
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "INR",
+    "Rate": 56.06
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "THB",
+    "Rate": 23.4
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "NZD",
+    "Rate": 1.0711
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "TWD",
+    "Rate": 20.86
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "MYR",
+    "Rate": 2.9898
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "IDR",
+    "Rate": 10555
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "VND",
+    "Rate": 15972
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2020-11-30",
+    "Currency": "AED",
+    "Rate": 2.7151
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-07-06",
+    "Currency": "PGK",
+    "Rate": 2.3887
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "HKD",
+    "Rate": 5.2829
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-28",
+    "Currency": "CAD",
+    "Rate": 0.9123
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "CHF",
+    "Rate": 0.6256
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "PHP",
+    "Rate": 37.76
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Last",
+    "Date": "2022-12-30",
+    "Currency": "SDR",
+    "Rate": 0.5091
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "USD",
+    "Rate": 0.5571
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "CNY",
+    "Rate": 3.9412
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "JPY",
+    "Rate": 60.77
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "EUR",
+    "Rate": 0.5112
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "KRW",
+    "Rate": 718.77
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "GBP",
+    "Rate": 0.4845
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "SGD",
+    "Rate": 0.8101
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "INR",
+    "Rate": 41.74
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "THB",
+    "Rate": 18.21
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "NZD",
+    "Rate": 1.0043
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "TWD",
+    "Rate": 16.98
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "MYR",
+    "Rate": 2.454
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "IDR",
+    "Rate": 8532
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "VND",
+    "Rate": 13021
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "AED",
+    "Rate": 2.0459
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "PGK",
+    "Rate": 1.9046
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "HKD",
+    "Rate": 4.3268
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "CAD",
+    "Rate": 0.8147
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "CHF",
+    "Rate": 0.5397
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2022-12-29",
+    "Currency": "PHP",
+    "Rate": 37.64
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Min",
+    "Date": "2020-03-19",
+    "Currency": "SDR",
+    "Rate": 0.4082
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-29",
+    "Currency": "USD",
+    "Rate": 0.8096
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2021-02-25",
+    "Currency": "CNY",
+    "Rate": 5.142
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-09-12",
+    "Currency": "JPY",
+    "Rate": 98.03
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-08-26",
+    "Currency": "EUR",
+    "Rate": 0.6985
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-09-13",
+    "Currency": "KRW",
+    "Rate": 944.89
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-09-26",
+    "Currency": "GBP",
+    "Rate": 0.6148
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-30",
+    "Currency": "SGD",
+    "Rate": 1.0594
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2021-04-20",
+    "Currency": "INR",
+    "Rate": 58.32
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-07-29",
+    "Currency": "THB",
+    "Rate": 25.79
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-09-28",
+    "Currency": "NZD",
+    "Rate": 1.142
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-29",
+    "Currency": "TWD",
+    "Rate": 23.6
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2021-05-10",
+    "Currency": "MYR",
+    "Rate": 3.2276
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2021-04-20",
+    "Currency": "IDR",
+    "Rate": 11313
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-29",
+    "Currency": "VND",
+    "Rate": 18386
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-29",
+    "Currency": "AED",
+    "Rate": 2.9733
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2021-02-25",
+    "Currency": "PGK",
+    "Rate": 2.7965
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-29",
+    "Currency": "HKD",
+    "Rate": 6.3303
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-03-15",
+    "Currency": "CAD",
+    "Rate": 1.0199
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-11",
+    "Currency": "CHF",
+    "Rate": 0.7711
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2022-12-30",
+    "Currency": "PHP",
+    "Rate": 37.76
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Max",
+    "Date": "2018-01-25",
+    "Currency": "SDR",
+    "Rate": 0.5584
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-09-17",
+    "Currency": "USD",
+    "Rate": 0.7162
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-04-24",
+    "Currency": "CNY",
+    "Rate": 4.8025
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-03-26",
+    "Currency": "JPY",
+    "Rate": 81
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-08-24",
+    "Currency": "EUR",
+    "Rate": 0.6292
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-07-26",
+    "Currency": "KRW",
+    "Rate": 833.54
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-05-02",
+    "Currency": "GBP",
+    "Rate": 0.5518
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-10-25",
+    "Currency": "SGD",
+    "Rate": 0.9771
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2020-10-23",
+    "Currency": "INR",
+    "Rate": 52.36
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-09-24",
+    "Currency": "THB",
+    "Rate": 23.59
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-05-08",
+    "Currency": "NZD",
+    "Rate": 1.0701
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2019-09-03",
+    "Currency": "TWD",
+    "Rate": 21.1
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2020-08-10",
+    "Currency": "MYR",
+    "Rate": 3.0046
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2021-09-27",
+    "Currency": "IDR",
+    "Rate": 10384
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2019-01-07",
+    "Currency": "VND",
+    "Rate": 16546
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-12-20",
+    "Currency": "AED",
+    "Rate": 2.6056
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2018-11-19",
+    "Currency": "PGK",
+    "Rate": 2.4606
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2019-03-26",
+    "Currency": "HKD",
+    "Rate": 5.5899
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2019-05-27",
+    "Currency": "CAD",
+    "Rate": 0.9321
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2019-09-10",
+    "Currency": "CHF",
+    "Rate": 0.6802
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2022-12-30",
+    "Currency": "PHP",
+    "Rate": 37.76
+  },
+  {
+    "SourceFileName": "2018-2022.xls",
+    "Type": "Median",
+    "Date": "2020-09-07",
+    "Currency": "SDR",
+    "Rate": 0.5148
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "USD",
+    "Rate": 0.6828
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "CNY",
+    "Rate": 4.6994
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "JPY",
+    "Rate": 88.48
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "EUR",
+    "Rate": 0.64
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "KRW",
+    "Rate": 867.16
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "GBP",
+    "Rate": 0.5656
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "SGD",
+    "Rate": 0.9134
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "INR",
+    "Rate": 56.51
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "THB",
+    "Rate": 23.47
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "NZD",
+    "Rate": 1.076
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "TWD",
+    "Rate": 20.97
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "MYR",
+    "Rate": 2.9975
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "IDR",
+    "Rate": 10635
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "VND",
+    "Rate": 16039
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2026-01-07",
+    "Currency": "PGK",
+    "Rate": 2.8807
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "HKD",
+    "Rate": 5.3316
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-12-21",
+    "Currency": "CAD",
+    "Rate": 0.9013
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "CHF",
+    "Rate": 0.631
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "PHP",
+    "Rate": 38.07
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "First",
+    "Date": "2023-01-03",
+    "Currency": "SDR",
+    "Rate": 0.5131
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "USD",
+    "Rate": 0.7029
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "CNY",
+    "Rate": 4.7546
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "JPY",
+    "Rate": 112.71
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "EUR",
+    "Rate": 0.6082
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "KRW",
+    "Rate": 1069.71
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "GBP",
+    "Rate": 0.5247
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "SGD",
+    "Rate": 0.9036
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "INR",
+    "Rate": 67.07
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "THB",
+    "Rate": 23.08
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "NZD",
+    "Rate": 1.2094
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "TWD",
+    "Rate": 22.24
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "MYR",
+    "Rate": 2.8555
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "IDR",
+    "Rate": 12598
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "VND",
+    "Rate": 18509
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "PGK",
+    "Rate": 3.0748
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "HKD",
+    "Rate": 5.5081
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "CAD",
+    "Rate": 0.9831
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "CHF",
+    "Rate": 0.56
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "PHP",
+    "Rate": 43.13
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Last",
+    "Date": "2026-06-12",
+    "Currency": "SDR",
+    "Rate": 0.5156
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "USD",
+    "Rate": 0.5975
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "CNY",
+    "Rate": 4.3916
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "JPY",
+    "Rate": 86.7
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "EUR",
+    "Rate": 0.5401
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2023-11-17",
+    "Currency": "KRW",
+    "Rate": 835.23
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "GBP",
+    "Rate": 0.4654
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "SGD",
+    "Rate": 0.8063
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-07",
+    "Currency": "INR",
+    "Rate": 51.57
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-07",
+    "Currency": "THB",
+    "Rate": 20.58
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2023-05-22",
+    "Currency": "NZD",
+    "Rate": 1.0575
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-06-27",
+    "Currency": "TWD",
+    "Rate": 18.85
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-11-25",
+    "Currency": "MYR",
+    "Rate": 2.6694
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2023-04-28",
+    "Currency": "IDR",
+    "Rate": 9676
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2023-08-21",
+    "Currency": "VND",
+    "Rate": 15226
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2026-01-15",
+    "Currency": "PGK",
+    "Rate": 2.8477
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "HKD",
+    "Rate": 4.6355
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "CAD",
+    "Rate": 0.8503
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "CHF",
+    "Rate": 0.5027
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "PHP",
+    "Rate": 34.25
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Min",
+    "Date": "2025-04-09",
+    "Currency": "SDR",
+    "Rate": 0.449
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "USD",
+    "Rate": 0.7258
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-06",
+    "Currency": "CNY",
+    "Rate": 4.9416
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-06-01",
+    "Currency": "JPY",
+    "Rate": 114.62
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2023-01-27",
+    "Currency": "EUR",
+    "Rate": 0.654
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-06-05",
+    "Currency": "KRW",
+    "Rate": 1098.7
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2023-02-03",
+    "Currency": "GBP",
+    "Rate": 0.5783
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2023-01-25",
+    "Currency": "SGD",
+    "Rate": 0.9362
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "INR",
+    "Rate": 69.61
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2024-07-05",
+    "Currency": "THB",
+    "Rate": 24.64
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-26",
+    "Currency": "NZD",
+    "Rate": 1.2248
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "TWD",
+    "Rate": 22.91
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2023-06-16",
+    "Currency": "MYR",
+    "Rate": 3.1823
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-06-04",
+    "Currency": "IDR",
+    "Rate": 12867
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "VND",
+    "Rate": 19126
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "PGK",
+    "Rate": 3.1584
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "HKD",
+    "Rate": 5.6844
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "CAD",
+    "Rate": 0.9948
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2023-01-27",
+    "Currency": "CHF",
+    "Rate": 0.6555
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2026-05-14",
+    "Currency": "PHP",
+    "Rate": 44.69
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Max",
+    "Date": "2023-02-02",
+    "Currency": "SDR",
+    "Rate": 0.529
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-05-13",
+    "Currency": "USD",
+    "Rate": 0.6596
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-08-03",
+    "Currency": "CNY",
+    "Rate": 4.6998
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-01-10",
+    "Currency": "JPY",
+    "Rate": 97.06
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-11-28",
+    "Currency": "EUR",
+    "Rate": 0.6046
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-08-08",
+    "Currency": "KRW",
+    "Rate": 902.05
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-02-01",
+    "Currency": "GBP",
+    "Rate": 0.5168
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-11-20",
+    "Currency": "SGD",
+    "Rate": 0.8784
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-07-26",
+    "Currency": "INR",
+    "Rate": 55.45
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-01-20",
+    "Currency": "THB",
+    "Rate": 22.77
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-09-19",
+    "Currency": "NZD",
+    "Rate": 1.0936
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-02-24",
+    "Currency": "TWD",
+    "Rate": 20.78
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-11-22",
+    "Currency": "MYR",
+    "Rate": 2.9057
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-02-20",
+    "Currency": "IDR",
+    "Rate": 10453
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-11-29",
+    "Currency": "VND",
+    "Rate": 16519
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2026-02-11",
+    "Currency": "PGK",
+    "Rate": 3.0484
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2025-09-18",
+    "Currency": "HKD",
+    "Rate": 5.1492
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2025-09-08",
+    "Currency": "CAD",
+    "Rate": 0.908
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-08-17",
+    "Currency": "CHF",
+    "Rate": 0.5618
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2023-04-17",
+    "Currency": "PHP",
+    "Rate": 37.4
+  },
+  {
+    "SourceFileName": "2023-current.xls",
+    "Type": "Median",
+    "Date": "2024-01-24",
+    "Currency": "SDR",
+    "Rate": 0.4939
+  }
+]
