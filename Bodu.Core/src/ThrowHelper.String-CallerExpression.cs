@@ -10,30 +10,11 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringLength" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidStringLength =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringLength);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringLengthRange" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidStringLengthRange =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringLengthRange);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringTooLong" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidStringTooLong =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringTooLong);
-
     /// <summary>
     /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />, or an
     /// <see cref="ArgumentException" /> if it is an empty string.
@@ -102,7 +83,7 @@ public static partial class ThrowHelper
         if (value.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidStringTooLong, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_StringTooLong, maxLength));
     }
 
     /// <summary>
@@ -130,7 +111,7 @@ public static partial class ThrowHelper
 
         if (value.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidStringLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_StringLength, expectedLength),
                 paramName);
     }
 
@@ -162,7 +143,7 @@ public static partial class ThrowHelper
         if (value.Length < minLength || value.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidStringLengthRange, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_StringLengthRange, minLength, maxLength));
     }
 }
 

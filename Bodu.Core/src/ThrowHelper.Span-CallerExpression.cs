@@ -10,37 +10,12 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Bodu.Extensions;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_DestinationTooSmall" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidDestinationTooSmall =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_DestinationTooSmall);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_SpanLength" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidSpanLength =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_SpanLength);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_SpanLengthMultipleOf" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidSpanLengthMultipleOf =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_SpanLengthMultipleOf);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_SpanTooShort" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidSpanTooShort =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_SpanTooShort);
-
     /// <summary>
     /// Throws an exception if the span does not have exactly <paramref name="expectedLength" /> elements.
     /// </summary>
@@ -58,7 +33,7 @@ public static partial class ThrowHelper
     {
         if (span.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
                 paramName);
     }
 
@@ -89,7 +64,7 @@ public static partial class ThrowHelper
     {
         if (span.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanTooShort, minimumLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
                 paramName);
     }
 
@@ -110,7 +85,7 @@ public static partial class ThrowHelper
     {
         if (span.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
                 paramName);
     }
 
@@ -142,7 +117,7 @@ public static partial class ThrowHelper
     {
         if (span.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanTooShort, minimumLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
                 paramName);
     }
 
@@ -172,7 +147,7 @@ public static partial class ThrowHelper
         if (span.Length < minLength || span.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireBetweenInclusive, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
     }
 
     /// <summary>
@@ -201,7 +176,7 @@ public static partial class ThrowHelper
         if (span.Length < minLength || span.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireBetweenInclusive, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
     }
 
     /// <summary>
@@ -313,18 +288,18 @@ public static partial class ThrowHelper
         if (offset < 0 || offset > span.Length)
             throw new ArgumentOutOfRangeException(
                 paramOffsetName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayOffset, paramOffsetName));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, paramOffsetName));
 
         if (count < 0 || count > span.Length)
             throw new ArgumentOutOfRangeException(
                 paramCountName,
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidArrayOffset, paramCountName));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, paramCountName));
 
         if (count > span.Length - offset)
             throw new ArgumentException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    s_argInvalidArrayOffsetOrLength,
+                    ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
                     paramOffsetName,
                     paramCountName,
                     paramSpanName));
@@ -362,7 +337,7 @@ public static partial class ThrowHelper
 
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidDestinationTooSmall, ResourceStrings.BufferKind_Array, destination.Length),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, ResourceStrings.BufferKind_Array, destination.Length),
                 paramDestinationName);
     }
 
@@ -389,7 +364,7 @@ public static partial class ThrowHelper
     {
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidDestinationTooSmall, ResourceStrings.BufferKind_Span, destination.Length),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, ResourceStrings.BufferKind_Span, destination.Length),
                 paramDestinationName);
     }
 
@@ -410,7 +385,7 @@ public static partial class ThrowHelper
     {
         if (span.Length - index < requiredLength)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanTooShort, requiredLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, requiredLength),
                 paramName);
     }
 
@@ -433,7 +408,7 @@ public static partial class ThrowHelper
             throw new ArgumentException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    s_argInvalidSpanTooShort,
+                    ResourceStrings.Arg_Invalid_SpanTooShort,
                     requiredLength),
                 paramName);
     }
@@ -463,7 +438,7 @@ public static partial class ThrowHelper
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanLengthMultipleOf, divisor),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
                 paramName);
     }
 
@@ -490,7 +465,7 @@ public static partial class ThrowHelper
     {
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidSpanLengthMultipleOf, divisor),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
                 paramName);
     }
 
@@ -518,7 +493,7 @@ public static partial class ThrowHelper
         if ((uint)index >= (uint)span.Length)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeIndexValidRange, span.Length));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, span.Length));
     }
 
     /// <summary>
@@ -545,7 +520,7 @@ public static partial class ThrowHelper
         if ((uint)index >= (uint)span.Length)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeIndexValidRange, span.Length));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, span.Length));
     }
 }
 

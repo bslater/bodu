@@ -10,78 +10,11 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_GreaterThanOrEqualOtherParameter" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidGreaterThanOrEqualOtherParameter =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_GreaterThanOrEqualOtherParameter);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_GreaterThanOtherParameter" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidGreaterThanOtherParameter =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_GreaterThanOtherParameter);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_LessThanOrEqualOtherParameter" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidLessThanOrEqualOtherParameter =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_LessThanOrEqualOtherParameter);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_LessThanOtherParameter" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidLessThanOtherParameter =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_LessThanOtherParameter);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_RequireBetweenExclusive" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeRequireBetweenExclusive =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_RequireBetweenExclusive);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeRequireBetweenInclusive =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_RequireGreaterThan" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeRequireGreaterThan =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_RequireGreaterThan);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeRequireGreaterThanOrEqual =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_RequireLessThan" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeRequireLessThan =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_RequireLessThan);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_RequireLessThanOrEqual" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argOutOfRangeRequireLessThanOrEqual =
-        CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_RequireLessThanOrEqual);
-
-    /// <summary>
-    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_ParameterRequiredIf" />.
-    /// </summary>
-    private static readonly CompositeFormat s_argInvalidParameterRequiredIf =
-        CompositeFormat.Parse(ResourceStrings.Arg_Invalid_ParameterRequiredIf);
-
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is greater than
     /// <paramref name="max" />.
@@ -102,7 +35,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(max) > 0)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireLessThanOrEqual, max));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireLessThanOrEqual, max));
     }
 
     /// <summary>
@@ -125,7 +58,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(max) >= 0)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireLessThan, max));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireLessThan, max));
     }
 
     /// <summary>
@@ -149,7 +82,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) >= 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidGreaterThanOrEqualOtherParameter, otherName),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_GreaterThanOrEqualOtherParameter, otherName),
                 paramName);
     }
 
@@ -174,7 +107,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) > 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidGreaterThanOtherParameter, otherName),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_GreaterThanOtherParameter, otherName),
                 paramName);
     }
 
@@ -198,7 +131,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(min) < 0)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireGreaterThanOrEqual, min));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual, min));
     }
 
     /// <summary>
@@ -236,7 +169,7 @@ public static partial class ThrowHelper
         {
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireGreaterThanOrEqual, min));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual, min));
         }
     }
 
@@ -260,7 +193,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(min) <= 0)
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireGreaterThan, min));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireGreaterThan, min));
     }
 
     /// <summary>
@@ -284,7 +217,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) <= 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidLessThanOrEqualOtherParameter, otherName),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_LessThanOrEqualOtherParameter, otherName),
                 paramName);
     }
 
@@ -308,7 +241,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) < 0)
             throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, s_argInvalidLessThanOtherParameter, otherName),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_LessThanOtherParameter, otherName),
                 paramName);
     }
 
@@ -339,14 +272,14 @@ public static partial class ThrowHelper
             if (value.CompareTo(min) < 0 || value.CompareTo(max) > 0)
                 throw new ArgumentOutOfRangeException(
                     paramName,
-                    string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireBetweenInclusive, min, max));
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, min, max));
         }
         else
         {
             if (value.CompareTo(min) <= 0 || value.CompareTo(max) >= 0)
                 throw new ArgumentOutOfRangeException(
                     paramName,
-                    string.Format(CultureInfo.CurrentCulture, s_argOutOfRangeRequireBetweenExclusive, min, max));
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenExclusive, min, max));
         }
     }
 }
