@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Bodu.CodeStyle.TestData</RootNamespace>
+    <RootNamespace>Bodu</RootNamespace>
     <AssemblyName>Bodu.CodeStyle.Test.Common</AssemblyName>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>

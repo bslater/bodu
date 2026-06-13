@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
@@ -25,21 +23,6 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     where TTest : CheckDigitAlgorithmTests<TTest, TAlgorithm>, new()
     where TAlgorithm : CheckDigitAlgorithm, new()
 {
-
-    /// <summary>
-    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
-    /// </summary>
-    /// <param name="data">
-    /// The test case data row. The first element is expected to contain the human-readable standard name.
-    /// </param>
-    /// <returns>
-    /// The standard name for the current test case as a <see cref="string" />.
-    /// </returns>
-    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
-    {
-        var name = (string)data[0];
-        return $"{name}";
-    }
 
     /// <summary>
     /// Returns an ordered dataset of known-answer vectors for use with MSTest data-driven tests.

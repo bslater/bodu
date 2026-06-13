@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Shared test-support library for the regional calendar data bundles. It is a plain class library
+    (IsTestProject=false): it has no runnable tests of its own — its inherited [TestMethod]s execute in the
+    leaf <Region>.Test assemblies, which carry the MSTest adapter and SDK. It therefore references only
+    MSTest.TestFramework (for the attributes and Assert surface) plus the calendar engine.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
+    <AssemblyName>Bodu.Globalization.Calendar.Data.Test.Common</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>

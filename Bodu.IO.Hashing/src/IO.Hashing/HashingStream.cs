@@ -46,15 +46,15 @@ namespace Bodu.IO.Hashing;
 public sealed class HashingStream
     : Stream
 {
-    /// <summary>
-    /// The stream that bytes are transferred to or from.
-    /// </summary>
-    private readonly Stream _innerStream;
 
     /// <summary>
     /// The algorithm that accumulates every byte transferred through this stream.
     /// </summary>
     private readonly NonCryptographicHashAlgorithm _algorithm;
+    /// <summary>
+    /// The stream that bytes are transferred to or from.
+    /// </summary>
+    private readonly Stream _innerStream;
 
     /// <summary>
     /// Indicates whether the inner stream is left open when this stream is disposed.
@@ -109,6 +109,13 @@ public sealed class HashingStream
         !_disposed && _innerStream.CanRead;
 
     /// <summary>
+    /// Gets a value indicating whether the stream supports seeking.
+    /// </summary>
+    /// <returns>Always <see langword="false" />; repositioning would corrupt the digest.</returns>
+    public override bool CanSeek =>
+        false;
+
+    /// <summary>
     /// Gets a value indicating whether the stream supports writing.
     /// </summary>
     /// <returns>
@@ -117,13 +124,6 @@ public sealed class HashingStream
     /// </returns>
     public override bool CanWrite =>
         !_disposed && _innerStream.CanWrite;
-
-    /// <summary>
-    /// Gets a value indicating whether the stream supports seeking.
-    /// </summary>
-    /// <returns>Always <see langword="false" />; repositioning would corrupt the digest.</returns>
-    public override bool CanSeek =>
-        false;
 
     /// <summary>
     /// Gets the length of the stream. Not supported.
@@ -142,6 +142,48 @@ public sealed class HashingStream
     {
         get => throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
         set => throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
+    }
+
+    /// <summary>
+    /// Asynchronously releases the stream, disposing the inner stream unless <c>leaveOpen</c> was specified. The
+    /// algorithm is never disposed.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose.</returns>
+    public override async ValueTask DisposeAsync()
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+
+            if (!_leaveOpen)
+                await _innerStream.DisposeAsync().ConfigureAwait(false);
+        }
+
+        await base.DisposeAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Flushes the inner stream.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
+    public override void Flush()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        _innerStream.Flush();
+    }
+
+    /// <summary>
+    /// Asynchronously flushes the inner stream.
+    /// </summary>
+    /// <param name="cancellationToken">A token used to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous flush.</returns>
+    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
+    public override Task FlushAsync(CancellationToken cancellationToken)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        return _innerStream.FlushAsync(cancellationToken);
     }
 
     /// <summary>
@@ -186,6 +228,21 @@ public sealed class HashingStream
     }
 
     /// <summary>
+    /// Reads bytes from the inner stream into the span, appending the bytes actually read to the digest.
+    /// </summary>
+    /// <param name="buffer">The destination span.</param>
+    /// <returns>The number of bytes read, or <c>0</c> at end of stream.</returns>
+    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
+    public override int Read(Span<byte> buffer)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        var bytesRead = _innerStream.Read(buffer);
+        _algorithm.Append(buffer[..bytesRead]);
+        return bytesRead;
+    }
+
+    /// <summary>
     /// Reads bytes from the inner stream into the buffer, appending the bytes actually read to the digest.
     /// </summary>
     /// <param name="buffer">The destination buffer. Must not be <see langword="null" />.</param>
@@ -208,30 +265,20 @@ public sealed class HashingStream
     }
 
     /// <summary>
-    /// Reads bytes from the inner stream into the span, appending the bytes actually read to the digest.
+    /// Asynchronously reads bytes from the inner stream into the memory region, appending the bytes actually read to
+    /// the digest.
     /// </summary>
-    /// <param name="buffer">The destination span.</param>
-    /// <returns>The number of bytes read, or <c>0</c> at end of stream.</returns>
+    /// <param name="buffer">The destination memory region.</param>
+    /// <param name="cancellationToken">A token used to cancel the operation.</param>
+    /// <returns>A task producing the number of bytes read, or <c>0</c> at end of stream.</returns>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override int Read(Span<byte> buffer)
+    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var bytesRead = _innerStream.Read(buffer);
-        _algorithm.Append(buffer[..bytesRead]);
+        var bytesRead = await _innerStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        _algorithm.Append(buffer.Span[..bytesRead]);
         return bytesRead;
-    }
-
-    /// <summary>
-    /// Reads a single byte from the inner stream, appending it to the digest when one is available.
-    /// </summary>
-    /// <returns>The byte read, or <c>-1</c> at end of stream.</returns>
-    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override int ReadByte()
-    {
-        Span<byte> single = stackalloc byte[1];
-
-        return Read(single) == 0 ? -1 : single[0];
     }
 
     /// <summary>
@@ -259,20 +306,54 @@ public sealed class HashingStream
     }
 
     /// <summary>
-    /// Asynchronously reads bytes from the inner stream into the memory region, appending the bytes actually read to
-    /// the digest.
+    /// Reads a single byte from the inner stream, appending it to the digest when one is available.
     /// </summary>
-    /// <param name="buffer">The destination memory region.</param>
-    /// <param name="cancellationToken">A token used to cancel the operation.</param>
-    /// <returns>A task producing the number of bytes read, or <c>0</c> at end of stream.</returns>
+    /// <returns>The byte read, or <c>-1</c> at end of stream.</returns>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    public override int ReadByte()
+    {
+        Span<byte> single = stackalloc byte[1];
+
+        return Read(single) == 0 ? -1 : single[0];
+    }
+
+    /// <summary>
+    /// Seeks within the stream. Not supported.
+    /// </summary>
+    /// <param name="offset">
+    /// The byte offset relative to <paramref name="origin" />. Not used; the method always throws.
+    /// </param>
+    /// <param name="origin">
+    /// The reference point for <paramref name="offset" />. Not used; the method always throws.
+    /// </param>
+    /// <returns>This method always throws.</returns>
+    /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
+    public override long Seek(long offset, SeekOrigin origin) =>
+        throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
+
+    /// <summary>
+    /// Sets the length of the stream. Not supported.
+    /// </summary>
+    /// <param name="value">Ignored.</param>
+    /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
+    public override void SetLength(long value) =>
+        throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
+
+    /// <summary>
+    /// Writes bytes to the inner stream and appends them to the digest.
+    /// </summary>
+    /// <param name="buffer">The source span.</param>
+    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
+    /// <remarks>
+    /// Bytes are appended to the digest after the inner stream accepts the write, so a failed write does not
+    /// contaminate the digest.
+    /// </remarks>
+    public override void Write(ReadOnlySpan<byte> buffer)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var bytesRead = await _innerStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
-        _algorithm.Append(buffer.Span[..bytesRead]);
-        return bytesRead;
+        _innerStream.Write(buffer);
+        _algorithm.Append(buffer);
     }
 
     /// <summary>
@@ -297,32 +378,18 @@ public sealed class HashingStream
     }
 
     /// <summary>
-    /// Writes bytes to the inner stream and appends them to the digest.
+    /// Asynchronously writes bytes to the inner stream and appends them to the digest.
     /// </summary>
-    /// <param name="buffer">The source span.</param>
+    /// <param name="buffer">The source memory region.</param>
+    /// <param name="cancellationToken">A token used to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous write.</returns>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    /// <remarks>
-    /// Bytes are appended to the digest after the inner stream accepts the write, so a failed write does not
-    /// contaminate the digest.
-    /// </remarks>
-    public override void Write(ReadOnlySpan<byte> buffer)
+    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        _innerStream.Write(buffer);
-        _algorithm.Append(buffer);
-    }
-
-    /// <summary>
-    /// Writes a single byte to the inner stream and appends it to the digest.
-    /// </summary>
-    /// <param name="value">The byte to write.</param>
-    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override void WriteByte(byte value)
-    {
-        ReadOnlySpan<byte> single = [value];
-
-        Write(single);
+        await _innerStream.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
+        _algorithm.Append(buffer.Span);
     }
 
     /// <summary>
@@ -349,65 +416,16 @@ public sealed class HashingStream
     }
 
     /// <summary>
-    /// Asynchronously writes bytes to the inner stream and appends them to the digest.
+    /// Writes a single byte to the inner stream and appends it to the digest.
     /// </summary>
-    /// <param name="buffer">The source memory region.</param>
-    /// <param name="cancellationToken">A token used to cancel the operation.</param>
-    /// <returns>A task representing the asynchronous write.</returns>
+    /// <param name="value">The byte to write.</param>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+    public override void WriteByte(byte value)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ReadOnlySpan<byte> single = [value];
 
-        await _innerStream.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
-        _algorithm.Append(buffer.Span);
+        Write(single);
     }
-
-    /// <summary>
-    /// Flushes the inner stream.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override void Flush()
-    {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-
-        _innerStream.Flush();
-    }
-
-    /// <summary>
-    /// Asynchronously flushes the inner stream.
-    /// </summary>
-    /// <param name="cancellationToken">A token used to cancel the operation.</param>
-    /// <returns>A task representing the asynchronous flush.</returns>
-    /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
-    public override Task FlushAsync(CancellationToken cancellationToken)
-    {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-
-        return _innerStream.FlushAsync(cancellationToken);
-    }
-
-    /// <summary>
-    /// Seeks within the stream. Not supported.
-    /// </summary>
-    /// <param name="offset">
-    /// The byte offset relative to <paramref name="origin" />. Not used; the method always throws.
-    /// </param>
-    /// <param name="origin">
-    /// The reference point for <paramref name="offset" />. Not used; the method always throws.
-    /// </param>
-    /// <returns>This method always throws.</returns>
-    /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
-    public override long Seek(long offset, SeekOrigin origin) =>
-        throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
-
-    /// <summary>
-    /// Sets the length of the stream. Not supported.
-    /// </summary>
-    /// <param name="value">Ignored.</param>
-    /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
-    public override void SetLength(long value) =>
-        throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
 
     /// <summary>
     /// Releases the stream, disposing the inner stream unless <c>leaveOpen</c> was specified. The algorithm is never
@@ -425,23 +443,5 @@ public sealed class HashingStream
         }
 
         base.Dispose(disposing);
-    }
-
-    /// <summary>
-    /// Asynchronously releases the stream, disposing the inner stream unless <c>leaveOpen</c> was specified. The
-    /// algorithm is never disposed.
-    /// </summary>
-    /// <returns>A task representing the asynchronous dispose.</returns>
-    public override async ValueTask DisposeAsync()
-    {
-        if (!_disposed)
-        {
-            _disposed = true;
-
-            if (!_leaveOpen)
-                await _innerStream.DisposeAsync().ConfigureAwait(false);
-        }
-
-        await base.DisposeAsync().ConfigureAwait(false);
     }
 }

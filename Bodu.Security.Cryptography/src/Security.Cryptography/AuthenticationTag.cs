@@ -60,6 +60,13 @@ public readonly struct AuthenticationTag
     }
 
     /// <summary>
+    /// Gets a value indicating whether the tag is empty.
+    /// </summary>
+    /// <returns><see langword="true" /> if the tag contains no bytes; otherwise, <see langword="false" />.</returns>
+    public bool IsEmpty =>
+        Length == 0;
+
+    /// <summary>
     /// Gets the number of bytes in the tag.
     /// </summary>
     /// <returns>The tag length in bytes, or <c>0</c> for the empty value.</returns>
@@ -67,11 +74,28 @@ public readonly struct AuthenticationTag
         _value?.Length ?? 0;
 
     /// <summary>
-    /// Gets a value indicating whether the tag is empty.
+    /// Determines whether two tags are equal.
     /// </summary>
-    /// <returns><see langword="true" /> if the tag contains no bytes; otherwise, <see langword="false" />.</returns>
-    public bool IsEmpty =>
-        Length == 0;
+    /// <param name="left">The first tag.</param>
+    /// <param name="right">The second tag.</param>
+    /// <returns>
+    /// <see langword="true" /> if the tags contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool operator ==(AuthenticationTag left, AuthenticationTag right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two tags are not equal.
+    /// </summary>
+    /// <param name="left">The first tag.</param>
+    /// <param name="right">The second tag.</param>
+    /// <returns><see langword="true" /> if the tags differ; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(AuthenticationTag left, AuthenticationTag right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Creates an <see cref="AuthenticationTag" /> from the provided bytes.
@@ -91,11 +115,29 @@ public readonly struct AuthenticationTag
         _value;
 
     /// <summary>
-    /// Copies the tag bytes into a new array.
+    /// Determines whether this tag equals another.
     /// </summary>
-    /// <returns>A new array containing the tag bytes; an empty array for the empty value.</returns>
-    public byte[] ToArray() =>
-        _value is null ? [] : (byte[])_value.Clone();
+    /// <param name="other">The tag to compare against.</param>
+    /// <returns>
+    /// <see langword="true" /> if both tags contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// This is an ordinary, short-circuiting comparison; tag verification must use
+    /// <see cref="FixedTimeEquals(AuthenticationTag)" /> instead.
+    /// </remarks>
+    public bool Equals(AuthenticationTag other) =>
+        AsSpan().SequenceEqual(other.AsSpan());
+
+    /// <summary>
+    /// Determines whether this tag equals the specified object.
+    /// </summary>
+    /// <param name="obj">The object to compare against.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="obj" /> is an <see cref="AuthenticationTag" /> with identical bytes;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
+    public override bool Equals(object? obj) =>
+        obj is AuthenticationTag other && Equals(other);
 
     /// <summary>
     /// Compares this tag to another in fixed time.
@@ -127,31 +169,6 @@ public readonly struct AuthenticationTag
         CryptographicOperations.FixedTimeEquals(AsSpan(), other);
 
     /// <summary>
-    /// Determines whether this tag equals another.
-    /// </summary>
-    /// <param name="other">The tag to compare against.</param>
-    /// <returns>
-    /// <see langword="true" /> if both tags contain identical bytes; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <remarks>
-    /// This is an ordinary, short-circuiting comparison; tag verification must use
-    /// <see cref="FixedTimeEquals(AuthenticationTag)" /> instead.
-    /// </remarks>
-    public bool Equals(AuthenticationTag other) =>
-        AsSpan().SequenceEqual(other.AsSpan());
-
-    /// <summary>
-    /// Determines whether this tag equals the specified object.
-    /// </summary>
-    /// <param name="obj">The object to compare against.</param>
-    /// <returns>
-    /// <see langword="true" /> if <paramref name="obj" /> is an <see cref="AuthenticationTag" /> with identical bytes;
-    /// otherwise, <see langword="false" />.
-    /// </returns>
-    public override bool Equals(object? obj) =>
-        obj is AuthenticationTag other && Equals(other);
-
-    /// <summary>
     /// Returns a hash code computed over the tag bytes.
     /// </summary>
     /// <returns>A hash code consistent with <see cref="Equals(AuthenticationTag)" />.</returns>
@@ -163,24 +180,11 @@ public readonly struct AuthenticationTag
     }
 
     /// <summary>
-    /// Determines whether two tags are equal.
+    /// Copies the tag bytes into a new array.
     /// </summary>
-    /// <param name="left">The first tag.</param>
-    /// <param name="right">The second tag.</param>
-    /// <returns>
-    /// <see langword="true" /> if the tags contain identical bytes; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool operator ==(AuthenticationTag left, AuthenticationTag right) =>
-        left.Equals(right);
-
-    /// <summary>
-    /// Determines whether two tags are not equal.
-    /// </summary>
-    /// <param name="left">The first tag.</param>
-    /// <param name="right">The second tag.</param>
-    /// <returns><see langword="true" /> if the tags differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(AuthenticationTag left, AuthenticationTag right) =>
-        !left.Equals(right);
+    /// <returns>A new array containing the tag bytes; an empty array for the empty value.</returns>
+    public byte[] ToArray() =>
+        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the tag.

@@ -78,7 +78,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void IsBetween_WhenUsingReverseComparer_ShouldReturnExpectedResult()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         Assert.IsTrue(5.IsBetween(1, 10, comparer));
         Assert.IsTrue(1.IsBetween(1, 10, comparer));

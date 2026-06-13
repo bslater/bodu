@@ -61,6 +61,13 @@ public readonly struct HashValue
     }
 
     /// <summary>
+    /// Gets a value indicating whether the hash value is empty.
+    /// </summary>
+    /// <returns><see langword="true" /> if the value contains no bytes; otherwise, <see langword="false" />.</returns>
+    public bool IsEmpty =>
+        Length == 0;
+
+    /// <summary>
     /// Gets the number of bytes in the hash value.
     /// </summary>
     /// <returns>The digest length in bytes, or <c>0</c> for the empty value.</returns>
@@ -68,11 +75,28 @@ public readonly struct HashValue
         _value?.Length ?? 0;
 
     /// <summary>
-    /// Gets a value indicating whether the hash value is empty.
+    /// Determines whether two hash values are equal.
     /// </summary>
-    /// <returns><see langword="true" /> if the value contains no bytes; otherwise, <see langword="false" />.</returns>
-    public bool IsEmpty =>
-        Length == 0;
+    /// <param name="left">The first hash value.</param>
+    /// <param name="right">The second hash value.</param>
+    /// <returns>
+    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool operator ==(HashValue left, HashValue right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two hash values are not equal.
+    /// </summary>
+    /// <param name="left">The first hash value.</param>
+    /// <param name="right">The second hash value.</param>
+    /// <returns><see langword="true" /> if the values differ; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(HashValue left, HashValue right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Creates a <see cref="HashValue" /> from the provided bytes.
@@ -133,43 +157,6 @@ public readonly struct HashValue
         _value;
 
     /// <summary>
-    /// Copies the digest bytes into a new array.
-    /// </summary>
-    /// <returns>A new array containing the digest bytes; an empty array for the empty value.</returns>
-    public byte[] ToArray() =>
-        _value is null ? [] : (byte[])_value.Clone();
-
-    /// <summary>
-    /// Formats the hash value as a lowercase hexadecimal string.
-    /// </summary>
-    /// <returns>The lowercase hexadecimal representation, or <see cref="string.Empty" /> for the empty value.</returns>
-    public string ToHexString() =>
-        CryptographyHelper.ToLowercaseHexString(_value);
-
-    /// <summary>
-    /// Formats the hash value as a Base64 string.
-    /// </summary>
-    /// <returns>The Base64 representation, or <see cref="string.Empty" /> for the empty value.</returns>
-    public string ToBase64String() =>
-        _value is null ? string.Empty : Convert.ToBase64String(_value);
-
-    /// <summary>
-    /// Compares this hash value to another in fixed time.
-    /// </summary>
-    /// <param name="other">The hash value to compare against.</param>
-    /// <returns>
-    /// <see langword="true" /> if both values have the same length and identical bytes; otherwise,
-    /// <see langword="false" />.
-    /// </returns>
-    /// <remarks>
-    /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
-    /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
-    /// <see langword="false" /> immediately, so the lengths themselves are not concealed.
-    /// </remarks>
-    public bool FixedTimeEquals(HashValue other) =>
-        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
-
-    /// <summary>
     /// Determines whether this hash value equals another.
     /// </summary>
     /// <param name="other">The hash value to compare against.</param>
@@ -195,6 +182,22 @@ public readonly struct HashValue
         obj is HashValue other && Equals(other);
 
     /// <summary>
+    /// Compares this hash value to another in fixed time.
+    /// </summary>
+    /// <param name="other">The hash value to compare against.</param>
+    /// <returns>
+    /// <see langword="true" /> if both values have the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
+    /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
+    /// <see langword="false" /> immediately, so the lengths themselves are not concealed.
+    /// </remarks>
+    public bool FixedTimeEquals(HashValue other) =>
+        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
+
+    /// <summary>
     /// Returns a hash code computed over the digest bytes.
     /// </summary>
     /// <returns>A hash code consistent with <see cref="Equals(HashValue)" />.</returns>
@@ -206,24 +209,25 @@ public readonly struct HashValue
     }
 
     /// <summary>
-    /// Determines whether two hash values are equal.
+    /// Copies the digest bytes into a new array.
     /// </summary>
-    /// <param name="left">The first hash value.</param>
-    /// <param name="right">The second hash value.</param>
-    /// <returns>
-    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool operator ==(HashValue left, HashValue right) =>
-        left.Equals(right);
+    /// <returns>A new array containing the digest bytes; an empty array for the empty value.</returns>
+    public byte[] ToArray() =>
+        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
-    /// Determines whether two hash values are not equal.
+    /// Formats the hash value as a Base64 string.
     /// </summary>
-    /// <param name="left">The first hash value.</param>
-    /// <param name="right">The second hash value.</param>
-    /// <returns><see langword="true" /> if the values differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(HashValue left, HashValue right) =>
-        !left.Equals(right);
+    /// <returns>The Base64 representation, or <see cref="string.Empty" /> for the empty value.</returns>
+    public string ToBase64String() =>
+        _value is null ? string.Empty : Convert.ToBase64String(_value);
+
+    /// <summary>
+    /// Formats the hash value as a lowercase hexadecimal string.
+    /// </summary>
+    /// <returns>The lowercase hexadecimal representation, or <see cref="string.Empty" /> for the empty value.</returns>
+    public string ToHexString() =>
+        CryptographyHelper.ToLowercaseHexString(_value);
 
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the hash value.

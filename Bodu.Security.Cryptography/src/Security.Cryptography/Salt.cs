@@ -53,6 +53,13 @@ public readonly struct Salt
     }
 
     /// <summary>
+    /// Gets a value indicating whether the salt is empty.
+    /// </summary>
+    /// <returns><see langword="true" /> if the salt contains no bytes; otherwise, <see langword="false" />.</returns>
+    public bool IsEmpty =>
+        Length == 0;
+
+    /// <summary>
     /// Gets the number of bytes in the salt.
     /// </summary>
     /// <returns>The salt length in bytes, or <c>0</c> for the empty value.</returns>
@@ -60,11 +67,28 @@ public readonly struct Salt
         _value?.Length ?? 0;
 
     /// <summary>
-    /// Gets a value indicating whether the salt is empty.
+    /// Determines whether two salts are equal.
     /// </summary>
-    /// <returns><see langword="true" /> if the salt contains no bytes; otherwise, <see langword="false" />.</returns>
-    public bool IsEmpty =>
-        Length == 0;
+    /// <param name="left">The first salt.</param>
+    /// <param name="right">The second salt.</param>
+    /// <returns>
+    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool operator ==(Salt left, Salt right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two salts are not equal.
+    /// </summary>
+    /// <param name="left">The first salt.</param>
+    /// <param name="right">The second salt.</param>
+    /// <returns><see langword="true" /> if the values differ; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(Salt left, Salt right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Creates a <see cref="Salt" /> from the provided bytes.
@@ -93,13 +117,6 @@ public readonly struct Salt
     /// <returns>A read-only span over the value; empty for the empty value.</returns>
     public ReadOnlySpan<byte> AsSpan() =>
         _value;
-
-    /// <summary>
-    /// Copies the salt bytes into a new array.
-    /// </summary>
-    /// <returns>A new array containing the salt bytes; an empty array for the empty value.</returns>
-    public byte[] ToArray() =>
-        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
     /// Determines whether this salt equals another.
@@ -134,24 +151,11 @@ public readonly struct Salt
     }
 
     /// <summary>
-    /// Determines whether two salts are equal.
+    /// Copies the salt bytes into a new array.
     /// </summary>
-    /// <param name="left">The first salt.</param>
-    /// <param name="right">The second salt.</param>
-    /// <returns>
-    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool operator ==(Salt left, Salt right) =>
-        left.Equals(right);
-
-    /// <summary>
-    /// Determines whether two salts are not equal.
-    /// </summary>
-    /// <param name="left">The first salt.</param>
-    /// <param name="right">The second salt.</param>
-    /// <returns><see langword="true" /> if the values differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(Salt left, Salt right) =>
-        !left.Equals(right);
+    /// <returns>A new array containing the salt bytes; an empty array for the empty value.</returns>
+    public byte[] ToArray() =>
+        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the salt.

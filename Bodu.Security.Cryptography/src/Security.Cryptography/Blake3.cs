@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -97,12 +97,6 @@ public sealed partial class Blake3
     private const int ChunkSize = 1024;
 
     /// <summary>
-    /// Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the
-    /// Merkle tree height is bounded at 54 — any well-formed input fits within this bound.
-    /// </summary>
-    private const int MaxCvStackDepth = 54;
-
-    /// <summary>
     /// The flag applied to the last compression block of every chunk.
     /// </summary>
     private const uint FlagChunkEnd = 2u;
@@ -122,6 +116,12 @@ public sealed partial class Blake3
     /// The flag applied to the root compression call to enable output extraction.
     /// </summary>
     private const uint FlagRoot = 8u;
+
+    /// <summary>
+    /// Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the
+    /// Merkle tree height is bounded at 54 — any well-formed input fits within this bound.
+    /// </summary>
+    private const int MaxCvStackDepth = 54;
 
     /// <summary>
     /// Output length in bytes.
@@ -469,42 +469,6 @@ public sealed partial class Blake3
     }
 
     /// <summary>
-    /// Computes a parent node chaining value by compressing the concatenation of a left and a right child chaining
-    /// value, writing the 8-word result into <paramref name="output" />.
-    /// </summary>
-    /// <param name="leftCv">The 8-word chaining value of the left child.</param>
-    /// <param name="rightCv">The 8-word chaining value of the right child.</param>
-    /// <param name="isRoot">
-    /// <see langword="true" /> if this parent node is the root of the hash tree, causing <see cref="FlagRoot" /> to be
-    /// applied.
-    /// </param>
-    /// <param name="output">
-    /// Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.
-    /// </param>
-    /// <remarks>
-    /// Both inputs are copied into <see cref="_parentBlockWords" /> before any write to <paramref name="output" />, so
-    /// callers may safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in
-    /// place without an intermediate buffer.
-    /// </remarks>
-    private void ParentCv(ReadOnlySpan<uint> leftCv, ReadOnlySpan<uint> rightCv, bool isRoot, Span<uint> output)
-    {
-        // Materialise both children into the scratch field BEFORE writing the output span. This is what makes the
-        // (rightCv, output) aliasing in PushChunkCv / MergeStackWithFinalChunk safe.
-        leftCv.CopyTo(_parentBlockWords.AsSpan(0, 8));
-        rightCv.CopyTo(_parentBlockWords.AsSpan(8, 8));
-
-        var flags = FlagParent;
-
-        if (isRoot)
-            flags |= FlagRoot;
-
-        // Parent nodes always use the IV as their chaining value input, counter = 0.
-        var outState = Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags);
-
-        outState.AsSpan(0, 8).CopyTo(output);
-    }
-
-    /// <summary>
     /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian uint32 word array,
     /// zero-padding any bytes beyond the actual block length.
     /// </summary>
@@ -556,6 +520,42 @@ public sealed partial class Blake3
         }
 
         working.CopyTo(output);
+    }
+
+    /// <summary>
+    /// Computes a parent node chaining value by compressing the concatenation of a left and a right child chaining
+    /// value, writing the 8-word result into <paramref name="output" />.
+    /// </summary>
+    /// <param name="leftCv">The 8-word chaining value of the left child.</param>
+    /// <param name="rightCv">The 8-word chaining value of the right child.</param>
+    /// <param name="isRoot">
+    /// <see langword="true" /> if this parent node is the root of the hash tree, causing <see cref="FlagRoot" /> to be
+    /// applied.
+    /// </param>
+    /// <param name="output">
+    /// Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.
+    /// </param>
+    /// <remarks>
+    /// Both inputs are copied into <see cref="_parentBlockWords" /> before any write to <paramref name="output" />, so
+    /// callers may safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in
+    /// place without an intermediate buffer.
+    /// </remarks>
+    private void ParentCv(ReadOnlySpan<uint> leftCv, ReadOnlySpan<uint> rightCv, bool isRoot, Span<uint> output)
+    {
+        // Materialise both children into the scratch field BEFORE writing the output span. This is what makes the
+        // (rightCv, output) aliasing in PushChunkCv / MergeStackWithFinalChunk safe.
+        leftCv.CopyTo(_parentBlockWords.AsSpan(0, 8));
+        rightCv.CopyTo(_parentBlockWords.AsSpan(8, 8));
+
+        var flags = FlagParent;
+
+        if (isRoot)
+            flags |= FlagRoot;
+
+        // Parent nodes always use the IV as their chaining value input, counter = 0.
+        var outState = Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags);
+
+        outState.AsSpan(0, 8).CopyTo(output);
     }
 
     // ---- tree-merging stack helpers ----

@@ -29,12 +29,37 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Blake2s
 {
+    private static readonly Vector128<uint> s_ror12 = Vector128.Create(12U);
     // The four rotation amounts used by Blake2s's G function (RFC 7693 §3.1). Encoded as broadcast
     // vectors so that Avx512F.VL.RotateRightVariable lowers each rotate to a single VPRORD instruction.
-    private static readonly Vector128<uint> s_ror16 = Vector128.Create((uint)16);
-    private static readonly Vector128<uint> s_ror12 = Vector128.Create((uint)12);
-    private static readonly Vector128<uint> s_ror8 = Vector128.Create((uint)8);
-    private static readonly Vector128<uint> s_ror7 = Vector128.Create((uint)7);
+    private static readonly Vector128<uint> s_ror16 = Vector128.Create(16U);
+    private static readonly Vector128<uint> s_ror7 = Vector128.Create(7U);
+    private static readonly Vector128<uint> s_ror8 = Vector128.Create(8U);
+
+    /// <summary>
+    /// Applies the BLAKE2s <c>G</c> mixing function in parallel across four columns (or four diagonals, after the
+    /// caller has applied the appropriate lane shifts).
+    /// </summary>
+    /// <param name="a">The top row of the working vector, updated in place.</param>
+    /// <param name="b">The second row of the working vector, updated in place.</param>
+    /// <param name="c">The third row of the working vector, updated in place.</param>
+    /// <param name="d">The bottom row of the working vector, updated in place.</param>
+    /// <param name="mx">The four <c>x</c> message words for this step, one per column.</param>
+    /// <param name="my">The four <c>y</c> message words for this step, one per column.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void GSimd(
+        ref Vector128<uint> a, ref Vector128<uint> b, ref Vector128<uint> c, ref Vector128<uint> d,
+        Vector128<uint> mx, Vector128<uint> my)
+    {
+        a += b + mx;
+        d = Avx512F.VL.RotateRightVariable(d ^ a, s_ror16);
+        c += d;
+        b = Avx512F.VL.RotateRightVariable(b ^ c, s_ror12);
+        a += b + my;
+        d = Avx512F.VL.RotateRightVariable(d ^ a, s_ror8);
+        c += d;
+        b = Avx512F.VL.RotateRightVariable(b ^ c, s_ror7);
+    }
 
     /// <summary>
     /// Compresses a single 64-byte block using the AVX-512 vectorised BLAKE2s compression function.
@@ -147,30 +172,5 @@ public sealed partial class Blake2s
         Unsafe.Add(ref hRef, 5) = hHi.GetElement(1);
         Unsafe.Add(ref hRef, 6) = hHi.GetElement(2);
         Unsafe.Add(ref hRef, 7) = hHi.GetElement(3);
-    }
-
-    /// <summary>
-    /// Applies the BLAKE2s <c>G</c> mixing function in parallel across four columns (or four diagonals, after the
-    /// caller has applied the appropriate lane shifts).
-    /// </summary>
-    /// <param name="a">The top row of the working vector, updated in place.</param>
-    /// <param name="b">The second row of the working vector, updated in place.</param>
-    /// <param name="c">The third row of the working vector, updated in place.</param>
-    /// <param name="d">The bottom row of the working vector, updated in place.</param>
-    /// <param name="mx">The four <c>x</c> message words for this step, one per column.</param>
-    /// <param name="my">The four <c>y</c> message words for this step, one per column.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void GSimd(
-        ref Vector128<uint> a, ref Vector128<uint> b, ref Vector128<uint> c, ref Vector128<uint> d,
-        Vector128<uint> mx, Vector128<uint> my)
-    {
-        a += b + mx;
-        d = Avx512F.VL.RotateRightVariable(d ^ a, s_ror16);
-        c += d;
-        b = Avx512F.VL.RotateRightVariable(b ^ c, s_ror12);
-        a += b + my;
-        d = Avx512F.VL.RotateRightVariable(d ^ a, s_ror8);
-        c += d;
-        b = Avx512F.VL.RotateRightVariable(b ^ c, s_ror7);
     }
 }

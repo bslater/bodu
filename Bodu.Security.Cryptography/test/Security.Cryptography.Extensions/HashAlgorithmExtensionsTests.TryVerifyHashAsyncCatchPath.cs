@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Test.IO;
 
 namespace Bodu.Security.Cryptography.Extensions;
 
@@ -23,7 +24,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_StreamBytes_WhenStreamThrows_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new ThrowingAsyncStream();
+        using var stream = new ThrowOnReadStream(static () => new IOException("Forced read failure."));
 
         var result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
 
@@ -38,7 +39,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_StreamHex_WhenStreamThrows_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new ThrowingAsyncStream();
+        using var stream = new ThrowOnReadStream(static () => new IOException("Forced read failure."));
 
         var result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
 
@@ -93,44 +94,5 @@ public partial class HashAlgorithmExtensionsTests
         var result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash, cts.Token);
 
         Assert.IsFalse(result);
-    }
-
-    /// <summary>
-    /// A read-only stream whose asynchronous reads always throw <see cref="IOException" />, used to drive the catch
-    /// path of the async <c>TryVerifyHashAsync</c> generated state machines.
-    /// </summary>
-    private sealed class ThrowingAsyncStream
-        : Stream
-    {
-        public override bool CanRead => true;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => false;
-
-        public override long Length => 0;
-
-        public override long Position
-        {
-            get => 0;
-            set => throw new NotSupportedException();
-        }
-
-        public override void Flush() => throw new NotSupportedException();
-
-        public override int Read(byte[] buffer, int offset, int count) =>
-            throw new IOException("Forced read failure.");
-
-        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
-            Task.FromException<int>(new IOException("Forced async read failure."));
-
-        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) =>
-            ValueTask.FromException<int>(new IOException("Forced async read failure."));
-
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-
-        public override void SetLength(long value) => throw new NotSupportedException();
-
-        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 }

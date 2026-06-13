@@ -18,7 +18,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="expectedCheck">The expected check code (unused; cross-comparison is between Compute and Append).</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void Compute_WhenInvokedForKnownAnswer_ShouldAgreeWithStreamingAppend(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -38,7 +38,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="expectedCheck">The expected check code.</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void Compute_WhenKnownAnswer_ShouldReturnExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;

@@ -57,7 +57,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void Min_WhenUsingReverseComparer_ShouldReturnLargestNumeric()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         Assert.AreEqual(10, 10.Min(1, comparer));
         Assert.AreEqual(10, 1.Min(10, comparer));

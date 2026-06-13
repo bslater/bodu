@@ -90,10 +90,10 @@ public sealed class Ed25519
     private const int KeySizeBits = 256;
 
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
+    private bool _disposed;
 
     private byte[]? _privateKey;
     private byte[]? _publicKey;
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ed25519" /> class with no key material.
@@ -107,25 +107,6 @@ public sealed class Ed25519
         LegalKeySizesValue = s_legalKeySizes;
         KeySizeValue = KeySizeBits;
     }
-
-    /// <summary>
-    /// Creates a new <see cref="Ed25519" /> instance with no key material.
-    /// </summary>
-    /// <returns>A new <see cref="Ed25519" /> instance.</returns>
-    public static new Ed25519 Create() =>
-        new();
-
-    /// <inheritdoc />
-    /// <returns>
-    /// <see langword="null" />, because Ed25519 is a signature algorithm and performs no key exchange.
-    /// </returns>
-    public override string? KeyExchangeAlgorithm =>
-        null;
-
-    /// <inheritdoc />
-    /// <returns>The string <c>"Ed25519"</c>.</returns>
-    public override string? SignatureAlgorithm =>
-        "Ed25519";
 
     /// <summary>
     /// Gets a value indicating whether the instance currently holds a private key.
@@ -163,6 +144,53 @@ public sealed class Ed25519
             ThrowIfDisposed();
             return _publicKey is not null;
         }
+    }
+
+    /// <inheritdoc />
+    /// <returns>
+    /// <see langword="null" />, because Ed25519 is a signature algorithm and performs no key exchange.
+    /// </returns>
+    public override string? KeyExchangeAlgorithm =>
+        null;
+
+    /// <inheritdoc />
+    /// <returns>The string <c>"Ed25519"</c>.</returns>
+    public override string? SignatureAlgorithm =>
+        "Ed25519";
+
+    /// <summary>
+    /// Creates a new <see cref="Ed25519" /> instance with no key material.
+    /// </summary>
+    /// <returns>A new <see cref="Ed25519" /> instance.</returns>
+    public static new Ed25519 Create() =>
+        new();
+
+    /// <summary>
+    /// Exports the raw 32-byte RFC 8032 private key seed.
+    /// </summary>
+    /// <returns>A fresh copy of the 32-byte seed exactly as generated or imported.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
+    public byte[] ExportPrivateKey()
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+
+        return (byte[])_privateKey!.Clone();
+    }
+
+    /// <summary>
+    /// Exports the raw 32-byte RFC 8032 public key.
+    /// </summary>
+    /// <returns>A fresh copy of the 32-byte compressed point encoding.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
+    public byte[] ExportPublicKey()
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+
+        return (byte[])_publicKey!.Clone();
     }
 
     /// <summary>
@@ -229,34 +257,6 @@ public sealed class Ed25519
 
         CryptographyHelper.ClearAndNullify(ref _privateKey);
         _publicKey = publicKey.ToArray();
-    }
-
-    /// <summary>
-    /// Exports the raw 32-byte RFC 8032 private key seed.
-    /// </summary>
-    /// <returns>A fresh copy of the 32-byte seed exactly as generated or imported.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
-    public byte[] ExportPrivateKey()
-    {
-        ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
-
-        return (byte[])_privateKey!.Clone();
-    }
-
-    /// <summary>
-    /// Exports the raw 32-byte RFC 8032 public key.
-    /// </summary>
-    /// <returns>A fresh copy of the 32-byte compressed point encoding.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
-    public byte[] ExportPublicKey()
-    {
-        ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
-
-        return (byte[])_publicKey!.Clone();
     }
 
     /// <summary>

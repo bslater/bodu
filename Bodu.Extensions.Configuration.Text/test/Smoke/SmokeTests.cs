@@ -6,6 +6,7 @@
 
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Test;
+using Bodu.Test.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -25,10 +26,7 @@ public class BridgeSmokeTests
     [TestCategory(TestCategories.Smoke)]
     public void AddConfiguration_ShouldExposeColonDelimitedKeys()
     {
-        var path = Path.GetTempFileName();
-        try
-        {
-            File.WriteAllText(path, """
+        using TempFileScope scope = new("""
 [*.cs]
 logging.level.default = Information
 
@@ -36,21 +34,16 @@ logging.level.default = Information
 logging.level.default = Warning
 """);
 
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfigurationFile(source =>
-                {
-                    source.FileProvider = new PhysicalFileProvider(Path.GetDirectoryName(path)!);
-                    source.Path = Path.GetFileName(path);
-                    source.TargetPath = "src/Foo.cs";
-                })
-                .Build();
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddBoduConfigurationFile(source =>
+            {
+                source.FileProvider = new PhysicalFileProvider(scope.Directory);
+                source.Path = Path.GetFileName(scope.Path);
+                source.TargetPath = "src/Foo.cs";
+            })
+            .Build();
 
-            Assert.AreEqual("Warning", configuration["logging:level:default"]);
-        }
-        finally
-        {
-            File.Delete(path);
-        }
+        Assert.AreEqual("Warning", configuration["logging:level:default"]);
     }
 
     /// <summary>

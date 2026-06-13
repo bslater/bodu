@@ -61,6 +61,24 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The destination length must equal the configured tag length of {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_Argon2DestinationLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Argon2DestinationLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported Argon2 version: 0x{0}. Supported versions are 0x10 and 0x13..
+        /// </summary>
+        internal static string Arg_Invalid_Argon2Version {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Argon2Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid block size {0}. Size of block must be {1}..
         /// </summary>
         internal static string Arg_Invalid_BlockLength {
@@ -79,14 +97,14 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CTS mode requires at least one full block ({0} bytes) of input..
+        ///   Looks up a localized string similar to {0} requires a cipher with a {1}-byte block size..
         /// </summary>
-        internal static string Arg_Invalid_CtsInputTooShort {
+        internal static string Arg_Invalid_CipherBlockSizeRequired {
             get {
-                return ResourceManager.GetString("Arg_Invalid_CtsInputTooShort", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CipherBlockSizeRequired", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The signature context must not exceed {0} bytes..
         /// </summary>
@@ -95,7 +113,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_ContextTooLong", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CTS mode requires at least one full block ({0} bytes) of input..
+        /// </summary>
+        internal static string Arg_Invalid_CtsInputTooShort {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CtsInputTooShort", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to The destination buffer must be exactly {0} bytes..
         /// </summary>
@@ -104,7 +131,43 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_DestinationLength", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The encoded {0} key is not a valid {1} encoding..
+        /// </summary>
+        internal static string Arg_Invalid_EncodedKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EncodedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The GCM nonce must be exactly {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_GcmNonceLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_GcmNonceLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The initial counter block must be exactly {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_InitialCounterBlockLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_InitialCounterBlockLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The initial counter block must not end in 0xFFFFFFFF; inc32(J0) would collide with J0 itself..
+        /// </summary>
+        internal static string Arg_Invalid_InitialCounterBlockReserved {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_InitialCounterBlockReserved", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Input must be at least {0} bytes (the tag size)..
         /// </summary>
@@ -133,11 +196,47 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The initialization vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes)..
+        /// </summary>
+        internal static string Arg_Invalid_IvLengthForMode {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IvLengthForMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The salt must be at least {0} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_KdfSaltTooShort {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_KdfSaltTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The ciphertext must be exactly {0} bytes for {1}..
+        /// </summary>
+        internal static string Arg_Invalid_KemCiphertextLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_KemCiphertextLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input must be a multiple of block size when using no padding..
         /// </summary>
         internal static string Arg_Invalid_NoPaddingInputNotAligned {
             get {
                 return ResourceManager.GetString("Arg_Invalid_NoPaddingInputNotAligned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag size ({0} bits) must be a positive multiple of 8 between 8 and the cipher block size ({1} bits)..
+        /// </summary>
+        internal static string Arg_Invalid_OcbTagSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_OcbTagSize", resourceCulture);
             }
         }
         
@@ -158,25 +257,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_PearsonTable", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The encoded {0} key is not a valid {1} encoding..
-        /// </summary>
-        internal static string Arg_Invalid_EncodedKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EncodedKey", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ciphertext must be exactly {0} bytes for {1}..
-        /// </summary>
-        internal static string Arg_Invalid_KemCiphertextLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_KemCiphertextLength", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The imported {0} key must be exactly {1} bytes..
         /// </summary>
@@ -223,6 +304,60 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits)..
+        /// </summary>
+        internal static string Arg_Invalid_XtsCipherBlockSizeMismatch {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_XtsCipherBlockSizeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tweak length ({0} bytes) must equal the cipher block size ({1} bytes)..
+        /// </summary>
+        internal static string Arg_Invalid_XtsTweakLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_XtsTweakLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 iterations must be at least 1..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2Iterations {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2Iterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 memory must be at least {0} kibibytes (8 * parallelism)..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2Memory {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2Memory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 parallelism must be between 1 and {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2Parallelism {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2Parallelism", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 tag length must be at least {0} bytes..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2TagLength {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2TagLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified block size must be greater than {0}..
         /// </summary>
         internal static string Arg_OutOfRange_BlockSizeMustBeGreaterThan {
@@ -246,6 +381,42 @@ namespace Bodu {
         internal static string Arg_OutOfRange_FanOutMinimum {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_FanOutMinimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt block size r must be at least 1..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptBlockSize {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptBlockSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt cost parameter N must be greater than 1 and a power of two..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptCostNotPowerOfTwo {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptCostNotPowerOfTwo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt output length must be between 1 and {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptOutputLength {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptOutputLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt parallelization parameter p must be between 1 and {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptParallelization {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptParallelization", resourceCulture);
             }
         }
         
@@ -349,6 +520,33 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GCM associated-data length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair..
+        /// </summary>
+        internal static string Crypt_Invalid_GcmAadLengthExceeded {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_GcmAadLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCM 32-bit counter would wrap past 0xFFFFFFFF; the message length exceeds the maximum allowed per (key, nonce) pair..
+        /// </summary>
+        internal static string Crypt_Invalid_GcmCounterWrap {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_GcmCounterWrap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCM plaintext length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair..
+        /// </summary>
+        internal static string Crypt_Invalid_GcmPlaintextLengthExceeded {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_GcmPlaintextLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The hash algorithm&apos;s destination buffer was too small..
         /// </summary>
         internal static string Crypt_Invalid_HashAlgorithmDestinationBufferTooSmall {
@@ -421,6 +619,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The requested memory size is too large to allocate as a single array..
+        /// </summary>
+        internal static string Crypt_Invalid_KdfMemoryExceedsLimit {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_KdfMemoryExceedsLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified key is not a valid length for this algorithm. Actual: {0} bytes. Expected: {1} bytes..
         /// </summary>
         internal static string Crypt_Invalid_KeyByteLength {
@@ -455,7 +662,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_NonCompliantFipsAlgorithm", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The operation requires a private key, but none is present on this instance..
         /// </summary>
@@ -464,7 +671,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_NoPrivateKey", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The operation requires a public key, but none is present on this instance..
         /// </summary>
@@ -554,7 +761,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_SecretboxAssociatedData", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream..
         /// </summary>
@@ -599,7 +806,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_UnsupportedPaddingMode", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The X25519 shared secret is all zero; the peer public key is a low-order point..
         /// </summary>
@@ -624,6 +831,33 @@ namespace Bodu {
         internal static string Crypt_Invalid_XofSqueezeAfterAbsorb {
             get {
                 return ResourceManager.GetString("Crypt_Invalid_XofSqueezeAfterAbsorb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value is not a valid hexadecimal string..
+        /// </summary>
+        internal static string Format_Invalid_HexString {
+            get {
+                return ResourceManager.GetString("Format_Invalid_HexString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The PHC encoded-hash string is not well formed..
+        /// </summary>
+        internal static string Format_Invalid_PhcString {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PhcString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BLAKE3 CV stack exceeded its {0}-level maximum tree depth..
+        /// </summary>
+        internal static string Op_Invalid_Blake3CvStackDepth {
+            get {
+                return ResourceManager.GetString("Op_Invalid_Blake3CvStackDepth", resourceCulture);
             }
         }
         
@@ -655,11 +889,29 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This GCM transform has already completed and cannot be reused. Create a new instance per message..
+        /// </summary>
+        internal static string Op_Invalid_GcmTransformCompleted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_GcmTransformCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The MemoryStream does not expose its underlying buffer..
         /// </summary>
         internal static string Op_Invalid_MemoryStreamBufferInaccessible {
             get {
                 return ResourceManager.GetString("Op_Invalid_MemoryStreamBufferInaccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write to level-{0} channel failed. The channel was completed before all nodes were submitted..
+        /// </summary>
+        internal static string Op_Invalid_MerkleChannelCompleted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleChannelCompleted", resourceCulture);
             }
         }
         
@@ -750,258 +1002,6 @@ namespace Bodu {
         internal static string Op_NotSupported_Poly1305Padding {
             get {
                 return ResourceManager.GetString("Op_NotSupported_Poly1305Padding", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} requires a cipher with a {1}-byte block size..
-        /// </summary>
-        internal static string Arg_Invalid_CipherBlockSizeRequired {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_CipherBlockSizeRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The GCM nonce must be exactly {0} bytes..
-        /// </summary>
-        internal static string Arg_Invalid_GcmNonceLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_GcmNonceLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The initial counter block must be exactly {0} bytes..
-        /// </summary>
-        internal static string Arg_Invalid_InitialCounterBlockLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_InitialCounterBlockLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The initial counter block must not end in 0xFFFFFFFF; inc32(J0) would collide with J0 itself..
-        /// </summary>
-        internal static string Arg_Invalid_InitialCounterBlockReserved {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_InitialCounterBlockReserved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The initialization vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes)..
-        /// </summary>
-        internal static string Arg_Invalid_IvLengthForMode {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_IvLengthForMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tag size ({0} bits) must be a positive multiple of 8 between 8 and the cipher block size ({1} bits)..
-        /// </summary>
-        internal static string Arg_Invalid_OcbTagSize {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_OcbTagSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits)..
-        /// </summary>
-        internal static string Arg_Invalid_XtsCipherBlockSizeMismatch {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_XtsCipherBlockSizeMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tweak length ({0} bytes) must equal the cipher block size ({1} bytes)..
-        /// </summary>
-        internal static string Arg_Invalid_XtsTweakLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_XtsTweakLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to GCM associated-data length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair..
-        /// </summary>
-        internal static string Crypt_Invalid_GcmAadLengthExceeded {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_GcmAadLengthExceeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to GCM 32-bit counter would wrap past 0xFFFFFFFF; the message length exceeds the maximum allowed per (key, nonce) pair..
-        /// </summary>
-        internal static string Crypt_Invalid_GcmCounterWrap {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_GcmCounterWrap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to GCM plaintext length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair..
-        /// </summary>
-        internal static string Crypt_Invalid_GcmPlaintextLengthExceeded {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_GcmPlaintextLengthExceeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BLAKE3 CV stack exceeded its {0}-level maximum tree depth..
-        /// </summary>
-        internal static string Op_Invalid_Blake3CvStackDepth {
-            get {
-                return ResourceManager.GetString("Op_Invalid_Blake3CvStackDepth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This GCM transform has already completed and cannot be reused. Create a new instance per message..
-        /// </summary>
-        internal static string Op_Invalid_GcmTransformCompleted {
-            get {
-                return ResourceManager.GetString("Op_Invalid_GcmTransformCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Write to level-{0} channel failed. The channel was completed before all nodes were submitted..
-        /// </summary>
-        internal static string Op_Invalid_MerkleChannelCompleted {
-            get {
-                return ResourceManager.GetString("Op_Invalid_MerkleChannelCompleted", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Argon2 parallelism must be between 1 and {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_Argon2Parallelism {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_Argon2Parallelism", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Argon2 iterations must be at least 1..
-        /// </summary>
-        internal static string Arg_OutOfRange_Argon2Iterations {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_Argon2Iterations", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Argon2 tag length must be at least {0} bytes..
-        /// </summary>
-        internal static string Arg_OutOfRange_Argon2TagLength {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_Argon2TagLength", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Argon2 memory must be at least {0} kibibytes (8 * parallelism)..
-        /// </summary>
-        internal static string Arg_OutOfRange_Argon2Memory {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_Argon2Memory", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported Argon2 version: 0x{0}. Supported versions are 0x10 and 0x13..
-        /// </summary>
-        internal static string Arg_Invalid_Argon2Version {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_Argon2Version", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The destination length must equal the configured tag length of {0} bytes..
-        /// </summary>
-        internal static string Arg_Invalid_Argon2DestinationLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_Argon2DestinationLength", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The salt must be at least {0} bytes..
-        /// </summary>
-        internal static string Arg_Invalid_KdfSaltTooShort {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_KdfSaltTooShort", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The requested memory size is too large to allocate as a single array..
-        /// </summary>
-        internal static string Crypt_Invalid_KdfMemoryExceedsLimit {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_KdfMemoryExceedsLimit", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The PHC encoded-hash string is not well formed..
-        /// </summary>
-        internal static string Format_Invalid_PhcString {
-            get {
-                return ResourceManager.GetString("Format_Invalid_PhcString", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The value is not a valid hexadecimal string..
-        /// </summary>
-        internal static string Format_Invalid_HexString {
-            get {
-                return ResourceManager.GetString("Format_Invalid_HexString", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The scrypt cost parameter N must be greater than 1 and a power of two..
-        /// </summary>
-        internal static string Arg_OutOfRange_ScryptCostNotPowerOfTwo {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ScryptCostNotPowerOfTwo", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The scrypt block size r must be at least 1..
-        /// </summary>
-        internal static string Arg_OutOfRange_ScryptBlockSize {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ScryptBlockSize", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The scrypt parallelization parameter p must be between 1 and {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_ScryptParallelization {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ScryptParallelization", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The scrypt output length must be between 1 and {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_ScryptOutputLength {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ScryptOutputLength", resourceCulture);
             }
         }
     }

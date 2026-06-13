@@ -17,7 +17,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="value">The full sequence in canonical form.</param>
     /// <param name="expectedIsValid">The verdict the algorithm is expected to render.</param>
     [TestMethod]
-    [DynamicData(nameof(IsValidKnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(IsValidKnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void IsValid_WhenKnownAnswer_ShouldReturnExpectedVerdict(string name, string value, bool expectedIsValid)
     {
         _ = name;

@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
 using Bodu.IO.Hashing.Checksums;
 
 namespace Bodu.IO.Hashing.CheckDigits;
@@ -27,18 +26,6 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     where TTest : MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>, new()
     where TAlgorithm : MultiCharCheckDigitAlgorithm, new()
 {
-
-    /// <summary>
-    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
-    /// </summary>
-    /// <param name="methodInfo">The <see cref="MethodInfo" /> for the test under construction (unused).</param>
-    /// <param name="data">The test case data row; the first element is expected to be the vector name.</param>
-    /// <returns>The vector name for the current test case.</returns>
-    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
-    {
-        _ = methodInfo;
-        return (string)data[0];
-    }
 
     /// <summary>
     /// Returns an ordered dataset of <c>IsValid</c> known-answer vectors for use with MSTest data-driven tests.

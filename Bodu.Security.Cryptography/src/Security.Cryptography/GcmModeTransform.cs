@@ -108,6 +108,18 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
+
+    /// <summary>
+    /// SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes (
+    /// <c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.
+    /// </summary>
+    internal const long MaxAadBytes = 1L << 61;
+
+    /// <summary>
+    /// SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes (
+    /// <c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.
+    /// </summary>
+    internal const long MaxPlaintextBytes = ((1L << 39) - 256) / 8;
     /// <summary>
     /// The fixed GCM block size in bits (128 bits = 16 bytes).
     /// </summary>
@@ -122,18 +134,6 @@ public sealed class GcmModeTransform
     /// The required GCM nonce size in bits (96 bits = 12 bytes).
     /// </summary>
     private const int NonceSize = 96;
-
-    /// <summary>
-    /// SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes (
-    /// <c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.
-    /// </summary>
-    internal const long MaxPlaintextBytes = ((1L << 39) - 256) / 8;
-
-    /// <summary>
-    /// SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes (
-    /// <c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.
-    /// </summary>
-    internal const long MaxAadBytes = 1L << 61;
 
     private readonly IBlockCipher _cipher;
     private byte[]? _aad;
@@ -258,42 +258,6 @@ public sealed class GcmModeTransform
     /// <inheritdoc />
     /// <value>Length of the GCM authentication tag is 128 bits (16 bytes).</value>
     public int TagSize => DefaultTagSize;
-
-    /// <summary>
-    /// Validates that the supplied plaintext length does not exceed the SP 800-38D §5.2.1.1 per-(key,nonce) plaintext
-    /// ceiling of <c>2³⁹ − 256</c> bits. Internal so tests can drive the check with synthetic length values that the
-    /// public int-typed span surface cannot construct.
-    /// </summary>
-    /// <param name="length">The candidate plaintext length in bytes.</param>
-    /// <exception cref="CryptographicException">
-    /// <paramref name="length" /> exceeds <see cref="MaxPlaintextBytes" />.
-    /// </exception>
-    internal static void ValidatePlaintextLength(long length)
-    {
-        if (length > MaxPlaintextBytes)
-        {
-            throw new CryptographicException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_GcmPlaintextLengthExceeded, length, MaxPlaintextBytes));
-        }
-    }
-
-    /// <summary>
-    /// Validates that the supplied associated-data length does not exceed the SP 800-38D §5.2.1.1 per-(key,nonce) AAD
-    /// ceiling of <c>2⁶⁴</c> bits. Internal so tests can drive the check with synthetic length values that the public
-    /// int-typed span surface cannot construct.
-    /// </summary>
-    /// <param name="length">The candidate associated-data length in bytes.</param>
-    /// <exception cref="CryptographicException">
-    /// <paramref name="length" /> exceeds <see cref="MaxAadBytes" />.
-    /// </exception>
-    internal static void ValidateAadLength(long length)
-    {
-        if (length > MaxAadBytes)
-        {
-            throw new CryptographicException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_GcmAadLengthExceeded, length, MaxAadBytes));
-        }
-    }
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -461,7 +425,7 @@ public sealed class GcmModeTransform
 
         ValidateAadLength(associatedData.Length);
 
-        _aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
+        _aad = associatedData.IsEmpty ? [] : associatedData.ToArray();
         _aadProcessed = true;
     }
 
@@ -479,6 +443,42 @@ public sealed class GcmModeTransform
     /// </exception>
     internal static GcmModeTransform CreateForTesting(IBlockCipher cipher, ReadOnlySpan<byte> initialCounterBlock) =>
         new(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
+
+    /// <summary>
+    /// Validates that the supplied associated-data length does not exceed the SP 800-38D §5.2.1.1 per-(key,nonce) AAD
+    /// ceiling of <c>2⁶⁴</c> bits. Internal so tests can drive the check with synthetic length values that the public
+    /// int-typed span surface cannot construct.
+    /// </summary>
+    /// <param name="length">The candidate associated-data length in bytes.</param>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="length" /> exceeds <see cref="MaxAadBytes" />.
+    /// </exception>
+    internal static void ValidateAadLength(long length)
+    {
+        if (length > MaxAadBytes)
+        {
+            throw new CryptographicException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_GcmAadLengthExceeded, length, MaxAadBytes));
+        }
+    }
+
+    /// <summary>
+    /// Validates that the supplied plaintext length does not exceed the SP 800-38D §5.2.1.1 per-(key,nonce) plaintext
+    /// ceiling of <c>2³⁹ − 256</c> bits. Internal so tests can drive the check with synthetic length values that the
+    /// public int-typed span surface cannot construct.
+    /// </summary>
+    /// <param name="length">The candidate plaintext length in bytes.</param>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="length" /> exceeds <see cref="MaxPlaintextBytes" />.
+    /// </exception>
+    internal static void ValidatePlaintextLength(long length)
+    {
+        if (length > MaxPlaintextBytes)
+        {
+            throw new CryptographicException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_GcmPlaintextLengthExceeded, length, MaxPlaintextBytes));
+        }
+    }
 
     /// <summary>
     /// Processes one 16-byte block through GHASH: <c>y = (y ⊕ block) · H</c>.

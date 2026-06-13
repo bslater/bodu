@@ -67,10 +67,22 @@ namespace Bodu.Collections.Generic.Concurrent;
 public sealed partial class ConcurrentHashSet<T>
     where T : notnull
 {
+
+    /// <summary>
+    /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on
+    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via the
+    /// internal initializer.
+    /// </summary>
+    internal const int MaxDefaultConcurrencyLevel = 32;
     /// <summary>
     /// The default initial bucket count used when no capacity hint is supplied.
     /// </summary>
     private const int DefaultCapacity = 31;
+
+    /// <summary>
+    /// The equality comparer used to hash and compare elements. Never <see langword="null" />.
+    /// </summary>
+    private readonly IEqualityComparer<T> _comparer;
 
     /// <summary>
     /// The fixed array of monitor objects used for lock striping. Bucket <c>b</c> is guarded by
@@ -79,21 +91,16 @@ public sealed partial class ConcurrentHashSet<T>
     private readonly object[] _locks;
 
     /// <summary>
-    /// The equality comparer used to hash and compare elements. Never <see langword="null" />.
+    /// The maximum number of elements a single lock region may own before <see cref="Add" /> requests a resize.
+    /// Recomputed whenever the bucket table grows.
     /// </summary>
-    private readonly IEqualityComparer<T> _comparer;
+    private int _budget;
 
     /// <summary>
     /// The current bucket table. Replaced atomically by <see cref="GrowTable" /> and <see cref="Clear" /> while every
     /// lock is held; declared <see langword="volatile" /> so lock-free readers observe a fully published table.
     /// </summary>
     private volatile Tables _tables;
-
-    /// <summary>
-    /// The maximum number of elements a single lock region may own before <see cref="Add" /> requests a resize.
-    /// Recomputed whenever the bucket table grows.
-    /// </summary>
-    private int _budget;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class that is empty and uses the default
@@ -129,6 +136,16 @@ public sealed partial class ConcurrentHashSet<T>
     { }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class containing the distinct elements
+    /// copied from <paramref name="collection" />, using the default equality comparer.
+    /// </summary>
+    /// <param name="collection">The collection whose distinct elements are copied into the set.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
+    public ConcurrentHashSet(IEnumerable<T> collection)
+        : this(collection, null)
+    { }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class that is empty, sized for the
     /// specified initial capacity, and uses the specified equality comparer.
     /// </summary>
@@ -143,16 +160,6 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     public ConcurrentHashSet(int capacity, IEqualityComparer<T>? comparer)
         : this(DefaultConcurrencyLevel, capacity, comparer)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class containing the distinct elements
-    /// copied from <paramref name="collection" />, using the default equality comparer.
-    /// </summary>
-    /// <param name="collection">The collection whose distinct elements are copied into the set.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    public ConcurrentHashSet(IEnumerable<T> collection)
-        : this(collection, null)
     { }
 
     /// <summary>
@@ -210,53 +217,49 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets the default number of lock stripes used by the public constructors. Reads
-    /// <see cref="Environment.ProcessorCount" /> and routes through <see cref="ClampDefaultConcurrencyLevel(int)" /> so
-    /// the clamp logic can be exercised in isolation.
+    /// Gets an approximate element count without acquiring any stripe lock.
     /// </summary>
-    /// <returns>The clamped default lock striping level for newly created instances.</returns>
-    private static int DefaultConcurrencyLevel =>
-        ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
-
-    /// <summary>
-    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at least
-    /// one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
-    /// </summary>
-    /// <param name="processorCount">The raw processor count to clamp.</param>
-    /// <returns>A value in the range <c>[1, MaxDefaultConcurrencyLevel]</c>.</returns>
+    /// <returns>
+    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other thread
+    /// is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the returned value
+    /// may not reflect any single coherent point-in-time state.
+    /// </returns>
     /// <remarks>
-    /// Extracted as a static helper so unit tests can exercise the clamp envelope with synthetic processor counts
-    /// rather than relying on the machine's actual <see cref="Environment.ProcessorCount" />.
+    /// <para>
+    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
+    /// tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" /> when an
+    /// exact snapshot is required.
+    /// </para>
+    /// <para>
+    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by the
+    /// number of lock stripes (the current default is at most <see cref="MaxDefaultConcurrencyLevel" />), not the
+    /// number of elements.
+    /// </para>
     /// </remarks>
-    internal static int ClampDefaultConcurrencyLevel(int processorCount) =>
-        Math.Clamp(processorCount, 1, MaxDefaultConcurrencyLevel);
+    public int ApproximateCount
+    {
+        get
+        {
+            var countPerLock = _tables._countPerLock;
+            var count = 0;
 
-    /// <summary>
-    /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on
-    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via the
-    /// internal initializer.
-    /// </summary>
-    internal const int MaxDefaultConcurrencyLevel = 32;
+            for (var i = 0; i < countPerLock.Length; i++)
+            {
+                checked
+                {
+                    count += Volatile.Read(ref countPerLock[i]);
+                }
+            }
+
+            return count;
+        }
+    }
 
     /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
     /// </summary>
     /// <returns>The active equality comparer.</returns>
     public IEqualityComparer<T> Comparer => _comparer;
-
-    /// <summary>
-    /// Gets the number of buckets in the current internal table. Exposed to the test assembly so that table-sizing
-    /// invariants can be asserted directly.
-    /// </summary>
-    /// <returns>The length of the current bucket array.</returns>
-    internal int BucketCount => _tables._buckets.Length;
-
-    /// <summary>
-    /// Gets the number of stripe locks that guard the table. Exposed to the test assembly so that table-sizing
-    /// invariants can be asserted directly.
-    /// </summary>
-    /// <returns>The fixed number of stripe locks allocated at construction.</returns>
-    internal int LockCount => _locks.Length;
 
     /// <summary>
     /// Gets the number of elements currently contained in the set.
@@ -329,45 +332,6 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets an approximate element count without acquiring any stripe lock.
-    /// </summary>
-    /// <returns>
-    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other thread
-    /// is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the returned value
-    /// may not reflect any single coherent point-in-time state.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
-    /// tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" /> when an
-    /// exact snapshot is required.
-    /// </para>
-    /// <para>
-    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by the
-    /// number of lock stripes (the current default is at most <see cref="MaxDefaultConcurrencyLevel" />), not the
-    /// number of elements.
-    /// </para>
-    /// </remarks>
-    public int ApproximateCount
-    {
-        get
-        {
-            var countPerLock = _tables._countPerLock;
-            var count = 0;
-
-            for (var i = 0; i < countPerLock.Length; i++)
-            {
-                checked
-                {
-                    count += Volatile.Read(ref countPerLock[i]);
-                }
-            }
-
-            return count;
-        }
-    }
-
-    /// <summary>
     /// Gets an <strong>approximate</strong> indication of whether the set is empty, computed without acquiring any
     /// stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and signals that the answer may
     /// briefly disagree with reality under concurrent mutation.
@@ -399,6 +363,29 @@ public sealed partial class ConcurrentHashSet<T>
             return true;
         }
     }
+
+    /// <summary>
+    /// Gets the number of buckets in the current internal table. Exposed to the test assembly so that table-sizing
+    /// invariants can be asserted directly.
+    /// </summary>
+    /// <returns>The length of the current bucket array.</returns>
+    internal int BucketCount => _tables._buckets.Length;
+
+    /// <summary>
+    /// Gets the number of stripe locks that guard the table. Exposed to the test assembly so that table-sizing
+    /// invariants can be asserted directly.
+    /// </summary>
+    /// <returns>The fixed number of stripe locks allocated at construction.</returns>
+    internal int LockCount => _locks.Length;
+
+    /// <summary>
+    /// Gets the default number of lock stripes used by the public constructors. Reads
+    /// <see cref="Environment.ProcessorCount" /> and routes through <see cref="ClampDefaultConcurrencyLevel(int)" /> so
+    /// the clamp logic can be exercised in isolation.
+    /// </summary>
+    /// <returns>The clamped default lock striping level for newly created instances.</returns>
+    private static int DefaultConcurrencyLevel =>
+        ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
 
     /// <summary>
     /// Adds the specified element to the set.
@@ -457,6 +444,62 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
+    /// Removes all elements from the set.
+    /// </summary>
+    /// <remarks>
+    /// This operation acquires every internal lock and installs a fresh, empty bucket table, so it is atomic with
+    /// respect to all other operations. The replacement table keeps at least as many buckets as there are lock stripes,
+    /// preserving the invariant that every stripe guards at least one bucket.
+    /// </remarks>
+    public void Clear()
+    {
+        var locksAcquired = 0;
+        try
+        {
+            AcquireAllLocks(ref locksAcquired);
+
+            // Retain the current bucket count so a previously grown set is not forced to immediately regrow, and
+            // never drop below the lock count or a stripe would guard zero buckets.
+            var bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
+            _tables = new Tables(new Node?[bucketCount], new int[_locks.Length]);
+            _budget = Math.Max(1, bucketCount / _locks.Length);
+        }
+        finally
+        {
+            ReleaseLocks(locksAcquired);
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the set contains the specified element.
+    /// </summary>
+    /// <param name="item">The element to locate.</param>
+    /// <returns>
+    /// <see langword="true" /> if an equal element was present during the call; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// This operation is lock-free: it walks the bucket chain through volatile reads and never blocks or is blocked by
+    /// a concurrent writer.
+    /// </remarks>
+    public bool Contains(T item)
+    {
+        ThrowHelper.ThrowIfNull(item);
+
+        var hashCode = _comparer.GetHashCode(item);
+        Tables tables = _tables;
+        var bucketNo = GetBucket(hashCode, tables._buckets.Length);
+
+        for (Node? node = Volatile.Read(ref tables._buckets[bucketNo]); node is not null; node = node._next)
+        {
+            if (hashCode == node._hashCode && _comparer.Equals(node._item, item))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Removes the specified element from the set.
     /// </summary>
     /// <param name="item">The element to remove.</param>
@@ -508,62 +551,6 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Determines whether the set contains the specified element.
-    /// </summary>
-    /// <param name="item">The element to locate.</param>
-    /// <returns>
-    /// <see langword="true" /> if an equal element was present during the call; otherwise, <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
-    /// <remarks>
-    /// This operation is lock-free: it walks the bucket chain through volatile reads and never blocks or is blocked by
-    /// a concurrent writer.
-    /// </remarks>
-    public bool Contains(T item)
-    {
-        ThrowHelper.ThrowIfNull(item);
-
-        var hashCode = _comparer.GetHashCode(item);
-        Tables tables = _tables;
-        var bucketNo = GetBucket(hashCode, tables._buckets.Length);
-
-        for (Node? node = Volatile.Read(ref tables._buckets[bucketNo]); node is not null; node = node._next)
-        {
-            if (hashCode == node._hashCode && _comparer.Equals(node._item, item))
-                return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Removes all elements from the set.
-    /// </summary>
-    /// <remarks>
-    /// This operation acquires every internal lock and installs a fresh, empty bucket table, so it is atomic with
-    /// respect to all other operations. The replacement table keeps at least as many buckets as there are lock stripes,
-    /// preserving the invariant that every stripe guards at least one bucket.
-    /// </remarks>
-    public void Clear()
-    {
-        var locksAcquired = 0;
-        try
-        {
-            AcquireAllLocks(ref locksAcquired);
-
-            // Retain the current bucket count so a previously grown set is not forced to immediately regrow, and
-            // never drop below the lock count or a stripe would guard zero buckets.
-            var bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
-            _tables = new Tables(new Node?[bucketCount], new int[_locks.Length]);
-            _budget = Math.Max(1, bucketCount / _locks.Length);
-        }
-        finally
-        {
-            ReleaseLocks(locksAcquired);
-        }
-    }
-
-    /// <summary>
     /// Copies the elements of the set into a new array.
     /// </summary>
     /// <returns>
@@ -600,6 +587,99 @@ public sealed partial class ConcurrentHashSet<T>
         {
             ReleaseLocks(locksAcquired);
         }
+    }
+
+    /// <summary>
+    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at least
+    /// one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
+    /// </summary>
+    /// <param name="processorCount">The raw processor count to clamp.</param>
+    /// <returns>A value in the range <c>[1, MaxDefaultConcurrencyLevel]</c>.</returns>
+    /// <remarks>
+    /// Extracted as a static helper so unit tests can exercise the clamp envelope with synthetic processor counts
+    /// rather than relying on the machine's actual <see cref="Environment.ProcessorCount" />.
+    /// </remarks>
+    internal static int ClampDefaultConcurrencyLevel(int processorCount) =>
+        Math.Clamp(processorCount, 1, MaxDefaultConcurrencyLevel);
+
+    /// <summary>
+    /// Maps a hash code to a bucket index.
+    /// </summary>
+    /// <param name="hashCode">The element hash code.</param>
+    /// <param name="bucketCount">The number of buckets in the table.</param>
+    /// <returns>The zero-based bucket index for <paramref name="hashCode" />.</returns>
+    private static int GetBucket(int hashCode, int bucketCount) =>
+        (int)((uint)hashCode % (uint)bucketCount);
+
+    /// <summary>
+    /// Returns a bucket-count hint for sizing the initial table from a source collection.
+    /// </summary>
+    /// <param name="collection">The source collection, which may be <see langword="null" />.</param>
+    /// <returns>
+    /// The element count when it can be determined cheaply; otherwise <see cref="DefaultCapacity" />.
+    /// </returns>
+    private static int GetCapacityHint(IEnumerable<T>? collection) =>
+        collection switch
+        {
+            ICollection<T> generic => generic.Count,
+            IReadOnlyCollection<T> readOnly => readOnly.Count,
+            _ => DefaultCapacity,
+        };
+
+    /// <summary>
+    /// Acquires every stripe lock in ascending index order.
+    /// </summary>
+    /// <param name="locksAcquired">
+    /// A running count of locks successfully entered, incremented as each lock is taken so the caller's
+    /// <see langword="finally" /> block can release exactly the locks that were acquired.
+    /// </param>
+    private void AcquireAllLocks(ref int locksAcquired)
+    {
+        for (var i = 0; i < _locks.Length; i++)
+        {
+            var lockTaken = false;
+            try
+            {
+                Monitor.Enter(_locks[i], ref lockTaken);
+            }
+            finally
+            {
+                if (lockTaken)
+                    locksAcquired++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Maps a hash code to its bucket index and the index of the stripe lock that guards that bucket.
+    /// </summary>
+    /// <param name="hashCode">The element hash code.</param>
+    /// <param name="bucketNo">When this method returns, contains the bucket index.</param>
+    /// <param name="lockNo">When this method returns, contains the stripe lock index.</param>
+    /// <param name="bucketCount">The number of buckets in the table.</param>
+    private void GetBucketAndLockNo(int hashCode, out int bucketNo, out int lockNo, int bucketCount)
+    {
+        bucketNo = (int)((uint)hashCode % (uint)bucketCount);
+        lockNo = bucketNo % _locks.Length;
+    }
+
+    /// <summary>
+    /// Returns the total element count by summing the per-lock counters. The caller must already hold every lock.
+    /// </summary>
+    /// <returns>The number of elements currently stored across all buckets.</returns>
+    private int GetCountNoLocks()
+    {
+        var count = 0;
+        var countPerLock = _tables._countPerLock;
+        for (var i = 0; i < countPerLock.Length; i++)
+        {
+            checked
+            {
+                count += countPerLock[i];
+            }
+        }
+
+        return count;
     }
 
     /// <summary>
@@ -696,30 +776,6 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Acquires every stripe lock in ascending index order.
-    /// </summary>
-    /// <param name="locksAcquired">
-    /// A running count of locks successfully entered, incremented as each lock is taken so the caller's
-    /// <see langword="finally" /> block can release exactly the locks that were acquired.
-    /// </param>
-    private void AcquireAllLocks(ref int locksAcquired)
-    {
-        for (var i = 0; i < _locks.Length; i++)
-        {
-            var lockTaken = false;
-            try
-            {
-                Monitor.Enter(_locks[i], ref lockTaken);
-            }
-            finally
-            {
-                if (lockTaken)
-                    locksAcquired++;
-            }
-        }
-    }
-
-    /// <summary>
     /// Releases the first <paramref name="locksAcquired" /> stripe locks.
     /// </summary>
     /// <param name="locksAcquired">The number of stripe locks, starting at index zero, to release.</param>
@@ -728,60 +784,4 @@ public sealed partial class ConcurrentHashSet<T>
         for (var i = 0; i < locksAcquired; i++)
             Monitor.Exit(_locks[i]);
     }
-
-    /// <summary>
-    /// Returns the total element count by summing the per-lock counters. The caller must already hold every lock.
-    /// </summary>
-    /// <returns>The number of elements currently stored across all buckets.</returns>
-    private int GetCountNoLocks()
-    {
-        var count = 0;
-        var countPerLock = _tables._countPerLock;
-        for (var i = 0; i < countPerLock.Length; i++)
-        {
-            checked
-            {
-                count += countPerLock[i];
-            }
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Maps a hash code to a bucket index.
-    /// </summary>
-    /// <param name="hashCode">The element hash code.</param>
-    /// <param name="bucketCount">The number of buckets in the table.</param>
-    /// <returns>The zero-based bucket index for <paramref name="hashCode" />.</returns>
-    private static int GetBucket(int hashCode, int bucketCount) =>
-        (int)((uint)hashCode % (uint)bucketCount);
-
-    /// <summary>
-    /// Maps a hash code to its bucket index and the index of the stripe lock that guards that bucket.
-    /// </summary>
-    /// <param name="hashCode">The element hash code.</param>
-    /// <param name="bucketNo">When this method returns, contains the bucket index.</param>
-    /// <param name="lockNo">When this method returns, contains the stripe lock index.</param>
-    /// <param name="bucketCount">The number of buckets in the table.</param>
-    private void GetBucketAndLockNo(int hashCode, out int bucketNo, out int lockNo, int bucketCount)
-    {
-        bucketNo = (int)((uint)hashCode % (uint)bucketCount);
-        lockNo = bucketNo % _locks.Length;
-    }
-
-    /// <summary>
-    /// Returns a bucket-count hint for sizing the initial table from a source collection.
-    /// </summary>
-    /// <param name="collection">The source collection, which may be <see langword="null" />.</param>
-    /// <returns>
-    /// The element count when it can be determined cheaply; otherwise <see cref="DefaultCapacity" />.
-    /// </returns>
-    private static int GetCapacityHint(IEnumerable<T>? collection) =>
-        collection switch
-        {
-            ICollection<T> generic => generic.Count,
-            IReadOnlyCollection<T> readOnly => readOnly.Count,
-            _ => DefaultCapacity,
-        };
 }

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.IO;
 using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 
@@ -30,19 +31,12 @@ key = value
     [TestMethod]
     public void Build_WhenMissingFileAndRequired_ShouldThrowFileNotFoundException()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddBoduConfigurationFile("does-not-exist.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
+        using TempDirectoryScope scope = new();
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddBoduConfigurationFile("does-not-exist.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
 
-            Assert.ThrowsExactly<FileNotFoundException>(() => _ = builder.Build());
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.ThrowsExactly<FileNotFoundException>(() => _ = builder.Build());
     }
 
     /// <summary>
@@ -52,20 +46,13 @@ key = value
     [TestMethod]
     public void Build_WhenMissingFileAndOptional_ShouldYieldEmptyConfiguration()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
-                .Build();
+        using TempDirectoryScope scope = new();
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
+            .Build();
 
-            Assert.IsNull(configuration["anything"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.IsNull(configuration["anything"]);
     }
 
     /// <summary>
@@ -76,25 +63,17 @@ key = value
     [TestMethod]
     public void Build_WhenMalformedRequiredFile_ShouldThrowAndPreserveParseException()
     {
-        var directory = CreateTempDirectory();
-        var path = Path.Combine(directory, "malformed.boduconfig");
-        try
-        {
-            File.WriteAllText(path, Malformed);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile("malformed.boduconfig", Malformed);
 
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddBoduConfigurationFile("malformed.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddBoduConfigurationFile("malformed.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
 
-            InvalidDataException ex = Assert.ThrowsExactly<InvalidDataException>(() => _ = builder.Build());
+        InvalidDataException ex = Assert.ThrowsExactly<InvalidDataException>(() => _ = builder.Build());
 
-            Assert.IsNotNull(ex.InnerException);
-            Assert.IsInstanceOfType<ConfigurationParseException>(ex.InnerException);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<ConfigurationParseException>(ex.InnerException);
     }
 
     /// <summary>
@@ -104,22 +83,14 @@ key = value
     [TestMethod]
     public void Build_WhenMalformedOptionalFile_ShouldStillThrow()
     {
-        var directory = CreateTempDirectory();
-        var path = Path.Combine(directory, "malformed.boduconfig");
-        try
-        {
-            File.WriteAllText(path, Malformed);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile("malformed.boduconfig", Malformed);
 
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddBoduConfigurationFile("malformed.boduconfig", targetPath: null, optional: true, reloadOnChange: false);
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddBoduConfigurationFile("malformed.boduconfig", targetPath: null, optional: true, reloadOnChange: false);
 
-            Assert.ThrowsExactly<InvalidDataException>(() => _ = builder.Build());
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.ThrowsExactly<InvalidDataException>(() => _ = builder.Build());
     }
 
     /// <summary>
@@ -173,12 +144,5 @@ key = value
 
         Assert.AreEqual("value", configuration["good"]);
         Assert.AreEqual("other", configuration["also_good"]);
-    }
-
-    private static string CreateTempDirectory()
-    {
-        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(directory);
-        return directory;
     }
 }

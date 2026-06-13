@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeArray.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -109,8 +109,7 @@ public sealed class BencodeArray
     {
         foreach (BencodeNode? item in _items)
         {
-            if (item is not null)
-                item.Parent = null;
+            item?.Parent = null;
         }
 
         _items.Clear();
@@ -145,8 +144,7 @@ public sealed class BencodeArray
         if (!_items.Remove(item))
             return false;
 
-        if (item is not null)
-            item.Parent = null;
+        item?.Parent = null;
 
         return true;
     }
@@ -157,8 +155,7 @@ public sealed class BencodeArray
         BencodeNode? removed = _items[index];
         _items.RemoveAt(index);
 
-        if (removed is not null)
-            removed.Parent = null;
+        removed?.Parent = null;
     }
 
     /// <inheritdoc />

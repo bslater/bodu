@@ -109,8 +109,7 @@ public sealed class TomlArray
     {
         foreach (TomlNode? item in _items)
         {
-            if (item is not null)
-                item.Parent = null;
+            item?.Parent = null;
         }
 
         _items.Clear();
@@ -145,8 +144,7 @@ public sealed class TomlArray
         if (!_items.Remove(item))
             return false;
 
-        if (item is not null)
-            item.Parent = null;
+        item?.Parent = null;
 
         return true;
     }
@@ -157,8 +155,7 @@ public sealed class TomlArray
         TomlNode? removed = _items[index];
         _items.RemoveAt(index);
 
-        if (removed is not null)
-            removed.Parent = null;
+        removed?.Parent = null;
     }
 
     /// <inheritdoc />

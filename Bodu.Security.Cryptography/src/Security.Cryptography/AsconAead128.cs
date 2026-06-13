@@ -130,16 +130,6 @@ public sealed class AsconAead128
     public const int NonceSize = 128;
 
     /// <summary>
-    /// Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).
-    /// </summary>
-    internal const int TagSizeBits = 128;
-
-    /// <summary>
-    /// Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).
-    /// </summary>
-    private const int RateSizeBits = 128;
-
-    /// <summary>
     /// Byte length of <see cref="KeySize" /> (16 bytes). Derived helper used for span-length checks.
     /// </summary>
     internal const int KeyBytes = KeySize / 8;
@@ -155,10 +145,9 @@ public sealed class AsconAead128
     internal const int TagBytes = TagSizeBits / 8;
 
     /// <summary>
-    /// Byte length of <see cref="RateSizeBits" /> (16 bytes). Derived helper used for block iteration over the sponge
-    /// rate.
+    /// Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).
     /// </summary>
-    private const int Rate = RateSizeBits / 8;
+    internal const int TagSizeBits = 128;
 
     // IV word for Ascon-AEAD128 (NIST SP 800-232).
     // Source: official ascon-c reference (crypto_aead/asconaead128/ref/constants.h, ASCON_128A_IV).
@@ -168,12 +157,23 @@ public sealed class AsconAead128
     private const int Pa = 12;
     private const int Pb = 8;
 
+    /// <summary>
+    /// Byte length of <see cref="RateSizeBits" /> (16 bytes). Derived helper used for block iteration over the sponge
+    /// rate.
+    /// </summary>
+    private const int Rate = RateSizeBits / 8;
+
+    /// <summary>
+    /// Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).
+    /// </summary>
+    private const int RateSizeBits = 128;
+
     private readonly KeyMaterial128 _key;
-    private AsconState _state;
 
     private bool _aadProcessed;
     private bool _completed;
     private bool _disposed;
+    private AsconState _state;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsconAead128" /> class with the specified key and nonce.
@@ -239,124 +239,6 @@ public sealed class AsconAead128
     /// <inheritdoc />
     /// <value>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).</value>
     public int TagSize => TagSizeBits;
-
-    /// <summary>
-    /// Absorbs associated data that will be authenticated but not encrypted.
-    /// </summary>
-    /// <param name="associatedData">
-    /// The bytes to authenticate. May be empty to indicate no associated data. Must be called exactly once before
-    /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
-    /// </param>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">This method has already been called on this instance.</exception>
-    public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
-    {
-        ThrowIfDisposed();
-        ThrowIfCompleted();
-
-        if (_aadProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
-
-        if (!associatedData.IsEmpty)
-        {
-            var offset = 0;
-
-            while (offset + Rate <= associatedData.Length)
-            {
-                _state.AbsorbRate128(associatedData.Slice(offset, Rate));
-                _state.Permute(Pb);
-                offset += Rate;
-            }
-
-            // Final partial block: Ascon padding — 0x01 at the first unused byte position.
-            Span<byte> pad = stackalloc byte[Rate];
-            var rem = associatedData.Length - offset;
-            associatedData.Slice(offset, rem).CopyTo(pad);
-            pad[rem] ^= 0x01;
-            _state.AbsorbRate128(pad);
-            _state.Permute(Pb);
-        }
-
-        // Domain separation: always applied after AD, even when AD is empty.
-        // SP 800-232 / ascon-c DSEP() = SETBYTE(0x80, 7) = 0x80 << 56.
-        _state.S4 ^= 0x8000000000000000UL;
-        _aadProcessed = true;
-    }
-
-    /// <summary>
-    /// Encrypts <paramref name="plaintext" /> and appends the 16-byte authentication tag to <paramref name="output" />.
-    /// </summary>
-    /// <param name="plaintext">The data to encrypt.</param>
-    /// <param name="output">
-    /// Receives the ciphertext followed immediately by the 16-byte tag. Must be at least
-    /// <c>plaintext.Length + <see cref="TagBytes"/></c> bytes long.
-    /// </param>
-    /// <returns>Total bytes written: <c>plaintext.Length + <see cref="TagBytes"/></c>.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">
-    /// <see cref="ProcessAssociatedData" /> has not been called.
-    /// </exception>
-    /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
-    public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
-    {
-        ThrowIfDisposed();
-        ThrowIfCompleted();
-        ThrowIfAadNotProcessed();
-
-        var required = plaintext.Length + TagBytes;
-        if (output.Length < required)
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
-                nameof(output));
-
-        try
-        {
-            var inOff = 0;
-            var outOff = 0;
-
-            while (inOff + Rate <= plaintext.Length)
-            {
-                var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
-                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
-
-                BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], _state.S0 ^ p0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], _state.S1 ^ p1);
-
-                _state.S0 ^= p0;
-                _state.S1 ^= p1;
-                _state.Permute(Pb);
-
-                inOff += Rate;
-                outOff += Rate;
-            }
-
-            var lastLen = plaintext.Length - inOff;
-
-            Span<byte> padded = stackalloc byte[Rate];
-            plaintext.Slice(inOff, lastLen).CopyTo(padded);
-            padded[lastLen] ^= 0x01;
-
-            var fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-            var fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
-
-            Span<byte> cOut = stackalloc byte[Rate];
-            BinaryPrimitives.WriteUInt64LittleEndian(cOut, _state.S0 ^ fp0);
-            BinaryPrimitives.WriteUInt64LittleEndian(cOut[8..], _state.S1 ^ fp1);
-
-            cOut[..lastLen].CopyTo(output[outOff..]);
-
-            _state.S0 ^= fp0;
-            _state.S1 ^= fp1;
-
-            Finalize(output.Slice(outOff + lastLen, TagBytes));
-
-            return required;
-        }
-        finally
-        {
-            _completed = true;
-        }
-    }
 
     /// <summary>
     /// Decrypts <paramref name="ciphertextWithTag" /> and verifies the 16-byte authentication tag.
@@ -476,6 +358,135 @@ public sealed class AsconAead128
     }
 
     /// <summary>
+    /// Encrypts <paramref name="plaintext" /> and appends the 16-byte authentication tag to <paramref name="output" />.
+    /// </summary>
+    /// <param name="plaintext">The data to encrypt.</param>
+    /// <param name="output">
+    /// Receives the ciphertext followed immediately by the 16-byte tag. Must be at least
+    /// <c>plaintext.Length + <see cref="TagBytes"/></c> bytes long.
+    /// </param>
+    /// <returns>Total bytes written: <c>plaintext.Length + <see cref="TagBytes"/></c>.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <see cref="ProcessAssociatedData" /> has not been called.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
+    public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        ThrowIfCompleted();
+        ThrowIfAadNotProcessed();
+
+        var required = plaintext.Length + TagBytes;
+        if (output.Length < required)
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
+                nameof(output));
+
+        try
+        {
+            var inOff = 0;
+            var outOff = 0;
+
+            while (inOff + Rate <= plaintext.Length)
+            {
+                var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
+                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
+
+                BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], _state.S0 ^ p0);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], _state.S1 ^ p1);
+
+                _state.S0 ^= p0;
+                _state.S1 ^= p1;
+                _state.Permute(Pb);
+
+                inOff += Rate;
+                outOff += Rate;
+            }
+
+            var lastLen = plaintext.Length - inOff;
+
+            Span<byte> padded = stackalloc byte[Rate];
+            plaintext.Slice(inOff, lastLen).CopyTo(padded);
+            padded[lastLen] ^= 0x01;
+
+            var fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
+            var fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
+
+            Span<byte> cOut = stackalloc byte[Rate];
+            BinaryPrimitives.WriteUInt64LittleEndian(cOut, _state.S0 ^ fp0);
+            BinaryPrimitives.WriteUInt64LittleEndian(cOut[8..], _state.S1 ^ fp1);
+
+            cOut[..lastLen].CopyTo(output[outOff..]);
+
+            _state.S0 ^= fp0;
+            _state.S1 ^= fp1;
+
+            Finalize(output.Slice(outOff + lastLen, TagBytes));
+
+            return required;
+        }
+        finally
+        {
+            _completed = true;
+        }
+    }
+
+    /// <summary>
+    /// Absorbs associated data that will be authenticated but not encrypted.
+    /// </summary>
+    /// <param name="associatedData">
+    /// The bytes to authenticate. May be empty to indicate no associated data. Must be called exactly once before
+    /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
+    /// </param>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">This method has already been called on this instance.</exception>
+    public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
+    {
+        ThrowIfDisposed();
+        ThrowIfCompleted();
+
+        if (_aadProcessed)
+            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
+
+        if (!associatedData.IsEmpty)
+        {
+            var offset = 0;
+
+            while (offset + Rate <= associatedData.Length)
+            {
+                _state.AbsorbRate128(associatedData.Slice(offset, Rate));
+                _state.Permute(Pb);
+                offset += Rate;
+            }
+
+            // Final partial block: Ascon padding — 0x01 at the first unused byte position.
+            Span<byte> pad = stackalloc byte[Rate];
+            var rem = associatedData.Length - offset;
+            associatedData.Slice(offset, rem).CopyTo(pad);
+            pad[rem] ^= 0x01;
+            _state.AbsorbRate128(pad);
+            _state.Permute(Pb);
+        }
+
+        // Domain separation: always applied after AD, even when AD is empty.
+        // SP 800-232 / ascon-c DSEP() = SETBYTE(0x80, 7) = 0x80 << 56.
+        _state.S4 ^= 0x8000000000000000UL;
+        _aadProcessed = true;
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="value" /> is not <see langword="null" /> and returns it as a
+    /// <see cref="ReadOnlySpan{T}" />, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
+    /// </summary>
+    /// <param name="value">The byte array to validate.</param>
+    /// <param name="paramName">The caller-visible parameter name reported in any exception.</param>
+    /// <returns>A <see cref="ReadOnlySpan{Byte}" /> over <paramref name="value" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
+    private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName) =>
+        value is null ? throw new ArgumentNullException(paramName) : (ReadOnlySpan<byte>)value.AsSpan();
+
+    /// <summary>
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
@@ -522,25 +533,13 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Validates that <paramref name="value" /> is not <see langword="null" /> and returns it as a
-    /// <see cref="ReadOnlySpan{T}" />, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
+    /// Throws <see cref="InvalidOperationException" /> if <see cref="ProcessAssociatedData" /> has not yet been called.
     /// </summary>
-    /// <param name="value">The byte array to validate.</param>
-    /// <param name="paramName">The caller-visible parameter name reported in any exception.</param>
-    /// <returns>A <see cref="ReadOnlySpan{Byte}" /> over <paramref name="value" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
-    private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName) =>
-        value is null ? throw new ArgumentNullException(paramName) : (ReadOnlySpan<byte>)value.AsSpan();
-
-    /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when any public method or property is accessed after the instance has been disposed.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed() =>
-        ObjectDisposedException.ThrowIf(_disposed, this);
+    private void ThrowIfAadNotProcessed()
+    {
+        if (!_aadProcessed)
+            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
+    }
 
 
     /// <summary>
@@ -553,13 +552,14 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if <see cref="ProcessAssociatedData" /> has not yet been called.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
-    private void ThrowIfAadNotProcessed()
-    {
-        if (!_aadProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
-    }
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_disposed, this);
 
     /// <summary>
     /// Stores the retained 128-bit key material for an <see cref="AsconAead128" /> instance.

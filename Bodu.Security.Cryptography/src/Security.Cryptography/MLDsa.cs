@@ -63,20 +63,20 @@ namespace Bodu.Security.Cryptography;
 public abstract class MLDsa
     : AsymmetricAlgorithm
 {
-    /// <summary>
-    /// The size, in bytes, of the private seed ξ accepted by <see cref="ImportPrivateSeed" />.
-    /// </summary>
-    public const int PrivateSeedSizeInBytes = 32;
 
     /// <summary>
     /// The maximum length, in bytes, of the signature context string.
     /// </summary>
     public const int MaxContextSizeInBytes = 255;
+    /// <summary>
+    /// The size, in bytes, of the private seed ξ accepted by <see cref="ImportPrivateSeed" />.
+    /// </summary>
+    public const int PrivateSeedSizeInBytes = 32;
 
     private readonly MLDsaParameters _parameters;
+    private bool _disposed;
     private byte[]? _privateKey;
     private byte[]? _publicKey;
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MLDsa" /> class for a specific FIPS 204 parameter set.
@@ -93,18 +93,6 @@ public abstract class MLDsa
         KeySizeValue = parameterSetDesignator;
     }
 
-    /// <inheritdoc />
-    /// <returns>
-    /// <see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.
-    /// </returns>
-    public override string? KeyExchangeAlgorithm =>
-        null;
-
-    /// <inheritdoc />
-    /// <returns>The string <c>"ML-DSA"</c>.</returns>
-    public override string? SignatureAlgorithm =>
-        "ML-DSA";
-
     /// <summary>
     /// Gets or sets a value indicating whether signing is deterministic instead of hedged.
     /// </summary>
@@ -114,51 +102,6 @@ public abstract class MLDsa
     /// </value>
     /// <returns>The currently configured signing mode.</returns>
     public bool DeterministicSigning { get; set; }
-
-    /// <summary>
-    /// Gets the size, in bytes, of the encoded public key.
-    /// </summary>
-    /// <value>1312, 1952, or 2592 depending on the parameter set.</value>
-    /// <returns>The public key size for this parameter set.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    public int PublicKeySizeInBytes
-    {
-        get
-        {
-            ThrowIfDisposed();
-            return _parameters.PublicKeySize;
-        }
-    }
-
-    /// <summary>
-    /// Gets the size, in bytes, of the encoded private key.
-    /// </summary>
-    /// <value>2560, 4032, or 4896 depending on the parameter set.</value>
-    /// <returns>The private key size for this parameter set.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    public int PrivateKeySizeInBytes
-    {
-        get
-        {
-            ThrowIfDisposed();
-            return _parameters.PrivateKeySize;
-        }
-    }
-
-    /// <summary>
-    /// Gets the size, in bytes, of an encoded signature.
-    /// </summary>
-    /// <value>2420, 3309, or 4627 depending on the parameter set.</value>
-    /// <returns>The signature size for this parameter set.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    public int SignatureSizeInBytes
-    {
-        get
-        {
-            ThrowIfDisposed();
-            return _parameters.SignatureSize;
-        }
-    }
 
     /// <summary>
     /// Gets a value indicating whether the instance currently holds a private key.
@@ -196,6 +139,91 @@ public abstract class MLDsa
         }
     }
 
+    /// <inheritdoc />
+    /// <returns>
+    /// <see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.
+    /// </returns>
+    public override string? KeyExchangeAlgorithm =>
+        null;
+
+    /// <summary>
+    /// Gets the size, in bytes, of the encoded private key.
+    /// </summary>
+    /// <value>2560, 4032, or 4896 depending on the parameter set.</value>
+    /// <returns>The private key size for this parameter set.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public int PrivateKeySizeInBytes
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _parameters.PrivateKeySize;
+        }
+    }
+
+    /// <summary>
+    /// Gets the size, in bytes, of the encoded public key.
+    /// </summary>
+    /// <value>1312, 1952, or 2592 depending on the parameter set.</value>
+    /// <returns>The public key size for this parameter set.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public int PublicKeySizeInBytes
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _parameters.PublicKeySize;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <returns>The string <c>"ML-DSA"</c>.</returns>
+    public override string? SignatureAlgorithm =>
+        "ML-DSA";
+
+    /// <summary>
+    /// Gets the size, in bytes, of an encoded signature.
+    /// </summary>
+    /// <value>2420, 3309, or 4627 depending on the parameter set.</value>
+    /// <returns>The signature size for this parameter set.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public int SignatureSizeInBytes
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _parameters.SignatureSize;
+        }
+    }
+
+    /// <summary>
+    /// Exports the encoded FIPS 204 private key.
+    /// </summary>
+    /// <returns>A fresh copy of the encoded private key.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
+    public byte[] ExportPrivateKey()
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+
+        return (byte[])_privateKey!.Clone();
+    }
+
+    /// <summary>
+    /// Exports the encoded FIPS 204 public key.
+    /// </summary>
+    /// <returns>A fresh copy of the encoded public key.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
+    public byte[] ExportPublicKey()
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+
+        return (byte[])_publicKey!.Clone();
+    }
+
     /// <summary>
     /// Generates a fresh random key pair, replacing any existing key material on the instance.
     /// </summary>
@@ -213,21 +241,6 @@ public abstract class MLDsa
 
         SetKeysFromSeed(seed);
         CryptographyHelper.Clear(seed);
-    }
-
-    /// <summary>
-    /// Imports the FIPS 204 32-byte private seed ξ and regenerates the full key pair from it, replacing any existing
-    /// key material on the instance.
-    /// </summary>
-    /// <param name="seed">The 32-byte key-generation seed ξ.</param>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="ArgumentException"><paramref name="seed" /> is not exactly 32 bytes long.</exception>
-    public void ImportPrivateSeed(ReadOnlySpan<byte> seed)
-    {
-        ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(seed, PrivateSeedSizeInBytes, $"{_parameters.Name} private seed");
-
-        SetKeysFromSeed(seed);
     }
 
     /// <summary>
@@ -264,6 +277,21 @@ public abstract class MLDsa
     }
 
     /// <summary>
+    /// Imports the FIPS 204 32-byte private seed ξ and regenerates the full key pair from it, replacing any existing
+    /// key material on the instance.
+    /// </summary>
+    /// <param name="seed">The 32-byte key-generation seed ξ.</param>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException"><paramref name="seed" /> is not exactly 32 bytes long.</exception>
+    public void ImportPrivateSeed(ReadOnlySpan<byte> seed)
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(seed, PrivateSeedSizeInBytes, $"{_parameters.Name} private seed");
+
+        SetKeysFromSeed(seed);
+    }
+
+    /// <summary>
     /// Imports an encoded FIPS 204 public key, replacing any existing key material on the instance.
     /// </summary>
     /// <param name="publicKey">The encoded public key ρ ‖ t₁.</param>
@@ -285,34 +313,6 @@ public abstract class MLDsa
     }
 
     /// <summary>
-    /// Exports the encoded FIPS 204 private key.
-    /// </summary>
-    /// <returns>A fresh copy of the encoded private key.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
-    public byte[] ExportPrivateKey()
-    {
-        ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
-
-        return (byte[])_privateKey!.Clone();
-    }
-
-    /// <summary>
-    /// Exports the encoded FIPS 204 public key.
-    /// </summary>
-    /// <returns>A fresh copy of the encoded public key.</returns>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
-    public byte[] ExportPublicKey()
-    {
-        ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
-
-        return (byte[])_publicKey!.Clone();
-    }
-
-    /// <summary>
     /// Signs the supplied data with an empty context string.
     /// </summary>
     /// <param name="data">The message bytes to sign. May be empty.</param>
@@ -320,7 +320,7 @@ public abstract class MLDsa
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
     public byte[] SignData(ReadOnlySpan<byte> data) =>
-        SignData(data, ReadOnlySpan<byte>.Empty);
+        SignData(data, []);
 
     /// <summary>
     /// Signs the supplied data under a context string.
@@ -383,7 +383,7 @@ public abstract class MLDsa
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
     public bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature) =>
-        VerifyData(data, signature, ReadOnlySpan<byte>.Empty);
+        VerifyData(data, signature, []);
 
     /// <summary>
     /// Verifies a signature over the supplied data under a context string.
@@ -456,21 +456,6 @@ public abstract class MLDsa
     }
 
     /// <summary>
-    /// Derives and stores the key pair from the 32-byte seed ξ, zeroing any previously held private key.
-    /// </summary>
-    /// <param name="seed">The 32-byte seed.</param>
-    private void SetKeysFromSeed(ReadOnlySpan<byte> seed)
-    {
-        var publicKey = new byte[_parameters.PublicKeySize];
-        var privateKey = new byte[_parameters.PrivateKeySize];
-        MLDsaEngine.KeyGen(_parameters, seed, publicKey, privateKey);
-
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _privateKey = privateKey;
-        _publicKey = publicKey;
-    }
-
-    /// <summary>
     /// Throws <see cref="ArgumentException" /> when the context string exceeds the FIPS 204 single-byte length limit.
     /// </summary>
     /// <param name="context">The context string to validate.</param>
@@ -486,6 +471,21 @@ public abstract class MLDsa
                     MaxContextSizeInBytes),
                 nameof(context));
         }
+    }
+
+    /// <summary>
+    /// Derives and stores the key pair from the 32-byte seed ξ, zeroing any previously held private key.
+    /// </summary>
+    /// <param name="seed">The 32-byte seed.</param>
+    private void SetKeysFromSeed(ReadOnlySpan<byte> seed)
+    {
+        var publicKey = new byte[_parameters.PublicKeySize];
+        var privateKey = new byte[_parameters.PrivateKeySize];
+        MLDsaEngine.KeyGen(_parameters, seed, publicKey, privateKey);
+
+        CryptographyHelper.ClearAndNullify(ref _privateKey);
+        _privateKey = privateKey;
+        _publicKey = publicKey;
     }
 
     /// <summary>

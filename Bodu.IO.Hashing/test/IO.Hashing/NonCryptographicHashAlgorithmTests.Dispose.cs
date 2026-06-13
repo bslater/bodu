@@ -49,7 +49,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// Reads the property value before disposal, then reassigns the same value after disposal — exercising the
     /// setter without changing observable behaviour.
     /// </remarks>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [DynamicData(
         nameof(GetAlgorithmWritableProperties),
         DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName),

@@ -42,6 +42,9 @@
       promoted to Bodu.Test in PR 1. Lets the shim file be deleted without touching every call site.
     -->
     <Using Include="Bodu.Test.Assertions.ExceptionAssert" Static="true" />
+    <!-- Shared test-double namespaces promoted to Bodu.Test; imported project-wide so the doubles resolve unqualified. -->
+    <Using Include="Bodu.Test.Collections" />
+    <Using Include="Bodu.Test.Comparers" />
   </ItemGroup>
 
   <ItemGroup>

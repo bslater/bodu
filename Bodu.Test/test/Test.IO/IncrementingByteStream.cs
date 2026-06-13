@@ -13,9 +13,9 @@ namespace Bodu.Test.IO;
 public class IncrementingByteStream
     : System.IO.Stream
 {
-    private readonly int size;
-    private int remaining; // Number of unread bytes left to emit
-    private byte written;  // Tracks current byte hashValue to write into the buffer
+    private readonly int _size;
+    private int _remaining; // Number of unread bytes left to emit
+    private byte _written;  // Tracks current byte hashValue to write into the buffer
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IncrementingByteStream" /> class with the specified byte length.
@@ -26,8 +26,8 @@ public class IncrementingByteStream
         if (size <= 0)
             throw new ArgumentOutOfRangeException(nameof(size), "Size must be greater than zero.");
 
-        this.size = size;
-        remaining = size;
+        this._size = size;
+        _remaining = size;
     }
 
     /// <inheritdoc />
@@ -63,24 +63,23 @@ public class IncrementingByteStream
     /// <exception cref="ObjectDisposedException">Thrown if the stream has been disposed.</exception>
     public override int Read(byte[] buffer, int offset, int count)
     {
-        if (remaining < 0)
-            throw new ObjectDisposedException(nameof(IncrementingByteStream));
+        if (_remaining < 0) throw new ObjectDisposedException(nameof(IncrementingByteStream));
 
-        if (remaining == 0)
+        if (_remaining == 0)
             return 0;
 
         // Read no more than half of remaining, or requested count, whichever is smaller
-        var localLimit = remaining / 2;
+        var localLimit = _remaining / 2;
         if (localLimit == 0 || localLimit > count)
-            localLimit = Math.Min(remaining, count);
+            localLimit = Math.Min(_remaining, count);
 
         // Fill the buffer with incrementing byte values
         for (var i = 0; i < localLimit; i++)
         {
-            buffer[offset + i] = written++;
+            buffer[offset + i] = _written++;
         }
 
-        remaining -= localLimit;
+        _remaining -= localLimit;
         return localLimit;
     }
 
@@ -95,9 +94,9 @@ public class IncrementingByteStream
     /// </summary>
     public byte[] ToArray()
     {
-        var result = new byte[size];
+        var result = new byte[_size];
         byte val = 0;
-        for (var i = 0; i < size; i++)
+        for (var i = 0; i < _size; i++)
         {
             result[i] = val++;
         }
@@ -111,7 +110,7 @@ public class IncrementingByteStream
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        remaining = -1; // Mark stream as unusable
+        _remaining = -1; // Mark stream as unusable
         base.Dispose(disposing);
     }
 }

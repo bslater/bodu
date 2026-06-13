@@ -95,7 +95,7 @@ public sealed partial class ConcurrentHashSet<T>
         /// </remarks>
         public bool MoveNext()
         {
-            T[] snapshot = _snapshot ?? Array.Empty<T>();
+            T[] snapshot = _snapshot ?? [];
             var next = _index + 1;
             if (next < snapshot.Length)
             {

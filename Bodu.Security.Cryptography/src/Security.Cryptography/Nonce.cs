@@ -57,6 +57,13 @@ public readonly struct Nonce
     }
 
     /// <summary>
+    /// Gets a value indicating whether the nonce is empty.
+    /// </summary>
+    /// <returns><see langword="true" /> if the nonce contains no bytes; otherwise, <see langword="false" />.</returns>
+    public bool IsEmpty =>
+        Length == 0;
+
+    /// <summary>
     /// Gets the number of bytes in the nonce.
     /// </summary>
     /// <returns>The nonce length in bytes, or <c>0</c> for the empty value.</returns>
@@ -64,11 +71,28 @@ public readonly struct Nonce
         _value?.Length ?? 0;
 
     /// <summary>
-    /// Gets a value indicating whether the nonce is empty.
+    /// Determines whether two nonces are equal.
     /// </summary>
-    /// <returns><see langword="true" /> if the nonce contains no bytes; otherwise, <see langword="false" />.</returns>
-    public bool IsEmpty =>
-        Length == 0;
+    /// <param name="left">The first nonce.</param>
+    /// <param name="right">The second nonce.</param>
+    /// <returns>
+    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool operator ==(Nonce left, Nonce right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two nonces are not equal.
+    /// </summary>
+    /// <param name="left">The first nonce.</param>
+    /// <param name="right">The second nonce.</param>
+    /// <returns><see langword="true" /> if the values differ; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(Nonce left, Nonce right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Creates a <see cref="Nonce" /> from the provided bytes.
@@ -97,13 +121,6 @@ public readonly struct Nonce
     /// <returns>A read-only span over the value; empty for the empty value.</returns>
     public ReadOnlySpan<byte> AsSpan() =>
         _value;
-
-    /// <summary>
-    /// Copies the nonce bytes into a new array.
-    /// </summary>
-    /// <returns>A new array containing the nonce bytes; an empty array for the empty value.</returns>
-    public byte[] ToArray() =>
-        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
     /// Determines whether this nonce equals another.
@@ -138,24 +155,11 @@ public readonly struct Nonce
     }
 
     /// <summary>
-    /// Determines whether two nonces are equal.
+    /// Copies the nonce bytes into a new array.
     /// </summary>
-    /// <param name="left">The first nonce.</param>
-    /// <param name="right">The second nonce.</param>
-    /// <returns>
-    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool operator ==(Nonce left, Nonce right) =>
-        left.Equals(right);
-
-    /// <summary>
-    /// Determines whether two nonces are not equal.
-    /// </summary>
-    /// <param name="left">The first nonce.</param>
-    /// <param name="right">The second nonce.</param>
-    /// <returns><see langword="true" /> if the values differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(Nonce left, Nonce right) =>
-        !left.Equals(right);
+    /// <returns>A new array containing the nonce bytes; an empty array for the empty value.</returns>
+    public byte[] ToArray() =>
+        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the nonce.

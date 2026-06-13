@@ -48,6 +48,12 @@ public readonly struct DotEnvComment
     }
 
     /// <summary>
+    /// Gets the 1-based source line at which the comment appeared, or <c>0</c> when programmatically constructed.
+    /// </summary>
+    /// <returns>A non-negative line number.</returns>
+    public int LineNumber { get; }
+
+    /// <summary>
     /// Gets the prefix character that introduced this comment.
     /// </summary>
     /// <returns>The character <c>'#'</c>.</returns>
@@ -58,30 +64,6 @@ public readonly struct DotEnvComment
     /// </summary>
     /// <returns>A non-null string.</returns>
     public string Text { get; }
-
-    /// <summary>
-    /// Gets the 1-based source line at which the comment appeared, or <c>0</c> when programmatically constructed.
-    /// </summary>
-    /// <returns>A non-negative line number.</returns>
-    public int LineNumber { get; }
-
-    /// <inheritdoc />
-    public bool Equals(DotEnvComment other) =>
-        this.Prefix == other.Prefix
-        && string.Equals(this.Text, other.Text, StringComparison.Ordinal)
-        && this.LineNumber == other.LineNumber;
-
-    /// <inheritdoc />
-    public override bool Equals(object? obj) =>
-        obj is DotEnvComment other && this.Equals(other);
-
-    /// <inheritdoc />
-    public override int GetHashCode() =>
-        HashCode.Combine(this.Prefix, this.Text, this.LineNumber);
-
-    /// <inheritdoc />
-    public override string ToString() =>
-        this.Text is null ? string.Empty : string.Concat(this.Prefix.ToString(), this.Text);
 
     /// <summary>
     /// Determines whether two comments are equal.
@@ -104,4 +86,22 @@ public readonly struct DotEnvComment
     {
         return !left.Equals(right);
     }
+
+    /// <inheritdoc />
+    public bool Equals(DotEnvComment other) =>
+        this.Prefix == other.Prefix
+        && string.Equals(this.Text, other.Text, StringComparison.Ordinal)
+        && this.LineNumber == other.LineNumber;
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) =>
+        obj is DotEnvComment other && this.Equals(other);
+
+    /// <inheritdoc />
+    public override int GetHashCode() =>
+        HashCode.Combine(this.Prefix, this.Text, this.LineNumber);
+
+    /// <inheritdoc />
+    public override string ToString() =>
+        this.Text is null ? string.Empty : string.Concat(this.Prefix.ToString(), this.Text);
 }

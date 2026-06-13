@@ -80,7 +80,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void IsLessThanOrEqual_WhenUsingReverseComparer_ShouldReturnExpectedResult()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         Assert.IsTrue(10.IsLessThanOrEqual(5, comparer));
         Assert.IsTrue(5.IsLessThanOrEqual(5, comparer));

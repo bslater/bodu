@@ -61,7 +61,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void IsOutside_WhenUsingReverseComparer_ShouldReturnExpectedResult()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         Assert.IsFalse(5.IsOutside(1, 10, comparer));
         Assert.IsFalse(1.IsOutside(1, 10, comparer));

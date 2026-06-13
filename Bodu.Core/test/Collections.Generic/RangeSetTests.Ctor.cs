@@ -100,7 +100,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
     {
-        var comparer = new ReverseIntComparer();
+        var comparer = new ReverseComparer<int>();
 
         var sut = new RangeSet<int>(comparer);
 

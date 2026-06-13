@@ -74,8 +74,8 @@ public sealed class CtsModeTransform
     : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
-    private readonly byte[] _iv;
     private readonly byte[] _currentIv; // running CBC chaining vector
+    private readonly byte[] _iv;
     private bool _disposed;
 
     /// <summary>
@@ -100,6 +100,25 @@ public sealed class CtsModeTransform
         _cipher = cipher;
         _iv = (byte[])iv.Clone();
         _currentIv = (byte[])iv.Clone();
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the seed and running CBC chaining vector so that
+    /// key-equivalent state does not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not
+    /// disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>
+    /// Idempotent.
+    /// </remarks>
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        CryptographyHelper.Clear(_iv);
+        CryptographyHelper.Clear(_currentIv);
+        _disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc />
@@ -130,6 +149,80 @@ public sealed class CtsModeTransform
             : DecryptCts(input, output, fullBlocks, tailBytes, blockSize);
     }
 
+    /// <summary>
+    /// Standard CBC decryption (no stealing), used when input is block-aligned.
+    /// </summary>
+    /// <param name="input">The ciphertext bytes to decrypt.</param>
+    /// <param name="output">The destination span for the plaintext.</param>
+    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
+    private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        var blockSize = _cipher.BlockSize / 8;
+        Span<byte> block = stackalloc byte[blockSize];
+
+        for (var offset = 0; offset < input.Length; offset += blockSize)
+        {
+            ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
+            Span<byte> outBlock = output.Slice(offset, blockSize);
+
+            _cipher.Decrypt(inBlock, block);
+            for (var i = 0; i < blockSize; i++)
+                outBlock[i] = (byte)(block[i] ^ _currentIv[i]);
+
+            inBlock.CopyTo(_currentIv);
+        }
+
+        return input.Length;
+    }
+
+    /// <summary>
+    /// CTS decryption for non-block-aligned input. Reconstructs the penultimate and final plaintext blocks using the
+    /// inverse steal, then decrypts all body blocks with CBC.
+    /// </summary>
+    /// <param name="input">The ciphertext input.</param>
+    /// <param name="output">The destination span for the plaintext.</param>
+    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input" />.</param>
+    /// <param name="tailBytes">
+    /// The number of bytes in the final partial block (1 to <paramref name="blockSize" /> − 1).
+    /// </param>
+    /// <param name="blockSize">The underlying cipher block size in bytes.</param>
+    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
+    private int DecryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
+    {
+        // Body blocks (all before the CTS pair).
+        var bodyBlocks = fullBlocks - 1;
+        var bodyLength = bodyBlocks * blockSize;
+
+        if (bodyBlocks > 0)
+            DecryptCbc(input[..bodyLength], output[..bodyLength]);
+
+        // In the encrypted stream: [C_n (blockSize)] [C_{n-1} truncated (tailBytes)]
+        ReadOnlySpan<byte> cn = input.Slice(bodyLength, blockSize);
+        ReadOnlySpan<byte> cnMinus1Trunc = input.Slice(bodyLength + blockSize, tailBytes);
+
+        // Step 1: raw-decrypt C_n → gives us P_n || E[tailBytes..].
+        Span<byte> rawDec = stackalloc byte[blockSize];
+        _cipher.Decrypt(cn, rawDec);
+
+        // Step 2: reconstruct E (the full encrypted penultimate block).
+        // E[0..tailBytes] = C_{n-1} truncated; E[tailBytes..] = rawDec[tailBytes..].
+        Span<byte> e = stackalloc byte[blockSize];
+        cnMinus1Trunc.CopyTo(e);
+        rawDec[tailBytes..].CopyTo(e[tailBytes..]);
+
+        // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
+        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
+
+        // Step 4: CBC-decrypt e to get P_{n-1}.
+        Span<byte> block = stackalloc byte[blockSize];
+        _cipher.Decrypt(e, block);
+        Span<byte> penultimateOut = output.Slice(bodyLength, blockSize);
+        for (var i = 0; i < blockSize; i++)
+            penultimateOut[i] = (byte)(block[i] ^ _currentIv[i]);
+
+        return input.Length;
+    }
+
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -153,32 +246,6 @@ public sealed class CtsModeTransform
 
             _cipher.Encrypt(block, outBlock);
             outBlock.CopyTo(_currentIv);
-        }
-
-        return input.Length;
-    }
-
-    /// <summary>
-    /// Standard CBC decryption (no stealing), used when input is block-aligned.
-    /// </summary>
-    /// <param name="input">The ciphertext bytes to decrypt.</param>
-    /// <param name="output">The destination span for the plaintext.</param>
-    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
-    private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
-    {
-        var blockSize = _cipher.BlockSize / 8;
-        Span<byte> block = stackalloc byte[blockSize];
-
-        for (var offset = 0; offset < input.Length; offset += blockSize)
-        {
-            ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
-            Span<byte> outBlock = output.Slice(offset, blockSize);
-
-            _cipher.Decrypt(inBlock, block);
-            for (var i = 0; i < blockSize; i++)
-                outBlock[i] = (byte)(block[i] ^ _currentIv[i]);
-
-            inBlock.CopyTo(_currentIv);
         }
 
         return input.Length;
@@ -232,72 +299,5 @@ public sealed class CtsModeTransform
         e[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         return input.Length;
-    }
-
-    /// <summary>
-    /// CTS decryption for non-block-aligned input. Reconstructs the penultimate and final plaintext blocks using the
-    /// inverse steal, then decrypts all body blocks with CBC.
-    /// </summary>
-    /// <param name="input">The ciphertext input.</param>
-    /// <param name="output">The destination span for the plaintext.</param>
-    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input" />.</param>
-    /// <param name="tailBytes">
-    /// The number of bytes in the final partial block (1 to <paramref name="blockSize" /> − 1).
-    /// </param>
-    /// <param name="blockSize">The underlying cipher block size in bytes.</param>
-    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
-    private int DecryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
-    {
-        // Body blocks (all before the CTS pair).
-        var bodyBlocks = fullBlocks - 1;
-        var bodyLength = bodyBlocks * blockSize;
-
-        if (bodyBlocks > 0)
-            DecryptCbc(input[..bodyLength], output[..bodyLength]);
-
-        // In the encrypted stream: [C_n (blockSize)] [C_{n-1} truncated (tailBytes)]
-        ReadOnlySpan<byte> cn = input.Slice(bodyLength, blockSize);
-        ReadOnlySpan<byte> cnMinus1Trunc = input.Slice(bodyLength + blockSize, tailBytes);
-
-        // Step 1: raw-decrypt C_n → gives us P_n || E[tailBytes..].
-        Span<byte> rawDec = stackalloc byte[blockSize];
-        _cipher.Decrypt(cn, rawDec);
-
-        // Step 2: reconstruct E (the full encrypted penultimate block).
-        // E[0..tailBytes] = C_{n-1} truncated; E[tailBytes..] = rawDec[tailBytes..].
-        Span<byte> e = stackalloc byte[blockSize];
-        cnMinus1Trunc.CopyTo(e);
-        rawDec[tailBytes..].CopyTo(e[tailBytes..]);
-
-        // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
-        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
-
-        // Step 4: CBC-decrypt e to get P_{n-1}.
-        Span<byte> block = stackalloc byte[blockSize];
-        _cipher.Decrypt(e, block);
-        Span<byte> penultimateOut = output.Slice(bodyLength, blockSize);
-        for (var i = 0; i < blockSize; i++)
-            penultimateOut[i] = (byte)(block[i] ^ _currentIv[i]);
-
-        return input.Length;
-    }
-
-    /// <summary>
-    /// Releases the resources used by this instance and zeroes the seed and running CBC chaining vector so that
-    /// key-equivalent state does not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not
-    /// disposed by this type — ownership remains with the caller.
-    /// </summary>
-    /// <remarks>
-    /// Idempotent.
-    /// </remarks>
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
-
-        CryptographyHelper.Clear(_iv);
-        CryptographyHelper.Clear(_currentIv);
-        _disposed = true;
-        GC.SuppressFinalize(this);
     }
 }

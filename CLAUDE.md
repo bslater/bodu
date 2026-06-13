@@ -316,6 +316,29 @@ Every `.cs` file begins with the standard banner — preserve the separator line
   - `CrcStandard.cs` ← root; `CrcStandard.Catalog.cs` ← auto-generated catalogue partial
 - Don't stack unrelated helper types into the same file. If a type only makes sense alongside its parent (private nested enum, internal helper record), split it into a partial file under the parent rather than co-locating it in the root.
 
+### Namespace–Folder Alignment
+
+Folders directly under a project's source root (`src/` or `test/`) map one-to-one to namespaces. The **namespace declared in a file is the source of truth**; its folder is derived from it. Concretely, for a file with namespace `N` in a project whose csproj declares `<RootNamespace>R</RootNamespace>`:
+
+| Case | Folder (relative to `src/`/`test/`) |
+|---|---|
+| `N` equals `R` | the project root (no folder) |
+| `N` starts with `R.` | a **single flat folder** named `N` minus the leading `R.`, dots preserved — e.g. `Bodu.IO.Hashing.CheckDigits` (with `R = Bodu`) ⇒ folder `IO.Hashing.CheckDigits` |
+
+Rules:
+
+- **No nested namespace folders.** A folder must never contain a child namespace folder. `IO.Hashing/` containing `Target/` is wrong — use sibling folders `IO.Hashing/` and `IO.Hashing.Target/`.
+- **One namespace per folder.** A folder holds only files whose namespace equals `R` + the folder name. If two namespaces currently share a folder, split them into two flat folders.
+- **Derive the folder from the namespace, never the reverse.** When a file's folder and namespace disagree, move the file to the folder its namespace dictates; do not silently rename the namespace to match the folder. (A namespace that looks wrong is a separate, explicit decision.)
+- `src/` and `test/` are not namespace components (the csproj sits at `<Project>/src/` or `<Project>/test/`). `<RootNamespace>` is taken from the csproj as-is.
+
+Carve-outs (exempt from the rules above):
+
+- **Asset / embedded-resource folders** may keep their own nested structure and are not required to match a namespace: any folder named `Fixtures` or `TomlTestCorpus`, or ending in `Resources` (calendar `.xml` packs, spec test corpora, `.resx`/`.Designer.cs` pairs, and other `EmbeddedResource`/`None`/`Content` data). These are wired to csproj globs by path, so do not move them.
+- **BCL-convention foreign namespaces** live at the project root: files deliberately declared in `Microsoft.*` or `System.*` (e.g. `IServiceCollection` registration extensions in `Microsoft.Extensions.DependencyInjection`).
+
+This convention is the dotted-flat reading of `dotnet_style_namespace_match_folder` / IDE0130 (a folder literally named `Collections.Generic` maps to `Bodu.Collections.Generic`). Run `bld/check-folder-namespace-alignment.sh` to verify a project or the whole tree; it encodes the rules and carve-outs above and exits non-zero on any violation.
+
 ### Naming
 
 - Private instance fields: `_camelCase`.

@@ -139,22 +139,16 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Gets the kind of the current token.
+    /// Gets the number of bytes consumed so far.
     /// </summary>
-    /// <returns>The current token kind.</returns>
-    public readonly BencodeTokenType TokenType => _tokenType;
+    /// <returns>The read position.</returns>
+    public readonly int BytesConsumed => _position;
 
     /// <summary>
     /// Gets the current container nesting depth.
     /// </summary>
     /// <returns>The depth, where zero is the document root.</returns>
     public readonly int CurrentDepth => _frames.Count;
-
-    /// <summary>
-    /// Gets the number of bytes consumed so far.
-    /// </summary>
-    /// <returns>The read position.</returns>
-    public readonly int BytesConsumed => _position;
 
     /// <summary>
     /// Gets the byte offset within the source where the current token begins. For a byte string or property name the
@@ -164,20 +158,144 @@ public ref struct Utf8BencodeReader
     public readonly int TokenStartIndex => _tokenStart;
 
     /// <summary>
+    /// Gets the kind of the current token.
+    /// </summary>
+    /// <returns>The current token kind.</returns>
+    public readonly BencodeTokenType TokenType => _tokenType;
+
+    /// <summary>
     /// Gets the raw content bytes of the current byte-string or property-name token.
     /// </summary>
     /// <returns>The byte-string content.</returns>
     public readonly ReadOnlySpan<byte> ValueSpan => _data.Slice(_valueStart, _valueLength);
 
     /// <summary>
-    /// Gets the raw input bytes between the supplied absolute offsets, used by the serializer's document bridges to
-    /// capture a value subtree's complete encoded form.
+    /// Copies the current byte-string or property-name token's raw content into the supplied destination.
     /// </summary>
-    /// <param name="start">The inclusive start offset.</param>
-    /// <param name="end">The exclusive end offset.</param>
-    /// <returns>The raw input slice.</returns>
-    internal readonly ReadOnlySpan<byte> Slice(int start, int end) =>
-        _data[start..end];
+    /// <param name="destination">The buffer that receives the raw content bytes.</param>
+    /// <returns>The number of bytes written to <paramref name="destination" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a byte string or property name.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> is shorter than the token's content.
+    /// </exception>
+    public readonly int CopyString(Span<byte> destination)
+    {
+        if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
+            throw new InvalidOperationException();
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, _valueLength);
+
+        ValueSpan.CopyTo(destination);
+        return _valueLength;
+    }
+
+    /// <summary>
+    /// Decodes the current byte-string or property-name token's content as UTF-8 text into the supplied destination.
+    /// </summary>
+    /// <param name="destination">The buffer that receives the decoded characters.</param>
+    /// <returns>The number of characters written to <paramref name="destination" />.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a byte string or property name.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> is shorter than the decoded character count.
+    /// </exception>
+    /// <remarks>
+    /// Decoding matches <see cref="GetString" />: byte sequences that are not valid UTF-8 are replaced with U+FFFD
+    /// rather than rejected. Use <see cref="CopyString(Span{byte})" /> to recover binary content losslessly.
+    /// </remarks>
+    public readonly int CopyString(Span<char> destination)
+    {
+        if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
+            throw new InvalidOperationException();
+
+        var charCount = Encoding.UTF8.GetCharCount(ValueSpan);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, charCount);
+
+        return Encoding.UTF8.GetChars(ValueSpan, destination);
+    }
+
+    /// <summary>
+    /// Copies the current byte-string or property-name token's content to a new array.
+    /// </summary>
+    /// <returns>The byte-string content.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a byte string or property name.
+    /// </exception>
+    public readonly byte[] GetBytes() =>
+        _tokenType is BencodeTokenType.ByteString or BencodeTokenType.PropertyName
+            ? ValueSpan.ToArray()
+            : throw new InvalidOperationException();
+
+    /// <summary>
+    /// Reads the current integer token as a 32-bit signed integer.
+    /// </summary>
+    /// <returns>The integer value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer token's value is outside the <see cref="int" /> range.
+    /// </exception>
+    public readonly int GetInt32()
+    {
+        if (!TryGetInt32(out var value))
+            throw Error(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfTypeRange, nameof(Int32)), _tokenStart);
+
+        return value;
+    }
+
+    /// <summary>
+    /// Reads the current integer token as a 64-bit signed integer.
+    /// </summary>
+    /// <returns>The integer value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer token's value exceeds <see cref="long.MaxValue" />; use <see cref="GetUInt64" /> to read
+    /// values in the upper unsigned 64-bit range.
+    /// </exception>
+    public readonly long GetInt64()
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+        if (_intExceedsInt64)
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, _tokenStart);
+
+        return _intValue;
+    }
+
+    /// <summary>
+    /// Decodes the current byte-string or property-name token as UTF-8 text.
+    /// </summary>
+    /// <returns>The decoded string.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current token is not a byte string or property name.
+    /// </exception>
+    public readonly string GetString() =>
+        _tokenType is BencodeTokenType.ByteString or BencodeTokenType.PropertyName
+            ? Encoding.UTF8.GetString(ValueSpan)
+            : throw new InvalidOperationException();
+
+    /// <summary>
+    /// Reads the current integer token as a 64-bit unsigned integer, accepting any value in [0,
+    /// <see cref="ulong.MaxValue" /> ].
+    /// </summary>
+    /// <returns>The unsigned integer value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the integer token's value is negative.</exception>
+    /// <remarks>
+    /// Bencode integers are arbitrary-precision per BEP 3, so a document may carry a value between
+    /// <see cref="long.MaxValue" /> and <see cref="ulong.MaxValue" /> that <see cref="GetInt64" /> cannot represent;
+    /// this accessor reads such values without loss.
+    /// </remarks>
+    public readonly ulong GetUInt64()
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+        if (!_intExceedsInt64 && _intValue < 0)
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, _tokenStart);
+
+        return _uintValue;
+    }
 
     /// <summary>
     /// Advances the reader to the next token.
@@ -275,44 +393,71 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Reads the current integer token as a 64-bit signed integer.
+    /// Skips the current value, including the entire subtree when the reader is on a container start. On a property
+    /// name the reader first advances to the property's value and then skips it.
     /// </summary>
-    /// <returns>The integer value.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
-    /// <exception cref="BencodeFormatException">
-    /// Thrown when the integer token's value exceeds <see cref="long.MaxValue" />; use <see cref="GetUInt64" /> to read
-    /// values in the upper unsigned 64-bit range.
-    /// </exception>
-    public readonly long GetInt64()
+    /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
+    public void Skip()
     {
-        if (_tokenType != BencodeTokenType.Integer)
-            throw new InvalidOperationException();
-        if (_intExceedsInt64)
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, _tokenStart);
+        if (_tokenType == BencodeTokenType.PropertyName)
+            _ = Read();
 
-        return _intValue;
+        if (_tokenType is not (BencodeTokenType.StartList or BencodeTokenType.StartDictionary))
+            return;
+
+        var depth = _frames.Count;
+        while (_frames.Count >= depth && Read())
+        {
+            // Read until the matching container end returns control to the original depth.
+        }
     }
 
     /// <summary>
-    /// Reads the current integer token as a 64-bit unsigned integer, accepting any value in [0,
-    /// <see cref="ulong.MaxValue" /> ].
+    /// Attempts to read the current integer token as a 32-bit signed integer.
     /// </summary>
-    /// <returns>The unsigned integer value.</returns>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the current integer token fits the <see cref="int" /> range; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
-    /// <exception cref="BencodeFormatException">Thrown when the integer token's value is negative.</exception>
-    /// <remarks>
-    /// Bencode integers are arbitrary-precision per BEP 3, so a document may carry a value between
-    /// <see cref="long.MaxValue" /> and <see cref="ulong.MaxValue" /> that <see cref="GetInt64" /> cannot represent;
-    /// this accessor reads such values without loss.
-    /// </remarks>
-    public readonly ulong GetUInt64()
+    public readonly bool TryGetInt32(out int value)
     {
         if (_tokenType != BencodeTokenType.Integer)
             throw new InvalidOperationException();
-        if (!_intExceedsInt64 && _intValue < 0)
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, _tokenStart);
 
-        return _uintValue;
+        if (_intExceedsInt64 || _intValue < int.MinValue || _intValue > int.MaxValue)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = (int)_intValue;
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to read the current integer token as a 64-bit signed integer.
+    /// </summary>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the current integer token fits the signed 64-bit range; <see langword="false" />
+    /// when it exceeds <see cref="long.MaxValue" /> and is therefore readable only through <see cref="GetUInt64" />.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
+    public readonly bool TryGetInt64(out long value)
+    {
+        if (_tokenType != BencodeTokenType.Integer)
+            throw new InvalidOperationException();
+
+        if (_intExceedsInt64)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = _intValue;
+        return true;
     }
 
     /// <summary>
@@ -342,92 +487,20 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Attempts to read the current integer token as a 64-bit signed integer.
+    /// Attempts to skip the current value.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
-    /// <returns>
-    /// <see langword="true" /> when the current integer token fits the signed 64-bit range; <see langword="false" />
-    /// when it exceeds <see cref="long.MaxValue" /> and is therefore readable only through <see cref="GetUInt64" />.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
-    public readonly bool TryGetInt64(out long value)
+    /// <returns><see langword="true" /> always, because the reader operates over a complete buffer.</returns>
+    /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
+    /// <remarks>
+    /// This reader has no streaming mode in which a value could end partway through a buffer, so the method is
+    /// equivalent to <see cref="Skip" /> and exists for source compatibility with callers written against a try-pattern
+    /// surface.
+    /// </remarks>
+    public bool TrySkip()
     {
-        if (_tokenType != BencodeTokenType.Integer)
-            throw new InvalidOperationException();
-
-        if (_intExceedsInt64)
-        {
-            value = 0;
-            return false;
-        }
-
-        value = _intValue;
+        Skip();
         return true;
     }
-
-    /// <summary>
-    /// Reads the current integer token as a 32-bit signed integer.
-    /// </summary>
-    /// <returns>The integer value.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
-    /// <exception cref="BencodeFormatException">
-    /// Thrown when the integer token's value is outside the <see cref="int" /> range.
-    /// </exception>
-    public readonly int GetInt32()
-    {
-        if (!TryGetInt32(out var value))
-            throw Error(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfTypeRange, nameof(Int32)), _tokenStart);
-
-        return value;
-    }
-
-    /// <summary>
-    /// Attempts to read the current integer token as a 32-bit signed integer.
-    /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
-    /// <returns>
-    /// <see langword="true" /> when the current integer token fits the <see cref="int" /> range; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">Thrown when the current token is not an integer.</exception>
-    public readonly bool TryGetInt32(out int value)
-    {
-        if (_tokenType != BencodeTokenType.Integer)
-            throw new InvalidOperationException();
-
-        if (_intExceedsInt64 || _intValue < int.MinValue || _intValue > int.MaxValue)
-        {
-            value = 0;
-            return false;
-        }
-
-        value = (int)_intValue;
-        return true;
-    }
-
-    /// <summary>
-    /// Decodes the current byte-string or property-name token as UTF-8 text.
-    /// </summary>
-    /// <returns>The decoded string.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the current token is not a byte string or property name.
-    /// </exception>
-    public readonly string GetString() =>
-        _tokenType is BencodeTokenType.ByteString or BencodeTokenType.PropertyName
-            ? Encoding.UTF8.GetString(ValueSpan)
-            : throw new InvalidOperationException();
-
-    /// <summary>
-    /// Copies the current byte-string or property-name token's content to a new array.
-    /// </summary>
-    /// <returns>The byte-string content.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the current token is not a byte string or property name.
-    /// </exception>
-    public readonly byte[] GetBytes() =>
-        _tokenType is BencodeTokenType.ByteString or BencodeTokenType.PropertyName
-            ? ValueSpan.ToArray()
-            : throw new InvalidOperationException();
 
     /// <summary>
     /// Compares the current byte-string or property-name token's content to the supplied UTF-8 bytes without
@@ -460,7 +533,7 @@ public ref struct Utf8BencodeReader
     /// </exception>
     public readonly bool ValueTextEquals(ReadOnlySpan<char> text)
     {
-        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
+        if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
             throw new InvalidOperationException();
 
         var byteCount = Encoding.UTF8.GetByteCount(text);
@@ -497,128 +570,31 @@ public ref struct Utf8BencodeReader
         ValueTextEquals(text.AsSpan());
 
     /// <summary>
-    /// Copies the current byte-string or property-name token's raw content into the supplied destination.
+    /// Gets the raw input bytes between the supplied absolute offsets, used by the serializer's document bridges to
+    /// capture a value subtree's complete encoded form.
     /// </summary>
-    /// <param name="destination">The buffer that receives the raw content bytes.</param>
-    /// <returns>The number of bytes written to <paramref name="destination" />.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the current token is not a byte string or property name.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination" /> is shorter than the token's content.
-    /// </exception>
-    public readonly int CopyString(Span<byte> destination)
-    {
-        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
-            throw new InvalidOperationException();
-        ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, _valueLength);
-
-        ValueSpan.CopyTo(destination);
-        return _valueLength;
-    }
+    /// <param name="start">The inclusive start offset.</param>
+    /// <param name="end">The exclusive end offset.</param>
+    /// <returns>The raw input slice.</returns>
+    internal readonly ReadOnlySpan<byte> Slice(int start, int end) =>
+        _data[start..end];
 
     /// <summary>
-    /// Decodes the current byte-string or property-name token's content as UTF-8 text into the supplied destination.
+    /// Creates a parse exception with a byte offset.
     /// </summary>
-    /// <param name="destination">The buffer that receives the decoded characters.</param>
-    /// <returns>The number of characters written to <paramref name="destination" />.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the current token is not a byte string or property name.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination" /> is shorter than the decoded character count.
-    /// </exception>
-    /// <remarks>
-    /// Decoding matches <see cref="GetString" />: byte sequences that are not valid UTF-8 are replaced with U+FFFD
-    /// rather than rejected. Use <see cref="CopyString(Span{byte})" /> to recover binary content losslessly.
-    /// </remarks>
-    public readonly int CopyString(Span<char> destination)
-    {
-        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
-            throw new InvalidOperationException();
-
-        var charCount = Encoding.UTF8.GetCharCount(ValueSpan);
-        ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, charCount);
-
-        return Encoding.UTF8.GetChars(ValueSpan, destination);
-    }
+    /// <param name="message">The error message.</param>
+    /// <param name="offset">The byte offset.</param>
+    /// <returns>The exception to throw.</returns>
+    private static BencodeFormatException Error(string message, int offset) =>
+        new(message, offset);
 
     /// <summary>
-    /// Skips the current value, including the entire subtree when the reader is on a container start. On a property
-    /// name the reader first advances to the property's value and then skips it.
+    /// Updates the enclosing dictionary's key/value expectation after a complete value has been read.
     /// </summary>
-    /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
-    public void Skip()
+    private readonly void AfterValue()
     {
-        if (_tokenType == BencodeTokenType.PropertyName)
-            _ = Read();
-
-        if (_tokenType is not(BencodeTokenType.StartList or BencodeTokenType.StartDictionary))
-            return;
-
-        var depth = _frames.Count;
-        while (_frames.Count >= depth && Read())
-        {
-            // Read until the matching container end returns control to the original depth.
-        }
-    }
-
-    /// <summary>
-    /// Attempts to skip the current value.
-    /// </summary>
-    /// <returns><see langword="true" /> always, because the reader operates over a complete buffer.</returns>
-    /// <exception cref="BencodeFormatException">Thrown when the skipped bytes are not valid Bencode.</exception>
-    /// <remarks>
-    /// This reader has no streaming mode in which a value could end partway through a buffer, so the method is
-    /// equivalent to <see cref="Skip" /> and exists for source compatibility with callers written against a try-pattern
-    /// surface.
-    /// </remarks>
-    public bool TrySkip()
-    {
-        Skip();
-        return true;
-    }
-
-    /// <summary>
-    /// Validates the dictionary key just read against the ordering and uniqueness rules selected at construction.
-    /// </summary>
-    /// <param name="top">The enclosing dictionary's frame.</param>
-    /// <exception cref="BencodeFormatException">
-    /// Thrown when the key repeats an earlier key and duplicates are not permitted, or precedes the previous key in
-    /// bytewise order and unsorted keys are not permitted.
-    /// </exception>
-    private readonly void ValidateDictionaryKey(Frame top)
-    {
-        ReadOnlySpan<byte> key = _data.Slice(_valueStart, _valueLength);
-
-        if (!_allowUnsortedKeys)
-        {
-            // Canonical order makes equal keys adjacent, so a single comparison against the previous key detects
-            // both unordered and duplicate keys.
-            if (top.PreviousKeyStart >= 0)
-            {
-                var comparison = key.SequenceCompareTo(_data.Slice(top.PreviousKeyStart, top.PreviousKeyLength));
-                if (comparison == 0 && !_allowDuplicateKeys)
-                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
-                if (comparison < 0)
-                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, _valueStart);
-            }
-
-            return;
-        }
-
-        if (!_allowDuplicateKeys)
-        {
-            // Without an ordering guarantee duplicates can appear anywhere, so the frame remembers every key seen.
-            top.SeenKeys ??= [];
-            foreach ((var start, var length) in top.SeenKeys)
-            {
-                if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
-                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
-            }
-
-            top.SeenKeys.Add((_valueStart, _valueLength));
-        }
+        if (_frames.Count > 0 && _frames[^1] is { IsDict: true } frame)
+            frame.ExpectKey = true;
     }
 
     /// <summary>
@@ -635,12 +611,31 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Updates the enclosing dictionary's key/value expectation after a complete value has been read.
+    /// Reads and validates a byte-string token beginning at the cursor, recording its content span.
     /// </summary>
-    private readonly void AfterValue()
+    private void ReadByteString()
     {
-        if (_frames.Count > 0 && _frames[^1] is { IsDict: true } frame)
-            frame.ExpectKey = true;
+        var start = _position;
+        while (_position < _data.Length && _data[_position] is >= (byte)'0' and <= (byte)'9')
+            _position++;
+
+        var lengthDigits = _position - start;
+        if (lengthDigits == 0 || (_data[start] == (byte)'0' && lengthDigits > 1))
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthLeadingZeros, start);
+
+        if (_position >= _data.Length || _data[_position] != (byte)':')
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringMissingSeparator, start);
+
+        if (!Utf8Parser.TryParse(_data[start.._position], out int length, out _))
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthTooLarge, start);
+
+        _position++;
+        if (length > _data.Length - _position)
+            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthExceedsInput, start);
+
+        _valueStart = _position;
+        _valueLength = length;
+        _position += length;
     }
 
     /// <summary>
@@ -699,41 +694,46 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Reads and validates a byte-string token beginning at the cursor, recording its content span.
+    /// Validates the dictionary key just read against the ordering and uniqueness rules selected at construction.
     /// </summary>
-    private void ReadByteString()
+    /// <param name="top">The enclosing dictionary's frame.</param>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the key repeats an earlier key and duplicates are not permitted, or precedes the previous key in
+    /// bytewise order and unsorted keys are not permitted.
+    /// </exception>
+    private readonly void ValidateDictionaryKey(Frame top)
     {
-        var start = _position;
-        while (_position < _data.Length && _data[_position] is >= (byte)'0' and <= (byte)'9')
-            _position++;
+        ReadOnlySpan<byte> key = _data.Slice(_valueStart, _valueLength);
 
-        var lengthDigits = _position - start;
-        if (lengthDigits == 0 || (_data[start] == (byte)'0' && lengthDigits > 1))
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthLeadingZeros, start);
+        if (!_allowUnsortedKeys)
+        {
+            // Canonical order makes equal keys adjacent, so a single comparison against the previous key detects
+            // both unordered and duplicate keys.
+            if (top.PreviousKeyStart >= 0)
+            {
+                var comparison = key.SequenceCompareTo(_data.Slice(top.PreviousKeyStart, top.PreviousKeyLength));
+                if (comparison == 0 && !_allowDuplicateKeys)
+                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+                if (comparison < 0)
+                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, _valueStart);
+            }
 
-        if (_position >= _data.Length || _data[_position] != (byte)':')
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringMissingSeparator, start);
+            return;
+        }
 
-        if (!Utf8Parser.TryParse(_data[start.._position], out int length, out _))
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthTooLarge, start);
+        if (!_allowDuplicateKeys)
+        {
+            // Without an ordering guarantee duplicates can appear anywhere, so the frame remembers every key seen.
+            top.SeenKeys ??= [];
+            foreach ((var start, var length) in top.SeenKeys)
+            {
+                if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
+                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+            }
 
-        _position++;
-        if (length > _data.Length - _position)
-            throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthExceedsInput, start);
-
-        _valueStart = _position;
-        _valueLength = length;
-        _position += length;
+            top.SeenKeys.Add((_valueStart, _valueLength));
+        }
     }
-
-    /// <summary>
-    /// Creates a parse exception with a byte offset.
-    /// </summary>
-    /// <param name="message">The error message.</param>
-    /// <param name="offset">The byte offset.</param>
-    /// <returns>The exception to throw.</returns>
-    private static BencodeFormatException Error(string message, int offset) =>
-        new(message, offset);
 
     /// <summary>
     /// Tracks the state of an open container during a read.
@@ -752,16 +752,22 @@ public ref struct Utf8BencodeReader
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the next token in a dictionary is a key.
+        /// </summary>
+        /// <returns><see langword="true" /> when a key is expected.</returns>
+        internal bool ExpectKey { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether the container is a dictionary.
         /// </summary>
         /// <returns><see langword="true" /> for a dictionary; otherwise <see langword="false" />.</returns>
         internal bool IsDict { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the next token in a dictionary is a key.
+        /// Gets or sets the length of the most recently read dictionary key.
         /// </summary>
-        /// <returns><see langword="true" /> when a key is expected.</returns>
-        internal bool ExpectKey { get; set; }
+        /// <returns>The previous key's length.</returns>
+        internal int PreviousKeyLength { get; set; }
 
         /// <summary>
         /// Gets or sets the start offset of the most recently read dictionary key, or <c> -1</c> when none has been
@@ -769,12 +775,6 @@ public ref struct Utf8BencodeReader
         /// </summary>
         /// <returns>The previous key's start offset.</returns>
         internal int PreviousKeyStart { get; set; }
-
-        /// <summary>
-        /// Gets or sets the length of the most recently read dictionary key.
-        /// </summary>
-        /// <returns>The previous key's length.</returns>
-        internal int PreviousKeyLength { get; set; }
 
         /// <summary>
         /// Gets or sets the source offsets and lengths of every key read in this dictionary, populated only when
