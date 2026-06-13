@@ -27,6 +27,11 @@ namespace Bodu.Text.Toml;
 /// omitted by default and a null array element is rejected.
 /// </para>
 /// <para>
+/// TOML has no representation for an object reference, so reference identity is not preserved: a value reachable by
+/// more than one path is written once per path, by value, and a reference cycle is rejected with
+/// <see cref="TomlSerializationException" /> rather than serialized.
+/// </para>
+/// <para>
 /// Each entry point accepts an optional <see cref="TomlSerializerOptions" />. When none is supplied a default instance
 /// is used. Reusing a single configured options object across many calls is the efficient pattern, because resolved
 /// converters and type metadata are cached on it.
