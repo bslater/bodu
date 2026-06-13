@@ -25,6 +25,19 @@ namespace Bodu.Security.Cryptography;
 /// where random collision is negligible (for example the 24-byte XChaCha20 nonce).
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Generate a fresh 12-byte nonce for an AES-GCM operation; it is unique per message, not secret.
+/// Nonce nonce = Nonce.Random(12);
+/// using var aes = new AesGcm(key, tagSizeInBytes: 16);
+/// aes.Encrypt(nonce.AsSpan(), plaintext, ciphertext, tag);
+///
+/// // The nonce travels with the ciphertext; reconstruct it on the receiving side to decrypt.
+/// Nonce received = Nonce.FromBytes(wireNonceBytes);
+///]]>
+/// </code>
+/// </example>
 public readonly struct Nonce : IEquatable<Nonce>
 {
     /// <summary>

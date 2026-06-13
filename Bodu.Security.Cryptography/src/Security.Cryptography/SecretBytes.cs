@@ -29,6 +29,26 @@ namespace Bodu.Security.Cryptography;
 /// This type is not thread-safe; callers coordinate concurrent access and disposal.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Hold secret key material for the scope of an operation; the pinned buffer is zeroed on dispose.
+/// using SecretBytes key = SecretBytes.Random(32);
+///
+/// // Hand a transient copy to a BCL API that requires a byte[], then erase that copy as well.
+/// byte[] transient = key.ToArray();
+/// try
+/// {
+///     using var hmac = new HMACSHA256(transient);
+///     // ... use hmac ...
+/// }
+/// finally
+/// {
+///     CryptographicOperations.ZeroMemory(transient);
+/// }
+///]]>
+/// </code>
+/// </example>
 public sealed class SecretBytes : IDisposable
 {
     /// <summary>

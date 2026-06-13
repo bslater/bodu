@@ -28,6 +28,20 @@ namespace Bodu.Security.Cryptography;
 /// against a locally computed one — use <see cref="FixedTimeEquals(HashValue)" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Wrap a freshly computed digest, then format it for logging or storage.
+/// HashValue digest = HashValue.FromBytes(SHA256.HashData(payload));
+/// string hex = digest.ToHexString();   // lowercase, e.g. "e3b0c442..."
+///
+/// // Compare the digest against an expected value in fixed time before trusting the payload.
+/// HashValue expected = HashValue.ParseHex("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+/// if (!digest.FixedTimeEquals(expected))
+///     throw new CryptographicException("Digest mismatch.");
+///]]>
+/// </code>
+/// </example>
 public readonly struct HashValue : IEquatable<HashValue>
 {
     /// <summary>
