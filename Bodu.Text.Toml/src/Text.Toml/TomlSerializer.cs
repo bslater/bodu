@@ -112,6 +112,11 @@ public static class TomlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the write.</param>
     /// <returns>A task that completes when the value has been written.</returns>
+    /// <remarks>
+    /// The value is serialized into an in-memory buffer in full and then written to the stream in a single asynchronous
+    /// operation: the method buffers the complete output rather than streaming it, so peak memory includes the entire
+    /// rendered document. Cancellation applies to the final write, not to the serialization that precedes it.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
@@ -184,6 +189,10 @@ public static class TomlSerializer
     /// <param name="source">The readable stream containing the UTF-8 TOML bytes.</param>
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The deserialized value.</returns>
+    /// <remarks>
+    /// The stream is read to its end into an in-memory buffer before parsing begins: the method buffers the complete
+    /// input rather than parsing incrementally, so peak memory includes the entire document.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
@@ -213,6 +222,11 @@ public static class TomlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the read.</param>
     /// <returns>A task that yields the deserialized value.</returns>
+    /// <remarks>
+    /// The stream is copied to an in-memory buffer in full before parsing begins: the method buffers the complete input
+    /// rather than parsing incrementally, so peak memory includes the entire document. Cancellation applies to reading
+    /// the stream, not to the parse and bind that follow.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
