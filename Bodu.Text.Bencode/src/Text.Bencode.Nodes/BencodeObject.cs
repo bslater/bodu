@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeObject.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -142,8 +142,7 @@ public sealed class BencodeObject
     {
         foreach (BencodeNode? child in _properties.Values)
         {
-            if (child is not null)
-                child.Parent = null;
+            child?.Parent = null;
         }
 
         _properties.Clear();
@@ -171,8 +170,7 @@ public sealed class BencodeObject
         if (!_properties.Remove(key, out BencodeNode? removed))
             return false;
 
-        if (removed is not null)
-            removed.Parent = null;
+        removed?.Parent = null;
 
         return true;
     }
@@ -183,8 +181,7 @@ public sealed class BencodeObject
         if (!((ICollection<KeyValuePair<string, BencodeNode?>>)_properties).Remove(item))
             return false;
 
-        if (item.Value is not null)
-            item.Value.Parent = null;
+        item.Value?.Parent = null;
 
         return true;
     }

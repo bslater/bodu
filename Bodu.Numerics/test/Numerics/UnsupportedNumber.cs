@@ -229,34 +229,64 @@ internal readonly struct UnsupportedNumber
     }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator +(UnsupportedNumber left, UnsupportedNumber right) => default;
+    public static UnsupportedNumber operator +(UnsupportedNumber left, UnsupportedNumber right)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator +(UnsupportedNumber value) => default;
+    public static UnsupportedNumber operator +(UnsupportedNumber value)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator -(UnsupportedNumber left, UnsupportedNumber right) => default;
+    public static UnsupportedNumber operator -(UnsupportedNumber left, UnsupportedNumber right)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator -(UnsupportedNumber value) => default;
+    public static UnsupportedNumber operator -(UnsupportedNumber value)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator ++(UnsupportedNumber value) => default;
+    public static UnsupportedNumber operator ++(UnsupportedNumber value)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator --(UnsupportedNumber value) => default;
+    public static UnsupportedNumber operator --(UnsupportedNumber value)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator *(UnsupportedNumber left, UnsupportedNumber right) => default;
+    public static UnsupportedNumber operator *(UnsupportedNumber left, UnsupportedNumber right)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static UnsupportedNumber operator /(UnsupportedNumber left, UnsupportedNumber right) => default;
+    public static UnsupportedNumber operator /(UnsupportedNumber left, UnsupportedNumber right)
+    {
+        return default;
+    }
 
     /// <inheritdoc />
-    public static bool operator ==(UnsupportedNumber left, UnsupportedNumber right) => true;
+    public static bool operator ==(UnsupportedNumber left, UnsupportedNumber right)
+    {
+        return true;
+    }
 
     /// <inheritdoc />
-    public static bool operator !=(UnsupportedNumber left, UnsupportedNumber right) => false;
+    public static bool operator !=(UnsupportedNumber left, UnsupportedNumber right)
+    {
+        return false;
+    }
 
     /// <inheritdoc />
     public bool Equals(UnsupportedNumber other) => true;

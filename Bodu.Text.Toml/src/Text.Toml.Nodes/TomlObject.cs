@@ -172,8 +172,7 @@ public sealed class TomlObject
     {
         foreach (TomlNode? child in _properties.Values)
         {
-            if (child is not null)
-                child.Parent = null;
+            child?.Parent = null;
         }
 
         _properties.Clear();
@@ -214,8 +213,7 @@ public sealed class TomlObject
             return false;
 
         RemoveFromOrder(key);
-        if (removed is not null)
-            removed.Parent = null;
+        removed?.Parent = null;
 
         return true;
     }
@@ -227,8 +225,7 @@ public sealed class TomlObject
             return false;
 
         RemoveFromOrder(item.Key);
-        if (item.Value is not null)
-            item.Value.Parent = null;
+        item.Value?.Parent = null;
 
         return true;
     }

@@ -72,6 +72,18 @@ public readonly struct ConfigurationSourceLocation
     }
 
     /// <summary>
+    /// Gets a location that represents an unknown position.
+    /// </summary>
+    /// <returns>An empty location whose numeric fields are all zero.</returns>
+    public static ConfigurationSourceLocation None => default;
+
+    /// <summary>
+    /// Gets the length of the span, measured in characters within the same line.
+    /// </summary>
+    /// <returns>A non-negative count; zero indicates a point location.</returns>
+    public int Length { get; }
+
+    /// <summary>
     /// Gets the 1-based line number that identifies the line in the source document.
     /// </summary>
     /// <returns>A positive line number, or zero when the location is unknown.</returns>
@@ -84,12 +96,6 @@ public readonly struct ConfigurationSourceLocation
     public int LinePosition { get; }
 
     /// <summary>
-    /// Gets the length of the span, measured in characters within the same line.
-    /// </summary>
-    /// <returns>A non-negative count; zero indicates a point location.</returns>
-    public int Length { get; }
-
-    /// <summary>
     /// Gets the source file path that produced this location, or <see langword="null" /> when the document was parsed
     /// from an in-memory string.
     /// </summary>
@@ -97,10 +103,26 @@ public readonly struct ConfigurationSourceLocation
     public string? Path { get; }
 
     /// <summary>
-    /// Gets a location that represents an unknown position.
+    /// Determines whether two locations are equal.
     /// </summary>
-    /// <returns>An empty location whose numeric fields are all zero.</returns>
-    public static ConfigurationSourceLocation None => default;
+    /// <param name="left">The first location to compare.</param>
+    /// <param name="right">The second location to compare.</param>
+    /// <returns><see langword="true" /> if the locations are equal; otherwise, <see langword="false" />.</returns>
+    public static bool operator ==(ConfigurationSourceLocation left, ConfigurationSourceLocation right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two locations are not equal.
+    /// </summary>
+    /// <param name="left">The first location to compare.</param>
+    /// <param name="right">The second location to compare.</param>
+    /// <returns><see langword="true" /> if the locations differ; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(ConfigurationSourceLocation left, ConfigurationSourceLocation right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Determines whether two locations refer to the same position in the same source.
@@ -136,28 +158,6 @@ public readonly struct ConfigurationSourceLocation
             LineNumber,
             LinePosition);
 
-        return Path is null ? core : string.Concat(Path, ": ", core);
-    }
-
-    /// <summary>
-    /// Determines whether two locations are equal.
-    /// </summary>
-    /// <param name="left">The first location to compare.</param>
-    /// <param name="right">The second location to compare.</param>
-    /// <returns><see langword="true" /> if the locations are equal; otherwise, <see langword="false" />.</returns>
-    public static bool operator ==(ConfigurationSourceLocation left, ConfigurationSourceLocation right)
-    {
-        return left.Equals(right);
-    }
-
-    /// <summary>
-    /// Determines whether two locations are not equal.
-    /// </summary>
-    /// <param name="left">The first location to compare.</param>
-    /// <param name="right">The second location to compare.</param>
-    /// <returns><see langword="true" /> if the locations differ; otherwise, <see langword="false" />.</returns>
-    public static bool operator !=(ConfigurationSourceLocation left, ConfigurationSourceLocation right)
-    {
-        return !left.Equals(right);
+        return Path is null ? core : $"{Path}: {core}";
     }
 }

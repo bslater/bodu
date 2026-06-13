@@ -31,10 +31,6 @@ namespace Bodu.Text.Bencode.Document;
 public sealed partial class BencodeDocument
     : IDisposable
 {
-    /// <summary>
-    /// The flat metadata index describing the parsed document in document order.
-    /// </summary>
-    private readonly Row[] _rows;
 
     /// <summary>
     /// Whether <see cref="_data" /> was rented from <see cref="ArrayPool{T}.Shared" /> and must be returned on
@@ -42,6 +38,10 @@ public sealed partial class BencodeDocument
     /// no-op and their elements remain valid indefinitely.
     /// </summary>
     private readonly bool _pooled;
+    /// <summary>
+    /// The flat metadata index describing the parsed document in document order.
+    /// </summary>
+    private readonly Row[] _rows;
 
     /// <summary>
     /// The buffer holding a copy of the parsed bytes, or <see langword="null" /> once the document has been disposed.
@@ -82,21 +82,6 @@ public sealed partial class BencodeDocument
         Parse(data, default(BencodeReaderOptions));
 
     /// <summary>
-    /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied options.
-    /// </summary>
-    /// <param name="data">The Bencode source bytes.</param>
-    /// <param name="options">The document options controlling the maximum nesting depth.</param>
-    /// <returns>A document over a private copy of <paramref name="data" />.</returns>
-    /// <exception cref="BencodeFormatException">
-    /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than the configured maximum.
-    /// </exception>
-    /// <remarks>
-    /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
-    /// </remarks>
-    public static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeDocumentOptions options) =>
-        Parse(data, ToReaderOptions(options));
-
-    /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" />.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
@@ -113,6 +98,21 @@ public sealed partial class BencodeDocument
 
         return Parse(data.AsSpan(), default(BencodeReaderOptions));
     }
+
+    /// <summary>
+    /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied options.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes.</param>
+    /// <param name="options">The document options controlling the maximum nesting depth.</param>
+    /// <returns>A document over a private copy of <paramref name="data" />.</returns>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than the configured maximum.
+    /// </exception>
+    /// <remarks>
+    /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// </remarks>
+    public static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeDocumentOptions options) =>
+        Parse(data, ToReaderOptions(options));
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied options.
@@ -137,17 +137,355 @@ public sealed partial class BencodeDocument
     }
 
     /// <summary>
-    /// Translates document options into the equivalent reader options.
+    /// Returns the rented buffer to <see cref="ArrayPool{T}.Shared" /> and invalidates the document.
     /// </summary>
-    /// <param name="options">The document options to translate.</param>
-    /// <returns>The reader options carrying the same depth and key-leniency settings.</returns>
-    private static BencodeReaderOptions ToReaderOptions(BencodeDocumentOptions options) =>
-        new()
+    /// <remarks>
+    /// Disposal is idempotent: calling it more than once has no further effect. After disposal, every element,
+    /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />. For the
+    /// non-pooled documents that back <see cref="BencodeElement.Clone" /> results, disposal is a no-op and the document
+    /// remains usable.
+    /// </remarks>
+    public void Dispose()
+    {
+        if (!_pooled)
+            return;
+
+        var data = _data;
+        if (data is null)
+            return;
+
+        _data = null;
+        ArrayPool<byte>.Shared.Return(data);
+    }
+
+    /// <summary>
+    /// Writes the document's root value to the supplied writer.
+    /// </summary>
+    /// <param name="writer">The destination writer.</param>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the writer's call sequence does not permit a value at the current position.
+    /// </exception>
+    /// <remarks>
+    /// The encoded bytes are emitted verbatim through
+    /// <see cref="Writer.Utf8BencodeWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />; because the document was
+    /// validated when parsed, no re-validation occurs.
+    /// </remarks>
+    public void WriteTo(Writer.Utf8BencodeWriter writer) =>
+        RootElement.WriteTo(writer);
+
+    /// <summary>
+    /// Parses the supplied Bencode bytes into a non-pooled <see cref="BencodeDocument" /> whose disposal is a no-op,
+    /// backing the elements returned by <see cref="BencodeElement.Clone" /> and the serializer's element bridge.
+    /// </summary>
+    /// <param name="data">The Bencode source bytes, which must form a single complete value.</param>
+    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
+    /// <returns>A document over a private, plainly allocated copy of <paramref name="data" />.</returns>
+    internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions = default)
+    {
+        var buffer = data.ToArray();
+        return new BencodeDocument(buffer, ParseRows(buffer, readerOptions), pooled: false);
+    }
+
+    /// <summary>
+    /// Gets the row index of the first child of the container at the supplied row index.
+    /// </summary>
+    /// <param name="index">The container's row index.</param>
+    /// <returns>The row index immediately following the container row.</returns>
+    internal int FirstChildRow(int index) =>
+        index + 1;
+
+    /// <summary>
+    /// Resolves the row index of the element at the supplied position within the array at the supplied row index.
+    /// </summary>
+    /// <param name="index">The array's row index.</param>
+    /// <param name="elementIndex">The zero-based position of the element to locate.</param>
+    /// <returns>The row index of the requested element.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an array.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="elementIndex" /> is negative or not less than the array length.
+    /// </exception>
+    internal int GetArrayElementRow(int index, int elementIndex)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Array)
+            throw KindMismatch(BencodeValueKind.Array, row.Kind);
+
+        // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
+        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, nameof(index));
+
+        var child = index + 1;
+        for (var i = 0; i < elementIndex; i++)
+            child += _rows[child].NumberOfRows;
+
+        return child;
+    }
+
+    /// <summary>
+    /// Gets the number of elements in the array at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The element count.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an array.</exception>
+    internal int GetArrayLength(int index)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Array)
+            throw KindMismatch(BencodeValueKind.Array, row.Kind);
+
+        return row.ChildCount;
+    }
+
+    /// <summary>
+    /// Copies the byte string at the supplied row index to a new array.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>A copy of the byte-string content.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a byte string.</exception>
+    internal byte[] GetBytes(int index)
+    {
+        var data = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.ByteString)
+            throw KindMismatch(BencodeValueKind.ByteString, row.Kind);
+
+        return data.AsSpan(row.Location, row.Length).ToArray();
+    }
+
+    /// <summary>
+    /// Gets the integer value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The decoded integer value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the integer's value exceeds <see cref="long.MaxValue" /> and is therefore readable only through
+    /// <see cref="GetUnsignedInteger(int)" />.
+    /// </exception>
+    internal long GetInteger(int index)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+        if (row.IntegerExceedsInt64)
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, row.RawLocation);
+
+        return row.Integer;
+    }
+
+    /// <summary>
+    /// Decodes the dictionary key stored at the supplied row index as UTF-8 text.
+    /// </summary>
+    /// <param name="keyRow">The row index of a key (a byte-string row in key position).</param>
+    /// <returns>The decoded key.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    internal string GetKey(int keyRow)
+    {
+        var data = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[keyRow];
+        return Encoding.UTF8.GetString(data, row.Location, row.Length);
+    }
+
+    /// <summary>
+    /// Gets the kind of the value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The value kind.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    internal BencodeValueKind GetKind(int index)
+    {
+        _ = EnsureNotDisposed();
+        return _rows[index].Kind;
+    }
+
+    /// <summary>
+    /// Gets the number of key/value pairs in the object at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The pair count.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
+    internal int GetObjectPairCount(int index)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Object)
+            throw KindMismatch(BencodeValueKind.Object, row.Kind);
+
+        return row.ChildCount;
+    }
+
+    /// <summary>
+    /// Walks an object's pairs starting at the supplied key row, returning the key, its value's row, and the row of the
+    /// next pair.
+    /// </summary>
+    /// <param name="keyRow">The row index of the current pair's key.</param>
+    /// <returns>
+    /// A tuple of the decoded key name, the row index of the pair's value, and the row index where the next pair
+    /// begins.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    internal (string Name, int ValueRow, int NextPairRow) GetPair(int keyRow)
+    {
+        var data = EnsureNotDisposed();
+        ref readonly Row key = ref _rows[keyRow];
+        var name = Encoding.UTF8.GetString(data, key.Location, key.Length);
+        var valueRow = keyRow + 1;
+        var nextPairRow = valueRow + _rows[valueRow].NumberOfRows;
+        return (name, valueRow, nextPairRow);
+    }
+
+    /// <summary>
+    /// Gets the complete encoded form of the value at the supplied row index — for a byte string this includes the
+    /// length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every child.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The raw encoded bytes, valid only until the document is disposed.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    internal ReadOnlySpan<byte> GetRawSpan(int index)
+    {
+        var data = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        return data.AsSpan(row.RawLocation, row.RawLength);
+    }
+
+    /// <summary>
+    /// Decodes the byte string at the supplied row index as UTF-8 text.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The decoded string.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a byte string.</exception>
+    internal string GetString(int index)
+    {
+        var data = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.ByteString)
+            throw KindMismatch(BencodeValueKind.ByteString, row.Kind);
+
+        return Encoding.UTF8.GetString(data, row.Location, row.Length);
+    }
+
+    /// <summary>
+    /// Gets the integer value at the supplied row index as a 64-bit unsigned integer, accepting any value in [0,
+    /// <see cref="ulong.MaxValue" /> ].
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The decoded unsigned integer value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the integer's value is negative.</exception>
+    internal ulong GetUnsignedInteger(int index)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+        if (!row.IntegerExceedsInt64 && row.Integer < 0)
+            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, row.RawLocation);
+
+        return unchecked((ulong)row.Integer);
+    }
+
+    /// <summary>
+    /// Gets the row index of the sibling that follows the value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The value's row index.</param>
+    /// <returns>The row index immediately following the value's subtree.</returns>
+    internal int NextSiblingRow(int index) =>
+        index + _rows[index].NumberOfRows;
+
+    /// <summary>
+    /// Attempts to get the integer value at the supplied row index as a 64-bit signed integer.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the value fits the signed 64-bit range; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    internal bool TryGetInteger(int index, out long value)
+    {
+        _ = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[index];
+        if (row.Kind != BencodeValueKind.Integer)
+            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
+
+        if (row.IntegerExceedsInt64)
         {
-            MaxDepth = options.MaxDepth,
-            AllowUnsortedKeys = options.AllowUnsortedKeys,
-            AllowDuplicateKeys = options.AllowDuplicateKeys,
-        };
+            value = 0;
+            return false;
+        }
+
+        value = row.Integer;
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to locate the value of the property with the supplied name within the object at the supplied row index.
+    /// </summary>
+    /// <param name="objIndex">The object's row index.</param>
+    /// <param name="name">The property name to find.</param>
+    /// <param name="valueRow">When this method returns, the row index of the matching value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when a matching property was found; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
+    internal bool TryGetProperty(int objIndex, string name, out int valueRow)
+    {
+        var data = EnsureNotDisposed();
+        ref readonly Row obj = ref _rows[objIndex];
+        if (obj.Kind != BencodeValueKind.Object)
+            throw KindMismatch(BencodeValueKind.Object, obj.Kind);
+
+        // Compare against the raw key bytes so byte strings that are not valid UTF-8 still match correctly.
+        var byteCount = Encoding.UTF8.GetByteCount(name);
+        var needle = ArrayPool<byte>.Shared.Rent(byteCount);
+        try
+        {
+            Encoding.UTF8.GetBytes(name, needle);
+            ReadOnlySpan<byte> needleSpan = needle.AsSpan(0, byteCount);
+
+            var cur = objIndex + 1;
+            for (var i = 0; i < obj.ChildCount; i++)
+            {
+                ref readonly Row key = ref _rows[cur];
+                var valueRowCandidate = cur + 1;
+                if (data.AsSpan(key.Location, key.Length).SequenceEqual(needleSpan))
+                {
+                    valueRow = valueRowCandidate;
+                    return true;
+                }
+
+                cur = valueRowCandidate + _rows[valueRowCandidate].NumberOfRows;
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(needle);
+        }
+
+        valueRow = 0;
+        return false;
+    }
+
+    /// <summary>
+    /// Creates the exception thrown when an accessor is invoked on an element of the wrong kind.
+    /// </summary>
+    /// <param name="required">The kind the accessor requires.</param>
+    /// <param name="actual">The actual kind of the element.</param>
+    /// <returns>The exception to throw.</returns>
+    private static InvalidOperationException KindMismatch(BencodeValueKind required, BencodeValueKind actual) =>
+        new(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ElementKindMismatch, required, actual));
 
     /// <summary>
     /// Parses the supplied Bencode bytes into a <see cref="BencodeDocument" /> using the supplied reader options.
@@ -174,19 +512,6 @@ public sealed partial class BencodeDocument
     }
 
     /// <summary>
-    /// Parses the supplied Bencode bytes into a non-pooled <see cref="BencodeDocument" /> whose disposal is a no-op,
-    /// backing the elements returned by <see cref="BencodeElement.Clone" /> and the serializer's element bridge.
-    /// </summary>
-    /// <param name="data">The Bencode source bytes, which must form a single complete value.</param>
-    /// <param name="readerOptions">The reader options governing depth and dictionary-key leniency.</param>
-    /// <returns>A document over a private, plainly allocated copy of <paramref name="data" />.</returns>
-    internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions = default)
-    {
-        var buffer = data.ToArray();
-        return new BencodeDocument(buffer, ParseRows(buffer, readerOptions), pooled: false);
-    }
-
-    /// <summary>
     /// Parses the supplied bytes into the flat row index describing the document.
     /// </summary>
     /// <param name="data">The Bencode source bytes.</param>
@@ -207,29 +532,7 @@ public sealed partial class BencodeDocument
         // The reader rejects trailing bytes on the next Read, completing root validation.
         reader.Read();
 
-        return rows.ToArray();
-    }
-
-    /// <summary>
-    /// Returns the rented buffer to <see cref="ArrayPool{T}.Shared" /> and invalidates the document.
-    /// </summary>
-    /// <remarks>
-    /// Disposal is idempotent: calling it more than once has no further effect. After disposal, every element,
-    /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />. For the
-    /// non-pooled documents that back <see cref="BencodeElement.Clone" /> results, disposal is a no-op and the document
-    /// remains usable.
-    /// </remarks>
-    public void Dispose()
-    {
-        if (!_pooled)
-            return;
-
-        var data = _data;
-        if (data is null)
-            return;
-
-        _data = null;
-        ArrayPool<byte>.Shared.Return(data);
+        return [.. rows];
     }
 
     /// <summary>
@@ -308,311 +611,17 @@ public sealed partial class BencodeDocument
     }
 
     /// <summary>
-    /// Gets the kind of the value at the supplied row index.
+    /// Translates document options into the equivalent reader options.
     /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The value kind.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    internal BencodeValueKind GetKind(int index)
-    {
-        _ = EnsureNotDisposed();
-        return _rows[index].Kind;
-    }
-
-    /// <summary>
-    /// Gets the integer value at the supplied row index.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The decoded integer value.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
-    /// <exception cref="BencodeFormatException">
-    /// Thrown when the integer's value exceeds <see cref="long.MaxValue" /> and is therefore readable only through
-    /// <see cref="GetUnsignedInteger(int)" />.
-    /// </exception>
-    internal long GetInteger(int index)
-    {
-        _ = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.Integer)
-            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
-        if (row.IntegerExceedsInt64)
-            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, row.RawLocation);
-
-        return row.Integer;
-    }
-
-    /// <summary>
-    /// Attempts to get the integer value at the supplied row index as a 64-bit signed integer.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <param name="value">When this method returns <see langword="true" />, the integer value; otherwise zero.</param>
-    /// <returns>
-    /// <see langword="true" /> when the value fits the signed 64-bit range; otherwise <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
-    internal bool TryGetInteger(int index, out long value)
-    {
-        _ = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.Integer)
-            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
-
-        if (row.IntegerExceedsInt64)
+    /// <param name="options">The document options to translate.</param>
+    /// <returns>The reader options carrying the same depth and key-leniency settings.</returns>
+    private static BencodeReaderOptions ToReaderOptions(BencodeDocumentOptions options) =>
+        new()
         {
-            value = 0;
-            return false;
-        }
-
-        value = row.Integer;
-        return true;
-    }
-
-    /// <summary>
-    /// Gets the integer value at the supplied row index as a 64-bit unsigned integer, accepting any value in [0,
-    /// <see cref="ulong.MaxValue" /> ].
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The decoded unsigned integer value.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
-    /// <exception cref="BencodeFormatException">Thrown when the integer's value is negative.</exception>
-    internal ulong GetUnsignedInteger(int index)
-    {
-        _ = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.Integer)
-            throw KindMismatch(BencodeValueKind.Integer, row.Kind);
-        if (!row.IntegerExceedsInt64 && row.Integer < 0)
-            throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeIntegerNegativeUnsigned, row.RawLocation);
-
-        return unchecked((ulong)row.Integer);
-    }
-
-    /// <summary>
-    /// Decodes the byte string at the supplied row index as UTF-8 text.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The decoded string.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not a byte string.</exception>
-    internal string GetString(int index)
-    {
-        var data = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.ByteString)
-            throw KindMismatch(BencodeValueKind.ByteString, row.Kind);
-
-        return Encoding.UTF8.GetString(data, row.Location, row.Length);
-    }
-
-    /// <summary>
-    /// Copies the byte string at the supplied row index to a new array.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>A copy of the byte-string content.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not a byte string.</exception>
-    internal byte[] GetBytes(int index)
-    {
-        var data = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.ByteString)
-            throw KindMismatch(BencodeValueKind.ByteString, row.Kind);
-
-        return data.AsSpan(row.Location, row.Length).ToArray();
-    }
-
-    /// <summary>
-    /// Gets the complete encoded form of the value at the supplied row index — for a byte string this includes the
-    /// length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every child.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The raw encoded bytes, valid only until the document is disposed.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    internal ReadOnlySpan<byte> GetRawSpan(int index)
-    {
-        var data = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        return data.AsSpan(row.RawLocation, row.RawLength);
-    }
-
-    /// <summary>
-    /// Writes the document's root value to the supplied writer.
-    /// </summary>
-    /// <param name="writer">The destination writer.</param>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the writer's call sequence does not permit a value at the current position.
-    /// </exception>
-    /// <remarks>
-    /// The encoded bytes are emitted verbatim through
-    /// <see cref="Writer.Utf8BencodeWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />; because the document was
-    /// validated when parsed, no re-validation occurs.
-    /// </remarks>
-    public void WriteTo(Writer.Utf8BencodeWriter writer) =>
-        RootElement.WriteTo(writer);
-
-    /// <summary>
-    /// Gets the number of elements in the array at the supplied row index.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The element count.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an array.</exception>
-    internal int GetArrayLength(int index)
-    {
-        _ = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.Array)
-            throw KindMismatch(BencodeValueKind.Array, row.Kind);
-
-        return row.ChildCount;
-    }
-
-    /// <summary>
-    /// Resolves the row index of the element at the supplied position within the array at the supplied row index.
-    /// </summary>
-    /// <param name="index">The array's row index.</param>
-    /// <param name="elementIndex">The zero-based position of the element to locate.</param>
-    /// <returns>The row index of the requested element.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an array.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="elementIndex" /> is negative or not less than the array length.
-    /// </exception>
-    internal int GetArrayElementRow(int index, int elementIndex)
-    {
-        _ = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.Array)
-            throw KindMismatch(BencodeValueKind.Array, row.Kind);
-
-        // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
-        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, nameof(index));
-
-        var child = index + 1;
-        for (var i = 0; i < elementIndex; i++)
-            child += _rows[child].NumberOfRows;
-
-        return child;
-    }
-
-    /// <summary>
-    /// Gets the number of key/value pairs in the object at the supplied row index.
-    /// </summary>
-    /// <param name="index">The row index.</param>
-    /// <returns>The pair count.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
-    internal int GetObjectPairCount(int index)
-    {
-        _ = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[index];
-        if (row.Kind != BencodeValueKind.Object)
-            throw KindMismatch(BencodeValueKind.Object, row.Kind);
-
-        return row.ChildCount;
-    }
-
-    /// <summary>
-    /// Gets the row index of the first child of the container at the supplied row index.
-    /// </summary>
-    /// <param name="index">The container's row index.</param>
-    /// <returns>The row index immediately following the container row.</returns>
-    internal int FirstChildRow(int index) =>
-        index + 1;
-
-    /// <summary>
-    /// Gets the row index of the sibling that follows the value at the supplied row index.
-    /// </summary>
-    /// <param name="index">The value's row index.</param>
-    /// <returns>The row index immediately following the value's subtree.</returns>
-    internal int NextSiblingRow(int index) =>
-        index + _rows[index].NumberOfRows;
-
-    /// <summary>
-    /// Decodes the dictionary key stored at the supplied row index as UTF-8 text.
-    /// </summary>
-    /// <param name="keyRow">The row index of a key (a byte-string row in key position).</param>
-    /// <returns>The decoded key.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    internal string GetKey(int keyRow)
-    {
-        var data = EnsureNotDisposed();
-        ref readonly Row row = ref _rows[keyRow];
-        return Encoding.UTF8.GetString(data, row.Location, row.Length);
-    }
-
-    /// <summary>
-    /// Walks an object's pairs starting at the supplied key row, returning the key, its value's row, and the row of the
-    /// next pair.
-    /// </summary>
-    /// <param name="keyRow">The row index of the current pair's key.</param>
-    /// <returns>
-    /// A tuple of the decoded key name, the row index of the pair's value, and the row index where the next pair
-    /// begins.
-    /// </returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    internal (string Name, int ValueRow, int NextPairRow) GetPair(int keyRow)
-    {
-        var data = EnsureNotDisposed();
-        ref readonly Row key = ref _rows[keyRow];
-        var name = Encoding.UTF8.GetString(data, key.Location, key.Length);
-        var valueRow = keyRow + 1;
-        var nextPairRow = valueRow + _rows[valueRow].NumberOfRows;
-        return (name, valueRow, nextPairRow);
-    }
-
-    /// <summary>
-    /// Attempts to locate the value of the property with the supplied name within the object at the supplied row index.
-    /// </summary>
-    /// <param name="objIndex">The object's row index.</param>
-    /// <param name="name">The property name to find.</param>
-    /// <param name="valueRow">When this method returns, the row index of the matching value; otherwise zero.</param>
-    /// <returns>
-    /// <see langword="true" /> when a matching property was found; otherwise <see langword="false" />.
-    /// </returns>
-    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
-    internal bool TryGetProperty(int objIndex, string name, out int valueRow)
-    {
-        var data = EnsureNotDisposed();
-        ref readonly Row obj = ref _rows[objIndex];
-        if (obj.Kind != BencodeValueKind.Object)
-            throw KindMismatch(BencodeValueKind.Object, obj.Kind);
-
-        // Compare against the raw key bytes so byte strings that are not valid UTF-8 still match correctly.
-        var byteCount = Encoding.UTF8.GetByteCount(name);
-        var needle = ArrayPool<byte>.Shared.Rent(byteCount);
-        try
-        {
-            Encoding.UTF8.GetBytes(name, needle);
-            ReadOnlySpan<byte> needleSpan = needle.AsSpan(0, byteCount);
-
-            var cur = objIndex + 1;
-            for (var i = 0; i < obj.ChildCount; i++)
-            {
-                ref readonly Row key = ref _rows[cur];
-                var valueRowCandidate = cur + 1;
-                if (data.AsSpan(key.Location, key.Length).SequenceEqual(needleSpan))
-                {
-                    valueRow = valueRowCandidate;
-                    return true;
-                }
-
-                cur = valueRowCandidate + _rows[valueRowCandidate].NumberOfRows;
-            }
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(needle);
-        }
-
-        valueRow = 0;
-        return false;
-    }
+            MaxDepth = options.MaxDepth,
+            AllowUnsortedKeys = options.AllowUnsortedKeys,
+            AllowDuplicateKeys = options.AllowDuplicateKeys,
+        };
 
     /// <summary>
     /// Ensures the document has not been disposed and returns its backing buffer.
@@ -621,13 +630,4 @@ public sealed partial class BencodeDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     private byte[] EnsureNotDisposed() =>
         _data ?? throw new ObjectDisposedException(nameof(BencodeDocument));
-
-    /// <summary>
-    /// Creates the exception thrown when an accessor is invoked on an element of the wrong kind.
-    /// </summary>
-    /// <param name="required">The kind the accessor requires.</param>
-    /// <param name="actual">The actual kind of the element.</param>
-    /// <returns>The exception to throw.</returns>
-    private static InvalidOperationException KindMismatch(BencodeValueKind required, BencodeValueKind actual) =>
-        new(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ElementKindMismatch, required, actual));
 }

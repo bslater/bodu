@@ -30,15 +30,6 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal struct Curve25519FieldElement
 {
-    /// <summary>
-    /// The number of bytes in the canonical little-endian encoding of a field element.
-    /// </summary>
-    internal const int EncodedSizeInBytes = 32;
-
-    /// <summary>
-    /// Mask isolating the low 51 bits of a limb.
-    /// </summary>
-    private const ulong LimbMask = (1UL << 51) - 1;
 
     /// <summary>
     /// Limb 0 of the radix-2^51 representation (bits 0–50 of the element value).
@@ -66,6 +57,16 @@ internal struct Curve25519FieldElement
     internal ulong L4;
 
     /// <summary>
+    /// The number of bytes in the canonical little-endian encoding of a field element.
+    /// </summary>
+    internal const int EncodedSizeInBytes = 32;
+
+    /// <summary>
+    /// Mask isolating the low 51 bits of a limb.
+    /// </summary>
+    private const ulong LimbMask = (1UL << 51) - 1;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Curve25519FieldElement" /> struct from explicit limb values.
     /// </summary>
     /// <param name="l0">Limb 0 (bits 0–50).</param>
@@ -83,6 +84,13 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
+    /// Gets the multiplicative identity (1) of the field.
+    /// </summary>
+    /// <returns>A field element whose value is one.</returns>
+    internal static Curve25519FieldElement One =>
+        new(1, 0, 0, 0, 0);
+
+    /// <summary>
     /// Gets the additive identity (0) of the field.
     /// </summary>
     /// <returns>A field element whose value is zero.</returns>
@@ -90,11 +98,64 @@ internal struct Curve25519FieldElement
         default;
 
     /// <summary>
-    /// Gets the multiplicative identity (1) of the field.
+    /// Adds two field elements limb-wise without reducing.
     /// </summary>
-    /// <returns>A field element whose value is one.</returns>
-    internal static Curve25519FieldElement One =>
-        new(1, 0, 0, 0, 0);
+    /// <param name="left">The first addend. Limbs must be below 2^53.</param>
+    /// <param name="right">The second addend. Limbs must be below 2^53.</param>
+    /// <returns>The sum with limbs below 2^54.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static Curve25519FieldElement Add(in Curve25519FieldElement left, in Curve25519FieldElement right) =>
+        new(left.L0 + right.L0, left.L1 + right.L1, left.L2 + right.L2, left.L3 + right.L3, left.L4 + right.L4);
+
+    /// <summary>
+    /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is 1,
+    /// and leaves <paramref name="destination" /> unchanged when it is 0, without a data-dependent branch.
+    /// </summary>
+    /// <param name="destination">The element conditionally overwritten.</param>
+    /// <param name="source">The element conditionally copied.</param>
+    /// <param name="condition">The move condition. Must be exactly 0 or 1.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ConditionalMove(ref Curve25519FieldElement destination, in Curve25519FieldElement source, ulong condition)
+    {
+        var mask = 0UL - condition;
+
+        destination.L0 ^= mask & (destination.L0 ^ source.L0);
+        destination.L1 ^= mask & (destination.L1 ^ source.L1);
+        destination.L2 ^= mask & (destination.L2 ^ source.L2);
+        destination.L3 ^= mask & (destination.L3 ^ source.L3);
+        destination.L4 ^= mask & (destination.L4 ^ source.L4);
+    }
+
+    /// <summary>
+    /// Swaps two field elements in place when <paramref name="condition" /> is 1, and leaves them unchanged when it is
+    /// 0, without a data-dependent branch.
+    /// </summary>
+    /// <param name="left">The first element, swapped with <paramref name="right" /> when the condition is set.</param>
+    /// <param name="right">The second element, swapped with <paramref name="left" /> when the condition is set.</param>
+    /// <param name="condition">The swap condition. Must be exactly 0 or 1.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ConditionalSwap(ref Curve25519FieldElement left, ref Curve25519FieldElement right, ulong condition)
+    {
+        var mask = 0UL - condition;
+
+        var x0 = mask & (left.L0 ^ right.L0);
+        var x1 = mask & (left.L1 ^ right.L1);
+        var x2 = mask & (left.L2 ^ right.L2);
+        var x3 = mask & (left.L3 ^ right.L3);
+        var x4 = mask & (left.L4 ^ right.L4);
+
+        left.L0 ^= x0;
+        left.L1 ^= x1;
+        left.L2 ^= x2;
+        left.L3 ^= x3;
+        left.L4 ^= x4;
+
+        right.L0 ^= x0;
+        right.L1 ^= x1;
+        right.L2 ^= x2;
+        right.L3 ^= x3;
+        right.L4 ^= x4;
+    }
 
     /// <summary>
     /// Decodes a 32-byte little-endian encoding into a loosely reduced field element, ignoring the most significant bit
@@ -119,163 +180,6 @@ internal struct Curve25519FieldElement
             (BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(19, 8)) >> 1) & LimbMask,
             (BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(24, 8)) >> 12) & LimbMask);
     }
-
-    /// <summary>
-    /// Writes the canonical 32-byte little-endian encoding of this element, fully reduced modulo p, into
-    /// <paramref name="destination" />.
-    /// </summary>
-    /// <param name="destination">The 32-byte span that receives the canonical encoding.</param>
-    /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes long.</exception>
-    /// <remarks>
-    /// The encoding always has its most significant bit clear because the canonical representative is below 2^255 − 19.
-    /// The reduction is branch-free.
-    /// </remarks>
-    internal readonly void ToBytes(Span<byte> destination)
-    {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
-
-        ulong t0 = L0, t1 = L1, t2 = L2, t3 = L3, t4 = L4;
-
-        // Two carry passes bring every limb below 2^51 (plus a tiny excess on t0), so the value is below 2p.
-        for (var pass = 0; pass < 2; pass++)
-        {
-            t1 += t0 >> 51;
-            t0 &= LimbMask;
-            t2 += t1 >> 51;
-            t1 &= LimbMask;
-            t3 += t2 >> 51;
-            t2 &= LimbMask;
-            t4 += t3 >> 51;
-            t3 &= LimbMask;
-            t0 += 19 * (t4 >> 51);
-            t4 &= LimbMask;
-        }
-
-        // Compute q = 1 when the value is >= p, else 0, by propagating the carry of (value + 19) past bit 254;
-        // adding 19q then dropping bit 255 subtracts q * p without a data-dependent branch.
-        var q = (t0 + 19) >> 51;
-        q = (t1 + q) >> 51;
-        q = (t2 + q) >> 51;
-        q = (t3 + q) >> 51;
-        q = (t4 + q) >> 51;
-
-        t0 += 19 * q;
-        t1 += t0 >> 51;
-        t0 &= LimbMask;
-        t2 += t1 >> 51;
-        t1 &= LimbMask;
-        t3 += t2 >> 51;
-        t2 &= LimbMask;
-        t4 += t3 >> 51;
-        t3 &= LimbMask;
-        t4 &= LimbMask;
-
-        BinaryPrimitives.WriteUInt64LittleEndian(destination[..8], t0 | (t1 << 51));
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8, 8), (t1 >> 13) | (t2 << 38));
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(16, 8), (t2 >> 26) | (t3 << 25));
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(24, 8), (t3 >> 39) | (t4 << 12));
-    }
-
-    /// <summary>
-    /// Adds two field elements limb-wise without reducing.
-    /// </summary>
-    /// <param name="left">The first addend. Limbs must be below 2^53.</param>
-    /// <param name="right">The second addend. Limbs must be below 2^53.</param>
-    /// <returns>The sum with limbs below 2^54.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Add(in Curve25519FieldElement left, in Curve25519FieldElement right) =>
-        new(left.L0 + right.L0, left.L1 + right.L1, left.L2 + right.L2, left.L3 + right.L3, left.L4 + right.L4);
-
-    /// <summary>
-    /// Subtracts <paramref name="right" /> from <paramref name="left" /> limb-wise, biasing by 4p to keep every limb
-    /// non-negative without branching.
-    /// </summary>
-    /// <param name="left">The minuend. Limbs must be below 2^53.</param>
-    /// <param name="right">The subtrahend. Limbs must be below 2^53.</param>
-    /// <returns>The difference with limbs below 2^54.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Subtract(in Curve25519FieldElement left, in Curve25519FieldElement right)
-    {
-        // 4p in radix 2^51: (2^53 - 76, 2^53 - 4, 2^53 - 4, 2^53 - 4, 2^53 - 4). Adding it keeps each limb
-        // non-negative for any subtrahend limb below 2^53, so the subtraction never borrows.
-        const ulong Four0 = (1UL << 53) - 76;
-        const ulong FourN = (1UL << 53) - 4;
-
-        return new Curve25519FieldElement(
-            left.L0 + Four0 - right.L0,
-            left.L1 + FourN - right.L1,
-            left.L2 + FourN - right.L2,
-            left.L3 + FourN - right.L3,
-            left.L4 + FourN - right.L4);
-    }
-
-    /// <summary>
-    /// Multiplies two field elements modulo p, returning a loosely reduced product.
-    /// </summary>
-    /// <param name="left">The first factor. Limbs must be below 2^54.</param>
-    /// <param name="right">The second factor. Limbs must be below 2^54.</param>
-    /// <returns>The product with all limbs below 2^52.</returns>
-    /// <remarks>
-    /// Uses the schoolbook 5×5 limb product with the high limbs folded back through the identity 2^255 ≡ 19 (mod p).
-    /// Partial products are accumulated in <see cref="UInt128" />, which cannot overflow for the permitted operand
-    /// bounds.
-    /// </remarks>
-    internal static Curve25519FieldElement Multiply(in Curve25519FieldElement left, in Curve25519FieldElement right)
-    {
-        ulong f0 = left.L0, f1 = left.L1, f2 = left.L2, f3 = left.L3, f4 = left.L4;
-        ulong g0 = right.L0, g1 = right.L1, g2 = right.L2, g3 = right.L3, g4 = right.L4;
-
-        UInt128 t0 = ((UInt128)f0 * g0)
-                   + (UInt128)19 * (((UInt128)f1 * g4) + ((UInt128)f2 * g3) + ((UInt128)f3 * g2) + ((UInt128)f4 * g1));
-        UInt128 t1 = ((UInt128)f0 * g1) + ((UInt128)f1 * g0)
-                   + (UInt128)19 * (((UInt128)f2 * g4) + ((UInt128)f3 * g3) + ((UInt128)f4 * g2));
-        UInt128 t2 = ((UInt128)f0 * g2) + ((UInt128)f1 * g1) + ((UInt128)f2 * g0)
-                   + (UInt128)19 * (((UInt128)f3 * g4) + ((UInt128)f4 * g3));
-        UInt128 t3 = ((UInt128)f0 * g3) + ((UInt128)f1 * g2) + ((UInt128)f2 * g1) + ((UInt128)f3 * g0)
-                   + (UInt128)19 * ((UInt128)f4 * g4);
-        UInt128 t4 = ((UInt128)f0 * g4) + ((UInt128)f1 * g3) + ((UInt128)f2 * g2) + ((UInt128)f3 * g1) + ((UInt128)f4 * g0);
-
-        return CarryReduce(t0, t1, t2, t3, t4);
-    }
-
-    /// <summary>
-    /// Squares a field element modulo p, returning a loosely reduced result.
-    /// </summary>
-    /// <param name="value">The element to square. Limbs must be below 2^54.</param>
-    /// <returns>The square with all limbs below 2^52.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Square(in Curve25519FieldElement value) =>
-        Multiply(value, value);
-
-    /// <summary>
-    /// Multiplies a field element by a small unsigned constant modulo p.
-    /// </summary>
-    /// <param name="value">The element to scale. Limbs must be below 2^54.</param>
-    /// <param name="factor">The small constant factor, such as the curve constant 121665.</param>
-    /// <returns>The scaled element with all limbs below 2^52.</returns>
-    internal static Curve25519FieldElement MultiplySmall(in Curve25519FieldElement value, uint factor)
-    {
-        UInt128 t0 = (UInt128)value.L0 * factor;
-        UInt128 t1 = (UInt128)value.L1 * factor;
-        UInt128 t2 = (UInt128)value.L2 * factor;
-        UInt128 t3 = (UInt128)value.L3 * factor;
-        UInt128 t4 = (UInt128)value.L4 * factor;
-
-        return CarryReduce(t0, t1, t2, t3, t4);
-    }
-
-    /// <summary>
-    /// Carries a loosely accumulated element back into tight reduction, bringing every limb below 2^52.
-    /// </summary>
-    /// <param name="value">The element to normalize. Limbs may be as large as 2^63.</param>
-    /// <returns>An equivalent element with all limbs below 2^52.</returns>
-    /// <remarks>
-    /// Use this before handing an <see cref="Add" /> or <see cref="Subtract" /> result back into another addition or
-    /// subtraction, whose operand bound (limbs below 2^53) a chained loose value would otherwise violate.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Reduce(in Curve25519FieldElement value) =>
-        CarryReduce(value.L0, value.L1, value.L2, value.L3, value.L4);
 
     /// <summary>
     /// Computes the multiplicative inverse of a field element by raising it to p − 2.
@@ -341,6 +245,52 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
+    /// Multiplies two field elements modulo p, returning a loosely reduced product.
+    /// </summary>
+    /// <param name="left">The first factor. Limbs must be below 2^54.</param>
+    /// <param name="right">The second factor. Limbs must be below 2^54.</param>
+    /// <returns>The product with all limbs below 2^52.</returns>
+    /// <remarks>
+    /// Uses the schoolbook 5×5 limb product with the high limbs folded back through the identity 2^255 ≡ 19 (mod p).
+    /// Partial products are accumulated in <see cref="UInt128" />, which cannot overflow for the permitted operand
+    /// bounds.
+    /// </remarks>
+    internal static Curve25519FieldElement Multiply(in Curve25519FieldElement left, in Curve25519FieldElement right)
+    {
+        ulong f0 = left.L0, f1 = left.L1, f2 = left.L2, f3 = left.L3, f4 = left.L4;
+        ulong g0 = right.L0, g1 = right.L1, g2 = right.L2, g3 = right.L3, g4 = right.L4;
+
+        UInt128 t0 = ((UInt128)f0 * g0)
+                   + (UInt128)19 * (((UInt128)f1 * g4) + ((UInt128)f2 * g3) + ((UInt128)f3 * g2) + ((UInt128)f4 * g1));
+        UInt128 t1 = ((UInt128)f0 * g1) + ((UInt128)f1 * g0)
+                   + (UInt128)19 * (((UInt128)f2 * g4) + ((UInt128)f3 * g3) + ((UInt128)f4 * g2));
+        UInt128 t2 = ((UInt128)f0 * g2) + ((UInt128)f1 * g1) + ((UInt128)f2 * g0)
+                   + (UInt128)19 * (((UInt128)f3 * g4) + ((UInt128)f4 * g3));
+        UInt128 t3 = ((UInt128)f0 * g3) + ((UInt128)f1 * g2) + ((UInt128)f2 * g1) + ((UInt128)f3 * g0)
+                   + (UInt128)19 * ((UInt128)f4 * g4);
+        UInt128 t4 = ((UInt128)f0 * g4) + ((UInt128)f1 * g3) + ((UInt128)f2 * g2) + ((UInt128)f3 * g1) + ((UInt128)f4 * g0);
+
+        return CarryReduce(t0, t1, t2, t3, t4);
+    }
+
+    /// <summary>
+    /// Multiplies a field element by a small unsigned constant modulo p.
+    /// </summary>
+    /// <param name="value">The element to scale. Limbs must be below 2^54.</param>
+    /// <param name="factor">The small constant factor, such as the curve constant 121665.</param>
+    /// <returns>The scaled element with all limbs below 2^52.</returns>
+    internal static Curve25519FieldElement MultiplySmall(in Curve25519FieldElement value, uint factor)
+    {
+        UInt128 t0 = (UInt128)value.L0 * factor;
+        UInt128 t1 = (UInt128)value.L1 * factor;
+        UInt128 t2 = (UInt128)value.L2 * factor;
+        UInt128 t3 = (UInt128)value.L3 * factor;
+        UInt128 t4 = (UInt128)value.L4 * factor;
+
+        return CarryReduce(t0, t1, t2, t3, t4);
+    }
+
+    /// <summary>
     /// Raises a field element to the power (p − 5) / 8 = 2^252 − 3, the exponent used to compute square roots during
     /// Ed25519 point decompression.
     /// </summary>
@@ -403,53 +353,48 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
-    /// Swaps two field elements in place when <paramref name="condition" /> is 1, and leaves them unchanged when it is
-    /// 0, without a data-dependent branch.
+    /// Carries a loosely accumulated element back into tight reduction, bringing every limb below 2^52.
     /// </summary>
-    /// <param name="left">The first element, swapped with <paramref name="right" /> when the condition is set.</param>
-    /// <param name="right">The second element, swapped with <paramref name="left" /> when the condition is set.</param>
-    /// <param name="condition">The swap condition. Must be exactly 0 or 1.</param>
+    /// <param name="value">The element to normalize. Limbs may be as large as 2^63.</param>
+    /// <returns>An equivalent element with all limbs below 2^52.</returns>
+    /// <remarks>
+    /// Use this before handing an <see cref="Add" /> or <see cref="Subtract" /> result back into another addition or
+    /// subtraction, whose operand bound (limbs below 2^53) a chained loose value would otherwise violate.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ConditionalSwap(ref Curve25519FieldElement left, ref Curve25519FieldElement right, ulong condition)
-    {
-        var mask = 0UL - condition;
-
-        var x0 = mask & (left.L0 ^ right.L0);
-        var x1 = mask & (left.L1 ^ right.L1);
-        var x2 = mask & (left.L2 ^ right.L2);
-        var x3 = mask & (left.L3 ^ right.L3);
-        var x4 = mask & (left.L4 ^ right.L4);
-
-        left.L0 ^= x0;
-        left.L1 ^= x1;
-        left.L2 ^= x2;
-        left.L3 ^= x3;
-        left.L4 ^= x4;
-
-        right.L0 ^= x0;
-        right.L1 ^= x1;
-        right.L2 ^= x2;
-        right.L3 ^= x3;
-        right.L4 ^= x4;
-    }
+    internal static Curve25519FieldElement Reduce(in Curve25519FieldElement value) =>
+        CarryReduce(value.L0, value.L1, value.L2, value.L3, value.L4);
 
     /// <summary>
-    /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is 1,
-    /// and leaves <paramref name="destination" /> unchanged when it is 0, without a data-dependent branch.
+    /// Squares a field element modulo p, returning a loosely reduced result.
     /// </summary>
-    /// <param name="destination">The element conditionally overwritten.</param>
-    /// <param name="source">The element conditionally copied.</param>
-    /// <param name="condition">The move condition. Must be exactly 0 or 1.</param>
+    /// <param name="value">The element to square. Limbs must be below 2^54.</param>
+    /// <returns>The square with all limbs below 2^52.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ConditionalMove(ref Curve25519FieldElement destination, in Curve25519FieldElement source, ulong condition)
-    {
-        var mask = 0UL - condition;
+    internal static Curve25519FieldElement Square(in Curve25519FieldElement value) =>
+        Multiply(value, value);
 
-        destination.L0 ^= mask & (destination.L0 ^ source.L0);
-        destination.L1 ^= mask & (destination.L1 ^ source.L1);
-        destination.L2 ^= mask & (destination.L2 ^ source.L2);
-        destination.L3 ^= mask & (destination.L3 ^ source.L3);
-        destination.L4 ^= mask & (destination.L4 ^ source.L4);
+    /// <summary>
+    /// Subtracts <paramref name="right" /> from <paramref name="left" /> limb-wise, biasing by 4p to keep every limb
+    /// non-negative without branching.
+    /// </summary>
+    /// <param name="left">The minuend. Limbs must be below 2^53.</param>
+    /// <param name="right">The subtrahend. Limbs must be below 2^53.</param>
+    /// <returns>The difference with limbs below 2^54.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static Curve25519FieldElement Subtract(in Curve25519FieldElement left, in Curve25519FieldElement right)
+    {
+        // 4p in radix 2^51: (2^53 - 76, 2^53 - 4, 2^53 - 4, 2^53 - 4, 2^53 - 4). Adding it keeps each limb
+        // non-negative for any subtrahend limb below 2^53, so the subtraction never borrows.
+        const ulong Four0 = (1UL << 53) - 76;
+        const ulong FourN = (1UL << 53) - 4;
+
+        return new Curve25519FieldElement(
+            left.L0 + Four0 - right.L0,
+            left.L1 + FourN - right.L1,
+            left.L2 + FourN - right.L2,
+            left.L3 + FourN - right.L3,
+            left.L4 + FourN - right.L4);
     }
 
     /// <summary>
@@ -487,6 +432,62 @@ internal struct Curve25519FieldElement
         CryptographyHelper.Clear(encoded);
 
         return accumulator == 0;
+    }
+
+    /// <summary>
+    /// Writes the canonical 32-byte little-endian encoding of this element, fully reduced modulo p, into
+    /// <paramref name="destination" />.
+    /// </summary>
+    /// <param name="destination">The 32-byte span that receives the canonical encoding.</param>
+    /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes long.</exception>
+    /// <remarks>
+    /// The encoding always has its most significant bit clear because the canonical representative is below 2^255 − 19.
+    /// The reduction is branch-free.
+    /// </remarks>
+    internal readonly void ToBytes(Span<byte> destination)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
+
+        ulong t0 = L0, t1 = L1, t2 = L2, t3 = L3, t4 = L4;
+
+        // Two carry passes bring every limb below 2^51 (plus a tiny excess on t0), so the value is below 2p.
+        for (var pass = 0; pass < 2; pass++)
+        {
+            t1 += t0 >> 51;
+            t0 &= LimbMask;
+            t2 += t1 >> 51;
+            t1 &= LimbMask;
+            t3 += t2 >> 51;
+            t2 &= LimbMask;
+            t4 += t3 >> 51;
+            t3 &= LimbMask;
+            t0 += 19 * (t4 >> 51);
+            t4 &= LimbMask;
+        }
+
+        // Compute q = 1 when the value is >= p, else 0, by propagating the carry of (value + 19) past bit 254;
+        // adding 19q then dropping bit 255 subtracts q * p without a data-dependent branch.
+        var q = (t0 + 19) >> 51;
+        q = (t1 + q) >> 51;
+        q = (t2 + q) >> 51;
+        q = (t3 + q) >> 51;
+        q = (t4 + q) >> 51;
+
+        t0 += 19 * q;
+        t1 += t0 >> 51;
+        t0 &= LimbMask;
+        t2 += t1 >> 51;
+        t1 &= LimbMask;
+        t3 += t2 >> 51;
+        t2 &= LimbMask;
+        t4 += t3 >> 51;
+        t3 &= LimbMask;
+        t4 &= LimbMask;
+
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[..8], t0 | (t1 << 51));
+        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8, 8), (t1 >> 13) | (t2 << 38));
+        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(16, 8), (t2 >> 26) | (t3 << 25));
+        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(24, 8), (t3 >> 39) | (t4 << 12));
     }
 
     /// <summary>

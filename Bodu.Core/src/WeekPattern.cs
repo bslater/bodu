@@ -48,6 +48,17 @@ namespace Bodu;
 public readonly partial struct WeekPattern
     : IEnumerable<DayOfWeek>
 {
+
+#pragma warning disable IDE1006
+    private static readonly char[] WeekdaySymbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+#pragma warning restore IDE1006
+
+    private readonly byte _selectedDays;
+
+    private const int MaxValue = 0b1111111;
+    private const int MinValue = 0b0000000;
+    private const byte ShiftValue = 0x01;
+
 #pragma warning disable IDE1006
 
     /// <summary>
@@ -67,16 +78,6 @@ public readonly partial struct WeekPattern
     public static readonly WeekPattern Weekend = new(DayOfWeek.Saturday, DayOfWeek.Sunday);
 
 #pragma warning restore IDE1006
-
-    private const int MaxValue = 0b1111111;
-    private const int MinValue = 0b0000000;
-    private const byte ShiftValue = 0x01;
-
-#pragma warning disable IDE1006
-    private static readonly char[] WeekdaySymbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-#pragma warning restore IDE1006
-
-    private readonly byte _selectedDays;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WeekPattern" /> struct with the specified selected days.
@@ -161,6 +162,22 @@ public readonly partial struct WeekPattern
     }
 
     /// <summary>
+    /// Creates a <see cref="WeekPattern" /> from the specified bitmask byte value.
+    /// </summary>
+    /// <param name="value">
+    /// A <see cref="byte" /> in the range [0, 127] where each bit represents a day of the week in Sunday-first order.
+    /// </param>
+    /// <returns>A <see cref="WeekPattern" /> corresponding to the supplied bitmask.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value" /> exceeds 127.</exception>
+    public static WeekPattern FromByte(byte value) => new((int)value);
+
+    /// <inheritdoc />
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    /// <inheritdoc />
+    IEnumerator<DayOfWeek> IEnumerable<DayOfWeek>.GetEnumerator() => GetEnumerator();
+
+    /// <summary>
     /// Determines whether the specified <see cref="DayOfWeek" /> is selected in this pattern.
     /// </summary>
     /// <param name="day">The day to test. Must be a valid <see cref="DayOfWeek" /> value.</param>
@@ -171,6 +188,30 @@ public readonly partial struct WeekPattern
     /// Thrown if <paramref name="day" /> is outside the valid <see cref="DayOfWeek" /> range.
     /// </exception>
     public bool Contains(DayOfWeek day) => this[day];
+
+    /// <summary>
+    /// Returns a struct enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order without
+    /// allocating.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Enumerator" /> that iterates the selected days. Returning the struct directly avoids the heap
+    /// allocation that a yield-state-machine enumerator would incur, and the C# <c>foreach</c> pattern binds to it via
+    /// pattern matching without going through <see cref="IEnumerable{T}" />.
+    /// </returns>
+    public Enumerator GetEnumerator() => new(_selectedDays);
+
+    /// <summary>
+    /// Returns a <see cref="byte" /> representation of the selected days.
+    /// </summary>
+    /// <returns>A <see cref="byte" /> whose bits correspond to the selected days in Sunday-first order.</returns>
+    public readonly byte ToByte() => _selectedDays;
+
+    /// <summary>
+    /// Returns an <see cref="int" /> representation of the selected days, for contexts where an integer type is
+    /// required.
+    /// </summary>
+    /// <returns>An <see cref="int" /> whose value equals the underlying bitmask.</returns>
+    public readonly int ToInt32() => _selectedDays;
 
     /// <summary>
     /// Returns a new <see cref="WeekPattern" /> that includes the specified day in addition to those already selected.
@@ -206,44 +247,4 @@ public readonly partial struct WeekPattern
         ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6);
         return new WeekPattern(_selectedDays & (byte)~(ShiftValue << (6 - (int)day)));
     }
-
-    /// <summary>
-    /// Returns a <see cref="byte" /> representation of the selected days.
-    /// </summary>
-    /// <returns>A <see cref="byte" /> whose bits correspond to the selected days in Sunday-first order.</returns>
-    public readonly byte ToByte() => _selectedDays;
-
-    /// <summary>
-    /// Returns an <see cref="int" /> representation of the selected days, for contexts where an integer type is
-    /// required.
-    /// </summary>
-    /// <returns>An <see cref="int" /> whose value equals the underlying bitmask.</returns>
-    public readonly int ToInt32() => _selectedDays;
-
-    /// <summary>
-    /// Creates a <see cref="WeekPattern" /> from the specified bitmask byte value.
-    /// </summary>
-    /// <param name="value">
-    /// A <see cref="byte" /> in the range [0, 127] where each bit represents a day of the week in Sunday-first order.
-    /// </param>
-    /// <returns>A <see cref="WeekPattern" /> corresponding to the supplied bitmask.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value" /> exceeds 127.</exception>
-    public static WeekPattern FromByte(byte value) => new((int)value);
-
-    /// <summary>
-    /// Returns a struct enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order without
-    /// allocating.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="Enumerator" /> that iterates the selected days. Returning the struct directly avoids the heap
-    /// allocation that a yield-state-machine enumerator would incur, and the C# <c>foreach</c> pattern binds to it via
-    /// pattern matching without going through <see cref="IEnumerable{T}" />.
-    /// </returns>
-    public Enumerator GetEnumerator() => new(_selectedDays);
-
-    /// <inheritdoc />
-    IEnumerator<DayOfWeek> IEnumerable<DayOfWeek>.GetEnumerator() => GetEnumerator();
-
-    /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

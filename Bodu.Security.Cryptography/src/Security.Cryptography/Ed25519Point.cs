@@ -20,10 +20,6 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal partial struct Ed25519Point
 {
-    /// <summary>
-    /// The size, in bytes, of an encoded point.
-    /// </summary>
-    internal const int EncodedSizeInBytes = 32;
 
     /// <summary>
     /// The curve constant d = −121665/121666 mod p, decoded from its canonical encoding at type initialization.
@@ -71,6 +67,11 @@ internal partial struct Ed25519Point
     private Curve25519FieldElement _t;
 
     /// <summary>
+    /// The size, in bytes, of an encoded point.
+    /// </summary>
+    internal const int EncodedSizeInBytes = 32;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Ed25519Point" /> struct from explicit extended coordinates.
     /// </summary>
     /// <param name="x">The X coordinate.</param>
@@ -90,13 +91,6 @@ internal partial struct Ed25519Point
     }
 
     /// <summary>
-    /// Gets the identity element (0, 1) of the curve group.
-    /// </summary>
-    /// <returns>The neutral point in extended coordinates (0 : 1 : 1 : 0).</returns>
-    internal static Ed25519Point Identity =>
-        new(Curve25519FieldElement.Zero, Curve25519FieldElement.One, Curve25519FieldElement.One, Curve25519FieldElement.Zero);
-
-    /// <summary>
     /// Gets the Ed25519 base point B defined by RFC 8032.
     /// </summary>
     /// <returns>The generator of the prime-order subgroup.</returns>
@@ -104,75 +98,11 @@ internal partial struct Ed25519Point
         s_basePoint;
 
     /// <summary>
-    /// Adds this point to <paramref name="other" /> using the complete unified extended-coordinate formula.
+    /// Gets the identity element (0, 1) of the curve group.
     /// </summary>
-    /// <param name="other">The point to add.</param>
-    /// <returns>The sum of the two points.</returns>
-    internal readonly Ed25519Point Add(in Ed25519Point other)
-    {
-        var a = Curve25519FieldElement.Multiply(
-            Curve25519FieldElement.Subtract(_y, _x),
-            Curve25519FieldElement.Subtract(other._y, other._x));
-        var b = Curve25519FieldElement.Multiply(
-            Curve25519FieldElement.Add(_y, _x),
-            Curve25519FieldElement.Add(other._y, other._x));
-        var c = Curve25519FieldElement.Multiply(Curve25519FieldElement.Multiply(_t, s_d2), other._t);
-        var zz = Curve25519FieldElement.Multiply(_z, other._z);
-        var d = Curve25519FieldElement.Add(zz, zz);
-
-        var e = Curve25519FieldElement.Subtract(b, a);
-        var f = Curve25519FieldElement.Subtract(d, c);
-        var g = Curve25519FieldElement.Add(d, c);
-        var h = Curve25519FieldElement.Add(b, a);
-
-        return new Ed25519Point(
-            Curve25519FieldElement.Multiply(e, f),
-            Curve25519FieldElement.Multiply(g, h),
-            Curve25519FieldElement.Multiply(f, g),
-            Curve25519FieldElement.Multiply(e, h));
-    }
-
-    /// <summary>
-    /// Doubles this point.
-    /// </summary>
-    /// <returns>The point added to itself.</returns>
-    /// <remarks>
-    /// Delegates to the complete <see cref="Add" /> formula, which is valid for equal operands; the dedicated doubling
-    /// formula is omitted in favor of a single audited code path.
-    /// </remarks>
-    internal readonly Ed25519Point Double() =>
-        Add(this);
-
-    /// <summary>
-    /// Negates this point, mapping (x, y) to (−x, y).
-    /// </summary>
-    /// <returns>The additive inverse of this point.</returns>
-    internal readonly Ed25519Point Negate() =>
-        new(
-            Curve25519FieldElement.Subtract(Curve25519FieldElement.Zero, _x),
-            _y,
-            _z,
-            Curve25519FieldElement.Subtract(Curve25519FieldElement.Zero, _t));
-
-    /// <summary>
-    /// Writes the canonical 32-byte RFC 8032 encoding of this point: the y coordinate in little-endian order with the
-    /// sign of x stored in bit 255.
-    /// </summary>
-    /// <param name="destination">The 32-byte span that receives the encoding.</param>
-    /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes.</exception>
-    internal readonly void Encode(Span<byte> destination)
-    {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
-
-        var zInverse = Curve25519FieldElement.Invert(_z);
-        var x = Curve25519FieldElement.Multiply(_x, zInverse);
-        var y = Curve25519FieldElement.Multiply(_y, zInverse);
-
-        y.ToBytes(destination);
-
-        if (x.IsNegative())
-            destination[31] |= 0x80;
-    }
+    /// <returns>The neutral point in extended coordinates (0 : 1 : 1 : 0).</returns>
+    internal static Ed25519Point Identity =>
+        new(Curve25519FieldElement.Zero, Curve25519FieldElement.One, Curve25519FieldElement.One, Curve25519FieldElement.Zero);
 
     /// <summary>
     /// Attempts to decode a 32-byte RFC 8032 point encoding, rejecting non-canonical y values and encodings that do not
@@ -242,6 +172,77 @@ internal partial struct Ed25519Point
 
         return true;
     }
+
+    /// <summary>
+    /// Adds this point to <paramref name="other" /> using the complete unified extended-coordinate formula.
+    /// </summary>
+    /// <param name="other">The point to add.</param>
+    /// <returns>The sum of the two points.</returns>
+    internal readonly Ed25519Point Add(in Ed25519Point other)
+    {
+        var a = Curve25519FieldElement.Multiply(
+            Curve25519FieldElement.Subtract(_y, _x),
+            Curve25519FieldElement.Subtract(other._y, other._x));
+        var b = Curve25519FieldElement.Multiply(
+            Curve25519FieldElement.Add(_y, _x),
+            Curve25519FieldElement.Add(other._y, other._x));
+        var c = Curve25519FieldElement.Multiply(Curve25519FieldElement.Multiply(_t, s_d2), other._t);
+        var zz = Curve25519FieldElement.Multiply(_z, other._z);
+        var d = Curve25519FieldElement.Add(zz, zz);
+
+        var e = Curve25519FieldElement.Subtract(b, a);
+        var f = Curve25519FieldElement.Subtract(d, c);
+        var g = Curve25519FieldElement.Add(d, c);
+        var h = Curve25519FieldElement.Add(b, a);
+
+        return new Ed25519Point(
+            Curve25519FieldElement.Multiply(e, f),
+            Curve25519FieldElement.Multiply(g, h),
+            Curve25519FieldElement.Multiply(f, g),
+            Curve25519FieldElement.Multiply(e, h));
+    }
+
+    /// <summary>
+    /// Doubles this point.
+    /// </summary>
+    /// <returns>The point added to itself.</returns>
+    /// <remarks>
+    /// Delegates to the complete <see cref="Add" /> formula, which is valid for equal operands; the dedicated doubling
+    /// formula is omitted in favor of a single audited code path.
+    /// </remarks>
+    internal readonly Ed25519Point Double() =>
+        Add(this);
+
+    /// <summary>
+    /// Writes the canonical 32-byte RFC 8032 encoding of this point: the y coordinate in little-endian order with the
+    /// sign of x stored in bit 255.
+    /// </summary>
+    /// <param name="destination">The 32-byte span that receives the encoding.</param>
+    /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes.</exception>
+    internal readonly void Encode(Span<byte> destination)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
+
+        var zInverse = Curve25519FieldElement.Invert(_z);
+        var x = Curve25519FieldElement.Multiply(_x, zInverse);
+        var y = Curve25519FieldElement.Multiply(_y, zInverse);
+
+        y.ToBytes(destination);
+
+        if (x.IsNegative())
+            destination[31] |= 0x80;
+    }
+
+    /// <summary>
+    /// Negates this point, mapping (x, y) to (−x, y).
+    /// </summary>
+    /// <returns>The additive inverse of this point.</returns>
+    internal readonly Ed25519Point Negate() =>
+        new(
+            Curve25519FieldElement.Subtract(Curve25519FieldElement.Zero, _x),
+            _y,
+            _z,
+            Curve25519FieldElement.Subtract(Curve25519FieldElement.Zero, _t));
 
     /// <summary>
     /// Determines whether two field elements represent the same value modulo p by comparing their canonical encodings.

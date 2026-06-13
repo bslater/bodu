@@ -79,13 +79,6 @@ public readonly struct SignatureValue
         _format;
 
     /// <summary>
-    /// Gets the number of bytes in the signature.
-    /// </summary>
-    /// <returns>The signature length in bytes, or <c>0</c> for the empty value.</returns>
-    public int Length =>
-        _value?.Length ?? 0;
-
-    /// <summary>
     /// Gets a value indicating whether the signature is empty.
     /// </summary>
     /// <returns>
@@ -93,6 +86,40 @@ public readonly struct SignatureValue
     /// </returns>
     public bool IsEmpty =>
         Length == 0;
+
+    /// <summary>
+    /// Gets the number of bytes in the signature.
+    /// </summary>
+    /// <returns>The signature length in bytes, or <c>0</c> for the empty value.</returns>
+    public int Length =>
+        _value?.Length ?? 0;
+
+    /// <summary>
+    /// Determines whether two signatures are equal.
+    /// </summary>
+    /// <param name="left">The first signature.</param>
+    /// <param name="right">The second signature.</param>
+    /// <returns>
+    /// <see langword="true" /> if the values record the same format and contain identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    public static bool operator ==(SignatureValue left, SignatureValue right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two signatures are not equal.
+    /// </summary>
+    /// <param name="left">The first signature.</param>
+    /// <param name="right">The second signature.</param>
+    /// <returns>
+    /// <see langword="true" /> if the values differ in format or bytes; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool operator !=(SignatureValue left, SignatureValue right)
+    {
+        return !left.Equals(right);
+    }
 
     /// <summary>
     /// Creates a <see cref="SignatureValue" /> from the provided bytes and encoding.
@@ -124,44 +151,6 @@ public readonly struct SignatureValue
         _value;
 
     /// <summary>
-    /// Copies the signature bytes into a new array.
-    /// </summary>
-    /// <returns>A new array containing the signature bytes; an empty array for the empty value.</returns>
-    public byte[] ToArray() =>
-        _value is null ? [] : (byte[])_value.Clone();
-
-    /// <summary>
-    /// Formats the signature as a lowercase hexadecimal string.
-    /// </summary>
-    /// <returns>The lowercase hexadecimal representation, or <see cref="string.Empty" /> for the empty value.</returns>
-    public string ToHexString() =>
-        CryptographyHelper.ToLowercaseHexString(_value);
-
-    /// <summary>
-    /// Formats the signature as a Base64 string.
-    /// </summary>
-    /// <returns>The Base64 representation, or <see cref="string.Empty" /> for the empty value.</returns>
-    public string ToBase64String() =>
-        _value is null ? string.Empty : Convert.ToBase64String(_value);
-
-    /// <summary>
-    /// Compares the bytes of this signature to another in fixed time, ignoring <see cref="Format" />.
-    /// </summary>
-    /// <param name="other">The signature to compare against.</param>
-    /// <returns>
-    /// <see langword="true" /> if both signatures have the same length and identical bytes; otherwise,
-    /// <see langword="false" />.
-    /// </returns>
-    /// <remarks>
-    /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
-    /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
-    /// <see langword="false" /> immediately, so the lengths themselves are not concealed. The recorded format is
-    /// intentionally excluded; compare <see cref="Format" /> separately when the encoding matters.
-    /// </remarks>
-    public bool FixedTimeEquals(SignatureValue other) =>
-        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
-
-    /// <summary>
     /// Determines whether this signature equals another, comparing both format and bytes.
     /// </summary>
     /// <param name="other">The signature to compare against.</param>
@@ -188,6 +177,23 @@ public readonly struct SignatureValue
         obj is SignatureValue other && Equals(other);
 
     /// <summary>
+    /// Compares the bytes of this signature to another in fixed time, ignoring <see cref="Format" />.
+    /// </summary>
+    /// <param name="other">The signature to compare against.</param>
+    /// <returns>
+    /// <see langword="true" /> if both signatures have the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
+    /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
+    /// <see langword="false" /> immediately, so the lengths themselves are not concealed. The recorded format is
+    /// intentionally excluded; compare <see cref="Format" /> separately when the encoding matters.
+    /// </remarks>
+    public bool FixedTimeEquals(SignatureValue other) =>
+        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
+
+    /// <summary>
     /// Returns a hash code computed over the format and the signature bytes.
     /// </summary>
     /// <returns>A hash code consistent with <see cref="Equals(SignatureValue)" />.</returns>
@@ -200,27 +206,25 @@ public readonly struct SignatureValue
     }
 
     /// <summary>
-    /// Determines whether two signatures are equal.
+    /// Copies the signature bytes into a new array.
     /// </summary>
-    /// <param name="left">The first signature.</param>
-    /// <param name="right">The second signature.</param>
-    /// <returns>
-    /// <see langword="true" /> if the values record the same format and contain identical bytes; otherwise,
-    /// <see langword="false" />.
-    /// </returns>
-    public static bool operator ==(SignatureValue left, SignatureValue right) =>
-        left.Equals(right);
+    /// <returns>A new array containing the signature bytes; an empty array for the empty value.</returns>
+    public byte[] ToArray() =>
+        _value is null ? [] : (byte[])_value.Clone();
 
     /// <summary>
-    /// Determines whether two signatures are not equal.
+    /// Formats the signature as a Base64 string.
     /// </summary>
-    /// <param name="left">The first signature.</param>
-    /// <param name="right">The second signature.</param>
-    /// <returns>
-    /// <see langword="true" /> if the values differ in format or bytes; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool operator !=(SignatureValue left, SignatureValue right) =>
-        !left.Equals(right);
+    /// <returns>The Base64 representation, or <see cref="string.Empty" /> for the empty value.</returns>
+    public string ToBase64String() =>
+        _value is null ? string.Empty : Convert.ToBase64String(_value);
+
+    /// <summary>
+    /// Formats the signature as a lowercase hexadecimal string.
+    /// </summary>
+    /// <returns>The lowercase hexadecimal representation, or <see cref="string.Empty" /> for the empty value.</returns>
+    public string ToHexString() =>
+        CryptographyHelper.ToLowercaseHexString(_value);
 
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the signature bytes.
