@@ -27,12 +27,12 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// The multiplier bounds are deliberately loose: they exist to catch order-of-magnitude regressions and to document the
-/// current baseline. The structural parser now reuses a per-depth scratch list for key paths and hands its row list to
-/// the document without a final array copy, so the three paths that share the builder all fell sharply:
-/// <c>TomlDocument.Parse</c> to about ten times the input, the serializer's bind path to under thirty, and the mutable
-/// node DOM to about twenty-four. The serializer's bind path and the mutable node DOM still build their own
-/// representations from the shared store; lowering them further needs unboxed scalar storage and lazy decoding over the
-/// retained source.
+/// current baseline. The structural parser reuses a per-depth scratch list for key paths, hands its row list to the
+/// document without a final array copy, and stores value-type scalars unboxed in the row, so the three paths that share
+/// the builder all fell sharply: <c>TomlDocument.Parse</c> to under nine times the input, the serializer's bind path to
+/// about twenty-seven, and the mutable node DOM to about twenty-three. The serializer's bind path and the mutable node
+/// DOM still build their own representations from the shared store; the remaining headroom is lazy string decoding over
+/// the retained source.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -98,7 +98,7 @@ public sealed class TomlAllocationTests
             _ = document.RootElement;
         });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 14);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 12);
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlNode.Parse(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 32);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 30);
     }
 
     /// <summary>
@@ -164,7 +164,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 38);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 36);
     }
 
     /// <summary>

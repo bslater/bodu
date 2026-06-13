@@ -81,10 +81,11 @@ public ref struct TomlDocumentReader
     private TomlTokenType _tokenType;
 
     /// <summary>
-    /// The value carried by the current token: a key for a property name, the decoded CLR value for a scalar, or
-    /// <see langword="null" /> for a structural token.
+    /// The string carried by the current token: the key for a property name, or the decoded string for a string scalar.
+    /// It is <see langword="null" /> for a value-type scalar — whose value is decoded on demand from the current row —
+    /// and for a structural token.
     /// </summary>
-    private object? _value;
+    private string? _value;
 
     /// <summary>
     /// The zero-based source byte offset at which the current token begins.
@@ -302,7 +303,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly string GetString() =>
         _tokenType is TomlTokenType.String or TomlTokenType.PropertyName
-            ? (string)_value!
+            ? _value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -314,7 +315,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly long GetInt64() =>
         _tokenType == TomlTokenType.Integer
-            ? (long)_value!
+            ? _rows[_currentRow].AsInt64()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -326,7 +327,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly double GetDouble() =>
         _tokenType == TomlTokenType.Float
-            ? (double)_value!
+            ? _rows[_currentRow].AsDouble()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -338,7 +339,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly bool GetBoolean() =>
         _tokenType == TomlTokenType.Boolean
-            ? (bool)_value!
+            ? _rows[_currentRow].AsBoolean()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -350,7 +351,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly DateTimeOffset GetDateTimeOffset() =>
         _tokenType == TomlTokenType.OffsetDateTime
-            ? (DateTimeOffset)_value!
+            ? _rows[_currentRow].AsDateTimeOffset()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -364,7 +365,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly DateTime GetDateTime() =>
         _tokenType == TomlTokenType.LocalDateTime
-            ? (DateTime)_value!
+            ? _rows[_currentRow].AsDateTime()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -376,7 +377,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly DateOnly GetDateOnly() =>
         _tokenType == TomlTokenType.LocalDate
-            ? (DateOnly)_value!
+            ? _rows[_currentRow].AsDateOnly()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -388,7 +389,7 @@ public ref struct TomlDocumentReader
     /// </exception>
     public readonly TimeOnly GetTimeOnly() =>
         _tokenType == TomlTokenType.LocalTime
-            ? (TimeOnly)_value!
+            ? _rows[_currentRow].AsTimeOnly()
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -425,7 +426,7 @@ public ref struct TomlDocumentReader
     {
         if (_rows[row].Kind == TomlReaderNodeKind.Scalar)
         {
-            SetToken(_rows[row].TokenType, _rows[row].Value, _rows[row].Offset, row);
+            SetToken(_rows[row].TokenType, _rows[row].StringValue, _rows[row].Offset, row);
             return;
         }
 
@@ -455,10 +456,10 @@ public ref struct TomlDocumentReader
     /// Sets the current token's kind, value, source offset, and owning row.
     /// </summary>
     /// <param name="tokenType">The kind of the token.</param>
-    /// <param name="value">The value carried by the token, or <see langword="null" /> for a structural token.</param>
+    /// <param name="value">The string carried by the token (a key or string scalar), or <see langword="null" />.</param>
     /// <param name="offset">The zero-based source byte offset at which the token begins.</param>
     /// <param name="row">The row index the token belongs to.</param>
-    private void SetToken(TomlTokenType tokenType, object? value, int offset, int row)
+    private void SetToken(TomlTokenType tokenType, string? value, int offset, int row)
     {
         _tokenType = tokenType;
         _value = value;

@@ -221,22 +221,101 @@ public sealed partial class TomlDocument
     }
 
     /// <summary>
-    /// Gets the decoded scalar value at the supplied row index, requiring it to be of the supplied kind.
+    /// Gets the decoded string value at the supplied row index.
     /// </summary>
-    /// <typeparam name="T">The CLR type the scalar was decoded to.</typeparam>
+    /// <param name="index">The row index.</param>
+    /// <returns>The string value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a string.</exception>
+    internal string GetString(int index) =>
+        ScalarRow(index, TomlValueKind.String).AsString();
+
+    /// <summary>
+    /// Gets the decoded integer value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The 64-bit signed integer.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    internal long GetInt64(int index) =>
+        ScalarRow(index, TomlValueKind.Integer).AsInt64();
+
+    /// <summary>
+    /// Gets the decoded floating-point value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The IEEE 754 binary64 value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a float.</exception>
+    internal double GetDouble(int index) =>
+        ScalarRow(index, TomlValueKind.Float).AsDouble();
+
+    /// <summary>
+    /// Gets the decoded Boolean value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The Boolean value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a Boolean.</exception>
+    internal bool GetBoolean(int index) =>
+        ScalarRow(index, TomlValueKind.Boolean).AsBoolean();
+
+    /// <summary>
+    /// Gets the decoded offset date-time value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The offset date-time value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an offset date-time.</exception>
+    internal DateTimeOffset GetDateTimeOffset(int index) =>
+        ScalarRow(index, TomlValueKind.OffsetDateTime).AsDateTimeOffset();
+
+    /// <summary>
+    /// Gets the decoded local date-time value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The local date-time value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a local date-time.</exception>
+    internal DateTime GetDateTime(int index) =>
+        ScalarRow(index, TomlValueKind.LocalDateTime).AsDateTime();
+
+    /// <summary>
+    /// Gets the decoded local date value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The local date value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a local date.</exception>
+    internal DateOnly GetDateOnly(int index) =>
+        ScalarRow(index, TomlValueKind.LocalDate).AsDateOnly();
+
+    /// <summary>
+    /// Gets the decoded local time value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The local time value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a local time.</exception>
+    internal TimeOnly GetTimeOnly(int index) =>
+        ScalarRow(index, TomlValueKind.LocalTime).AsTimeOnly();
+
+    /// <summary>
+    /// Returns the scalar row at the supplied index, requiring it to be of the supplied kind.
+    /// </summary>
     /// <param name="index">The row index.</param>
     /// <param name="required">The scalar kind the accessor requires.</param>
-    /// <returns>The decoded value.</returns>
+    /// <returns>The scalar row, from which the typed value is decoded by the caller.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the element is not of the required kind.</exception>
-    internal T GetScalar<T>(int index, TomlValueKind required)
+    private TomlReaderRow ScalarRow(int index, TomlValueKind required)
     {
         List<TomlReaderRow> rows = EnsureNotDisposed();
         TomlValueKind kind = ToValueKind(rows[index]);
         if (kind != required)
             throw KindMismatch(required, kind);
 
-        return (T)rows[index].Value!;
+        return rows[index];
     }
 
     /// <summary>

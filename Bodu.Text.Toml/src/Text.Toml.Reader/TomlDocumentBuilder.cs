@@ -247,29 +247,32 @@ internal sealed class TomlDocumentBuilder
             }
 
             case TomlTokenType.String:
-                return NewScalar(TomlTokenType.String, lexer.GetString(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.String, lexer.TokenStartIndex, stringValue: lexer.GetString());
 
             case TomlTokenType.Integer:
-                return NewScalar(TomlTokenType.Integer, lexer.GetInt64(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.Integer, lexer.TokenStartIndex, bits: lexer.GetInt64());
 
             case TomlTokenType.Float:
-                return NewScalar(TomlTokenType.Float, lexer.GetDouble(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.Float, lexer.TokenStartIndex, bits: BitConverter.DoubleToInt64Bits(lexer.GetDouble()));
 
             case TomlTokenType.Boolean:
-                return NewScalar(TomlTokenType.Boolean, lexer.GetBoolean(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.Boolean, lexer.TokenStartIndex, bits: lexer.GetBoolean() ? 1L : 0L);
 
             case TomlTokenType.OffsetDateTime:
-                return NewScalar(TomlTokenType.OffsetDateTime, lexer.GetDateTimeOffset(), lexer.TokenStartIndex);
+            {
+                var dateTimeOffset = lexer.GetDateTimeOffset();
+                return NewScalar(TomlTokenType.OffsetDateTime, lexer.TokenStartIndex, bits: dateTimeOffset.Ticks, offsetMinutes: (short)(dateTimeOffset.Offset.Ticks / TimeSpan.TicksPerMinute));
+            }
 
             case TomlTokenType.LocalDateTime:
-                return NewScalar(TomlTokenType.LocalDateTime, lexer.GetDateTime(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.LocalDateTime, lexer.TokenStartIndex, bits: lexer.GetDateTime().Ticks);
 
             case TomlTokenType.LocalDate:
-                return NewScalar(TomlTokenType.LocalDate, lexer.GetDateOnly(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.LocalDate, lexer.TokenStartIndex, bits: lexer.GetDateOnly().DayNumber);
 
             case TomlTokenType.LocalTime:
             default:
-                return NewScalar(TomlTokenType.LocalTime, lexer.GetTimeOnly(), lexer.TokenStartIndex);
+                return NewScalar(TomlTokenType.LocalTime, lexer.TokenStartIndex, bits: lexer.GetTimeOnly().Ticks);
         }
     }
 
@@ -511,16 +514,20 @@ internal sealed class TomlDocumentBuilder
     /// Appends a scalar row to the store and returns its index.
     /// </summary>
     /// <param name="tokenType">The token type that classifies the scalar.</param>
-    /// <param name="value">The decoded CLR value.</param>
     /// <param name="offset">The source byte offset at which the scalar begins.</param>
+    /// <param name="stringValue">The decoded string for a string scalar; otherwise <see langword="null" />.</param>
+    /// <param name="bits">The value packed into 64 bits for a value-type scalar; otherwise zero.</param>
+    /// <param name="offsetMinutes">The UTC offset in whole minutes for an offset date-time; otherwise zero.</param>
     /// <returns>The row index of the new scalar.</returns>
-    private int NewScalar(TomlTokenType tokenType, object value, int offset)
+    private int NewScalar(TomlTokenType tokenType, int offset, string? stringValue = null, long bits = 0L, short offsetMinutes = 0)
     {
         _rows.Add(new TomlReaderRow
         {
             Kind = TomlReaderNodeKind.Scalar,
             TokenType = tokenType,
-            Value = value,
+            StringValue = stringValue,
+            ScalarBits = bits,
+            ScalarOffsetMinutes = offsetMinutes,
             Offset = offset,
             FirstChild = -1,
             LastChild = -1,
