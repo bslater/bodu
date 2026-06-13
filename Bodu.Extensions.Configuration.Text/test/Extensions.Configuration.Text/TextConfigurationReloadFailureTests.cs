@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.IO;
 using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
@@ -44,61 +45,53 @@ logging.level.default = Debug
     [TestMethod]
     public void Reload_WhenMalformedAndOnLoadExceptionAttached_ShouldReceiveParseException()
     {
-        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(directory);
-        var path = Path.Combine(directory, "reload.boduconfig");
+        using TempDirectoryScope scope = new();
+        var path = scope.Combine("reload.boduconfig");
 
         FileLoadExceptionContext? captured = null;
         using ManualResetEventSlim handlerInvoked = new(initialState: false);
 
-        try
-        {
-            File.WriteAllText(path, Initial);
-            File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddSeconds(-30));
+        File.WriteAllText(path, Initial);
+        File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddSeconds(-30));
 
-            PhysicalFileProvider fileProvider = new(directory)
+        PhysicalFileProvider fileProvider = new(scope.Path)
+        {
+            UseActivePolling = true,
+            UsePollingFileWatcher = true,
+        };
+
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddBoduConfigurationFile(source =>
             {
-                UseActivePolling = true,
-                UsePollingFileWatcher = true,
-            };
-
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddBoduConfigurationFile(source =>
+                source.FileProvider = fileProvider;
+                source.Path = "reload.boduconfig";
+                source.Optional = false;
+                source.ReloadOnChange = true;
+                source.OnLoadException = ctx =>
                 {
-                    source.FileProvider = fileProvider;
-                    source.Path = "reload.boduconfig";
-                    source.Optional = false;
-                    source.ReloadOnChange = true;
-                    source.OnLoadException = ctx =>
-                    {
-                        captured = ctx;
-                        ctx.Ignore = true; // Don't tear down the host on a malformed reload.
-                        handlerInvoked.Set();
-                    };
-                })
-                .Build();
+                    captured = ctx;
+                    ctx.Ignore = true; // Don't tear down the host on a malformed reload.
+                    handlerInvoked.Set();
+                };
+            })
+            .Build();
 
-            Assert.AreEqual("Information", configuration["logging:level:default"]);
+        Assert.AreEqual("Information", configuration["logging:level:default"]);
 
-            Thread.Sleep(50);
-            File.WriteAllText(path, Malformed);
-            File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
+        Thread.Sleep(50);
+        File.WriteAllText(path, Malformed);
+        File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
 
-            var fired = handlerInvoked.Wait(TimeSpan.FromSeconds(15));
+        var fired = handlerInvoked.Wait(TimeSpan.FromSeconds(15));
 
-            Assert.IsTrue(fired, "Expected the OnLoadException handler to fire when the reload encountered a malformed file.");
-            Assert.IsNotNull(captured);
+        Assert.IsTrue(fired, "Expected the OnLoadException handler to fire when the reload encountered a malformed file.");
+        Assert.IsNotNull(captured);
 
-            // FileConfigurationProvider wraps load-time exceptions in InvalidDataException, mirroring the
-            // behaviour of the JSON/INI providers. The original ConfigurationParseException is preserved
-            // as the inner exception so the diagnostic is reachable.
-            Assert.IsInstanceOfType<InvalidDataException>(captured!.Exception);
-            Assert.IsInstanceOfType<ConfigurationParseException>(captured.Exception.InnerException);
-        }
-        finally
-        {
-            try { Directory.Delete(directory, recursive: true); } catch { }
-        }
+        // FileConfigurationProvider wraps load-time exceptions in InvalidDataException, mirroring the
+        // behaviour of the JSON/INI providers. The original ConfigurationParseException is preserved
+        // as the inner exception so the diagnostic is reachable.
+        Assert.IsInstanceOfType<InvalidDataException>(captured!.Exception);
+        Assert.IsInstanceOfType<ConfigurationParseException>(captured.Exception.InnerException);
     }
 
     /// <summary>

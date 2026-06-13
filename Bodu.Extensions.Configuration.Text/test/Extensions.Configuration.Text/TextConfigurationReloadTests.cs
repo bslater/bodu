@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -31,45 +32,35 @@ logging.level.default = Debug
     [TestMethod]
     public void Reload_WhenFileChangesOnDisk_ShouldFireToken()
     {
-        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(directory);
-        var path = Path.Combine(directory, "reload.boduconfig");
+        using TempDirectoryScope scope = new();
+        var path = scope.WriteFile("reload.boduconfig", InitialContent);
+        File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddSeconds(-30));
 
-        try
+        PhysicalFileProvider fileProvider = new(scope.Path)
         {
-            File.WriteAllText(path, InitialContent);
-            File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddSeconds(-30));
+            UseActivePolling = true,
+            UsePollingFileWatcher = true,
+        };
 
-            PhysicalFileProvider fileProvider = new(directory)
-            {
-                UseActivePolling = true,
-                UsePollingFileWatcher = true,
-            };
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddBoduConfigurationFile(fileProvider, "reload.boduconfig", targetPath: null, optional: false, reloadOnChange: true)
+            .Build();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddBoduConfigurationFile(fileProvider, "reload.boduconfig", targetPath: null, optional: false, reloadOnChange: true)
-                .Build();
+        Assert.AreEqual("Information", configuration["logging:level:default"]);
 
-            Assert.AreEqual("Information", configuration["logging:level:default"]);
+        using ManualResetEventSlim signal = new(initialState: false);
+        using IDisposable registration = Microsoft.Extensions.Primitives.ChangeToken.OnChange(
+            configuration.GetReloadToken,
+            () => signal.Set());
 
-            using ManualResetEventSlim signal = new(initialState: false);
-            using IDisposable registration = Microsoft.Extensions.Primitives.ChangeToken.OnChange(
-                configuration.GetReloadToken,
-                () => signal.Set());
+        // Ensure the next write has a clearly newer mtime than the original.
+        Thread.Sleep(50);
+        File.WriteAllText(path, UpdatedContent);
+        File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
 
-            // Ensure the next write has a clearly newer mtime than the original.
-            Thread.Sleep(50);
-            File.WriteAllText(path, UpdatedContent);
-            File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
+        var reloaded = signal.Wait(TimeSpan.FromSeconds(15));
 
-            var reloaded = signal.Wait(TimeSpan.FromSeconds(15));
-
-            Assert.IsTrue(reloaded, "Expected the reload token to fire after the file changed on disk.");
-            Assert.AreEqual("Debug", configuration["logging:level:default"]);
-        }
-        finally
-        {
-            try { Directory.Delete(directory, recursive: true); } catch { }
-        }
+        Assert.IsTrue(reloaded, "Expected the reload token to fire after the file changed on disk.");
+        Assert.AreEqual("Debug", configuration["logging:level:default"]);
     }
 }

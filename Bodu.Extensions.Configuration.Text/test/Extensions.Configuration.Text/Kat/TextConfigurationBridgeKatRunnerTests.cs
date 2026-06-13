@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions.Configuration.Text;
+using Bodu.Test.IO;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
@@ -44,7 +45,7 @@ public class TextConfigurationBridgeKatRunnerTests
         if (kat.Source is null)
         {
             // Optional missing file scenario — no file is created, but the builder is configured to expect one.
-            IConfiguration configuration = new ConfigurationBuilder()
+            _ = new ConfigurationBuilder()
                 .AddBoduConfigurationFile(source =>
                 {
                     source.FileProvider = new PhysicalFileProvider(Path.GetTempPath());
@@ -58,28 +59,19 @@ public class TextConfigurationBridgeKatRunnerTests
             return;
         }
 
-        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
-        try
-        {
-            File.WriteAllText(path, kat.Source);
+        using TempFileScope scope = new(kat.Source, "boduconfig");
 
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfigurationFile(source =>
-                {
-                    source.FileProvider = new PhysicalFileProvider(Path.GetDirectoryName(path)!);
-                    source.Path = Path.GetFileName(path);
-                    source.TargetPath = kat.TargetPath;
-                })
-                .Build();
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddBoduConfigurationFile(source =>
+            {
+                source.FileProvider = new PhysicalFileProvider(scope.Directory);
+                source.Path = Path.GetFileName(scope.Path);
+                source.TargetPath = kat.TargetPath;
+            })
+            .Build();
 
-            foreach (ExpectedValue ev in kat.ExpectedValues)
-                Assert.AreEqual(ev.Value, configuration[ev.Key], $"{kat.Id}: bridge value for '{ev.Key}'.");
-        }
-        finally
-        {
-            if (File.Exists(path))
-                File.Delete(path);
-        }
+        foreach (ExpectedValue ev in kat.ExpectedValues)
+            Assert.AreEqual(ev.Value, configuration[ev.Key], $"{kat.Id}: bridge value for '{ev.Key}'.");
     }
 
     private static void ExecuteBridgeFail(ConfigurationKat kat)

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -27,23 +28,14 @@ logging.level.default = Information
     [TestMethod]
     public void AddConfiguration_WithExplicitFileProvider_ShouldLoadFromProvider()
     {
-        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
-        try
-        {
-            File.WriteAllText(path, Sample);
-            PhysicalFileProvider fileProvider = new(Path.GetDirectoryName(path)!);
+        using TempFileScope scope = new(Sample, "boduconfig");
+        PhysicalFileProvider fileProvider = new(scope.Directory);
 
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddBoduConfigurationFile(fileProvider, Path.GetFileName(path))
-                .Build();
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddBoduConfigurationFile(fileProvider, Path.GetFileName(scope.Path))
+            .Build();
 
-            Assert.AreEqual("Information", configuration["logging:level:default"]);
-        }
-        finally
-        {
-            if (File.Exists(path))
-                File.Delete(path);
-        }
+        Assert.AreEqual("Information", configuration["logging:level:default"]);
     }
 
     /// <summary>
@@ -53,25 +45,15 @@ logging.level.default = Information
     [TestMethod]
     public void AddConfiguration_WithNullFileProvider_ShouldFallBackToBuilderDefault()
     {
-        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
-        try
-        {
-            File.WriteAllText(path, Sample);
+        using TempFileScope scope = new(Sample, "boduconfig");
+        ConfigurationBuilder builder = new();
+        builder.SetBasePath(scope.Directory);
 
-            ConfigurationBuilder builder = new();
-            builder.SetBasePath(Path.GetDirectoryName(path)!);
+        IConfiguration configuration = builder
+            .AddBoduConfigurationFile(provider: null, path: Path.GetFileName(scope.Path))
+            .Build();
 
-            IConfiguration configuration = builder
-                .AddBoduConfigurationFile(provider: null, path: Path.GetFileName(path))
-                .Build();
-
-            Assert.AreEqual("Information", configuration["logging:level:default"]);
-        }
-        finally
-        {
-            if (File.Exists(path))
-                File.Delete(path);
-        }
+        Assert.AreEqual("Information", configuration["logging:level:default"]);
     }
 
     /// <summary>

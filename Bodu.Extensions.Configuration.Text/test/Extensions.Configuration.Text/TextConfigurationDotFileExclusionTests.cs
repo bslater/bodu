@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Physical;
@@ -33,23 +34,16 @@ discovered = yes
     [TestMethod]
     public void AddConfiguration_WhenDotFileExistsAndDefaultExclusionFilters_ShouldNotResolveDotFile()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            File.WriteAllText(Path.Combine(directory, ".boduconfig"), Sample);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile(".boduconfig", Sample);
 
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory)); // default = ExclusionFilters.Sensitive
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path)); // default = ExclusionFilters.Sensitive
 
-            // No bodu.config fallback present, so optional+default-filter discovery sees neither file.
-            IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
+        // No bodu.config fallback present, so optional+default-filter discovery sees neither file.
+        IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
 
-            Assert.IsNull(configuration["discovered"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.IsNull(configuration["discovered"]);
     }
 
     /// <summary>
@@ -60,22 +54,15 @@ discovered = yes
     [TestMethod]
     public void AddConfiguration_WhenDotFileExistsAndExclusionFiltersNone_ShouldResolveDotFile()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            File.WriteAllText(Path.Combine(directory, ".boduconfig"), Sample);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile(".boduconfig", Sample);
 
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory, ExclusionFilters.None));
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path, ExclusionFilters.None));
 
-            IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddBoduConfiguration().Build();
 
-            Assert.AreEqual("yes", configuration["discovered"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.AreEqual("yes", configuration["discovered"]);
     }
 
     /// <summary>
@@ -85,28 +72,14 @@ discovered = yes
     [TestMethod]
     public void AddConfiguration_WhenPlainFileExistsAndDefaultExclusionFilters_ShouldResolvePlainFile()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            File.WriteAllText(Path.Combine(directory, "bodu.config"), Sample);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile("bodu.config", Sample);
 
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory)); // default = Sensitive
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path)); // default = Sensitive
 
-            IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddBoduConfiguration().Build();
 
-            Assert.AreEqual("yes", configuration["discovered"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
-    }
-
-    private static string CreateTempDirectory()
-    {
-        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(directory);
-        return directory;
+        Assert.AreEqual("yes", configuration["discovered"]);
     }
 }

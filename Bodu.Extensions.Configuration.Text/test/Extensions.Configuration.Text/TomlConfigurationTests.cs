@@ -6,6 +6,7 @@
 
 using System.Text;
 
+using Bodu.Test.IO;
 using Bodu.Text.Toml;
 
 using Microsoft.Extensions.Configuration;
@@ -71,19 +72,11 @@ public sealed class TomlConfigurationTests
     [TestMethod]
     public void AddTomlFile_WhenFileExists_ShouldLoadValues()
     {
-        var path = Path.GetTempFileName();
-        try
-        {
-            File.WriteAllText(path, "name = \"from-file\"\n[db]\nport = 5432\n");
-            var config = new ConfigurationBuilder().AddTomlFile(path).Build();
+        using TempFileScope scope = new("name = \"from-file\"\n[db]\nport = 5432\n");
+        var config = new ConfigurationBuilder().AddTomlFile(scope.Path).Build();
 
-            Assert.AreEqual("from-file", config["name"]);
-            Assert.AreEqual("5432", config["db:port"]);
-        }
-        finally
-        {
-            File.Delete(path);
-        }
+        Assert.AreEqual("from-file", config["name"]);
+        Assert.AreEqual("5432", config["db:port"]);
     }
 
     [TestMethod]
