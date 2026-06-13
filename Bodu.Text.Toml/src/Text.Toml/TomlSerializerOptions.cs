@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Bodu.Text.Toml.Serialization;
@@ -409,6 +410,8 @@ public sealed partial class TomlSerializerOptions
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public TomlConverter GetConverter(Type typeToConvert)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
