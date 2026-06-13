@@ -178,21 +178,19 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that an element obtained from an array enumerator created before disposal throws
-    /// <see cref="ObjectDisposedException" /> when its value is accessed after disposal.
+    /// Verifies that an array enumerator created before disposal throws <see cref="ObjectDisposedException" /> when it
+    /// is advanced after disposal, because element walking reads the document's row store.
     /// </summary>
     [TestMethod]
-    public void Current_WhenDocumentDisposedAfterEnumeratorCreated_ShouldThrowOnElementAccess()
+    public void MoveNext_WhenDocumentDisposedAfterArrayEnumeratorCreated_ShouldThrowObjectDisposedException()
     {
         var document = TomlDocument.Parse("a = [1]\n");
         TomlElement.ArrayEnumerator enumerator = document.RootElement.GetProperty("a").EnumerateArray();
         document.Dispose();
 
-        Assert.IsTrue(enumerator.MoveNext());
-
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            _ = enumerator.Current.ValueKind;
+            _ = enumerator.MoveNext();
         });
     }
 

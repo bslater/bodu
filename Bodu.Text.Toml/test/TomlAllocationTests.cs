@@ -27,9 +27,10 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// The multiplier bounds are deliberately loose: they exist to catch order-of-magnitude regressions and to document the
-/// current baseline. The read pipeline now materializes a structural node tree and the flat row index — the flattened
-/// token-list intermediate has been removed — and still allocates on the order of forty times the input; collapsing the
-/// remaining tree into the flat model would lower these further, at which point the bounds should be tightened.
+/// current baseline. The read-only document pipeline now builds a single flat row store directly — the intermediate
+/// node tree and the separate row copy are both gone — so <c>TomlDocument.Parse</c> drops from roughly forty-four times
+/// the input to about twenty-six. The serializer's bind path and the mutable node DOM build their own representations
+/// from the same store and are bounded separately; lowering those further needs lazy decoding over the retained source.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -95,7 +96,7 @@ public sealed class TomlAllocationTests
             _ = document.RootElement;
         });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 48);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 36);
     }
 
     /// <summary>
