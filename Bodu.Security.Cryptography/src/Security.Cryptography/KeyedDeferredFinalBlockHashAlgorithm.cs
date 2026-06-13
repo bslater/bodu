@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 
@@ -161,7 +162,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
 
             if (value.Length > _maximumKeySize / 8)
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{_maximumKeySize}"));
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{_maximumKeySize}"));
 
             KeyValue = value.Length > 0 ? value.Copy() : null;
             Initialize();

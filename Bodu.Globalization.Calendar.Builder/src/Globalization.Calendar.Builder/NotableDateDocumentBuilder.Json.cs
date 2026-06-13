@@ -227,7 +227,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (policy.SpanCollisionPolicy is CollisionPolicy span) result["spanCollisionPolicy"] = span.ToString();
         if (policy.PriorityDirection is PriorityDirection direction) result["priorityDirection"] = direction.ToString();
         if (policy.ObservedDateRangePolicy is ObservedDateRangePolicy observed) result["observedDateRangePolicy"] = observed.ToString();
-        if (policy.WorkingWeek is WeekPattern week) result["workingDays"] = week.ToString("01");
+        if (policy.WorkingWeek is WeekPattern week) result["workingDays"] = week.ToString("01", CultureInfo.InvariantCulture);
 
         if (policy.CategoryPrecedence is { Count: > 0 } precedence)
         {

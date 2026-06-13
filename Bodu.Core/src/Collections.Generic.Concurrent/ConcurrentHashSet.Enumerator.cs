@@ -28,7 +28,8 @@ public sealed partial class ConcurrentHashSet<T>
     /// The order in which elements are yielded is unspecified and may differ between enumerators.
     /// </para>
     /// </remarks>
-    public struct Enumerator : IEnumerator<T>
+    public struct Enumerator
+        : IEnumerator<T>
     {
         /// <summary>
         /// The point-in-time snapshot of the set's elements captured when the enumerator was created.

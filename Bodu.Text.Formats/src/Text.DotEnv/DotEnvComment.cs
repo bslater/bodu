@@ -22,7 +22,8 @@ namespace Bodu.Text.DotEnv;
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Prefix}{Text,nq}")]
-public readonly struct DotEnvComment : IEquatable<DotEnvComment>
+public readonly struct DotEnvComment
+    : IEquatable<DotEnvComment>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DotEnvComment" /> struct.

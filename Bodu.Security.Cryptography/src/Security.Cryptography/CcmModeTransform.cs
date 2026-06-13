@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -293,7 +294,7 @@ public sealed class CcmModeTransform
             if (aad.Length >= 0xFF00)
             {
                 throw new NotSupportedException(
-                    string.Format(CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
             }
 
             // Encode: 2-byte length + aad + zero-padding to block multiple.

@@ -43,7 +43,8 @@ namespace Bodu.IO.Hashing;
 ///]]>
 /// </code>
 /// </example>
-public sealed class HashingStream : Stream
+public sealed class HashingStream
+    : Stream
 {
     /// <summary>
     /// The stream that bytes are transferred to or from.

@@ -318,7 +318,7 @@ public sealed class GcmModeTransform
         if (ciphertextWithTag.Length < DefaultTagSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, DefaultTagSize / 8),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, DefaultTagSize / 8),
                 nameof(ciphertextWithTag));
         }
 
@@ -326,7 +326,7 @@ public sealed class GcmModeTransform
         if (output.Length < plaintextLength)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
         }
 
@@ -407,7 +407,7 @@ public sealed class GcmModeTransform
         if (output.Length < required)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
         }
 

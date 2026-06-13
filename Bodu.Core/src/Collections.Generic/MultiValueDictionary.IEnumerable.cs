@@ -43,7 +43,8 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </para>
     /// </remarks>
     [Serializable]
-    public struct Enumerator : IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>>
+    public struct Enumerator
+        : IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>>
     {
         private readonly MultiValueDictionary<TKey, TValue> _dictionary;
         private readonly int _version;

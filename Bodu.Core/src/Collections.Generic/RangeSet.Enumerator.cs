@@ -26,7 +26,8 @@ public sealed partial class RangeSet<T>
     /// and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
-    public struct Enumerator : IEnumerator<Range<T>>
+    public struct Enumerator
+        : IEnumerator<Range<T>>
     {
         /// <summary>
         /// The set being enumerated.

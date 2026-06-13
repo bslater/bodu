@@ -45,7 +45,8 @@ namespace Bodu;
 /// </remarks>
 [Serializable]
 [DebuggerDisplay("{ToString(),nq} ({Count} selected)")]
-public readonly partial struct WeekPattern : IEnumerable<DayOfWeek>
+public readonly partial struct WeekPattern
+    : IEnumerable<DayOfWeek>
 {
 #pragma warning disable IDE1006
 

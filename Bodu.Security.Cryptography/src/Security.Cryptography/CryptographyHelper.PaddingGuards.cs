@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -39,7 +40,7 @@ internal static partial class CryptographyHelper
     {
         ThrowHelper.ThrowIfNull(paddingScheme);
         throw new CryptographicException(
-            string.Format(CryptoResourceStrings.Crypt_Invalid_PaddingScheme, paddingScheme));
+            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_PaddingScheme, paddingScheme));
     }
 
     /// <summary>
@@ -66,7 +67,7 @@ internal static partial class CryptographyHelper
     {
         ThrowHelper.ThrowIfNull(paddingScheme);
         throw new ArgumentException(
-            string.Format(CryptoResourceStrings.Arg_Invalid_PaddedSequence, paddingScheme),
+            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_PaddedSequence, paddingScheme),
             paramName);
     }
 
@@ -86,7 +87,7 @@ internal static partial class CryptographyHelper
     public static void ThrowUnsupportedPaddingMode<T>(T mode)
         where T : struct, Enum =>
         throw new CryptographicException(
-            string.Format(CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode));
+            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode));
 
     /// <summary>
     /// Retrieves the underlying buffer of <paramref name="stream" /> via

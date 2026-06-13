@@ -109,8 +109,8 @@ public abstract class MLDsa
     /// Gets or sets a value indicating whether signing is deterministic instead of hedged.
     /// </summary>
     /// <value>
-    /// <see langword="false" /> (the default) to mix 32 fresh random bytes into every signature per the FIPS 204
-    /// hedged variant; <see langword="true" /> to use the all-zero string, making signatures reproducible.
+    /// <see langword="false" /> (the default) to mix 32 fresh random bytes into every signature per the FIPS 204 hedged
+    /// variant; <see langword="true" /> to use the all-zero string, making signatures reproducible.
     /// </value>
     /// <returns>The currently configured signing mode.</returns>
     public bool DeterministicSigning { get; set; }

@@ -38,7 +38,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public readonly struct Nonce : IEquatable<Nonce>
+public readonly struct Nonce
+    : IEquatable<Nonce>
 {
     /// <summary>
     /// The nonce bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

@@ -40,7 +40,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
+public readonly struct AuthenticationTag
+    : IEquatable<AuthenticationTag>
 {
     /// <summary>
     /// The tag bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

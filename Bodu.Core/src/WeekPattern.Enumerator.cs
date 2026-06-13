@@ -24,7 +24,8 @@ public readonly partial struct WeekPattern
     /// type and immutable, so the snapshot semantics are exact.
     /// </para>
     /// </remarks>
-    public struct Enumerator : IEnumerator<DayOfWeek>
+    public struct Enumerator
+        : IEnumerator<DayOfWeek>
     {
         private readonly byte _bits;
         private int _index;

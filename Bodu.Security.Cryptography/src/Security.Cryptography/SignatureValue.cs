@@ -42,7 +42,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public readonly struct SignatureValue : IEquatable<SignatureValue>
+public readonly struct SignatureValue
+    : IEquatable<SignatureValue>
 {
     /// <summary>
     /// The signature bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

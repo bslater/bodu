@@ -24,7 +24,8 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{Prefix}{Text,nq}")]
-public readonly struct IniComment : IEquatable<IniComment>
+public readonly struct IniComment
+    : IEquatable<IniComment>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="IniComment" /> struct.

@@ -28,7 +28,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
-    public struct Enumerator : IEnumerator<ValueRange<TKey, TValue>>
+    public struct Enumerator
+        : IEnumerator<ValueRange<TKey, TValue>>
     {
         /// <summary>
         /// The dictionary being enumerated.

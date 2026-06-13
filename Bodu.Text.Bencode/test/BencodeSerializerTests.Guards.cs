@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerTests.Guards.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -162,7 +162,8 @@ public partial class BencodeSerializerTests
     /// A stream that reports <see cref="Stream.CanWrite" /> as <see langword="false" />, used to exercise the
     /// writability guard on stream-accepting entry points.
     /// </summary>
-    private sealed class NonWritableStream : MemoryStream
+    private sealed class NonWritableStream
+        : MemoryStream
     {
         /// <summary>
         /// Gets a value indicating whether the stream supports writing.
@@ -175,7 +176,8 @@ public partial class BencodeSerializerTests
     /// A stream that reports <see cref="Stream.CanRead" /> as <see langword="false" />, used to exercise the
     /// readability guard on stream-accepting entry points.
     /// </summary>
-    private sealed class NonReadableStream : MemoryStream
+    private sealed class NonReadableStream
+        : MemoryStream
     {
         /// <summary>
         /// Gets a value indicating whether the stream supports reading.

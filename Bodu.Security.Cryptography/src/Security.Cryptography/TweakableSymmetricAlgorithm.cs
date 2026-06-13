@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -363,6 +364,7 @@ public abstract class TweakableSymmetricAlgorithm
         if (!ValidTweakSize(bitLength))
             throw new CryptographicException(
                 string.Format(
+                    CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     bitLength,
                     CryptographyHelper.FormatLegalSizes(LegalTweakSizes)));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerContextTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,8 @@ public class AdjustmentHandlerContextTests
     /// <summary>
     /// A handler that reads the territory, resolution context, and occupancy probe before shifting two days forward.
     /// </summary>
-    private sealed class ContextProbingHandler : IAdjustmentHandler
+    private sealed class ContextProbingHandler
+        : IAdjustmentHandler
     {
         /// <inheritdoc />
         public DateOnly? Adjust(AdjustmentHandlerContext context)

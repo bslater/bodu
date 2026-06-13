@@ -49,7 +49,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public sealed class SecretBytes : IDisposable
+public sealed class SecretBytes
+    : IDisposable
 {
     /// <summary>
     /// The pinned buffer holding the secret bytes. Zeroed by <see cref="Clear" /> and <see cref="Dispose" />.

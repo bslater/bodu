@@ -6,7 +6,8 @@
 
 namespace Bodu;
 
-public partial struct WeekPattern : System.IFormattable
+public partial struct WeekPattern
+    : System.IFormattable
 {
     /// <summary>
     /// Returns a string representation of the current <see cref="WeekPattern" /> using the default Sunday-first format

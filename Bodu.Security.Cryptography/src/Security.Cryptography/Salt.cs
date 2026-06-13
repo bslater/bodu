@@ -34,7 +34,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public readonly struct Salt : IEquatable<Salt>
+public readonly struct Salt
+    : IEquatable<Salt>
 {
     /// <summary>
     /// The salt bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

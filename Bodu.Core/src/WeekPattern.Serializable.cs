@@ -9,7 +9,8 @@ using System.Runtime.Serialization;
 
 namespace Bodu;
 
-public partial struct WeekPattern : System.Runtime.Serialization.ISerializable
+public partial struct WeekPattern
+    : System.Runtime.Serialization.ISerializable
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WeekPattern" /> struct from the given serialized data.

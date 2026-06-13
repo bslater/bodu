@@ -42,7 +42,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public readonly struct HashValue : IEquatable<HashValue>
+public readonly struct HashValue
+    : IEquatable<HashValue>
 {
     /// <summary>
     /// The digest bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
