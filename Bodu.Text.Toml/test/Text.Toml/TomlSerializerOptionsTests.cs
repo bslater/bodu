@@ -11,11 +11,11 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the parameter-validation contracts of <see cref="TomlSerializerOptions" />: undefined enumeration values
-/// are rejected with the expected <c>ParamName</c>, converter resolution rejects a <see langword="null" /> type, and
-/// the converter list's tolerance of <see langword="null" /> entries is pinned.
+/// are rejected with the expected <c>ParamName</c> and converter resolution rejects a <see langword="null" /> type. The
+/// converter list's null-rejection and read-only contract is covered in the <c>Converters</c> partial.
 /// </summary>
 [TestClass]
-public class TomlSerializerOptionsTests
+public partial class TomlSerializerOptionsTests
 {
     /// <summary>
     /// Verifies that setting <see cref="TomlSerializerOptions.DefaultIgnoreCondition" /> to an undefined
@@ -159,20 +159,5 @@ public class TomlSerializerOptionsTests
         {
             _ = options.GetConverter(null!);
         }, "typeToConvert");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="TomlSerializerOptions.Converters" /> accepts a <see langword="null" /> entry without
-    /// throwing, pinning the current list-backed behavior.
-    /// </summary>
-    [TestMethod]
-    public void Converters_WhenNullAdded_ShouldAcceptEntry()
-    {
-        var options = new TomlSerializerOptions();
-
-        options.Converters.Add(null!);
-
-        Assert.AreEqual(1, options.Converters.Count);
-        Assert.IsNull(options.Converters[0]);
     }
 }

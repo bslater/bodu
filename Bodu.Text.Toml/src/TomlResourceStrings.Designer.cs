@@ -506,6 +506,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A possible object cycle was detected while serializing type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_CycleDetected {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CycleDetected", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The property '{0}' appears more than once..
         /// </summary>
         internal static string Op_Invalid_DuplicateProperty {

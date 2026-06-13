@@ -10,9 +10,9 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Writer;
 
 /// <summary>
-/// Provides a forward-only writer that emits canonical TOML bytes to an <see cref="IBufferWriter{T}" />. Because TOML's
-/// surface layout is a whole-document property, the writer buffers every value into an in-memory tree and serializes it
-/// when the root table is closed.
+/// Provides an append-only writer that emits normalized TOML bytes to an <see cref="IBufferWriter{T}" />. Because TOML's
+/// surface layout is a whole-document property, the writer is not progressive: it buffers every value into an in-memory
+/// tree and serializes it when the root table is closed.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,7 +23,7 @@ namespace Bodu.Text.Toml.Writer;
 /// tree.
 /// </para>
 /// <para>
-/// Canonical emission happens once, when the outermost table is closed by the root <see cref="WriteEndTable" />. A
+/// Normalized emission happens once, when the outermost table is closed by the root <see cref="WriteEndTable" />. A
 /// table's scalar and array members are written first as <c>key = value</c> lines, then its sub-tables as
 /// <c>[dotted.path]</c> block headers (depth-first, in document order); an array whose every element is a table is
 /// emitted as a run of <c>[[path]]</c> blocks. Arrays of non-table values are inline (<c>[1, 2, 3]</c>), and a table
@@ -33,6 +33,29 @@ namespace Bodu.Text.Toml.Writer;
 /// form matching their kind.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var buffer = new ArrayBufferWriter<byte>();
+/// var writer = new Utf8TomlWriter(buffer);
+///
+/// writer.WriteStartTable();             // the required root table
+/// writer.WritePropertyName("name");
+/// writer.WriteString("app");
+/// writer.WritePropertyName("port");
+/// writer.WriteInteger(8080);
+///
+/// writer.WritePropertyName("server");
+/// writer.WriteStartTable();             // nested table, emitted as a [server] block
+/// writer.WritePropertyName("host");
+/// writer.WriteString("localhost");
+/// writer.WriteEndTable();
+///
+/// writer.WriteEndTable();               // closing the root table emits the document
+/// // buffer.WrittenSpan now holds the UTF-8 TOML bytes.
+///]]>
+/// </code>
+/// </example>
 public ref partial struct Utf8TomlWriter
 {
     /// <summary>
@@ -84,6 +107,12 @@ public ref partial struct Utf8TomlWriter
     private readonly long[] _byteCounts;
 
     /// <summary>
+    /// The set of reference-typed values currently being written, used by the serializer to detect object cycles. Held
+    /// in a shared managed object so it survives a by-value copy of the writer, as <see cref="_frames" /> does.
+    /// </summary>
+    private readonly HashSet<object> _references;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Utf8TomlWriter" /> struct.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
@@ -99,6 +128,7 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = 256;
         _byteCounts = new long[2];
+        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
 
     /// <summary>
@@ -112,7 +142,9 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256, and a
+    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
+    /// cannot drive the writer into a <see cref="StackOverflowException" />.
     /// </remarks>
     public Utf8TomlWriter(IBufferWriter<byte> output, TomlWriterOptions options)
     {
@@ -121,9 +153,28 @@ public ref partial struct Utf8TomlWriter
         _output = output;
         _frames = [];
         _root = new TomlWriterNode?[1];
-        _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        _maxDepth = options.MaxDepth <= 0 ? 256 : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
+        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
+
+    /// <summary>
+    /// Records that the specified reference-typed value is being written, reporting whether it was already in progress.
+    /// </summary>
+    /// <param name="value">The reference being entered.</param>
+    /// <returns>
+    /// <see langword="true" /> when the reference was newly recorded; <see langword="false" /> when it is already being
+    /// written, which indicates an object cycle.
+    /// </returns>
+    internal bool TryEnterReference(object value) =>
+        _references.Add(value);
+
+    /// <summary>
+    /// Removes the specified reference-typed value from the in-progress set once it has been fully written.
+    /// </summary>
+    /// <param name="value">The reference being exited.</param>
+    internal void ExitReference(object value) =>
+        _references.Remove(value);
 
     /// <summary>
     /// Writes the start of a table.
@@ -153,7 +204,7 @@ public ref partial struct Utf8TomlWriter
     /// property name without a value.
     /// </exception>
     /// <remarks>
-    /// Closing the outermost table serializes the buffered value tree to canonical TOML and writes the resulting UTF-8
+    /// Closing the outermost table serializes the buffered value tree to normalized TOML and writes the resulting UTF-8
     /// bytes to the destination buffer writer.
     /// </remarks>
     public readonly void WriteEndTable()
@@ -380,7 +431,7 @@ public ref partial struct Utf8TomlWriter
     }
 
     /// <summary>
-    /// Serializes the completed root table to canonical TOML, emitting the UTF-8 bytes directly to the destination
+    /// Serializes the completed root table to normalized TOML, emitting the UTF-8 bytes directly to the destination
     /// buffer writer without an intermediate document-sized buffer.
     /// </summary>
     /// <param name="root">The completed root table.</param>

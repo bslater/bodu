@@ -116,6 +116,37 @@ public sealed class TomlDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that nesting beyond the absolute depth ceiling is rejected even when the configured maximum depth is far
+    /// larger, so an unbounded configured depth cannot drive the parser into a <see cref="StackOverflowException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenNestingExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowTomlFormatException()
+    {
+        var depth = TomlLimits.AbsoluteMaxDepth + 1;
+        var toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
+
+        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = new TomlDocumentBuilder(TomlSpecVersion.V1_0, int.MaxValue).Parse(Encoding.UTF8.GetBytes(toml));
+        });
+    }
+
+    /// <summary>
+    /// Verifies that nesting at exactly the absolute depth ceiling is accepted, confirming the cap bounds rather than
+    /// lowers the limit.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenNestingAtAbsoluteCap_ShouldSucceed()
+    {
+        var depth = TomlLimits.AbsoluteMaxDepth;
+        var toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
+
+        TomlTableNode root = new TomlDocumentBuilder(TomlSpecVersion.V1_0, int.MaxValue).Parse(Encoding.UTF8.GetBytes(toml));
+
+        Assert.AreEqual(1, root.Items.Count);
+    }
+
+    /// <summary>
     /// Verifies that node offsets in the materialized tree are byte offsets into the UTF-8 source.
     /// </summary>
     [TestMethod]

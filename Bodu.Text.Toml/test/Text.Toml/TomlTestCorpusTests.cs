@@ -30,7 +30,7 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// </remarks>
 [TestClass]
-public sealed class TomlTestCorpusTests
+public sealed partial class TomlTestCorpusTests
 {
     /// <summary>
     /// The root directory of the vendored corpus within the test output.

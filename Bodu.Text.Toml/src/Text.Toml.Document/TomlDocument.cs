@@ -11,9 +11,8 @@ using Bodu.Text.Toml.Reader;
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Provides a read-only, high-performance document object model over TOML text. The source is parsed once into a flat
-/// metadata index and exposed through lightweight <see cref="TomlElement" /> struct views; no node tree is
-/// materialized.
+/// Provides a read-only, high-performance document object model over TOML text, exposed as a flat index of row records
+/// through lightweight <see cref="TomlElement" /> struct views rather than a tree of node objects.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,8 +22,10 @@ namespace Bodu.Text.Toml.Document;
 /// enumerator, and <see cref="TomlProperty" /> obtained from a document is valid only until the document is disposed.
 /// </para>
 /// <para>
-/// Call <see cref="Dispose" /> when finished to release the index. After disposal, any operation on an element
-/// belonging to the document throws <see cref="ObjectDisposedException" />.
+/// Call <see cref="Dispose" /> when finished to invalidate the document and the <see cref="TomlElement" /> views taken
+/// from it; after disposal, any operation on such an element throws <see cref="ObjectDisposedException" />. Disposal
+/// releases no unmanaged or pooled resources — it drops the reference to the managed row index, which the garbage
+/// collector would otherwise reclaim.
 /// </para>
 /// <para>
 /// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" /> or
@@ -32,6 +33,19 @@ namespace Bodu.Text.Toml.Document;
 /// internally over a single value subtree may root any value kind.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The document owns a flat row index; dispose it (here via 'using') when finished.
+/// // Every element view obtained from it is valid only until the document is disposed.
+/// using TomlDocument document = TomlDocument.Parse("name = \"app\"\nport = 8080\n");
+/// TomlElement root = document.RootElement;
+///
+/// string name = root.GetProperty("name").GetString();   // "app"
+/// long port = root.GetProperty("port").GetInt64();       // 8080
+///]]>
+/// </code>
+/// </example>
 public sealed partial class TomlDocument
     : IDisposable
 {

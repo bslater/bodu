@@ -10,7 +10,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// Defines the customizations applied to a mutable TOML node tree.
 /// </summary>
 /// <remarks>
-/// The options govern in-memory behaviour only; they do not affect serialization, which always emits canonical TOML
+/// The options govern in-memory behaviour only; they do not affect serialization, which always emits normalized TOML
 /// with table members in insertion order regardless of the configured comparison.
 /// </remarks>
 public struct TomlNodeOptions

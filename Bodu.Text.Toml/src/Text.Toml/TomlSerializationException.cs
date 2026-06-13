@@ -12,8 +12,9 @@ namespace Bodu.Text.Toml;
 /// </summary>
 /// <remarks>
 /// This exception reports a binding-level failure and is distinct from <see cref="TomlFormatException" />, which
-/// reports that the source text was not well-formed TOML. When the failure can be traced to a position in the source,
-/// the <see cref="Offset" /> carries it.
+/// reports that the source text was not well-formed TOML. When the failure can be traced to a member, the
+/// <see cref="Path" /> carries the dotted path to it; when it can be traced to a position in the source, the
+/// <see cref="Offset" />, <see cref="LineNumber" />, and <see cref="ColumnNumber" /> carry the position.
 /// </remarks>
 public sealed class TomlSerializationException
     : Exception
@@ -61,5 +62,40 @@ public sealed class TomlSerializationException
     /// Gets the byte offset into the source at which the error was detected, when available.
     /// </summary>
     /// <returns>The byte offset, or <see langword="null" /> when the failure has no associated position.</returns>
-    public int? Offset { get; }
+    public int? Offset { get; internal set; }
+
+    /// <summary>
+    /// Gets the 1-based line number in the source at which the error was detected, when available.
+    /// </summary>
+    /// <returns>The line number, or <see langword="null" /> when the failure has no associated position.</returns>
+    public int? LineNumber { get; internal set; }
+
+    /// <summary>
+    /// Gets the 1-based column number, in UTF-8 bytes from the start of the line, at which the error was detected, when
+    /// available.
+    /// </summary>
+    /// <returns>The column number, or <see langword="null" /> when the failure has no associated position.</returns>
+    public int? ColumnNumber { get; internal set; }
+
+    /// <summary>
+    /// Gets the dotted path to the member whose binding failed, for example <c>server.endpoints[0].timeout</c>, when
+    /// available.
+    /// </summary>
+    /// <returns>The member path, or <see langword="null" /> when the failure is not associated with a member.</returns>
+    public string? Path { get; internal set; }
+
+    /// <summary>
+    /// Prepends a path segment to an existing member path, joining a key segment with a dot and an array-index segment
+    /// (which already begins with <c>[</c>) directly.
+    /// </summary>
+    /// <param name="segment">The parent segment to prepend, a member or dictionary key, or an array index of the form <c>[i]</c>.</param>
+    /// <param name="childPath">The already-accumulated child path, or <see langword="null" /> when none.</param>
+    /// <returns>The combined path.</returns>
+    internal static string CombinePath(string segment, string? childPath)
+    {
+        if (string.IsNullOrEmpty(childPath))
+            return segment;
+
+        return childPath[0] == '[' ? segment + childPath : segment + "." + childPath;
+    }
 }

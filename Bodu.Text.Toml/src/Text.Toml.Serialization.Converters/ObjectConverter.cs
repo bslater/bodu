@@ -49,7 +49,19 @@ internal sealed class ObjectConverter<T>
 
             if (metadata.TryGetProperty(name, out PropertyMetadata? property) && property is not null)
             {
-                if (!values.TryAdd(property, property.Converter.ReadAsObject(ref reader, property.PropertyType, options)))
+                object? converted;
+                try
+                {
+                    converted = property.Converter.ReadAsObject(ref reader, property.PropertyType, options);
+                }
+                catch (TomlSerializationException ex)
+                {
+                    ex.Path = TomlSerializationException.CombinePath(name, ex.Path);
+                    reader.StampPosition(ex);
+                    throw;
+                }
+
+                if (!values.TryAdd(property, converted))
                 {
                     throw new TomlSerializationException(
                         string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_DuplicateProperty, name));
@@ -96,31 +108,53 @@ internal sealed class ObjectConverter<T>
         if (value is null)
             return;
 
-        (value as ITomlOnSerializing)?.OnSerializing();
+        // A value type cannot participate in a reference cycle, so only reference instances are tracked.
+        var tracked = !typeof(T).IsValueType;
+        if (tracked && !writer.TryEnterReference(value!))
+            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(T)));
 
-        TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
-
-        // Track emitted keys only when extension data may follow, so a colliding overflow entry is rejected as a
-        // serialization error rather than surfacing as a writer-level duplicate-key failure.
-        HashSet<string>? emittedKeys = metadata.ExtensionData is null ? null : new HashSet<string>(StringComparer.Ordinal);
-
-        writer.WriteStartTable();
-        foreach (PropertyMetadata property in metadata.Properties)
+        try
         {
-            var memberValue = property.GetValue(value);
-            if (ShouldSkip(property, memberValue, options))
-                continue;
+            (value as ITomlOnSerializing)?.OnSerializing();
 
-            writer.WritePropertyName(property.WireName);
-            property.Converter.WriteAsObject(writer, memberValue, options);
-            _ = emittedKeys?.Add(property.WireName);
+            TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
+
+            // Track emitted keys only when extension data may follow, so a colliding overflow entry is rejected as a
+            // serialization error rather than surfacing as a writer-level duplicate-key failure.
+            HashSet<string>? emittedKeys = metadata.ExtensionData is null ? null : new HashSet<string>(StringComparer.Ordinal);
+
+            writer.WriteStartTable();
+            foreach (PropertyMetadata property in metadata.Properties)
+            {
+                var memberValue = property.GetValue(value);
+                if (ShouldSkip(property, memberValue, options))
+                    continue;
+
+                writer.WritePropertyName(property.WireName);
+                try
+                {
+                    property.Converter.WriteAsObject(writer, memberValue, options);
+                }
+                catch (TomlSerializationException ex)
+                {
+                    ex.Path = TomlSerializationException.CombinePath(property.WireName, ex.Path);
+                    throw;
+                }
+
+                _ = emittedKeys?.Add(property.WireName);
+            }
+
+            WriteExtensionData(writer, metadata, value, emittedKeys);
+
+            writer.WriteEndTable();
+
+            (value as ITomlOnSerialized)?.OnSerialized();
         }
-
-        WriteExtensionData(writer, metadata, value, emittedKeys);
-
-        writer.WriteEndTable();
-
-        (value as ITomlOnSerialized)?.OnSerialized();
+        finally
+        {
+            if (tracked)
+                writer.ExitReference(value!);
+        }
     }
 
     /// <summary>
