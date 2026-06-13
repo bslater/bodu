@@ -355,7 +355,7 @@ process-wide fallback.
 ### Compact formatting
 
 For dashboards and summaries,
-<xref:Bodu.Financial.MoneyCompactFormattingExtensions> renders large
+<xref:Bodu.Financial.Extensions.MoneyCompactFormattingExtensions> renders large
 amounts in abbreviated form (`1.2K`, `3.4M`, `5.6B`) directly on both
 `Money<TCurrency>` and `Money`:
 
