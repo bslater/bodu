@@ -68,7 +68,7 @@ public sealed class SecretBytes : IDisposable
     {
         ThrowHelper.ThrowIfZeroOrNegative(length);
 
-        SecretBytes secret = new SecretBytes(length);
+        var secret = new SecretBytes(length);
         CryptographyHelper.FillWithRandomBytes(secret._buffer);
         return secret;
     }
@@ -84,7 +84,7 @@ public sealed class SecretBytes : IDisposable
     /// </remarks>
     public static SecretBytes CopyFrom(ReadOnlySpan<byte> source)
     {
-        SecretBytes secret = new SecretBytes(source.Length);
+        var secret = new SecretBytes(source.Length);
         source.CopyTo(secret._buffer);
         return secret;
     }

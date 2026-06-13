@@ -22,7 +22,7 @@ internal static partial class MLDsaEngine
     /// <param name="destination">The span receiving 256 coefficients in [0, q).</param>
     private static void RejNttPoly(ReadOnlySpan<byte> rho, byte column, byte row, Span<int> destination)
     {
-        KeccakSponge sponge = KeccakSponge.CreateShake128();
+        var sponge = KeccakSponge.CreateShake128();
         sponge.Absorb(rho);
 
         Span<byte> indices = stackalloc byte[2];
@@ -54,7 +54,7 @@ internal static partial class MLDsaEngine
     /// <param name="destination">The span receiving 256 coefficients in [0, q), centered values folded modulo q.</param>
     private static void RejBoundedPoly(int eta, ReadOnlySpan<byte> rhoPrime, int nonce, Span<int> destination)
     {
-        KeccakSponge sponge = KeccakSponge.CreateShake256();
+        var sponge = KeccakSponge.CreateShake256();
         sponge.Absorb(rhoPrime);
 
         Span<byte> nonceBytes = stackalloc byte[2];
@@ -140,7 +140,7 @@ internal static partial class MLDsaEngine
     {
         destination.Clear();
 
-        KeccakSponge sponge = KeccakSponge.CreateShake256();
+        var sponge = KeccakSponge.CreateShake256();
         sponge.Absorb(commitmentHash);
 
         Span<byte> signBytes = stackalloc byte[8];

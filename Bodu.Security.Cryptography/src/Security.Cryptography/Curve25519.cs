@@ -57,7 +57,7 @@ internal static class Curve25519
         e[31] &= 127;
         e[31] |= 64;
 
-        Curve25519FieldElement x1 = Curve25519FieldElement.FromBytes(u);
+        var x1 = Curve25519FieldElement.FromBytes(u);
         Curve25519FieldElement x2 = Curve25519FieldElement.One;
         Curve25519FieldElement z2 = Curve25519FieldElement.Zero;
         Curve25519FieldElement x3 = x1;
@@ -73,15 +73,15 @@ internal static class Curve25519
             Curve25519FieldElement.ConditionalSwap(ref z2, ref z3, swap);
             swap = bit;
 
-            Curve25519FieldElement a = Curve25519FieldElement.Add(x2, z2);
-            Curve25519FieldElement aa = Curve25519FieldElement.Square(a);
-            Curve25519FieldElement b = Curve25519FieldElement.Subtract(x2, z2);
-            Curve25519FieldElement bb = Curve25519FieldElement.Square(b);
-            Curve25519FieldElement eDiff = Curve25519FieldElement.Subtract(aa, bb);
-            Curve25519FieldElement c = Curve25519FieldElement.Add(x3, z3);
-            Curve25519FieldElement d = Curve25519FieldElement.Subtract(x3, z3);
-            Curve25519FieldElement da = Curve25519FieldElement.Multiply(d, a);
-            Curve25519FieldElement cb = Curve25519FieldElement.Multiply(c, b);
+            var a = Curve25519FieldElement.Add(x2, z2);
+            var aa = Curve25519FieldElement.Square(a);
+            var b = Curve25519FieldElement.Subtract(x2, z2);
+            var bb = Curve25519FieldElement.Square(b);
+            var eDiff = Curve25519FieldElement.Subtract(aa, bb);
+            var c = Curve25519FieldElement.Add(x3, z3);
+            var d = Curve25519FieldElement.Subtract(x3, z3);
+            var da = Curve25519FieldElement.Multiply(d, a);
+            var cb = Curve25519FieldElement.Multiply(c, b);
 
             x3 = Curve25519FieldElement.Square(Curve25519FieldElement.Add(da, cb));
             z3 = Curve25519FieldElement.Multiply(x1, Curve25519FieldElement.Square(Curve25519FieldElement.Subtract(da, cb)));
@@ -94,7 +94,7 @@ internal static class Curve25519
         Curve25519FieldElement.ConditionalSwap(ref x2, ref x3, swap);
         Curve25519FieldElement.ConditionalSwap(ref z2, ref z3, swap);
 
-        Curve25519FieldElement result = Curve25519FieldElement.Multiply(x2, Curve25519FieldElement.Invert(z2));
+        var result = Curve25519FieldElement.Multiply(x2, Curve25519FieldElement.Invert(z2));
         result.ToBytes(destination);
 
         CryptographyHelper.Clear(e);

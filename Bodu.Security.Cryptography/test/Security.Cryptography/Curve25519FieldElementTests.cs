@@ -28,7 +28,7 @@ public class Curve25519FieldElementTests
     {
         var encoded = Convert.FromHexString("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
-        Curve25519FieldElement element = Curve25519FieldElement.FromBytes(encoded);
+        var element = Curve25519FieldElement.FromBytes(encoded);
         var roundTrip = new byte[Curve25519FieldElement.EncodedSizeInBytes];
         element.ToBytes(roundTrip);
 
@@ -66,7 +66,7 @@ public class Curve25519FieldElementTests
     {
         _ = testName;
 
-        Curve25519FieldElement element = Curve25519FieldElement.FromBytes(Convert.FromHexString(inputHex));
+        var element = Curve25519FieldElement.FromBytes(Convert.FromHexString(inputHex));
         var actual = new byte[Curve25519FieldElement.EncodedSizeInBytes];
         element.ToBytes(actual);
 
@@ -97,9 +97,9 @@ public class Curve25519FieldElementTests
     public void Multiply_WhenMultipliedByOne_ShouldReturnSameValue()
     {
         var encoded = Convert.FromHexString("e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c");
-        Curve25519FieldElement element = Curve25519FieldElement.FromBytes(encoded);
+        var element = Curve25519FieldElement.FromBytes(encoded);
 
-        Curve25519FieldElement product = Curve25519FieldElement.Multiply(element, Curve25519FieldElement.One);
+        var product = Curve25519FieldElement.Multiply(element, Curve25519FieldElement.One);
 
         CollectionAssert.AreEqual(encoded, ToArray(product));
     }
@@ -110,10 +110,10 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void Invert_WhenMultipliedByOriginal_ShouldYieldOne()
     {
-        Curve25519FieldElement element = Curve25519FieldElement.FromBytes(
+        var element = Curve25519FieldElement.FromBytes(
             Convert.FromHexString("a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4"));
 
-        Curve25519FieldElement product = Curve25519FieldElement.Multiply(element, Curve25519FieldElement.Invert(element));
+        var product = Curve25519FieldElement.Multiply(element, Curve25519FieldElement.Invert(element));
 
         CollectionAssert.AreEqual(ToArray(Curve25519FieldElement.One), ToArray(product));
     }
@@ -127,10 +127,10 @@ public class Curve25519FieldElementTests
     {
         var encodedA = Convert.FromHexString("4b66e9d4d1b4673c5ad22691957d6af5c11b6421e0ea01d42ca4169e7918ba0d");
         var encodedB = Convert.FromHexString("e5210f12786811d3f4b7959d0538ae2c31dbe7106fc03c3efc4cd549c715a413");
-        Curve25519FieldElement a = Curve25519FieldElement.FromBytes(encodedA);
-        Curve25519FieldElement b = Curve25519FieldElement.FromBytes(encodedB);
+        var a = Curve25519FieldElement.FromBytes(encodedA);
+        var b = Curve25519FieldElement.FromBytes(encodedB);
 
-        Curve25519FieldElement recovered = Curve25519FieldElement.Subtract(Curve25519FieldElement.Add(a, b), b);
+        var recovered = Curve25519FieldElement.Subtract(Curve25519FieldElement.Add(a, b), b);
 
         CollectionAssert.AreEqual(encodedA, ToArray(recovered));
     }
@@ -142,12 +142,12 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void MultiplySmall_WhenComparedToFullMultiply_ShouldProduceSameResult()
     {
-        Curve25519FieldElement element = Curve25519FieldElement.FromBytes(
+        var element = Curve25519FieldElement.FromBytes(
             Convert.FromHexString("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a"));
         var factor = new Curve25519FieldElement(121665, 0, 0, 0, 0);
 
-        Curve25519FieldElement viaSmall = Curve25519FieldElement.MultiplySmall(element, 121665);
-        Curve25519FieldElement viaFull = Curve25519FieldElement.Multiply(element, factor);
+        var viaSmall = Curve25519FieldElement.MultiplySmall(element, 121665);
+        var viaFull = Curve25519FieldElement.Multiply(element, factor);
 
         CollectionAssert.AreEqual(ToArray(viaFull), ToArray(viaSmall));
     }
@@ -159,17 +159,17 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void Pow22523_WhenRaisedToEighthTimesZSeventh_ShouldEqualZCubed()
     {
-        Curve25519FieldElement z = Curve25519FieldElement.FromBytes(
+        var z = Curve25519FieldElement.FromBytes(
             Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f"));
 
         // left = (z^(2^252-3))^8 * z^7 = z^(2^255-24+7) = z^(2^255-17) = z^((2^255-19)+2) = z^(p+2).
-        Curve25519FieldElement x = Curve25519FieldElement.Pow22523(z);
-        Curve25519FieldElement x8 = Curve25519FieldElement.Square(Curve25519FieldElement.Square(Curve25519FieldElement.Square(x)));
-        Curve25519FieldElement z2 = Curve25519FieldElement.Square(z);
-        Curve25519FieldElement z3 = Curve25519FieldElement.Multiply(z2, z);
-        Curve25519FieldElement z4 = Curve25519FieldElement.Square(z2);
-        Curve25519FieldElement z7 = Curve25519FieldElement.Multiply(z4, z3);
-        Curve25519FieldElement left = Curve25519FieldElement.Multiply(x8, z7);
+        var x = Curve25519FieldElement.Pow22523(z);
+        var x8 = Curve25519FieldElement.Square(Curve25519FieldElement.Square(Curve25519FieldElement.Square(x)));
+        var z2 = Curve25519FieldElement.Square(z);
+        var z3 = Curve25519FieldElement.Multiply(z2, z);
+        var z4 = Curve25519FieldElement.Square(z2);
+        var z7 = Curve25519FieldElement.Multiply(z4, z3);
+        var left = Curve25519FieldElement.Multiply(x8, z7);
 
         // By Fermat, z^p = z, so z^(p+2) = z^3.
         CollectionAssert.AreEqual(ToArray(z3), ToArray(left));
@@ -183,13 +183,13 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void Reduce_WhenNegatingLooseSubtractionResult_ShouldYieldAdditiveInverse()
     {
-        Curve25519FieldElement a = Curve25519FieldElement.FromBytes(
+        var a = Curve25519FieldElement.FromBytes(
             Convert.FromHexString("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"));
 
         // u = a² − 1 as a loose (unreduced) value, then −u via Reduce; u + (−u) must be zero.
-        Curve25519FieldElement u = Curve25519FieldElement.Subtract(
+        var u = Curve25519FieldElement.Subtract(
             Curve25519FieldElement.Square(a), Curve25519FieldElement.One);
-        Curve25519FieldElement negated = Curve25519FieldElement.Subtract(
+        var negated = Curve25519FieldElement.Subtract(
             Curve25519FieldElement.Zero, Curve25519FieldElement.Reduce(u));
 
         Assert.IsTrue(Curve25519FieldElement.Reduce(Curve25519FieldElement.Add(Curve25519FieldElement.Reduce(u), negated)).IsZeroConstantTime());

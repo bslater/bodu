@@ -34,7 +34,7 @@ public sealed partial class MLDsa44Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using MLDsa44 dsa = MLDsa44.Create();
+        using var dsa = MLDsa44.Create();
 
         Assert.IsNotNull(dsa);
         Assert.AreEqual(44, dsa.KeySize);

@@ -292,7 +292,7 @@ public sealed class Ed25519
         Span<byte> digest = stackalloc byte[64];
         Span<byte> r = stackalloc byte[32];
 
-        using (IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
+        using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
         {
             // r = SHA-512(prefix ‖ M) mod L, then R = [r]B.
             hash.AppendData(expanded[32..]);
@@ -359,7 +359,7 @@ public sealed class Ed25519
 
         // k = SHA-512(R ‖ A ‖ M) mod L; accept when [S]B == R + [k]A (cofactorless).
         Span<byte> digest = stackalloc byte[64];
-        using (IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
+        using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
         {
             hash.AppendData(rEncoded);
             hash.AppendData(_publicKey);

@@ -34,7 +34,7 @@ public sealed partial class MLKem512Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using MLKem512 kem = MLKem512.Create();
+        using var kem = MLKem512.Create();
 
         Assert.IsNotNull(kem);
         Assert.AreEqual(512, kem.KeySize);
