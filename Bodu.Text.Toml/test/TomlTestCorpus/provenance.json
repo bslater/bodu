@@ -1,0 +1,9 @@
+{
+  "source": "https://github.com/toml-lang/toml-test",
+  "license": "MIT",
+  "upstreamCommit": null,
+  "note": "Vendored toml-lang/toml-test conformance corpus. The upstream commit was not recorded at vendoring time; record it here when known. The case counts below fingerprint the vendored revision so accidental drift is caught by TomlTestCorpusTests.Corpus_MatchesPinnedProvenance.",
+  "specProfiles": [ "1.0.0", "1.1.0" ],
+  "validCaseCount": 266,
+  "invalidCaseCount": 505
+}
