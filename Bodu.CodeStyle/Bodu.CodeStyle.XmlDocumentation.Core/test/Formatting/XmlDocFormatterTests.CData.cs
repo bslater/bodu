@@ -113,7 +113,7 @@ public sealed class XmlDocFormatterCDataTests
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
         // Collect prose lines (skip tag-only and the final partial line of the paragraph).
-        string[] outputLines = result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None);
+        var outputLines = result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None);
         var proseLineLengths = new System.Collections.Generic.List<int>();
         for (var i = 0; i < outputLines.Length; i++)
         {
