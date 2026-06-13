@@ -33,6 +33,29 @@ namespace Bodu.Text.Toml.Writer;
 /// form matching their kind.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var buffer = new ArrayBufferWriter<byte>();
+/// var writer = new Utf8TomlWriter(buffer);
+///
+/// writer.WriteStartTable();             // the required root table
+/// writer.WritePropertyName("name");
+/// writer.WriteString("app");
+/// writer.WritePropertyName("port");
+/// writer.WriteInteger(8080);
+///
+/// writer.WritePropertyName("server");
+/// writer.WriteStartTable();             // nested table, emitted as a [server] block
+/// writer.WritePropertyName("host");
+/// writer.WriteString("localhost");
+/// writer.WriteEndTable();
+///
+/// writer.WriteEndTable();               // closing the root table emits the document
+/// // buffer.WrittenSpan now holds the UTF-8 TOML bytes.
+///]]>
+/// </code>
+/// </example>
 public ref partial struct Utf8TomlWriter
 {
     /// <summary>

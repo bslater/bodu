@@ -33,6 +33,19 @@ namespace Bodu.Text.Toml.Document;
 /// internally over a single value subtree may root any value kind.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The document owns a flat row index; dispose it (here via 'using') when finished.
+/// // Every element view obtained from it is valid only until the document is disposed.
+/// using TomlDocument document = TomlDocument.Parse("name = \"app\"\nport = 8080\n");
+/// TomlElement root = document.RootElement;
+///
+/// string name = root.GetProperty("name").GetString();   // "app"
+/// long port = root.GetProperty("port").GetInt64();       // 8080
+///]]>
+/// </code>
+/// </example>
 public sealed partial class TomlDocument
     : IDisposable
 {

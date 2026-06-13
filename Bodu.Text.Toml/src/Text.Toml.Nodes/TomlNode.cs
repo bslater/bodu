@@ -33,6 +33,23 @@ namespace Bodu.Text.Toml.Nodes;
 /// <see cref="InvalidOperationException" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Parse a document, edit it in place, add a nested table, then serialize the result.
+/// TomlObject config = TomlNode.Parse("name = \"app\"\nport = 8080\n"u8)!.AsObject();
+/// config["port"] = 9090;        // replace a scalar
+/// config["debug"] = true;       // add a scalar
+///
+/// var server = new TomlObject();
+/// server["host"] = "localhost";
+/// config["server"] = server;    // add a nested table
+///
+/// // Emits the scalar members as key/value lines, then the nested table as a [server] block.
+/// string toml = config.ToString();
+///]]>
+/// </code>
+/// </example>
 public abstract class TomlNode
 {
     /// <summary>
