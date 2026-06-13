@@ -43,7 +43,7 @@ public static class KatDisplayName
         ArgumentNullException.ThrowIfNull(methodInfo);
 
         return data is { Length: > 0 } && data[0] is IKat kat
-            ? $"{methodInfo.Name}({kat.Name})"
+            ? kat.Name
             : methodInfo.Name;
     }
 }
