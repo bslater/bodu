@@ -1,10 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Text;
 
 namespace Bodu.Text.Toml.Reader;
 
@@ -18,9 +16,10 @@ namespace Bodu.Text.Toml.Reader;
 /// TOML cannot be tokenized into tree order in a single forward pass: out-of-line <c>[table]</c> and
 /// <c>[[array-of-tables]]</c> headers contribute to structure declared elsewhere in the document. The constructor
 /// therefore parses the entire document up front — scanning the UTF-8 bytes with <see cref="Utf8TomlReader" /> and
-/// enforcing TOML's key, value, table, and array-of-tables rules through <see cref="TomlDocumentBuilder" /> — and
-/// <see cref="Read" /> advances a cursor over the resulting, fully materialized token stream. This type walks a parsed
-/// document; <see cref="Utf8TomlReader" /> reads the UTF-8 source in document order.
+/// enforcing TOML's key, value, table, and array-of-tables rules through <see cref="TomlDocumentBuilder" /> — into a
+/// structural value tree, and <see cref="Read" /> advances a depth-first cursor over that tree, emitting the normalized
+/// token stream on demand rather than materializing it. This type walks a parsed document; <see cref="Utf8TomlReader" />
+/// reads the UTF-8 source in document order.
 /// </para>
 /// <para>
 /// The stream is normalized: the several TOML spellings of structure collapse to a single nested shape. A header table,
@@ -45,9 +44,14 @@ namespace Bodu.Text.Toml.Reader;
 public ref struct TomlDocumentReader
 {
     /// <summary>
-    /// The fully materialized, normalized token stream.
+    /// The initial capacity of the traversal stack; it grows on demand for documents nested deeper than this.
     /// </summary>
-    private readonly List<TomlReaderToken> _tokens;
+    private const int InitialStackDepth = 8;
+
+    /// <summary>
+    /// The root table of the parsed structural tree the cursor walks.
+    /// </summary>
+    private readonly TomlTableNode _root;
 
     /// <summary>
     /// The UTF-8 source bytes, retained so a token's byte offset can be mapped to a line and column on a binding
@@ -56,15 +60,36 @@ public ref struct TomlDocumentReader
     private readonly ReadOnlySpan<byte> _source;
 
     /// <summary>
-    /// The index of the current token, or <c>-1</c> before the first <see cref="Read" />.
+    /// The stack of open containers, one frame per open table or array, innermost last.
     /// </summary>
-    private int _index;
+    private Frame[] _stack;
 
     /// <summary>
-    /// The number of containers currently open, counting the synthetic document-root table. The publicly reported
+    /// The number of open containers on <see cref="_stack" />, counting the document-root table. The publicly reported
     /// <see cref="CurrentDepth" /> excludes the root, so it is this value less one.
     /// </summary>
-    private int _openDepth;
+    private int _depth;
+
+    /// <summary>
+    /// Whether the first <see cref="Read" /> has occurred, after which the cursor is positioned within the tree.
+    /// </summary>
+    private bool _started;
+
+    /// <summary>
+    /// The kind of the current token.
+    /// </summary>
+    private TomlTokenType _tokenType;
+
+    /// <summary>
+    /// The value carried by the current token: a key for a property name, the decoded CLR value for a scalar, or
+    /// <see langword="null" /> for a structural token.
+    /// </summary>
+    private object? _value;
+
+    /// <summary>
+    /// The zero-based source byte offset at which the current token begins.
+    /// </summary>
+    private int _offset;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied bytes, enforcing
@@ -93,14 +118,14 @@ public ref struct TomlDocumentReader
     {
         var maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
 
-        TomlTableNode root = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
-
+        _root = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
         _source = utf8Toml;
-        _tokens = new List<TomlReaderToken>();
-        Flatten(root);
-
-        _index = -1;
-        _openDepth = 0;
+        _stack = new Frame[InitialStackDepth];
+        _depth = 0;
+        _started = false;
+        _tokenType = TomlTokenType.None;
+        _value = null;
+        _offset = 0;
     }
 
     /// <summary>
@@ -142,8 +167,7 @@ public ref struct TomlDocumentReader
     /// <returns>
     /// The current token kind, or <see cref="TomlTokenType.None" /> before the first or after the last token.
     /// </returns>
-    public readonly TomlTokenType TokenType =>
-        _index >= 0 && _index < _tokens.Count ? _tokens[_index].TokenType : TomlTokenType.None;
+    public readonly TomlTokenType TokenType => _tokenType;
 
     /// <summary>
     /// Gets the current container nesting depth.
@@ -152,7 +176,7 @@ public ref struct TomlDocumentReader
     /// The depth, where zero is the document root. A top-level table or array opens depth one; nested containers
     /// increase it further.
     /// </returns>
-    public readonly int CurrentDepth => _openDepth > 0 ? _openDepth - 1 : 0;
+    public readonly int CurrentDepth => _depth > 0 ? _depth - 1 : 0;
 
     /// <summary>
     /// Records the source position of the current token on a binding failure, setting the byte offset, line number, and
@@ -166,10 +190,10 @@ public ref struct TomlDocumentReader
     /// </remarks>
     internal readonly void StampPosition(TomlSerializationException exception)
     {
-        if (exception.Offset is not null || _index < 0 || _index >= _tokens.Count)
+        if (exception.Offset is not null || _tokenType == TomlTokenType.None)
             return;
 
-        var offset = _tokens[_index].Offset;
+        var offset = _offset;
 
         var line = 1;
         var lineStart = 0;
@@ -196,27 +220,56 @@ public ref struct TomlDocumentReader
     /// </returns>
     public bool Read()
     {
-        if (_index + 1 >= _tokens.Count)
+        if (!_started)
         {
-            // Position past the final token so that TokenType reports None once the document is exhausted.
-            _index = _tokens.Count;
+            _started = true;
+            Enter(_root);
+            return true;
+        }
+
+        if (_depth == 0)
+        {
+            _tokenType = TomlTokenType.None;
             return false;
         }
 
-        _index++;
-        switch (_tokens[_index].TokenType)
+        var top = _depth - 1;
+        if (_stack[top].Node.Kind == TomlReaderNodeKind.Table)
         {
-            case TomlTokenType.StartTable:
-            case TomlTokenType.StartArray:
-                _openDepth++;
-                break;
+            var table = (TomlTableNode)_stack[top].Node;
+            if (_stack[top].AwaitingValue)
+            {
+                _stack[top].AwaitingValue = false;
+                TomlReaderNode value = table.Items[_stack[top].Index].Value;
+                _stack[top].Index++;
+                EmitValue(value);
+                return true;
+            }
 
-            case TomlTokenType.EndTable:
-            case TomlTokenType.EndArray:
-                _openDepth--;
-                break;
+            if (_stack[top].Index < table.Items.Count)
+            {
+                KeyValuePair<string, TomlReaderNode> entry = table.Items[_stack[top].Index];
+                SetToken(TomlTokenType.PropertyName, entry.Key, table.Offset);
+                _stack[top].AwaitingValue = true;
+                return true;
+            }
+
+            SetToken(TomlTokenType.EndTable, null, table.Offset);
+            _depth--;
+            return true;
         }
 
+        var array = (TomlArrayNode)_stack[top].Node;
+        if (_stack[top].Index < array.Count)
+        {
+            TomlReaderNode item = array.Items[_stack[top].Index];
+            _stack[top].Index++;
+            EmitValue(item);
+            return true;
+        }
+
+        SetToken(TomlTokenType.EndArray, null, array.Offset);
+        _depth--;
         return true;
     }
 
@@ -229,8 +282,8 @@ public ref struct TomlDocumentReader
     /// <see cref="TomlTokenType.PropertyName" />.
     /// </exception>
     public readonly string GetString() =>
-        TokenType is TomlTokenType.String or TomlTokenType.PropertyName
-            ? (string)_tokens[_index].Value!
+        _tokenType is TomlTokenType.String or TomlTokenType.PropertyName
+            ? (string)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -241,8 +294,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
     public readonly long GetInt64() =>
-        TokenType == TomlTokenType.Integer
-            ? (long)_tokens[_index].Value!
+        _tokenType == TomlTokenType.Integer
+            ? (long)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -253,8 +306,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
     public readonly double GetDouble() =>
-        TokenType == TomlTokenType.Float
-            ? (double)_tokens[_index].Value!
+        _tokenType == TomlTokenType.Float
+            ? (double)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -265,8 +318,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Boolean" />.
     /// </exception>
     public readonly bool GetBoolean() =>
-        TokenType == TomlTokenType.Boolean
-            ? (bool)_tokens[_index].Value!
+        _tokenType == TomlTokenType.Boolean
+            ? (bool)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -277,8 +330,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not an <see cref="TomlTokenType.OffsetDateTime" />.
     /// </exception>
     public readonly DateTimeOffset GetDateTimeOffset() =>
-        TokenType == TomlTokenType.OffsetDateTime
-            ? (DateTimeOffset)_tokens[_index].Value!
+        _tokenType == TomlTokenType.OffsetDateTime
+            ? (DateTimeOffset)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -291,8 +344,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.LocalDateTime" />.
     /// </exception>
     public readonly DateTime GetDateTime() =>
-        TokenType == TomlTokenType.LocalDateTime
-            ? (DateTime)_tokens[_index].Value!
+        _tokenType == TomlTokenType.LocalDateTime
+            ? (DateTime)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -303,8 +356,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.LocalDate" />.
     /// </exception>
     public readonly DateOnly GetDateOnly() =>
-        TokenType == TomlTokenType.LocalDate
-            ? (DateOnly)_tokens[_index].Value!
+        _tokenType == TomlTokenType.LocalDate
+            ? (DateOnly)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -315,8 +368,8 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.LocalTime" />.
     /// </exception>
     public readonly TimeOnly GetTimeOnly() =>
-        TokenType == TomlTokenType.LocalTime
-            ? (TimeOnly)_tokens[_index].Value!
+        _tokenType == TomlTokenType.LocalTime
+            ? (TimeOnly)_value!
             : throw new InvalidOperationException();
 
     /// <summary>
@@ -331,58 +384,97 @@ public ref struct TomlDocumentReader
     /// </remarks>
     public void Skip()
     {
-        if (TokenType == TomlTokenType.PropertyName)
+        if (_tokenType == TomlTokenType.PropertyName)
             _ = Read();
 
-        if (TokenType is not(TomlTokenType.StartTable or TomlTokenType.StartArray))
+        if (_tokenType is not(TomlTokenType.StartTable or TomlTokenType.StartArray))
             return;
 
-        var depth = _openDepth;
-        while (_openDepth >= depth && Read())
+        var depth = _depth;
+        while (_depth >= depth && Read())
         {
             // Read until the matching container end returns control to the original depth.
         }
     }
 
     /// <summary>
-    /// Appends the tokens of a table to the stream as <see cref="TomlTokenType.StartTable" />, its entries, and
-    /// <see cref="TomlTokenType.EndTable" />.
+    /// Emits the next token for a table value or array element: a scalar token for a scalar node, or the opening token
+    /// of a nested container, which is then descended into.
     /// </summary>
-    /// <param name="table">The table to flatten.</param>
-    private readonly void Flatten(TomlTableNode table)
+    /// <param name="node">The value node to emit.</param>
+    private void EmitValue(TomlReaderNode node)
     {
-        _tokens.Add(new TomlReaderToken(TomlTokenType.StartTable, null, table.Offset));
-        foreach (KeyValuePair<string, TomlReaderNode> pair in table.Items)
+        if (node.Kind == TomlReaderNodeKind.Scalar)
         {
-            _tokens.Add(new TomlReaderToken(TomlTokenType.PropertyName, pair.Key, table.Offset));
-            Flatten(pair.Value);
+            var scalar = (TomlScalarNode)node;
+            SetToken(scalar.TokenType, scalar.Value, scalar.Offset);
+            return;
         }
 
-        _tokens.Add(new TomlReaderToken(TomlTokenType.EndTable, null, table.Offset));
+        Enter(node);
     }
 
     /// <summary>
-    /// Appends the tokens of a value node to the stream.
+    /// Opens a container by emitting its start token and pushing a traversal frame for it onto the stack.
     /// </summary>
-    /// <param name="node">The node to flatten.</param>
-    private readonly void Flatten(TomlReaderNode node)
+    /// <param name="node">The table or array node to open.</param>
+    private void Enter(TomlReaderNode node)
     {
-        switch (node)
+        if (_depth == _stack.Length)
+            Array.Resize(ref _stack, _stack.Length * 2);
+
+        _stack[_depth] = new Frame(node);
+        _depth++;
+
+        SetToken(
+            node.Kind == TomlReaderNodeKind.Table ? TomlTokenType.StartTable : TomlTokenType.StartArray,
+            null,
+            node.Offset);
+    }
+
+    /// <summary>
+    /// Sets the current token's kind, value, and source offset.
+    /// </summary>
+    /// <param name="tokenType">The kind of the token.</param>
+    /// <param name="value">The value carried by the token, or <see langword="null" /> for a structural token.</param>
+    /// <param name="offset">The zero-based source byte offset at which the token begins.</param>
+    private void SetToken(TomlTokenType tokenType, object? value, int offset)
+    {
+        _tokenType = tokenType;
+        _value = value;
+        _offset = offset;
+    }
+
+    /// <summary>
+    /// A traversal frame for one open container: the container node and the cursor's position within it.
+    /// </summary>
+    private struct Frame
+    {
+        /// <summary>
+        /// The container node this frame walks, a <see cref="TomlTableNode" /> or a <see cref="TomlArrayNode" />.
+        /// </summary>
+        public TomlReaderNode Node;
+
+        /// <summary>
+        /// The index of the next child to emit.
+        /// </summary>
+        public int Index;
+
+        /// <summary>
+        /// For a table frame, whether the property name for <see cref="Index" /> has been emitted and its value is the
+        /// next token to produce.
+        /// </summary>
+        public bool AwaitingValue;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Frame" /> struct positioned before the container's first child.
+        /// </summary>
+        /// <param name="node">The container node the frame walks.</param>
+        public Frame(TomlReaderNode node)
         {
-            case TomlTableNode table:
-                Flatten(table);
-                break;
-
-            case TomlArrayNode array:
-                _tokens.Add(new TomlReaderToken(TomlTokenType.StartArray, null, array.Offset));
-                foreach (TomlReaderNode item in array.Items)
-                    Flatten(item);
-                _tokens.Add(new TomlReaderToken(TomlTokenType.EndArray, null, array.Offset));
-                break;
-
-            case TomlScalarNode scalar:
-                _tokens.Add(new TomlReaderToken(scalar.TokenType, scalar.Value, scalar.Offset));
-                break;
+            Node = node;
+            Index = 0;
+            AwaitingValue = false;
         }
     }
 }

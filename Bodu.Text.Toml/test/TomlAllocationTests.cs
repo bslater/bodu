@@ -27,9 +27,9 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// The multiplier bounds are deliberately loose: they exist to catch order-of-magnitude regressions and to document the
-/// pre-redesign baseline (the normalized pipeline materializes a node tree, a flattened token list, and the flat row
-/// index in turn, allocating roughly forty times the input). A direct-to-flat parse pipeline would lower these
-/// substantially, at which point the bounds should be tightened.
+/// current baseline. The read pipeline now materializes a structural node tree and the flat row index — the flattened
+/// token-list intermediate has been removed — and still allocates on the order of forty times the input; collapsing the
+/// remaining tree into the flat model would lower these further, at which point the bounds should be tightened.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -95,7 +95,7 @@ public sealed class TomlAllocationTests
             _ = document.RootElement;
         });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 64);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 48);
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlNode.Parse(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 64);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 48);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 72);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 56);
     }
 
     /// <summary>
