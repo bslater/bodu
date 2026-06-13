@@ -43,7 +43,7 @@ namespace Bodu.Text.Toml;
 ///]]>
 /// </code>
 /// </example>
-public sealed class TomlSerializerOptions
+public sealed partial class TomlSerializerOptions
 {
     /// <summary>
     /// The default maximum nesting depth.
@@ -51,9 +51,10 @@ public sealed class TomlSerializerOptions
     public const int DefaultMaxDepth = 64;
 
     /// <summary>
-    /// The user-registered converters, consulted before the built-in converters.
+    /// The user-registered converters, consulted before the built-in converters. The list rejects a
+    /// <see langword="null" /> entry and refuses every mutation once the options have become read-only.
     /// </summary>
-    private readonly List<TomlConverter> _converters = [];
+    private readonly ConverterList _converters;
 
     /// <summary>
     /// The cache of concrete converters resolved per type.
@@ -145,6 +146,8 @@ public sealed class TomlSerializerOptions
     public TomlSerializerOptions(TomlSerializerDefaults defaults)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(defaults);
+
+        _converters = new ConverterList(this);
 
         if (defaults == TomlSerializerDefaults.Web)
         {
