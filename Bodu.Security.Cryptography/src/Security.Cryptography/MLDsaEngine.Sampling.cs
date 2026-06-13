@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Sampling.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-DSA expansion and sampling routines (FIPS 204 Algorithms 29–34): matrix expansion by rejection
-/// from SHAKE128, bounded secret sampling and mask expansion from SHAKE256, and the SampleInBall challenge sampler.
+/// Provides the ML-DSA expansion and sampling routines (FIPS 204 Algorithms 29–34): matrix expansion by rejection from
+/// SHAKE128, bounded secret sampling and mask expansion from SHAKE256, and the SampleInBall challenge sampler.
 /// </summary>
 internal static partial class MLDsaEngine
 {
@@ -51,7 +51,9 @@ internal static partial class MLDsaEngine
     /// <param name="eta">The bound η (2 or 4).</param>
     /// <param name="rhoPrime">The 64-byte secret expansion seed.</param>
     /// <param name="nonce">The 16-bit domain-separation nonce, absorbed little-endian.</param>
-    /// <param name="destination">The span receiving 256 coefficients in [0, q), centered values folded modulo q.</param>
+    /// <param name="destination">
+    /// The span receiving 256 coefficients in [0, q), centered values folded modulo q.
+    /// </param>
     private static void RejBoundedPoly(int eta, ReadOnlySpan<byte> rhoPrime, int nonce, Span<int> destination)
     {
         KeccakSponge sponge = KeccakSponge.CreateShake256();
@@ -82,8 +84,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Maps a half-byte onto a coefficient in [−η, η] folded into [0, q), rejecting out-of-range values
-    /// (FIPS 204 Algorithm 15 / CoeffFromHalfByte).
+    /// Maps a half-byte onto a coefficient in [−η, η] folded into [0, q), rejecting out-of-range values (FIPS 204
+    /// Algorithm 15 / CoeffFromHalfByte).
     /// </summary>
     /// <param name="eta">The bound η (2 or 4).</param>
     /// <param name="halfByte">The candidate half-byte in [0, 16).</param>
@@ -108,13 +110,15 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Expands one mask polynomial y[r] with coefficients in [−γ₁ + 1, γ₁] from
-    /// SHAKE256(ρ″ ‖ IntegerToBytes(κ + r, 2)) (FIPS 204 Algorithm 34 / ExpandMask).
+    /// Expands one mask polynomial y[r] with coefficients in [−γ₁ + 1, γ₁] from SHAKE256(ρ″ ‖ IntegerToBytes(κ + r, 2))
+    /// (FIPS 204 Algorithm 34 / ExpandMask).
     /// </summary>
     /// <param name="parameters">The parameter set supplying γ₁ and its packing width.</param>
     /// <param name="rhoDoublePrime">The 64-byte per-message seed ρ″.</param>
     /// <param name="nonce">The value κ + r, absorbed as two little-endian bytes.</param>
-    /// <param name="destination">The span receiving 256 coefficients in [0, q), centered values folded modulo q.</param>
+    /// <param name="destination">
+    /// The span receiving 256 coefficients in [0, q), centered values folded modulo q.
+    /// </param>
     private static void ExpandMask(MLDsaParameters parameters, ReadOnlySpan<byte> rhoDoublePrime, int nonce, Span<int> destination)
     {
         Span<byte> nonceBytes = stackalloc byte[2];
@@ -130,8 +134,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Samples the challenge polynomial with exactly τ coefficients of ±1 from the commitment hash c̃
-    /// (FIPS 204 Algorithm 29 / SampleInBall).
+    /// Samples the challenge polynomial with exactly τ coefficients of ±1 from the commitment hash c̃ (FIPS 204
+    /// Algorithm 29 / SampleInBall).
     /// </summary>
     /// <param name="parameters">The parameter set supplying τ.</param>
     /// <param name="commitmentHash">The λ/4-byte commitment hash c̃, absorbed in full.</param>

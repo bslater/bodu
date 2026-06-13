@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DsaSigGenKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,12 +9,14 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single signature-generation known-answer test (KAT) vector with an expected signature, covering
-/// both deterministic rows and hedged rows that carry explicit signer randomness.
+/// Represents a single signature-generation known-answer test (KAT) vector with an expected signature, covering both
+/// deterministic rows and hedged rows that carry explicit signer randomness.
 /// </summary>
 /// <param name="Name">The human-readable label identifying this row in test output.</param>
 /// <param name="ParameterSet">The parameter-set name, such as <c>"ML-DSA-65"</c>.</param>
-/// <param name="Deterministic"><see langword="true" /> for deterministic rows (rnd = 0); <see langword="false" /> for hedged rows.</param>
+/// <param name="Deterministic">
+/// <see langword="true" /> for deterministic rows (rnd = 0); <see langword="false" /> for hedged rows.
+/// </param>
 /// <param name="PrivateKey">The encoded private key.</param>
 /// <param name="PublicKey">The encoded public key matching <paramref name="PrivateKey" />.</param>
 /// <param name="Context">The signature context string; empty when the row signs without context.</param>
@@ -34,8 +36,8 @@ public sealed record DsaSigGenKnownAnswer(
 {
     /// <summary>
     /// Reads all signature-generation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>,
-    /// <c>Set</c>, <c>Deterministic</c>, <c>Sk</c>, <c>Pk</c>, <c>Context</c>, <c>Message</c>, optional
-    /// <c>Rnd</c>, and <c>Signature</c>.
+    /// <c>Set</c>, <c>Deterministic</c>, <c>Sk</c>, <c>Pk</c>, <c>Context</c>, <c>Message</c>, optional <c>Rnd</c>, and
+    /// <c>Signature</c>.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

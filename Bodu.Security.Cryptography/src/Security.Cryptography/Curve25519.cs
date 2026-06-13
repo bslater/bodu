@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Curve25519.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The ladder processes the 255 scalar bits from most to least significant, using a single mask-driven conditional
-/// swap per bit so that the sequence of field operations is independent of the scalar value. The scalar supplied by
-/// the caller is never modified: clamping is applied to a stack copy that is zeroed before returning.
+/// The ladder processes the 255 scalar bits from most to least significant, using a single mask-driven conditional swap
+/// per bit so that the sequence of field operations is independent of the scalar value. The scalar supplied by the
+/// caller is never modified: clamping is applied to a stack copy that is zeroed before returning.
 /// </para>
 /// </remarks>
 internal static class Curve25519
@@ -34,7 +34,9 @@ internal static class Curve25519
     /// <paramref name="destination" />.
     /// </summary>
     /// <param name="scalar">The 32-byte little-endian scalar. Clamped per RFC 7748 §5 on a private copy.</param>
-    /// <param name="u">The 32-byte little-endian u-coordinate; bit 255 is masked before decoding, as the RFC requires.</param>
+    /// <param name="u">
+    /// The 32-byte little-endian u-coordinate; bit 255 is masked before decoding, as the RFC requires.
+    /// </param>
     /// <param name="destination">The 32-byte span that receives the resulting u-coordinate.</param>
     /// <returns>
     /// <see langword="true" /> when the result is the all-zero output produced by low-order input points; otherwise,
@@ -117,8 +119,8 @@ internal static class Curve25519
     /// <paramref name="scalar" /> or <paramref name="destination" /> is not exactly 32 bytes long.
     /// </exception>
     /// <remarks>
-    /// The base point has order 8 × L, so a clamped scalar can never produce the all-zero output; the low-order
-    /// result flag returned by <see cref="ScalarMult" /> is therefore discarded.
+    /// The base point has order 8 × L, so a clamped scalar can never produce the all-zero output; the low-order result
+    /// flag returned by <see cref="ScalarMult" /> is therefore discarded.
     /// </remarks>
     internal static void ScalarMultBase(ReadOnlySpan<byte> scalar, Span<byte> destination)
     {

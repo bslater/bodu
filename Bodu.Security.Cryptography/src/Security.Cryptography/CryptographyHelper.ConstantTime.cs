@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptographyHelper.ConstantTime.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,11 +36,13 @@ internal static partial class CryptographyHelper
     }
 
     /// <summary>
-    /// Copies <paramref name="whenZero" /> into <paramref name="destination" /> when
-    /// <paramref name="difference" /> is 0, and <paramref name="whenNonZero" /> otherwise, using a mask derived
-    /// arithmetically from the accumulator so the selection has no data-dependent branch.
+    /// Copies <paramref name="whenZero" /> into <paramref name="destination" /> when <paramref name="difference" /> is
+    /// 0, and <paramref name="whenNonZero" /> otherwise, using a mask derived arithmetically from the accumulator so
+    /// the selection has no data-dependent branch.
     /// </summary>
-    /// <param name="difference">The difference accumulator, typically from <see cref="ConstantTimeDifference" />.</param>
+    /// <param name="difference">
+    /// The difference accumulator, typically from <see cref="ConstantTimeDifference" />.
+    /// </param>
     /// <param name="whenZero">The bytes selected when the accumulator is 0.</param>
     /// <param name="whenNonZero">The bytes selected when the accumulator is non-zero.</param>
     /// <param name="destination">The span receiving the selected bytes.</param>

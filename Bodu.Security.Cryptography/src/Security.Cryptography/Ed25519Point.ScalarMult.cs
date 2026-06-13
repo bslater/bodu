@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519Point.ScalarMult.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,8 +52,8 @@ internal partial struct Ed25519Point
         ScalarMult(s_basePoint, scalar);
 
     /// <summary>
-    /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is
-    /// 1, and leaves <paramref name="destination" /> unchanged when it is 0, without a data-dependent branch.
+    /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is 1,
+    /// and leaves <paramref name="destination" /> unchanged when it is 0, without a data-dependent branch.
     /// </summary>
     /// <param name="destination">The point conditionally overwritten.</param>
     /// <param name="source">The point conditionally copied.</param>

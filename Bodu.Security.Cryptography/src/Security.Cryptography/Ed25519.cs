@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,14 +11,14 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides a managed implementation of the Ed25519 digital signature algorithm (PureEdDSA over edwards25519) as
-/// defined in RFC 8032, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. This class cannot
-/// be inherited.
+/// defined in RFC 8032, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. This class cannot be
+/// inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ed25519 produces deterministic 64-byte signatures from a 32-byte private seed at a 128-bit security level. The
-/// same message signed twice under the same key yields the identical signature; no signing nonce is consumed, which
-/// removes the catastrophic nonce-reuse failure mode of ECDSA-style schemes.
+/// Ed25519 produces deterministic 64-byte signatures from a 32-byte private seed at a 128-bit security level. The same
+/// message signed twice under the same key yields the identical signature; no signing nonce is consumed, which removes
+/// the catastrophic nonce-reuse failure mode of ECDSA-style schemes.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -36,22 +36,21 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>Scope.</strong> Only pure Ed25519 is implemented. The pre-hash (Ed25519ph) and context (Ed25519ctx)
-/// variants of RFC 8032 are deliberately out of scope for this version. Only the raw RFC 8032 32-byte key encodings
-/// are supported; the PKCS#8 / SubjectPublicKeyInfo members inherited from <see cref="AsymmetricAlgorithm" /> are
-/// not implemented and retain their base (throwing) behavior.
+/// <strong>Scope.</strong> Only pure Ed25519 is implemented. The pre-hash (Ed25519ph) and context (Ed25519ctx) variants
+/// of RFC 8032 are deliberately out of scope for this version. Only the raw RFC 8032 32-byte key encodings are
+/// supported; the PKCS#8 / SubjectPublicKeyInfo members inherited from <see cref="AsymmetricAlgorithm" /> are not
+/// implemented and retain their base (throwing) behavior.
 /// </para>
 /// <para>
-/// <strong>Verification policy.</strong> <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> applies
-/// the cofactorless equation [S]B = R + [k]A and rejects signatures whose S component is at or above the group order
-/// (the RFC 8032 malleability check) and points whose encodings are non-canonical. Malformed or wrong-length
-/// signatures return <see langword="false" /> rather than throwing.
+/// <strong>Verification policy.</strong> <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> applies the
+/// cofactorless equation [S]B = R + [k]A and rejects signatures whose S component is at or above the group order (the
+/// RFC 8032 malleability check) and points whose encodings are non-canonical. Malformed or wrong-length signatures
+/// return <see langword="false" /> rather than throwing.
 /// </para>
 /// <para>
-/// Signing runs in constant time with respect to the private key, and intermediate secrets (the expanded SHA-512
-/// seed, the per-signature scalar r) are zeroed before returning. Private key material is zeroed when the instance
-/// is disposed. This implementation offers best-effort side-channel resistance and has not been independently
-/// audited.
+/// Signing runs in constant time with respect to the private key, and intermediate secrets (the expanded SHA-512 seed,
+/// the per-signature scalar r) are zeroed before returning. Private key material is zeroed when the instance is
+/// disposed. This implementation offers best-effort side-channel resistance and has not been independently audited.
 /// </para>
 /// </remarks>
 /// <example>
@@ -117,7 +116,9 @@ public sealed class Ed25519
         new();
 
     /// <inheritdoc />
-    /// <returns><see langword="null" />, because Ed25519 is a signature algorithm and performs no key exchange.</returns>
+    /// <returns>
+    /// <see langword="null" />, because Ed25519 is a signature algorithm and performs no key exchange.
+    /// </returns>
     public override string? KeyExchangeAlgorithm =>
         null;
 
@@ -129,8 +130,13 @@ public sealed class Ed25519
     /// <summary>
     /// Gets a value indicating whether the instance currently holds a private key.
     /// </summary>
-    /// <value><see langword="true" /> when private key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when <see cref="SignData(ReadOnlySpan{byte})" /> and <see cref="ExportPrivateKey" /> are available.</returns>
+    /// <value>
+    /// <see langword="true" /> when private key material is present; otherwise, <see langword="false" />.
+    /// </value>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="SignData(ReadOnlySpan{byte})" /> and <see cref="ExportPrivateKey" /> are
+    /// available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPrivateKey
     {
@@ -145,7 +151,10 @@ public sealed class Ed25519
     /// Gets a value indicating whether the instance currently holds a public key.
     /// </summary>
     /// <value><see langword="true" /> when public key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> and <see cref="ExportPublicKey" /> are available.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> and
+    /// <see cref="ExportPublicKey" /> are available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPublicKey
     {
@@ -173,10 +182,12 @@ public sealed class Ed25519
     }
 
     /// <summary>
-    /// Imports a raw 32-byte RFC 8032 private key seed and derives the matching public key, replacing any existing
-    /// key material on the instance.
+    /// Imports a raw 32-byte RFC 8032 private key seed and derives the matching public key, replacing any existing key
+    /// material on the instance.
     /// </summary>
-    /// <param name="privateKey">The 32-byte private seed to import. The caller's buffer is copied and never modified.</param>
+    /// <param name="privateKey">
+    /// The 32-byte private seed to import. The caller's buffer is copied and never modified.
+    /// </param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException"><paramref name="privateKey" /> is not exactly 32 bytes long.</exception>
     public void ImportPrivateKey(ReadOnlySpan<byte> privateKey)
@@ -249,8 +260,7 @@ public sealed class Ed25519
     }
 
     /// <summary>
-    /// Signs the supplied data with the instance's private key, producing the deterministic 64-byte Ed25519
-    /// signature.
+    /// Signs the supplied data with the instance's private key, producing the deterministic 64-byte Ed25519 signature.
     /// </summary>
     /// <param name="data">The message bytes to sign. May be empty.</param>
     /// <returns>The 64-byte signature R ‖ S.</returns>
@@ -332,9 +342,9 @@ public sealed class Ed25519
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
     /// <remarks>
-    /// Verification never throws for bad signature input: every failure mode — wrong length, S ≥ L, a non-canonical
-    /// or off-curve R — yields <see langword="false" />. Verification time may vary with the inputs, which is
-    /// acceptable because all inputs to verification are public.
+    /// Verification never throws for bad signature input: every failure mode — wrong length, S ≥ L, a non-canonical or
+    /// off-curve R — yields <see langword="false" />. Verification time may vary with the inputs, which is acceptable
+    /// because all inputs to verification are public.
     /// </remarks>
     public bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {

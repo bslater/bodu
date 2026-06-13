@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AuthenticationTag.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ namespace Bodu.Security.Cryptography;
 /// would otherwise accept several look-alike byte buffers.
 /// </para>
 /// <para>
-/// <see cref="AuthenticationTag" /> carries its bytes by defensive copy, and the default instance
-/// (<c>default(AuthenticationTag)</c>) is the empty value: <see cref="Length" /> is <c>0</c> and
-/// <see cref="IsEmpty" /> is <see langword="true" />.
+/// <see cref="AuthenticationTag" /> carries its bytes by defensive copy, and the default instance (
+/// <c>default(AuthenticationTag)</c>) is the empty value: <see cref="Length" /> is <c>0</c> and <see cref="IsEmpty" />
+/// is <see langword="true" />.
 /// </para>
 /// <para>
 /// Tag verification is security-critical: always compare tags with <see cref="FixedTimeEquals(AuthenticationTag)" />
@@ -31,14 +31,14 @@ namespace Bodu.Security.Cryptography;
 public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
 {
     /// <summary>
-    /// The tag bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly;
-    /// all accessors normalize <see langword="null" /> to an empty value.
+    /// The tag bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
+    /// accessors normalize <see langword="null" /> to an empty value.
     /// </summary>
     private readonly byte[]? _value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthenticationTag" /> struct that takes ownership of the
-    /// supplied array.
+    /// Initializes a new instance of the <see cref="AuthenticationTag" /> struct that takes ownership of the supplied
+    /// array.
     /// </summary>
     /// <param name="value">The tag bytes. Callers must pass a buffer that is not retained elsewhere.</param>
     private AuthenticationTag(byte[] value)
@@ -64,7 +64,9 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// Creates an <see cref="AuthenticationTag" /> from the provided bytes.
     /// </summary>
     /// <param name="value">The tag bytes to copy. An empty span yields the empty value.</param>
-    /// <returns>A new <see cref="AuthenticationTag" /> containing a defensive copy of <paramref name="value" />.</returns>
+    /// <returns>
+    /// A new <see cref="AuthenticationTag" /> containing a defensive copy of <paramref name="value" />.
+    /// </returns>
     public static AuthenticationTag FromBytes(ReadOnlySpan<byte> value) =>
         value.IsEmpty ? default : new AuthenticationTag(value.ToArray());
 
@@ -86,8 +88,10 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// Compares this tag to another in fixed time.
     /// </summary>
     /// <param name="other">The tag to compare against.</param>
-    /// <returns><see langword="true" /> if both tags have the same length and identical bytes; otherwise,
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both tags have the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
     /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
@@ -99,9 +103,13 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// <summary>
     /// Compares this tag to a raw byte sequence in fixed time.
     /// </summary>
-    /// <param name="other">The bytes to compare against, typically the tag region of a transform's output buffer.</param>
-    /// <returns><see langword="true" /> if <paramref name="other" /> has the same length and identical bytes;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <param name="other">
+    /// The bytes to compare against, typically the tag region of a transform's output buffer.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="other" /> has the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public bool FixedTimeEquals(ReadOnlySpan<byte> other) =>
         CryptographicOperations.FixedTimeEquals(AsSpan(), other);
 
@@ -109,7 +117,9 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// Determines whether this tag equals another.
     /// </summary>
     /// <param name="other">The tag to compare against.</param>
-    /// <returns><see langword="true" /> if both tags contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both tags contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// This is an ordinary, short-circuiting comparison; tag verification must use
     /// <see cref="FixedTimeEquals(AuthenticationTag)" /> instead.
@@ -121,8 +131,10 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// Determines whether this tag equals the specified object.
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
-    /// <returns><see langword="true" /> if <paramref name="obj" /> is an <see cref="AuthenticationTag" /> with
-    /// identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="obj" /> is an <see cref="AuthenticationTag" /> with identical bytes;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     public override bool Equals(object? obj) =>
         obj is AuthenticationTag other && Equals(other);
 
@@ -142,7 +154,9 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// </summary>
     /// <param name="left">The first tag.</param>
     /// <param name="right">The second tag.</param>
-    /// <returns><see langword="true" /> if the tags contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the tags contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public static bool operator ==(AuthenticationTag left, AuthenticationTag right) =>
         left.Equals(right);
 
@@ -160,8 +174,8 @@ public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
     /// </summary>
     /// <returns>The tag bytes as lowercase hexadecimal text; <see cref="string.Empty" /> for the empty value.</returns>
     /// <remarks>
-    /// Authentication tags travel with the ciphertext and are not secrets, so the content is intentionally included
-    /// in the string representation.
+    /// Authentication tags travel with the ciphertext and are not secrets, so the content is intentionally included in
+    /// the string representation.
     /// </remarks>
     public override string ToString() =>
         CryptographyHelper.ToLowercaseHexString(_value);

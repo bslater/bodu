@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemAcvpVectors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,8 +27,8 @@ public static class MLKemAcvpVectors
     }
 
     /// <summary>
-    /// Yields the encapsulation or decapsulation vectors for one parameter set as
-    /// <see cref="DynamicDataAttribute" /> rows.
+    /// Yields the encapsulation or decapsulation vectors for one parameter set as <see cref="DynamicDataAttribute" />
+    /// rows.
     /// </summary>
     /// <param name="parameterSet">The parameter-set name.</param>
     /// <param name="function">Either <c>"encapsulation"</c> or <c>"decapsulation"</c>.</param>
@@ -88,8 +88,8 @@ public static class MLKemAcvpVectors
     }
 
     /// <summary>
-    /// Asserts a decapsulation vector: importing the decapsulation key and decapsulating the candidate ciphertext
-    /// must yield the expected shared secret, including the implicit-rejection key for tampered rows.
+    /// Asserts a decapsulation vector: importing the decapsulation key and decapsulating the candidate ciphertext must
+    /// yield the expected shared secret, including the implicit-rejection key for tampered rows.
     /// </summary>
     /// <param name="kem">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>

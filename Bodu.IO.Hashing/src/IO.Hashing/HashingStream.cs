@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,25 +9,24 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Provides a pass-through <see cref="Stream" /> that feeds every byte read from or written to an inner stream into
-/// a <see cref="NonCryptographicHashAlgorithm" />, so a digest can be computed while data is being transferred.
+/// Provides a pass-through <see cref="Stream" /> that feeds every byte read from or written to an inner stream into a
+/// <see cref="NonCryptographicHashAlgorithm" />, so a digest can be computed while data is being transferred.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The stream is direction-agnostic: <see cref="CanRead" /> and <see cref="CanWrite" /> delegate to the inner
-/// stream, and bytes are appended to the algorithm whichever way they flow. Reads append only the bytes actually
-/// returned by the inner stream; writes append after the inner stream has accepted the bytes.
+/// The stream is direction-agnostic: <see cref="CanRead" /> and <see cref="CanWrite" /> delegate to the inner stream,
+/// and bytes are appended to the algorithm whichever way they flow. Reads append only the bytes actually returned by
+/// the inner stream; writes append after the inner stream has accepted the bytes.
 /// </para>
 /// <para>
-/// Seeking is not supported (<see cref="CanSeek" /> is always <see langword="false" />): repositioning would let
-/// bytes bypass or re-enter the digest, silently corrupting it.
+/// Seeking is not supported (<see cref="CanSeek" /> is always <see langword="false" />): repositioning would let bytes
+/// bypass or re-enter the digest, silently corrupting it.
 /// </para>
 /// <para>
 /// <see cref="GetCurrentHash" /> reports the digest of the bytes transferred so far without finalizing the ongoing
-/// computation; <see cref="GetHashAndReset" /> additionally resets the algorithm. The algorithm instance is supplied
-/// by the caller, is not disposed by this stream, and — like all <see cref="NonCryptographicHashAlgorithm" />
-/// instances — is not thread-safe, so concurrent reads and writes through the same <see cref="HashingStream" /> are
-/// not supported.
+/// computation; <see cref="GetHashAndReset" /> additionally resets the algorithm. The algorithm instance is supplied by
+/// the caller, is not disposed by this stream, and — like all <see cref="NonCryptographicHashAlgorithm" /> instances —
+/// is not thread-safe, so concurrent reads and writes through the same <see cref="HashingStream" /> are not supported.
 /// </para>
 /// </remarks>
 public sealed class HashingStream : Stream
@@ -53,15 +52,20 @@ public sealed class HashingStream : Stream
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HashingStream" /> class over the specified inner stream and
-    /// hash algorithm.
+    /// Initializes a new instance of the <see cref="HashingStream" /> class over the specified inner stream and hash
+    /// algorithm.
     /// </summary>
     /// <param name="innerStream">The stream to transfer bytes to or from. Must not be <see langword="null" />.</param>
-    /// <param name="algorithm">The algorithm that accumulates the transferred bytes. Must not be <see langword="null" />.</param>
-    /// <param name="leaveOpen"><see langword="true" /> to leave <paramref name="innerStream" /> open after this
-    /// stream is disposed; otherwise, <see langword="false" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="innerStream" /> or <paramref name="algorithm" /> is
-    /// <see langword="null" />.</exception>
+    /// <param name="algorithm">
+    /// The algorithm that accumulates the transferred bytes. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="leaveOpen">
+    /// <see langword="true" /> to leave <paramref name="innerStream" /> open after this stream is disposed; otherwise,
+    /// <see langword="false" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="innerStream" /> or <paramref name="algorithm" /> is <see langword="null" />.
+    /// </exception>
     public HashingStream(Stream innerStream, NonCryptographicHashAlgorithm algorithm, bool leaveOpen = false)
     {
         ThrowHelper.ThrowIfNull(innerStream);
@@ -82,16 +86,20 @@ public sealed class HashingStream : Stream
     /// <summary>
     /// Gets a value indicating whether the stream supports reading.
     /// </summary>
-    /// <returns><see langword="true" /> if this stream is not disposed and the inner stream supports reading;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if this stream is not disposed and the inner stream supports reading; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public override bool CanRead =>
         !_disposed && _innerStream.CanRead;
 
     /// <summary>
     /// Gets a value indicating whether the stream supports writing.
     /// </summary>
-    /// <returns><see langword="true" /> if this stream is not disposed and the inner stream supports writing;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if this stream is not disposed and the inner stream supports writing; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public override bool CanWrite =>
         !_disposed && _innerStream.CanWrite;
 
@@ -153,8 +161,12 @@ public sealed class HashingStream : Stream
     /// <param name="count">The maximum number of bytes to read.</param>
     /// <returns>The number of bytes read, or <c>0</c> at end of stream.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
-    /// <exception cref="ArgumentException"><paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="offset" /> or <paramref name="count" /> is negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
     public override int Read(byte[] buffer, int offset, int count)
     {
@@ -191,7 +203,8 @@ public sealed class HashingStream : Stream
     }
 
     /// <summary>
-    /// Asynchronously reads bytes from the inner stream into the buffer, appending the bytes actually read to the digest.
+    /// Asynchronously reads bytes from the inner stream into the buffer, appending the bytes actually read to the
+    /// digest.
     /// </summary>
     /// <param name="buffer">The destination buffer. Must not be <see langword="null" />.</param>
     /// <param name="offset">The zero-based offset in <paramref name="buffer" /> at which to begin storing data.</param>
@@ -199,8 +212,12 @@ public sealed class HashingStream : Stream
     /// <param name="cancellationToken">A token used to cancel the operation.</param>
     /// <returns>A task producing the number of bytes read, or <c>0</c> at end of stream.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
-    /// <exception cref="ArgumentException"><paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="offset" /> or <paramref name="count" /> is negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
@@ -210,8 +227,8 @@ public sealed class HashingStream : Stream
     }
 
     /// <summary>
-    /// Asynchronously reads bytes from the inner stream into the memory region, appending the bytes actually read
-    /// to the digest.
+    /// Asynchronously reads bytes from the inner stream into the memory region, appending the bytes actually read to
+    /// the digest.
     /// </summary>
     /// <param name="buffer">The destination memory region.</param>
     /// <param name="cancellationToken">A token used to cancel the operation.</param>
@@ -233,8 +250,12 @@ public sealed class HashingStream : Stream
     /// <param name="offset">The zero-based offset in <paramref name="buffer" /> at which to begin reading data.</param>
     /// <param name="count">The number of bytes to write.</param>
     /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
-    /// <exception cref="ArgumentException"><paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="offset" /> or <paramref name="count" /> is negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
     public override void Write(byte[] buffer, int offset, int count)
     {
@@ -281,8 +302,12 @@ public sealed class HashingStream : Stream
     /// <param name="cancellationToken">A token used to cancel the operation.</param>
     /// <returns>A task representing the asynchronous write.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> or <paramref name="count" /> is negative.</exception>
-    /// <exception cref="ArgumentException"><paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="offset" /> or <paramref name="count" /> is negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="offset" /> + <paramref name="count" /> exceeds the buffer length.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">The stream has been disposed.</exception>
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
@@ -349,8 +374,8 @@ public sealed class HashingStream : Stream
         throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
 
     /// <summary>
-    /// Releases the stream, disposing the inner stream unless <c>leaveOpen</c> was specified. The algorithm is
-    /// never disposed.
+    /// Releases the stream, disposing the inner stream unless <c>leaveOpen</c> was specified. The algorithm is never
+    /// disposed.
     /// </summary>
     /// <param name="disposing"><see langword="true" /> when called from <see cref="Stream.Dispose()" />.</param>
     protected override void Dispose(bool disposing)

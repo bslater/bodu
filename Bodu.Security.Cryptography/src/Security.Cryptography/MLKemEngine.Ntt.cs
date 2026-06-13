@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ internal static partial class MLKemEngine
     private const int Zeta = 17;
 
     /// <summary>
-    /// Twiddle factors ζ^BitRev₇(i) mod q for i = 0–127, computed once at type initialization rather than
-    /// transcribed, eliminating table-copy defects.
+    /// Twiddle factors ζ^BitRev₇(i) mod q for i = 0–127, computed once at type initialization rather than transcribed,
+    /// eliminating table-copy defects.
     /// </summary>
     private static readonly int[] s_zetas = BuildZetaTable();
 
@@ -50,8 +50,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Applies the inverse NTT (FIPS 203 Algorithm 10) to a polynomial in place, including the final scaling by
-    /// 128⁻¹ mod q.
+    /// Applies the inverse NTT (FIPS 203 Algorithm 10) to a polynomial in place, including the final scaling by 128⁻¹
+    /// mod q.
     /// </summary>
     /// <param name="f">The 256 NTT coefficients in [0, q), replaced by the standard representation in [0, q).</param>
     private static void InvNtt(Span<int> f)

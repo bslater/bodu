@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Rounding.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,7 @@ internal static partial class MLDsaEngine
     private const int D = 13;
 
     /// <summary>
-    /// Splits a coefficient into high and low parts r = r₁·2ᵈ + r₀ with r₀ ∈ (−2ᵈ⁻¹, 2ᵈ⁻¹] (FIPS 204
-    /// Algorithm 35).
+    /// Splits a coefficient into high and low parts r = r₁·2ᵈ + r₀ with r₀ ∈ (−2ᵈ⁻¹, 2ᵈ⁻¹] (FIPS 204 Algorithm 35).
     /// </summary>
     /// <param name="r">The coefficient in [0, q).</param>
     /// <param name="r1">Receives the high part.</param>
@@ -73,8 +72,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Computes the hint bit indicating whether adding <paramref name="z" /> to <paramref name="r" /> changes the
-    /// high part (FIPS 204 Algorithm 39).
+    /// Computes the hint bit indicating whether adding <paramref name="z" /> to <paramref name="r" /> changes the high
+    /// part (FIPS 204 Algorithm 39).
     /// </summary>
     /// <param name="gamma2">The parameter γ₂.</param>
     /// <param name="z">The perturbation coefficient in [0, q).</param>
@@ -107,8 +106,8 @@ internal static partial class MLDsaEngine
     /// <param name="poly">The 256 coefficients in [0, q).</param>
     /// <returns>The infinity norm.</returns>
     /// <remarks>
-    /// The scan has no early exit, so the time reveals only that a norm check happened — which restart iteration of
-    /// the signing loop runs is public by design — and not which coefficient drove the bound.
+    /// The scan has no early exit, so the time reveals only that a norm check happened — which restart iteration of the
+    /// signing loop runs is public by design — and not which coefficient drove the bound.
     /// </remarks>
     private static int InfinityNorm(ReadOnlySpan<int> poly)
     {

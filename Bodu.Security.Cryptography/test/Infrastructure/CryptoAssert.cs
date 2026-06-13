@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoAssert.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,14 +11,14 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 /// <remarks>
 /// The helpers improve failure diagnostics for byte-sequence comparisons (first differing index plus full hex
-/// renderings). Exception assertions are intentionally not wrapped here — tests keep
-/// <c>Assert.ThrowsExactly</c> calls explicit at the call site per repository convention.
+/// renderings). Exception assertions are intentionally not wrapped here — tests keep <c>Assert.ThrowsExactly</c> calls
+/// explicit at the call site per repository convention.
 /// </remarks>
 internal static class CryptoAssert
 {
     /// <summary>
-    /// Asserts that two byte sequences are identical, reporting the first differing index and the full hex
-    /// renderings of both operands on failure.
+    /// Asserts that two byte sequences are identical, reporting the first differing index and the full hex renderings
+    /// of both operands on failure.
     /// </summary>
     /// <param name="expected">The expected bytes.</param>
     /// <param name="actual">The actual bytes produced by the code under test.</param>

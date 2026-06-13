@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SecretBytes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,10 +14,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="SecretBytes" /> is a hygiene measure for key material, passwords, and other secrets: the bytes are
-/// copied into a buffer allocated on the pinned object heap (so the garbage collector cannot relocate it and leave
-/// stale copies behind), the buffer is zeroed by <see cref="Clear" /> and <see cref="Dispose" /> using
-/// <see cref="CryptographicOperations.ZeroMemory(Span{byte})" />, and <see cref="ToString" /> never reveals the content.
+/// <see cref="SecretBytes" /> is a hygiene measure for key material, passwords, and other secrets: the bytes are copied
+/// into a buffer allocated on the pinned object heap (so the garbage collector cannot relocate it and leave stale
+/// copies behind), the buffer is zeroed by <see cref="Clear" /> and <see cref="Dispose" /> using
+/// <see cref="CryptographicOperations.ZeroMemory(Span{byte})" />, and <see cref="ToString" /> never reveals the
+/// content.
 /// </para>
 /// <para>
 /// Managed .NET cannot guarantee perfect secrecy: the source data existed in unprotected memory before it was copied
@@ -53,8 +54,10 @@ public sealed class SecretBytes : IDisposable
     /// <summary>
     /// Gets the number of bytes of secret material.
     /// </summary>
-    /// <returns>The buffer length in bytes. Remains readable after disposal, because the length of a secret is not
-    /// itself secret.</returns>
+    /// <returns>
+    /// The buffer length in bytes. Remains readable after disposal, because the length of a secret is not itself
+    /// secret.
+    /// </returns>
     public int Length =>
         _buffer.Length;
 
@@ -112,7 +115,8 @@ public sealed class SecretBytes : IDisposable
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <remarks>
     /// The returned array is an ordinary managed allocation outside this instance's control; callers should zero it
-    /// (for example with <see cref="CryptographicOperations.ZeroMemory(Span{byte})" />) as soon as it is no longer needed.
+    /// (for example with <see cref="CryptographicOperations.ZeroMemory(Span{byte})" />) as soon as it is no longer
+    /// needed.
     /// </remarks>
     public byte[] ToArray()
     {
@@ -125,10 +129,14 @@ public sealed class SecretBytes : IDisposable
     /// Compares this secret to another in fixed time.
     /// </summary>
     /// <param name="other">The secret to compare against. Must not be <see langword="null" />.</param>
-    /// <returns><see langword="true" /> if both secrets have the same length and identical bytes; otherwise,
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both secrets have the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
-    /// <exception cref="ObjectDisposedException">This instance or <paramref name="other" /> has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// This instance or <paramref name="other" /> has been disposed.
+    /// </exception>
     public bool FixedTimeEquals(SecretBytes other)
     {
         ThrowHelper.ThrowIfNull(other);
@@ -142,8 +150,10 @@ public sealed class SecretBytes : IDisposable
     /// Compares this secret to a raw byte sequence in fixed time.
     /// </summary>
     /// <param name="other">The bytes to compare against.</param>
-    /// <returns><see langword="true" /> if <paramref name="other" /> has the same length and identical bytes;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="other" /> has the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool FixedTimeEquals(ReadOnlySpan<byte> other)
     {
@@ -170,8 +180,8 @@ public sealed class SecretBytes : IDisposable
     /// Zeroes the secret bytes and marks the instance as disposed.
     /// </summary>
     /// <remarks>
-    /// Disposal is idempotent. After disposal, <see cref="Length" /> and <see cref="ToString" /> remain usable;
-    /// all members that reach the secret content throw <see cref="ObjectDisposedException" />.
+    /// Disposal is idempotent. After disposal, <see cref="Length" /> and <see cref="ToString" /> remain usable; all
+    /// members that reach the secret content throw <see cref="ObjectDisposedException" />.
     /// </remarks>
     public void Dispose()
     {

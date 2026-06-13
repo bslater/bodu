@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureFormat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The same mathematical signature can be serialized in incompatible ways — most notably ECDSA signatures, which
-/// circulate both as ASN.1 DER <c>SEQUENCE</c> structures and as fixed-width IEEE P1363 <c>r || s</c>
-/// concatenations. Carrying the format alongside the bytes prevents a signature produced in one encoding from being
-/// verified, stored, or transmitted as if it were the other.
+/// circulate both as ASN.1 DER <c>SEQUENCE</c> structures and as fixed-width IEEE P1363 <c>r || s</c> concatenations.
+/// Carrying the format alongside the bytes prevents a signature produced in one encoding from being verified, stored,
+/// or transmitted as if it were the other.
 /// </para>
 /// </remarks>
 public enum SignatureFormat

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DsaKeyGenKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,8 +25,8 @@ public sealed record DsaKeyGenKnownAnswer(
     byte[] ExpectedPrivateKey) : IKat
 {
     /// <summary>
-    /// Reads all key-generation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>,
-    /// <c>Set</c>, <c>Seed</c>, <c>Pk</c>, and <c>Sk</c>.
+    /// Reads all key-generation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>, <c>Set</c>,
+    /// <c>Seed</c>, <c>Pk</c>, and <c>Sk</c>.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KemEncapDecapKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,10 +14,16 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <param name="Name">The human-readable label identifying this row in test output.</param>
 /// <param name="ParameterSet">The parameter-set name, such as <c>"ML-KEM-768"</c>.</param>
 /// <param name="Function">Either <c>"encapsulation"</c> or <c>"decapsulation"</c>.</param>
-/// <param name="Key">The encoded encapsulation key (encapsulation rows) or decapsulation key (decapsulation rows).</param>
-/// <param name="M">The fixed 32-byte encapsulation randomness, or <see langword="null" /> for decapsulation rows.</param>
+/// <param name="Key">
+/// The encoded encapsulation key (encapsulation rows) or decapsulation key (decapsulation rows).
+/// </param>
+/// <param name="M">
+/// The fixed 32-byte encapsulation randomness, or <see langword="null" /> for decapsulation rows.
+/// </param>
 /// <param name="Ciphertext">The expected (encapsulation) or candidate (decapsulation) ciphertext.</param>
-/// <param name="SharedSecret">The expected shared secret, including the implicit-rejection key for tampered rows.</param>
+/// <param name="SharedSecret">
+/// The expected shared secret, including the implicit-rejection key for tampered rows.
+/// </param>
 public sealed record KemEncapDecapKnownAnswer(
     string Name,
     string ParameterSet,
@@ -28,8 +34,8 @@ public sealed record KemEncapDecapKnownAnswer(
     byte[] SharedSecret) : IKat
 {
     /// <summary>
-    /// Reads all encapsulation/decapsulation vectors from a <c>Field = value</c> KAT stream with the fields
-    /// <c>Name</c>, <c>Set</c>, <c>Function</c>, <c>Ek</c> or <c>Dk</c>, optional <c>M</c>, <c>C</c>, and <c>K</c>.
+    /// Reads all encapsulation/decapsulation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>
+    /// , <c>Set</c>, <c>Function</c>, <c>Ek</c> or <c>Dk</c>, optional <c>M</c>, <c>C</c>, and <c>K</c>.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

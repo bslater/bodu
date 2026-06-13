@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Encoding.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,7 @@ namespace Bodu.Security.Cryptography;
 internal static partial class MLDsaEngine
 {
     /// <summary>
-    /// Serializes 256 unsigned coefficients of the given bit width in little-endian bit order
-    /// (FIPS 204 SimpleBitPack).
+    /// Serializes 256 unsigned coefficients of the given bit width in little-endian bit order (FIPS 204 SimpleBitPack).
     /// </summary>
     /// <param name="bits">The bit width of each coefficient.</param>
     /// <param name="coefficients">The 256 coefficients, each below 2^bits.</param>
@@ -39,8 +38,7 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Deserializes 32·bits bytes into 256 unsigned coefficients in little-endian bit order
-    /// (FIPS 204 SimpleBitUnpack).
+    /// Deserializes 32·bits bytes into 256 unsigned coefficients in little-endian bit order (FIPS 204 SimpleBitUnpack).
     /// </summary>
     /// <param name="bits">The bit width of each coefficient.</param>
     /// <param name="source">The 32·bits source bytes.</param>
@@ -67,8 +65,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Serializes 256 centered coefficients by packing <paramref name="bound" /> − centered(coefficient) in the
-    /// given bit width (FIPS 204 BitPack with b = <paramref name="bound" />).
+    /// Serializes 256 centered coefficients by packing <paramref name="bound" /> − centered(coefficient) in the given
+    /// bit width (FIPS 204 BitPack with b = <paramref name="bound" />).
     /// </summary>
     /// <param name="bits">The bit width of each packed value.</param>
     /// <param name="bound">The upper bound b of the centered range [b − 2^bits + 1, b].</param>
@@ -91,8 +89,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Deserializes 32·bits bytes into 256 centered coefficients folded into [0, q)
-    /// (FIPS 204 BitUnpack with b = <paramref name="bound" />).
+    /// Deserializes 32·bits bytes into 256 centered coefficients folded into [0, q) (FIPS 204 BitUnpack with b =
+    /// <paramref name="bound" />).
     /// </summary>
     /// <param name="bits">The bit width of each packed value.</param>
     /// <param name="bound">The upper bound b of the centered range.</param>
@@ -109,8 +107,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Serializes the hint vector into ω + k bytes: the ascending hint positions per polynomial followed by the
-    /// running cumulative counts (FIPS 204 Algorithm 20 / HintBitPack).
+    /// Serializes the hint vector into ω + k bytes: the ascending hint positions per polynomial followed by the running
+    /// cumulative counts (FIPS 204 Algorithm 20 / HintBitPack).
     /// </summary>
     /// <param name="parameters">The parameter set supplying ω and k.</param>
     /// <param name="hints">The k hint polynomials with entries 0 or 1.</param>
@@ -133,9 +131,9 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Deserializes and strictly validates a hint encoding (FIPS 204 Algorithm 21 / HintBitUnpack): cumulative
-    /// counts must be monotone and bounded by ω, positions within each polynomial must be strictly ascending, and
-    /// all unused position bytes must be zero.
+    /// Deserializes and strictly validates a hint encoding (FIPS 204 Algorithm 21 / HintBitUnpack): cumulative counts
+    /// must be monotone and bounded by ω, positions within each polynomial must be strictly ascending, and all unused
+    /// position bytes must be zero.
     /// </summary>
     /// <param name="parameters">The parameter set supplying ω and k.</param>
     /// <param name="source">The ω + k encoded bytes.</param>
@@ -174,8 +172,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Encodes the high-bits commitment w₁ for hashing: SimpleBitPack of every polynomial at the parameter set's
-    /// w₁ width (FIPS 204 Algorithm 28 / w1Encode).
+    /// Encodes the high-bits commitment w₁ for hashing: SimpleBitPack of every polynomial at the parameter set's w₁
+    /// width (FIPS 204 Algorithm 28 / w1Encode).
     /// </summary>
     /// <param name="parameters">The parameter set supplying the packing width and k.</param>
     /// <param name="w1">The k high-bits polynomials.</param>

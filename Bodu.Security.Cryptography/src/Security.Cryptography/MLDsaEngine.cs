@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,14 +12,14 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 8380417; centered values are
-/// folded modulo q and re-centered at the packing boundaries and norm checks. Coefficient reductions use the C#
-/// remainder operator with the constant modulus, which the JIT lowers to multiply-and-shift sequences rather than
-/// data-dependent division.
+/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 8380417; centered values are folded
+/// modulo q and re-centered at the packing boundaries and norm checks. Coefficient reductions use the C# remainder
+/// operator with the constant modulus, which the JIT lowers to multiply-and-shift sequences rather than data-dependent
+/// division.
 /// </para>
 /// <para>
-/// The number of rejection-loop restarts during signing is public by design (FIPS 204 §3.5); the per-iteration work
-/// is fixed and the norm scans have no early exit.
+/// The number of rejection-loop restarts during signing is public by design (FIPS 204 §3.5); the per-iteration work is
+/// fixed and the norm scans have no early exit.
 /// </para>
 /// </remarks>
 internal static partial class MLDsaEngine
@@ -96,14 +96,15 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Runs ML-DSA.Sign_internal (FIPS 204 Algorithm 7) over the message representative
-    /// M′ = 0x00 ‖ len(ctx) ‖ ctx ‖ M.
+    /// Runs ML-DSA.Sign_internal (FIPS 204 Algorithm 7) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖ M.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="privateKey">The encoded private key.</param>
     /// <param name="context">The signature context string (at most 255 bytes; validated by the caller).</param>
     /// <param name="message">The message bytes.</param>
-    /// <param name="rnd">The 32-byte signer randomness: fresh random for hedged signing, all-zero for deterministic.</param>
+    /// <param name="rnd">
+    /// The 32-byte signer randomness: fresh random for hedged signing, all-zero for deterministic.
+    /// </param>
     /// <param name="signature">The span receiving the encoded signature c̃ ‖ z ‖ h.</param>
     /// <exception cref="ArgumentException">A fixed-size span does not have its exact required length.</exception>
     internal static void Sign(
@@ -262,8 +263,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Runs ML-DSA.Verify_internal (FIPS 204 Algorithm 8) over the message representative
-    /// M′ = 0x00 ‖ len(ctx) ‖ ctx ‖ M.
+    /// Runs ML-DSA.Verify_internal (FIPS 204 Algorithm 8) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖
+    /// M.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="publicKey">The encoded public key ρ ‖ t₁.</param>
@@ -271,7 +272,9 @@ internal static partial class MLDsaEngine
     /// <param name="message">The message bytes.</param>
     /// <param name="signature">The candidate encoded signature.</param>
     /// <returns><see langword="true" /> when the signature is valid; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentException"><paramref name="publicKey" /> does not have its exact required length.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="publicKey" /> does not have its exact required length.
+    /// </exception>
     internal static bool Verify(
         MLDsaParameters parameters,
         ReadOnlySpan<byte> publicKey,
@@ -365,8 +368,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Recomputes the encoded public key from a private key and reports whether the embedded tr hash matches,
-    /// providing an import-time consistency check and the cached public key.
+    /// Recomputes the encoded public key from a private key and reports whether the embedded tr hash matches, providing
+    /// an import-time consistency check and the cached public key.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="privateKey">The encoded private key.</param>
@@ -425,8 +428,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Computes the message digest μ = H(tr ‖ 0x00 ‖ len(ctx) ‖ ctx ‖ M, 64) without materializing the
-    /// concatenated message representative.
+    /// Computes the message digest μ = H(tr ‖ 0x00 ‖ len(ctx) ‖ ctx ‖ M, 64) without materializing the concatenated
+    /// message representative.
     /// </summary>
     /// <param name="tr">The 64-byte public-key hash from the private key or recomputed from the public key.</param>
     /// <param name="context">The signature context string.</param>
@@ -617,8 +620,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Encodes the response vector and hints into the signature layout following the commitment hash already
-    /// written at the front of the buffer.
+    /// Encodes the response vector and hints into the signature layout following the commitment hash already written at
+    /// the front of the buffer.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="z">The ℓ response polynomials.</param>

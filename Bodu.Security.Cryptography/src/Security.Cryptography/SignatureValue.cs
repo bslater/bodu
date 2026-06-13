@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Security.Cryptography;
 /// passing an ASN.1 DER signature to a verifier expecting the fixed-width IEEE P1363 form, or vice versa.
 /// </para>
 /// <para>
-/// <see cref="SignatureValue" /> carries its bytes by defensive copy, and the default instance
-/// (<c>default(SignatureValue)</c>) is the empty value with <see cref="SignatureFormat.Unknown" />:
+/// <see cref="SignatureValue" /> carries its bytes by defensive copy, and the default instance (
+/// <c>default(SignatureValue)</c>) is the empty value with <see cref="SignatureFormat.Unknown" />:
 /// <see cref="Length" /> is <c>0</c> and <see cref="IsEmpty" /> is <see langword="true" />.
 /// </para>
 /// <para>
@@ -30,8 +30,8 @@ namespace Bodu.Security.Cryptography;
 public readonly struct SignatureValue : IEquatable<SignatureValue>
 {
     /// <summary>
-    /// The signature bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly;
-    /// all accessors normalize <see langword="null" /> to an empty value.
+    /// The signature bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
+    /// accessors normalize <see langword="null" /> to an empty value.
     /// </summary>
     private readonly byte[]? _value;
 
@@ -41,7 +41,8 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     private readonly SignatureFormat _format;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SignatureValue" /> struct that takes ownership of the supplied array.
+    /// Initializes a new instance of the <see cref="SignatureValue" /> struct that takes ownership of the supplied
+    /// array.
     /// </summary>
     /// <param name="value">The signature bytes. Callers must pass a buffer that is not retained elsewhere.</param>
     /// <param name="format">The wire encoding of <paramref name="value" />.</param>
@@ -54,8 +55,10 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// <summary>
     /// Gets the wire encoding of the signature bytes.
     /// </summary>
-    /// <returns>The <see cref="SignatureFormat" /> recorded when the value was created;
-    /// <see cref="SignatureFormat.Unknown" /> for the default instance.</returns>
+    /// <returns>
+    /// The <see cref="SignatureFormat" /> recorded when the value was created; <see cref="SignatureFormat.Unknown" />
+    /// for the default instance.
+    /// </returns>
     public SignatureFormat Format =>
         _format;
 
@@ -69,22 +72,26 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// <summary>
     /// Gets a value indicating whether the signature is empty.
     /// </summary>
-    /// <returns><see langword="true" /> if the signature contains no bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the signature contains no bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public bool IsEmpty =>
         Length == 0;
 
     /// <summary>
     /// Creates a <see cref="SignatureValue" /> from the provided bytes and encoding.
     /// </summary>
-    /// <param name="value">The signature bytes to copy. An empty span yields an empty value carrying
-    /// <paramref name="format" />.</param>
+    /// <param name="value">
+    /// The signature bytes to copy. An empty span yields an empty value carrying <paramref name="format" />.
+    /// </param>
     /// <param name="format">The wire encoding of <paramref name="value" />.</param>
     /// <returns>A new <see cref="SignatureValue" /> containing a defensive copy of <paramref name="value" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="format" /> is not a defined
-    /// <see cref="SignatureFormat" /> value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="format" /> is not a defined <see cref="SignatureFormat" /> value.
+    /// </exception>
     /// <remarks>
-    /// The structural validity of <paramref name="value" /> against <paramref name="format" /> is not verified;
-    /// the format is metadata recorded by the producer.
+    /// The structural validity of <paramref name="value" /> against <paramref name="format" /> is not verified; the
+    /// format is metadata recorded by the producer.
     /// </remarks>
     public static SignatureValue FromBytes(ReadOnlySpan<byte> value, SignatureFormat format)
     {
@@ -125,8 +132,10 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// Compares the bytes of this signature to another in fixed time, ignoring <see cref="Format" />.
     /// </summary>
     /// <param name="other">The signature to compare against.</param>
-    /// <returns><see langword="true" /> if both signatures have the same length and identical bytes; otherwise,
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both signatures have the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
     /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
@@ -140,8 +149,10 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// Determines whether this signature equals another, comparing both format and bytes.
     /// </summary>
     /// <param name="other">The signature to compare against.</param>
-    /// <returns><see langword="true" /> if both values record the same <see cref="Format" /> and contain identical
-    /// bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both values record the same <see cref="Format" /> and contain identical bytes;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// This is an ordinary, short-circuiting comparison; use <see cref="FixedTimeEquals(SignatureValue)" /> when the
     /// comparison is security-relevant.
@@ -153,8 +164,10 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// Determines whether this signature equals the specified object.
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
-    /// <returns><see langword="true" /> if <paramref name="obj" /> is a <see cref="SignatureValue" /> with the same
-    /// format and identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="SignatureValue" /> with the same format and
+    /// identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public override bool Equals(object? obj) =>
         obj is SignatureValue other && Equals(other);
 
@@ -175,8 +188,10 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// </summary>
     /// <param name="left">The first signature.</param>
     /// <param name="right">The second signature.</param>
-    /// <returns><see langword="true" /> if the values record the same format and contain identical bytes; otherwise,
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the values record the same format and contain identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public static bool operator ==(SignatureValue left, SignatureValue right) =>
         left.Equals(right);
 
@@ -185,7 +200,9 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// </summary>
     /// <param name="left">The first signature.</param>
     /// <param name="right">The second signature.</param>
-    /// <returns><see langword="true" /> if the values differ in format or bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the values differ in format or bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public static bool operator !=(SignatureValue left, SignatureValue right) =>
         !left.Equals(right);
 
@@ -194,8 +211,8 @@ public readonly struct SignatureValue : IEquatable<SignatureValue>
     /// </summary>
     /// <returns>The same text as <see cref="ToHexString" />.</returns>
     /// <remarks>
-    /// Signatures are not secrets, so the content is intentionally included in the string representation. The
-    /// recorded format is not part of the text; read <see cref="Format" /> directly when it is needed.
+    /// Signatures are not secrets, so the content is intentionally included in the string representation. The recorded
+    /// format is not part of the text; read <see cref="Format" /> directly when it is needed.
     /// </remarks>
     public override string ToString() =>
         ToHexString();

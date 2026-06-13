@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Salt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// A salt diversifies derivation output so identical inputs do not produce identical results; it is unique per
-/// derivation but not secret, and is typically stored alongside the derived value. Using a dedicated type keeps
-/// salts from being confused with keys, nonces, or derived output in APIs that would otherwise accept several
-/// look-alike byte buffers.
+/// derivation but not secret, and is typically stored alongside the derived value. Using a dedicated type keeps salts
+/// from being confused with keys, nonces, or derived output in APIs that would otherwise accept several look-alike byte
+/// buffers.
 /// </para>
 /// <para>
 /// <see cref="Salt" /> carries its bytes by defensive copy, and the default instance (<c>default(Salt)</c>) is the
@@ -24,8 +24,8 @@ namespace Bodu.Security.Cryptography;
 public readonly struct Salt : IEquatable<Salt>
 {
     /// <summary>
-    /// The salt bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly;
-    /// all accessors normalize <see langword="null" /> to an empty value.
+    /// The salt bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
+    /// accessors normalize <see langword="null" /> to an empty value.
     /// </summary>
     private readonly byte[]? _value;
 
@@ -91,7 +91,9 @@ public readonly struct Salt : IEquatable<Salt>
     /// Determines whether this salt equals another.
     /// </summary>
     /// <param name="other">The salt to compare against.</param>
-    /// <returns><see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public bool Equals(Salt other) =>
         AsSpan().SequenceEqual(other.AsSpan());
 
@@ -99,8 +101,10 @@ public readonly struct Salt : IEquatable<Salt>
     /// Determines whether this salt equals the specified object.
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
-    /// <returns><see langword="true" /> if <paramref name="obj" /> is a <see cref="Salt" /> with identical bytes;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="Salt" /> with identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public override bool Equals(object? obj) =>
         obj is Salt other && Equals(other);
 
@@ -120,7 +124,9 @@ public readonly struct Salt : IEquatable<Salt>
     /// </summary>
     /// <param name="left">The first salt.</param>
     /// <param name="right">The second salt.</param>
-    /// <returns><see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public static bool operator ==(Salt left, Salt right) =>
         left.Equals(right);
 
@@ -136,7 +142,9 @@ public readonly struct Salt : IEquatable<Salt>
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the salt.
     /// </summary>
-    /// <returns>The salt bytes as lowercase hexadecimal text; <see cref="string.Empty" /> for the empty value.</returns>
+    /// <returns>
+    /// The salt bytes as lowercase hexadecimal text; <see cref="string.Empty" /> for the empty value.
+    /// </returns>
     /// <remarks>
     /// Salts are not secrets, so the content is intentionally included in the string representation.
     /// </remarks>

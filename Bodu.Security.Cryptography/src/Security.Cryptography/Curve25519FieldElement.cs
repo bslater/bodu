@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Curve25519FieldElement.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,11 +21,11 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Reduction contract.</strong> An element is <em>loosely reduced</em> when every limb is below 2^52.
 /// <see cref="FromBytes" />, <see cref="Multiply" />, <see cref="Square" />, and <see cref="MultiplySmall" /> always
-/// return loosely reduced values. <see cref="Add" /> and <see cref="Subtract" /> accept operands with limbs below
-/// 2^53 and produce limbs below 2^54 without re-reducing; callers must route such sums through a multiplication or
-/// <see cref="ToBytes" /> before chaining further additions. The formulas used by the Montgomery ladder and the
-/// Edwards point operations never stack more than one addition or subtraction between multiplications, so the limbs
-/// stay comfortably within the bound required by <see cref="Multiply" />.
+/// return loosely reduced values. <see cref="Add" /> and <see cref="Subtract" /> accept operands with limbs below 2^53
+/// and produce limbs below 2^54 without re-reducing; callers must route such sums through a multiplication or
+/// <see cref="ToBytes" /> before chaining further additions. The formulas used by the Montgomery ladder and the Edwards
+/// point operations never stack more than one addition or subtraction between multiplications, so the limbs stay
+/// comfortably within the bound required by <see cref="Multiply" />.
 /// </para>
 /// </remarks>
 internal struct Curve25519FieldElement
@@ -97,8 +97,8 @@ internal struct Curve25519FieldElement
         new(1, 0, 0, 0, 0);
 
     /// <summary>
-    /// Decodes a 32-byte little-endian encoding into a loosely reduced field element, ignoring the most significant
-    /// bit of the final byte as required by RFC 7748 and RFC 8032.
+    /// Decodes a 32-byte little-endian encoding into a loosely reduced field element, ignoring the most significant bit
+    /// of the final byte as required by RFC 7748 and RFC 8032.
     /// </summary>
     /// <param name="source">The 32-byte little-endian encoding to decode.</param>
     /// <returns>The decoded field element with all limbs below 2^51.</returns>
@@ -127,8 +127,8 @@ internal struct Curve25519FieldElement
     /// <param name="destination">The 32-byte span that receives the canonical encoding.</param>
     /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes long.</exception>
     /// <remarks>
-    /// The encoding always has its most significant bit clear because the canonical representative is below
-    /// 2^255 − 19. The reduction is branch-free.
+    /// The encoding always has its most significant bit clear because the canonical representative is below 2^255 − 19.
+    /// The reduction is branch-free.
     /// </remarks>
     internal readonly void ToBytes(Span<byte> destination)
     {
@@ -216,9 +216,9 @@ internal struct Curve25519FieldElement
     /// <param name="right">The second factor. Limbs must be below 2^54.</param>
     /// <returns>The product with all limbs below 2^52.</returns>
     /// <remarks>
-    /// Uses the schoolbook 5×5 limb product with the high limbs folded back through the identity
-    /// 2^255 ≡ 19 (mod p). Partial products are accumulated in <see cref="UInt128" />, which cannot overflow for the
-    /// permitted operand bounds.
+    /// Uses the schoolbook 5×5 limb product with the high limbs folded back through the identity 2^255 ≡ 19 (mod p).
+    /// Partial products are accumulated in <see cref="UInt128" />, which cannot overflow for the permitted operand
+    /// bounds.
     /// </remarks>
     internal static Curve25519FieldElement Multiply(in Curve25519FieldElement left, in Curve25519FieldElement right)
     {
@@ -403,8 +403,8 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
-    /// Swaps two field elements in place when <paramref name="condition" /> is 1, and leaves them unchanged when it
-    /// is 0, without a data-dependent branch.
+    /// Swaps two field elements in place when <paramref name="condition" /> is 1, and leaves them unchanged when it is
+    /// 0, without a data-dependent branch.
     /// </summary>
     /// <param name="left">The first element, swapped with <paramref name="right" /> when the condition is set.</param>
     /// <param name="right">The second element, swapped with <paramref name="left" /> when the condition is set.</param>
@@ -434,8 +434,8 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
-    /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is
-    /// 1, and leaves <paramref name="destination" /> unchanged when it is 0, without a data-dependent branch.
+    /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is 1,
+    /// and leaves <paramref name="destination" /> unchanged when it is 0, without a data-dependent branch.
     /// </summary>
     /// <param name="destination">The element conditionally overwritten.</param>
     /// <param name="source">The element conditionally copied.</param>
@@ -453,10 +453,12 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
-    /// Determines whether the canonical representative of this element is negative, defined by RFC 8032 as having
-    /// its least significant bit set.
+    /// Determines whether the canonical representative of this element is negative, defined by RFC 8032 as having its
+    /// least significant bit set.
     /// </summary>
-    /// <returns><see langword="true" /> when the canonical encoding is odd; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the canonical encoding is odd; otherwise, <see langword="false" />.
+    /// </returns>
     internal readonly bool IsNegative()
     {
         Span<byte> encoded = stackalloc byte[EncodedSizeInBytes];

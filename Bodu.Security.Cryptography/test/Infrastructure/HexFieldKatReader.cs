@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HexFieldKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,16 +7,18 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses line-oriented known-answer test files made up of <c>Field = value</c> lines grouped into records separated
-/// by one or more blank lines. Lines beginning with <c>#</c> are comments. The reader is format-agnostic; callers map
-/// each emitted field dictionary onto their strongly typed KAT record.
+/// Parses line-oriented known-answer test files made up of <c>Field = value</c> lines grouped into records separated by
+/// one or more blank lines. Lines beginning with <c>#</c> are comments. The reader is format-agnostic; callers map each
+/// emitted field dictionary onto their strongly typed KAT record.
 /// </summary>
 public static class HexFieldKatReader
 {
     /// <summary>
     /// Reads the records of a <c>Field = value</c> KAT file from <paramref name="stream" />.
     /// </summary>
-    /// <param name="stream">A readable text stream containing the KAT data. Any line-ending convention is accepted.</param>
+    /// <param name="stream">
+    /// A readable text stream containing the KAT data. Any line-ending convention is accepted.
+    /// </param>
     /// <returns>
     /// One ordinal-keyed dictionary per record, each mapping field labels to their raw (untrimmed-interior) string
     /// values, yielded in source order.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsa.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,36 +10,36 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST
-/// FIPS 204, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. Use the sealed
+/// Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST FIPS
+/// 204, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. Use the sealed
 /// <see cref="MLDsa44" />, <see cref="MLDsa65" />, or <see cref="MLDsa87" /> parameter sets.
 /// </summary>
 /// <remarks>
 /// <para>
 /// ML-DSA is a digital signature scheme believed secure against quantum adversaries (its hardness rests on the
-/// Module-LWE and SelfTargetMSIS problems). Signing accepts an optional <em>context</em> string of at most 255
-/// bytes that domain-separates signatures across applications; a signature created with a context verifies only
-/// with the same context.
+/// Module-LWE and SelfTargetMSIS problems). Signing accepts an optional <em>context</em> string of at most 255 bytes
+/// that domain-separates signatures across applications; a signature created with a context verifies only with the same
+/// context.
 /// </para>
 /// <para>
-/// <strong>Hedged versus deterministic signing.</strong> By default signing is <em>hedged</em>: each signature
-/// mixes 32 fresh random bytes into the nonce derivation, which is the FIPS 204 default and protects against
-/// fault-injection and randomness-disclosure attacks. Setting <see cref="DeterministicSigning" /> to
-/// <see langword="true" /> substitutes the all-zero string, making signatures reproducible for a fixed key and
-/// message. Both variants are standard; verification is unaffected.
+/// <strong>Hedged versus deterministic signing.</strong> By default signing is <em>hedged</em>: each signature mixes 32
+/// fresh random bytes into the nonce derivation, which is the FIPS 204 default and protects against fault-injection and
+/// randomness-disclosure attacks. Setting <see cref="DeterministicSigning" /> to <see langword="true" /> substitutes
+/// the all-zero string, making signatures reproducible for a fixed key and message. Both variants are standard;
+/// verification is unaffected.
 /// </para>
 /// <para>
 /// <strong><see cref="AsymmetricAlgorithm.KeySize" /> semantics.</strong> The reported key size is the FIPS 204
-/// parameter-set designator (44, 65, or 87) identifying the matrix dimensions and security category — it is not a
-/// key length in bits.
+/// parameter-set designator (44, 65, or 87) identifying the matrix dimensions and security category — it is not a key
+/// length in bits.
 /// </para>
 /// <para>
-/// <strong>Scope.</strong> This type implements pure ML-DSA (the ML-DSA.Sign / ML-DSA.Verify external functions).
-/// The pre-hash variant HashML-DSA is deliberately out of scope for this version. Only the raw FIPS 204 byte
-/// encodings are supported: the 32-byte seed ξ via <see cref="ImportPrivateSeed" /> and the encoded keys via
-/// <see cref="ImportPrivateKey" /> (which cross-checks the embedded public-key hash) and
-/// <see cref="ImportPublicKey" />. The PKCS#8 / SubjectPublicKeyInfo members inherited from
-/// <see cref="AsymmetricAlgorithm" /> are not implemented and retain their base (throwing) behavior.
+/// <strong>Scope.</strong> This type implements pure ML-DSA (the ML-DSA.Sign / ML-DSA.Verify external functions). The
+/// pre-hash variant HashML-DSA is deliberately out of scope for this version. Only the raw FIPS 204 byte encodings are
+/// supported: the 32-byte seed ξ via <see cref="ImportPrivateSeed" /> and the encoded keys via
+/// <see cref="ImportPrivateKey" /> (which cross-checks the embedded public-key hash) and <see cref="ImportPublicKey" />
+/// . The PKCS#8 / SubjectPublicKeyInfo members inherited from <see cref="AsymmetricAlgorithm" /> are not implemented
+/// and retain their base (throwing) behavior.
 /// </para>
 /// <para>
 /// Verification returns <see langword="false" /> (never throws) for malformed, non-canonical, or wrong-length
@@ -82,7 +82,9 @@ public abstract class MLDsa
     /// Initializes a new instance of the <see cref="MLDsa" /> class for a specific FIPS 204 parameter set.
     /// </summary>
     /// <param name="parameters">The parameter set implemented by the derived type.</param>
-    /// <param name="parameterSetDesignator">The designator (44, 65, or 87) reported through <see cref="AsymmetricAlgorithm.KeySize" />.</param>
+    /// <param name="parameterSetDesignator">
+    /// The designator (44, 65, or 87) reported through <see cref="AsymmetricAlgorithm.KeySize" />.
+    /// </param>
     private protected MLDsa(MLDsaParameters parameters, int parameterSetDesignator)
     {
         _parameters = parameters;
@@ -92,7 +94,9 @@ public abstract class MLDsa
     }
 
     /// <inheritdoc />
-    /// <returns><see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.</returns>
+    /// <returns>
+    /// <see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.
+    /// </returns>
     public override string? KeyExchangeAlgorithm =>
         null;
 
@@ -159,8 +163,12 @@ public abstract class MLDsa
     /// <summary>
     /// Gets a value indicating whether the instance currently holds a private key.
     /// </summary>
-    /// <value><see langword="true" /> when private key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when the signing members and <see cref="ExportPrivateKey" /> are available.</returns>
+    /// <value>
+    /// <see langword="true" /> when private key material is present; otherwise, <see langword="false" />.
+    /// </value>
+    /// <returns>
+    /// <see langword="true" /> when the signing members and <see cref="ExportPrivateKey" /> are available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPrivateKey
     {
@@ -175,7 +183,9 @@ public abstract class MLDsa
     /// Gets a value indicating whether the instance currently holds a public key.
     /// </summary>
     /// <value><see langword="true" /> when public key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when the verification members and <see cref="ExportPublicKey" /> are available.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the verification members and <see cref="ExportPublicKey" /> are available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPublicKey
     {
@@ -191,8 +201,8 @@ public abstract class MLDsa
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <remarks>
-    /// The 32-byte seed ξ is drawn from a cryptographically secure random source. Any previously held private key
-    /// is zeroed before being replaced.
+    /// The 32-byte seed ξ is drawn from a cryptographically secure random source. Any previously held private key is
+    /// zeroed before being replaced.
     /// </remarks>
     public void GenerateKey()
     {
@@ -206,8 +216,8 @@ public abstract class MLDsa
     }
 
     /// <summary>
-    /// Imports the FIPS 204 32-byte private seed ξ and regenerates the full key pair from it, replacing any
-    /// existing key material on the instance.
+    /// Imports the FIPS 204 32-byte private seed ξ and regenerates the full key pair from it, replacing any existing
+    /// key material on the instance.
     /// </summary>
     /// <param name="seed">The 32-byte key-generation seed ξ.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -227,8 +237,8 @@ public abstract class MLDsa
     /// <param name="privateKey">The encoded private key ρ ‖ K ‖ tr ‖ s₁ ‖ s₂ ‖ t₀.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="privateKey" /> does not have the exact parameter-set length, or its embedded tr hash does
-    /// not match the public key recomputed from the secret vectors.
+    /// <paramref name="privateKey" /> does not have the exact parameter-set length, or its embedded tr hash does not
+    /// match the public key recomputed from the secret vectors.
     /// </exception>
     public void ImportPrivateKey(ReadOnlySpan<byte> privateKey)
     {
@@ -258,7 +268,9 @@ public abstract class MLDsa
     /// </summary>
     /// <param name="publicKey">The encoded public key ρ ‖ t₁.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="ArgumentException"><paramref name="publicKey" /> does not have the exact parameter-set length.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="publicKey" /> does not have the exact parameter-set length.
+    /// </exception>
     /// <remarks>
     /// Any private key previously held by the instance is zeroed and discarded, leaving a verify-only instance.
     /// </remarks>
@@ -335,11 +347,13 @@ public abstract class MLDsa
     /// </summary>
     /// <param name="data">The message bytes to sign. May be empty.</param>
     /// <param name="context">The domain-separation context string of at most 255 bytes. May be empty.</param>
-    /// <param name="destination">The span receiving the signature. Must be exactly <see cref="SignatureSizeInBytes" /> bytes.</param>
+    /// <param name="destination">
+    /// The span receiving the signature. Must be exactly <see cref="SignatureSizeInBytes" /> bytes.
+    /// </param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="context" /> is longer than 255 bytes, or <paramref name="destination" /> does not have the
-    /// exact signature length.
+    /// <paramref name="context" /> is longer than 255 bytes, or <paramref name="destination" /> does not have the exact
+    /// signature length.
     /// </exception>
     /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
     public void SignData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> context, Span<byte> destination)
@@ -363,8 +377,8 @@ public abstract class MLDsa
     /// <param name="data">The message bytes that were signed. May be empty.</param>
     /// <param name="signature">The candidate encoded signature.</param>
     /// <returns>
-    /// <see langword="true" /> when the signature is valid; <see langword="false" /> for any invalid, malformed,
-    /// or wrong-length signature.
+    /// <see langword="true" /> when the signature is valid; <see langword="false" /> for any invalid, malformed, or
+    /// wrong-length signature.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
@@ -378,8 +392,8 @@ public abstract class MLDsa
     /// <param name="signature">The candidate encoded signature.</param>
     /// <param name="context">The domain-separation context string used at signing time. May be empty.</param>
     /// <returns>
-    /// <see langword="true" /> when the signature is valid; <see langword="false" /> for any invalid, malformed,
-    /// or wrong-length signature.
+    /// <see langword="true" /> when the signature is valid; <see langword="false" /> for any invalid, malformed, or
+    /// wrong-length signature.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException"><paramref name="context" /> is longer than 255 bytes.</exception>
@@ -394,8 +408,8 @@ public abstract class MLDsa
     }
 
     /// <summary>
-    /// Signs with explicit signer randomness, exposing the FIPS 204 Sign_internal interface for known-answer tests
-    /// that pin hedged signatures.
+    /// Signs with explicit signer randomness, exposing the FIPS 204 Sign_internal interface for known-answer tests that
+    /// pin hedged signatures.
     /// </summary>
     /// <param name="data">The message bytes to sign.</param>
     /// <param name="context">The domain-separation context string.</param>
@@ -457,8 +471,7 @@ public abstract class MLDsa
     }
 
     /// <summary>
-    /// Throws <see cref="ArgumentException" /> when the context string exceeds the FIPS 204 single-byte length
-    /// limit.
+    /// Throws <see cref="ArgumentException" /> when the context string exceeds the FIPS 204 single-byte length limit.
     /// </summary>
     /// <param name="context">The context string to validate.</param>
     /// <exception cref="ArgumentException"><paramref name="context" /> is longer than 255 bytes.</exception>

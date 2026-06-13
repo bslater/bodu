@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents the immutable output of a hash operation, with strict hexadecimal parsing, common text formattings,
-/// and explicit fixed-time comparison.
+/// Represents the immutable output of a hash operation, with strict hexadecimal parsing, common text formattings, and
+/// explicit fixed-time comparison.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -31,8 +31,8 @@ namespace Bodu.Security.Cryptography;
 public readonly struct HashValue : IEquatable<HashValue>
 {
     /// <summary>
-    /// The digest bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly;
-    /// all accessors normalize <see langword="null" /> to an empty value.
+    /// The digest bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
+    /// accessors normalize <see langword="null" /> to an empty value.
     /// </summary>
     private readonly byte[]? _value;
 
@@ -73,8 +73,9 @@ public readonly struct HashValue : IEquatable<HashValue>
     /// <param name="text">The hexadecimal text. Both uppercase and lowercase digits are accepted.</param>
     /// <returns>A <see cref="HashValue" /> containing the decoded bytes.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException"><paramref name="text" /> has odd length or contains a character that is not
-    /// an ASCII hexadecimal digit.</exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="text" /> has odd length or contains a character that is not an ASCII hexadecimal digit.
+    /// </exception>
     /// <remarks>
     /// Parsing is strict: whitespace, separators, and <c>0x</c> prefixes are rejected. An empty string parses to the
     /// empty value.
@@ -91,9 +92,13 @@ public readonly struct HashValue : IEquatable<HashValue>
     /// Attempts to parse a strict hexadecimal string into a <see cref="HashValue" />.
     /// </summary>
     /// <param name="text">The hexadecimal text, or <see langword="null" />.</param>
-    /// <param name="result">When this method returns <see langword="true" />, the parsed value; otherwise the empty value.</param>
-    /// <returns><see langword="true" /> if <paramref name="text" /> is a well-formed hexadecimal string; otherwise,
-    /// <see langword="false" />.</returns>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the parsed value; otherwise the empty value.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="text" /> is a well-formed hexadecimal string; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public static bool TryParseHex(string? text, out HashValue result)
     {
         result = default;
@@ -137,8 +142,10 @@ public readonly struct HashValue : IEquatable<HashValue>
     /// Compares this hash value to another in fixed time.
     /// </summary>
     /// <param name="other">The hash value to compare against.</param>
-    /// <returns><see langword="true" /> if both values have the same length and identical bytes; otherwise,
-    /// <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both values have the same length and identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// Built on <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />: the
     /// comparison time depends only on the length of the operands, not on their content. A length mismatch returns
@@ -151,7 +158,9 @@ public readonly struct HashValue : IEquatable<HashValue>
     /// Determines whether this hash value equals another.
     /// </summary>
     /// <param name="other">The hash value to compare against.</param>
-    /// <returns><see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// This is an ordinary, short-circuiting comparison; use <see cref="FixedTimeEquals(HashValue)" /> when the
     /// comparison is security-relevant.
@@ -163,8 +172,10 @@ public readonly struct HashValue : IEquatable<HashValue>
     /// Determines whether this hash value equals the specified object.
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
-    /// <returns><see langword="true" /> if <paramref name="obj" /> is a <see cref="HashValue" /> with identical bytes;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="HashValue" /> with identical bytes;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     public override bool Equals(object? obj) =>
         obj is HashValue other && Equals(other);
 
@@ -184,7 +195,9 @@ public readonly struct HashValue : IEquatable<HashValue>
     /// </summary>
     /// <param name="left">The first hash value.</param>
     /// <param name="right">The second hash value.</param>
-    /// <returns><see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public static bool operator ==(HashValue left, HashValue right) =>
         left.Equals(right);
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,16 +9,16 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single signature known-answer test (KAT) vector — a public key, message, and candidate signature
-/// with the expected verification outcome, optionally carrying the private key for deterministic signing checks.
+/// Represents a single signature known-answer test (KAT) vector — a public key, message, and candidate signature with
+/// the expected verification outcome, optionally carrying the private key for deterministic signing checks.
 /// </summary>
 /// <param name="Name">The human-readable label identifying this row in test output.</param>
 /// <param name="PublicKey">The signer's public key.</param>
 /// <param name="Message">The message bytes; empty when the vector signs the empty message.</param>
 /// <param name="Signature">The candidate signature under test.</param>
 /// <param name="ExpectedValid">
-/// <see langword="true" /> when verification must accept the signature; <see langword="false" /> when it must
-/// reject it.
+/// <see langword="true" /> when verification must accept the signature; <see langword="false" /> when it must reject
+/// it.
 /// </param>
 /// <param name="PrivateKey">
 /// The signer's private key when the vector doubles as a deterministic signing KAT; otherwise <see langword="null" />.
@@ -32,8 +32,8 @@ public sealed record SignatureKnownAnswer(
     byte[]? PrivateKey = null) : IKat
 {
     /// <summary>
-    /// Reads all signature vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>,
-    /// <c>Public</c>, <c>Msg</c>, <c>Sig</c>, and <c>Valid</c>, plus an optional <c>Private</c> field.
+    /// Reads all signature vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>, <c>Public</c>,
+    /// <c>Msg</c>, <c>Sig</c>, and <c>Valid</c>, plus an optional <c>Private</c> field.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

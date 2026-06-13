@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,10 +12,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 3329. Coefficient reductions use
-/// the C# remainder operator with the constant modulus, which the JIT lowers to multiply-and-shift sequences rather
-/// than data-dependent division. The decapsulation re-encryption comparison and the secret selection between the
-/// real and implicit-rejection keys are byte-wise constant-time.
+/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 3329. Coefficient reductions use the
+/// C# remainder operator with the constant modulus, which the JIT lowers to multiply-and-shift sequences rather than
+/// data-dependent division. The decapsulation re-encryption comparison and the secret selection between the real and
+/// implicit-rejection keys are byte-wise constant-time.
 /// </para>
 /// </remarks>
 internal static partial class MLKemEngine
@@ -78,7 +78,9 @@ internal static partial class MLKemEngine
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="encapsulationKey">The encoded encapsulation key. Assumed already validated.</param>
-    /// <param name="m">The 32-byte encapsulation randomness; supplied explicitly so known-answer tests can drive it.</param>
+    /// <param name="m">
+    /// The 32-byte encapsulation randomness; supplied explicitly so known-answer tests can drive it.
+    /// </param>
     /// <param name="ciphertext">The span receiving the ciphertext.</param>
     /// <param name="sharedSecret">The span receiving the 32-byte shared secret.</param>
     /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
@@ -108,8 +110,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Runs ML-KEM.Decaps_internal (FIPS 203 Algorithm 18), recovering the shared secret with implicit rejection:
-    /// a tampered ciphertext yields the unrelated key J(z ‖ c) rather than an error.
+    /// Runs ML-KEM.Decaps_internal (FIPS 203 Algorithm 18), recovering the shared secret with implicit rejection: a
+    /// tampered ciphertext yields the unrelated key J(z ‖ c) rather than an error.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="decapsulationKey">The encoded decapsulation key. Assumed already validated.</param>
@@ -158,8 +160,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Performs the FIPS 203 §7.2 encapsulation-key check: the encoded coefficients must round-trip through the
-    /// 12-bit codec, that is, every value must already be reduced modulo q.
+    /// Performs the FIPS 203 §7.2 encapsulation-key check: the encoded coefficients must round-trip through the 12-bit
+    /// codec, that is, every value must already be reduced modulo q.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="encapsulationKey">The candidate encapsulation key.</param>
@@ -188,8 +190,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Performs the FIPS 203 §7.3 decapsulation-key check: the embedded encapsulation key must be well-formed and
-    /// its stored hash must equal H(ek).
+    /// Performs the FIPS 203 §7.3 decapsulation-key check: the embedded encapsulation key must be well-formed and its
+    /// stored hash must equal H(ek).
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="decapsulationKey">The candidate decapsulation key.</param>
@@ -210,8 +212,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Runs K-PKE.KeyGen (FIPS 203 Algorithm 13), producing the encoded public key (with the matrix seed appended)
-    /// and the encoded secret vector.
+    /// Runs K-PKE.KeyGen (FIPS 203 Algorithm 13), producing the encoded public key (with the matrix seed appended) and
+    /// the encoded secret vector.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="d">The 32-byte seed.</param>
@@ -272,8 +274,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Runs K-PKE.Encrypt (FIPS 203 Algorithm 14), producing the compressed ciphertext for a 32-byte message under
-    /// the given encryption randomness.
+    /// Runs K-PKE.Encrypt (FIPS 203 Algorithm 14), producing the compressed ciphertext for a 32-byte message under the
+    /// given encryption randomness.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="ekPke">The encoded public key ByteEncode₁₂(t̂) ‖ ρ.</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KemKeyCheckKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single KEM key-import validation known-answer test (KAT) vector: a candidate encoded key and
-/// whether import must accept it.
+/// Represents a single KEM key-import validation known-answer test (KAT) vector: a candidate encoded key and whether
+/// import must accept it.
 /// </summary>
 /// <param name="Name">The human-readable label identifying this row in test output.</param>
 /// <param name="ParameterSet">The parameter-set name, such as <c>"ML-KEM-768"</c>.</param>

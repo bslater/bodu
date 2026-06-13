@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKem.768.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 /// AES-192) — the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.
 /// </summary>
 /// <remarks>
-/// Key and ciphertext sizes: encapsulation key 1184 bytes, decapsulation key 2400 bytes, ciphertext 1088 bytes,
-/// shared secret 32 bytes. See <see cref="MLKem" /> for the shared algorithm surface and security notes.
+/// Key and ciphertext sizes: encapsulation key 1184 bytes, decapsulation key 2400 bytes, ciphertext 1088 bytes, shared
+/// secret 32 bytes. See <see cref="MLKem" /> for the shared algorithm surface and security notes.
 /// </remarks>
 public sealed class MLKem768
     : MLKem

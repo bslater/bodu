@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519Scalar.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides arithmetic modulo the Ed25519 group order L = 2^252 + 27742317777372353535851937790883648493 used by
-/// RFC 8032 signing and verification.
+/// Provides arithmetic modulo the Ed25519 group order L = 2^252 + 27742317777372353535851937790883648493 used by RFC
+/// 8032 signing and verification.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -72,8 +72,8 @@ internal static class Ed25519Scalar
     /// <param name="destination">The 32-byte span that receives the canonical result.</param>
     /// <exception cref="ArgumentException">Any span does not have its exact required length.</exception>
     /// <remarks>
-    /// Inputs need not be reduced; any 256-bit values are accepted, which lets the signing path pass the clamped
-    /// secret scalar directly.
+    /// Inputs need not be reduced; any 256-bit values are accepted, which lets the signing path pass the clamped secret
+    /// scalar directly.
     /// </remarks>
     internal static void MulAdd(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, ReadOnlySpan<byte> c, Span<byte> destination)
     {
@@ -118,11 +118,13 @@ internal static class Ed25519Scalar
     }
 
     /// <summary>
-    /// Determines whether a 32-byte little-endian scalar is canonical, that is, strictly less than the group order
-    /// L. RFC 8032 verification rejects signatures whose S component is non-canonical to prevent malleability.
+    /// Determines whether a 32-byte little-endian scalar is canonical, that is, strictly less than the group order L.
+    /// RFC 8032 verification rejects signatures whose S component is non-canonical to prevent malleability.
     /// </summary>
     /// <param name="scalar">The 32-byte little-endian scalar to test.</param>
-    /// <returns><see langword="true" /> when the scalar is strictly less than L; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the scalar is strictly less than L; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="scalar" /> is not exactly 32 bytes.</exception>
     internal static bool IsCanonical(ReadOnlySpan<byte> scalar)
     {

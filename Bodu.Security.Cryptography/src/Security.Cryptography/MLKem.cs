@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKem.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the family base class for the ML-KEM module-lattice key-encapsulation mechanism standardized by NIST
-/// FIPS 203, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. Use the sealed
+/// Provides the family base class for the ML-KEM module-lattice key-encapsulation mechanism standardized by NIST FIPS
+/// 203, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. Use the sealed
 /// <see cref="MLKem512" />, <see cref="MLKem768" />, or <see cref="MLKem1024" /> parameter sets.
 /// </summary>
 /// <remarks>
@@ -28,21 +28,19 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>Implicit rejection.</strong> <see cref="Decapsulate(ReadOnlySpan{byte})" /> never throws for a tampered
-/// ciphertext of the correct length: per FIPS 203 it silently returns the unrelated key J(z ‖ c), so an attacker
-/// cannot use decapsulation failures as an oracle. Only a wrong-length ciphertext throws
-/// <see cref="ArgumentException" />.
+/// ciphertext of the correct length: per FIPS 203 it silently returns the unrelated key J(z ‖ c), so an attacker cannot
+/// use decapsulation failures as an oracle. Only a wrong-length ciphertext throws <see cref="ArgumentException" />.
 /// </para>
 /// <para>
-/// <strong>Key formats.</strong> Only the FIPS 203 byte encodings are supported: the 64-byte private seed (d ‖ z)
-/// via <see cref="ImportPrivateSeed" />, and the encoded decapsulation / encapsulation keys via
-/// <see cref="ImportDecapsulationKey" /> and <see cref="ImportEncapsulationKey" />, which apply the §7.3 hash and
-/// §7.2 modulus checks respectively. The PKCS#8 / SubjectPublicKeyInfo members inherited from
+/// <strong>Key formats.</strong> Only the FIPS 203 byte encodings are supported: the 64-byte private seed (d ‖ z) via
+/// <see cref="ImportPrivateSeed" />, and the encoded decapsulation / encapsulation keys via
+/// <see cref="ImportDecapsulationKey" /> and <see cref="ImportEncapsulationKey" />, which apply the §7.3 hash and §7.2
+/// modulus checks respectively. The PKCS#8 / SubjectPublicKeyInfo members inherited from
 /// <see cref="AsymmetricAlgorithm" /> are not implemented and retain their base (throwing) behavior.
 /// </para>
 /// <para>
-/// The decapsulation re-encryption comparison and key selection are constant-time, and private key material is
-/// zeroed on dispose. This implementation offers best-effort side-channel resistance and has not been independently
-/// audited.
+/// The decapsulation re-encryption comparison and key selection are constant-time, and private key material is zeroed
+/// on dispose. This implementation offers best-effort side-channel resistance and has not been independently audited.
 /// </para>
 /// </remarks>
 /// <example>
@@ -82,7 +80,9 @@ public abstract class MLKem
     /// Initializes a new instance of the <see cref="MLKem" /> class for a specific FIPS 203 parameter set.
     /// </summary>
     /// <param name="parameters">The parameter set implemented by the derived type.</param>
-    /// <param name="parameterSetDesignator">The designator (512, 768, or 1024) reported through <see cref="AsymmetricAlgorithm.KeySize" />.</param>
+    /// <param name="parameterSetDesignator">
+    /// The designator (512, 768, or 1024) reported through <see cref="AsymmetricAlgorithm.KeySize" />.
+    /// </param>
     private protected MLKem(MLKemParameters parameters, int parameterSetDesignator)
     {
         _parameters = parameters;
@@ -97,7 +97,9 @@ public abstract class MLKem
         "ML-KEM";
 
     /// <inheritdoc />
-    /// <returns><see langword="null" />, because ML-KEM is a key-encapsulation mechanism and produces no signatures.</returns>
+    /// <returns>
+    /// <see langword="null" />, because ML-KEM is a key-encapsulation mechanism and produces no signatures.
+    /// </returns>
     public override string? SignatureAlgorithm =>
         null;
 
@@ -149,8 +151,13 @@ public abstract class MLKem
     /// <summary>
     /// Gets a value indicating whether the instance currently holds a decapsulation key.
     /// </summary>
-    /// <value><see langword="true" /> when decapsulation key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when <see cref="Decapsulate(ReadOnlySpan{byte})" /> and <see cref="ExportDecapsulationKey" /> are available.</returns>
+    /// <value>
+    /// <see langword="true" /> when decapsulation key material is present; otherwise, <see langword="false" />.
+    /// </value>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Decapsulate(ReadOnlySpan{byte})" /> and
+    /// <see cref="ExportDecapsulationKey" /> are available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasDecapsulationKey
     {
@@ -164,8 +171,13 @@ public abstract class MLKem
     /// <summary>
     /// Gets a value indicating whether the instance currently holds an encapsulation key.
     /// </summary>
-    /// <value><see langword="true" /> when encapsulation key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when <see cref="Encapsulate()" /> and <see cref="ExportEncapsulationKey" /> are available.</returns>
+    /// <value>
+    /// <see langword="true" /> when encapsulation key material is present; otherwise, <see langword="false" />.
+    /// </value>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Encapsulate()" /> and <see cref="ExportEncapsulationKey" /> are
+    /// available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasEncapsulationKey
     {
@@ -181,8 +193,8 @@ public abstract class MLKem
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <remarks>
-    /// The two 32-byte seeds (d for key derivation, z for implicit rejection) are drawn from a cryptographically
-    /// secure random source. Any previously held decapsulation key is zeroed before being replaced.
+    /// The two 32-byte seeds (d for key derivation, z for implicit rejection) are drawn from a cryptographically secure
+    /// random source. Any previously held decapsulation key is zeroed before being replaced.
     /// </remarks>
     public void GenerateKey()
     {
@@ -199,7 +211,9 @@ public abstract class MLKem
     /// Imports the FIPS 203 64-byte private seed d ‖ z and regenerates the full key pair from it, replacing any
     /// existing key material on the instance.
     /// </summary>
-    /// <param name="seed">The 64-byte concatenation of the key-derivation seed d and the implicit-rejection seed z.</param>
+    /// <param name="seed">
+    /// The 64-byte concatenation of the key-derivation seed d and the implicit-rejection seed z.
+    /// </param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException"><paramref name="seed" /> is not exactly 64 bytes long.</exception>
     public void ImportPrivateSeed(ReadOnlySpan<byte> seed)
@@ -319,10 +333,12 @@ public abstract class MLKem
     }
 
     /// <summary>
-    /// Encapsulates a fresh shared secret to the instance's encapsulation key, writing the ciphertext and secret
-    /// into the supplied spans.
+    /// Encapsulates a fresh shared secret to the instance's encapsulation key, writing the ciphertext and secret into
+    /// the supplied spans.
     /// </summary>
-    /// <param name="ciphertext">The span receiving the ciphertext. Must be exactly <see cref="CiphertextSizeInBytes" /> bytes.</param>
+    /// <param name="ciphertext">
+    /// The span receiving the ciphertext. Must be exactly <see cref="CiphertextSizeInBytes" /> bytes.
+    /// </param>
     /// <param name="sharedSecret">The span receiving the shared secret. Must be exactly 32 bytes.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
@@ -347,11 +363,13 @@ public abstract class MLKem
     /// <param name="ciphertext">The ciphertext received from the encapsulating party.</param>
     /// <returns>The 32-byte shared secret.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="ArgumentException"><paramref name="ciphertext" /> does not have the exact parameter-set length.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="ciphertext" /> does not have the exact parameter-set length.
+    /// </exception>
     /// <exception cref="CryptographicException">The instance does not hold a decapsulation key.</exception>
     /// <remarks>
-    /// A tampered ciphertext of the correct length does not throw: implicit rejection silently yields a key
-    /// unrelated to the encapsulating party's, per FIPS 203.
+    /// A tampered ciphertext of the correct length does not throw: implicit rejection silently yields a key unrelated
+    /// to the encapsulating party's, per FIPS 203.
     /// </remarks>
     public byte[] Decapsulate(ReadOnlySpan<byte> ciphertext)
     {
@@ -369,8 +387,8 @@ public abstract class MLKem
     /// <param name="sharedSecret">The span receiving the shared secret. Must be exactly 32 bytes.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertext" /> does not have the exact parameter-set length, or
-    /// <paramref name="sharedSecret" /> is not exactly 32 bytes.
+    /// <paramref name="ciphertext" /> does not have the exact parameter-set length, or <paramref name="sharedSecret" />
+    /// is not exactly 32 bytes.
     /// </exception>
     /// <exception cref="CryptographicException">The instance does not hold a decapsulation key.</exception>
     public void Decapsulate(ReadOnlySpan<byte> ciphertext, Span<byte> sharedSecret)

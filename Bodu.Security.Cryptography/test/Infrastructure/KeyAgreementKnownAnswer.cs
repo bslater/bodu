@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyAgreementKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single key-agreement known-answer test (KAT) vector — a private key, a peer public key, and either
-/// the expected shared secret or the expectation that the derivation is rejected.
+/// Represents a single key-agreement known-answer test (KAT) vector — a private key, a peer public key, and either the
+/// expected shared secret or the expectation that the derivation is rejected.
 /// </summary>
 /// <param name="Name">The human-readable label identifying this row in test output.</param>
 /// <param name="PrivateKey">The local party's private key.</param>

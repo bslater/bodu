@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptographyHelper.Hex.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,11 +17,13 @@ internal static partial class CryptographyHelper
     /// Formats the provided bytes as a lowercase hexadecimal string.
     /// </summary>
     /// <param name="bytes">The bytes to format.</param>
-    /// <returns>A lowercase hexadecimal string of length <c>2 × bytes.Length</c>, or <see cref="string.Empty" /> when
-    /// <paramref name="bytes" /> is empty.</returns>
+    /// <returns>
+    /// A lowercase hexadecimal string of length <c>2 × bytes.Length</c>, or <see cref="string.Empty" /> when
+    /// <paramref name="bytes" /> is empty.
+    /// </returns>
     /// <remarks>
-    /// .NET 8 offers no <c>Convert.ToHexStringLower</c>; this helper writes the digits directly to avoid the
-    /// double allocation of <see cref="Convert.ToHexString(ReadOnlySpan{byte})" /> followed by a lowercase copy.
+    /// .NET 8 offers no <c>Convert.ToHexStringLower</c>; this helper writes the digits directly to avoid the double
+    /// allocation of <see cref="Convert.ToHexString(ReadOnlySpan{byte})" /> followed by a lowercase copy.
     /// </remarks>
     internal static string ToLowercaseHexString(ReadOnlySpan<byte> bytes)
     {
@@ -45,9 +47,13 @@ internal static partial class CryptographyHelper
     /// Attempts to decode a hexadecimal character sequence into a newly allocated byte array.
     /// </summary>
     /// <param name="text">The hexadecimal text to decode. Both uppercase and lowercase digits are accepted.</param>
-    /// <param name="bytes">When this method returns <see langword="true" />, the decoded bytes; otherwise an empty array.</param>
-    /// <returns><see langword="true" /> if <paramref name="text" /> has even length and contains only ASCII
-    /// hexadecimal digits; otherwise, <see langword="false" />.</returns>
+    /// <param name="bytes">
+    /// When this method returns <see langword="true" />, the decoded bytes; otherwise an empty array.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="text" /> has even length and contains only ASCII hexadecimal digits;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// Parsing is strict: no whitespace, separators, or <c>0x</c> prefixes are tolerated. An empty input decodes
     /// successfully to an empty array.

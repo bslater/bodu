@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.Encoding.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -71,8 +71,8 @@ internal static partial class MLKemEngine
     /// <param name="value">The coefficient in [0, q).</param>
     /// <returns>The compressed value below 2^d.</returns>
     /// <remarks>
-    /// The constant-divisor division is lowered by the JIT to a multiply-and-shift sequence, so the operation does
-    /// not perform a data-dependent hardware division.
+    /// The constant-divisor division is lowered by the JIT to a multiply-and-shift sequence, so the operation does not
+    /// perform a data-dependent hardware division.
     /// </remarks>
     private static int Compress(int bits, int value) =>
         (int)((((uint)value << bits) + (Q / 2)) / Q) & ((1 << bits) - 1);

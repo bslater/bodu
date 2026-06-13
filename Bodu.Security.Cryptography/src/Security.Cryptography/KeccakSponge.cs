@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeccakSponge.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The sponge is a mutable struct: create one via the <c>Create*</c> factories, call <see cref="Absorb" /> any
-/// number of times, then call <see cref="Squeeze" /> repeatedly to stream output. The first squeeze applies the
-/// multi-rate padding and closes the absorb phase; absorbing after squeezing throws. Byte access into the lane state
-/// uses explicit shift arithmetic, so behavior is independent of host endianness.
+/// The sponge is a mutable struct: create one via the <c>Create*</c> factories, call <see cref="Absorb" /> any number
+/// of times, then call <see cref="Squeeze" /> repeatedly to stream output. The first squeeze applies the multi-rate
+/// padding and closes the absorb phase; absorbing after squeezing throws. Byte access into the lane state uses explicit
+/// shift arithmetic, so behavior is independent of host endianness.
 /// </para>
 /// <para>
 /// The lattice-cryptography samplers require an unbounded output stream (rejection sampling squeezes until enough
@@ -123,8 +123,8 @@ internal struct KeccakSponge
     }
 
     /// <summary>
-    /// Squeezes output bytes from the sponge. The first call applies the multi-rate padding and transitions the
-    /// sponge into the squeeze phase; subsequent calls continue the same output stream.
+    /// Squeezes output bytes from the sponge. The first call applies the multi-rate padding and transitions the sponge
+    /// into the squeeze phase; subsequent calls continue the same output stream.
     /// </summary>
     /// <param name="destination">The span to fill with output bytes. May be empty.</param>
     internal void Squeeze(Span<byte> destination)
@@ -174,8 +174,8 @@ internal struct KeccakSponge
         Reset();
 
     /// <summary>
-    /// Computes SHAKE128 over <paramref name="input" />, filling <paramref name="output" /> with the requested
-    /// number of output bytes.
+    /// Computes SHAKE128 over <paramref name="input" />, filling <paramref name="output" /> with the requested number
+    /// of output bytes.
     /// </summary>
     /// <param name="input">The input bytes.</param>
     /// <param name="output">The span that receives the output stream.</param>
@@ -188,8 +188,8 @@ internal struct KeccakSponge
     }
 
     /// <summary>
-    /// Computes SHAKE256 over <paramref name="input" />, filling <paramref name="output" /> with the requested
-    /// number of output bytes.
+    /// Computes SHAKE256 over <paramref name="input" />, filling <paramref name="output" /> with the requested number
+    /// of output bytes.
     /// </summary>
     /// <param name="input">The input bytes.</param>
     /// <param name="output">The span that receives the output stream.</param>
@@ -202,8 +202,8 @@ internal struct KeccakSponge
     }
 
     /// <summary>
-    /// Computes SHAKE256 over the concatenation <paramref name="input1" /> ‖ <paramref name="input2" />, matching
-    /// the two-part call shapes of the FIPS 203 PRF and KDF functions without an intermediate buffer.
+    /// Computes SHAKE256 over the concatenation <paramref name="input1" /> ‖ <paramref name="input2" />, matching the
+    /// two-part call shapes of the FIPS 203 PRF and KDF functions without an intermediate buffer.
     /// </summary>
     /// <param name="input1">The first input segment.</param>
     /// <param name="input2">The second input segment.</param>

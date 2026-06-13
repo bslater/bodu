@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,8 +22,8 @@ internal static partial class MLDsaEngine
     private const long InverseOf256 = 8347681;
 
     /// <summary>
-    /// Twiddle factors ζ^BitRev₈(m) mod q for m = 0–255, computed once at type initialization rather than
-    /// transcribed, eliminating table-copy defects.
+    /// Twiddle factors ζ^BitRev₈(m) mod q for m = 0–255, computed once at type initialization rather than transcribed,
+    /// eliminating table-copy defects.
     /// </summary>
     private static readonly int[] s_zetas = BuildZetaTable();
 
@@ -50,8 +50,8 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Applies the inverse NTT (FIPS 204 Algorithm 42) to a polynomial in place, including the final scaling by
-    /// 256⁻¹ mod q.
+    /// Applies the inverse NTT (FIPS 204 Algorithm 42) to a polynomial in place, including the final scaling by 256⁻¹
+    /// mod q.
     /// </summary>
     /// <param name="w">The 256 NTT coefficients in [0, q), replaced by the standard representation in [0, q).</param>
     private static void InvNtt(Span<int> w)

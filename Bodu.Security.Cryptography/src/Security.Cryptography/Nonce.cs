@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Nonce.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,9 +11,9 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A nonce is unique per operation under a given key but is not secret; it typically travels alongside the
-/// ciphertext. Using a dedicated type keeps nonces from being confused with keys, salts, or authentication tags in
-/// APIs that would otherwise accept several look-alike byte buffers.
+/// A nonce is unique per operation under a given key but is not secret; it typically travels alongside the ciphertext.
+/// Using a dedicated type keeps nonces from being confused with keys, salts, or authentication tags in APIs that would
+/// otherwise accept several look-alike byte buffers.
 /// </para>
 /// <para>
 /// <see cref="Nonce" /> carries its bytes by defensive copy, and the default instance (<c>default(Nonce)</c>) is the
@@ -28,8 +28,8 @@ namespace Bodu.Security.Cryptography;
 public readonly struct Nonce : IEquatable<Nonce>
 {
     /// <summary>
-    /// The nonce bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly;
-    /// all accessors normalize <see langword="null" /> to an empty value.
+    /// The nonce bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
+    /// accessors normalize <see langword="null" /> to an empty value.
     /// </summary>
     private readonly byte[]? _value;
 
@@ -95,7 +95,9 @@ public readonly struct Nonce : IEquatable<Nonce>
     /// Determines whether this nonce equals another.
     /// </summary>
     /// <param name="other">The nonce to compare against.</param>
-    /// <returns><see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public bool Equals(Nonce other) =>
         AsSpan().SequenceEqual(other.AsSpan());
 
@@ -103,8 +105,10 @@ public readonly struct Nonce : IEquatable<Nonce>
     /// Determines whether this nonce equals the specified object.
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
-    /// <returns><see langword="true" /> if <paramref name="obj" /> is a <see cref="Nonce" /> with identical bytes;
-    /// otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="Nonce" /> with identical bytes; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public override bool Equals(object? obj) =>
         obj is Nonce other && Equals(other);
 
@@ -124,7 +128,9 @@ public readonly struct Nonce : IEquatable<Nonce>
     /// </summary>
     /// <param name="left">The first nonce.</param>
     /// <param name="right">The second nonce.</param>
-    /// <returns><see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the values contain identical bytes; otherwise, <see langword="false" />.
+    /// </returns>
     public static bool operator ==(Nonce left, Nonce right) =>
         left.Equals(right);
 
@@ -140,7 +146,9 @@ public readonly struct Nonce : IEquatable<Nonce>
     /// <summary>
     /// Returns the lowercase hexadecimal representation of the nonce.
     /// </summary>
-    /// <returns>The nonce bytes as lowercase hexadecimal text; <see cref="string.Empty" /> for the empty value.</returns>
+    /// <returns>
+    /// The nonce bytes as lowercase hexadecimal text; <see cref="string.Empty" /> for the empty value.
+    /// </returns>
     /// <remarks>
     /// Nonces are not secrets, so the content is intentionally included in the string representation.
     /// </remarks>

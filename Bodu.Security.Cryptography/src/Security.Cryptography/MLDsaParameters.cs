@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaParameters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Captures the FIPS 204 parameter set of an ML-DSA instance: matrix dimensions, noise and rejection bounds, and
-/// the derived encoding sizes.
+/// Captures the FIPS 204 parameter set of an ML-DSA instance: matrix dimensions, noise and rejection bounds, and the
+/// derived encoding sizes.
 /// </summary>
 internal sealed class MLDsaParameters
 {

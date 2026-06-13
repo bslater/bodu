@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.Sampling.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 internal static partial class MLKemEngine
 {
     /// <summary>
-    /// Samples a uniformly random NTT-domain polynomial from the XOF stream SHAKE128(ρ ‖ index1 ‖ index2) by
-    /// rejection (FIPS 203 Algorithm 7 / SampleNTT).
+    /// Samples a uniformly random NTT-domain polynomial from the XOF stream SHAKE128(ρ ‖ index1 ‖ index2) by rejection
+    /// (FIPS 203 Algorithm 7 / SampleNTT).
     /// </summary>
     /// <param name="rho">The 32-byte public matrix seed.</param>
     /// <param name="index1">The first index byte absorbed after the seed.</param>
@@ -22,8 +22,8 @@ internal static partial class MLKemEngine
     /// <param name="destination">The span receiving 256 coefficients in [0, q).</param>
     /// <remarks>
     /// Rejection sampling consumes an unbounded number of squeeze blocks, which is why
-    /// <see cref="KeccakSponge.Squeeze" /> supports streaming output. The matrix is public, so variable-time
-    /// rejection here leaks nothing secret.
+    /// <see cref="KeccakSponge.Squeeze" /> supports streaming output. The matrix is public, so variable-time rejection
+    /// here leaks nothing secret.
     /// </remarks>
     private static void SampleNtt(ReadOnlySpan<byte> rho, byte index1, byte index2, Span<int> destination)
     {
@@ -55,8 +55,8 @@ internal static partial class MLKemEngine
     }
 
     /// <summary>
-    /// Samples a centered-binomial-distribution polynomial from the PRF stream SHAKE256(seed ‖ counter)
-    /// (FIPS 203 Algorithm 8 / SamplePolyCBD with the PRF of §4.1).
+    /// Samples a centered-binomial-distribution polynomial from the PRF stream SHAKE256(seed ‖ counter) (FIPS 203
+    /// Algorithm 8 / SamplePolyCBD with the PRF of §4.1).
     /// </summary>
     /// <param name="eta">The CBD parameter η (2 or 3); the PRF supplies 64η bytes.</param>
     /// <param name="seed">The 32-byte PRF seed (σ or r).</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="X25519.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,17 +9,16 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the X25519 elliptic-curve Diffie-Hellman key agreement function defined in
-/// RFC 7748, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. This class cannot be
-/// inherited.
+/// Provides a managed implementation of the X25519 elliptic-curve Diffie-Hellman key agreement function defined in RFC
+/// 7748, exposed through the standard <see cref="AsymmetricAlgorithm" /> framework. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// X25519 performs scalar multiplication on the Montgomery form of Curve25519, providing a 128-bit security level
-/// with 32-byte keys and a 32-byte shared secret. Two parties each generate a key pair, exchange public keys, and
-/// call <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> with the peer's public key to arrive at the same
-/// shared secret. The shared secret is a raw curve point coordinate and should be passed through a key derivation
-/// function (such as HKDF or <see cref="Blake2b" /> in keyed mode) before use as symmetric key material.
+/// X25519 performs scalar multiplication on the Montgomery form of Curve25519, providing a 128-bit security level with
+/// 32-byte keys and a 32-byte shared secret. Two parties each generate a key pair, exchange public keys, and call
+/// <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> with the peer's public key to arrive at the same shared
+/// secret. The shared secret is a raw curve point coordinate and should be passed through a key derivation function
+/// (such as HKDF or <see cref="Blake2b" /> in keyed mode) before use as symmetric key material.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -59,9 +58,9 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="AsymmetricAlgorithm" /> are not implemented and retain their base (throwing) behavior.
 /// </para>
 /// <para>
-/// Scalar multiplication runs in constant time with respect to the private key. Private key material is zeroed when
-/// the instance is disposed. This implementation, like the rest of the library, offers best-effort side-channel
-/// resistance and has not been independently audited.
+/// Scalar multiplication runs in constant time with respect to the private key. Private key material is zeroed when the
+/// instance is disposed. This implementation, like the rest of the library, offers best-effort side-channel resistance
+/// and has not been independently audited.
 /// </para>
 /// </remarks>
 /// <example>
@@ -128,15 +127,22 @@ public sealed class X25519
         "X25519";
 
     /// <inheritdoc />
-    /// <returns><see langword="null" />, because X25519 is a key agreement algorithm and produces no signatures.</returns>
+    /// <returns>
+    /// <see langword="null" />, because X25519 is a key agreement algorithm and produces no signatures.
+    /// </returns>
     public override string? SignatureAlgorithm =>
         null;
 
     /// <summary>
     /// Gets a value indicating whether the instance currently holds a private key.
     /// </summary>
-    /// <value><see langword="true" /> when private key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> and <see cref="ExportPrivateKey" /> are available.</returns>
+    /// <value>
+    /// <see langword="true" /> when private key material is present; otherwise, <see langword="false" />.
+    /// </value>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> and
+    /// <see cref="ExportPrivateKey" /> are available.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPrivateKey
     {
@@ -182,7 +188,9 @@ public sealed class X25519
     /// Imports a raw 32-byte RFC 7748 private key and derives the matching public key, replacing any existing key
     /// material on the instance.
     /// </summary>
-    /// <param name="privateKey">The 32-byte private scalar to import. The caller's buffer is copied and never modified.</param>
+    /// <param name="privateKey">
+    /// The 32-byte private scalar to import. The caller's buffer is copied and never modified.
+    /// </param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException"><paramref name="privateKey" /> is not exactly 32 bytes long.</exception>
     /// <remarks>
@@ -245,16 +253,17 @@ public sealed class X25519
     }
 
     /// <summary>
-    /// Derives the 32-byte X25519 shared secret between this instance's private key and the supplied peer public
-    /// key.
+    /// Derives the 32-byte X25519 shared secret between this instance's private key and the supplied peer public key.
     /// </summary>
     /// <param name="peerPublicKey">The peer's 32-byte RFC 7748 public key.</param>
-    /// <returns>The 32-byte shared secret. Pass the value through a KDF before using it as symmetric key material.</returns>
+    /// <returns>
+    /// The 32-byte shared secret. Pass the value through a KDF before using it as symmetric key material.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException"><paramref name="peerPublicKey" /> is not exactly 32 bytes long.</exception>
     /// <exception cref="CryptographicException">
-    /// The instance does not hold a private key, or <paramref name="peerPublicKey" /> is a low-order point whose
-    /// shared secret would be all zero.
+    /// The instance does not hold a private key, or <paramref name="peerPublicKey" /> is a low-order point whose shared
+    /// secret would be all zero.
     /// </exception>
     public byte[] DeriveSharedSecret(ReadOnlySpan<byte> peerPublicKey)
     {
@@ -265,8 +274,8 @@ public sealed class X25519
     }
 
     /// <summary>
-    /// Derives the 32-byte X25519 shared secret between this instance's private key and the supplied peer public
-    /// key, writing it into <paramref name="destination" />.
+    /// Derives the 32-byte X25519 shared secret between this instance's private key and the supplied peer public key,
+    /// writing it into <paramref name="destination" />.
     /// </summary>
     /// <param name="peerPublicKey">The peer's 32-byte RFC 7748 public key.</param>
     /// <param name="destination">The 32-byte span that receives the shared secret.</param>
@@ -275,8 +284,8 @@ public sealed class X25519
     /// <paramref name="peerPublicKey" /> or <paramref name="destination" /> is not exactly 32 bytes long.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// The instance does not hold a private key, or <paramref name="peerPublicKey" /> is a low-order point whose
-    /// shared secret would be all zero. The destination is zeroed before the exception is thrown.
+    /// The instance does not hold a private key, or <paramref name="peerPublicKey" /> is a low-order point whose shared
+    /// secret would be all zero. The destination is zeroed before the exception is thrown.
     /// </exception>
     public void DeriveSharedSecret(ReadOnlySpan<byte> peerPublicKey, Span<byte> destination)
     {
@@ -322,8 +331,8 @@ public sealed class X25519
     }
 
     /// <summary>
-    /// Stores the supplied private key array on the instance, deriving and caching the matching public key, and
-    /// zeroing any previously held private key.
+    /// Stores the supplied private key array on the instance, deriving and caching the matching public key, and zeroing
+    /// any previously held private key.
     /// </summary>
     /// <param name="privateKey">The 32-byte private key array to take ownership of.</param>
     private void SetPrivateKey(byte[] privateKey)

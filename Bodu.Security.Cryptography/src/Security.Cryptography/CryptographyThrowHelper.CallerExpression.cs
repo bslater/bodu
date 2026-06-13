@@ -547,7 +547,9 @@ internal static partial class CryptographyThrowHelper
     /// </summary>
     /// <param name="key">The raw key bytes to validate.</param>
     /// <param name="expectedLength">The required key length, in bytes.</param>
-    /// <param name="keyDescription">A short label for the key kind used in the exception message, such as <c>"X25519 private"</c>.</param>
+    /// <param name="keyDescription">
+    /// A short label for the key kind used in the exception message, such as <c>"X25519 private"</c>.
+    /// </param>
     /// <param name="paramName">The name of the key parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentException">Thrown when <c>key.Length != expectedLength</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -568,8 +570,8 @@ internal static partial class CryptographyThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> if a caller-supplied destination span does not have the exact
-    /// length the operation writes.
+    /// Throws an <see cref="ArgumentException" /> if a caller-supplied destination span does not have the exact length
+    /// the operation writes.
     /// </summary>
     /// <param name="destination">The destination span to validate.</param>
     /// <param name="expectedLength">The required destination length, in bytes.</param>
@@ -592,8 +594,8 @@ internal static partial class CryptographyThrowHelper
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if an asymmetric operation requires private key material that
-    /// is not present on the instance.
+    /// Throws a <see cref="CryptographicException" /> if an asymmetric operation requires private key material that is
+    /// not present on the instance.
     /// </summary>
     /// <param name="hasPrivateKey">
     /// <see langword="true" /> if private key material is present; <see langword="false" /> otherwise.
@@ -609,8 +611,8 @@ internal static partial class CryptographyThrowHelper
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if an asymmetric operation requires public key material that
-    /// is not present on the instance.
+    /// Throws a <see cref="CryptographicException" /> if an asymmetric operation requires public key material that is
+    /// not present on the instance.
     /// </summary>
     /// <param name="hasPublicKey">
     /// <see langword="true" /> if public key material is present; <see langword="false" /> otherwise.

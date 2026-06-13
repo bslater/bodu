@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KemKeyGenKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Represents a single KEM key-generation known-answer test (KAT) vector: the seeds and the expected encoded key
-/// pair.
+/// Represents a single KEM key-generation known-answer test (KAT) vector: the seeds and the expected encoded key pair.
 /// </summary>
 /// <param name="Name">The human-readable label identifying this row in test output.</param>
 /// <param name="ParameterSet">The parameter-set name, such as <c>"ML-KEM-768"</c>.</param>
@@ -27,8 +26,8 @@ public sealed record KemKeyGenKnownAnswer(
     byte[] ExpectedDecapsulationKey) : IKat
 {
     /// <summary>
-    /// Reads all key-generation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>,
-    /// <c>Set</c>, <c>D</c>, <c>Z</c>, <c>Ek</c>, and <c>Dk</c>.
+    /// Reads all key-generation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>, <c>Set</c>,
+    /// <c>D</c>, <c>Z</c>, <c>Ek</c>, and <c>Dk</c>.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519Point.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,9 +13,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Point addition uses the unified extended-coordinate formula of Hisil, Wong, Carter, and Dawson. Because the curve
-/// parameter a = −1 is a square modulo p and d is a non-square, the formula is complete: it is correct for every
-/// input pair, including doubling and the identity, so no secret-dependent branching is required. This trades the
-/// peak speed of the ref10 formula set for a substantially smaller and more reviewable implementation.
+/// parameter a = −1 is a square modulo p and d is a non-square, the formula is complete: it is correct for every input
+/// pair, including doubling and the identity, so no secret-dependent branching is required. This trades the peak speed
+/// of the ref10 formula set for a substantially smaller and more reviewable implementation.
 /// </para>
 /// </remarks>
 internal partial struct Ed25519Point
@@ -44,8 +44,8 @@ internal partial struct Ed25519Point
 
     /// <summary>
     /// The Ed25519 base point B = (x, 4/5) with x positive, decoded from its canonical encoding. Declared after the
-    /// curve constants in this file because static field initializers run in declaration order and the decoder
-    /// consumes <see cref="s_d" /> and <see cref="s_sqrtMinusOne" />.
+    /// curve constants in this file because static field initializers run in declaration order and the decoder consumes
+    /// <see cref="s_d" /> and <see cref="s_sqrtMinusOne" />.
     /// </summary>
     private static readonly Ed25519Point s_basePoint = DecodeConstant(
         "5866666666666666666666666666666666666666666666666666666666666666");
@@ -137,8 +137,8 @@ internal partial struct Ed25519Point
     /// </summary>
     /// <returns>The point added to itself.</returns>
     /// <remarks>
-    /// Delegates to the complete <see cref="Add" /> formula, which is valid for equal operands; the dedicated
-    /// doubling formula is omitted in favor of a single audited code path.
+    /// Delegates to the complete <see cref="Add" /> formula, which is valid for equal operands; the dedicated doubling
+    /// formula is omitted in favor of a single audited code path.
     /// </remarks>
     internal readonly Ed25519Point Double() =>
         Add(this);
@@ -155,8 +155,8 @@ internal partial struct Ed25519Point
             Curve25519FieldElement.Subtract(Curve25519FieldElement.Zero, _t));
 
     /// <summary>
-    /// Writes the canonical 32-byte RFC 8032 encoding of this point: the y coordinate in little-endian order with
-    /// the sign of x stored in bit 255.
+    /// Writes the canonical 32-byte RFC 8032 encoding of this point: the y coordinate in little-endian order with the
+    /// sign of x stored in bit 255.
     /// </summary>
     /// <param name="destination">The 32-byte span that receives the encoding.</param>
     /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes.</exception>
@@ -175,8 +175,8 @@ internal partial struct Ed25519Point
     }
 
     /// <summary>
-    /// Attempts to decode a 32-byte RFC 8032 point encoding, rejecting non-canonical y values and encodings that do
-    /// not correspond to a curve point.
+    /// Attempts to decode a 32-byte RFC 8032 point encoding, rejecting non-canonical y values and encodings that do not
+    /// correspond to a curve point.
     /// </summary>
     /// <param name="encoded">The 32-byte encoding to decode.</param>
     /// <param name="point">When the method returns <see langword="true" />, the decoded point.</param>
@@ -185,8 +185,8 @@ internal partial struct Ed25519Point
     /// <remarks>
     /// The decoder enforces the RFC 8032 §5.1.3 rules strictly: a y coordinate at or above p, a non-square x²
     /// candidate, or the invalid combination x = 0 with sign bit 1 all fail. Strict canonicality matters for
-    /// interoperable signature verification, where implementations that accept non-canonical encodings disagree
-    /// with those that reject them.
+    /// interoperable signature verification, where implementations that accept non-canonical encodings disagree with
+    /// those that reject them.
     /// </remarks>
     internal static bool TryDecode(ReadOnlySpan<byte> encoded, out Ed25519Point point)
     {
@@ -244,12 +244,13 @@ internal partial struct Ed25519Point
     }
 
     /// <summary>
-    /// Determines whether two field elements represent the same value modulo p by comparing their canonical
-    /// encodings.
+    /// Determines whether two field elements represent the same value modulo p by comparing their canonical encodings.
     /// </summary>
     /// <param name="left">The first element.</param>
     /// <param name="right">The second element.</param>
-    /// <returns><see langword="true" /> when the elements are congruent modulo p; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the elements are congruent modulo p; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool AreEqual(in Curve25519FieldElement left, in Curve25519FieldElement right)
     {
         Span<byte> leftBytes = stackalloc byte[EncodedSizeInBytes];
@@ -269,7 +270,9 @@ internal partial struct Ed25519Point
     /// </summary>
     /// <param name="hex">The canonical 32-byte encoding as a hex string.</param>
     /// <returns>The decoded point.</returns>
-    /// <exception cref="InvalidOperationException">The constant fails to decode, indicating a build-time defect.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The constant fails to decode, indicating a build-time defect.
+    /// </exception>
     private static Ed25519Point DecodeConstant(string hex) =>
         TryDecode(Convert.FromHexString(hex), out Ed25519Point point)
             ? point

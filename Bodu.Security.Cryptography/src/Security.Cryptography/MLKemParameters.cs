@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemParameters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Captures the FIPS 203 parameter set of an ML-KEM instance: the module rank and noise/compression parameters
-/// together with the derived encoding sizes.
+/// Captures the FIPS 203 parameter set of an ML-KEM instance: the module rank and noise/compression parameters together
+/// with the derived encoding sizes.
 /// </summary>
 internal sealed class MLKemParameters
 {
@@ -63,8 +63,8 @@ internal sealed class MLKemParameters
     internal int K { get; }
 
     /// <summary>
-    /// Gets the centered-binomial-distribution parameter η₁ used for the key-generation secret and error vectors
-    /// and the encryption secret vector.
+    /// Gets the centered-binomial-distribution parameter η₁ used for the key-generation secret and error vectors and
+    /// the encryption secret vector.
     /// </summary>
     /// <returns>3 for ML-KEM-512; otherwise 2.</returns>
     internal int Eta1 { get; }
