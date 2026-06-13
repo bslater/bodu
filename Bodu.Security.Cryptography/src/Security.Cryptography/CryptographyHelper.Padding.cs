@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -81,7 +82,7 @@ internal static partial class CryptographyHelper
 
             default:
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.Crypt_Invalid_PropertyValue, nameof(SymmetricAlgorithm.Padding)));
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_PropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
         int padCount = source[^1];
@@ -158,7 +159,7 @@ internal static partial class CryptographyHelper
 
             default:
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.Crypt_Invalid_PropertyValue, nameof(SymmetricAlgorithm.Padding)));
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_PropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
         ThrowHelper.ThrowIfLessThan(blockSize, 1);

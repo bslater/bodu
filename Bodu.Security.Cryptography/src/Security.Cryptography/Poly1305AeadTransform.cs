@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -116,7 +117,7 @@ public abstract class Poly1305AeadTransform
         var required = checked(plaintext.Length + TagBytes);
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
 
         ThrowIfPartialOverlap(plaintext, output);
@@ -141,13 +142,13 @@ public abstract class Poly1305AeadTransform
 
         if (ciphertextWithTag.Length < TagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
         var plaintextLength = ciphertextWithTag.Length - TagBytes;
         if (output.Length < plaintextLength)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
 
         ThrowIfPartialOverlap(ciphertextWithTag, output);

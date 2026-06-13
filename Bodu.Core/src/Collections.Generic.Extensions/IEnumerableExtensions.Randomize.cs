@@ -64,6 +64,7 @@ public static partial class IEnumerableExtensions
             RandomizationMode.ReservoirSample => count is null
                 ? throw new ArgumentException(
                     string.Format(
+                        CultureInfo.CurrentCulture,
                         ResourceStrings.Arg_Invalid_ParameterRequiredIf,
                         nameof(count),
                         nameof(mode),
@@ -76,6 +77,7 @@ public static partial class IEnumerableExtensions
             RandomizationMode.LazyShuffle => count is null
                 ? throw new ArgumentException(
                     string.Format(
+                        CultureInfo.CurrentCulture,
                         ResourceStrings.Arg_Invalid_ParameterRequiredIf,
                         nameof(count),
                         nameof(mode),

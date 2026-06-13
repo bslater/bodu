@@ -166,7 +166,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (policy.SpanCollisionPolicy is CollisionPolicy span) element.SetAttributeValue("spanCollisionPolicy", span.ToString());
         if (policy.PriorityDirection is PriorityDirection direction) element.SetAttributeValue("priorityDirection", direction.ToString());
         if (policy.ObservedDateRangePolicy is ObservedDateRangePolicy observed) element.SetAttributeValue("observedDateRangePolicy", observed.ToString());
-        if (policy.WorkingWeek is WeekPattern week) element.SetAttributeValue("workingDays", week.ToString("01"));
+        if (policy.WorkingWeek is WeekPattern week) element.SetAttributeValue("workingDays", week.ToString("01", CultureInfo.InvariantCulture));
 
         if (policy.CategoryPrecedence is { Count: > 0 } precedence)
         {

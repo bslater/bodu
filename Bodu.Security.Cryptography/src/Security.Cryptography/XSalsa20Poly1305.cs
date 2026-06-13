@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -186,12 +188,12 @@ public sealed class XSalsa20Poly1305
     {
         if (source.Length < TagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(source));
 
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, source.Length),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, source.Length),
                 nameof(destination));
 
         return source.Length - TagBytes;

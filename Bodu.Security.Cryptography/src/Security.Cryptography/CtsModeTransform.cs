@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -108,7 +110,7 @@ public sealed class CtsModeTransform
         if (input.Length < blockSize)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Arg_Invalid_CtsInputTooShort, blockSize),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_CtsInputTooShort, blockSize),
                 nameof(input));
         }
 

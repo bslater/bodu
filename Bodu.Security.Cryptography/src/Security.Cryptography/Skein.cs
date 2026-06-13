@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 
@@ -188,6 +189,7 @@ public abstract partial class Skein<T>
             if (value.Length > MaxKeySize / 8)
                 throw new CryptographicException(
                     string.Format(
+                        CultureInfo.CurrentCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         $"0..{MaxKeySize}"));

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Globalization;
 
 namespace Bodu.Security.Cryptography;
 
@@ -78,14 +79,14 @@ public abstract partial class SerpentBlockCipher
         if (key.Length != BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, BlockSize),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, BlockSize),
                 nameof(key));
         }
 
         if (tweak.Length != TweakSizeBits / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_TweakSize, tweak.Length * 8, TweakSizeBits),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_TweakSize, tweak.Length * 8, TweakSizeBits),
                 nameof(tweak));
         }
 
@@ -124,7 +125,7 @@ public abstract partial class SerpentBlockCipher
         if (input.Length != BlockSize / 8 || output.Length != BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
         }
 
         var w = BlockWords;
@@ -179,7 +180,7 @@ public abstract partial class SerpentBlockCipher
         if (input.Length != BlockSize / 8 || output.Length != BlockSize / 8)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
         }
 
         var w = BlockWords;
