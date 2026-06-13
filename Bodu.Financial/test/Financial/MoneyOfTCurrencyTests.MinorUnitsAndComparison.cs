@@ -90,7 +90,7 @@ public partial class MoneyOfTCurrencyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Min" /> returns the lesser of two same-currency values.
+    /// Verifies that <c>Min</c> returns the lesser of two same-currency values.
     /// </summary>
     [TestMethod]
     public void Min_WhenLeftLessThanRight_ShouldReturnLeft()
@@ -98,12 +98,12 @@ public partial class MoneyOfTCurrencyTests
         var a = new Money<USD>(5m);
         var b = new Money<USD>(10m);
 
-        Assert.AreEqual(a, Money<USD>.Min(a, b));
-        Assert.AreEqual(a, Money<USD>.Min(b, a));
+        Assert.AreEqual(a, MoneyOfTCurrencyExtensions.Min(a, b));
+        Assert.AreEqual(a, MoneyOfTCurrencyExtensions.Min(b, a));
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Min" /> handles equal operands by returning the first.
+    /// Verifies that <c>Min</c> handles equal operands by returning the first.
     /// </summary>
     [TestMethod]
     public void Min_WhenOperandsEqual_ShouldReturnLeft()
@@ -111,11 +111,11 @@ public partial class MoneyOfTCurrencyTests
         var a = new Money<USD>(5m);
         var b = new Money<USD>(5m);
 
-        Assert.AreEqual(a, Money<USD>.Min(a, b));
+        Assert.AreEqual(a, MoneyOfTCurrencyExtensions.Min(a, b));
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Max" /> returns the larger of two same-currency values.
+    /// Verifies that <c>Max</c> returns the larger of two same-currency values.
     /// </summary>
     [TestMethod]
     public void Max_WhenLeftGreaterThanRight_ShouldReturnLeft()
@@ -123,12 +123,12 @@ public partial class MoneyOfTCurrencyTests
         var a = new Money<USD>(10m);
         var b = new Money<USD>(5m);
 
-        Assert.AreEqual(a, Money<USD>.Max(a, b));
-        Assert.AreEqual(a, Money<USD>.Max(b, a));
+        Assert.AreEqual(a, MoneyOfTCurrencyExtensions.Max(a, b));
+        Assert.AreEqual(a, MoneyOfTCurrencyExtensions.Max(b, a));
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Clamp" /> returns the value unchanged when inside the range.
+    /// Verifies that <c>Clamp</c> returns the value unchanged when inside the range.
     /// </summary>
     [TestMethod]
     public void Clamp_WhenValueInsideRange_ShouldReturnValueUnchanged()
@@ -137,11 +137,11 @@ public partial class MoneyOfTCurrencyTests
         var min = new Money<USD>(0m);
         var max = new Money<USD>(100m);
 
-        Assert.AreEqual(value, Money<USD>.Clamp(value, min, max));
+        Assert.AreEqual(value, MoneyOfTCurrencyExtensions.Clamp(value, min, max));
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Clamp" /> snaps below-range values to the lower bound and
+    /// Verifies that <c>Clamp</c> snaps below-range values to the lower bound and
     /// above-range values to the upper bound.
     /// </summary>
     [TestMethod]
@@ -150,12 +150,12 @@ public partial class MoneyOfTCurrencyTests
         var min = new Money<USD>(0m);
         var max = new Money<USD>(100m);
 
-        Assert.AreEqual(min, Money<USD>.Clamp(new Money<USD>(-50m), min, max));
-        Assert.AreEqual(max, Money<USD>.Clamp(new Money<USD>(200m), min, max));
+        Assert.AreEqual(min, MoneyOfTCurrencyExtensions.Clamp(new Money<USD>(-50m), min, max));
+        Assert.AreEqual(max, MoneyOfTCurrencyExtensions.Clamp(new Money<USD>(200m), min, max));
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Clamp" /> throws when the bounds are inverted.
+    /// Verifies that <c>Clamp</c> throws when the bounds are inverted.
     /// </summary>
     [TestMethod]
     public void Clamp_WhenMinGreaterThanMax_ShouldThrowArgumentException()
@@ -165,7 +165,7 @@ public partial class MoneyOfTCurrencyTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = Money<USD>.Clamp(new Money<USD>(50m), min, max);
+            _ = MoneyOfTCurrencyExtensions.Clamp(new Money<USD>(50m), min, max);
         });
     }
 

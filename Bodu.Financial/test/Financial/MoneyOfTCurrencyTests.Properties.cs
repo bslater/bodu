@@ -33,7 +33,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Sign" /> reports the correct sign of the amount.
+    /// Verifies that <c>Sign</c> reports the correct sign of the amount.
     /// </summary>
     [TestMethod]
     [DataRow(-5.00, -1)]
@@ -47,7 +47,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.Abs" /> returns the unsigned amount.
+    /// Verifies that <c>Abs</c> returns the unsigned amount.
     /// </summary>
     [TestMethod]
     public void Abs_WhenAccessed_ShouldReturnAbsoluteAmount()
@@ -58,7 +58,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.IsZero" /> distinguishes between zero and non-zero amounts.
+    /// Verifies that <c>IsZero</c> distinguishes between zero and non-zero amounts.
     /// </summary>
     [TestMethod]
     public void IsZero_WhenAccessed_ShouldReflectAmount()
@@ -68,7 +68,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.IsPositive" /> returns <see langword="true" /> only for amounts
+    /// Verifies that <c>IsPositive</c> returns <see langword="true" /> only for amounts
     /// strictly greater than zero.
     /// </summary>
     [TestMethod]
@@ -85,7 +85,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.IsNegative" /> returns <see langword="true" /> only for amounts
+    /// Verifies that <c>IsNegative</c> returns <see langword="true" /> only for amounts
     /// strictly less than zero.
     /// </summary>
     [TestMethod]
@@ -102,7 +102,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money{TCurrency}.IsPositive" /> and <see cref="Money{TCurrency}.IsNegative" />
+    /// Verifies that <c>IsPositive</c> and <c>IsNegative</c>
     /// are both <see langword="false" /> at zero — the boundary value belongs to neither half-line.
     /// </summary>
     [TestMethod]

@@ -1,6 +1,20 @@
 <Project>
 
   <!--
+    Define BODU_EXTENSION_MEMBERS when the building SDK is .NET 10 or later, which ships the C# 14
+    compiler that supports extension members. Combined with LangVersion=latest (bld/Bodu.props), this
+    lets sources express convenience members as C# 14 extension properties; older SDKs fall back to
+    classic this-parameter extension methods. This lives in Directory.Build.targets rather than
+    bld/Bodu.props because NETCoreSdkVersion — the SDK/Roslyn version actually running the build, and
+    the correct signal for language-feature availability — is not yet set when Directory.Build.props
+    imports bld/Bodu.props. VersionGreaterThanOrEquals avoids the lexical trap where "10.0" sorts
+    before "8.0".
+  -->
+  <PropertyGroup Condition="'$(NETCoreSdkVersion)' != '' and '$([MSBuild]::VersionGreaterThanOrEquals($(NETCoreSdkVersion), 10.0))' == 'true'">
+    <DefineConstants>$(DefineConstants);BODU_EXTENSION_MEMBERS</DefineConstants>
+  </PropertyGroup>
+
+  <!--
     Centralised analyser package references. Directory.Build.targets is processed after each
     project file, so $(IsTestProject), $(GenerateDocumentationFile), and any project-specific
     opt-out properties are resolved by the time these ItemGroups are evaluated.

@@ -117,7 +117,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Abs" /> returns the unsigned amount.
+    /// Verifies that <c>Abs</c> returns the unsigned amount.
     /// </summary>
     [TestMethod]
     public void Abs_WhenNegative_ShouldReturnUnsignedAmount()

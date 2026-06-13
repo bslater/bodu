@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    <Using Include="Bodu.Financial.Extensions" />
   </ItemGroup>
 
   <ItemGroup>

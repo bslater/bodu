@@ -67,52 +67,6 @@ public readonly partial struct Money
             : CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
 
     /// <summary>
-    /// Gets a value indicating whether this amount is zero.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="Amount" /> is zero; otherwise <see langword="false" />.
-    /// </returns>
-    public bool IsZero =>
-        _amount == 0m;
-
-    /// <summary>
-    /// Gets a value indicating whether this amount is strictly greater than zero.
-    /// </summary>
-    /// <returns><see langword="true" /> when positive; otherwise <see langword="false" />.</returns>
-    public bool IsPositive =>
-        _amount > 0m;
-
-    /// <summary>
-    /// Gets a value indicating whether this amount is strictly less than zero.
-    /// </summary>
-    /// <returns><see langword="true" /> when negative; otherwise <see langword="false" />.</returns>
-    public bool IsNegative =>
-        _amount < 0m;
-
-    /// <summary>
-    /// Gets the sign of this amount.
-    /// </summary>
-    /// <returns><c>-1</c>, <c>0</c>, or <c>1</c>.</returns>
-    public int Sign =>
-        Math.Sign(_amount);
-
-    /// <summary>
-    /// Gets the absolute value of this amount.
-    /// </summary>
-    /// <returns>A <see cref="Money" /> with the same ISO code and a non-negative amount.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
-    /// </exception>
-    public Money Abs
-    {
-        get
-        {
-            EnsureHasCurrency();
-            return WithAmount(Math.Abs(_amount));
-        }
-    }
-
-    /// <summary>
     /// Returns a <see cref="Money" /> representing zero of the specified currency.
     /// </summary>
     /// <param name="isoCode">The ISO 4217 code.</param>
