@@ -262,7 +262,7 @@ public sealed class TerritoryCodeTests
     [TestMethod]
     public void Equals_WhenComparedAsObject_ShouldMatchValue()
     {
-        TerritoryCode code = TerritoryCode.Parse("AU-NSW");
+        var code = TerritoryCode.Parse("AU-NSW");
 
         Assert.IsTrue(code.Equals((object)TerritoryCode.Parse("AU-NSW")));
         Assert.IsFalse(code.Equals((object)"AU-NSW"));

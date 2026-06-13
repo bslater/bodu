@@ -160,7 +160,7 @@ public sealed class ReloadableNotableDateServiceTests
         ReloadableNotableDateService service = new(provider);
 
         var date = new DateOnly(2025, 1, 1);
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
 
         Assert.IsNotNull(service.Resolve(date, "XX"));
         Assert.IsNotNull(service.Resolve(date, "XX", filter));

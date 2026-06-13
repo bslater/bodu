@@ -64,7 +64,7 @@ public class NotableDateTimeExtensionsCoverageTests
     public void DateTimeOffsetExtensions_ShouldResolveQueries()
     {
         INotableDateService service = Service;
-        TimeSpan offset = TimeSpan.FromHours(10);
+        var offset = TimeSpan.FromHours(10);
         var holiday = new DateTimeOffset(2026, 1, 1, 9, 0, 0, offset);   // Thursday public holiday
         var later = new DateTimeOffset(2026, 1, 12, 9, 0, 0, offset);
 
