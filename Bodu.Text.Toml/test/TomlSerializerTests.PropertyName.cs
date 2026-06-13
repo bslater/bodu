@@ -17,13 +17,42 @@ namespace Bodu.Text.Toml;
 public partial class TomlSerializerTests
 {
     /// <summary>
-    /// Verifies that, under the default case-insensitive matching, a table key whose casing differs from the member's
+    /// Verifies that, when case-insensitive matching is enabled, a table key whose casing differs from the member's
     /// CLR name is still bound to that member on read.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenCaseInsensitiveDefaultAndKeyCasingDiffers_ShouldBindMember()
+    public void Deserialize_WhenCaseInsensitiveEnabledAndKeyCasingDiffers_ShouldBindMember()
+    {
+        var options = new TomlSerializerOptions { PropertyNameCaseInsensitive = true };
+
+        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
+
+        Assert.AreEqual(7, model.Value);
+    }
+
+    /// <summary>
+    /// Verifies that, under the default (general) options, a table key whose casing differs from the member's CLR name
+    /// is treated as unmapped and not bound, because the general default is case-sensitive — matching both
+    /// <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDefaultOptionsAndKeyCasingDiffers_ShouldNotBindMember()
     {
         var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n");
+
+        Assert.AreEqual(0, model.Value);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="TomlSerializerDefaults.Web" /> preset retains case-insensitive matching, so a table
+    /// key whose casing differs from the member's CLR name is still bound.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenWebDefaultsAndKeyCasingDiffers_ShouldBindMember()
+    {
+        var options = new TomlSerializerOptions(TomlSerializerDefaults.Web);
+
+        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -103,15 +132,17 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that the same key supplied twice under case-insensitive matching binds the same member twice and is
-    /// rejected with <see cref="TomlSerializationException" />, since a member may be assigned only once.
+    /// Verifies that, under case-insensitive matching, the same member targeted by two keys of differing casing binds
+    /// twice and is rejected with <see cref="TomlSerializationException" />, since a member may be assigned only once.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenKeyBindsSameMemberTwice_ShouldThrowTomlSerializationException()
     {
+        var options = new TomlSerializerOptions { PropertyNameCaseInsensitive = true };
+
         var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
-            _ = TomlSerializer.Deserialize<CaseInsensitiveModel>("Value = 1\nvalue = 2\n");
+            _ = TomlSerializer.Deserialize<CaseInsensitiveModel>("Value = 1\nvalue = 2\n", options);
         });
 
         Assert.IsTrue(ex.Message.Contains("value", StringComparison.Ordinal));

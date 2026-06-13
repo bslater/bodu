@@ -90,7 +90,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorAttributePresent_ShouldUseAttributedConstructor()
     {
-        var model = TomlSerializer.Deserialize<AttributedConstructorModel>("a = 3\n");
+        var model = TomlSerializer.Deserialize<AttributedConstructorModel>("A = 3\n");
 
         Assert.AreEqual(3, model.A);
         Assert.AreEqual("attributed", model.SelectedConstructor);
@@ -103,7 +103,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenParameterlessConstructorAvailable_ShouldPreferParameterlessAndSetMembers()
     {
-        var model = TomlSerializer.Deserialize<MixedConstructorModel>("a = 1\nb = 2\n");
+        var model = TomlSerializer.Deserialize<MixedConstructorModel>("A = 1\nB = 2\n");
 
         Assert.AreEqual("parameterless", model.SelectedConstructor);
         Assert.AreEqual(1, model.A);
@@ -117,7 +117,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenMultipleParameterizedConstructors_ShouldUseGreatestArity()
     {
-        var model = TomlSerializer.Deserialize<GreatestArityModel>("a = 1\nb = 2\n");
+        var model = TomlSerializer.Deserialize<GreatestArityModel>("A = 1\nB = 2\n");
 
         Assert.AreEqual(2, model.ParameterCount);
         Assert.AreEqual(1, model.A);

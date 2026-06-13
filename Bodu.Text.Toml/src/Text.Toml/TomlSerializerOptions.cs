@@ -78,9 +78,11 @@ public sealed partial class TomlSerializerOptions
     private TomlNamingPolicy? _namingPolicy;
 
     /// <summary>
-    /// Whether property-name matching ignores case when reading.
+    /// Whether property-name matching ignores case when reading. Case-sensitive by default for general options,
+    /// matching <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys; the
+    /// <see cref="TomlSerializerDefaults.Web" /> preset enables case-insensitive matching.
     /// </summary>
-    private bool _caseInsensitive = true;
+    private bool _caseInsensitive;
 
     /// <summary>
     /// Whether public fields are surfaced as serializable members.
@@ -183,7 +185,8 @@ public sealed partial class TomlSerializerOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to match case-insensitively; otherwise <see langword="false" />. The default is
-    /// <see langword="true" />.
+    /// <see langword="false" /> for general options and <see langword="true" /> under
+    /// <see cref="TomlSerializerDefaults.Web" />.
     /// </value>
     /// <returns>Whether property-name matching ignores case.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
