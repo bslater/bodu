@@ -15,7 +15,15 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 [TestClass]
 public sealed class AsiaPacificCalendarDataTests
+    : CalendarDataTestsBase
 {
+    /// <inheritdoc />
+    protected override IReadOnlyList<string> SupportedCountries => AsiaPacificCalendarData.SupportedCountries;
+
+    /// <inheritdoc />
+    protected override INotableDateService CreateService(string territory) =>
+        AsiaPacificCalendarData.CreateService(territory);
+
     /// <summary>
     /// Verifies that each Asia-Pacific holiday resolves to its known emitted date and observed flag.
     /// </summary>
@@ -116,14 +124,10 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("TW", 2024, "national-day-tw", "2024-10-10", false)]
     public void Resolve_AsiaPacificHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
-        var matches = AsiaPacificCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
-        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
-        Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+        Assert.AreEqual(isObserved, match.IsObserved, "observed flag");
     }
 
     /// <summary>
@@ -133,9 +137,7 @@ public sealed class AsiaPacificCalendarDataTests
     [TestMethod]
     public void Resolve_WhenAnzacDayInWesternAustralia_ShadowsNationalRule()
     {
-        NotableDate wa = AsiaPacificCalendarData.CreateService("AU-WA")
-            .Resolve(new DateRange(new DateOnly(2020, 1, 1), new DateOnly(2020, 12, 31)), "AU-WA")
-            .Single(r => r.NotableDateId == "anzac-day");
+        NotableDate wa = ResolveSingle("AU-WA", 2020, "anzac-day");
 
         Assert.AreEqual(
             (new DateOnly(2020, 4, 27), true, "wa"),
@@ -154,8 +156,7 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow(2027, "2027-04-26")]
     public void Resolve_WhenAnzacDayInNewSouthWalesTrialYear_EmitsActualAndAdditionalMonday(int year, string additionalMonday)
     {
-        var anzac = AsiaPacificCalendarData.CreateService("AU-NSW")
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "AU-NSW")
+        var anzac = ResolveYear("AU-NSW", year)
             .Where(r => r.NotableDateId == "anzac-day")
             .OrderBy(r => r.Date)
             .ToList();
@@ -181,15 +182,11 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow(2032)]
     public void Resolve_WhenAnzacDayInNewSouthWalesOutsideTrial_FallsBackToNationalRule(int year)
     {
-        var anzac = AsiaPacificCalendarData.CreateService("AU-NSW")
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "AU-NSW")
-            .Where(r => r.NotableDateId == "anzac-day")
-            .ToList();
+        NotableDate anzac = ResolveSingle("AU-NSW", year, "anzac-day");
 
-        Assert.HasCount(1, anzac, "outside the trial NSW has a single Anzac Day");
-        Assert.AreEqual(new DateOnly(year, 4, 25), anzac[0].Date, "the national rule keeps 25 April");
-        Assert.IsFalse(anzac[0].IsObserved, "the national rule has no substitute");
-        Assert.AreEqual("au", anzac[0].RuleId, "AU-NSW falls back to the national rule");
+        Assert.AreEqual(new DateOnly(year, 4, 25), anzac.Date, "the national rule keeps 25 April");
+        Assert.IsFalse(anzac.IsObserved, "the national rule has no substitute");
+        Assert.AreEqual("au", anzac.RuleId, "AU-NSW falls back to the national rule");
     }
 
     /// <summary>
@@ -242,17 +239,9 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("TW", 2024, "mid-autumn-festival", "2024-09-17")]
     public void Resolve_LunarOrIslamicFestival_IsWithinToleranceOfKnownDate(string territory, int year, string notableDateId, string expected)
     {
-        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        var matches = AsiaPacificCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
-
-        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
-
-        var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
-        Assert.IsLessThanOrEqualTo(2, deltaDays, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
+        AssertWithinDays(match.Date, DateOnly.Parse(expected, CultureInfo.InvariantCulture), 2, $"{notableDateId} {territory} {year}");
     }
 
     /// <summary>
@@ -272,22 +261,5 @@ public sealed class AsiaPacificCalendarDataTests
         Assert.AreEqual(
             (new DateOnly(2024, 2, 10), 7, new DateOnly(2024, 2, 16)),
             (matches[0].Date, matches[0].DurationDays, matches[0].EndDate));
-    }
-
-    /// <summary>
-    /// Verifies that every supported country loads and validates (the loader throws on a validation error) and
-    /// resolves a non-empty set of holidays for a representative year.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
-    {
-        foreach (var country in AsiaPacificCalendarData.SupportedCountries)
-        {
-            IReadOnlyList<NotableDate> holidays = AsiaPacificCalendarData.CreateService(country)
-                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
-
-            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
-        }
     }
 }

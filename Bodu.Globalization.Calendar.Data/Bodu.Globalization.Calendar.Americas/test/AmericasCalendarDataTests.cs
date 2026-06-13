@@ -15,7 +15,15 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 [TestClass]
 public sealed class AmericasCalendarDataTests
+    : CalendarDataTestsBase
 {
+    /// <inheritdoc />
+    protected override IReadOnlyList<string> SupportedCountries => AmericasCalendarData.SupportedCountries;
+
+    /// <inheritdoc />
+    protected override INotableDateService CreateService(string territory) =>
+        AmericasCalendarData.CreateService(territory);
+
     /// <summary>
     /// Verifies that each United States holiday resolves to its known emitted date and observed flag.
     /// </summary>
@@ -39,7 +47,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow(2022, "christmas-day", "2022-12-26", true)]
     public void Resolve_UnitedStatesHoliday_MatchesKnownAnswer(int year, string notableDateId, string expected, bool isObserved)
     {
-        NotableDate match = Single("US", year, notableDateId);
+        NotableDate match = ResolveSingle("US", year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
         Assert.AreEqual(isObserved, match.IsObserved, "observed flag");
@@ -71,7 +79,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("CA", 2024, "christmas-eve", "2024-12-24", false)]
     public void Resolve_CanadianHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
-        NotableDate match = Single(territory, year, notableDateId);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
         Assert.AreEqual(isObserved, match.IsObserved, "observed flag");
@@ -103,7 +111,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("US-TX", 2024, "lbj-day", "2024-08-27")]
     public void Resolve_UnitedStatesStateHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
-        NotableDate match = Single(territory, year, notableDateId);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
@@ -158,7 +166,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("CA-NL", 2024, "nl-st-patricks-day", "2024-03-18")]
     public void Resolve_FloatingHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
-        NotableDate match = Single(territory, year, notableDateId);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
@@ -183,7 +191,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("CA", 2024, "international-womens-day", "2024-03-08")]
     public void Resolve_HubSharedObservance_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
-        NotableDate match = Single(territory, year, notableDateId);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
@@ -270,7 +278,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow(2024, "fathers-day", "2024-06-16")]
     public void Resolve_MexicanFloatingHoliday_MatchesKnownAnswer(int year, string notableDateId, string expected)
     {
-        NotableDate match = Single("MX", year, notableDateId);
+        NotableDate match = ResolveSingle("MX", year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
@@ -292,26 +300,9 @@ public sealed class AmericasCalendarDataTests
     [DataRow(2024, "christmas-day", "2024-12-25")]
     public void Resolve_MexicanFixedHoliday_MatchesKnownAnswer(int year, string notableDateId, string expected)
     {
-        NotableDate match = Single("MX", year, notableDateId);
+        NotableDate match = ResolveSingle("MX", year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
-    }
-
-    /// <summary>
-    /// Verifies that every supported country loads and validates (the loader throws on a validation error) and
-    /// resolves a non-empty set of holidays for a representative year.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
-    {
-        foreach (var country in AmericasCalendarData.SupportedCountries)
-        {
-            IReadOnlyList<NotableDate> holidays = AmericasCalendarData.CreateService(country)
-                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
-
-            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
-        }
     }
 
     /// <summary>
@@ -370,7 +361,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("PE", 2024, "fathers-day", "2024-06-16")]
     public void Resolve_LatinAmericanFloatingHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
-        NotableDate match = Single(territory, year, notableDateId);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
@@ -405,7 +396,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("PE", 2024, "battle-of-ayacucho", "2024-12-09")]
     public void Resolve_LatinAmericanFixedHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
-        NotableDate match = Single(territory, year, notableDateId);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
         Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
@@ -417,7 +408,7 @@ public sealed class AmericasCalendarDataTests
     [TestMethod]
     public void Resolve_ColombianEmilianiHoliday_WhenNotOnMonday_IsObservedOnFollowingMonday()
     {
-        NotableDate moved = Single("CO", 2024, "epiphany");
+        NotableDate moved = ResolveSingle("CO", 2024, "epiphany");
 
         Assert.AreEqual(
             (new DateOnly(2024, 1, 8), true),
@@ -431,7 +422,7 @@ public sealed class AmericasCalendarDataTests
     [TestMethod]
     public void Resolve_ColombianEmilianiHoliday_WhenAlreadyOnMonday_IsNotMoved()
     {
-        NotableDate notMoved = Single("CO", 2025, "epiphany");
+        NotableDate notMoved = ResolveSingle("CO", 2025, "epiphany");
 
         Assert.AreEqual(
             (new DateOnly(2025, 1, 6), false),
@@ -459,23 +450,5 @@ public sealed class AmericasCalendarDataTests
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
         Assert.AreEqual(0, AmericasCalendarData.CreateService("BR").Resolve(year, "BR").Count(r => r.NotableDateId == "constitutionalist-revolution"));
-    }
-
-    /// <summary>
-    /// Resolves a single year window for the requested territory and returns the one occurrence with the supplied id.
-    /// </summary>
-    /// <param name="territory">The requested territory code.</param>
-    /// <param name="year">The Gregorian year.</param>
-    /// <param name="notableDateId">The notable-date id to select.</param>
-    /// <returns>The matching occurrence.</returns>
-    private static NotableDate Single(string territory, int year, string notableDateId)
-    {
-        var matches = AmericasCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
-
-        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
-        return matches[0];
     }
 }

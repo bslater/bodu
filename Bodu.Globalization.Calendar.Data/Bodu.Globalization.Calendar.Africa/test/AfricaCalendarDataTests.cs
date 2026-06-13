@@ -16,7 +16,15 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 [TestClass]
 public sealed class AfricaCalendarDataTests
+    : CalendarDataTestsBase
 {
+    /// <inheritdoc />
+    protected override IReadOnlyList<string> SupportedCountries => AfricaCalendarData.SupportedCountries;
+
+    /// <inheritdoc />
+    protected override INotableDateService CreateService(string territory) =>
+        AfricaCalendarData.CreateService(territory);
+
     /// <summary>
     /// Verifies that each fixed, Easter-derived, or nth-weekday African holiday resolves to its known emitted date
     /// and observed flag.
@@ -61,14 +69,10 @@ public sealed class AfricaCalendarDataTests
     [DataRow("MA", 2024, "independence-day-ma", "2024-11-18", false)]
     public void Resolve_AfricanHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
-        var matches = AfricaCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
-        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
-        Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+        Assert.AreEqual(isObserved, match.IsObserved, "observed flag");
     }
 
     /// <summary>
@@ -91,17 +95,9 @@ public sealed class AfricaCalendarDataTests
     [DataRow("MA", 2024, "eid-al-fitr", "2024-04-10")]
     public void Resolve_IslamicFestival_IsWithinToleranceOfKnownDate(string territory, int year, string notableDateId, string expected)
     {
-        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        var matches = AfricaCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
-
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
-
-        var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
-        Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
+        AssertWithinDays(match.Date, DateOnly.Parse(expected, CultureInfo.InvariantCulture), 2, $"{notableDateId} {territory} {year}");
     }
 
     /// <summary>
@@ -111,9 +107,7 @@ public sealed class AfricaCalendarDataTests
     [TestMethod]
     public void Resolve_WhenSouthAfricanHolidayFallsOnSunday_IsObservedOnMonday()
     {
-        NotableDate moved = AfricaCalendarData.CreateService("ZA")
-            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "ZA")
-            .Single(r => r.NotableDateId == "youth-day");
+        NotableDate moved = ResolveSingle("ZA", 2024, "youth-day");
 
         Assert.AreEqual(
             (new DateOnly(2024, 6, 17), true),
@@ -127,29 +121,10 @@ public sealed class AfricaCalendarDataTests
     [TestMethod]
     public void Resolve_WhenSouthAfricanHolidayFallsOnSaturday_IsNotMoved()
     {
-        NotableDate notMoved = AfricaCalendarData.CreateService("ZA")
-            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "ZA")
-            .Single(r => r.NotableDateId == "freedom-day");
+        NotableDate notMoved = ResolveSingle("ZA", 2024, "freedom-day");
 
         Assert.AreEqual(
             (new DateOnly(2024, 4, 27), false),
             (notMoved.Date, notMoved.IsObserved));
-    }
-
-    /// <summary>
-    /// Verifies that every supported country loads and validates (the loader throws on a validation error) and
-    /// resolves a non-empty set of holidays for a representative year.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
-    {
-        foreach (var country in AfricaCalendarData.SupportedCountries)
-        {
-            IReadOnlyList<NotableDate> holidays = AfricaCalendarData.CreateService(country)
-                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
-
-            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
-        }
     }
 }
