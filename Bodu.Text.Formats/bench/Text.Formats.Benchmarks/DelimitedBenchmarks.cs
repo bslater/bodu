@@ -22,7 +22,7 @@ public class DelimitedBenchmarks
     /// <summary>
     /// Gets or sets the row count used to construct the input document for this iteration.
     /// </summary>
-    [Params(10, 1_000, 100_000)]
+    [Params(10, 1_000, 100_000, 1_000_000)]
     public int RowCount { get; set; }
 
     /// <summary>
