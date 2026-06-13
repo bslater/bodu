@@ -64,7 +64,7 @@ public class RbaRateKnownAnswerTests
     /// </summary>
     /// <param name="answer">The known-answer row under test.</param>
     /// <returns>A task that completes when the assertion has run.</returns>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(KnownAnswers), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public async Task GetRate_WhenKnownAnswer_ShouldReturnPublishedRate(RbaRateKnownAnswer answer)
