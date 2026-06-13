@@ -31,10 +31,10 @@ public sealed partial class Blake2s
 {
     // The four rotation amounts used by Blake2s's G function (RFC 7693 §3.1). Encoded as broadcast
     // vectors so that Avx512F.VL.RotateRightVariable lowers each rotate to a single VPRORD instruction.
-    private static readonly Vector128<uint> s_ror16 = Vector128.Create((uint)16);
-    private static readonly Vector128<uint> s_ror12 = Vector128.Create((uint)12);
-    private static readonly Vector128<uint> s_ror8 = Vector128.Create((uint)8);
-    private static readonly Vector128<uint> s_ror7 = Vector128.Create((uint)7);
+    private static readonly Vector128<uint> s_ror16 = Vector128.Create(16U);
+    private static readonly Vector128<uint> s_ror12 = Vector128.Create(12U);
+    private static readonly Vector128<uint> s_ror8 = Vector128.Create(8U);
+    private static readonly Vector128<uint> s_ror7 = Vector128.Create(7U);
 
     /// <summary>
     /// Compresses a single 64-byte block using the AVX-512 vectorised BLAKE2s compression function.

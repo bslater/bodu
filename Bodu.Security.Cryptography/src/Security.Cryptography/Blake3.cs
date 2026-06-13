@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 

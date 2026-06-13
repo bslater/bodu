@@ -51,8 +51,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("7893729977");
 ///]]>
 /// </example>
-/// <seealso cref="AlphanumericCheckDigitAlgorithm" />
-/// <seealso cref="MultiCharCheckDigitAlgorithm" />
+/// <seealso cref="AlphanumericCheckDigitAlgorithm" /> <seealso cref="MultiCharCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />
 public abstract class CheckDigitAlgorithm
 {
