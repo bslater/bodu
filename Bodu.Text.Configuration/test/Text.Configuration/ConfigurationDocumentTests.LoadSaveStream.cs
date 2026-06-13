@@ -17,7 +17,7 @@ public partial class ConfigurationDocumentTests
     {
         using StringReader reader = new("[*]\na = 1\n");
 
-        ConfigurationDocument document = ConfigurationDocument.Load(reader);
+        var document = ConfigurationDocument.Load(reader);
 
         Assert.AreEqual("1", document.Resolve("any.cs").GetString("a"));
     }
@@ -29,7 +29,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void Save_ToStream_WhenLeaveOpen_ShouldWriteAndKeepStreamOpen()
     {
-        ConfigurationDocument document = ConfigurationDocument.Parse("[*]\na = 1\n");
+        var document = ConfigurationDocument.Parse("[*]\na = 1\n");
         using MemoryStream stream = new();
 
         ConfigurationDocument.Save(document, stream, options: null, leaveOpen: true);

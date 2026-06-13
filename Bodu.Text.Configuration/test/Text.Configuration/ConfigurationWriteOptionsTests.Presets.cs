@@ -49,7 +49,7 @@ public partial class ConfigurationWriteOptionsTests
     [TestMethod]
     public void For_WhenRelaxedProfile_ShouldEnableInlineCommentsAndPreserveComments()
     {
-        ConfigurationWriteOptions options = ConfigurationWriteOptions.For(ConfigurationProfile.Relaxed);
+        var options = ConfigurationWriteOptions.For(ConfigurationProfile.Relaxed);
 
         Assert.AreEqual(
             (ConfigurationProfile.Relaxed, true, true),

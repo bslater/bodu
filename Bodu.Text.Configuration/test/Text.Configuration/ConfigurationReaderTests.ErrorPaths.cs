@@ -99,7 +99,7 @@ public sealed class ConfigurationReaderErrorPathTests
     {
         ConfigurationParseOptions options = new() { DuplicateKeyMode = DuplicateKeyPolicy.FirstWins };
 
-        ConfigurationDocument document = ConfigurationDocument.Parse("[*]\na = 1\na = 2\n", options);
+        var document = ConfigurationDocument.Parse("[*]\na = 1\na = 2\n", options);
 
         Assert.AreEqual("1", document.Resolve("any.cs").GetString("a"));
     }
@@ -113,7 +113,7 @@ public sealed class ConfigurationReaderErrorPathTests
     {
         ConfigurationParseOptions options = new() { DuplicateKeyMode = DuplicateKeyPolicy.LastWins };
 
-        ConfigurationDocument document = ConfigurationDocument.Parse("[*]\na = 1\n# lead\na = 2 ; inline\n", options);
+        var document = ConfigurationDocument.Parse("[*]\na = 1\n# lead\na = 2 ; inline\n", options);
 
         Assert.AreEqual("2", document.Resolve("any.cs").GetString("a"));
     }
@@ -127,7 +127,7 @@ public sealed class ConfigurationReaderErrorPathTests
     {
         ConfigurationParseOptions options = new() { DuplicateSectionMode = IniDuplicateSectionBehavior.MergeAll };
 
-        ConfigurationDocument document = ConfigurationDocument.Parse("[*.cs]\na = 1\n[other]\nx = 9\n[*.cs]\nb = 2\n", options);
+        var document = ConfigurationDocument.Parse("[*.cs]\na = 1\n[other]\nx = 9\n[*.cs]\nb = 2\n", options);
         ConfigurationView view = document.Resolve("file.cs");
 
         Assert.AreEqual(("1", "2"), (view.GetString("a"), view.GetString("b")));
@@ -142,7 +142,7 @@ public sealed class ConfigurationReaderErrorPathTests
     {
         ConfigurationParseOptions options = new() { DuplicateSectionMode = IniDuplicateSectionBehavior.MergeAdjacent };
 
-        ConfigurationDocument document = ConfigurationDocument.Parse("[*.cs]\na = 1\n[*.cs]\nb = 2\n", options);
+        var document = ConfigurationDocument.Parse("[*.cs]\na = 1\n[*.cs]\nb = 2\n", options);
         ConfigurationView view = document.Resolve("file.cs");
 
         Assert.AreEqual(("1", "2"), (view.GetString("a"), view.GetString("b")));

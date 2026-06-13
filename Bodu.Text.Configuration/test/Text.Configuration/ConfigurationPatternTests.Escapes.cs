@@ -14,7 +14,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenPatternEndsWithBackslash_ShouldEscapeIt()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("abc\\");
+        var pattern = ConfigurationPattern.Compile("abc\\");
 
         Assert.AreEqual("abc\\", pattern.Source);
     }
@@ -25,7 +25,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenCharClassContainsEscape_ShouldMatchLiteral()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("file[\\*].cs");
+        var pattern = ConfigurationPattern.Compile("file[\\*].cs");
 
         Assert.IsTrue(pattern.IsMatch("file*.cs"));
     }
@@ -36,7 +36,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenCharClassContainsCaret_ShouldMatchLiteral()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("v[1^].cs");
+        var pattern = ConfigurationPattern.Compile("v[1^].cs");
 
         Assert.IsTrue(pattern.IsMatch("v^.cs"));
     }
