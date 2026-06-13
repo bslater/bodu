@@ -1,0 +1,33 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "AUDUSD=X",
+          "regularMarketPrice": 0.6855,
+          "gmtoffset": 0
+        },
+        "timestamp": [
+          1672704000,
+          1672790400,
+          1672876800,
+          1672963200
+        ],
+        "indicators": {
+          "quote": [
+            {
+              "close": [
+                0.6828,
+                0.6790,
+                null,
+                0.6855
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

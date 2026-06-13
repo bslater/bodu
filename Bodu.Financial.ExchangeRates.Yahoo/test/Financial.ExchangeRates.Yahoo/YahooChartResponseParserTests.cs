@@ -1,0 +1,67 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="YahooChartResponseParserTests.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Text;
+
+namespace Bodu.Financial.ExchangeRates.Yahoo;
+
+/// <summary>
+/// Verifies the behaviour of <see cref="YahooChartResponseParser" /> over fixture and malformed input.
+/// </summary>
+[TestClass]
+public class YahooChartResponseParserTests
+{
+    /// <summary>
+    /// Builds a chart request for the AUD/USD fixture spanning January 2023.
+    /// </summary>
+    /// <returns>The chart request.</returns>
+    private static YahooChartRequest CreateRequest() =>
+        new(new ExchangeRatePair("AUD", "USD"), "AUDUSD=X", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+    /// <summary>
+    /// Verifies that a valid chart parses to the present close observations, skipping the null-close day.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenValidChart_ShouldReturnPresentObservations()
+    {
+        var json = YahooFixtures.ReadBytes(YahooFixtures.AudUsd);
+
+        YahooExchangeRateChart chart = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+
+        Assert.AreEqual(3, chart.Observations.Count);
+        Assert.AreEqual("USD", chart.QuoteIsoCode);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), chart.Observations[0].Date);
+        Assert.AreEqual(0.6828m, chart.Observations[0].Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a chart-error response throws <see cref="YahooExchangeRateFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenChartError_ShouldThrowFormatException()
+    {
+        var json = YahooFixtures.ReadBytes(YahooFixtures.ErrorNotFound);
+
+        _ = Assert.ThrowsExactly<YahooExchangeRateFormatException>(() =>
+        {
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that malformed JSON throws <see cref="YahooExchangeRateFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMalformedJson_ShouldThrowFormatException()
+    {
+        var json = Encoding.UTF8.GetBytes("{ not json");
+
+        _ = Assert.ThrowsExactly<YahooExchangeRateFormatException>(() =>
+        {
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+        });
+    }
+}
