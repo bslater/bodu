@@ -71,7 +71,7 @@ public sealed partial class Ed25519Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using Ed25519 algorithm = Ed25519.Create();
+        using var algorithm = Ed25519.Create();
 
         Assert.IsNotNull(algorithm);
         Assert.AreEqual(256, algorithm.KeySize);

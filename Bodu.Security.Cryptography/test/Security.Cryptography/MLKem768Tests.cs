@@ -34,7 +34,7 @@ public sealed partial class MLKem768Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using MLKem768 kem = MLKem768.Create();
+        using var kem = MLKem768.Create();
 
         Assert.IsNotNull(kem);
         Assert.AreEqual(768, kem.KeySize);

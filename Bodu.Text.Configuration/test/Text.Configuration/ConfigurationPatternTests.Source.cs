@@ -14,7 +14,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Source_ShouldExposeOriginalPatternText()
     {
-        ConfigurationPattern pattern = ConfigurationPattern.Compile("*.cs");
+        var pattern = ConfigurationPattern.Compile("*.cs");
 
         Assert.AreEqual("*.cs", pattern.Source);
     }

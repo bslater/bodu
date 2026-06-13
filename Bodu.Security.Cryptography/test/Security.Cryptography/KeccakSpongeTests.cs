@@ -125,7 +125,7 @@ public class KeccakSpongeTests
         var oneShot = new byte[500];
         KeccakSponge.Shake256(message, oneShot);
 
-        KeccakSponge sponge = KeccakSponge.CreateShake256();
+        var sponge = KeccakSponge.CreateShake256();
         foreach (var b in message)
             sponge.Absorb(new[] { b });
 
@@ -149,7 +149,7 @@ public class KeccakSpongeTests
     [TestMethod]
     public void Absorb_WhenCalledAfterSqueeze_ShouldThrowInvalidOperationExceptionUntilReset()
     {
-        KeccakSponge sponge = KeccakSponge.CreateShake128();
+        var sponge = KeccakSponge.CreateShake128();
         sponge.Absorb(new byte[] { 1, 2, 3 });
         sponge.Squeeze(new byte[8]);
 

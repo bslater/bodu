@@ -67,7 +67,7 @@ public sealed partial class X25519Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using X25519 algorithm = X25519.Create();
+        using var algorithm = X25519.Create();
 
         Assert.IsNotNull(algorithm);
         Assert.AreEqual(256, algorithm.KeySize);

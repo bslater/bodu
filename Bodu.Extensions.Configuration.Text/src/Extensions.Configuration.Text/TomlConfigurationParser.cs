@@ -48,7 +48,7 @@ internal static class TomlConfigurationParser
 
         var bytes = ReadToEnd(stream);
 
-        using TomlDocument document = TomlDocument.Parse(bytes);
+        using var document = TomlDocument.Parse(bytes);
         return Flatten(document.RootElement);
     }
 

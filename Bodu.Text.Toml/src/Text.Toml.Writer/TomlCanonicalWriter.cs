@@ -195,7 +195,7 @@ internal static class TomlCanonicalWriter
                 break;
 
             case TomlTokenType.LocalDateTime:
-                DateTime localDateTime = (DateTime)scalar.Value;
+                var localDateTime = (DateTime)scalar.Value;
                 _ = localDateTime.TryFormat(buffer, out written, "yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture);
                 emitter.AppendAscii(buffer[..written]);
                 WriteFraction(ref emitter, localDateTime.Ticks);
@@ -207,7 +207,7 @@ internal static class TomlCanonicalWriter
                 break;
 
             default:
-                TimeOnly localTime = (TimeOnly)scalar.Value;
+                var localTime = (TimeOnly)scalar.Value;
                 _ = localTime.TryFormat(buffer, out written, "HH:mm:ss", CultureInfo.InvariantCulture);
                 emitter.AppendAscii(buffer[..written]);
                 WriteFraction(ref emitter, localTime.Ticks);

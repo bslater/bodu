@@ -61,7 +61,7 @@ internal static partial class MLDsaEngine
         dims[1] = (byte)l;
 
         Span<byte> expanded = stackalloc byte[128];
-        KeccakSponge sponge = KeccakSponge.CreateShake256();
+        var sponge = KeccakSponge.CreateShake256();
         sponge.Absorb(xi);
         sponge.Absorb(dims);
         sponge.Squeeze(expanded);
@@ -141,7 +141,7 @@ internal static partial class MLDsaEngine
         ComputeMu(tr, context, message, mu);
 
         Span<byte> rhoDoublePrime = stackalloc byte[64];
-        KeccakSponge seedSponge = KeccakSponge.CreateShake256();
+        var seedSponge = KeccakSponge.CreateShake256();
         seedSponge.Absorb(capK);
         seedSponge.Absorb(rnd);
         seedSponge.Absorb(mu);
@@ -311,7 +311,7 @@ internal static partial class MLDsaEngine
 
         // μ = H(H(pk, 64) ‖ M′, 64).
         Span<byte> tr = stackalloc byte[64];
-        KeccakSponge trSponge = KeccakSponge.CreateShake256();
+        var trSponge = KeccakSponge.CreateShake256();
         trSponge.Absorb(publicKey);
         trSponge.Squeeze(tr);
         trSponge.Clear();
@@ -411,7 +411,7 @@ internal static partial class MLDsaEngine
         }
 
         Span<byte> actualTr = stackalloc byte[64];
-        KeccakSponge trSponge = KeccakSponge.CreateShake256();
+        var trSponge = KeccakSponge.CreateShake256();
         trSponge.Absorb(publicKey);
         trSponge.Squeeze(actualTr);
         trSponge.Clear();
@@ -441,7 +441,7 @@ internal static partial class MLDsaEngine
         framing[0] = 0;
         framing[1] = (byte)context.Length;
 
-        KeccakSponge sponge = KeccakSponge.CreateShake256();
+        var sponge = KeccakSponge.CreateShake256();
         sponge.Absorb(tr);
         sponge.Absorb(framing);
         sponge.Absorb(context);
@@ -568,7 +568,7 @@ internal static partial class MLDsaEngine
 
         // tr = H(pk, 64) is stored inside the private key for the signing digest.
         Span<byte> tr = privateKey.Slice(64, 64);
-        KeccakSponge sponge = KeccakSponge.CreateShake256();
+        var sponge = KeccakSponge.CreateShake256();
         sponge.Absorb(publicKey);
         sponge.Squeeze(tr);
         sponge.Clear();

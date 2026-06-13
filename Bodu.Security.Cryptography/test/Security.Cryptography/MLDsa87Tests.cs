@@ -34,7 +34,7 @@ public sealed partial class MLDsa87Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using MLDsa87 dsa = MLDsa87.Create();
+        using var dsa = MLDsa87.Create();
 
         Assert.IsNotNull(dsa);
         Assert.AreEqual(87, dsa.KeySize);

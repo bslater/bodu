@@ -552,7 +552,7 @@ public sealed class NotableDateTraversalExtensionTests
     [TestMethod]
     public void EnumerateWorkingDays_OnDateTimeOffset_ShouldPreserveOffsetAndTime()
     {
-        TimeSpan offset = TimeSpan.FromHours(10);
+        var offset = TimeSpan.FromHours(10);
         DateTimeOffset start = new(2026, 1, 5, 9, 30, 0, offset);
         DateTimeOffset end = new(2026, 1, 9, 0, 0, 0, offset);
 

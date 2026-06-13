@@ -110,20 +110,20 @@ internal partial struct Ed25519Point
     /// <returns>The sum of the two points.</returns>
     internal readonly Ed25519Point Add(in Ed25519Point other)
     {
-        Curve25519FieldElement a = Curve25519FieldElement.Multiply(
+        var a = Curve25519FieldElement.Multiply(
             Curve25519FieldElement.Subtract(_y, _x),
             Curve25519FieldElement.Subtract(other._y, other._x));
-        Curve25519FieldElement b = Curve25519FieldElement.Multiply(
+        var b = Curve25519FieldElement.Multiply(
             Curve25519FieldElement.Add(_y, _x),
             Curve25519FieldElement.Add(other._y, other._x));
-        Curve25519FieldElement c = Curve25519FieldElement.Multiply(Curve25519FieldElement.Multiply(_t, s_d2), other._t);
-        Curve25519FieldElement zz = Curve25519FieldElement.Multiply(_z, other._z);
-        Curve25519FieldElement d = Curve25519FieldElement.Add(zz, zz);
+        var c = Curve25519FieldElement.Multiply(Curve25519FieldElement.Multiply(_t, s_d2), other._t);
+        var zz = Curve25519FieldElement.Multiply(_z, other._z);
+        var d = Curve25519FieldElement.Add(zz, zz);
 
-        Curve25519FieldElement e = Curve25519FieldElement.Subtract(b, a);
-        Curve25519FieldElement f = Curve25519FieldElement.Subtract(d, c);
-        Curve25519FieldElement g = Curve25519FieldElement.Add(d, c);
-        Curve25519FieldElement h = Curve25519FieldElement.Add(b, a);
+        var e = Curve25519FieldElement.Subtract(b, a);
+        var f = Curve25519FieldElement.Subtract(d, c);
+        var g = Curve25519FieldElement.Add(d, c);
+        var h = Curve25519FieldElement.Add(b, a);
 
         return new Ed25519Point(
             Curve25519FieldElement.Multiply(e, f),
@@ -164,9 +164,9 @@ internal partial struct Ed25519Point
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
 
-        Curve25519FieldElement zInverse = Curve25519FieldElement.Invert(_z);
-        Curve25519FieldElement x = Curve25519FieldElement.Multiply(_x, zInverse);
-        Curve25519FieldElement y = Curve25519FieldElement.Multiply(_y, zInverse);
+        var zInverse = Curve25519FieldElement.Invert(_z);
+        var x = Curve25519FieldElement.Multiply(_x, zInverse);
+        var y = Curve25519FieldElement.Multiply(_y, zInverse);
 
         y.ToBytes(destination);
 
@@ -196,7 +196,7 @@ internal partial struct Ed25519Point
         var sign = (encoded[31] & 0x80) != 0;
 
         // FromBytes ignores bit 255; a canonical y must round-trip to the encoding with the sign bit cleared.
-        Curve25519FieldElement y = Curve25519FieldElement.FromBytes(encoded);
+        var y = Curve25519FieldElement.FromBytes(encoded);
         Span<byte> canonical = stackalloc byte[EncodedSizeInBytes];
         y.ToBytes(canonical);
 
@@ -210,18 +210,18 @@ internal partial struct Ed25519Point
 
         // Solve x² = (y² − 1) / (d·y² + 1) via the combined exponentiation x = u·v³·(u·v⁷)^((p−5)/8). The
         // subtraction result is re-reduced because u is later negated, and Subtract requires tight operands.
-        Curve25519FieldElement y2 = Curve25519FieldElement.Square(y);
-        Curve25519FieldElement u = Curve25519FieldElement.Reduce(
+        var y2 = Curve25519FieldElement.Square(y);
+        var u = Curve25519FieldElement.Reduce(
             Curve25519FieldElement.Subtract(y2, Curve25519FieldElement.One));
-        Curve25519FieldElement v = Curve25519FieldElement.Add(Curve25519FieldElement.Multiply(s_d, y2), Curve25519FieldElement.One);
+        var v = Curve25519FieldElement.Add(Curve25519FieldElement.Multiply(s_d, y2), Curve25519FieldElement.One);
 
-        Curve25519FieldElement v3 = Curve25519FieldElement.Multiply(Curve25519FieldElement.Square(v), v);
-        Curve25519FieldElement v7 = Curve25519FieldElement.Multiply(Curve25519FieldElement.Square(v3), v);
-        Curve25519FieldElement x = Curve25519FieldElement.Multiply(
+        var v3 = Curve25519FieldElement.Multiply(Curve25519FieldElement.Square(v), v);
+        var v7 = Curve25519FieldElement.Multiply(Curve25519FieldElement.Square(v3), v);
+        var x = Curve25519FieldElement.Multiply(
             Curve25519FieldElement.Multiply(u, v3),
             Curve25519FieldElement.Pow22523(Curve25519FieldElement.Multiply(u, v7)));
 
-        Curve25519FieldElement vx2 = Curve25519FieldElement.Multiply(v, Curve25519FieldElement.Square(x));
+        var vx2 = Curve25519FieldElement.Multiply(v, Curve25519FieldElement.Square(x));
 
         if (!AreEqual(vx2, u))
         {

@@ -34,7 +34,7 @@ public sealed partial class MLDsa65Tests
     [TestMethod]
     public void Create_WhenCalled_ShouldReturnNewInstanceWithDefaults()
     {
-        using MLDsa65 dsa = MLDsa65.Create();
+        using var dsa = MLDsa65.Create();
 
         Assert.IsNotNull(dsa);
         Assert.AreEqual(65, dsa.KeySize);

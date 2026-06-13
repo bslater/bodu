@@ -27,7 +27,7 @@ internal static partial class MLKemEngine
     /// </remarks>
     private static void SampleNtt(ReadOnlySpan<byte> rho, byte index1, byte index2, Span<int> destination)
     {
-        KeccakSponge sponge = KeccakSponge.CreateShake128();
+        var sponge = KeccakSponge.CreateShake128();
         sponge.Absorb(rho);
 
         Span<byte> indices = stackalloc byte[2];
