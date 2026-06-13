@@ -6,7 +6,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
 
 namespace Bodu.Text.DotEnv;
 
@@ -40,12 +39,6 @@ namespace Bodu.Text.DotEnv;
 /// </example>
 public sealed class DotEnvDocument
 {
-    /// <summary>
-    /// Cached format for the <c>KeyNotFound</c> message.
-    /// </summary>
-    private static readonly CompositeFormat s_keyNotFound =
-        CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DotEnvKeyNotFound);
-
     private readonly List<DotEnvEntry> _entries;
     private readonly Dictionary<string, DotEnvEntry> _lookup;
 
@@ -102,7 +95,7 @@ public sealed class DotEnvDocument
         ThrowHelper.ThrowIfNull(key);
 
         return !_lookup.TryGetValue(key, out DotEnvEntry? entry)
-            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, s_keyNotFound, key))
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Op_Invalid_DotEnvKeyNotFound, key))
             : entry.GetValue<T>();
     }
 

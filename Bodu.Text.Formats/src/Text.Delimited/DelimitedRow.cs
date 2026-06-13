@@ -6,7 +6,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
 
 namespace Bodu.Text.Delimited;
 
@@ -45,9 +44,6 @@ namespace Bodu.Text.Delimited;
 /// </example>
 public sealed class DelimitedRow
 {
-    private static readonly CompositeFormat s_headerNotFound =
-        CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DelimitedHeaderNotFound);
-
     /// <summary>
     /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the document
     /// was parsed without a header row.
@@ -234,5 +230,5 @@ public sealed class DelimitedRow
     [DoesNotReturn]
     private static void ThrowHeaderNotFound(string header) =>
         throw new KeyNotFoundException(
-            string.Format(CultureInfo.CurrentCulture, s_headerNotFound, header));
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Op_Invalid_DelimitedHeaderNotFound, header));
 }

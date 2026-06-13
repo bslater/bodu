@@ -6,7 +6,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
 
 namespace Bodu.Text.Ini;
 
@@ -42,12 +41,6 @@ namespace Bodu.Text.Ini;
 /// </example>
 public sealed class IniSection
 {
-    /// <summary>
-    /// Cached format for the <c>KeyNotFound</c> message.
-    /// </summary>
-    private static readonly CompositeFormat s_keyNotFound =
-        CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_IniSectionKeyNotFound);
-
     private readonly List<IniEntry> _entries;
     private readonly Dictionary<string, IniEntry> _lookup;
     private readonly List<IniComment> _leadingComments = new();
@@ -191,7 +184,7 @@ public sealed class IniSection
         ThrowHelper.ThrowIfNull(key);
 
         return !_lookup.TryGetValue(key, out IniEntry? entry)
-            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, s_keyNotFound, key))
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Op_Invalid_IniSectionKeyNotFound, key))
             : entry.GetValue<T>();
     }
 
