@@ -367,3 +367,8 @@ dotnet_analyzer_diagnostic.category-Documentation.severity = none
 # co-located with the inputs they describe. CA1861 would scatter them into static fields
 # for no practical benefit since data providers are called once by the test runner.
 dotnet_diagnostic.CA1861.severity = none
+# Test assertions and data builders call ToString/Parse/Format without an explicit
+# IFormatProvider for readability. Locale-correctness is a shipping-code concern, enforced
+# on production source; tests execute under the invariant culture, so the provider would add
+# only noise here.
+dotnet_diagnostic.CA1305.severity = none

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Globalization;
 using System.Security.Cryptography;
 using Bodu.Buffers;
 
@@ -157,7 +158,7 @@ public sealed class MerkleTreeHash
         _algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
         _blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
                                                         nameof(blockSize),
-                                                        string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+                                                        string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
         _fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), CryptoResourceStrings.Arg_OutOfRange_FanOutMinimum);
         _buffer = new MemoryStream(blockSize);
         _currentLevel = new List<byte[]>();

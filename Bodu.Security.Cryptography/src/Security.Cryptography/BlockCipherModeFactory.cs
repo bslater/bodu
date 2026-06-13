@@ -100,7 +100,7 @@ public static class BlockCipherModeFactory
 
             default:
                 throw new NotSupportedException(
-                    string.Format(CryptoResourceStrings.Op_NotSupported_CipherMode, mode));
+                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_NotSupported_CipherMode, mode));
         }
     }
 

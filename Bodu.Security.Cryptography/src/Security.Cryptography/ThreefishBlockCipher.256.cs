@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
@@ -112,7 +113,7 @@ public sealed partial class Threefish256Cipher
         if (input.Length != 32 || output.Length != 32)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 32));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, 32));
         }
 
         if (Avx512F.VL.IsSupported)
@@ -226,7 +227,7 @@ public sealed partial class Threefish256Cipher
         if (input.Length != 32 || output.Length != 32)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, 32));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, 32));
         }
 
         if (Avx512F.VL.IsSupported)

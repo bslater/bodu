@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography.Extensions;
@@ -186,7 +187,7 @@ public static class AeadBlockCipherModeTransformExtensions
         if (ciphertextWithTag.Length < tagBytes)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.Arg_Invalid_InputTooShortForTag, tagBytes),
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_InputTooShortForTag, tagBytes),
                 nameof(ciphertextWithTag));
         }
 
