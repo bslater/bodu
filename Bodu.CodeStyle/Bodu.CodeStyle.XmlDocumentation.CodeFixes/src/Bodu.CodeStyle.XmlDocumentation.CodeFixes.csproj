@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Bodu.CodeStyle.XmlDocumentation.CodeFixes</RootNamespace>
+    <RootNamespace>Bodu</RootNamespace>
     <AssemblyName>Bodu.CodeStyle.XmlDocumentation.CodeFixes</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
