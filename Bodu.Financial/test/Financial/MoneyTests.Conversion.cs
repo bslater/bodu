@@ -74,7 +74,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Of_WhenRoundingOverload_ShouldRoundToMinorUnits()
     {
-        Money<USD> value = Money.Of<USD>(1.005m, MidpointRounding.AwayFromZero);
+        var value = Money.Of<USD>(1.005m, MidpointRounding.AwayFromZero);
 
         Assert.AreEqual(1.01m, value.Amount);
     }
