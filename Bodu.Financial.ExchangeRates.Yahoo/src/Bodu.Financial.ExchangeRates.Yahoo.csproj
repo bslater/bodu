@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <Version>1.0.0</Version>
+    <Description>Yahoo Finance exchange-rate provider for Bodu.Financial. Fetches and parses the Yahoo Finance v8 chart JSON service and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API over arbitrary currency pairs.</Description>
+    <PackageTags>bodu;financial;yahoo;exchange-rate;forex;fx;rest;json</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Financial.ExchangeRates.Yahoo.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Financial.ExchangeRates.Yahoo\YahooResourceStrings.resx">
+      <LastGenOutput>YahooResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Financial.ExchangeRates.Yahoo\YahooResourceStrings.Designer.cs">
+      <DependentUpon>YahooResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>
