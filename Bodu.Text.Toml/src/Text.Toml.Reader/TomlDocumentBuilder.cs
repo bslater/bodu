@@ -65,7 +65,8 @@ internal sealed class TomlDocumentBuilder
     private readonly TomlSpecVersion _specVersion;
 
     /// <summary>
-    /// The maximum nesting depth of tables and arrays the builder will accept.
+    /// The maximum nesting depth of tables and arrays the builder will accept, clamped to
+    /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
     /// </summary>
     private readonly int _maxDepth;
 
@@ -84,10 +85,14 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="specVersion">The specification version whose grammar to enforce.</param>
     /// <param name="maxDepth">The maximum nesting depth of tables and arrays to accept.</param>
+    /// <remarks>
+    /// The effective depth is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured
+    /// value cannot drive the parser into a <see cref="StackOverflowException" />.
+    /// </remarks>
     internal TomlDocumentBuilder(TomlSpecVersion specVersion, int maxDepth)
     {
         _specVersion = specVersion;
-        _maxDepth = maxDepth;
+        _maxDepth = Math.Min(maxDepth, TomlLimits.AbsoluteMaxDepth);
         _current = _root;
     }
 

@@ -112,7 +112,9 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256, and a
+    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
+    /// cannot drive the writer into a <see cref="StackOverflowException" />.
     /// </remarks>
     public Utf8TomlWriter(IBufferWriter<byte> output, TomlWriterOptions options)
     {
@@ -121,7 +123,7 @@ public ref partial struct Utf8TomlWriter
         _output = output;
         _frames = [];
         _root = new TomlWriterNode?[1];
-        _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        _maxDepth = options.MaxDepth <= 0 ? 256 : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
     }
 

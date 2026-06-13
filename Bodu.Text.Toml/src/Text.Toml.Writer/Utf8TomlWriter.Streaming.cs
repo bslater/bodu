@@ -52,7 +52,7 @@ public ref partial struct Utf8TomlWriter
         _output = _streamBuffer;
         _frames = [];
         _root = new TomlWriterNode?[1];
-        _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        _maxDepth = options.MaxDepth <= 0 ? 256 : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
     }
 
