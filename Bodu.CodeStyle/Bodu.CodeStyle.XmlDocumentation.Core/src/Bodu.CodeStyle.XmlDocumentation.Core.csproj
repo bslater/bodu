@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Bodu.CodeStyle.XmlDocumentation</RootNamespace>
+    <RootNamespace>Bodu</RootNamespace>
     <AssemblyName>Bodu.CodeStyle.XmlDocumentation.Core</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
@@ -19,6 +19,8 @@
     <EmbeddedResource Update="XmlDocResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>XmlDocResourceStrings.Designer.cs</LastGenOutput>
+      <!-- RootNamespace is Bodu; pin the manifest name the generated Designer accessor expects. -->
+      <LogicalName>Bodu.CodeStyle.XmlDocumentation.XmlDocResourceStrings.resources</LogicalName>
     </EmbeddedResource>
     <Compile Update="XmlDocResourceStrings.Designer.cs">
       <DesignTime>True</DesignTime>
