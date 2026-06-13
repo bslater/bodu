@@ -4,29 +4,29 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Security.Cryptography.Infrastructure;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains unit tests for <see cref="MLKem1024" />, inheriting the shared behavioral contract from
-/// <see cref="MLKemContractTests{TKem}" />.
+/// Contains unit tests for <see cref="MLKem1024" />, inheriting the asymmetric, KEM, and ML-KEM family contracts
+/// from <see cref="MLKemContractTests{TTest, TKem}" />.
 /// </summary>
 [TestClass]
-public partial class MLKem1024Tests
-    : MLKemContractTests<MLKem1024>
+public sealed partial class MLKem1024Tests
+    : MLKemContractTests<MLKem1024Tests, MLKem1024>
 {
     /// <inheritdoc />
-    protected override int ExpectedKeySizeDesignator => 1024;
+    protected override int CiphertextSizeBytes => 1568;
 
     /// <inheritdoc />
-    protected override int ExpectedEncapsulationKeySize => 1568;
-
-    /// <inheritdoc />
-    protected override int ExpectedDecapsulationKeySize => 3168;
-
-    /// <inheritdoc />
-    protected override int ExpectedCiphertextSize => 1568;
+    protected override AsymmetricAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            KeySizeDesignator = 1024,
+            KeyExchangeAlgorithmName = "ML-KEM",
+            SignatureAlgorithmName = null,
+            PrivateKeySizeBytes = 3168,
+            PublicKeySizeBytes = 1568,
+        };
 
     /// <summary>
     /// Verifies that <see cref="MLKem1024.Create" /> returns a fresh instance with default state.

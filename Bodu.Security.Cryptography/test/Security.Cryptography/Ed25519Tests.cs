@@ -4,30 +4,66 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains unit tests for the <see cref="Ed25519" /> signature algorithm covering construction defaults and the
-/// <see cref="AsymmetricAlgorithm" /> surface.
+/// Contains unit tests for <see cref="Ed25519" />, inheriting the asymmetric and signature contracts from
+/// <see cref="SignatureAlgorithmTests{TTest, TAlgorithm}" />. RFC 8032 and Wycheproof known-answer coverage lives
+/// in the <c>KnownAnswerTests</c> partial.
 /// </summary>
 [TestClass]
-public partial class Ed25519Tests
+public sealed partial class Ed25519Tests
+    : SignatureAlgorithmTests<Ed25519Tests, Ed25519>
 {
-    /// <summary>
-    /// Verifies that a newly constructed <see cref="Ed25519" /> instance reports the fixed 256-bit key size and
-    /// holds no key material.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefault_ShouldReportFixedKeySizeAndNoKeys()
-    {
-        using var algorithm = new Ed25519();
+    /// <inheritdoc />
+    protected override int SignatureSizeBytes => Ed25519.SignatureSizeInBytes;
 
-        Assert.AreEqual(256, algorithm.KeySize);
-        Assert.IsFalse(algorithm.HasPrivateKey);
-        Assert.IsFalse(algorithm.HasPublicKey);
-    }
+    /// <inheritdoc />
+    protected override AsymmetricAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            KeySizeDesignator = 256,
+            KeyExchangeAlgorithmName = null,
+            SignatureAlgorithmName = "Ed25519",
+            PrivateKeySizeBytes = Ed25519.PrivateKeySizeInBytes,
+            PublicKeySizeBytes = Ed25519.PublicKeySizeInBytes,
+        };
+
+    /// <inheritdoc />
+    protected override void GenerateKey(Ed25519 algorithm) =>
+        algorithm.GenerateKey();
+
+    /// <inheritdoc />
+    protected override bool HasPrivateKey(Ed25519 algorithm) =>
+        algorithm.HasPrivateKey;
+
+    /// <inheritdoc />
+    protected override bool HasPublicKey(Ed25519 algorithm) =>
+        algorithm.HasPublicKey;
+
+    /// <inheritdoc />
+    protected override void ImportPrivateKey(Ed25519 algorithm, byte[] privateKey) =>
+        algorithm.ImportPrivateKey(privateKey);
+
+    /// <inheritdoc />
+    protected override void ImportPublicKey(Ed25519 algorithm, byte[] publicKey) =>
+        algorithm.ImportPublicKey(publicKey);
+
+    /// <inheritdoc />
+    protected override byte[] ExportPrivateKey(Ed25519 algorithm) =>
+        algorithm.ExportPrivateKey();
+
+    /// <inheritdoc />
+    protected override byte[] ExportPublicKey(Ed25519 algorithm) =>
+        algorithm.ExportPublicKey();
+
+    /// <inheritdoc />
+    protected override byte[] SignData(Ed25519 algorithm, byte[] data) =>
+        algorithm.SignData(data);
+
+    /// <inheritdoc />
+    protected override bool VerifyData(Ed25519 algorithm, byte[] data, byte[] signature) =>
+        algorithm.VerifyData(data, signature);
 
     /// <summary>
     /// Verifies that <see cref="Ed25519.Create" /> returns a fresh instance with default state.
@@ -40,53 +76,5 @@ public partial class Ed25519Tests
         Assert.IsNotNull(algorithm);
         Assert.AreEqual(256, algorithm.KeySize);
         Assert.IsFalse(algorithm.HasPrivateKey);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="AsymmetricAlgorithm.LegalKeySizes" /> exposes exactly one fixed 256-bit entry.
-    /// </summary>
-    [TestMethod]
-    public void LegalKeySizes_WhenRead_ShouldContainSingleFixed256BitEntry()
-    {
-        using var algorithm = new Ed25519();
-
-        KeySizes[] sizes = algorithm.LegalKeySizes;
-
-        Assert.AreEqual(1, sizes.Length);
-        Assert.AreEqual(256, sizes[0].MinSize);
-        Assert.AreEqual(256, sizes[0].MaxSize);
-        Assert.AreEqual(0, sizes[0].SkipSize);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Ed25519.SignatureAlgorithm" /> identifies the algorithm and
-    /// <see cref="Ed25519.KeyExchangeAlgorithm" /> is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void SignatureAlgorithm_WhenRead_ShouldReturnEd25519AndNullKeyExchangeAlgorithm()
-    {
-        using var algorithm = new Ed25519();
-
-        Assert.AreEqual("Ed25519", algorithm.SignatureAlgorithm);
-        Assert.IsNull(algorithm.KeyExchangeAlgorithm);
-    }
-
-    /// <summary>
-    /// Verifies that the PKCS#8 / SubjectPublicKeyInfo export members inherited from
-    /// <see cref="AsymmetricAlgorithm" /> retain their unimplemented base behavior, because only raw RFC 8032 key
-    /// encodings are supported.
-    /// </summary>
-    [TestMethod]
-    public void ExportSubjectPublicKeyInfo_WhenCalled_ShouldThrowNotImplementedException()
-    {
-        using var algorithm = new Ed25519();
-        algorithm.GenerateKey();
-
-        var ex = Assert.ThrowsExactly<NotImplementedException>(() =>
-        {
-            _ = algorithm.ExportSubjectPublicKeyInfo();
-        });
-
-        Assert.IsNotNull(ex);
     }
 }

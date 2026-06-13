@@ -4,29 +4,29 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Security.Cryptography.Infrastructure;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains unit tests for <see cref="MLDsa44" />, inheriting the shared behavioral contract from
-/// <see cref="MLDsaContractTests{TDsa}" />.
+/// Contains unit tests for <see cref="MLDsa44" />, inheriting the asymmetric, signature, and ML-DSA family
+/// contracts from <see cref="MLDsaContractTests{TTest, TDsa}" />.
 /// </summary>
 [TestClass]
-public partial class MLDsa44Tests
-    : MLDsaContractTests<MLDsa44>
+public sealed partial class MLDsa44Tests
+    : MLDsaContractTests<MLDsa44Tests, MLDsa44>
 {
     /// <inheritdoc />
-    protected override int ExpectedKeySizeDesignator => 44;
+    protected override int SignatureSizeBytes => 2420;
 
     /// <inheritdoc />
-    protected override int ExpectedPublicKeySize => 1312;
-
-    /// <inheritdoc />
-    protected override int ExpectedPrivateKeySize => 2560;
-
-    /// <inheritdoc />
-    protected override int ExpectedSignatureSize => 2420;
+    protected override AsymmetricAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            KeySizeDesignator = 44,
+            KeyExchangeAlgorithmName = null,
+            SignatureAlgorithmName = "ML-DSA",
+            PrivateKeySizeBytes = 2560,
+            PublicKeySizeBytes = 1312,
+        };
 
     /// <summary>
     /// Verifies that <see cref="MLDsa44.Create" /> returns a fresh instance with default state.

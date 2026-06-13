@@ -4,30 +4,62 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains unit tests for the <see cref="X25519" /> key agreement algorithm covering construction defaults and the
-/// <see cref="AsymmetricAlgorithm" /> surface.
+/// Contains unit tests for <see cref="X25519" />, inheriting the asymmetric and key-agreement contracts from
+/// <see cref="KeyAgreementAlgorithmTests{TTest, TAlgorithm}" />. RFC 7748 and Wycheproof known-answer coverage
+/// lives in the <c>KnownAnswerTests</c> partial.
 /// </summary>
 [TestClass]
-public partial class X25519Tests
+public sealed partial class X25519Tests
+    : KeyAgreementAlgorithmTests<X25519Tests, X25519>
 {
-    /// <summary>
-    /// Verifies that a newly constructed <see cref="X25519" /> instance reports the fixed 256-bit key size and holds
-    /// no key material.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefault_ShouldReportFixedKeySizeAndNoKeys()
-    {
-        using var algorithm = new X25519();
+    /// <inheritdoc />
+    protected override int SharedSecretSizeBytes => X25519.SharedSecretSizeInBytes;
 
-        Assert.AreEqual(256, algorithm.KeySize);
-        Assert.IsFalse(algorithm.HasPrivateKey);
-        Assert.IsFalse(algorithm.HasPublicKey);
-    }
+    /// <inheritdoc />
+    protected override AsymmetricAlgorithmSpecification GetSpecification() =>
+        new()
+        {
+            KeySizeDesignator = 256,
+            KeyExchangeAlgorithmName = "X25519",
+            SignatureAlgorithmName = null,
+            PrivateKeySizeBytes = X25519.KeySizeInBytes,
+            PublicKeySizeBytes = X25519.KeySizeInBytes,
+        };
+
+    /// <inheritdoc />
+    protected override void GenerateKey(X25519 algorithm) =>
+        algorithm.GenerateKey();
+
+    /// <inheritdoc />
+    protected override bool HasPrivateKey(X25519 algorithm) =>
+        algorithm.HasPrivateKey;
+
+    /// <inheritdoc />
+    protected override bool HasPublicKey(X25519 algorithm) =>
+        algorithm.HasPublicKey;
+
+    /// <inheritdoc />
+    protected override void ImportPrivateKey(X25519 algorithm, byte[] privateKey) =>
+        algorithm.ImportPrivateKey(privateKey);
+
+    /// <inheritdoc />
+    protected override void ImportPublicKey(X25519 algorithm, byte[] publicKey) =>
+        algorithm.ImportPublicKey(publicKey);
+
+    /// <inheritdoc />
+    protected override byte[] ExportPrivateKey(X25519 algorithm) =>
+        algorithm.ExportPrivateKey();
+
+    /// <inheritdoc />
+    protected override byte[] ExportPublicKey(X25519 algorithm) =>
+        algorithm.ExportPublicKey();
+
+    /// <inheritdoc />
+    protected override byte[] DeriveSharedSecret(X25519 algorithm, byte[] peerPublicKey) =>
+        algorithm.DeriveSharedSecret(peerPublicKey);
 
     /// <summary>
     /// Verifies that <see cref="X25519.Create" /> returns a fresh instance with default state.
@@ -40,70 +72,5 @@ public partial class X25519Tests
         Assert.IsNotNull(algorithm);
         Assert.AreEqual(256, algorithm.KeySize);
         Assert.IsFalse(algorithm.HasPrivateKey);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="AsymmetricAlgorithm.LegalKeySizes" /> exposes exactly one fixed 256-bit entry.
-    /// </summary>
-    [TestMethod]
-    public void LegalKeySizes_WhenRead_ShouldContainSingleFixed256BitEntry()
-    {
-        using var algorithm = new X25519();
-
-        KeySizes[] sizes = algorithm.LegalKeySizes;
-
-        Assert.AreEqual(1, sizes.Length);
-        Assert.AreEqual(256, sizes[0].MinSize);
-        Assert.AreEqual(256, sizes[0].MaxSize);
-        Assert.AreEqual(0, sizes[0].SkipSize);
-    }
-
-    /// <summary>
-    /// Verifies that assigning any key size other than 256 bits through <see cref="AsymmetricAlgorithm.KeySize" />
-    /// throws <see cref="CryptographicException" />.
-    /// </summary>
-    [TestMethod]
-    public void KeySize_WhenSetToUnsupportedValue_ShouldThrowCryptographicException()
-    {
-        using var algorithm = new X25519();
-
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            algorithm.KeySize = 255;
-        });
-
-        Assert.IsNotNull(ex);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="X25519.KeyExchangeAlgorithm" /> identifies the algorithm and
-    /// <see cref="X25519.SignatureAlgorithm" /> is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void KeyExchangeAlgorithm_WhenRead_ShouldReturnX25519AndNullSignatureAlgorithm()
-    {
-        using var algorithm = new X25519();
-
-        Assert.AreEqual("X25519", algorithm.KeyExchangeAlgorithm);
-        Assert.IsNull(algorithm.SignatureAlgorithm);
-    }
-
-    /// <summary>
-    /// Verifies that the PKCS#8 / SubjectPublicKeyInfo export members inherited from
-    /// <see cref="AsymmetricAlgorithm" /> retain their unimplemented base behavior, because only raw RFC 7748 key
-    /// encodings are supported.
-    /// </summary>
-    [TestMethod]
-    public void ExportSubjectPublicKeyInfo_WhenCalled_ShouldThrowNotImplementedException()
-    {
-        using var algorithm = new X25519();
-        algorithm.GenerateKey();
-
-        var ex = Assert.ThrowsExactly<NotImplementedException>(() =>
-        {
-            _ = algorithm.ExportSubjectPublicKeyInfo();
-        });
-
-        Assert.IsNotNull(ex);
     }
 }
