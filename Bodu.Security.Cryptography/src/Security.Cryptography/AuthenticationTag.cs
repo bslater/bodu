@@ -28,7 +28,8 @@ namespace Bodu.Security.Cryptography;
 /// position of the first mismatching byte from the comparison time.
 /// </para>
 /// </remarks>
-public readonly struct AuthenticationTag : IEquatable<AuthenticationTag>
+public readonly struct AuthenticationTag
+    : IEquatable<AuthenticationTag>
 {
     /// <summary>
     /// The tag bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

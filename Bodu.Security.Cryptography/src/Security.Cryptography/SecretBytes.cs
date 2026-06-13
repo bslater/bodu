@@ -29,7 +29,8 @@ namespace Bodu.Security.Cryptography;
 /// This type is not thread-safe; callers coordinate concurrent access and disposal.
 /// </para>
 /// </remarks>
-public sealed class SecretBytes : IDisposable
+public sealed class SecretBytes
+    : IDisposable
 {
     /// <summary>
     /// The pinned buffer holding the secret bytes. Zeroed by <see cref="Clear" /> and <see cref="Dispose" />.

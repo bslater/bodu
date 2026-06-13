@@ -21,7 +21,8 @@ namespace Bodu.Security.Cryptography;
 /// empty value: <see cref="Length" /> is <c>0</c> and <see cref="IsEmpty" /> is <see langword="true" />.
 /// </para>
 /// </remarks>
-public readonly struct Salt : IEquatable<Salt>
+public readonly struct Salt
+    : IEquatable<Salt>
 {
     /// <summary>
     /// The salt bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

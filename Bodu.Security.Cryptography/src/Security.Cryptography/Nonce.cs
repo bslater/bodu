@@ -25,7 +25,8 @@ namespace Bodu.Security.Cryptography;
 /// where random collision is negligible (for example the 24-byte XChaCha20 nonce).
 /// </para>
 /// </remarks>
-public readonly struct Nonce : IEquatable<Nonce>
+public readonly struct Nonce
+    : IEquatable<Nonce>
 {
     /// <summary>
     /// The nonce bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all

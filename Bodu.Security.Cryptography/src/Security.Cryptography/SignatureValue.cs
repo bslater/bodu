@@ -27,7 +27,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="FixedTimeEquals(SignatureValue)" /> compares the bytes only, in fixed time.
 /// </para>
 /// </remarks>
-public readonly struct SignatureValue : IEquatable<SignatureValue>
+public readonly struct SignatureValue
+    : IEquatable<SignatureValue>
 {
     /// <summary>
     /// The signature bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
