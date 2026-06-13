@@ -99,7 +99,7 @@ public static class TomlSerializer
         TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
         RequireRootIsTable(value, effective);
 
-        var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
+        var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { MaxDepth = effective.MaxDepth });
         TomlSerializerEngine.Serialize(writer, value, effective);
     }
 
