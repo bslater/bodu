@@ -15,7 +15,15 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 [TestClass]
 public sealed class EuropeCalendarDataTests
+    : CalendarDataTestsBase
 {
+    /// <inheritdoc />
+    protected override IReadOnlyList<string> SupportedCountries => EuropeCalendarData.SupportedCountries;
+
+    /// <inheritdoc />
+    protected override INotableDateService CreateService(string territory) =>
+        EuropeCalendarData.CreateService(territory);
+
     /// <summary>
     /// Verifies that each European holiday resolves to its known emitted date and observed flag.
     /// </summary>
@@ -74,31 +82,10 @@ public sealed class EuropeCalendarDataTests
     [DataRow("DE-SN", 2024, "repentance-day", "2024-11-20", false)]
     public void Resolve_EuropeanHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
-        var matches = EuropeCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
-        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
-        Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
-    }
-
-    /// <summary>
-    /// Verifies that every supported European country loads and validates (the loader throws on a validation error) and
-    /// resolves a non-empty set of holidays for a representative year.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
-    {
-        foreach (var country in EuropeCalendarData.SupportedCountries)
-        {
-            IReadOnlyList<NotableDate> holidays = EuropeCalendarData.CreateService(country)
-                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
-
-            Assert.IsNotEmpty(holidays, $"{country} resolved no holidays for 2024");
-        }
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+        Assert.AreEqual(isObserved, match.IsObserved, "observed flag");
     }
 
     /// <summary>
@@ -120,14 +107,10 @@ public sealed class EuropeCalendarDataTests
     [DataRow("IE", 2024, "saint-patricks-day", "2024-03-18", true)]
     public void Resolve_MigratedEuropeanHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected, bool isObserved)
     {
-        var matches = EuropeCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {territory} {year}");
-        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
-        Assert.AreEqual(isObserved, matches[0].IsObserved, "observed flag");
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
+        Assert.AreEqual(isObserved, match.IsObserved, "observed flag");
     }
 
     /// <summary>

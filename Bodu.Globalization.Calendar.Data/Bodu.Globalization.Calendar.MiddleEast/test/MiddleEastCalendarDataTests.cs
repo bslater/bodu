@@ -16,7 +16,15 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 [TestClass]
 public sealed class MiddleEastCalendarDataTests
+    : CalendarDataTestsBase
 {
+    /// <inheritdoc />
+    protected override IReadOnlyList<string> SupportedCountries => MiddleEastCalendarData.SupportedCountries;
+
+    /// <inheritdoc />
+    protected override INotableDateService CreateService(string territory) =>
+        MiddleEastCalendarData.CreateService(territory);
+
     /// <summary>
     /// Verifies that each fixed or nth-weekday Middle East holiday resolves to its known emitted date.
     /// </summary>
@@ -43,13 +51,9 @@ public sealed class MiddleEastCalendarDataTests
     [DataRow("TR", 2024, "republic-day-tr", "2024-10-29")]
     public void Resolve_MiddleEastHoliday_MatchesKnownAnswer(string territory, int year, string notableDateId, string expected)
     {
-        var matches = MiddleEastCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
-        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), matches[0].Date, "emitted date");
+        Assert.AreEqual(DateOnly.Parse(expected, CultureInfo.InvariantCulture), match.Date, "emitted date");
     }
 
     /// <summary>
@@ -81,33 +85,8 @@ public sealed class MiddleEastCalendarDataTests
     [DataRow("IL", 2024, "independence-day-il", "2024-05-14")]
     public void Resolve_IslamicOrJewishFestival_IsWithinToleranceOfKnownDate(string territory, int year, string notableDateId, string expected)
     {
-        var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
+        NotableDate match = ResolveSingle(territory, year, notableDateId);
 
-        var matches = MiddleEastCalendarData.CreateService(territory)
-            .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
-            .Where(r => r.NotableDateId == notableDateId)
-            .ToList();
-
-        Assert.AreEqual(1, matches.Count, $"expected exactly one '{notableDateId}' for {territory} {year}");
-
-        var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
-        Assert.IsTrue(deltaDays <= 2, $"{notableDateId} {territory} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
-    }
-
-    /// <summary>
-    /// Verifies that every supported country loads and validates (the loader throws on a validation error) and
-    /// resolves a non-empty set of holidays for a representative year.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
-    {
-        foreach (var country in MiddleEastCalendarData.SupportedCountries)
-        {
-            IReadOnlyList<NotableDate> holidays = MiddleEastCalendarData.CreateService(country)
-                .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), country);
-
-            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
-        }
+        AssertWithinDays(match.Date, DateOnly.Parse(expected, CultureInfo.InvariantCulture), 2, $"{notableDateId} {territory} {year}");
     }
 }

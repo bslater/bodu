@@ -35,7 +35,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="expectedCheck">The check character the algorithm is expected to emit for the second run.</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void Reset_BetweenAppends_ShouldDiscardPriorState(string name, string body, char expectedCheck)
     {
         _ = name;

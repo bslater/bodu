@@ -17,7 +17,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The full body characters.</param>
     /// <param name="expectedCheck">The expected check character (unused).</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void GetCurrentCheckDigit_AtEveryPrefixLength_ShouldAgreeWithStaticCompute(string name, string body, char expectedCheck)
     {
         _ = name;

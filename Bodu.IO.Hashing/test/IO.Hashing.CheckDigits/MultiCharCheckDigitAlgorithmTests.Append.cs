@@ -33,7 +33,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -53,7 +53,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void Append_WhenKnownAnswerIsAppendedOneCharAtATime_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -73,7 +73,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void Append_WhenKnownAnswerIsSplitAcrossTwoChunks_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;

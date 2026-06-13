@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.IO.Hashing;
+using Bodu.Test.IO;
 
 namespace Bodu.IO.Hashing.Extensions;
 
@@ -213,7 +214,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenStreamThrowsDuringRead_ForHexOverload_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using ThrowingStream stream = new();
+        using ThrowOnReadStream stream = new(static () => new IOException("Simulated read failure."));
 
         Assert.IsFalse(algorithm.TryVerifyHash(stream, s_sampleHex));
     }
@@ -226,7 +227,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenStreamThrowsDuringRead_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using ThrowingStream stream = new();
+        using ThrowOnReadStream stream = new(static () => new IOException("Simulated read failure."));
 
         Assert.IsFalse(algorithm.TryVerifyHash(stream, s_sampleHash));
     }
@@ -243,45 +244,4 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         Assert.IsFalse(algorithm.TryVerifyHash(s_sampleString, s_sampleEncoding, wrong));
     }
-
-    /// <summary>
-    /// A readable <see cref="Stream" /> whose every read raises <see cref="IOException" />, used to drive the
-    /// exception-safe false-return branch of stream-based <c>TryVerifyHash</c> overloads.
-    /// </summary>
-    private sealed class ThrowingStream
-        : Stream
-    {
-
-        public override bool CanRead => true;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => false;
-
-        public override long Length => throw new NotSupportedException();
-
-        public override long Position
-        {
-            get => 0;
-            set => throw new NotSupportedException();
-        }
-
-        public override void Flush()
-        {
-        }
-
-        public override int Read(byte[] buffer, int offset, int count) =>
-            throw new IOException("Simulated read failure.");
-
-        public override long Seek(long offset, SeekOrigin origin) =>
-            throw new NotSupportedException();
-
-        public override void SetLength(long value) =>
-            throw new NotSupportedException();
-
-        public override void Write(byte[] buffer, int offset, int count) =>
-            throw new NotSupportedException();
-
-    }
-
 }

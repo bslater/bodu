@@ -32,6 +32,7 @@
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Globalization.Calendar/Bodu.Globalization.Calendar.Data/">
+    <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Data.Test.Common/Bodu.Globalization.Calendar.Data.Test.Common.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/src/Bodu.Globalization.Calendar.Africa.csproj">
       <Build Solution="Debug|*" Project="false" />
     </Project>

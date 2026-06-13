@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Test.IO;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text;
@@ -80,37 +81,30 @@ public class TextConfigurationMicrosoftParityTests
     [TestMethod]
     public void Build_WhenMissingRequiredFile_ShouldThrow_ForAllThreeProviders()
     {
-        var directory = CreateTempDirectory();
-        try
+        using TempDirectoryScope scope = new();
+        Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
-            Assert.ThrowsExactly<FileNotFoundException>(() =>
-            {
-                _ = new ConfigurationBuilder()
-                    .SetBasePath(directory)
-                    .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
-                    .Build();
-            });
+            _ = new ConfigurationBuilder()
+                .SetBasePath(scope.Path)
+                .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
+                .Build();
+        });
 
-            Assert.ThrowsExactly<FileNotFoundException>(() =>
-            {
-                _ = new ConfigurationBuilder()
-                    .SetBasePath(directory)
-                    .AddIniFile("missing.ini", optional: false)
-                    .Build();
-            });
-
-            Assert.ThrowsExactly<FileNotFoundException>(() =>
-            {
-                _ = new ConfigurationBuilder()
-                    .SetBasePath(directory)
-                    .AddJsonFile("missing.json", optional: false)
-                    .Build();
-            });
-        }
-        finally
+        Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
-            Directory.Delete(directory, recursive: true);
-        }
+            _ = new ConfigurationBuilder()
+                .SetBasePath(scope.Path)
+                .AddIniFile("missing.ini", optional: false)
+                .Build();
+        });
+
+        Assert.ThrowsExactly<FileNotFoundException>(() =>
+        {
+            _ = new ConfigurationBuilder()
+                .SetBasePath(scope.Path)
+                .AddJsonFile("missing.json", optional: false)
+                .Build();
+        });
     }
 
     /// <summary>
@@ -120,32 +114,25 @@ public class TextConfigurationMicrosoftParityTests
     [TestMethod]
     public void Build_WhenMissingOptionalFile_ShouldYieldEmpty_ForAllThreeProviders()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            IConfiguration bodu = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
-                .Build();
+        using TempDirectoryScope scope = new();
+        IConfiguration bodu = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
+            .Build();
 
-            IConfiguration ini = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddIniFile("missing.ini", optional: true)
-                .Build();
+        IConfiguration ini = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddIniFile("missing.ini", optional: true)
+            .Build();
 
-            IConfiguration json = new ConfigurationBuilder()
-                .SetBasePath(directory)
-                .AddJsonFile("missing.json", optional: true)
-                .Build();
+        IConfiguration json = new ConfigurationBuilder()
+            .SetBasePath(scope.Path)
+            .AddJsonFile("missing.json", optional: true)
+            .Build();
 
-            Assert.IsNull(bodu["anything"]);
-            Assert.IsNull(ini["anything"]);
-            Assert.IsNull(json["anything"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.IsNull(bodu["anything"]);
+        Assert.IsNull(ini["anything"]);
+        Assert.IsNull(json["anything"]);
     }
 
     /// <summary>
@@ -155,32 +142,25 @@ public class TextConfigurationMicrosoftParityTests
     [TestMethod]
     public void Build_WhenMalformedRequiredFile_ShouldThrowInvalidDataException_ForBoduAndJson()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            File.WriteAllText(Path.Combine(directory, "bad.boduconfig"), "[unterminated\nkey = value\n");
-            File.WriteAllText(Path.Combine(directory, "bad.json"), "{ not valid json");
+        using TempDirectoryScope scope = new();
+        scope.WriteFile("bad.boduconfig", "[unterminated\nkey = value\n");
+        scope.WriteFile("bad.json", "{ not valid json");
 
-            Assert.ThrowsExactly<InvalidDataException>(() =>
-            {
-                _ = new ConfigurationBuilder()
-                    .SetBasePath(directory)
-                    .AddBoduConfigurationFile("bad.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
-                    .Build();
-            });
-
-            Assert.ThrowsExactly<InvalidDataException>(() =>
-            {
-                _ = new ConfigurationBuilder()
-                    .SetBasePath(directory)
-                    .AddJsonFile("bad.json", optional: false)
-                    .Build();
-            });
-        }
-        finally
+        Assert.ThrowsExactly<InvalidDataException>(() =>
         {
-            Directory.Delete(directory, recursive: true);
-        }
+            _ = new ConfigurationBuilder()
+                .SetBasePath(scope.Path)
+                .AddBoduConfigurationFile("bad.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
+                .Build();
+        });
+
+        Assert.ThrowsExactly<InvalidDataException>(() =>
+        {
+            _ = new ConfigurationBuilder()
+                .SetBasePath(scope.Path)
+                .AddJsonFile("bad.json", optional: false)
+                .Build();
+        });
     }
 
     /// <summary>
@@ -228,12 +208,5 @@ items.2 = third
 
         Assert.IsFalse(typeof(FileConfigurationProvider).IsAssignableFrom(boduProvider.GetType()));
         Assert.IsFalse(typeof(FileConfigurationProvider).IsAssignableFrom(jsonProvider.GetType()));
-    }
-
-    private static string CreateTempDirectory()
-    {
-        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(directory);
-        return directory;
     }
 }

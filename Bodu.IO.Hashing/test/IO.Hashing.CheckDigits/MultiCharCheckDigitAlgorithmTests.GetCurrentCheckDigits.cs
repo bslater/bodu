@@ -19,7 +19,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="expectedCheck">The expected check code (unused in this cross-check).</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(CheckDigitKatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(CheckDigitKatDisplayName))]
     public void GetCurrentCheckDigits_SpanAndStringOverloads_ShouldAgree(string name, string body, string expectedCheck)
     {
         _ = name;

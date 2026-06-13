@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Physical;
@@ -27,22 +28,15 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndDotConfigPresent_ShouldLoad()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            File.WriteAllText(Path.Combine(directory, ".boduconfig"), Sample);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile(".boduconfig", Sample);
 
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory, ExclusionFilters.None));
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path, ExclusionFilters.None));
 
-            IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddBoduConfiguration().Build();
 
-            Assert.AreEqual("yes", configuration["default:filename:loaded"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.AreEqual("yes", configuration["default:filename:loaded"]);
     }
 
     /// <summary>
@@ -52,22 +46,15 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndPlainConfigPresent_ShouldLoadFallback()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            File.WriteAllText(Path.Combine(directory, "bodu.config"), Sample);
+        using TempDirectoryScope scope = new();
+        scope.WriteFile("bodu.config", Sample);
 
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory));
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path));
 
-            IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddBoduConfiguration().Build();
 
-            Assert.AreEqual("yes", configuration["default:filename:loaded"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.AreEqual("yes", configuration["default:filename:loaded"]);
     }
 
     /// <summary>
@@ -77,20 +64,13 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndAllMissing_ShouldNotThrow()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory));
+        using TempDirectoryScope scope = new();
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path));
 
-            IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
+        IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
 
-            Assert.IsNull(configuration["default:filename:loaded"]);
-        }
-        finally
-        {
-            Directory.Delete(directory, recursive: true);
-        }
+        Assert.IsNull(configuration["default:filename:loaded"]);
     }
 
     /// <summary>
@@ -100,21 +80,14 @@ default.filename.loaded = yes
     [TestMethod]
     public void AddConfiguration_WhenNoArgsAndRequiredAndAllMissing_ShouldThrowExactly()
     {
-        var directory = CreateTempDirectory();
-        try
-        {
-            ConfigurationBuilder builder = new();
-            builder.SetFileProvider(new PhysicalFileProvider(directory));
+        using TempDirectoryScope scope = new();
+        ConfigurationBuilder builder = new();
+        builder.SetFileProvider(new PhysicalFileProvider(scope.Path));
 
-            Assert.ThrowsExactly<FileNotFoundException>(() =>
-            {
-                _ = builder.AddBoduConfiguration(optional: false).Build();
-            });
-        }
-        finally
+        Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
-            Directory.Delete(directory, recursive: true);
-        }
+            _ = builder.AddBoduConfiguration(optional: false).Build();
+        });
     }
 
     /// <summary>
@@ -129,12 +102,5 @@ default.filename.loaded = yes
         {
             _ = builder.AddBoduConfiguration();
         });
-    }
-
-    private static string CreateTempDirectory()
-    {
-        var directory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(directory);
-        return directory;
     }
 }

@@ -72,7 +72,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void Clamp_WhenUsingReverseComparer_ShouldRespectComparerOrdering()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         // Under a reverse comparer, 20 is "less than" 10, so 20 is below min (10) and is clamped to 10.
         Assert.AreEqual(10, 20.Clamp(10, 1, comparer));
