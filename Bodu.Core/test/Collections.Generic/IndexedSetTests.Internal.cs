@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-
 namespace Bodu.Collections.Generic;
 
 public partial class IndexedSetTests
@@ -64,41 +62,4 @@ public partial class IndexedSetTests
         Assert.IsNotNull(storage);
         Assert.AreEqual(sut.Count, storage.Count);
     }
-
-    /// <summary>
-    /// Wraps an <see cref="IEnumerable{T}" /> as <see cref="IReadOnlyCollection{T}" /> only — deliberately not
-    /// implementing <see cref="ICollection{T}" /> so capacity-hint helpers see the read-only-collection branch.
-    /// </summary>
-    /// <typeparam name="T">The element type.</typeparam>
-    private sealed class ReadOnlyCollectionOnly<T>
-        : IReadOnlyCollection<T>
-    {
-
-        private readonly T[] _items;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IndexedSetTests.ReadOnlyCollectionOnly{T}" /> class
-        /// wrapping the supplied items.
-        /// </summary>
-        /// <param name="items">The items to expose. Must not be <see langword="null" />.</param>
-        public ReadOnlyCollectionOnly(T[] items)
-        {
-            _items = items;
-        }
-
-        /// <inheritdoc />
-        public int Count => _items.Length;
-
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        /// <inheritdoc />
-        public IEnumerator<T> GetEnumerator()
-        {
-            foreach (T item in _items)
-                yield return item;
-        }
-
-    }
-
 }

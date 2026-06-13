@@ -83,7 +83,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void IsOutside_WhenUsingReverseComparer_ShouldHonorComparerOrdering()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         // With reverse ordering, 10 is the "lower" boundary and 1 is the "upper" boundary, so:
         //  - 5 is inside,

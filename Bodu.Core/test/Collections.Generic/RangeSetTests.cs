@@ -63,18 +63,4 @@ public partial class RangeSetTests
 
         return result;
     }
-
-    /// <summary>
-    /// A reverse-order comparer over <see cref="int" /> used to verify that a non-default comparer is honoured
-    /// during validation. This comparer treats values that are numerically larger as logically smaller.
-    /// </summary>
-    private sealed class ReverseIntComparer
-        : IComparer<int>
-    {
-
-        /// <inheritdoc />
-        public int Compare(int x, int y) => y.CompareTo(x);
-
-    }
-
 }

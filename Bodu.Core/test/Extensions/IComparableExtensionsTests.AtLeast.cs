@@ -56,7 +56,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void AtLeast_WhenUsingReverseComparer_ShouldRespectComparerOrdering()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         // Under a reverse comparer, 1 is "greater than" 10, so 1 is already at or above the floor (10).
         Assert.AreEqual(1, 1.AtLeast(10, comparer));

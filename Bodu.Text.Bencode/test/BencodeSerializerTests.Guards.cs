@@ -7,6 +7,7 @@
 using System.Buffers;
 using System.Text;
 using Bodu.Test.Assertions;
+using Bodu.Test.IO;
 
 namespace Bodu.Text.Bencode;
 
@@ -156,33 +157,5 @@ public partial class BencodeSerializerTests
         BencodeSerializer.Serialize(buffer, 5);
 
         Assert.AreEqual("i5e", Encoding.Latin1.GetString(buffer.WrittenSpan));
-    }
-
-    /// <summary>
-    /// A stream that reports <see cref="Stream.CanWrite" /> as <see langword="false" />, used to exercise the
-    /// writability guard on stream-accepting entry points.
-    /// </summary>
-    private sealed class NonWritableStream
-        : MemoryStream
-    {
-        /// <summary>
-        /// Gets a value indicating whether the stream supports writing.
-        /// </summary>
-        /// <returns>Always <see langword="false" />.</returns>
-        public override bool CanWrite => false;
-    }
-
-    /// <summary>
-    /// A stream that reports <see cref="Stream.CanRead" /> as <see langword="false" />, used to exercise the
-    /// readability guard on stream-accepting entry points.
-    /// </summary>
-    private sealed class NonReadableStream
-        : MemoryStream
-    {
-        /// <summary>
-        /// Gets a value indicating whether the stream supports reading.
-        /// </summary>
-        /// <returns>Always <see langword="false" />.</returns>
-        public override bool CanRead => false;
     }
 }

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.IO.Hashing;
+using Bodu.Test.IO;
 
 namespace Bodu.IO.Hashing.Extensions;
 
@@ -192,7 +193,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenStreamThrowsDuringRead_ForHexOverload_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using AsyncThrowingStream stream = new();
+        using ThrowOnReadStream stream = new(static () => new IOException("Simulated read failure."));
 
         var result = await algorithm.TryVerifyHashAsync(stream, s_sampleHex);
 
@@ -207,7 +208,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenStreamThrowsDuringRead_ForMemoryOverload_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using AsyncThrowingStream stream = new();
+        using ThrowOnReadStream stream = new(static () => new IOException("Simulated read failure."));
         ReadOnlyMemory<byte> expected = s_sampleHash;
 
         var result = await algorithm.TryVerifyHashAsync(stream, expected);
@@ -223,57 +224,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenStreamThrowsDuringRead_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using AsyncThrowingStream stream = new();
+        using ThrowOnReadStream stream = new(static () => new IOException("Simulated read failure."));
 
         var result = await algorithm.TryVerifyHashAsync(stream, s_sampleHash);
 
         Assert.IsFalse(result);
     }
-
-    /// <summary>
-    /// A readable async <see cref="Stream" /> whose every read raises <see cref="IOException" />, used to drive
-    /// the exception-safe false-return branch of stream-based async <c>TryVerifyHashAsync</c> overloads.
-    /// </summary>
-    private sealed class AsyncThrowingStream
-        : Stream
-    {
-
-        public override bool CanRead => true;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => false;
-
-        public override long Length => throw new NotSupportedException();
-
-        public override long Position
-        {
-            get => 0;
-            set => throw new NotSupportedException();
-        }
-
-        public override void Flush()
-        {
-        }
-
-        public override int Read(byte[] buffer, int offset, int count) =>
-            throw new IOException("Simulated read failure.");
-
-        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) =>
-            ValueTask.FromException<int>(new IOException("Simulated async read failure."));
-
-        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
-            Task.FromException<int>(new IOException("Simulated async read failure."));
-
-        public override long Seek(long offset, SeekOrigin origin) =>
-            throw new NotSupportedException();
-
-        public override void SetLength(long value) =>
-            throw new NotSupportedException();
-
-        public override void Write(byte[] buffer, int offset, int count) =>
-            throw new NotSupportedException();
-
-    }
-
 }

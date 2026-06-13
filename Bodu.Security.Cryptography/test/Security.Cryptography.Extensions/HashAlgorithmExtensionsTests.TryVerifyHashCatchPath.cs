@@ -6,6 +6,7 @@
 
 using System.Security.Cryptography;
 using System.Text;
+using Bodu.Test.IO;
 
 namespace Bodu.Security.Cryptography.Extensions;
 
@@ -99,7 +100,7 @@ public partial class HashAlgorithmExtensionsTests
     public void TryVerifyHash_StreamBytes_WhenStreamThrows_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new ThrowingStream();
+        using var stream = new ThrowOnReadStream(static () => new IOException("Forced read failure."));
 
         Assert.IsFalse(algorithm.TryVerifyHash(stream, SampleHash));
     }
@@ -112,7 +113,7 @@ public partial class HashAlgorithmExtensionsTests
     public void TryVerifyHash_StreamHex_WhenStreamThrows_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        using var stream = new ThrowingStream();
+        using var stream = new ThrowOnReadStream(static () => new IOException("Forced read failure."));
 
         Assert.IsFalse(algorithm.TryVerifyHash(stream, SampleHex));
     }
@@ -199,38 +200,5 @@ public partial class HashAlgorithmExtensionsTests
         ReadOnlySpan<byte> mismatched = BitConverter.GetBytes((uint)8888);
 
         Assert.IsFalse(algorithm.TryVerifyHash(input, mismatched));
-    }
-
-    /// <summary>
-    /// A read stream that throws on every read operation to force <see cref="HashAlgorithm.ComputeHash(Stream)" />
-    /// into its exception path.
-    /// </summary>
-    private sealed class ThrowingStream
-        : Stream
-    {
-        public override bool CanRead => true;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => false;
-
-        public override long Length => 0;
-
-        public override long Position
-        {
-            get => 0;
-            set => throw new NotSupportedException();
-        }
-
-        public override void Flush() => throw new NotSupportedException();
-
-        public override int Read(byte[] buffer, int offset, int count) =>
-            throw new IOException("Forced read failure.");
-
-        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-
-        public override void SetLength(long value) => throw new NotSupportedException();
-
-        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 }

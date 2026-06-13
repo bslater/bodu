@@ -7,6 +7,7 @@
 using System.Buffers;
 using System.Text;
 using Bodu.Test.Assertions;
+using Bodu.Test.IO;
 
 namespace Bodu.Text.Toml;
 
@@ -169,33 +170,5 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <returns>The stored integer value.</returns>
         public int Value { get; set; }
-    }
-
-    /// <summary>
-    /// A stream that reports <see cref="Stream.CanWrite" /> as <see langword="false" />, used to exercise the
-    /// writability guard on stream-accepting entry points.
-    /// </summary>
-    private sealed class NonWritableStream
-        : MemoryStream
-    {
-        /// <summary>
-        /// Gets a value indicating whether the stream supports writing.
-        /// </summary>
-        /// <returns>Always <see langword="false" />.</returns>
-        public override bool CanWrite => false;
-    }
-
-    /// <summary>
-    /// A stream that reports <see cref="Stream.CanRead" /> as <see langword="false" />, used to exercise the
-    /// readability guard on stream-accepting entry points.
-    /// </summary>
-    private sealed class NonReadableStream
-        : MemoryStream
-    {
-        /// <summary>
-        /// Gets a value indicating whether the stream supports reading.
-        /// </summary>
-        /// <returns>Always <see langword="false" />.</returns>
-        public override bool CanRead => false;
     }
 }

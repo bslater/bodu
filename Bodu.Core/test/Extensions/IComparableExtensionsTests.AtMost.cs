@@ -56,7 +56,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     public void AtMost_WhenUsingReverseComparer_ShouldRespectComparerOrdering()
     {
-        IComparer<int> comparer = ReverseIntComparer.Instance;
+        IComparer<int> comparer = ReverseComparer<int>.Instance;
 
         // Under a reverse comparer, 20 is "less than" 10, so 20 is already at or below the ceiling (10).
         Assert.AreEqual(20, 20.AtMost(10, comparer));
