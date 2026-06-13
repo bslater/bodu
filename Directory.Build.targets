@@ -9,8 +9,15 @@
     the correct signal for language-feature availability — is not yet set when Directory.Build.props
     imports bld/Bodu.props. VersionGreaterThanOrEquals avoids the lexical trap where "10.0" sorts
     before "8.0".
+
+    The symbol is additionally suppressed when BuildingForDocfx=true (set by docs/docfx.json metadata
+    properties). DocFX 2.78.5 cannot model C# 14 extension blocks: it hashes each extension(Receiver)
+    block by receiver type, so members split one-per-partial-file collapse to a single UID and emit
+    "duplicated member" warnings that fail the docfx warnings-as-errors build. Compiling the
+    extension-method fallback for documentation yields the same members in a form DocFX renders cleanly
+    (as Bodu.Core's DateTimeExtensions already does); the shipped library still compiles the properties.
   -->
-  <PropertyGroup Condition="'$(NETCoreSdkVersion)' != '' and '$([MSBuild]::VersionGreaterThanOrEquals($(NETCoreSdkVersion), 10.0))' == 'true'">
+  <PropertyGroup Condition="'$(NETCoreSdkVersion)' != '' and '$([MSBuild]::VersionGreaterThanOrEquals($(NETCoreSdkVersion), 10.0))' == 'true' and '$(BuildingForDocfx)' != 'true'">
     <DefineConstants>$(DefineConstants);BODU_EXTENSION_MEMBERS</DefineConstants>
   </PropertyGroup>
 
