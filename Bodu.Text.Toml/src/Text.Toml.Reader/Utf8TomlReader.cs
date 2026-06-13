@@ -424,6 +424,18 @@ public ref partial struct Utf8TomlReader
     public readonly ReadOnlySpan<byte> ValueSpan => _source.Slice(_valueStart, _valueLength);
 
     /// <summary>
+    /// Gets the byte offset into the source at which the current token's raw text content begins, inside any delimiters.
+    /// </summary>
+    /// <returns>The content start offset, paired with <see cref="ValueLength" /> to slice the source on demand.</returns>
+    internal readonly int ValueStart => _valueStart;
+
+    /// <summary>
+    /// Gets the byte length of the current token's raw text content, excluding delimiters.
+    /// </summary>
+    /// <returns>The content length, paired with <see cref="ValueStart" /> to slice the source on demand.</returns>
+    internal readonly int ValueLength => _valueLength;
+
+    /// <summary>
     /// Gets the byte at the cursor.
     /// </summary>
     /// <returns>The current byte.</returns>

@@ -435,7 +435,7 @@ public ref partial struct Utf8TomlReader
     /// </summary>
     /// <param name="content">The raw content bytes, already validated by the scan.</param>
     /// <returns>The decoded string.</returns>
-    private readonly string DecodeEscapedString(ReadOnlySpan<byte> content)
+    internal static string DecodeEscapedString(ReadOnlySpan<byte> content)
     {
         var sb = new StringBuilder(content.Length);
         var i = 0;
@@ -482,6 +482,19 @@ public ref partial struct Utf8TomlReader
 
         return sb.ToString();
     }
+
+    /// <summary>
+    /// Decodes the validated content of a string token, transcoding the raw bytes directly when escape-free and
+    /// resolving escapes otherwise.
+    /// </summary>
+    /// <param name="content">The raw content bytes, already validated by the scan.</param>
+    /// <param name="hasEscapes">
+    /// <see langword="true" /> when the content carries escape sequences or line-ending backslashes that must be
+    /// resolved; otherwise <see langword="false" />.
+    /// </param>
+    /// <returns>The decoded string.</returns>
+    internal static string DecodeString(ReadOnlySpan<byte> content, bool hasEscapes) =>
+        hasEscapes ? DecodeEscapedString(content) : Encoding.UTF8.GetString(content);
 
     /// <summary>
     /// Appends the Unicode scalar value spelled by <paramref name="digits" /> validated hexadecimal digits.

@@ -1,9 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Globalization;
 using System.Text;
 using Bodu.Text.Toml.Reader;
@@ -16,16 +17,17 @@ namespace Bodu.Text.Toml.Document;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A <see cref="TomlDocument" /> holds a flat array of row records describing the document structure. The underlying
-/// <see cref="TomlDocumentReader" /> parses and decodes the whole document up front, so each scalar row stores its
-/// already decoded CLR value and the document keeps no copy of the source bytes. Every <see cref="TomlElement" />,
-/// enumerator, and <see cref="TomlProperty" /> obtained from a document is valid only until the document is disposed.
+/// A <see cref="TomlDocument" /> holds the flat row store produced directly by the structural parser, so parsing
+/// materializes neither an intermediate node tree nor a token list. Value-type scalars are decoded into the row, while a
+/// string scalar is decoded on demand from the UTF-8 source the document retains, so a string is materialized only when
+/// read. Every <see cref="TomlElement" />, enumerator, and <see cref="TomlProperty" /> obtained from a document is valid
+/// only until the document is disposed.
 /// </para>
 /// <para>
 /// Call <see cref="Dispose" /> when finished to invalidate the document and the <see cref="TomlElement" /> views taken
-/// from it; after disposal, any operation on such an element throws <see cref="ObjectDisposedException" />. Disposal
-/// releases no unmanaged or pooled resources — it drops the reference to the managed row index, which the garbage
-/// collector would otherwise reclaim.
+/// from it; after disposal, any operation on such an element throws <see cref="ObjectDisposedException" />. A parsed
+/// document rents its retained source from the shared array pool, so disposal returns that buffer as well as dropping the
+/// row store; neglecting to dispose leaks the buffer back to the garbage collector rather than the pool.
 /// </para>
 /// <para>
 /// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" /> or
@@ -36,7 +38,7 @@ namespace Bodu.Text.Toml.Document;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // The document owns a flat row index; dispose it (here via 'using') when finished.
+/// // The document owns a flat row store; dispose it (here via 'using') when finished.
 /// // Every element view obtained from it is valid only until the document is disposed.
 /// using TomlDocument document = TomlDocument.Parse("name = \"app\"\nport = 8080\n");
 /// TomlElement root = document.RootElement;
@@ -61,18 +63,45 @@ public sealed partial class TomlDocument
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>
-    /// The flat metadata index describing the parsed document in document order, or <see langword="null" /> once the
-    /// document has been disposed.
+    /// The flat row store describing the parsed document, or <see langword="null" /> once the document has been
+    /// disposed. The store may be shared with the owning read when this document is a subtree view.
     /// </summary>
-    private Row[]? _rows;
+    private List<TomlReaderRow>? _rows;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlDocument" /> class from a parsed row index.
+    /// The row index of this document's root within <see cref="_rows" />, which is zero for a parsed document and the
+    /// subtree root for a value materialized over a shared store.
     /// </summary>
-    /// <param name="rows">The flat metadata index describing the document.</param>
-    private TomlDocument(Row[] rows)
+    private readonly int _rootIndex;
+
+    /// <summary>
+    /// The UTF-8 source the document retains so a string scalar can be decoded on demand, or <see langword="null" />
+    /// once the document has been disposed. A parsed document rents this from the shared array pool; a subtree view
+    /// shares the owning read's garbage-collected copy.
+    /// </summary>
+    private byte[]? _source;
+
+    /// <summary>
+    /// Whether <see cref="_source" /> was rented from <see cref="ArrayPool{T}" /> and must be returned on disposal. A
+    /// subtree view shares a garbage-collected copy instead, so it does not return the buffer.
+    /// </summary>
+    private readonly bool _pooledSource;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlDocument" /> class over the supplied store and retained source.
+    /// </summary>
+    /// <param name="rows">The flat row store, possibly shared with the owning read.</param>
+    /// <param name="rootIndex">The row index of this document's root.</param>
+    /// <param name="source">The UTF-8 source retained for on-demand string decoding.</param>
+    /// <param name="pooledSource">
+    /// <see langword="true" /> when <paramref name="source" /> is pooled and disposal must return it.
+    /// </param>
+    private TomlDocument(List<TomlReaderRow> rows, int rootIndex, byte[] source, bool pooledSource)
     {
         _rows = rows;
+        _rootIndex = rootIndex;
+        _source = source;
+        _pooledSource = pooledSource;
     }
 
     /// <summary>
@@ -84,7 +113,7 @@ public sealed partial class TomlDocument
     /// <see cref="TomlElement.ValueKind" /> is <see cref="TomlValueKind.Table" />.
     /// </returns>
     public TomlElement RootElement =>
-        new(this, 0);
+        new(this, _rootIndex);
 
     /// <summary>
     /// Parses the supplied UTF-8 TOML bytes into a <see cref="TomlDocument" />.
@@ -111,20 +140,23 @@ public sealed partial class TomlDocument
     /// </remarks>
     public static TomlDocument Parse(ReadOnlySpan<byte> utf8Toml, TomlDocumentOptions options)
     {
-        TomlReaderOptions readerOptions = new()
+        var maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : options.MaxDepth;
+
+        // Retain a copy of the source so string scalars can be decoded on demand; rent it so the retention costs no
+        // managed allocation across repeated parses, and return it on disposal.
+        byte[] source = ArrayPool<byte>.Shared.Rent(utf8Toml.Length);
+        try
         {
-            SpecVersion = options.SpecVersion,
-            MaxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : options.MaxDepth,
-        };
+            utf8Toml.CopyTo(source);
+            List<TomlReaderRow> rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(source.AsSpan(0, utf8Toml.Length));
 
-        var reader = new TomlDocumentReader(utf8Toml, readerOptions);
-        if (!reader.Read())
-            throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
-
-        List<Row> rows = [];
-        ReadValue(ref reader, rows);
-
-        return new TomlDocument(rows.ToArray());
+            return new TomlDocument(rows, 0, source, pooledSource: true);
+        }
+        catch
+        {
+            ArrayPool<byte>.Shared.Return(source);
+            throw;
+        }
     }
 
     /// <summary>
@@ -172,114 +204,45 @@ public sealed partial class TomlDocument
     }
 
     /// <summary>
-    /// Reads the single complete value at the reader's current token into a <see cref="TomlDocument" /> whose root is
-    /// that value.
+    /// Materializes the single complete value at the reader's current token into a <see cref="TomlDocument" /> whose
+    /// root is that value, sharing the reader's row store rather than copying.
     /// </summary>
     /// <param name="reader">The reader, positioned on the value's first token.</param>
     /// <returns>A document over the value's subtree, which may root any value kind.</returns>
-    /// <exception cref="TomlFormatException">Thrown when the reader is positioned on an unexpected token.</exception>
     /// <remarks>
     /// On return the reader is positioned on the value's last token, matching the converter read contract. The
     /// serializer uses this entry point to materialize a <see cref="TomlElement" /> for an element-typed or
-    /// <see cref="object" />-typed member.
+    /// <see cref="object" />-typed member. The returned document references the same store as the read and shares the
+    /// read's single garbage-collected source copy, so it remains valid for as long as both are reachable and never
+    /// requires disposal.
     /// </remarks>
     internal static TomlDocument ParseValue(ref TomlDocumentReader reader)
     {
-        List<Row> rows = [];
-        ReadValue(ref reader, rows);
+        var document = new TomlDocument(reader.Rows, reader.CurrentRowIndex, reader.GetOwnedSource(), pooledSource: false);
+        reader.Skip();
 
-        return new TomlDocument(rows.ToArray());
+        return document;
     }
 
     /// <summary>
-    /// Releases the metadata index and invalidates the document.
+    /// Releases the row store and the retained source, and invalidates the document.
     /// </summary>
     /// <remarks>
-    /// Disposal is idempotent: calling it more than once has no further effect. After disposal, every element,
-    /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />.
+    /// Disposal is idempotent: calling it more than once has no further effect. A parsed document returns its pooled
+    /// source buffer to the shared array pool; a subtree view shares a garbage-collected copy and returns nothing. After
+    /// disposal, every element, enumerator, and property obtained from the document throws
+    /// <see cref="ObjectDisposedException" />.
     /// </remarks>
-    public void Dispose() =>
-        _rows = null;
-
-    /// <summary>
-    /// Reads a complete value beginning at the reader's current token, appending its subtree to
-    /// <paramref name="rows" />.
-    /// </summary>
-    /// <param name="reader">The reader, positioned on the value's first token.</param>
-    /// <param name="rows">The growing flat metadata index to append to.</param>
-    /// <exception cref="TomlFormatException">Thrown when the reader is positioned on an unexpected token.</exception>
-    private static void ReadValue(ref TomlDocumentReader reader, List<Row> rows)
+    public void Dispose()
     {
-        switch (reader.TokenType)
-        {
-            case TomlTokenType.String:
-                rows.Add(Row.Scalar(TomlValueKind.String, reader.GetString()));
-                return;
+        if (_rows is null)
+            return;
 
-            case TomlTokenType.Integer:
-                rows.Add(Row.Scalar(TomlValueKind.Integer, reader.GetInt64()));
-                return;
+        _rows = null;
+        if (_pooledSource && _source is not null)
+            ArrayPool<byte>.Shared.Return(_source);
 
-            case TomlTokenType.Float:
-                rows.Add(Row.Scalar(TomlValueKind.Float, reader.GetDouble()));
-                return;
-
-            case TomlTokenType.Boolean:
-                rows.Add(Row.Scalar(TomlValueKind.Boolean, reader.GetBoolean()));
-                return;
-
-            case TomlTokenType.OffsetDateTime:
-                rows.Add(Row.Scalar(TomlValueKind.OffsetDateTime, reader.GetDateTimeOffset()));
-                return;
-
-            case TomlTokenType.LocalDateTime:
-                rows.Add(Row.Scalar(TomlValueKind.LocalDateTime, reader.GetDateTime()));
-                return;
-
-            case TomlTokenType.LocalDate:
-                rows.Add(Row.Scalar(TomlValueKind.LocalDate, reader.GetDateOnly()));
-                return;
-
-            case TomlTokenType.LocalTime:
-                rows.Add(Row.Scalar(TomlValueKind.LocalTime, reader.GetTimeOnly()));
-                return;
-
-            case TomlTokenType.StartArray:
-                {
-                    var self = rows.Count;
-                    rows.Add(default);
-                    var count = 0;
-                    while (reader.Read() && reader.TokenType != TomlTokenType.EndArray)
-                    {
-                        ReadValue(ref reader, rows);
-                        count++;
-                    }
-
-                    rows[self] = Row.Container(TomlValueKind.Array, childCount: count, numberOfRows: rows.Count - self);
-                    return;
-                }
-
-            case TomlTokenType.StartTable:
-                {
-                    var self = rows.Count;
-                    rows.Add(default);
-                    var pairs = 0;
-                    while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
-                    {
-                        // The key surfaces as a property-name token; store it as a key row preceding its value subtree.
-                        rows.Add(Row.Key(reader.GetString()));
-                        reader.Read();
-                        ReadValue(ref reader, rows);
-                        pairs++;
-                    }
-
-                    rows[self] = Row.Container(TomlValueKind.Table, childCount: pairs, numberOfRows: rows.Count - self);
-                    return;
-                }
-
-            default:
-                throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
-        }
+        _source = null;
     }
 
     /// <summary>
@@ -290,27 +253,109 @@ public sealed partial class TomlDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal TomlValueKind GetKind(int index)
     {
-        Row[] rows = EnsureNotDisposed();
-        return rows[index].Kind;
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        return ToValueKind(rows[index]);
     }
 
     /// <summary>
-    /// Gets the decoded scalar value at the supplied row index, requiring it to be of the supplied kind.
+    /// Gets the decoded string value at the supplied row index.
     /// </summary>
-    /// <typeparam name="T">The CLR type the scalar was decoded to.</typeparam>
+    /// <param name="index">The row index.</param>
+    /// <returns>The string value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a string.</exception>
+    internal string GetString(int index)
+    {
+        TomlReaderRow row = ScalarRow(index, TomlValueKind.String);
+        return Utf8TomlReader.DecodeString(_source!.AsSpan(row.StringContentStart, row.StringContentLength), row.StringHasEscapes);
+    }
+
+    /// <summary>
+    /// Gets the decoded integer value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The 64-bit signed integer.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an integer.</exception>
+    internal long GetInt64(int index) =>
+        ScalarRow(index, TomlValueKind.Integer).AsInt64();
+
+    /// <summary>
+    /// Gets the decoded floating-point value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The IEEE 754 binary64 value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a float.</exception>
+    internal double GetDouble(int index) =>
+        ScalarRow(index, TomlValueKind.Float).AsDouble();
+
+    /// <summary>
+    /// Gets the decoded Boolean value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The Boolean value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a Boolean.</exception>
+    internal bool GetBoolean(int index) =>
+        ScalarRow(index, TomlValueKind.Boolean).AsBoolean();
+
+    /// <summary>
+    /// Gets the decoded offset date-time value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The offset date-time value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an offset date-time.</exception>
+    internal DateTimeOffset GetDateTimeOffset(int index) =>
+        ScalarRow(index, TomlValueKind.OffsetDateTime).AsDateTimeOffset();
+
+    /// <summary>
+    /// Gets the decoded local date-time value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The local date-time value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a local date-time.</exception>
+    internal DateTime GetDateTime(int index) =>
+        ScalarRow(index, TomlValueKind.LocalDateTime).AsDateTime();
+
+    /// <summary>
+    /// Gets the decoded local date value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The local date value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a local date.</exception>
+    internal DateOnly GetDateOnly(int index) =>
+        ScalarRow(index, TomlValueKind.LocalDate).AsDateOnly();
+
+    /// <summary>
+    /// Gets the decoded local time value at the supplied row index.
+    /// </summary>
+    /// <param name="index">The row index.</param>
+    /// <returns>The local time value.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not a local time.</exception>
+    internal TimeOnly GetTimeOnly(int index) =>
+        ScalarRow(index, TomlValueKind.LocalTime).AsTimeOnly();
+
+    /// <summary>
+    /// Returns the scalar row at the supplied index, requiring it to be of the supplied kind.
+    /// </summary>
     /// <param name="index">The row index.</param>
     /// <param name="required">The scalar kind the accessor requires.</param>
-    /// <returns>The decoded value.</returns>
+    /// <returns>The scalar row, from which the typed value is decoded by the caller.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the element is not of the required kind.</exception>
-    internal T GetScalar<T>(int index, TomlValueKind required)
+    private TomlReaderRow ScalarRow(int index, TomlValueKind required)
     {
-        Row[] rows = EnsureNotDisposed();
-        ref readonly Row row = ref rows[index];
-        if (row.Kind != required)
-            throw KindMismatch(required, row.Kind);
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        TomlValueKind kind = ToValueKind(rows[index]);
+        if (kind != required)
+            throw KindMismatch(required, kind);
 
-        return (T)row.Value!;
+        return rows[index];
     }
 
     /// <summary>
@@ -322,12 +367,11 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not an array.</exception>
     internal int GetArrayLength(int index)
     {
-        Row[] rows = EnsureNotDisposed();
-        ref readonly Row row = ref rows[index];
-        if (row.Kind != TomlValueKind.Array)
-            throw KindMismatch(TomlValueKind.Array, row.Kind);
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        if (rows[index].Kind != TomlReaderNodeKind.Array)
+            throw KindMismatch(TomlValueKind.Array, ToValueKind(rows[index]));
 
-        return row.ChildCount;
+        return rows[index].ChildCount;
     }
 
     /// <summary>
@@ -343,17 +387,16 @@ public sealed partial class TomlDocument
     /// </exception>
     internal int GetArrayElementRow(int index, int elementIndex)
     {
-        Row[] rows = EnsureNotDisposed();
-        ref readonly Row row = ref rows[index];
-        if (row.Kind != TomlValueKind.Array)
-            throw KindMismatch(TomlValueKind.Array, row.Kind);
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        if (rows[index].Kind != TomlReaderNodeKind.Array)
+            throw KindMismatch(TomlValueKind.Array, ToValueKind(rows[index]));
 
         // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
-        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, "index");
+        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)rows[index].ChildCount, "index");
 
-        var child = index + 1;
+        var child = rows[index].FirstChild;
         for (var i = 0; i < elementIndex; i++)
-            child += rows[child].NumberOfRows;
+            child = rows[child].NextSibling;
 
         return child;
     }
@@ -367,50 +410,43 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not a table.</exception>
     internal int GetTablePairCount(int index)
     {
-        Row[] rows = EnsureNotDisposed();
-        ref readonly Row row = ref rows[index];
-        if (row.Kind != TomlValueKind.Table)
-            throw KindMismatch(TomlValueKind.Table, row.Kind);
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        if (rows[index].Kind != TomlReaderNodeKind.Table)
+            throw KindMismatch(TomlValueKind.Table, ToValueKind(rows[index]));
 
-        return row.ChildCount;
+        return rows[index].ChildCount;
     }
 
     /// <summary>
     /// Gets the row index of the first child of the container at the supplied row index.
     /// </summary>
     /// <param name="index">The container's row index.</param>
-    /// <returns>The row index immediately following the container row.</returns>
+    /// <returns>The row index of the first child, or <c>-1</c> when the container is empty.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal int FirstChildRow(int index) =>
-        index + 1;
+        EnsureNotDisposed()[index].FirstChild;
 
     /// <summary>
     /// Gets the row index of the sibling that follows the value at the supplied row index.
     /// </summary>
     /// <param name="index">The value's row index.</param>
-    /// <returns>The row index immediately following the value's subtree.</returns>
+    /// <returns>The row index of the next sibling, or <c>-1</c> when it is the last child.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    internal int NextSiblingRow(int index)
-    {
-        Row[] rows = EnsureNotDisposed();
-        return index + rows[index].NumberOfRows;
-    }
+    internal int NextSiblingRow(int index) =>
+        EnsureNotDisposed()[index].NextSibling;
 
     /// <summary>
-    /// Walks a table's pairs starting at the supplied key row, returning the key, its value's row, and the row of the
-    /// next pair.
+    /// Reads a table pair given the row of its value, returning the key, the value's row, and the row of the next pair.
     /// </summary>
-    /// <param name="keyRow">The row index of the current pair's key.</param>
+    /// <param name="pairRow">The row index of the pair's value, which also carries the key.</param>
     /// <returns>
     /// A tuple of the key name, the row index of the pair's value, and the row index where the next pair begins.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    internal (string Name, int ValueRow, int NextPairRow) GetPair(int keyRow)
+    internal (string Name, int ValueRow, int NextPairRow) GetPair(int pairRow)
     {
-        Row[] rows = EnsureNotDisposed();
-        var name = (string)rows[keyRow].Value!;
-        var valueRow = keyRow + 1;
-        var nextPairRow = valueRow + rows[valueRow].NumberOfRows;
-        return (name, valueRow, nextPairRow);
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        return ((string)rows[pairRow].Key!, pairRow, rows[pairRow].NextSibling);
     }
 
     /// <summary>
@@ -426,22 +462,20 @@ public sealed partial class TomlDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not a table.</exception>
     internal bool TryGetProperty(int tableIndex, string name, out int valueRow)
     {
-        Row[] rows = EnsureNotDisposed();
-        ref readonly Row table = ref rows[tableIndex];
-        if (table.Kind != TomlValueKind.Table)
-            throw KindMismatch(TomlValueKind.Table, table.Kind);
+        List<TomlReaderRow> rows = EnsureNotDisposed();
+        if (rows[tableIndex].Kind != TomlReaderNodeKind.Table)
+            throw KindMismatch(TomlValueKind.Table, ToValueKind(rows[tableIndex]));
 
-        var cur = tableIndex + 1;
-        for (var i = 0; i < table.ChildCount; i++)
+        var child = rows[tableIndex].FirstChild;
+        while (child >= 0)
         {
-            var valueRowCandidate = cur + 1;
-            if (string.Equals((string)rows[cur].Value!, name, StringComparison.Ordinal))
+            if (string.Equals(rows[child].Key, name, StringComparison.Ordinal))
             {
-                valueRow = valueRowCandidate;
+                valueRow = child;
                 return true;
             }
 
-            cur = valueRowCandidate + rows[valueRowCandidate].NumberOfRows;
+            child = rows[child].NextSibling;
         }
 
         valueRow = 0;
@@ -449,11 +483,34 @@ public sealed partial class TomlDocument
     }
 
     /// <summary>
-    /// Ensures the document has not been disposed and returns its metadata index.
+    /// Maps a row's node kind and scalar token type to the public value kind.
     /// </summary>
-    /// <returns>The flat metadata index.</returns>
+    /// <param name="row">The row to classify.</param>
+    /// <returns>The value kind.</returns>
+    private static TomlValueKind ToValueKind(in TomlReaderRow row) =>
+        row.Kind switch
+        {
+            TomlReaderNodeKind.Table => TomlValueKind.Table,
+            TomlReaderNodeKind.Array => TomlValueKind.Array,
+            _ => row.TokenType switch
+            {
+                TomlTokenType.String => TomlValueKind.String,
+                TomlTokenType.Integer => TomlValueKind.Integer,
+                TomlTokenType.Float => TomlValueKind.Float,
+                TomlTokenType.Boolean => TomlValueKind.Boolean,
+                TomlTokenType.OffsetDateTime => TomlValueKind.OffsetDateTime,
+                TomlTokenType.LocalDateTime => TomlValueKind.LocalDateTime,
+                TomlTokenType.LocalDate => TomlValueKind.LocalDate,
+                _ => TomlValueKind.LocalTime,
+            },
+        };
+
+    /// <summary>
+    /// Ensures the document has not been disposed and returns its row store.
+    /// </summary>
+    /// <returns>The flat row store.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
-    private Row[] EnsureNotDisposed() =>
+    private List<TomlReaderRow> EnsureNotDisposed() =>
         _rows ?? throw new ObjectDisposedException(nameof(TomlDocument));
 
     /// <summary>

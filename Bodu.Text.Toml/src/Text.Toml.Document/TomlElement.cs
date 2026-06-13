@@ -63,7 +63,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not a <see cref="TomlValueKind.String" />.
     /// </exception>
     public string GetString() =>
-        _document.GetScalar<string>(_index, TomlValueKind.String);
+        _document.GetString(_index);
 
     /// <summary>
     /// Gets the value of this integer element as a 64-bit signed integer.
@@ -74,7 +74,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not an <see cref="TomlValueKind.Integer" />.
     /// </exception>
     public long GetInt64() =>
-        _document.GetScalar<long>(_index, TomlValueKind.Integer);
+        _document.GetInt64(_index);
 
     /// <summary>
     /// Gets the value of this float element as an IEEE 754 binary64 floating-point value.
@@ -85,7 +85,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not a <see cref="TomlValueKind.Float" />.
     /// </exception>
     public double GetDouble() =>
-        _document.GetScalar<double>(_index, TomlValueKind.Float);
+        _document.GetDouble(_index);
 
     /// <summary>
     /// Gets the value of this Boolean element.
@@ -96,7 +96,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not a <see cref="TomlValueKind.Boolean" />.
     /// </exception>
     public bool GetBoolean() =>
-        _document.GetScalar<bool>(_index, TomlValueKind.Boolean);
+        _document.GetBoolean(_index);
 
     /// <summary>
     /// Gets the value of this offset-date-time element.
@@ -107,7 +107,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not an <see cref="TomlValueKind.OffsetDateTime" />.
     /// </exception>
     public DateTimeOffset GetDateTimeOffset() =>
-        _document.GetScalar<DateTimeOffset>(_index, TomlValueKind.OffsetDateTime);
+        _document.GetDateTimeOffset(_index);
 
     /// <summary>
     /// Gets the value of this local-date-time element.
@@ -121,7 +121,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not a <see cref="TomlValueKind.LocalDateTime" />.
     /// </exception>
     public DateTime GetDateTime() =>
-        _document.GetScalar<DateTime>(_index, TomlValueKind.LocalDateTime);
+        _document.GetDateTime(_index);
 
     /// <summary>
     /// Gets the value of this local-date element.
@@ -132,7 +132,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not a <see cref="TomlValueKind.LocalDate" />.
     /// </exception>
     public DateOnly GetDateOnly() =>
-        _document.GetScalar<DateOnly>(_index, TomlValueKind.LocalDate);
+        _document.GetDateOnly(_index);
 
     /// <summary>
     /// Gets the value of this local-time element.
@@ -143,7 +143,7 @@ public readonly partial struct TomlElement
     /// Thrown when this element is not a <see cref="TomlValueKind.LocalTime" />.
     /// </exception>
     public TimeOnly GetTimeOnly() =>
-        _document.GetScalar<TimeOnly>(_index, TomlValueKind.LocalTime);
+        _document.GetTimeOnly(_index);
 
     /// <summary>
     /// Gets the number of elements in this array element.

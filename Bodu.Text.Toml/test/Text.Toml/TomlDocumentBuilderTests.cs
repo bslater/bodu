@@ -1,18 +1,19 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Text.Toml.Document;
 using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the behaviour of <see cref="TomlDocumentBuilder" />, the structural TOML parser, with particular focus on
-/// the lexical/structural validation split: every rule enforced by the builder's identity sets must be rejected by the
-/// builder even though the same input lexes cleanly.
+/// the lexical/structural validation split: every rule enforced by the builder's flag-and-link row store must be
+/// rejected by the builder even though the same input lexes cleanly.
 /// </summary>
 [TestClass]
 public sealed class TomlDocumentBuilderTests
@@ -21,6 +22,7 @@ public sealed class TomlDocumentBuilderTests
     /// Verifies that a structurally invalid document lexes cleanly but is rejected by the builder, proving the
     /// validation split.
     /// </summary>
+    /// <param name="toml">The structurally invalid TOML source.</param>
     [TestMethod]
     [DataRow("a = 1\na = 2\n", DisplayName = "duplicate key")]
     [DataRow("a.b = 1\na.b = 2\n", DisplayName = "duplicate dotted key")]
@@ -56,24 +58,20 @@ public sealed class TomlDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that out-of-line headers merge their members into nested position in the materialized tree.
+    /// Verifies that out-of-line headers merge their members into nested position, preserving insertion order.
     /// </summary>
     [TestMethod]
     public void Parse_WhenOutOfLineHeaders_ShouldMergeIntoNestedTables()
     {
-        TomlTableNode root = Parse("[server]\nhost = \"a\"\n\n[client]\ntimeout = 5\n\n[server.tls]\nenabled = true\n");
+        using var document = TomlDocument.Parse("[server]\nhost = \"a\"\n\n[client]\ntimeout = 5\n\n[server.tls]\nenabled = true\n");
+        TomlElement root = document.RootElement;
 
-        Assert.AreEqual(2, root.Items.Count);
-        Assert.AreEqual("server", root.Items[0].Key);
-        Assert.AreEqual("client", root.Items[1].Key);
+        CollectionAssert.AreEqual(new[] { "server", "client" }, Keys(root));
 
-        var server = (TomlTableNode)root.Items[0].Value;
-        Assert.AreEqual(2, server.Items.Count);
-        Assert.AreEqual("host", server.Items[0].Key);
-        Assert.AreEqual("tls", server.Items[1].Key);
-
-        var tls = (TomlTableNode)server.Items[1].Value;
-        Assert.AreEqual(true, ((TomlScalarNode)tls.Items[0].Value).Value);
+        TomlElement server = root.GetProperty("server");
+        CollectionAssert.AreEqual(new[] { "host", "tls" }, Keys(server));
+        Assert.AreEqual("a", server.GetProperty("host").GetString());
+        Assert.IsTrue(server.GetProperty("tls").GetProperty("enabled").GetBoolean());
     }
 
     /// <summary>
@@ -82,12 +80,13 @@ public sealed class TomlDocumentBuilderTests
     [TestMethod]
     public void Parse_WhenArrayOfTables_ShouldAppendElements()
     {
-        TomlTableNode root = Parse("[[p]]\nn = 1\n\n[[p]]\nn = 2\n");
+        using var document = TomlDocument.Parse("[[p]]\nn = 1\n\n[[p]]\nn = 2\n");
+        TomlElement p = document.RootElement.GetProperty("p");
 
-        var array = (TomlArrayNode)root.Items[0].Value;
-        Assert.AreEqual(2, array.Count);
-        Assert.AreEqual(1L, ((TomlScalarNode)((TomlTableNode)array.Items[0]).Items[0].Value).Value);
-        Assert.AreEqual(2L, ((TomlScalarNode)((TomlTableNode)array.Items[1]).Items[0].Value).Value);
+        Assert.AreEqual(TomlValueKind.Array, p.ValueKind);
+        Assert.AreEqual(2, p.GetArrayLength());
+        Assert.AreEqual(1L, p[0].GetProperty("n").GetInt64());
+        Assert.AreEqual(2L, p[1].GetProperty("n").GetInt64());
     }
 
     /// <summary>
@@ -110,9 +109,10 @@ public sealed class TomlDocumentBuilderTests
     [TestMethod]
     public void Parse_WhenNestingAtMaxDepth_ShouldSucceed()
     {
-        TomlTableNode root = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 3).Parse(Encoding.UTF8.GetBytes("a = [[[1]]]\n"));
+        using var document = TomlDocument.Parse("a = [[[1]]]\n", new TomlDocumentOptions { MaxDepth = 3 });
 
-        Assert.AreEqual(1, root.Items.Count);
+        Assert.AreEqual(TomlValueKind.Table, document.RootElement.ValueKind);
+        Assert.IsTrue(document.RootElement.TryGetProperty("a", out _));
     }
 
     /// <summary>
@@ -141,29 +141,39 @@ public sealed class TomlDocumentBuilderTests
         var depth = TomlLimits.AbsoluteMaxDepth;
         var toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
-        TomlTableNode root = new TomlDocumentBuilder(TomlSpecVersion.V1_0, int.MaxValue).Parse(Encoding.UTF8.GetBytes(toml));
+        using var document = TomlDocument.Parse(toml, new TomlDocumentOptions { MaxDepth = int.MaxValue });
 
-        Assert.AreEqual(1, root.Items.Count);
+        Assert.AreEqual(TomlValueKind.Table, document.RootElement.ValueKind);
+        Assert.IsTrue(document.RootElement.TryGetProperty("a", out _));
     }
 
     /// <summary>
-    /// Verifies that node offsets in the materialized tree are byte offsets into the UTF-8 source.
+    /// Verifies that the row store carries byte offsets into the UTF-8 source for each scalar.
     /// </summary>
     [TestMethod]
     public void Parse_WhenMultiByteContent_ShouldCarryByteOffsets()
     {
         // Bytes: s(0) sp(1) =(2) sp(3) "(4) é(5,6) "(7) LF(8) i(9) sp(10) =(11) sp(12) 1(13) LF(14).
-        TomlTableNode root = Parse("s = \"é\"\ni = 1\n");
+        List<TomlReaderRow> rows = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 256).Parse(Encoding.UTF8.GetBytes("s = \"é\"\ni = 1\n"));
 
-        Assert.AreEqual(4, ((TomlScalarNode)root.Items[0].Value).Offset);
-        Assert.AreEqual(13, ((TomlScalarNode)root.Items[1].Value).Offset);
+        var first = rows[rows[0].FirstChild];
+        var second = rows[first.NextSibling];
+
+        Assert.AreEqual(4, first.Offset);
+        Assert.AreEqual(13, second.Offset);
     }
 
     /// <summary>
-    /// Parses <paramref name="toml" /> with default options and returns the root table.
+    /// Collects the property names of a table element in stored order.
     /// </summary>
-    /// <param name="toml">The TOML source text.</param>
-    /// <returns>The materialized root table.</returns>
-    private static TomlTableNode Parse(string toml) =>
-        new TomlDocumentBuilder(TomlSpecVersion.V1_0, 256).Parse(Encoding.UTF8.GetBytes(toml));
+    /// <param name="table">The table element to read.</param>
+    /// <returns>The property names in order.</returns>
+    private static string[] Keys(TomlElement table)
+    {
+        var names = new List<string>();
+        foreach (TomlProperty property in table.EnumerateObject())
+            names.Add(property.Name);
+
+        return [.. names];
+    }
 }

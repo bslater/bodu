@@ -27,9 +27,13 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// The multiplier bounds are deliberately loose: they exist to catch order-of-magnitude regressions and to document the
-/// current baseline. The read pipeline now materializes a structural node tree and the flat row index — the flattened
-/// token-list intermediate has been removed — and still allocates on the order of forty times the input; collapsing the
-/// remaining tree into the flat model would lower these further, at which point the bounds should be tightened.
+/// current baseline. The structural parser reuses a per-depth scratch list for key paths, hands its row list to the
+/// document without a final array copy, and packs every scalar into the row — value types unboxed, and a string as the
+/// source span of its content, decoded on demand from the source the document retains in a pooled buffer. So
+/// <c>TomlDocument.Parse</c> sits near eight times the input, the serializer's bind path near twenty-six, and the mutable
+/// node DOM near twenty-two; parsing a string-valued document without reading the values stays in the single digits
+/// because the strings are never decoded. The bind and node paths still build their own representations from the shared
+/// store.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -95,7 +99,27 @@ public sealed class TomlAllocationTests
             _ = document.RootElement;
         });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 48);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 11);
+    }
+
+    /// <summary>
+    /// Verifies that parsing a string-valued document into a <see cref="TomlDocument" /> without reading the values
+    /// stays within the recorded allocation baseline, confirming string scalars are not decoded at parse time but only
+    /// when read.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TomlDocument_WhenParsingStringValuesWithoutReading_ShouldStayWithinAllocationBaseline()
+    {
+        var bytes = Encoding.UTF8.GetBytes(BuildStringDocument(SampleLineCount));
+
+        var allocated = Measure(() =>
+        {
+            using var document = TomlDocument.Parse(bytes);
+            _ = document.RootElement;
+        });
+
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 8);
     }
 
     /// <summary>
@@ -130,7 +154,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlNode.Parse(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 48);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 30);
     }
 
     /// <summary>
@@ -161,7 +185,7 @@ public sealed class TomlAllocationTests
 
         var allocated = Measure(() => { _ = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 56);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 36);
     }
 
     /// <summary>
@@ -298,6 +322,21 @@ public sealed class TomlAllocationTests
         var builder = new StringBuilder(lines * 16);
         for (var i = 0; i < lines; i++)
             builder.Append("key").Append(i).Append(" = ").Append(i).Append('\n');
+
+        return builder.ToString();
+    }
+
+    /// <summary>
+    /// Builds a flat TOML document of <paramref name="lines" /> bare key/value pairs whose values are quoted strings,
+    /// used to measure the read-only document's string handling.
+    /// </summary>
+    /// <param name="lines">The number of key/value lines to emit.</param>
+    /// <returns>The TOML source text.</returns>
+    private static string BuildStringDocument(int lines)
+    {
+        var builder = new StringBuilder(lines * 32);
+        for (var i = 0; i < lines; i++)
+            builder.Append("key").Append(i).Append(" = \"value ").Append(i).Append(" payload text\"\n");
 
         return builder.ToString();
     }
