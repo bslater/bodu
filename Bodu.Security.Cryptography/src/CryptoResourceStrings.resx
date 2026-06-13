@@ -334,6 +334,9 @@
   <data name="Format_Invalid_PhcString" xml:space="preserve">
     <value>The PHC encoded-hash string is not well formed.</value>
   </data>
+  <data name="Format_Invalid_HexString" xml:space="preserve">
+    <value>The value is not a valid hexadecimal string.</value>
+  </data>
   <data name="Arg_OutOfRange_ScryptCostNotPowerOfTwo" xml:space="preserve">
     <value>The scrypt cost parameter N must be greater than 1 and a power of two.</value>
   </data>

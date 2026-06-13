@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -179,5 +179,8 @@
   </data>
   <data name="Op_Invalid_TotalLengthOverflow" xml:space="preserve">
     <value>Cumulative input length would exceed the {0}-byte limit tracked by {1}.</value>
+  </data>
+  <data name="Op_NotSupported_HashingStreamNotSeekable" xml:space="preserve">
+    <value>The stream does not support seeking.</value>
   </data>
 </root>
