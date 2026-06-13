@@ -247,7 +247,7 @@ internal sealed class TomlDocumentBuilder
             }
 
             case TomlTokenType.String:
-                return NewScalar(TomlTokenType.String, lexer.TokenStartIndex, stringValue: lexer.GetString());
+                return NewScalar(TomlTokenType.String, lexer.TokenStartIndex, bits: TomlReaderRow.PackStringSpan(lexer.ValueStart, lexer.ValueLength, lexer.HasEscapes));
 
             case TomlTokenType.Integer:
                 return NewScalar(TomlTokenType.Integer, lexer.TokenStartIndex, bits: lexer.GetInt64());
@@ -515,17 +515,15 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="tokenType">The token type that classifies the scalar.</param>
     /// <param name="offset">The source byte offset at which the scalar begins.</param>
-    /// <param name="stringValue">The decoded string for a string scalar; otherwise <see langword="null" />.</param>
-    /// <param name="bits">The value packed into 64 bits for a value-type scalar; otherwise zero.</param>
+    /// <param name="bits">The packed payload: a value-type scalar's value, or a string scalar's content span.</param>
     /// <param name="offsetMinutes">The UTC offset in whole minutes for an offset date-time; otherwise zero.</param>
     /// <returns>The row index of the new scalar.</returns>
-    private int NewScalar(TomlTokenType tokenType, int offset, string? stringValue = null, long bits = 0L, short offsetMinutes = 0)
+    private int NewScalar(TomlTokenType tokenType, int offset, long bits = 0L, short offsetMinutes = 0)
     {
         _rows.Add(new TomlReaderRow
         {
             Kind = TomlReaderNodeKind.Scalar,
             TokenType = tokenType,
-            StringValue = stringValue,
             ScalarBits = bits,
             ScalarOffsetMinutes = offsetMinutes,
             Offset = offset,

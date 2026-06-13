@@ -54,10 +54,18 @@ public ref struct TomlDocumentReader
     private readonly List<TomlReaderRow> _rows;
 
     /// <summary>
-    /// The UTF-8 source bytes, retained so a token's byte offset can be mapped to a line and column on a binding
-    /// failure. Held as a span because the reader is a <see langword="ref struct" /> scoped to a single read.
+    /// The UTF-8 source bytes, retained so a string value can be decoded on demand and a token's byte offset mapped to a
+    /// line and column on a binding failure. Held as a span because the reader is a <see langword="ref struct" /> scoped
+    /// to a single read.
     /// </summary>
     private readonly ReadOnlySpan<byte> _source;
+
+    /// <summary>
+    /// A lazily created garbage-collected copy of <see cref="_source" />, materialized on the first
+    /// <see cref="GetOwnedSource" /> so that subtree documents from <c>TomlDocument.ParseValue</c> can retain the source
+    /// the reader holds only as a span. Every such document from one read shares this single copy.
+    /// </summary>
+    private byte[]? _ownedSource;
 
     /// <summary>
     /// The stack of open containers, one frame per open table or array, innermost last.
@@ -200,6 +208,18 @@ public ref struct TomlDocumentReader
     internal readonly int CurrentRowIndex => _currentRow;
 
     /// <summary>
+    /// Returns a garbage-collected copy of the source, creating it once and reusing it for every subtree document
+    /// materialized from this read.
+    /// </summary>
+    /// <returns>The owned source copy, whose offsets match the shared row store.</returns>
+    /// <remarks>
+    /// A subtree document needs to retain the source for on-demand string decoding, but the reader holds it only as a
+    /// span; this materializes a single shared copy so binding many element-typed members does not copy per element.
+    /// </remarks>
+    internal byte[] GetOwnedSource() =>
+        _ownedSource ??= _source.ToArray();
+
+    /// <summary>
     /// Records the source position of the current token on a binding failure, setting the byte offset, line number, and
     /// column number of the supplied exception when it does not already carry a position.
     /// </summary>
@@ -301,10 +321,19 @@ public ref struct TomlDocumentReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.String" /> or
     /// <see cref="TomlTokenType.PropertyName" />.
     /// </exception>
-    public readonly string GetString() =>
-        _tokenType is TomlTokenType.String or TomlTokenType.PropertyName
-            ? _value!
-            : throw new InvalidOperationException();
+    public readonly string GetString()
+    {
+        if (_tokenType == TomlTokenType.PropertyName)
+            return _value!;
+
+        if (_tokenType == TomlTokenType.String)
+        {
+            TomlReaderRow row = _rows[_currentRow];
+            return Utf8TomlReader.DecodeString(_source.Slice(row.StringContentStart, row.StringContentLength), row.StringHasEscapes);
+        }
+
+        throw new InvalidOperationException();
+    }
 
     /// <summary>
     /// Reads the current token as a 64-bit signed integer.
@@ -426,7 +455,7 @@ public ref struct TomlDocumentReader
     {
         if (_rows[row].Kind == TomlReaderNodeKind.Scalar)
         {
-            SetToken(_rows[row].TokenType, _rows[row].StringValue, _rows[row].Offset, row);
+            SetToken(_rows[row].TokenType, null, _rows[row].Offset, row);
             return;
         }
 

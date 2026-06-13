@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Globalization;
 using System.Text;
 using Bodu.Text.Toml.Reader;
@@ -17,15 +18,16 @@ namespace Bodu.Text.Toml.Document;
 /// <remarks>
 /// <para>
 /// A <see cref="TomlDocument" /> holds the flat row store produced directly by the structural parser, so parsing
-/// materializes neither an intermediate node tree nor a token list. Each scalar row stores its already decoded CLR value
-/// and the document keeps no copy of the source bytes. Every <see cref="TomlElement" />, enumerator, and
-/// <see cref="TomlProperty" /> obtained from a document is valid only until the document is disposed.
+/// materializes neither an intermediate node tree nor a token list. Value-type scalars are decoded into the row, while a
+/// string scalar is decoded on demand from the UTF-8 source the document retains, so a string is materialized only when
+/// read. Every <see cref="TomlElement" />, enumerator, and <see cref="TomlProperty" /> obtained from a document is valid
+/// only until the document is disposed.
 /// </para>
 /// <para>
 /// Call <see cref="Dispose" /> when finished to invalidate the document and the <see cref="TomlElement" /> views taken
-/// from it; after disposal, any operation on such an element throws <see cref="ObjectDisposedException" />. Disposal
-/// releases no unmanaged or pooled resources — it drops the reference to the managed row store, which the garbage
-/// collector would otherwise reclaim.
+/// from it; after disposal, any operation on such an element throws <see cref="ObjectDisposedException" />. A parsed
+/// document rents its retained source from the shared array pool, so disposal returns that buffer as well as dropping the
+/// row store; neglecting to dispose leaks the buffer back to the garbage collector rather than the pool.
 /// </para>
 /// <para>
 /// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" /> or
@@ -73,23 +75,33 @@ public sealed partial class TomlDocument
     private readonly int _rootIndex;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlDocument" /> class rooted at the start of the supplied store.
+    /// The UTF-8 source the document retains so a string scalar can be decoded on demand, or <see langword="null" />
+    /// once the document has been disposed. A parsed document rents this from the shared array pool; a subtree view
+    /// shares the owning read's garbage-collected copy.
     /// </summary>
-    /// <param name="rows">The flat row store describing the document.</param>
-    private TomlDocument(List<TomlReaderRow> rows)
-        : this(rows, 0)
-    {
-    }
+    private byte[]? _source;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlDocument" /> class rooted at the supplied row of the store.
+    /// Whether <see cref="_source" /> was rented from <see cref="ArrayPool{T}" /> and must be returned on disposal. A
+    /// subtree view shares a garbage-collected copy instead, so it does not return the buffer.
+    /// </summary>
+    private readonly bool _pooledSource;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlDocument" /> class over the supplied store and retained source.
     /// </summary>
     /// <param name="rows">The flat row store, possibly shared with the owning read.</param>
     /// <param name="rootIndex">The row index of this document's root.</param>
-    private TomlDocument(List<TomlReaderRow> rows, int rootIndex)
+    /// <param name="source">The UTF-8 source retained for on-demand string decoding.</param>
+    /// <param name="pooledSource">
+    /// <see langword="true" /> when <paramref name="source" /> is pooled and disposal must return it.
+    /// </param>
+    private TomlDocument(List<TomlReaderRow> rows, int rootIndex, byte[] source, bool pooledSource)
     {
         _rows = rows;
         _rootIndex = rootIndex;
+        _source = source;
+        _pooledSource = pooledSource;
     }
 
     /// <summary>
@@ -129,9 +141,22 @@ public sealed partial class TomlDocument
     public static TomlDocument Parse(ReadOnlySpan<byte> utf8Toml, TomlDocumentOptions options)
     {
         var maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : options.MaxDepth;
-        List<TomlReaderRow> rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
 
-        return new TomlDocument(rows);
+        // Retain a copy of the source so string scalars can be decoded on demand; rent it so the retention costs no
+        // managed allocation across repeated parses, and return it on disposal.
+        byte[] source = ArrayPool<byte>.Shared.Rent(utf8Toml.Length);
+        try
+        {
+            utf8Toml.CopyTo(source);
+            List<TomlReaderRow> rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(source.AsSpan(0, utf8Toml.Length));
+
+            return new TomlDocument(rows, 0, source, pooledSource: true);
+        }
+        catch
+        {
+            ArrayPool<byte>.Shared.Return(source);
+            throw;
+        }
     }
 
     /// <summary>
@@ -187,26 +212,38 @@ public sealed partial class TomlDocument
     /// <remarks>
     /// On return the reader is positioned on the value's last token, matching the converter read contract. The
     /// serializer uses this entry point to materialize a <see cref="TomlElement" /> for an element-typed or
-    /// <see cref="object" />-typed member. The returned document references the same store as the read, so it remains
-    /// valid for as long as that store is reachable.
+    /// <see cref="object" />-typed member. The returned document references the same store as the read and shares the
+    /// read's single garbage-collected source copy, so it remains valid for as long as both are reachable and never
+    /// requires disposal.
     /// </remarks>
     internal static TomlDocument ParseValue(ref TomlDocumentReader reader)
     {
-        var document = new TomlDocument(reader.Rows, reader.CurrentRowIndex);
+        var document = new TomlDocument(reader.Rows, reader.CurrentRowIndex, reader.GetOwnedSource(), pooledSource: false);
         reader.Skip();
 
         return document;
     }
 
     /// <summary>
-    /// Releases the row store and invalidates the document.
+    /// Releases the row store and the retained source, and invalidates the document.
     /// </summary>
     /// <remarks>
-    /// Disposal is idempotent: calling it more than once has no further effect. After disposal, every element,
-    /// enumerator, and property obtained from the document throws <see cref="ObjectDisposedException" />.
+    /// Disposal is idempotent: calling it more than once has no further effect. A parsed document returns its pooled
+    /// source buffer to the shared array pool; a subtree view shares a garbage-collected copy and returns nothing. After
+    /// disposal, every element, enumerator, and property obtained from the document throws
+    /// <see cref="ObjectDisposedException" />.
     /// </remarks>
-    public void Dispose() =>
+    public void Dispose()
+    {
+        if (_rows is null)
+            return;
+
         _rows = null;
+        if (_pooledSource && _source is not null)
+            ArrayPool<byte>.Shared.Return(_source);
+
+        _source = null;
+    }
 
     /// <summary>
     /// Gets the kind of the value at the supplied row index.
@@ -227,8 +264,11 @@ public sealed partial class TomlDocument
     /// <returns>The string value.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the element is not a string.</exception>
-    internal string GetString(int index) =>
-        ScalarRow(index, TomlValueKind.String).AsString();
+    internal string GetString(int index)
+    {
+        TomlReaderRow row = ScalarRow(index, TomlValueKind.String);
+        return Utf8TomlReader.DecodeString(_source!.AsSpan(row.StringContentStart, row.StringContentLength), row.StringHasEscapes);
+    }
 
     /// <summary>
     /// Gets the decoded integer value at the supplied row index.

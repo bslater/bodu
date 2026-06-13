@@ -14,10 +14,11 @@ namespace Bodu.Text.Toml.Reader;
 /// cursor in <see cref="TomlDocumentReader" />, so no separate tree or token list is materialized.
 /// </summary>
 /// <remarks>
-/// A value-type scalar carries its value unboxed: numeric, Boolean, and date/time scalars pack into
-/// <see cref="ScalarBits" /> (with <see cref="ScalarOffsetMinutes" /> for an offset date-time), and only a string scalar
-/// holds a reference, in <see cref="StringValue" />. The <c>As…</c> accessors decode each kind, and are the single
-/// counterpart to the packing the builder performs, so the two cannot drift.
+/// No scalar holds a reference. A numeric, Boolean, or date/time scalar packs its value into <see cref="ScalarBits" />
+/// (with <see cref="ScalarOffsetMinutes" /> for an offset date-time), and a string scalar packs its content's source
+/// span into <see cref="ScalarBits" /> instead — decoded on demand from the retained source rather than at parse. The
+/// <c>As…</c> value accessors and the <c>StringContent…</c> span accessors are the single counterpart to the packing the
+/// builder performs, so the two cannot drift.
 /// </remarks>
 internal struct TomlReaderRow
 {
@@ -33,16 +34,11 @@ internal struct TomlReaderRow
     public TomlTokenType TokenType;
 
     /// <summary>
-    /// For a string scalar, the decoded string; <see langword="null" /> for any other kind. Every value-type scalar
-    /// carries its value in <see cref="ScalarBits" /> instead, so no scalar value is boxed.
-    /// </summary>
-    public string? StringValue;
-
-    /// <summary>
-    /// For a value-type scalar, the value packed into 64 bits: the integer itself; the float reinterpreted with
-    /// <see cref="BitConverter.DoubleToInt64Bits(double)" />; zero or one for a Boolean; the day number for a local date;
-    /// or the tick count for a local time, a local date-time, or the local clock time of an offset date-time. Unused for
-    /// a string, table, or array.
+    /// The scalar's packed payload, interpreted by <see cref="TokenType" />. A value-type scalar stores its value: the
+    /// integer itself; the float reinterpreted with <see cref="BitConverter.DoubleToInt64Bits(double)" />; zero or one
+    /// for a Boolean; the day number for a local date; or the tick count for a local time, a local date-time, or the
+    /// local clock time of an offset date-time. A string scalar stores its content's source span, packed by
+    /// <see cref="PackStringSpan(int, int, bool)" />. Unused for a table or array.
     /// </summary>
     public long ScalarBits;
 
@@ -143,9 +139,43 @@ internal struct TomlReaderRow
         new(ScalarBits, new TimeSpan(0, ScalarOffsetMinutes, 0));
 
     /// <summary>
-    /// Returns this string scalar's decoded value.
+    /// Gets the source byte offset at which this string scalar's content begins, inside its delimiters.
     /// </summary>
-    /// <returns>The string value.</returns>
-    public readonly string AsString() =>
-        StringValue!;
+    /// <returns>The content start offset, paired with <see cref="StringContentLength" /> to slice the retained source.</returns>
+    public readonly int StringContentStart =>
+        (int)(ScalarBits >> 32);
+
+    /// <summary>
+    /// Gets the byte length of this string scalar's content.
+    /// </summary>
+    /// <returns>The content length, paired with <see cref="StringContentStart" /> to slice the retained source.</returns>
+    public readonly int StringContentLength =>
+        (int)((uint)ScalarBits & LengthMask);
+
+    /// <summary>
+    /// Gets a value indicating whether this string scalar's content carries escapes that decoding must resolve.
+    /// </summary>
+    /// <returns><see langword="true" /> when the content must be unescaped rather than transcoded directly.</returns>
+    public readonly bool StringHasEscapes =>
+        ((uint)ScalarBits & EscapeFlag) != 0;
+
+    /// <summary>
+    /// Packs a string scalar's content source span and escape state into the 64-bit <see cref="ScalarBits" /> payload.
+    /// </summary>
+    /// <param name="start">The source byte offset at which the content begins.</param>
+    /// <param name="length">The content length in bytes, which must be less than 2^31.</param>
+    /// <param name="hasEscapes">Whether the content carries escapes that decoding must resolve.</param>
+    /// <returns>The packed payload: the start in the high 32 bits, the length and escape flag in the low 32.</returns>
+    public static long PackStringSpan(int start, int length, bool hasEscapes) =>
+        ((long)(uint)start << 32) | (uint)length | (hasEscapes ? EscapeFlag : 0U);
+
+    /// <summary>
+    /// The bit within the low 32 bits of <see cref="ScalarBits" /> that flags a string scalar's content as escaped.
+    /// </summary>
+    private const uint EscapeFlag = 0x8000_0000U;
+
+    /// <summary>
+    /// The mask selecting a string scalar's content length from the low 32 bits of <see cref="ScalarBits" />.
+    /// </summary>
+    private const uint LengthMask = 0x7FFF_FFFFU;
 }
