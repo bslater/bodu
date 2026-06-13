@@ -17,7 +17,8 @@ namespace Bodu.Numerics;
 /// <see cref="BigInteger" />, and it refuses every <c>TryConvert</c> request so the framework raises
 /// <see cref="NotSupportedException" /> rather than producing a value.
 /// </summary>
-internal readonly struct UnsupportedNumber : INumberBase<UnsupportedNumber>
+internal readonly struct UnsupportedNumber
+    : INumberBase<UnsupportedNumber>
 {
     /// <summary>
     /// When <see langword="true" />, the value reports itself as non-integer yet finite, and its double conversion

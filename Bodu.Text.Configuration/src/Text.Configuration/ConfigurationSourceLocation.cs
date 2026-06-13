@@ -52,7 +52,8 @@ namespace Bodu.Text.Configuration;
 ///]]>
 /// </example>
 [DebuggerDisplay("Line {LineNumber}, Col {LinePosition}, Len {Length}")]
-public readonly struct ConfigurationSourceLocation : IEquatable<ConfigurationSourceLocation>
+public readonly struct ConfigurationSourceLocation
+    : IEquatable<ConfigurationSourceLocation>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationSourceLocation" /> struct with the specified line

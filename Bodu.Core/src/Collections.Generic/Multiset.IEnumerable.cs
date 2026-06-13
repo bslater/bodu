@@ -45,7 +45,8 @@ public sealed partial class Multiset<T>
     /// </para>
     /// </remarks>
     [Serializable]
-    public struct Enumerator : IEnumerator<T>
+    public struct Enumerator
+        : IEnumerator<T>
     {
         private readonly Multiset<T> _multiset;
         private readonly int _version;

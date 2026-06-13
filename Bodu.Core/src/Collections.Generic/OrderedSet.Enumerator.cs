@@ -27,7 +27,8 @@ public sealed partial class OrderedSet<T>
     /// <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
-    public struct Enumerator : IEnumerator<T>
+    public struct Enumerator
+        : IEnumerator<T>
     {
         /// <summary>
         /// The storage being enumerated.

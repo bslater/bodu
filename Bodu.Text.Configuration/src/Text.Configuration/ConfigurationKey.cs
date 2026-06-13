@@ -44,7 +44,8 @@ namespace Bodu.Text.Configuration;
 ///]]>
 /// </example>
 [DebuggerDisplay("{RawKey,nq} -> {Path,nq}")]
-public readonly partial struct ConfigurationKey : IEquatable<ConfigurationKey>
+public readonly partial struct ConfigurationKey
+    : IEquatable<ConfigurationKey>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationKey" /> struct from a raw key string using the
