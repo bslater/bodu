@@ -36,6 +36,17 @@ Several capabilities ship as independent companion packages so they can release 
 | `Bodu.Globalization.Calendar.Plugins` | Stable | Trust-gated loading of external assemblies that contribute custom `INotableDateAlgorithm` implementations. | `Bodu.Globalization.Calendar` |
 | `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions for registering Bodu.Financial currency-lookup and monetary services via `AddBoduFinancial`. | `Bodu.Financial`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 
+## File formats and exchange-rate data
+
+The Reserve Bank of Australia historical exchange-rate provider ships as a small, strictly layered stack. The lower two layers carry no financial or RBA-specific concepts and can be reused on their own: a generic compound-file reader, and a narrow binary-`.xls` reader built on it.
+
+| Package | Status | Purpose | Depends on |
+|---|---|---|---|
+| `Bodu.IO.Compound` | **Preview** | Read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage envelope used by legacy Office files. Exposes the embedded named streams with no application-format knowledge. | `Bodu.Core` |
+| `Bodu.Formats.Excel.Binary` | **Preview** | Narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `Bodu.IO.Compound`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.Rba` | **Preview** | Downloads and parses the RBA's published daily exchange-rate `.xls` files, serving them as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API and in-memory plus on-disk caching. | `Bodu.Formats.Excel.Binary`, `Bodu.Financial`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.Rba.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the RBA provider as a singleton backed by a configured `HttpClient`, binding `RbaExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Rba`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
+
 ## Calendar data packs
 
 Region-specific public-holiday rules ship as independent NuGet packages — one per region — so consumers pull in only the territories they need. Each is built on the notable-date schema and exposes a `<Region>CalendarData` factory over per-country embedded resource packs.
@@ -81,6 +92,12 @@ dotnet add package Bodu.Globalization.Calendar.Builder
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 dotnet add package Bodu.Globalization.Calendar.Plugins
 dotnet add package Bodu.Financial.DependencyInjection
+
+# File formats and exchange-rate data
+dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.Formats.Excel.Binary
+dotnet add package Bodu.Financial.ExchangeRates.Rba
+dotnet add package Bodu.Financial.ExchangeRates.Rba.DependencyInjection
 
 # Calendar regional data packs (install only what you need)
 dotnet add package Bodu.Globalization.Calendar.Americas

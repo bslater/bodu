@@ -9,7 +9,7 @@ using Bodu.Formats.Excel.Binary;
 namespace Bodu.Financial.ExchangeRates.Rba;
 
 /// <summary>
-/// A test table source that parses the embedded sample workbook for every era, recording how many times it is invoked.
+/// A test table source that parses an embedded workbook fixture for every era, recording how many times it is invoked.
 /// </summary>
 internal sealed class FixtureRbaExchangeRateTableSource
     : IRbaExchangeRateTableSource
@@ -20,12 +20,19 @@ internal sealed class FixtureRbaExchangeRateTableSource
     private readonly RbaExchangeRateOptions _options;
 
     /// <summary>
+    /// The embedded fixture file name to parse.
+    /// </summary>
+    private readonly string _fileName;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="FixtureRbaExchangeRateTableSource" /> class.
     /// </summary>
     /// <param name="options">The options used when parsing the workbook.</param>
-    public FixtureRbaExchangeRateTableSource(RbaExchangeRateOptions options)
+    /// <param name="fileName">The embedded fixture file name to parse.</param>
+    public FixtureRbaExchangeRateTableSource(RbaExchangeRateOptions options, string fileName = RbaFixtures.Sample)
     {
         _options = options;
+        _fileName = fileName;
     }
 
     /// <summary>
@@ -39,7 +46,7 @@ internal sealed class FixtureRbaExchangeRateTableSource
     {
         GetTableCallCount++;
 
-        using MemoryStream stream = RbaFixtures.OpenStream(RbaFixtures.Sample);
+        using MemoryStream stream = RbaFixtures.OpenStream(_fileName);
         var workbook = Biff8WorkbookReader.Open(stream);
         return ValueTask.FromResult(RbaExchangeRateWorkbookParser.Parse(workbook, _options));
     }
