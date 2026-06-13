@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using Bodu.Text.Toml.Reader;
@@ -14,7 +15,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Provides static methods for serializing values to canonical TOML text and deserializing TOML back into values,
+/// Provides static methods for serializing values to normalized TOML text and deserializing TOML back into values,
 /// mapping plain CLR objects to and from the format through configurable converters.
 /// </summary>
 /// <remarks>
@@ -24,6 +25,11 @@ namespace Bodu.Text.Toml;
 /// Scalars map to the corresponding TOML kinds; enumerations to strings; a byte array to an array of integers or a
 /// Base64 string per <see cref="TomlSerializerOptions.ByteArrayHandling" />; and TOML has no null, so a null member is
 /// omitted by default and a null array element is rejected.
+/// </para>
+/// <para>
+/// TOML has no representation for an object reference, so reference identity is not preserved: a value reachable by
+/// more than one path is written once per path, by value, and a reference cycle is rejected with
+/// <see cref="TomlSerializationException" /> rather than serialized.
 /// </para>
 /// <para>
 /// Each entry point accepts an optional <see cref="TomlSerializerOptions" />. When none is supplied a default instance
@@ -47,7 +53,7 @@ public static class TomlSerializer
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>
-    /// Serializes the specified value to canonical TOML text.
+    /// Serializes the specified value to normalized TOML text.
     /// </summary>
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
     /// <param name="value">The value to serialize.</param>
@@ -59,6 +65,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the value does not map to a table at the document root, or cannot be represented in TOML.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static string Serialize<T>(T value, TomlSerializerOptions? options = null)
     {
         var buffer = new ArrayBufferWriter<byte>();
@@ -82,6 +90,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the value does not map to a table at the document root, or cannot be represented in TOML.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static void Serialize<T>(IBufferWriter<byte> destination, T value, TomlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -89,7 +99,7 @@ public static class TomlSerializer
         TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
         RequireRootIsTable(value, effective);
 
-        var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
+        var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { MaxDepth = effective.MaxDepth });
         TomlSerializerEngine.Serialize(writer, value, effective);
     }
 
@@ -102,6 +112,11 @@ public static class TomlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the write.</param>
     /// <returns>A task that completes when the value has been written.</returns>
+    /// <remarks>
+    /// The value is serialized into an in-memory buffer in full and then written to the stream in a single asynchronous
+    /// operation: the method buffers the complete output rather than streaming it, so peak memory includes the entire
+    /// rendered document. Cancellation applies to the final write, not to the serialization that precedes it.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
@@ -111,6 +126,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the value does not map to a table at the document root, or cannot be represented in TOML.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static ValueTask SerializeAsync<T>(Stream destination, T value, TomlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -135,6 +152,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(string text, TomlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(text);
@@ -153,6 +172,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(ReadOnlySpan<byte> utf8Toml, TomlSerializerOptions? options = null)
     {
         TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
@@ -168,6 +189,10 @@ public static class TomlSerializer
     /// <param name="source">The readable stream containing the UTF-8 TOML bytes.</param>
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The deserialized value.</returns>
+    /// <remarks>
+    /// The stream is read to its end into an in-memory buffer before parsing begins: the method buffers the complete
+    /// input rather than parsing incrementally, so peak memory includes the entire document.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
@@ -176,6 +201,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(Stream source, TomlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -195,6 +222,11 @@ public static class TomlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the read.</param>
     /// <returns>A task that yields the deserialized value.</returns>
+    /// <remarks>
+    /// The stream is copied to an in-memory buffer in full before parsing begins: the method buffers the complete input
+    /// rather than parsing incrementally, so peak memory includes the entire document. Cancellation applies to reading
+    /// the stream, not to the parse and bind that follow.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
@@ -203,6 +235,8 @@ public static class TomlSerializer
     /// <exception cref="TomlSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static async ValueTask<T> DeserializeAsync<T>(Stream source, TomlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);

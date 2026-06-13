@@ -1257,7 +1257,7 @@ public ref partial struct Utf8TomlReader
     /// and rejecting disallowed control characters.
     /// </summary>
     /// <remarks>
-    /// Both TOML v1.0.0 and the v1.1.0 draft prohibit control characters other than tab (U+0000–U+0008, U+000A–U+001F,
+    /// Both TOML v1.0.0 and v1.1.0 prohibit control characters other than tab (U+0000–U+0008, U+000A–U+001F,
     /// U+007F) inside a comment, so the rule is applied unconditionally.
     /// </remarks>
     /// <returns>

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Bodu.Text.Toml.Serialization;
@@ -43,7 +44,7 @@ namespace Bodu.Text.Toml;
 ///]]>
 /// </code>
 /// </example>
-public sealed class TomlSerializerOptions
+public sealed partial class TomlSerializerOptions
 {
     /// <summary>
     /// The default maximum nesting depth.
@@ -51,9 +52,10 @@ public sealed class TomlSerializerOptions
     public const int DefaultMaxDepth = 64;
 
     /// <summary>
-    /// The user-registered converters, consulted before the built-in converters.
+    /// The user-registered converters, consulted before the built-in converters. The list rejects a
+    /// <see langword="null" /> entry and refuses every mutation once the options have become read-only.
     /// </summary>
-    private readonly List<TomlConverter> _converters = [];
+    private readonly ConverterList _converters;
 
     /// <summary>
     /// The cache of concrete converters resolved per type.
@@ -77,9 +79,11 @@ public sealed class TomlSerializerOptions
     private TomlNamingPolicy? _namingPolicy;
 
     /// <summary>
-    /// Whether property-name matching ignores case when reading.
+    /// Whether property-name matching ignores case when reading. Case-sensitive by default for general options,
+    /// matching <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys; the
+    /// <see cref="TomlSerializerDefaults.Web" /> preset enables case-insensitive matching.
     /// </summary>
-    private bool _caseInsensitive = true;
+    private bool _caseInsensitive;
 
     /// <summary>
     /// Whether public fields are surfaced as serializable members.
@@ -146,6 +150,8 @@ public sealed class TomlSerializerOptions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(defaults);
 
+        _converters = new ConverterList(this);
+
         if (defaults == TomlSerializerDefaults.Web)
         {
             _namingPolicy = TomlNamingPolicy.CamelCase;
@@ -180,7 +186,8 @@ public sealed class TomlSerializerOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to match case-insensitively; otherwise <see langword="false" />. The default is
-    /// <see langword="true" />.
+    /// <see langword="false" /> for general options and <see langword="true" /> under
+    /// <see cref="TomlSerializerDefaults.Web" />.
     /// </value>
     /// <returns>Whether property-name matching ignores case.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
@@ -403,6 +410,8 @@ public sealed class TomlSerializerOptions
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
+    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public TomlConverter GetConverter(Type typeToConvert)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);

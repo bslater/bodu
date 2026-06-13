@@ -69,8 +69,22 @@ internal sealed class CollectionConverter<TCollection, TElement>
         }
 
         List<TElement> items = [];
+        var index = 0;
         while (reader.Read() && reader.TokenType != TomlTokenType.EndArray)
-            items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options) !);
+        {
+            try
+            {
+                items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options) !);
+            }
+            catch (TomlSerializationException ex)
+            {
+                ex.Path = TomlSerializationException.CombinePath("[" + index.ToString(CultureInfo.InvariantCulture) + "]", ex.Path);
+                reader.StampPosition(ex);
+                throw;
+            }
+
+            index++;
+        }
 
         return Materialize(items);
     }
@@ -80,16 +94,37 @@ internal sealed class CollectionConverter<TCollection, TElement>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        writer.WriteStartArray();
-        foreach (TElement element in (IEnumerable<TElement>)value)
+        if (!writer.TryEnterReference(value))
+            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(TCollection)));
+
+        try
         {
-            if (element is null)
-                throw new TomlSerializationException(TomlResourceStrings.Op_NotSupported_NullCollectionElement);
+            writer.WriteStartArray();
+            var index = 0;
+            foreach (TElement element in (IEnumerable<TElement>)value)
+            {
+                if (element is null)
+                    throw new TomlSerializationException(TomlResourceStrings.Op_NotSupported_NullCollectionElement);
 
-            _elementConverter.WriteAsObject(writer, element, options);
+                try
+                {
+                    _elementConverter.WriteAsObject(writer, element, options);
+                }
+                catch (TomlSerializationException ex)
+                {
+                    ex.Path = TomlSerializationException.CombinePath("[" + index.ToString(CultureInfo.InvariantCulture) + "]", ex.Path);
+                    throw;
+                }
+
+                index++;
+            }
+
+            writer.WriteEndArray();
         }
-
-        writer.WriteEndArray();
+        finally
+        {
+            writer.ExitReference(value);
+        }
     }
 
     /// <summary>

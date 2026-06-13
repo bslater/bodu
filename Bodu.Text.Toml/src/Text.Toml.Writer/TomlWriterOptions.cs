@@ -30,10 +30,10 @@ public struct TomlWriterOptions
     /// <value>The target specification version; the default is <see cref="TomlSpecVersion.V1_0" />.</value>
     /// <returns>The target specification version.</returns>
     /// <remarks>
-    /// The property is currently inert: the writer emits canonical output that is valid under both TOML v1.0.0 and
-    /// v1.1.0 regardless of the value. It is reserved for a future version in which the emitted grammar differs between
-    /// specification versions.
+    /// The property has no effect: the writer emits normalized output that is valid under both TOML v1.0.0 and v1.1.0
+    /// regardless of the value. It is obsolete and will be removed in a future release.
     /// </remarks>
+    [Obsolete("The writer emits output valid under both TOML v1.0.0 and v1.1.0, so SpecVersion has no effect; it will be removed in a future release.")]
     public TomlSpecVersion SpecVersion { get; set; }
 
     /// <summary>
