@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies that <see cref="NotableDateResourceLoader.LoadJson(string)" /> ingests the JSON representation of a
+/// Verifies that <see cref="NotableDateResourceLoader.LoadJson(string, Microsoft.Extensions.Logging.ILogger)" /> ingests the JSON representation of a
 /// notable-date document, producing the same resolution behaviour as the XML form across fixed dates, nth-weekday and
 /// offset strategies, an algorithm, a non-Gregorian calendar, an adjustment policy, and an override.
 /// </summary>

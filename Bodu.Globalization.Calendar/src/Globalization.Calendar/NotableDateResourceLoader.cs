@@ -6,6 +6,8 @@
 
 using System.Globalization;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -25,7 +27,7 @@ namespace Bodu.Globalization.Calendar;
 /// resolver overload, whose delegate maps a resource name to that resource's XML or JSON content.
 /// </para>
 /// <para>
-/// <strong>When to use.</strong> Call <see cref="Load(string)" /> / <see cref="LoadJson(string)" /> (or the
+/// <strong>When to use.</strong> Call <see cref="Load(string, ILogger)" /> / <see cref="LoadJson(string, ILogger)" /> (or the
 /// <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document imports
 /// shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the data-pack
 /// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources for you.
@@ -61,6 +63,9 @@ public static class NotableDateResourceLoader
     /// Loads and validates a notable-date document from its XML content.
     /// </summary>
     /// <param name="xml">The notable-date document XML content.</param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="xml" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="xml" /> is empty or white-space.</exception>
@@ -68,8 +73,8 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(string xml) =>
-        Load(xml, NoResolver);
+    public static NotableDateResource Load(string xml, ILogger? logger = null) =>
+        Load(xml, NoResolver, null, logger);
 
     /// <summary>
     /// Loads and validates a notable-date document from its XML content, resolving imports through the supplied
@@ -78,6 +83,9 @@ public static class NotableDateResourceLoader
     /// <param name="xml">The notable-date document XML content.</param>
     /// <param name="resourceResolver">
     /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
     /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
@@ -88,8 +96,8 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver) =>
-        Load(xml, resourceResolver, null);
+    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, ILogger? logger = null) =>
+        Load(xml, resourceResolver, null, logger);
 
     /// <summary>
     /// Loads and validates a notable-date document from its XML content, resolving imports through the supplied
@@ -102,6 +110,9 @@ public static class NotableDateResourceLoader
     /// <param name="algorithms">
     /// A registry of custom algorithm keys to accept during validation, or <see langword="null" />.
     /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
@@ -111,7 +122,7 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms)
+    public static NotableDateResource Load(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(xml);
         ThrowHelper.ThrowIfNull(resourceResolver);
@@ -120,13 +131,16 @@ public static class NotableDateResourceLoader
         List<NotableDateValidationDiagnostic> diagnostics = new();
         ParsedNotableDateDocument document = NotableDateDocumentParser.Parse(xml, diagnostics);
 
-        return Build(document, resourceResolver, algorithms, diagnostics);
+        return Build(document, resourceResolver, algorithms, diagnostics, logger);
     }
 
     /// <summary>
     /// Loads and validates a notable-date document from a stream of XML content.
     /// </summary>
     /// <param name="stream">The stream containing the notable-date document XML.</param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The stream content is empty or white-space.</exception>
@@ -134,8 +148,8 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(Stream stream) =>
-        Load(ReadToEnd(stream));
+    public static NotableDateResource Load(Stream stream, ILogger? logger = null) =>
+        Load(ReadToEnd(stream), NoResolver, null, logger);
 
     /// <summary>
     /// Loads and validates a notable-date document from a stream of XML content, resolving imports through the supplied
@@ -144,6 +158,9 @@ public static class NotableDateResourceLoader
     /// <param name="stream">The stream containing the notable-date document XML.</param>
     /// <param name="resourceResolver">
     /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
     /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
@@ -154,13 +171,16 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource Load(Stream stream, Func<string, string?> resourceResolver) =>
-        Load(ReadToEnd(stream), resourceResolver);
+    public static NotableDateResource Load(Stream stream, Func<string, string?> resourceResolver, ILogger? logger = null) =>
+        Load(ReadToEnd(stream), resourceResolver, null, logger);
 
     /// <summary>
     /// Loads and validates a notable-date document from its JSON content.
     /// </summary>
     /// <param name="json">The notable-date document JSON content.</param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="json" /> is empty or white-space.</exception>
@@ -168,8 +188,8 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource LoadJson(string json) =>
-        LoadJson(json, NoResolver);
+    public static NotableDateResource LoadJson(string json, ILogger? logger = null) =>
+        LoadJson(json, NoResolver, logger);
 
     /// <summary>
     /// Loads and validates a notable-date document from its JSON content, resolving imports through the supplied
@@ -178,6 +198,9 @@ public static class NotableDateResourceLoader
     /// <param name="json">The notable-date document JSON content.</param>
     /// <param name="resourceResolver">
     /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
     /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException">
@@ -188,7 +211,7 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource LoadJson(string json, Func<string, string?> resourceResolver)
+    public static NotableDateResource LoadJson(string json, Func<string, string?> resourceResolver, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(resourceResolver);
@@ -197,13 +220,16 @@ public static class NotableDateResourceLoader
         List<NotableDateValidationDiagnostic> diagnostics = new();
         ParsedNotableDateDocument document = NotableDateJsonDocumentParser.Parse(json, diagnostics);
 
-        return Build(document, resourceResolver, null, diagnostics);
+        return Build(document, resourceResolver, null, diagnostics, logger);
     }
 
     /// <summary>
     /// Loads and validates a notable-date document from a stream of JSON content.
     /// </summary>
     /// <param name="stream">The stream containing the notable-date document JSON.</param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The stream content is empty or white-space.</exception>
@@ -211,8 +237,8 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource LoadJson(Stream stream) =>
-        LoadJson(ReadToEnd(stream));
+    public static NotableDateResource LoadJson(Stream stream, ILogger? logger = null) =>
+        LoadJson(ReadToEnd(stream), NoResolver, logger);
 
     /// <summary>
     /// Resolves imports, applies overrides, assembles the resource, runs semantic validation, and fails when any error
@@ -226,12 +252,17 @@ public static class NotableDateResourceLoader
     /// <param name="diagnostics">
     /// The diagnostics accumulated during parsing, extended by import resolution and validation.
     /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics, or <see langword="null" /> for <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The validated <see cref="NotableDateResource" />.</returns>
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics)
+    private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics, ILogger? logger)
     {
+        ILogger log = logger ?? NullLogger.Instance;
+
         (List<AdjustmentPolicy> policies, List<NotableDateDefinition> concepts) =
             ResolveImports(document, resourceResolver, new HashSet<string>(StringComparer.Ordinal), diagnostics);
 
@@ -249,10 +280,13 @@ public static class NotableDateResourceLoader
         var errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
         if (errorCount > 0)
         {
+            Log.ResourceValidationFailed(log, errorCount);
             throw new NotableDateValidationException(
                 string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Op_Invalid_DocumentValidationFailed, errorCount),
                 diagnostics);
         }
+
+        Log.ResourceLoaded(log, resource.ResourceId, resource.NotableDates.Count, resource.AdjustmentPolicies.Count);
 
         return resource;
     }

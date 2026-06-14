@@ -8,6 +8,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Globalization.Calendar.Plugins;
 
@@ -55,6 +57,10 @@ public static class NotableDatePluginLoader
     /// </summary>
     /// <param name="assembly">The assembly declaring the plugin via <see cref="NotableDatePluginAttribute" />.</param>
     /// <param name="trustPolicy">The policy that must trust the assembly before its plugin is activated.</param>
+    /// <param name="logger">
+    /// The logger that receives diagnostics for the load. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The activated plugin.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="assembly" /> or <paramref name="trustPolicy" /> is <see langword="null" />.
@@ -64,10 +70,12 @@ public static class NotableDatePluginLoader
     /// <exception cref="PluginActivationException">
     /// The plugin type could not be activated or is not a plugin.
     /// </exception>
-    public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy)
+    public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(assembly);
         ThrowHelper.ThrowIfNull(trustPolicy);
+
+        ILogger log = logger ?? NullLogger.Instance;
 
         AssemblyName assemblyName = assembly.GetName();
         var name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
@@ -78,17 +86,23 @@ public static class NotableDatePluginLoader
         PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash, token));
         if (!trust.IsTrusted)
         {
+            Log.PluginTrustRejected(log, name, trust.Reason ?? string.Empty);
             throw new PluginNotTrustedException(
                 string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_Plugin, name, trust.Reason ?? string.Empty),
                 name,
                 trust.Reason);
         }
 
+        Log.PluginTrusted(log, name);
+
         NotableDatePluginAttribute? attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>() ?? throw new PluginMissingAttributeException(
                 string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Missing_PluginAttribute, name),
                 name);
 
-        return Activate(attribute.PluginType);
+        INotableDatePlugin plugin = Activate(attribute.PluginType);
+        Log.PluginActivated(log, name, attribute.PluginType.FullName ?? attribute.PluginType.Name);
+
+        return plugin;
     }
 
     /// <summary>
@@ -96,6 +110,10 @@ public static class NotableDatePluginLoader
     /// </summary>
     /// <param name="assemblyPath">The file path of the plugin assembly.</param>
     /// <param name="trustPolicy">The policy that must trust the assembly before its plugin is activated.</param>
+    /// <param name="logger">
+    /// The logger that receives diagnostics for the load. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The activated plugin.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="assemblyPath" /> or <paramref name="trustPolicy" /> is <see langword="null" />.
@@ -105,7 +123,7 @@ public static class NotableDatePluginLoader
     /// <exception cref="PluginActivationException">
     /// The plugin type could not be activated or is not a plugin.
     /// </exception>
-    public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy)
+    public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
@@ -114,7 +132,7 @@ public static class NotableDatePluginLoader
         AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: false);
         Assembly assembly = context.LoadFromAssemblyPath(fullPath);
 
-        return LoadFrom(assembly, trustPolicy);
+        return LoadFrom(assembly, trustPolicy, logger);
     }
 
     /// <summary>
@@ -122,11 +140,15 @@ public static class NotableDatePluginLoader
     /// </summary>
     /// <param name="plugin">The plugin whose algorithms are registered.</param>
     /// <param name="registry">The registry to populate.</param>
+    /// <param name="logger">
+    /// The logger that receives diagnostics for the registration. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <returns>The number of algorithms registered.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="plugin" /> or <paramref name="registry" /> is <see langword="null" />.
     /// </exception>
-    public static int RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry)
+    public static int RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(plugin);
         ThrowHelper.ThrowIfNull(registry);
@@ -140,6 +162,8 @@ public static class NotableDatePluginLoader
             registry.Register(pair.Key, pair.Value);
             count++;
         }
+
+        Log.PluginAlgorithmsRegistered(logger ?? NullLogger.Instance, count, plugin.GetType().FullName ?? plugin.GetType().Name);
 
         return count;
     }
