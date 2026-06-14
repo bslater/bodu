@@ -234,7 +234,7 @@ public sealed class RbaExchangeRateProvider
                 return;
         }
 
-        Log.EraLoadStarting(_logger, era.Label);
+        Log.EraLoadStarting(_logger, _options.DownloadStartingLogLevel, era.Label);
 
         RbaExchangeRateTable table;
         try
@@ -243,7 +243,7 @@ public sealed class RbaExchangeRateProvider
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.EraLoadFailed(_logger, era.Label, ex);
+            Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
             throw;
         }
 
@@ -254,7 +254,7 @@ public sealed class RbaExchangeRateProvider
 
             var count = Accumulate(table);
             RebuildSnapshot();
-            Log.EraLoaded(_logger, era.Label, count);
+            Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);
         }
     }
 
@@ -382,7 +382,7 @@ public sealed class RbaExchangeRateProvider
         foreach (ExchangeRate rate in table.EnumerateRates())
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
-            Log.ObservationIngested(_logger, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
 

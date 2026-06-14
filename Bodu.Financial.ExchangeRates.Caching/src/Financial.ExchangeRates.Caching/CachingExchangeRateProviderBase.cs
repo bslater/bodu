@@ -107,14 +107,14 @@ public abstract class CachingExchangeRateProviderBase
 
             if (TryServeFromCache(source.Key, duration, fromIsoCode, toIsoCode, date, options, now, out result))
             {
-                Log.CacheHit(_logger, source.Key, fromIsoCode, toIsoCode, date);
+                Log.CacheHit(_logger, _options.CacheHitLogLevel, source.Key, fromIsoCode, toIsoCode, date);
                 return true;
             }
 
             if (source.Value.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
             {
                 StoreResult(source.Key, duration, fromIsoCode, toIsoCode, result, now);
-                Log.CacheMissStored(_logger, source.Key, fromIsoCode, toIsoCode, date);
+                Log.CacheMissStored(_logger, _options.CacheMissLogLevel, source.Key, fromIsoCode, toIsoCode, date);
                 return true;
             }
         }
@@ -143,7 +143,7 @@ public abstract class CachingExchangeRateProviderBase
 
             if (TryServeRangeFromCache(source.Key, duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
             {
-                Log.RangeCacheHit(_logger, source.Key, fromIsoCode, toIsoCode);
+                Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, source.Key, fromIsoCode, toIsoCode);
                 return cached;
             }
 
@@ -153,7 +153,7 @@ public abstract class CachingExchangeRateProviderBase
             if (fetched.Count > 0)
             {
                 StoreRange(source.Key, duration, pair, fetched, now);
-                Log.RangeRefetched(_logger, source.Key, fromIsoCode, toIsoCode, fetched.Count);
+                Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, source.Key, fromIsoCode, toIsoCode, fetched.Count);
                 return fetched;
             }
         }

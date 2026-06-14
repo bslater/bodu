@@ -6,6 +6,8 @@
 
 namespace Bodu.Financial.ExchangeRates.Rba;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Configures how the <see cref="RbaExchangeRateProvider" /> downloads, caches, and interprets RBA exchange-rate data.
 /// </summary>
@@ -85,6 +87,30 @@ public sealed class RbaExchangeRateOptions
     /// <value>The alias map; defaults to mapping <c>SDR</c> to the ISO code <c>XDR</c>.</value>
     public IDictionary<string, string> CurrencyAliases { get; set; } =
         new Dictionary<string, string>(StringComparer.Ordinal) { ["SDR"] = "XDR" };
+
+    /// <summary>
+    /// Gets or sets the level at which the start of an era download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel DownloadStartingLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a completed era download (with its observation count) is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel DownloadCompletedLogLevel { get; set; } = LogLevel.Information;
+
+    /// <summary>
+    /// Gets or sets the level at which a failed era download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
+    public LogLevel DownloadFailedLogLevel { get; set; } = LogLevel.Warning;
+
+    /// <summary>
+    /// Gets or sets the level at which each individual ingested rate observation is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
 
     /// <summary>
     /// Validates the options, throwing when a required value is missing.

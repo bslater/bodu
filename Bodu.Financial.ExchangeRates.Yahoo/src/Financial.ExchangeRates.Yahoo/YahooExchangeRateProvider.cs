@@ -178,7 +178,7 @@ public sealed class YahooExchangeRateProvider
 
         if (_options.AllowSynchronousNetworkAccess && TryLoadPairForDate(fromIsoCode, toIsoCode, date))
         {
-            Log.SynchronousNetworkFetch(_logger, date);
+            Log.SynchronousNetworkFetch(_logger, _options.SynchronousNetworkFetchLogLevel, date);
             return _snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
         }
 
@@ -232,7 +232,7 @@ public sealed class YahooExchangeRateProvider
         var symbol = _options.BuildSymbol(fromIsoCode, toIsoCode);
         YahooChartRequest request = new(pair, symbol, startDate, endDate);
 
-        Log.PairLoadStarting(_logger, symbol);
+        Log.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, symbol);
 
         YahooExchangeRateChart chart;
         try
@@ -241,7 +241,7 @@ public sealed class YahooExchangeRateProvider
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.PairLoadFailed(_logger, symbol, ex);
+            Log.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, symbol, ex);
             throw;
         }
 
@@ -250,7 +250,7 @@ public sealed class YahooExchangeRateProvider
             var count = Accumulate(chart);
             ExtendCoveredRange(pair, startDate, endDate);
             RebuildSnapshot();
-            Log.PairLoaded(_logger, symbol, count);
+            Log.PairLoaded(_logger, _options.DownloadCompletedLogLevel, symbol, count);
         }
     }
 
@@ -344,7 +344,7 @@ public sealed class YahooExchangeRateProvider
         foreach (ExchangeRate rate in chart.EnumerateRates())
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
-            Log.ObservationIngested(_logger, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
 

@@ -45,6 +45,24 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     }
 
     /// <summary>
+    /// Verifies that a configured non-default <see cref="CachingExchangeRateOptions.CacheHitLogLevel" /> is honoured,
+    /// so a cache hit is emitted at the configured level rather than the <see cref="LogLevel.Trace" /> default.
+    /// </summary>
+    [TestMethod]
+    public void GetRate_WhenCacheHitLogLevelConfigured_ShouldLogAtConfiguredLevel()
+    {
+        CapturingLogger logger = new();
+        _options.CacheHitLogLevel = LogLevel.Information;
+        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        CachingDatedExchangeRateProvider sut = new(new[] { Source(Provider, InnerWith()) }, _cache, _options, _clock, logger);
+
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+
+        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Information && e.EventId.Id == 4501));
+        Assert.IsFalse(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501));
+    }
+
+    /// <summary>
     /// Verifies that serving a fresh cached rate without a logger succeeds, confirming the default <c>null</c> logger
     /// path is a no-op.
     /// </summary>

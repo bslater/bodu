@@ -6,6 +6,8 @@
 
 namespace Bodu.Financial.ExchangeRates.Yahoo;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Configures how the <see cref="YahooExchangeRateProvider" /> addresses and interprets the Yahoo Finance chart REST
 /// service.
@@ -107,6 +109,36 @@ public sealed class YahooExchangeRateOptions
     /// <value>The alias map; defaults to an empty map.</value>
     public IDictionary<string, string> CurrencyAliases { get; set; } =
         new Dictionary<string, string>(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Gets or sets the level at which the start of a chart download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel DownloadStartingLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a completed chart download (with its observation count) is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel DownloadCompletedLogLevel { get; set; } = LogLevel.Information;
+
+    /// <summary>
+    /// Gets or sets the level at which a failed chart download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
+    public LogLevel DownloadFailedLogLevel { get; set; } = LogLevel.Warning;
+
+    /// <summary>
+    /// Gets or sets the level at which each individual ingested rate observation is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
+
+    /// <summary>
+    /// Gets or sets the level at which a synchronous, blocking on-demand network fetch is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
+    public LogLevel SynchronousNetworkFetchLogLevel { get; set; } = LogLevel.Warning;
 
     /// <summary>
     /// Validates the options, throwing when a required value is missing or a template lacks its placeholder.

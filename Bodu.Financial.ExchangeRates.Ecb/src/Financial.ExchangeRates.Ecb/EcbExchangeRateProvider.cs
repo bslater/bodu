@@ -185,7 +185,7 @@ public sealed class EcbExchangeRateProvider
 
         if (_options.AllowSynchronousNetworkAccess && TryLoadFeedForDate(date))
         {
-            Log.SynchronousNetworkFetch(_logger, date);
+            Log.SynchronousNetworkFetch(_logger, _options.SynchronousNetworkFetchLogLevel, date);
             return _snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
         }
 
@@ -240,7 +240,7 @@ public sealed class EcbExchangeRateProvider
                 return;
         }
 
-        Log.FeedLoadStarting(_logger, feed.Name);
+        Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, feed.Name);
 
         EcbExchangeRateTable table;
         try
@@ -249,7 +249,7 @@ public sealed class EcbExchangeRateProvider
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.FeedLoadFailed(_logger, feed.Name, ex);
+            Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, feed.Name, ex);
             throw;
         }
 
@@ -260,7 +260,7 @@ public sealed class EcbExchangeRateProvider
 
             var count = Accumulate(table);
             RebuildSnapshot();
-            Log.FeedLoaded(_logger, feed.Name, count);
+            Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count);
         }
     }
 
@@ -409,7 +409,7 @@ public sealed class EcbExchangeRateProvider
         foreach (ExchangeRate rate in table.EnumerateRates())
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
-            Log.ObservationIngested(_logger, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
 

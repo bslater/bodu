@@ -224,7 +224,7 @@ public sealed class BoeExchangeRateProvider
                 return;
         }
 
-        Log.FeedLoadStarting(_logger, startDate, endDate);
+        Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, startDate, endDate);
 
         BoeExchangeRateTable table;
         try
@@ -233,7 +233,7 @@ public sealed class BoeExchangeRateProvider
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.FeedLoadFailed(_logger, startDate, endDate, ex);
+            Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex);
             throw;
         }
 
@@ -242,7 +242,7 @@ public sealed class BoeExchangeRateProvider
             var count = Accumulate(table);
             _loadedRanges.Add((startDate, endDate));
             RebuildSnapshot();
-            Log.FeedLoaded(_logger, startDate, endDate, count);
+            Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count);
         }
     }
 
@@ -369,7 +369,7 @@ public sealed class BoeExchangeRateProvider
         foreach (ExchangeRate rate in table.EnumerateRates())
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
-            Log.ObservationIngested(_logger, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
 

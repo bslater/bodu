@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -60,6 +61,30 @@ public sealed class CachingExchangeRateOptions
     /// <see cref="DefaultExpiry" />.
     /// </value>
     public IDictionary<string, TimeSpan> ProviderExpiry { get; } = new Dictionary<string, TimeSpan>(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Gets or sets the level at which a single-date lookup served from the cache is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Trace;
+
+    /// <summary>
+    /// Gets or sets the level at which a single-date cache miss resolved from a source and then cached is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Trace;
+
+    /// <summary>
+    /// Gets or sets the level at which a range lookup served entirely from the cache is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel CacheRangeHitLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a range lookup refetched from a source and re-cached is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel CacheRangeRefetchLogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
     /// Resolves the caching duration for a provider, returning its specific override when present and the default

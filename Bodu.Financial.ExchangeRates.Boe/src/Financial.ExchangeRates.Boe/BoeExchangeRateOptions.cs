@@ -6,6 +6,8 @@
 
 namespace Bodu.Financial.ExchangeRates.Boe;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Configures how the <see cref="BoeExchangeRateProvider" /> downloads, caches, and interprets Bank of England daily
 /// spot exchange-rate data.
@@ -82,6 +84,30 @@ public sealed class BoeExchangeRateOptions
     /// are treated as refreshable rather than immutable.
     /// </remarks>
     public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
+
+    /// <summary>
+    /// Gets or sets the level at which the start of a range download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel DownloadStartingLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a completed range download (with its observation count) is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel DownloadCompletedLogLevel { get; set; } = LogLevel.Information;
+
+    /// <summary>
+    /// Gets or sets the level at which a failed range download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
+    public LogLevel DownloadFailedLogLevel { get; set; } = LogLevel.Warning;
+
+    /// <summary>
+    /// Gets or sets the level at which each individual ingested rate observation is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
 
     /// <summary>
     /// Validates the options, throwing when a required value is missing.
