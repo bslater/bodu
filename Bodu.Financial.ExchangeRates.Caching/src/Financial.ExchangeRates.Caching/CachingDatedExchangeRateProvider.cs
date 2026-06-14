@@ -25,6 +25,16 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// When several sources are supplied the provider behaves as a caching composite, consulting the sources in the order
 /// they were supplied and returning the first that can satisfy the request.
 /// </para>
+/// <para>
+/// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
+/// package) the provider records, on the read hot path, a single-date cache hit and a single-date miss-then-store
+/// (both <see cref="LogLevel.Trace" /> by default, mirroring per-operation cache logging in libraries such as
+/// CacheManager), and, for ranges, a cache hit and a refetch (both <see cref="LogLevel.Debug" /> by default). The
+/// underlying network fetch is logged by the wrapped source, not here. Every level is configurable through the
+/// corresponding <c>Cache*LogLevel</c> property on <see cref="CachingExchangeRateOptions" />; omitting the logger
+/// selects <see cref="Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance" />, so logging is opt-in and free
+/// when unused.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

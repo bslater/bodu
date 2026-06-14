@@ -20,6 +20,11 @@ namespace Bodu.Globalization.Calendar;
 /// reads the provider's current resource; when it differs from the one the inner service was built from, a fresh inner
 /// service is constructed. Construction is cheap, so reloads are inexpensive.
 /// </para>
+/// <para>
+/// <strong>Logging.</strong> The constructors accept an optional <see cref="ILogger" /> (defaulting to
+/// <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied, the service records each rebuild of its
+/// resolution state after observing a reloaded resource at <see cref="LogLevel.Debug" />. This level is fixed.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

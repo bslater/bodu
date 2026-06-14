@@ -23,6 +23,11 @@ using Microsoft.Extensions.Logging;
 /// template, and the <see cref="SymbolFormat" /> used to build the foreign-exchange ticker. The chart bar interval is
 /// fixed at one day, and the date range is supplied per call through the provider's lookup and range methods.
 /// </para>
+/// <para>
+/// The <c>*LogLevel</c> members set the <see cref="LogLevel" /> at which each diagnostic the provider emits is logged,
+/// so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
+/// <see cref="LogLevel.None" /> to suppress that event entirely.
+/// </para>
 /// </remarks>
 public sealed class YahooExchangeRateOptions
 {

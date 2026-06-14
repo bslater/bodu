@@ -47,3 +47,36 @@ concrete provider (Yahoo / RBA / ECB / BoE)
 
 For dependency-injection wiring, see
 `Bodu.Financial.ExchangeRates.Caching.DependencyInjection`.
+
+## Logging
+
+The caching provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
+constructor, or let the `*.DependencyInjection` package wire one for you (category
+`Bodu.Financial.ExchangeRates.Caching.CachingDatedExchangeRateProvider`). When no logger is
+supplied it defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when
+unused.
+
+Single-date lookups happen on the read hot path (once per conversion), so their hit/miss
+diagnostics default to `Trace` — following the convention of dedicated cache libraries such
+as CacheManager, which keep per-operation logging at `Trace` to avoid flooding at high call
+rates. Coarser range operations default to `Debug`. The actual network hit is logged by the
+wrapped source provider (typically at `Information`), not here. Every level is individually
+configurable on `CachingExchangeRateOptions`:
+
+| Event | Default level | Option property |
+|---|---|---|
+| A single-date lookup served from the cache | `Trace` | `CacheHitLogLevel` |
+| A single-date cache miss resolved from a source and cached | `Trace` | `CacheMissLogLevel` |
+| A range lookup served entirely from the cache | `Debug` | `CacheRangeHitLogLevel` |
+| A range lookup refetched from a source and re-cached | `Debug` | `CacheRangeRefetchLogLevel` |
+
+```csharp
+// Promote per-lookup cache diagnostics to Debug for a noisy local debugging session.
+var options = new CachingExchangeRateOptions
+{
+    CacheHitLogLevel = LogLevel.Debug,
+    CacheMissLogLevel = LogLevel.Debug,
+};
+```
+
+Part of the [Bodu](https://github.com/bodu/bodu) utility library.

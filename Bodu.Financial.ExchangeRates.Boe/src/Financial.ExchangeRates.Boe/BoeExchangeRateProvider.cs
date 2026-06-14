@@ -29,6 +29,14 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// around that date and retry. Inverse pairs, same-currency identity, and date-resolution policies are inherited from
 /// <see cref="FixedDatedExchangeRateProvider" />.
 /// </para>
+/// <para>
+/// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
+/// package) the provider records: the start of a range download (<see cref="LogLevel.Debug" />), a completed download
+/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation
+/// (<see cref="LogLevel.Trace" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
+/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="BoeExchangeRateOptions" />; omitting
+/// the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
+/// </para>
 /// </remarks>
 public sealed class BoeExchangeRateProvider
     : IDatedExchangeRateProvider, IExchangeRateProvider

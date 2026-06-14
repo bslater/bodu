@@ -12,9 +12,16 @@ using Microsoft.Extensions.Logging;
 /// Configures how the <see cref="RbaExchangeRateProvider" /> downloads, caches, and interprets RBA exchange-rate data.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
 /// require no configuration for the common case. The dependency-injection package binds this type from configuration
 /// and a <c>configure</c> delegate.
+/// </para>
+/// <para>
+/// The <c>*LogLevel</c> members set the <see cref="LogLevel" /> at which each diagnostic the provider emits is logged,
+/// so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
+/// <see cref="LogLevel.None" /> to suppress that event entirely.
+/// </para>
 /// </remarks>
 public sealed class RbaExchangeRateOptions
 {

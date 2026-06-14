@@ -20,6 +20,11 @@ namespace Bodu.Globalization.Calendar;
 /// override operations or refreshed data at runtime is performed by loading a fresh <see cref="NotableDateResource" />
 /// and passing it to <see cref="Reload" />.
 /// </para>
+/// <para>
+/// <strong>Logging.</strong> The constructor accepts an optional <see cref="ILogger" /> (defaulting to
+/// <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied, <see cref="Reload" /> records the swap at
+/// <see cref="LogLevel.Information" />, naming the resource that becomes current. This level is fixed.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

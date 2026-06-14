@@ -32,6 +32,13 @@ namespace Bodu.Globalization.Calendar;
 /// shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the data-pack
 /// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources for you.
 /// </para>
+/// <para>
+/// <strong>Logging.</strong> Each <c>Load</c> / <c>LoadJson</c> overload accepts an optional <see cref="ILogger" />
+/// (defaulting to <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied it records a successfully
+/// loaded resource with its definition and policy counts (<see cref="LogLevel.Debug" />) and a validation failure with
+/// its error-diagnostic count (<see cref="LogLevel.Warning" />, logged immediately before the
+/// <see cref="NotableDateValidationException" /> is thrown). These levels are fixed.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

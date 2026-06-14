@@ -14,8 +14,16 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// rate stays fresh, and per-provider overrides of that default.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
 /// require no configuration for the common case.
+/// </para>
+/// <para>
+/// The <c>Cache*LogLevel</c> members set the <see cref="LogLevel" /> at which each cache diagnostic is logged, so
+/// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
+/// default to <see cref="LogLevel.Trace" /> because they run on the read hot path; the range events default to
+/// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
