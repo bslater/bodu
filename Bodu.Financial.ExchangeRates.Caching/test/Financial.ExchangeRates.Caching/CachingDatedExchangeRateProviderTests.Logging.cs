@@ -26,7 +26,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Debug && e.EventId.Id == 4502));
+        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4502));
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Debug && e.EventId.Id == 4501));
+        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501));
     }
 
     /// <summary>

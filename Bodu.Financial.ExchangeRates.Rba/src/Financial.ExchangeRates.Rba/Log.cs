@@ -33,8 +33,19 @@ internal static partial class Log
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="era">The label of the loaded era.</param>
     /// <param name="rateCount">The number of rate observations accumulated from the era.</param>
-    [LoggerMessage(EventId = 4302, Level = LogLevel.Debug, Message = "Loaded RBA era '{era}' with {rateCount} rate observation(s)")]
+    [LoggerMessage(EventId = 4302, Level = LogLevel.Information, Message = "Loaded RBA era '{era}' with {rateCount} rate observation(s)")]
     public static partial void EraLoaded(ILogger logger, string era, int rateCount);
+
+    /// <summary>
+    /// Logs an individual rate observation ingested from an era, for fine-grained diagnostics.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="date">The observation date.</param>
+    /// <param name="rate">The observed rate.</param>
+    [LoggerMessage(EventId = 4305, Level = LogLevel.Trace, Message = "Ingested RBA observation {fromIsoCode}->{toIsoCode} on {date} = {rate}")]
+    public static partial void ObservationIngested(ILogger logger, string fromIsoCode, string toIsoCode, DateOnly date, decimal rate);
 
     /// <summary>
     /// Logs that an era download failed.

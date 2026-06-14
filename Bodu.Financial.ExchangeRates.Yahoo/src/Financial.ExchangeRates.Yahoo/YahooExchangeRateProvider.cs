@@ -344,6 +344,7 @@ public sealed class YahooExchangeRateProvider
         foreach (ExchangeRate rate in chart.EnumerateRates())
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
 

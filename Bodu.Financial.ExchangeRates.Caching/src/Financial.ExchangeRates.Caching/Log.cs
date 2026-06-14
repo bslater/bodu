@@ -27,7 +27,7 @@ internal static partial class Log
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="date">The requested date.</param>
-    [LoggerMessage(EventId = 4501, Level = LogLevel.Debug, Message = "Served {fromIsoCode}->{toIsoCode} on {date} from cache for source '{source}'")]
+    [LoggerMessage(EventId = 4501, Level = LogLevel.Trace, Message = "Served {fromIsoCode}->{toIsoCode} on {date} from cache for source '{source}'")]
     public static partial void CacheHit(ILogger logger, string source, string fromIsoCode, string toIsoCode, DateOnly date);
 
     /// <summary>
@@ -38,7 +38,7 @@ internal static partial class Log
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="date">The requested date.</param>
-    [LoggerMessage(EventId = 4502, Level = LogLevel.Debug, Message = "Cache miss for {fromIsoCode}->{toIsoCode} on {date}; resolved from source '{source}' and cached")]
+    [LoggerMessage(EventId = 4502, Level = LogLevel.Trace, Message = "Cache miss for {fromIsoCode}->{toIsoCode} on {date}; resolved from source '{source}' and cached")]
     public static partial void CacheMissStored(ILogger logger, string source, string fromIsoCode, string toIsoCode, DateOnly date);
 
     /// <summary>
