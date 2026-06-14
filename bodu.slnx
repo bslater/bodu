@@ -111,6 +111,14 @@
     <Project Path="Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection/src/Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection/test/Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Caching/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching/src/Bodu.Financial.ExchangeRates.Caching.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching/test/Bodu.Financial.ExchangeRates.Caching.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Caching.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.DependencyInjection/src/Bodu.Financial.ExchangeRates.Caching.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.DependencyInjection/test/Bodu.Financial.ExchangeRates.Caching.DependencyInjection.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />

@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Yahoo;
 
 /// <summary>
-/// Configures how the <see cref="YahooExchangeRateProvider" /> addresses, caches, and interprets the Yahoo Finance
-/// chart REST service.
+/// Configures how the <see cref="YahooExchangeRateProvider" /> addresses and interprets the Yahoo Finance chart REST
+/// service.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -92,35 +92,6 @@ public sealed class YahooExchangeRateOptions
     /// startup.
     /// </remarks>
     public bool AllowSynchronousNetworkAccess { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether fetched rates are persisted to an on-disk cache.
-    /// </summary>
-    /// <value>
-    /// <see langword="true" /> to enable the on-disk cache; otherwise <see langword="false" />. Defaults to
-    /// <see langword="true" />.
-    /// </value>
-    /// <remarks>
-    /// The cache stores rates in a provider- and pair-keyed format, each dated rate carrying the time it was retrieved.
-    /// A cached rate is treated as fresh until <see cref="CacheExpiry" /> elapses after its retrieval time, after which
-    /// the provider re-fetches.
-    /// </remarks>
-    public bool EnableDiskCache { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the directory used by the on-disk cache.
-    /// </summary>
-    /// <value>
-    /// The cache directory, or <see langword="null" /> to use a <c>bodu-yahoo</c> folder under the system temporary
-    /// path.
-    /// </value>
-    public string? CacheDirectory { get; set; }
-
-    /// <summary>
-    /// Gets or sets the expiry trigger that determines how long a cached rate remains fresh after it was retrieved.
-    /// </summary>
-    /// <value>The cache expiry; defaults to 24 hours.</value>
-    public TimeSpan CacheExpiry { get; set; } = TimeSpan.FromHours(24);
 
     /// <summary>
     /// Gets or sets the look-back window used when a synchronous or undated lookup must fetch a pair on demand. The

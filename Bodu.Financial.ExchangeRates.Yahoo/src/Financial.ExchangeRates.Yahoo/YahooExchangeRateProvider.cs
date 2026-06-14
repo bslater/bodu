@@ -53,11 +53,6 @@ public sealed class YahooExchangeRateProvider
     private readonly YahooExchangeRateOptions _options;
 
     /// <summary>
-    /// The on-disk rate cache; <see cref="NullYahooRateCache" /> when caching is disabled.
-    /// </summary>
-    private readonly IYahooRateCache _cache;
-
-    /// <summary>
     /// Guards mutation of the accumulator, loaded-range index, series index, and snapshot fields.
     /// </summary>
     private readonly object _gate = new();
@@ -98,13 +93,13 @@ public sealed class YahooExchangeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public YahooExchangeRateProvider(HttpClient httpClient, YahooExchangeRateOptions options)
-        : this(CreateSource(httpClient, options), options, CreateCache(options))
+        : this(CreateSource(httpClient, options), options)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by an explicit chart
-    /// source and no on-disk cache, used for testing.
+    /// source, used for testing.
     /// </summary>
     /// <param name="source">The chart source.</param>
     /// <param name="options">The provider options.</param>
@@ -113,32 +108,13 @@ public sealed class YahooExchangeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options)
-        : this(source, options, NullYahooRateCache.Instance)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by an explicit chart
-    /// source and rate cache, used for testing.
-    /// </summary>
-    /// <param name="source">The chart source.</param>
-    /// <param name="options">The provider options.</param>
-    /// <param name="cache">The rate cache.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="source" />, <paramref name="options" />, or <paramref name="cache" /> is
-    /// <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options, IYahooRateCache cache)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
-        ThrowHelper.ThrowIfNull(cache);
         options.Validate();
 
         _source = source;
         _options = options;
-        _cache = cache;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -234,20 +210,9 @@ public sealed class YahooExchangeRateProvider
                 return;
         }
 
-        // Serve from the on-disk cache when it holds fresh rates spanning the requested window.
-        if (TryHydrateFromCache(pair))
-        {
-            lock (_gate)
-            {
-                if (IsRangeCovered(pair, startDate, endDate))
-                    return;
-            }
-        }
-
         var symbol = _options.BuildSymbol(fromIsoCode, toIsoCode);
         YahooChartRequest request = new(pair, symbol, startDate, endDate);
         YahooExchangeRateChart chart = await _source.GetChartAsync(request, cancellationToken).ConfigureAwait(false);
-        var retrievedAt = DateTimeOffset.UtcNow;
 
         lock (_gate)
         {
@@ -255,8 +220,6 @@ public sealed class YahooExchangeRateProvider
             ExtendCoveredRange(pair, startDate, endDate);
             RebuildSnapshot();
         }
-
-        PersistToCache(pair, chart, retrievedAt);
     }
 
     /// <summary>
@@ -319,20 +282,6 @@ public sealed class YahooExchangeRateProvider
     }
 
     /// <summary>
-    /// Builds the rate cache from the options.
-    /// </summary>
-    /// <param name="options">The provider options.</param>
-    /// <returns>A disk cache when enabled; otherwise the no-op cache.</returns>
-    private static IYahooRateCache CreateCache(YahooExchangeRateOptions options)
-    {
-        ThrowHelper.ThrowIfNull(options);
-
-        return options.EnableDiskCache
-            ? new FileSystemYahooRateCache(options.CacheDirectory)
-            : NullYahooRateCache.Instance;
-    }
-
-    /// <summary>
     /// Throws when an inclusive date range is inverted.
     /// </summary>
     /// <param name="startDate">The inclusive start of the range.</param>
@@ -360,67 +309,6 @@ public sealed class YahooExchangeRateProvider
 
         foreach (ExchangeRate rate in chart.EnumerateRates())
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
-    }
-
-    /// <summary>
-    /// Hydrates the in-memory store from the cache's fresh rates for a pair, seeding coverage from their date span.
-    /// </summary>
-    /// <param name="pair">The pair to hydrate.</param>
-    /// <returns>
-    /// <see langword="true" /> when at least one fresh cached rate was loaded; otherwise <see langword="false" />.
-    /// </returns>
-    private bool TryHydrateFromCache(ExchangeRatePair pair)
-    {
-        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(pair, ProviderName);
-        if (cached.Count == 0)
-            return false;
-
-        var now = DateTimeOffset.UtcNow;
-
-        lock (_gate)
-        {
-            DateOnly min = DateOnly.MaxValue;
-            DateOnly max = DateOnly.MinValue;
-            var any = false;
-
-            foreach (CachedExchangeRate rate in cached)
-            {
-                if (!rate.IsFresh(now, _options.CacheExpiry))
-                    continue;
-
-                _builder.Upsert(pair, ProviderName, rate.Date, rate.Rate);
-                min = rate.Date < min ? rate.Date : min;
-                max = rate.Date > max ? rate.Date : max;
-                any = true;
-            }
-
-            if (!any)
-                return false;
-
-            _series[pair] = new YahooSeriesInfo(pair, _options.BuildSymbol(pair.FromIsoCode, pair.ToIsoCode), pair.ToIsoCode);
-            ExtendCoveredRange(pair, min, max);
-            RebuildSnapshot();
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Persists a fetched chart's observations to the cache, stamped with the supplied retrieval time.
-    /// </summary>
-    /// <param name="pair">The pair the chart resolves.</param>
-    /// <param name="chart">The fetched chart.</param>
-    /// <param name="retrievedAt">The instant the chart was retrieved.</param>
-    private void PersistToCache(ExchangeRatePair pair, YahooExchangeRateChart chart, DateTimeOffset retrievedAt)
-    {
-        if (chart.Observations.Count == 0)
-            return;
-
-        var rates = new List<CachedExchangeRate>(chart.Observations.Count);
-        foreach (ExchangeRateObservation observation in chart.Observations)
-            rates.Add(new CachedExchangeRate(observation.Date, observation.Rate, retrievedAt));
-
-        _cache.Store(pair, ProviderName, rates);
     }
 
     /// <summary>
