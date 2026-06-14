@@ -16,6 +16,24 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
 /// require no configuration for the common case.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new CachingExchangeRateOptions
+/// {
+///     CacheDirectory = "/var/cache/fx",        // null/blank -> a bodu-exchange-rates temp folder
+///     DefaultExpiry = TimeSpan.FromHours(24),  // applies to any source without an override
+/// };
+///
+/// // Override the default for specific sources, keyed by the name the source is cached under.
+/// options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);
+/// options.ProviderExpiry["Yahoo"] = TimeSpan.FromHours(1);
+///
+/// TimeSpan rbaExpiry = options.GetExpiry("RBA");      // 7 days
+/// TimeSpan ecbExpiry = options.GetExpiry("ECB");      // 24 hours (the default)
+///]]>
+/// </code>
+/// </example>
 public sealed class CachingExchangeRateOptions
 {
     /// <summary>

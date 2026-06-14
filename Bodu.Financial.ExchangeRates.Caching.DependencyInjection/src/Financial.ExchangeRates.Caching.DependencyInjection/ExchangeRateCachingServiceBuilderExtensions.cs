@@ -31,13 +31,38 @@ public static class ExchangeRateCachingServiceBuilderExtensions
     /// <param name="configuration">
     /// An optional configuration root or section bound into <see cref="CachingExchangeRateOptions" />.
     /// </param>
-    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.</param>
+    /// <param name="sectionName">
+    /// The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.
+    /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="builder" /> or <paramref name="configureSources" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="sectionName" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" /> is empty or white space.
+    /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// services.AddBoduFinancial()
+    ///         .AddYahooExchangeRates()
+    ///         .AddRbaHistoricalRates()
+    ///         .AddCachedExchangeRateProvider(
+    ///             sources => sources
+    ///                 .AddSource<YahooExchangeRateProvider>(YahooExchangeRateProvider.ProviderName)
+    ///                 .AddSource<RbaExchangeRateProvider>(RbaExchangeRateProvider.ProviderName),
+    ///             configure: o =>
+    ///             {
+    ///                 o.CacheDirectory = "/var/cache/fx";
+    ///                 o.DefaultExpiry = TimeSpan.FromHours(12);
+    ///                 o.ProviderExpiry[RbaExchangeRateProvider.ProviderName] = TimeSpan.FromDays(7);
+    ///             });
+    ///
+    /// // Consumers resolve IDatedExchangeRateProvider and transparently get cached single-date and range lookups.
+    ///]]>
+    /// </code>
+    /// </example>
     public static IFinancialServiceBuilder AddCachedExchangeRateProvider(
         this IFinancialServiceBuilder builder,
         Action<ICachedExchangeRateSourceBuilder> configureSources,
@@ -70,18 +95,21 @@ public static class ExchangeRateCachingServiceBuilderExtensions
     /// <param name="configuration">
     /// An optional configuration root or section bound into <see cref="CachingExchangeRateOptions" />.
     /// </param>
-    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.</param>
+    /// <param name="sectionName">
+    /// The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.
+    /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="builder" /> or <paramref name="sources" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="sectionName" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" /> is empty or white space.
+    /// </exception>
     /// <remarks>
     /// The named sources are typically the concrete providers registered by their own packages, for example
-    /// <c>sp =&gt; new[] { new KeyValuePair&lt;string, IDatedExchangeRateProvider&gt;(YahooExchangeRateProvider.ProviderName,
-    /// sp.GetRequiredService&lt;YahooExchangeRateProvider&gt;()) }</c>. Only the dated
-    /// <see cref="IDatedExchangeRateProvider" /> surface is registered through the cache; any undated
+    /// <c>sp =&gt; new[] { new KeyValuePair&lt;string, IDatedExchangeRateProvider&gt;(YahooExchangeRateProvider.ProviderName, sp.GetRequiredService&lt;YahooExchangeRateProvider&gt;()) }</c>
+    /// . Only the dated <see cref="IDatedExchangeRateProvider" /> surface is registered through the cache; any undated
     /// <see cref="IExchangeRateProvider" /> registration continues to resolve its concrete provider.
     /// </remarks>
     public static IFinancialServiceBuilder AddCachedExchangeRateProvider(

@@ -25,6 +25,38 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// they were supplied and returning the first that can satisfy the request.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+/// using Bodu.Financial.ExchangeRates.Caching;
+///
+/// // Wrap one or more fetch-only providers. Each source caches under its own name, with a
+/// // per-source expiry that falls back to the default when not specified.
+/// var options = new CachingExchangeRateOptions
+/// {
+///     CacheDirectory = "/var/cache/fx",      // null -> a bodu-exchange-rates temp folder
+///     DefaultExpiry = TimeSpan.FromHours(12),
+/// };
+/// options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);
+///
+/// var caching = new CachingDatedExchangeRateProvider(
+///     new[]
+///     {
+///         new KeyValuePair<string, IDatedExchangeRateProvider>("Yahoo", yahoo),
+///         new KeyValuePair<string, IDatedExchangeRateProvider>("RBA", rba),
+///     },
+///     options);
+///
+/// // Single-date lookup: served from the cache when fresh, otherwise fetched and then cached.
+/// ExchangeRateLookupResult today = caching.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+///
+/// // Range lookup: served from the cache when the cached rows span the window, else refetched.
+/// IReadOnlyList<ExchangeRate> january =
+///     await caching.GetRatesAsync("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+///]]>
+/// </code>
+/// </example>
 public sealed class CachingDatedExchangeRateProvider
     : CachingExchangeRateProviderBase
 {
@@ -65,7 +97,8 @@ public sealed class CachingDatedExchangeRateProvider
     /// <param name="sources">The named sources to wrap, in priority order.</param>
     /// <param name="cache">The cache that serves fresh rates and stores resolved observations.</param>
     /// <param name="options">
-    /// The expiry options. <see cref="CachingExchangeRateOptions.CacheDirectory" /> is ignored when a cache is supplied.
+    /// The expiry options. <see cref="CachingExchangeRateOptions.CacheDirectory" /> is ignored when a cache is
+    /// supplied.
     /// </param>
     /// <param name="timeProvider">
     /// The time source used to evaluate freshness and stamp newly cached rows. <see langword="null" /> selects
@@ -97,7 +130,9 @@ public sealed class CachingDatedExchangeRateProvider
     /// </summary>
     /// <param name="options">The cache location options.</param>
     /// <returns>A new cache instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     private static IExchangeRateCache CreateCache(CachingExchangeRateOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
@@ -110,7 +145,9 @@ public sealed class CachingDatedExchangeRateProvider
     /// </summary>
     /// <param name="sources">The sources to validate.</param>
     /// <returns>The validated sources as an array preserving the supplied order.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="sources" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="sources" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when the sources violate a rule.</exception>
     private static KeyValuePair<string, IDatedExchangeRateProvider>[] ValidateSources(IEnumerable<KeyValuePair<string, IDatedExchangeRateProvider>> sources)
     {

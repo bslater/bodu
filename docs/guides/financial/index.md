@@ -71,6 +71,11 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 </div>
 
 <div class="bodu-card">
+  <h3><a href="exchange-rate-caching.md">Caching exchange rates</a></h3>
+  <p>Cache fetched rates as TOML in front of any provider — <code>CachingDatedExchangeRateProvider</code>, per-provider expiry with a global default, single-date and range serving, and the on-disk format.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="dependency-injection.md">Dependency injection</a></h3>
   <p>Register the financial stack with <code>AddBoduFinancial(...)</code> — currency lookups, named monetary contexts, FX providers, JSON converters, and options binding.</p>
 </div>
@@ -82,7 +87,8 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 1. **[Working with `Money<TCurrency>`](money.md)** — the monetary core; everything else builds on it.
 2. **[Working with exchange rates](exchange-rates.md)** — the provider contracts and editing surface for crossing currencies.
 3. **[Exchange-rate types](exchange-types.md)** and **[lookups on a known dataset](exchange-rate-lookups.md)** — reference material; dip in when choosing a type or tuning a lookup policy.
-4. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
+4. **[Caching exchange rates](exchange-rate-caching.md)** — add a TOML disk cache in front of any provider, with per-provider expiry.
+5. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
 
 ## See also
 

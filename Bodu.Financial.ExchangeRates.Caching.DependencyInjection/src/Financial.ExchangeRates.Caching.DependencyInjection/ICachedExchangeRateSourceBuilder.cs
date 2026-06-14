@@ -21,7 +21,9 @@ public interface ICachedExchangeRateSourceBuilder
     /// <param name="name">The identifier the source's rates are cached under.</param>
     /// <param name="source">A factory that resolves the source from the service provider.</param>
     /// <returns>The same builder, for chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or white space.</exception>
     ICachedExchangeRateSourceBuilder AddSource(string name, Func<IServiceProvider, IDatedExchangeRateProvider> source);
 

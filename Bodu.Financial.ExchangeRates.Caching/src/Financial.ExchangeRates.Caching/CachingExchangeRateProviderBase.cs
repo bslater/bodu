@@ -10,21 +10,21 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Provides the shared caching mechanism for a provider that wraps one or more named
-/// <see cref="IDatedExchangeRateProvider" /> sources: it serves fresh rates from an <see cref="IExchangeRateCache" /> and
-/// delegates to a source only on a miss, caching what the source returns. Derived types supply the wrapped sources.
+/// <see cref="IDatedExchangeRateProvider" /> sources: it serves fresh rates from an <see cref="IExchangeRateCache" />
+/// and delegates to a source only on a miss, caching what the source returns. Derived types supply the wrapped sources.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider implements the same <see cref="IDatedExchangeRateProvider" /> contract the caller resolves, so it can be
-/// inserted transparently. Each source has its own caching duration, taken from
+/// The provider implements the same <see cref="IDatedExchangeRateProvider" /> contract the caller resolves, so it can
+/// be inserted transparently. Each source has its own caching duration, taken from
 /// <see cref="CachingExchangeRateOptions.ProviderExpiry" /> when present and otherwise
 /// <see cref="CachingExchangeRateOptions.DefaultExpiry" />.
 /// </para>
 /// <para>
-/// Sources are consulted in the order returned by <see cref="Sources" />; the first to satisfy a request wins. Single-date
-/// lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from the cache only
-/// when the cached fresh rows for the source span the requested window; otherwise the whole range is refetched from the
-/// source and re-cached.
+/// Sources are consulted in the order returned by <see cref="Sources" />; the first to satisfy a request wins.
+/// Single-date lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from
+/// the cache only when the cached fresh rows for the source span the requested window; otherwise the whole range is
+/// refetched from the source and re-cached.
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
@@ -142,8 +142,8 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Attempts to resolve a single-date request from the fresh cached rows for a source (and its inverse, when inversion
-    /// is permitted) by delegating to a <see cref="FixedDatedExchangeRateProvider" /> built from them.
+    /// Attempts to resolve a single-date request from the fresh cached rows for a source (and its inverse, when
+    /// inversion is permitted) by delegating to a <see cref="FixedDatedExchangeRateProvider" /> built from them.
     /// </summary>
     /// <param name="provider">The source name the rows are cached under.</param>
     /// <param name="duration">The duration cached rows for the source stay fresh.</param>
@@ -153,7 +153,9 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="options">The lookup rules to apply.</param>
     /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the resolved result.</param>
-    /// <returns><see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.
+    /// </returns>
     private bool TryServeFromCache(string provider, TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
@@ -182,8 +184,8 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Attempts to serve a range request from the cache, treating the source's fresh cached rows as covering the request
-    /// only when their earliest and latest dates span the requested window.
+    /// Attempts to serve a range request from the cache, treating the source's fresh cached rows as covering the
+    /// request only when their earliest and latest dates span the requested window.
     /// </summary>
     /// <param name="provider">The source name the rows are cached under.</param>
     /// <param name="duration">The duration cached rows for the source stay fresh.</param>
@@ -192,7 +194,9 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the rates within the range.</param>
-    /// <returns><see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
+    /// </returns>
     private bool TryServeRangeFromCache(string provider, TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result)
     {
         IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(provider, pair, duration, now);

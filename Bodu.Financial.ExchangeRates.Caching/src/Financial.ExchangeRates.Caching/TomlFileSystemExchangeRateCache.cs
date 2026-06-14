@@ -22,6 +22,22 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// while writing is swallowed, so a cache problem never breaks rate retrieval.
 /// </para>
 /// </remarks>
+/// <example>
+/// A store under provider <c>Yahoo</c> for the <c>AUD/USD</c> pair produces a file named <c>Yahoo_AUDUSD.toml</c> with
+/// one table per dated rate: <code language="toml">
+///<![CDATA[
+/// [[Entries]]
+/// Date = 2023-01-03
+/// Rate = "0.5000"
+/// CachedAtUtc = 2023-01-04T09:15:00+00:00
+///
+/// [[Entries]]
+/// Date = 2023-01-06
+/// Rate = "0.5100"
+/// CachedAtUtc = 2023-01-04T09:15:00+00:00
+///]]>
+/// </code>
+/// </example>
 public sealed class TomlFileSystemExchangeRateCache
     : ExchangeRateCacheBase
 {
