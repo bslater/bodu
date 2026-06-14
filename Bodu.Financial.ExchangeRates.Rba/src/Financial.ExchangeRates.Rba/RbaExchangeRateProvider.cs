@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Rba;
 
@@ -26,6 +28,14 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// enabled, block to download that era and retry. Loaded eras are accumulated into an immutable
 /// <see cref="ExchangeRateBook" /> snapshot that backs the synchronous lookups, so inverse pairs, same-currency
 /// identity, and date-resolution policies are inherited from <see cref="FixedDatedExchangeRateProvider" />.
+/// </para>
+/// <para>
+/// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
+/// package) the provider records: the start of an era download (<see cref="LogLevel.Debug" />), a completed download
+/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation
+/// (<see cref="LogLevel.Trace" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
+/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="RbaExchangeRateOptions" />; omitting
+/// the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
 public sealed class RbaExchangeRateProvider
@@ -89,17 +99,26 @@ public sealed class RbaExchangeRateProvider
     private volatile FixedDatedExchangeRateProvider _snapshot;
 
     /// <summary>
+    /// The logger that records era downloads and on-demand network fetches.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RbaExchangeRateProvider" /> class backed by the RBA <c>.xls</c>
     /// files, downloaded with the supplied HTTP client.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records era downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public RbaExchangeRateProvider(HttpClient httpClient, RbaExchangeRateOptions options)
-        : this(CreateSource(httpClient, options), options)
+    public RbaExchangeRateProvider(HttpClient httpClient, RbaExchangeRateOptions options, ILogger? logger = null)
+        : this(CreateSource(httpClient, options), options, logger)
     {
     }
 
@@ -109,11 +128,15 @@ public sealed class RbaExchangeRateProvider
     /// </summary>
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records era downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal RbaExchangeRateProvider(IRbaExchangeRateTableSource source, RbaExchangeRateOptions options)
+    internal RbaExchangeRateProvider(IRbaExchangeRateTableSource source, RbaExchangeRateOptions options, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -121,6 +144,7 @@ public sealed class RbaExchangeRateProvider
 
         _source = source;
         _options = options;
+        _logger = logger ?? NullLogger.Instance;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -218,15 +242,27 @@ public sealed class RbaExchangeRateProvider
                 return;
         }
 
-        RbaExchangeRateTable table = await _source.GetTableAsync(era, cancellationToken).ConfigureAwait(false);
+        Log.EraLoadStarting(_logger, _options.DownloadStartingLogLevel, era.Label);
+
+        RbaExchangeRateTable table;
+        try
+        {
+            table = await _source.GetTableAsync(era, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
+            throw;
+        }
 
         lock (_gate)
         {
             if (!_loadedEras.Add(era.Label))
                 return;
 
-            Accumulate(table);
+            var count = Accumulate(table);
             RebuildSnapshot();
+            Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);
         }
     }
 
@@ -344,13 +380,21 @@ public sealed class RbaExchangeRateProvider
     /// Upserts a parsed table's observations and series metadata into the accumulator.
     /// </summary>
     /// <param name="table">The parsed table.</param>
-    private void Accumulate(RbaExchangeRateTable table)
+    /// <returns>The number of rate observations upserted.</returns>
+    private int Accumulate(RbaExchangeRateTable table)
     {
         foreach (RbaSeriesInfo info in table.GetSeriesInfo())
             _series[info.Pair] = info;
 
+        var count = 0;
         foreach (ExchangeRate rate in table.EnumerateRates())
+        {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+            count++;
+        }
+
+        return count;
     }
 
     /// <summary>

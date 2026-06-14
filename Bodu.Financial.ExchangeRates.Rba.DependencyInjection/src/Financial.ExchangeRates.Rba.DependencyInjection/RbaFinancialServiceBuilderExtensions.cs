@@ -8,6 +8,7 @@ using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
@@ -76,7 +77,7 @@ public static class RbaFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             RbaExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<RbaExchangeRateOptions>>().Value;
-            return new RbaExchangeRateProvider(client, options);
+            return new RbaExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<RbaExchangeRateProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<RbaExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<RbaExchangeRateProvider>());

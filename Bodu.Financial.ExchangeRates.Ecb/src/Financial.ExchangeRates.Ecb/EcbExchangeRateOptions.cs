@@ -6,14 +6,23 @@
 
 namespace Bodu.Financial.ExchangeRates.Ecb;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Configures how the <see cref="EcbExchangeRateProvider" /> downloads, caches, and interprets ECB euro reference-rate
 /// data.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
 /// require no configuration for the common case. The dependency-injection package binds this type from configuration
 /// and a <c>configure</c> delegate.
+/// </para>
+/// <para>
+/// The <c>*LogLevel</c> members set the <see cref="LogLevel" /> at which each diagnostic the provider emits is logged,
+/// so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
+/// <see cref="LogLevel.None" /> to suppress that event entirely.
+/// </para>
 /// </remarks>
 public sealed class EcbExchangeRateOptions
 {
@@ -78,6 +87,36 @@ public sealed class EcbExchangeRateOptions
     /// <value>The alias map; defaults to an empty map because the ECB publishes ISO 4217 codes directly.</value>
     public IDictionary<string, string> CurrencyAliases { get; set; } =
         new Dictionary<string, string>(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Gets or sets the level at which the start of a feed download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel DownloadStartingLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a completed feed download (with its observation count) is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel DownloadCompletedLogLevel { get; set; } = LogLevel.Information;
+
+    /// <summary>
+    /// Gets or sets the level at which a failed feed download is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
+    public LogLevel DownloadFailedLogLevel { get; set; } = LogLevel.Warning;
+
+    /// <summary>
+    /// Gets or sets the level at which each individual ingested rate observation is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
+
+    /// <summary>
+    /// Gets or sets the level at which a synchronous, blocking on-demand network fetch is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
+    public LogLevel SynchronousNetworkFetchLogLevel { get; set; } = LogLevel.Warning;
 
     /// <summary>
     /// Validates the options, throwing when a required value is missing.

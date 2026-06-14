@@ -67,3 +67,39 @@ decimal latest = provider.GetRate("EUR", "GBP");
 
 See [`Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection`](../Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection)
 for `AddYahooExchangeRates` / `AddBoduYahooExchangeRates`.
+
+## Logging
+
+The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
+constructor, or let the `*.DependencyInjection` package wire one for you (category
+`Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateProvider`). When no logger is supplied
+it defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
+
+The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
+Azure SDK — the completed download is the one `Information` line per fetch, payload detail
+is `Trace`, and degraded paths are `Warning`. Every level is individually configurable on
+`YahooExchangeRateOptions`:
+
+| Event | Default level | Option property |
+|---|---|---|
+| A pair/chart download is starting | `Debug` | `DownloadStartingLogLevel` |
+| A pair/chart loaded (with its observation count) | `Information` | `DownloadCompletedLogLevel` |
+| Each individual rate observation ingested | `Trace` | `ObservationIngestedLogLevel` |
+| A pair/chart download failed (logged, then re-thrown) | `Warning` | `DownloadFailedLogLevel` |
+| A synchronous lookup triggered a blocking network fetch | `Warning` | `SynchronousNetworkFetchLogLevel` |
+
+```csharp
+// Quieten the per-fetch line and turn off per-observation tracing entirely.
+var options = new YahooExchangeRateOptions
+{
+    DownloadCompletedLogLevel = LogLevel.Debug,
+    ObservationIngestedLogLevel = LogLevel.None,
+};
+```
+
+The default verbosity is deliberately low: at `Information` you see one line per pair/chart
+loaded; at `Debug` you additionally see when downloads start; only at `Trace` do you get a
+line per rate observation (which can be hundreds per chart — keep it for targeted
+debugging).
+
+Part of the [Bodu](https://github.com/bodu/bodu) utility library.

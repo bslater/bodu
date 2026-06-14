@@ -44,7 +44,7 @@ public sealed class TestPlugin
 /// assemblies, and registers the plugin's algorithms for use by the resolver.
 /// </summary>
 [TestClass]
-public sealed class NotableDatePluginLoaderTests
+public sealed partial class NotableDatePluginLoaderTests
 {
     /// <summary>
     /// Gets the test assembly, which declares the plugin via an assembly attribute.
@@ -184,7 +184,7 @@ public sealed class NotableDatePluginLoaderTests
     }
 
     /// <summary>
-    /// Verifies that the file-path <see cref="NotableDatePluginLoader.LoadFrom(string, IPluginTrustPolicy)" /> overload
+    /// Verifies that the file-path <see cref="NotableDatePluginLoader.LoadFrom(string, IPluginTrustPolicy, Microsoft.Extensions.Logging.ILogger)" /> overload
     /// loads the assembly from disk and activates its plugin.
     /// </summary>
     [TestMethod]

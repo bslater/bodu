@@ -8,6 +8,7 @@ using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
@@ -76,7 +77,7 @@ public static class YahooFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
-            return new YahooExchangeRateProvider(client, options);
+            return new YahooExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<YahooExchangeRateProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());

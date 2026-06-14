@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="MutableNotableDateResourceProvider" />, including override changes applied by reloading.
 /// </summary>
 [TestClass]
-public sealed class ReloadableNotableDateServiceTests
+public sealed partial class ReloadableNotableDateServiceTests
 {
     /// <summary>
     /// A resource placing the special day on 1 January.

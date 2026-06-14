@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar;
 /// Verifies the load and validation pipeline of <see cref="NotableDateResourceLoader" /> against the minimal notable-date document.
 /// </summary>
 [TestClass]
-public sealed class NotableDateResourceLoaderTests
+public sealed partial class NotableDateResourceLoaderTests
 {
     /// <summary>
     /// Verifies that loading the minimal notable-date document validates successfully and reports three notable-date concepts, five

@@ -47,4 +47,37 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   user-agent — so the query can be pointed at a mirror or proxy without touching caching or
   series configuration. See the `*.DependencyInjection` package for `AddBoeReferenceRates`.
 
+## Logging
+
+The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
+constructor, or let the `*.DependencyInjection` package wire one for you (category
+`Bodu.Financial.ExchangeRates.Boe.BoeExchangeRateProvider`). When no logger is supplied it
+defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
+
+The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
+Azure SDK — the completed download is the one `Information` line per range loaded, payload
+detail is `Trace`, and degraded paths are `Warning`. Every level is individually
+configurable on `BoeExchangeRateOptions`:
+
+| Event | Default level | Option property |
+|---|---|---|
+| A range download is starting | `Debug` | `DownloadStartingLogLevel` |
+| A range loaded (with its observation count) | `Information` | `DownloadCompletedLogLevel` |
+| Each individual rate observation ingested | `Trace` | `ObservationIngestedLogLevel` |
+| A range download failed (logged, then re-thrown) | `Warning` | `DownloadFailedLogLevel` |
+
+```csharp
+// Quieten the per-range line and turn off per-observation tracing entirely.
+var options = new BoeExchangeRateOptions
+{
+    DownloadCompletedLogLevel = LogLevel.Debug,
+    ObservationIngestedLogLevel = LogLevel.None,
+};
+```
+
+The default verbosity is deliberately low: at `Information` you see one line per range
+loaded; at `Debug` you additionally see when downloads start; only at `Trace` do you get a
+line per rate observation (which can be thousands per range — keep it for targeted
+debugging).
+
 Part of the [Bodu](https://github.com/bodu/bodu) utility library.

@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -16,6 +19,11 @@ namespace Bodu.Globalization.Calendar;
 /// is reloaded at runtime — for example a dependency-injection singleton whose source document changes. Each query
 /// reads the provider's current resource; when it differs from the one the inner service was built from, a fresh inner
 /// service is constructed. Construction is cheap, so reloads are inexpensive.
+/// </para>
+/// <para>
+/// <strong>Logging.</strong> The constructors accept an optional <see cref="ILogger" /> (defaulting to
+/// <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied, the service records each rebuild of its
+/// resolution state after observing a reloaded resource at <see cref="LogLevel.Debug" />. This level is fixed.
 /// </para>
 /// </remarks>
 /// <example>
@@ -51,6 +59,11 @@ public sealed class ReloadableNotableDateService
     private readonly object _gate = new();
 
     /// <summary>
+    /// The logger that records resolution-state rebuilds after a reload.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// The inner service resolving against <see cref="_builtFrom" />.
     /// </summary>
     private NotableDateService _inner;
@@ -64,9 +77,13 @@ public sealed class ReloadableNotableDateService
     /// Initializes a new instance of the <see cref="ReloadableNotableDateService" /> class.
     /// </summary>
     /// <param name="provider">The provider supplying the resource currently in effect.</param>
+    /// <param name="logger">
+    /// The logger that records resolution-state rebuilds. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
-    public ReloadableNotableDateService(INotableDateResourceProvider provider)
-        : this(provider, null)
+    public ReloadableNotableDateService(INotableDateResourceProvider provider, ILogger? logger = null)
+        : this(provider, null, logger)
     {
     }
 
@@ -79,13 +96,18 @@ public sealed class ReloadableNotableDateService
     /// The optional collaborators propagated to each rebuilt inner <see cref="NotableDateService" />, or
     /// <see langword="null" /> for built-ins only.
     /// </param>
+    /// <param name="logger">
+    /// The logger that records resolution-state rebuilds. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <see langword="null" />.</exception>
-    public ReloadableNotableDateService(INotableDateResourceProvider provider, NotableDateServiceOptions? options)
+    public ReloadableNotableDateService(INotableDateResourceProvider provider, NotableDateServiceOptions? options, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(provider);
 
         _provider = provider;
         _options = options;
+        _logger = logger ?? NullLogger.Instance;
 
         _builtFrom = provider.Current;
         _inner = new NotableDateService(_builtFrom, options);
@@ -129,6 +151,7 @@ public sealed class ReloadableNotableDateService
             {
                 _inner = new NotableDateService(current, _options);
                 _builtFrom = current;
+                Log.ResolutionStateRebuilt(_logger, current.ResourceId);
             }
 
             return _inner;

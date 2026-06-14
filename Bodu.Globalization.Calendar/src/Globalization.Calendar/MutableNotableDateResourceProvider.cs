@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -16,6 +19,11 @@ namespace Bodu.Globalization.Calendar;
 /// rebuilds its resolution state the next time it is queried. Because a resource is itself immutable, applying new
 /// override operations or refreshed data at runtime is performed by loading a fresh <see cref="NotableDateResource" />
 /// and passing it to <see cref="Reload" />.
+/// </para>
+/// <para>
+/// <strong>Logging.</strong> The constructor accepts an optional <see cref="ILogger" /> (defaulting to
+/// <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied, <see cref="Reload" /> records the swap at
+/// <see cref="LogLevel.Information" />, naming the resource that becomes current. This level is fixed.
 /// </para>
 /// </remarks>
 /// <example>
@@ -41,15 +49,24 @@ public sealed class MutableNotableDateResourceProvider
     private volatile NotableDateResource _current;
 
     /// <summary>
+    /// The logger that records resource reloads.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="MutableNotableDateResourceProvider" /> class.
     /// </summary>
     /// <param name="resource">The initial resource.</param>
+    /// <param name="logger">
+    /// The logger that records resource reloads. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>
-    public MutableNotableDateResourceProvider(NotableDateResource resource)
+    public MutableNotableDateResourceProvider(NotableDateResource resource, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(resource);
 
         _current = resource;
+        _logger = logger ?? NullLogger.Instance;
     }
 
     /// <inheritdoc />
@@ -66,5 +83,6 @@ public sealed class MutableNotableDateResourceProvider
         ThrowHelper.ThrowIfNull(resource);
 
         _current = resource;
+        Log.ResourceReloaded(_logger, resource.ResourceId);
     }
 }

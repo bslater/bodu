@@ -6,6 +6,7 @@
 
 using Bodu;
 using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -101,10 +102,13 @@ public static class NotableDateServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
         ThrowHelper.ThrowIfNull(initialResource);
 
-        MutableNotableDateResourceProvider provider = new(initialResource);
-        services.AddSingleton(provider);
-        services.AddSingleton<INotableDateResourceProvider>(provider);
-        services.AddSingleton<INotableDateService>(_ => new ReloadableNotableDateService(provider));
+        services.AddSingleton(sp => new MutableNotableDateResourceProvider(
+            initialResource,
+            sp.GetService<ILoggerFactory>()?.CreateLogger<MutableNotableDateResourceProvider>()));
+        services.AddSingleton<INotableDateResourceProvider>(sp => sp.GetRequiredService<MutableNotableDateResourceProvider>());
+        services.AddSingleton<INotableDateService>(sp => new ReloadableNotableDateService(
+            sp.GetRequiredService<MutableNotableDateResourceProvider>(),
+            sp.GetService<ILoggerFactory>()?.CreateLogger<ReloadableNotableDateService>()));
         return services;
     }
 }

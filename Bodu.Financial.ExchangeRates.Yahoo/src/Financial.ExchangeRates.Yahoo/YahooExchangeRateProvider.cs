@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Yahoo;
 
@@ -26,6 +28,15 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// to fetch a window around the requested date and retry. Fetched observations are accumulated into an immutable
 /// <see cref="ExchangeRateBook" /> snapshot that backs the synchronous lookups, so inverse pairs, same-currency
 /// identity, and date-resolution policies are inherited from <see cref="FixedDatedExchangeRateProvider" />.
+/// </para>
+/// <para>
+/// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
+/// package) the provider records: the start of a pair/chart download (<see cref="LogLevel.Debug" />), a completed
+/// download with its observation count (<see cref="LogLevel.Information" />), each ingested observation
+/// (<see cref="LogLevel.Trace" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
+/// synchronous on-demand network fetch (<see cref="LogLevel.Warning" />). Every level is configurable through the
+/// corresponding <c>*LogLevel</c> property on <see cref="YahooExchangeRateOptions" />; omitting the logger selects
+/// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
 public sealed class YahooExchangeRateProvider
@@ -83,17 +94,26 @@ public sealed class YahooExchangeRateProvider
     private volatile FixedDatedExchangeRateProvider _snapshot;
 
     /// <summary>
+    /// The logger that records chart downloads and on-demand network fetches.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by the Yahoo Finance
     /// chart endpoint, queried with the supplied HTTP client.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue chart requests.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records chart downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public YahooExchangeRateProvider(HttpClient httpClient, YahooExchangeRateOptions options)
-        : this(CreateSource(httpClient, options), options)
+    public YahooExchangeRateProvider(HttpClient httpClient, YahooExchangeRateOptions options, ILogger? logger = null)
+        : this(CreateSource(httpClient, options), options, logger)
     {
     }
 
@@ -103,11 +123,15 @@ public sealed class YahooExchangeRateProvider
     /// </summary>
     /// <param name="source">The chart source.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records chart downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options)
+    internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -115,6 +139,7 @@ public sealed class YahooExchangeRateProvider
 
         _source = source;
         _options = options;
+        _logger = logger ?? NullLogger.Instance;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -161,7 +186,10 @@ public sealed class YahooExchangeRateProvider
             return true;
 
         if (_options.AllowSynchronousNetworkAccess && TryLoadPairForDate(fromIsoCode, toIsoCode, date))
+        {
+            Log.SynchronousNetworkFetch(_logger, _options.SynchronousNetworkFetchLogLevel, date);
             return _snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
+        }
 
         result = default;
         return false;
@@ -212,13 +240,26 @@ public sealed class YahooExchangeRateProvider
 
         var symbol = _options.BuildSymbol(fromIsoCode, toIsoCode);
         YahooChartRequest request = new(pair, symbol, startDate, endDate);
-        YahooExchangeRateChart chart = await _source.GetChartAsync(request, cancellationToken).ConfigureAwait(false);
+
+        Log.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, symbol);
+
+        YahooExchangeRateChart chart;
+        try
+        {
+            chart = await _source.GetChartAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Log.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, symbol, ex);
+            throw;
+        }
 
         lock (_gate)
         {
-            Accumulate(chart);
+            var count = Accumulate(chart);
             ExtendCoveredRange(pair, startDate, endDate);
             RebuildSnapshot();
+            Log.PairLoaded(_logger, _options.DownloadCompletedLogLevel, symbol, count);
         }
     }
 
@@ -302,13 +343,21 @@ public sealed class YahooExchangeRateProvider
     /// Upserts a fetched chart's observations and series metadata into the accumulator.
     /// </summary>
     /// <param name="chart">The parsed chart.</param>
-    private void Accumulate(YahooExchangeRateChart chart)
+    /// <returns>The number of rate observations upserted.</returns>
+    private int Accumulate(YahooExchangeRateChart chart)
     {
         YahooSeriesInfo info = chart.GetSeriesInfo();
         _series[info.Pair] = info;
 
+        var count = 0;
         foreach (ExchangeRate rate in chart.EnumerateRates())
+        {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+            count++;
+        }
+
+        return count;
     }
 
     /// <summary>

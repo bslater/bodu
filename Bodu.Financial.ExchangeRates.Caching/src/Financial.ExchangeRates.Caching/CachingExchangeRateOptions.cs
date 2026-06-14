@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -13,8 +14,16 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// rate stays fresh, and per-provider overrides of that default.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
 /// require no configuration for the common case.
+/// </para>
+/// <para>
+/// The <c>Cache*LogLevel</c> members set the <see cref="LogLevel" /> at which each cache diagnostic is logged, so
+/// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
+/// default to <see cref="LogLevel.Trace" /> because they run on the read hot path; the range events default to
+/// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -60,6 +69,30 @@ public sealed class CachingExchangeRateOptions
     /// <see cref="DefaultExpiry" />.
     /// </value>
     public IDictionary<string, TimeSpan> ProviderExpiry { get; } = new Dictionary<string, TimeSpan>(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Gets or sets the level at which a single-date lookup served from the cache is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Trace;
+
+    /// <summary>
+    /// Gets or sets the level at which a single-date cache miss resolved from a source and then cached is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Trace;
+
+    /// <summary>
+    /// Gets or sets the level at which a range lookup served entirely from the cache is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel CacheRangeHitLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a range lookup refetched from a source and re-cached is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel CacheRangeRefetchLogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
     /// Resolves the caching duration for a provider, returning its specific override when present and the default
