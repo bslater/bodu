@@ -22,7 +22,7 @@ public class YahooChartExchangeRateSourceTests
     {
         StubHttpMessageHandler handler = new(YahooFixtures.ReadBytes(YahooFixtures.AudUsd));
         using HttpClient client = new(handler);
-        YahooExchangeRateOptions options = new() { EnableDiskCache = false };
+        YahooExchangeRateOptions options = new();
         YahooExchangeRateProvider provider = new(client, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));

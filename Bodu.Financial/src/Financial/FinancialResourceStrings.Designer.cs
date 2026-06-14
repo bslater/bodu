@@ -214,6 +214,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The end date must not be earlier than the start date..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRateRangeInverted {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRateRangeInverted", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Provider-priority list must contain at least one entry..
         /// </summary>
         internal static string Arg_Invalid_ProviderPriorityEmpty {

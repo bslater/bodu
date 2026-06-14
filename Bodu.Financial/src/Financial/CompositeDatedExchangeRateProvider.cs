@@ -142,4 +142,26 @@ public sealed class CompositeDatedExchangeRateProvider
         result = default;
         return false;
     }
+
+    /// <inheritdoc />
+    public async ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken = default)
+    {
+        IDatedExchangeRateProvider[] providers = _providers;
+
+        for (var i = 0; i < providers.Length; i++)
+        {
+            IReadOnlyList<ExchangeRate> rates =
+                await providers[i].GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
+
+            if (rates.Count > 0)
+                return rates;
+        }
+
+        return Array.Empty<ExchangeRate>();
+    }
 }

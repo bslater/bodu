@@ -123,6 +123,9 @@
   <data name="Arg_Invalid_ProviderNullOrWhiteSpace" xml:space="preserve">
     <value>Provider identifier must not be empty or white-space.</value>
   </data>
+  <data name="Arg_Invalid_ExchangeRateRangeInverted" xml:space="preserve">
+    <value>The end date must not be earlier than the start date.</value>
+  </data>
   <data name="Arg_Invalid_ProviderPriorityEmpty" xml:space="preserve">
     <value>Provider-priority list must contain at least one entry.</value>
   </data>
