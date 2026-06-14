@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -75,6 +76,10 @@ public sealed class CachingDatedExchangeRateProvider
     /// The time source used to evaluate freshness and stamp newly cached rows. <see langword="null" /> selects
     /// <see cref="TimeProvider.System" />.
     /// </param>
+    /// <param name="logger">
+    /// The logger that records cache hits, misses, and refetches. <see langword="null" /> selects
+    /// <see cref="Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="sources" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -85,8 +90,9 @@ public sealed class CachingDatedExchangeRateProvider
     public CachingDatedExchangeRateProvider(
         IEnumerable<KeyValuePair<string, IDatedExchangeRateProvider>> sources,
         CachingExchangeRateOptions options,
-        TimeProvider? timeProvider = null)
-        : this(sources, CreateCache(options), options, timeProvider)
+        TimeProvider? timeProvider = null,
+        ILogger? logger = null)
+        : this(sources, CreateCache(options), options, timeProvider, logger)
     {
     }
 
@@ -104,6 +110,10 @@ public sealed class CachingDatedExchangeRateProvider
     /// The time source used to evaluate freshness and stamp newly cached rows. <see langword="null" /> selects
     /// <see cref="TimeProvider.System" />.
     /// </param>
+    /// <param name="logger">
+    /// The logger that records cache hits, misses, and refetches. <see langword="null" /> selects
+    /// <see cref="Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="sources" />, <paramref name="cache" />, or <paramref name="options" /> is
     /// <see langword="null" />.
@@ -116,8 +126,9 @@ public sealed class CachingDatedExchangeRateProvider
         IEnumerable<KeyValuePair<string, IDatedExchangeRateProvider>> sources,
         IExchangeRateCache cache,
         CachingExchangeRateOptions options,
-        TimeProvider? timeProvider = null)
-        : base(cache, options, timeProvider)
+        TimeProvider? timeProvider = null,
+        ILogger? logger = null)
+        : base(cache, options, timeProvider, logger)
     {
         _sources = ValidateSources(sources);
     }

@@ -8,6 +8,7 @@ using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Ecb.DependencyInjection;
@@ -76,7 +77,7 @@ public static class EcbFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             EcbExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<EcbExchangeRateOptions>>().Value;
-            return new EcbExchangeRateProvider(client, options);
+            return new EcbExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<EcbExchangeRateProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<EcbExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<EcbExchangeRateProvider>());

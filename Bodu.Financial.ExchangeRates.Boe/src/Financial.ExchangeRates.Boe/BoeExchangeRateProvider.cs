@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Boe;
 
@@ -89,17 +91,26 @@ public sealed class BoeExchangeRateProvider
     private volatile FixedDatedExchangeRateProvider _snapshot;
 
     /// <summary>
+    /// The logger that records range downloads and on-demand network fetches.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class backed by the IADB CSV endpoint,
     /// queried with the supplied HTTP client.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records range downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public BoeExchangeRateProvider(HttpClient httpClient, BoeExchangeRateOptions options)
-        : this(CreateSource(httpClient, options), options)
+    public BoeExchangeRateProvider(HttpClient httpClient, BoeExchangeRateOptions options, ILogger? logger = null)
+        : this(CreateSource(httpClient, options), options, logger)
     {
     }
 
@@ -109,11 +120,15 @@ public sealed class BoeExchangeRateProvider
     /// </summary>
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records range downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal BoeExchangeRateProvider(IBoeExchangeRateTableSource source, BoeExchangeRateOptions options)
+    internal BoeExchangeRateProvider(IBoeExchangeRateTableSource source, BoeExchangeRateOptions options, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -121,6 +136,7 @@ public sealed class BoeExchangeRateProvider
 
         _source = source;
         _options = options;
+        _logger = logger ?? NullLogger.Instance;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -208,13 +224,25 @@ public sealed class BoeExchangeRateProvider
                 return;
         }
 
-        BoeExchangeRateTable table = await _source.GetTableAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
+        Log.FeedLoadStarting(_logger, startDate, endDate);
+
+        BoeExchangeRateTable table;
+        try
+        {
+            table = await _source.GetTableAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Log.FeedLoadFailed(_logger, startDate, endDate, ex);
+            throw;
+        }
 
         lock (_gate)
         {
-            Accumulate(table);
+            var count = Accumulate(table);
             _loadedRanges.Add((startDate, endDate));
             RebuildSnapshot();
+            Log.FeedLoaded(_logger, startDate, endDate, count);
         }
     }
 
@@ -331,13 +359,20 @@ public sealed class BoeExchangeRateProvider
     /// Upserts a parsed table's observations and series metadata into the accumulator.
     /// </summary>
     /// <param name="table">The parsed table.</param>
-    private void Accumulate(BoeExchangeRateTable table)
+    /// <returns>The number of rate observations upserted.</returns>
+    private int Accumulate(BoeExchangeRateTable table)
     {
         foreach (BoeSeriesInfo info in table.GetSeriesInfo())
             _series[info.Pair] = info;
 
+        var count = 0;
         foreach (ExchangeRate rate in table.EnumerateRates())
+        {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            count++;
+        }
+
+        return count;
     }
 
     /// <summary>

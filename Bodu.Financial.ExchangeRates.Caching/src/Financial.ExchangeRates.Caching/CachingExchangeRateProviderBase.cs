@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -46,6 +48,11 @@ public abstract class CachingExchangeRateProviderBase
     private readonly TimeProvider _timeProvider;
 
     /// <summary>
+    /// The logger that records cache hits, misses, and refetches.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="CachingExchangeRateProviderBase" /> class.
     /// </summary>
     /// <param name="cache">The cache that serves fresh rates and stores resolved observations.</param>
@@ -54,11 +61,15 @@ public abstract class CachingExchangeRateProviderBase
     /// The time source used to evaluate freshness and stamp newly cached rows. <see langword="null" /> selects
     /// <see cref="TimeProvider.System" />.
     /// </param>
+    /// <param name="logger">
+    /// The logger that records cache hits, misses, and refetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="cache" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    protected CachingExchangeRateProviderBase(IExchangeRateCache cache, CachingExchangeRateOptions options, TimeProvider? timeProvider)
+    protected CachingExchangeRateProviderBase(IExchangeRateCache cache, CachingExchangeRateOptions options, TimeProvider? timeProvider, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(cache);
         ThrowHelper.ThrowIfNull(options);
@@ -67,6 +78,7 @@ public abstract class CachingExchangeRateProviderBase
         _cache = cache;
         _options = options;
         _timeProvider = timeProvider ?? TimeProvider.System;
+        _logger = logger ?? NullLogger.Instance;
     }
 
     /// <summary>
@@ -94,11 +106,15 @@ public abstract class CachingExchangeRateProviderBase
             var duration = _options.GetExpiry(source.Key);
 
             if (TryServeFromCache(source.Key, duration, fromIsoCode, toIsoCode, date, options, now, out result))
+            {
+                Log.CacheHit(_logger, source.Key, fromIsoCode, toIsoCode, date);
                 return true;
+            }
 
             if (source.Value.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
             {
                 StoreResult(source.Key, duration, fromIsoCode, toIsoCode, result, now);
+                Log.CacheMissStored(_logger, source.Key, fromIsoCode, toIsoCode, date);
                 return true;
             }
         }
@@ -126,7 +142,10 @@ public abstract class CachingExchangeRateProviderBase
             var duration = _options.GetExpiry(source.Key);
 
             if (TryServeRangeFromCache(source.Key, duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
+            {
+                Log.RangeCacheHit(_logger, source.Key, fromIsoCode, toIsoCode);
                 return cached;
+            }
 
             IReadOnlyList<ExchangeRate> fetched =
                 await source.Value.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
@@ -134,6 +153,7 @@ public abstract class CachingExchangeRateProviderBase
             if (fetched.Count > 0)
             {
                 StoreRange(source.Key, duration, pair, fetched, now);
+                Log.RangeRefetched(_logger, source.Key, fromIsoCode, toIsoCode, fetched.Count);
                 return fetched;
             }
         }

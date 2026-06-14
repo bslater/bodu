@@ -8,6 +8,7 @@ using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
@@ -142,7 +143,8 @@ public static class ExchangeRateCachingServiceBuilderExtensions
                 sources(serviceProvider),
                 serviceProvider.GetRequiredService<IExchangeRateCache>(),
                 serviceProvider.GetRequiredService<IOptions<CachingExchangeRateOptions>>().Value,
-                serviceProvider.GetService<TimeProvider>()));
+                serviceProvider.GetService<TimeProvider>(),
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<CachingDatedExchangeRateProvider>()));
 
         return builder;
     }

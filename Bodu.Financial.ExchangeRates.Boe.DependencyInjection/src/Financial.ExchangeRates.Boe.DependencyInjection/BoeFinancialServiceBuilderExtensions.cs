@@ -8,6 +8,7 @@ using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Boe.DependencyInjection;
@@ -76,7 +77,7 @@ public static class BoeFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             BoeExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<BoeExchangeRateOptions>>().Value;
-            return new BoeExchangeRateProvider(client, options);
+            return new BoeExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<BoeExchangeRateProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<BoeExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<BoeExchangeRateProvider>());

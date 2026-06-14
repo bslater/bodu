@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Ecb;
 
@@ -90,17 +92,26 @@ public sealed class EcbExchangeRateProvider
     private volatile FixedDatedExchangeRateProvider _snapshot;
 
     /// <summary>
+    /// The logger that records feed downloads and on-demand network fetches.
+    /// </summary>
+    private readonly ILogger _logger;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class backed by the ECB
     /// <c>eurofxref</c> feeds, downloaded with the supplied HTTP client.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records feed downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public EcbExchangeRateProvider(HttpClient httpClient, EcbExchangeRateOptions options)
-        : this(CreateSource(httpClient, options), options)
+    public EcbExchangeRateProvider(HttpClient httpClient, EcbExchangeRateOptions options, ILogger? logger = null)
+        : this(CreateSource(httpClient, options), options, logger)
     {
     }
 
@@ -110,11 +121,15 @@ public sealed class EcbExchangeRateProvider
     /// </summary>
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that records feed downloads and on-demand network fetches. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal EcbExchangeRateProvider(IEcbExchangeRateTableSource source, EcbExchangeRateOptions options)
+    internal EcbExchangeRateProvider(IEcbExchangeRateTableSource source, EcbExchangeRateOptions options, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -122,6 +137,7 @@ public sealed class EcbExchangeRateProvider
 
         _source = source;
         _options = options;
+        _logger = logger ?? NullLogger.Instance;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -168,7 +184,10 @@ public sealed class EcbExchangeRateProvider
             return true;
 
         if (_options.AllowSynchronousNetworkAccess && TryLoadFeedForDate(date))
+        {
+            Log.SynchronousNetworkFetch(_logger, date);
             return _snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
+        }
 
         result = default;
         return false;
@@ -221,15 +240,27 @@ public sealed class EcbExchangeRateProvider
                 return;
         }
 
-        EcbExchangeRateTable table = await _source.GetTableAsync(feed, cancellationToken).ConfigureAwait(false);
+        Log.FeedLoadStarting(_logger, feed.Name);
+
+        EcbExchangeRateTable table;
+        try
+        {
+            table = await _source.GetTableAsync(feed, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Log.FeedLoadFailed(_logger, feed.Name, ex);
+            throw;
+        }
 
         lock (_gate)
         {
             if (!_loadedFeeds.Add(feed.Name))
                 return;
 
-            Accumulate(table);
+            var count = Accumulate(table);
             RebuildSnapshot();
+            Log.FeedLoaded(_logger, feed.Name, count);
         }
     }
 
@@ -368,13 +399,20 @@ public sealed class EcbExchangeRateProvider
     /// Upserts a parsed table's observations and series metadata into the accumulator.
     /// </summary>
     /// <param name="table">The parsed table.</param>
-    private void Accumulate(EcbExchangeRateTable table)
+    /// <returns>The number of rate observations upserted.</returns>
+    private int Accumulate(EcbExchangeRateTable table)
     {
         foreach (EcbSeriesInfo info in table.GetSeriesInfo())
             _series[info.Pair] = info;
 
+        var count = 0;
         foreach (ExchangeRate rate in table.EnumerateRates())
+        {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            count++;
+        }
+
+        return count;
     }
 
     /// <summary>
