@@ -29,6 +29,10 @@ public sealed class DatedExchangeRateProviderRegistrationTests
         /// <inheritdoc />
         public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result) =>
             throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
     }
 
     /// <summary>

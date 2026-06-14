@@ -76,4 +76,7 @@
   <data name="IO_KeyNotFound_ExchangeRate" xml:space="preserve">
     <value>No exchange rate is available for {0}/{1} on {2}.</value>
   </data>
+  <data name="Arg_Invalid_RangeInverted" xml:space="preserve">
+    <value>The end date must not be earlier than the start date.</value>
+  </data>
 </root>

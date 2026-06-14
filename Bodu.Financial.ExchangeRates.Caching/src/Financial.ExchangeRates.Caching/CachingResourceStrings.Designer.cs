@@ -113,5 +113,14 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("IO_KeyNotFound_ExchangeRate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The end date must not be earlier than the start date..
+        /// </summary>
+        internal static string Arg_Invalid_RangeInverted {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RangeInverted", resourceCulture);
+            }
+        }
     }
 }

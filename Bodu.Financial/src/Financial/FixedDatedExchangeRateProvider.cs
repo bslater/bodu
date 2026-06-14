@@ -180,6 +180,41 @@ public sealed class FixedDatedExchangeRateProvider
         return false;
     }
 
+    /// <inheritdoc />
+    public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken = default)
+    {
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
+        if (endDate < startDate)
+            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ExchangeRateRangeInverted, nameof(endDate));
+
+        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        List<ExchangeRate> result = new();
+
+        var priority = _providerPriority;
+        for (var i = 0; i < priority.Length; i++)
+        {
+            if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)
+                continue;
+
+            foreach (ExchangeRateObservation observation in series.GetObservations())
+            {
+                if (observation.Date >= startDate && observation.Date <= endDate)
+                    result.Add(new ExchangeRate(fromIsoCode, toIsoCode, observation.Date, observation.Rate, priority[i]));
+            }
+
+            break;
+        }
+
+        result.Sort(static (left, right) => left.Date.CompareTo(right.Date));
+        return new ValueTask<IReadOnlyList<ExchangeRate>>(result);
+    }
+
     /// <summary>
     /// Materialises the supplied observations into a multi-provider <see cref="ExchangeRateBook" />, validating that
     /// each pair carries observations from a single provider only.

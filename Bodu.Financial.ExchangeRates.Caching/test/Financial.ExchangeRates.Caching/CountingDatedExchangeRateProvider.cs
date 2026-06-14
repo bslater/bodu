@@ -38,7 +38,13 @@ internal sealed class CountingDatedExchangeRateProvider
     public int TryGetRateCallCount { get; private set; }
 
     /// <summary>
-    /// Gets the total number of inner lookups across both methods.
+    /// Gets the number of times <see cref="GetRatesAsync" /> has been invoked.
+    /// </summary>
+    /// <returns>The invocation count.</returns>
+    public int GetRatesAsyncCallCount { get; private set; }
+
+    /// <summary>
+    /// Gets the total number of inner lookups across the single-date methods.
     /// </summary>
     /// <returns>The combined invocation count.</returns>
     public int TotalCallCount => GetRateCallCount + TryGetRateCallCount;
@@ -55,5 +61,12 @@ internal sealed class CountingDatedExchangeRateProvider
     {
         TryGetRateCallCount++;
         return _inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
+    }
+
+    /// <inheritdoc />
+    public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    {
+        GetRatesAsyncCallCount++;
+        return _inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
     }
 }
