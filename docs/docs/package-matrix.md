@@ -38,7 +38,7 @@ Several capabilities ship as independent companion packages so they can release 
 
 ## File formats and exchange-rate data
 
-The Reserve Bank of Australia historical exchange-rate provider ships as a small, strictly layered stack. The lower two layers carry no financial or RBA-specific concepts and can be reused on their own: a generic compound-file reader, and a narrow binary-`.xls` reader built on it.
+Several exchange-rate providers ship as independent packages over a shared `IDatedExchangeRateProvider` / `IExchangeRateProvider` contract, so consumers pull in only the data sources they need, each paired with an opt-in dependency-injection companion. The Reserve Bank of Australia provider sits on a small, strictly layered stack whose lower two layers carry no financial or RBA-specific concepts and can be reused on their own: a generic compound-file reader, and a narrow binary-`.xls` reader built on it. A standalone caching layer can decorate any provider with a shared on-disk TOML cache.
 
 | Package | Status | Purpose | Depends on |
 |---|---|---|---|
@@ -46,6 +46,14 @@ The Reserve Bank of Australia historical exchange-rate provider ships as a small
 | `Bodu.Formats.Excel.Binary` | **Preview** | Narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `Bodu.IO.Compound`, `Bodu.Core` |
 | `Bodu.Financial.ExchangeRates.Rba` | **Preview** | Downloads and parses the RBA's published daily exchange-rate `.xls` files, serving them as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API and in-memory plus on-disk caching. | `Bodu.Formats.Excel.Binary`, `Bodu.Financial`, `Bodu.Core` |
 | `Bodu.Financial.ExchangeRates.Rba.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the RBA provider as a singleton backed by a configured `HttpClient`, binding `RbaExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Rba`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
+| `Bodu.Financial.ExchangeRates.Boe` | **Preview** | Queries the Bank of England's Interactive Statistical Database (IADB) CSV endpoint for daily spot rates, serving them as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API and in-memory plus on-disk caching. | `Bodu.Text.Formats`, `Bodu.Financial`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.Boe.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the BoE provider as a singleton backed by a configured `HttpClient`, binding `BoeExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Boe`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
+| `Bodu.Financial.ExchangeRates.Ecb` | **Preview** | Downloads and parses the ECB's published `eurofxref` euro foreign-exchange reference-rate XML feeds, serving them as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API and in-memory plus on-disk caching. | `Bodu.Financial`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.Ecb.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the ECB provider as a singleton backed by a configured `HttpClient`, binding `EcbExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Ecb`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
+| `Bodu.Financial.ExchangeRates.Yahoo` | **Preview** | Fetches and parses the Yahoo Finance v8 chart JSON service, serving the results as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API over arbitrary currency pairs. | `Bodu.Financial`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the Yahoo Finance provider as a singleton backed by a configured `HttpClient`, binding `YahooExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Yahoo`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
+| `Bodu.Financial.ExchangeRates.Caching` | **Preview** | `CachingDatedExchangeRateProvider`, a decorator that wraps any `IDatedExchangeRateProvider` and serves fresh rates from a shared on-disk cache (one TOML file per provider and currency pair), delegating to the inner provider only on a miss. | `Bodu.Text.Toml`, `Bodu.Financial`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.Caching.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the TOML on-disk cache and decorate the registered `IDatedExchangeRateProvider` with a `CachingDatedExchangeRateProvider`, so consumers transparently get cached lookups. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.DependencyInjection` |
 
 ## Calendar data packs
 
@@ -98,6 +106,14 @@ dotnet add package Bodu.IO.Compound
 dotnet add package Bodu.Formats.Excel.Binary
 dotnet add package Bodu.Financial.ExchangeRates.Rba
 dotnet add package Bodu.Financial.ExchangeRates.Rba.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Boe
+dotnet add package Bodu.Financial.ExchangeRates.Boe.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Ecb
+dotnet add package Bodu.Financial.ExchangeRates.Ecb.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Yahoo
+dotnet add package Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Caching
+dotnet add package Bodu.Financial.ExchangeRates.Caching.DependencyInjection
 
 # Calendar regional data packs (install only what you need)
 dotnet add package Bodu.Globalization.Calendar.Americas
