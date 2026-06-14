@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 /// Verifies the dependency-injection wiring of the caching exchange-rate provider.
 /// </summary>
 [TestClass]
-public sealed class ExchangeRateCachingServiceBuilderExtensionsTests
+public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
 {
     /// <summary>
     /// Verifies that the registered <see cref="IDatedExchangeRateProvider" /> is a caching provider.

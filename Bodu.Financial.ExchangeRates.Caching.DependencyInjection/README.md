@@ -13,13 +13,9 @@ services.AddBoduFinancial()
         .AddYahooExchangeRates()
         .AddRbaHistoricalRates()
         .AddCachedExchangeRateProvider(
-            sp => new[]
-            {
-                new KeyValuePair<string, IDatedExchangeRateProvider>(
-                    YahooExchangeRateProvider.ProviderName, sp.GetRequiredService<YahooExchangeRateProvider>()),
-                new KeyValuePair<string, IDatedExchangeRateProvider>(
-                    RbaExchangeRateProvider.ProviderName, sp.GetRequiredService<RbaExchangeRateProvider>()),
-            },
+            sources => sources
+                .AddSource<YahooExchangeRateProvider>(YahooExchangeRateProvider.ProviderName)
+                .AddSource<RbaExchangeRateProvider>(RbaExchangeRateProvider.ProviderName),
             configure: o =>
             {
                 o.CacheDirectory = "/var/cache/fx";
@@ -29,13 +25,22 @@ services.AddBoduFinancial()
 ```
 
 The names are supplied at the composition root — the provider classes themselves know nothing of
-caching. Sources are consulted in the supplied order; the first to satisfy a lookup wins.
+caching. Sources are consulted in the supplied order; the first to satisfy a lookup wins. Both
+single-date lookups (`GetRate`/`TryGetRate`) and range lookups (`GetRatesAsync`) are served through
+the cache by the resolved `IDatedExchangeRateProvider`.
 
 ## Method
 
-`AddCachedExchangeRateProvider(sources, ...)` registers the shared `TomlFileSystemExchangeRateCache`
-and a `CachingDatedExchangeRateProvider` (as `IDatedExchangeRateProvider`) wrapping the named sources.
-It binds `CachingExchangeRateOptions` from configuration (default section
+`AddCachedExchangeRateProvider(...)` registers the shared `TomlFileSystemExchangeRateCache` and a
+`CachingDatedExchangeRateProvider` (as `IDatedExchangeRateProvider`) wrapping the named sources. Two
+overloads add the sources:
+
+- **Fluent** — `configureSources` with `.AddSource<TProvider>(name)` (resolved from the container) or
+  `.AddSource(name, sp => …)` (a factory).
+- **Raw factory** — `Func<IServiceProvider, IEnumerable<KeyValuePair<string, IDatedExchangeRateProvider>>>`
+  for full control.
+
+Both bind `CachingExchangeRateOptions` from configuration (default section
 `Financial:ExchangeRateCache`) and an optional `configure` delegate. Only the dated
 `IDatedExchangeRateProvider` surface is registered through the cache; any undated
 `IExchangeRateProvider` registration continues to resolve its concrete provider.
