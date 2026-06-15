@@ -96,6 +96,57 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing dictionaries nested beyond the ceiling throws
+    /// <see cref="TomlSerializationException" />, confirming the depth guard covers the dictionary converter path and not
+    /// only object property chains.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNestedDictionariesExceedCap_ShouldThrowTomlSerializationException()
+    {
+        var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
+
+        var root = new Dictionary<string, object>();
+        var current = root;
+        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+        {
+            var next = new Dictionary<string, object>();
+            current["child"] = next;
+            current = next;
+        }
+
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(root, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing arrays nested beyond the ceiling throws <see cref="TomlSerializationException" />,
+    /// confirming the depth guard covers the collection converter path and not only object property chains.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNestedArraysExceedCap_ShouldThrowTomlSerializationException()
+    {
+        var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
+
+        var inner = new List<object>();
+        var current = inner;
+        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+        {
+            var next = new List<object>();
+            current.Add(next);
+            current = next;
+        }
+
+        var root = new Dictionary<string, object> { ["values"] = inner };
+
+        Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(root, options);
+        });
+    }
+
+    /// <summary>
     /// Verifies that a <see cref="TomlSerializerOptions.MaxDepth" /> larger than the absolute ceiling is still accepted
     /// by the property, confirming the ceiling is enforced while parsing or writing rather than at configuration time.
     /// </summary>
