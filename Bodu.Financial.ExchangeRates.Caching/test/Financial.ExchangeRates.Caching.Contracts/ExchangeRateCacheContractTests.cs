@@ -194,4 +194,188 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         Assert.AreEqual(0, other.Count);
     }
+
+    /// <summary>
+    /// Verifies that a recorded coverage window is reported as covered, both for the exact window and for a sub-window
+    /// wholly inside it.
+    /// </summary>
+    [TestMethod]
+    public void GetCoverage_WhenWindowRecorded_ShouldContainWindowAndSubWindow()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
+
+        DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
+
+        Assert.IsTrue(coverage.Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
+        Assert.IsTrue(coverage.Contains(new DateOnly(2023, 1, 5), new DateOnly(2023, 1, 8)));
+    }
+
+    /// <summary>
+    /// Verifies that a window straddling an unfetched gap between two recorded windows is not reported as covered, while
+    /// each recorded window remains covered on its own.
+    /// </summary>
+    [TestMethod]
+    public void GetCoverage_WhenWindowStraddlesGap_ShouldNotContainStraddlingWindow()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4), Duration, now);
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 8), new DateOnly(2023, 1, 10), Duration, now);
+
+        DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
+
+        Assert.IsFalse(coverage.Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
+        Assert.IsTrue(coverage.Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)));
+        Assert.IsTrue(coverage.Contains(new DateOnly(2023, 1, 8), new DateOnly(2023, 1, 10)));
+    }
+
+    /// <summary>
+    /// Verifies that a read against a pair with no recorded coverage returns an empty <see cref="DateRangeCoverage" />.
+    /// </summary>
+    [TestMethod]
+    public void GetCoverage_WhenNothingRecorded_ShouldReturnEmpty()
+    {
+        TCache cache = CreateCache();
+
+        DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, DateTimeOffset.UtcNow);
+
+        Assert.IsTrue(coverage.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that a coverage window recorded at an instant is no longer reported as covered once one duration has
+    /// elapsed, using the same strict less-than freshness boundary as cached rows.
+    /// </summary>
+    [TestMethod]
+    public void GetCoverage_WhenWindowExpired_ShouldNotBeCovered()
+    {
+        TCache cache = CreateCache();
+        var recordedAt = DateTimeOffset.UtcNow;
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, recordedAt);
+
+        DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, recordedAt + Duration);
+
+        Assert.IsTrue(coverage.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IExchangeRateCache.RecordCoverage" /> rejects an inverted window.
+    /// </summary>
+    [TestMethod]
+    public void RecordCoverage_WhenStartAfterEnd_ShouldThrowArgumentOutOfRangeException()
+    {
+        TCache cache = CreateCache();
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            cache.RecordCoverage(Pair, new DateOnly(2023, 1, 10), new DateOnly(2023, 1, 3), Duration, DateTimeOffset.UtcNow);
+        });
+
+        Assert.AreEqual("start", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that coverage recorded under one pair is not reported for a different pair.
+    /// </summary>
+    [TestMethod]
+    public void GetCoverage_WhenRecordedUnderDifferentPair_ShouldNotLeak()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
+
+        DateRangeCoverage other = cache.GetCoverage(new ExchangeRatePair("EUR", "USD"), Duration, now);
+
+        Assert.IsTrue(other.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that storing rates after coverage was recorded preserves that coverage, confirming the two halves of the
+    /// per-pair state are written independently.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenCoveragePreviouslyRecorded_ShouldPreserveCoverage()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+
+        Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
+        Assert.AreEqual(1, cache.GetRates(Pair, Duration, now).Count);
+    }
+
+    /// <summary>
+    /// Verifies that recording coverage after rates were stored preserves those rows, confirming the two halves of the
+    /// per-pair state are written independently.
+    /// </summary>
+    [TestMethod]
+    public void RecordCoverage_WhenRatesPreviouslyStored_ShouldPreserveEntries()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+        Assert.AreEqual(1, rows.Count);
+        Assert.AreEqual(0.5000m, rows[0].Rate);
+        Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
+    }
+
+    /// <summary>
+    /// Verifies that a row carrying a non-positive rate is silently dropped on store and not returned on read.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenRowHasNonPositiveRate_ShouldNotReturnRow()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0m, now) }, Duration, now);
+
+        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+    }
+
+    /// <summary>
+    /// Verifies that a row carrying a default (unset) date is silently dropped on store and not returned on read.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenRowHasDefaultDate_ShouldNotReturnRow()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(default, 0.5000m, now) }, Duration, now);
+
+        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+    }
+
+    /// <summary>
+    /// Verifies that a valid row stored alongside an invalid one is retained while the invalid row is dropped.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenMixOfValidAndInvalidRows_ShouldRetainOnlyValid()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        cache.Store(
+            Pair,
+            new[]
+            {
+                new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now),
+                new CachedExchangeRate(new DateOnly(2023, 1, 6), -0.1m, now),
+            },
+            Duration,
+            now);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+        Assert.AreEqual(1, rows.Count);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
+    }
 }

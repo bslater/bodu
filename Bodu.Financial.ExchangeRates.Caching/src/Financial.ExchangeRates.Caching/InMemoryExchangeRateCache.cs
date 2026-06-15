@@ -38,10 +38,10 @@ public sealed class InMemoryExchangeRateCache
     : ExchangeRateCacheBase<ExchangeRateCacheOptions>
 {
     /// <summary>
-    /// The in-memory store of cached rows, keyed by currency pair. Each value is an immutable snapshot owned by the
-    /// cache.
+    /// The in-memory store of per-pair state, keyed by currency pair. Each value is an immutable snapshot owned by the
+    /// cache, carrying both the cached rows and the coverage windows.
     /// </summary>
-    private readonly ConcurrentDictionary<ExchangeRatePair, CachedExchangeRate[]> _store = new();
+    private readonly ConcurrentDictionary<ExchangeRatePair, CachePairState> _store = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InMemoryExchangeRateCache" /> class.
@@ -72,22 +72,27 @@ public sealed class InMemoryExchangeRateCache
     }
 
     /// <inheritdoc />
-    protected override IReadOnlyList<CachedExchangeRate> ReadEntries(ExchangeRatePair pair) =>
-        _store.TryGetValue(pair, out CachedExchangeRate[]? entries) ? entries : Array.Empty<CachedExchangeRate>();
+    private protected override CachePairState ReadState(ExchangeRatePair pair) =>
+        _store.TryGetValue(pair, out CachePairState? state) ? state : CachePairState.Empty;
 
     /// <inheritdoc />
-    protected override void WriteEntries(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries)
+    private protected override void WriteState(ExchangeRatePair pair, CachePairState state)
     {
-        if (entries.Count == 0)
+        // Drop the pair entirely only when nothing remains to retain, so an empty state does not linger in the map.
+        if (state.Entries.Count == 0 && state.Coverage.Count == 0)
         {
             _store.TryRemove(pair, out _);
             return;
         }
 
-        var snapshot = new CachedExchangeRate[entries.Count];
-        for (var i = 0; i < entries.Count; i++)
-            snapshot[i] = entries[i];
+        var entries = new CachedExchangeRate[state.Entries.Count];
+        for (var i = 0; i < state.Entries.Count; i++)
+            entries[i] = state.Entries[i];
 
-        _store[pair] = snapshot;
+        var coverage = new CoverageWindow[state.Coverage.Count];
+        for (var i = 0; i < state.Coverage.Count; i++)
+            coverage[i] = state.Coverage[i];
+
+        _store[pair] = new CachePairState(entries, coverage);
     }
 }

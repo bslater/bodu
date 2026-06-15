@@ -27,9 +27,11 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// Single-date lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from
-/// the cache only when the cached fresh rows span the requested window; otherwise the whole range is refetched from the
-/// inner provider and re-cached. To group several sources behind one entry point, wrap each in its own caching provider
-/// and compose them with an <see cref="AggregatingExchangeRateProvider" />.
+/// the cache only when its recorded coverage contains the whole requested window — that is, every day in the window was
+/// actually fetched and is still fresh — so an interior day that was never fetched forces a refetch rather than being
+/// served from a sparse set of rows. On a miss the whole range is refetched from the inner provider, re-cached, and
+/// recorded as covered. To group several sources behind one entry point, wrap each in its own caching provider and
+/// compose them with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
@@ -149,6 +151,11 @@ public abstract class CachingExchangeRateProviderBase
         if (fetched.Count > 0)
         {
             StoreRange(duration, pair, fetched, now);
+
+            // Record the whole requested window as covered, not merely the dates that returned a row: the request asked
+            // for every interior day, so a later lookup of the same window can be served without refetching gaps.
+            _cache.RecordCoverage(pair, startDate, endDate, duration, now);
+
             Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count);
             return fetched;
         }
@@ -207,30 +214,30 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Attempts to serve a range request from the cache, treating the fresh cached rows as covering the request only
-    /// when their earliest and latest dates span the requested window.
+    /// Attempts to serve a range request from the cache, treating the window as cached only when the recorded coverage
+    /// contains every day of it — so a window that straddles an unfetched interior gap is not served from a sparse set
+    /// of rows.
     /// </summary>
-    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="duration">The duration cached rows and coverage windows stay fresh.</param>
     /// <param name="pair">The requested currency pair.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
-    /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
+    /// <param name="now">The instant against which cached rows and coverage are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the rates within the range.</param>
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
     private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result)
     {
-        IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
-
-        // GetRates returns rows ordered ascending by date; treat the range as cached only when the fresh rows span it.
-        if (fresh.Count == 0 || fresh[0].Date > startDate || fresh[^1].Date < endDate)
+        // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched.
+        if (!_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
         {
             result = Array.Empty<ExchangeRate>();
             return false;
         }
 
         var provider = _cache.Provider;
+        IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
         List<ExchangeRate> rates = new();
         foreach (CachedExchangeRate rate in fresh)
         {

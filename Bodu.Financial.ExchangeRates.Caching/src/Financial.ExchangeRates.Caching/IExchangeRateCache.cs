@@ -22,6 +22,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// self-cleans over time.
 /// </para>
 /// <para>
+/// Alongside rate rows, the cache persists <em>coverage</em>: the date ranges that were actually fetched, recorded via
+/// <see cref="RecordCoverage" /> and read back as a <see cref="DateRangeCoverage" /> via <see cref="GetCoverage" />.
+/// Coverage is what makes a range lookup correct — a sparse set of rows can span a window without every interior day
+/// having been fetched, so a range is served from the cache only when its coverage contains the whole window.
+/// </para>
+/// <para>
 /// Implementations are expected to be resilient: a cache failure should manifest as an empty result or a no-op rather
 /// than an exception that breaks rate retrieval.
 /// </para>
@@ -52,4 +58,40 @@ public interface IExchangeRateCache
     /// <param name="duration">The duration a cached rate remains fresh after it was cached.</param>
     /// <param name="asOf">The instant against which stale rows are pruned.</param>
     void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf);
+
+    /// <summary>
+    /// Returns the union of the still-fresh coverage windows recorded for the supplied pair, evaluated against
+    /// <paramref name="asOf" />.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="duration">The duration a recorded coverage window remains fresh after it was fetched.</param>
+    /// <param name="asOf">The instant against which coverage freshness is evaluated.</param>
+    /// <returns>
+    /// A <see cref="DateRangeCoverage" /> describing the days known to have been fetched and still fresh; empty when no
+    /// fresh coverage exists.
+    /// </returns>
+    /// <remarks>
+    /// Coverage answers which days were actually fetched, not merely which days have a cached rate. A range lookup
+    /// should be served from the cache only when this coverage
+    /// <see cref="DateRangeCoverage.Contains(DateOnly, DateOnly)" /> the whole requested window, so an interior day
+    /// that was never fetched forces a refetch rather than being served from a sparse set of rows.
+    /// </remarks>
+    DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf);
+
+    /// <summary>
+    /// Records that the inclusive range <paramref name="start" />..<paramref name="end" /> was fetched for the supplied
+    /// pair, stamping the window at <paramref name="asOf" /> and pruning windows that are no longer fresh under
+    /// <paramref name="duration" />.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="start">The inclusive first date of the fetched range.</param>
+    /// <param name="end">The inclusive last date of the fetched range.</param>
+    /// <param name="duration">The duration a recorded coverage window remains fresh after it was fetched.</param>
+    /// <param name="asOf">
+    /// The instant the fetched window is stamped with and against which stale windows are pruned.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
+    /// </exception>
+    void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf);
 }

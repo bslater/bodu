@@ -97,4 +97,64 @@ public sealed partial class TomlFileExchangeRateCacheTests
         Assert.AreEqual(1, read.Count);
         Assert.AreEqual(0.5m, read[0].Rate);
     }
+
+    /// <summary>
+    /// Verifies that a recorded coverage window is written as a <c>[[Coverage]]</c> array of tables with native RFC 3339
+    /// dates.
+    /// </summary>
+    [TestMethod]
+    public void RecordCoverage_WhenWritten_ShouldProduceExpectedTomlShape()
+    {
+        TomlFileExchangeRateCache cache = CreateCache();
+        var fetchedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6), Duration, fetchedAt);
+
+        var text = File.ReadAllText(PairFilePath);
+
+        StringAssert.Contains(text, "[[Coverage]]", StringComparison.Ordinal);
+        StringAssert.Contains(text, "Start = 2023-01-03", StringComparison.Ordinal);
+        StringAssert.Contains(text, "End = 2023-01-06", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Verifies that rows and coverage round-trip together through a fresh cache instance, confirming a single file
+    /// carries both halves of the per-pair state.
+    /// </summary>
+    [TestMethod]
+    public void Store_AndRecordCoverage_WhenReadByNewInstance_ShouldRoundTripBoth()
+    {
+        var now = DateTimeOffset.UtcNow;
+        TomlFileExchangeRateCache cache = CreateCache();
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
+        cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6), Duration, now);
+
+        TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
+
+        Assert.AreEqual(1, reopened.GetRates(Pair, Duration, now).Count);
+        Assert.IsTrue(reopened.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6)));
+    }
+
+    /// <summary>
+    /// Verifies that a legacy file written before coverage was tracked — one with only an <c>[[Entries]]</c> array and
+    /// no <c>[[Coverage]]</c> section — still deserializes to its rows with empty coverage and no error.
+    /// </summary>
+    [TestMethod]
+    public void GetRates_WhenFileHasNoCoverageSection_ShouldReadEntriesWithEmptyCoverage()
+    {
+        TomlFileExchangeRateCache cache = CreateCache();
+        Directory.CreateDirectory(Path.Combine(_directory, Provider));
+        var now = DateTimeOffset.UtcNow;
+
+        // A hand-written pre-coverage file: entries only, no [[Coverage]] array of tables.
+        File.WriteAllText(
+            PairFilePath,
+            "[[Entries]]\nDate = 2023-01-03\nRate = \"0.5000\"\nCachedAtUtc = "
+            + now.ToString("yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture) + "\n");
+
+        IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, now);
+
+        Assert.AreEqual(1, read.Count);
+        Assert.AreEqual(0.5000m, read[0].Rate);
+        Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).IsEmpty);
+    }
 }
