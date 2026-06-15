@@ -86,9 +86,11 @@ public sealed class SqliteExchangeRateCache
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
     /// <summary>
-    /// Indicates whether the instance has been disposed.
+    /// Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an
+    /// <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" />
+    /// idempotent: only the first caller observes the transition and releases the keep-alive connection.
     /// </summary>
-    private bool _disposed;
+    private int _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqliteExchangeRateCache" /> class.
@@ -226,12 +228,16 @@ public sealed class SqliteExchangeRateCache
     /// <summary>
     /// Releases the keep-alive connection held for the instance lifetime.
     /// </summary>
+    /// <remarks>
+    /// Idempotent: a second or concurrent call is a safe no-op. The disposed flag is flipped with
+    /// <see cref="Interlocked.Exchange(ref int, int)" /> so exactly one caller wins the transition and disposes the
+    /// keep-alive connection, preventing a double dispose of the underlying handle.
+    /// </remarks>
     public void Dispose()
     {
-        if (_disposed)
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
             return;
 
-        _disposed = true;
         _keepAlive.Dispose();
     }
 
