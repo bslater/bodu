@@ -122,5 +122,41 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Arg_Invalid_RangeInverted", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The provider name '{0}' referenced by the aggregation configuration was not supplied as a child..
+        /// </summary>
+        internal static string Arg_Invalid_UnknownAggregationChild {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_UnknownAggregationChild", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An aggregation route is keyed by an invalid currency pair..
+        /// </summary>
+        internal static string Arg_Invalid_AggregationRoutePair {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_AggregationRoutePair", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An aggregation route must reference at least one provider..
+        /// </summary>
+        internal static string Arg_Invalid_AggregationRouteEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_AggregationRouteEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An aggregation route must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_AggregationRouteNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_AggregationRouteNull", resourceCulture);
+            }
+        }
     }
 }
