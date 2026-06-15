@@ -91,6 +91,10 @@ artifacts/
 # so a fresh clone resolves it without an explicit pack step.
 !/local-packages/*.nupkg
 
+# Transient solution filter written by tools/Update-CodeStyleAnalyzer.ps1 when it excludes
+# benchmark projects; normally deleted at the end of the run, ignored in case a run is interrupted.
+_codestyle-refresh.slnf
+
 **/[Pp]ackages/*
 !**/[Pp]ackages/build/
 
