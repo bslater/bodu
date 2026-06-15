@@ -50,12 +50,45 @@ public static partial class IEnumerableExtensions
        System.Collections.Generic.IEnumerable<T>,
        System.IDisposable
     {
+        /// <summary>
+        /// The initial backing-array length allocated when the first element is appended.
+        /// </summary>
+        private const int DefaultCapacity = 4;
+
+        /// <summary>
+        /// The original sequence whose elements are cached on first enumeration.
+        /// </summary>
         private readonly IEnumerable<T> _source;
-        private List<T>? _cache;
+
+        /// <summary>
+        /// The append-only backing store; <see langword="null" /> until initialized and after disposal.
+        /// </summary>
+        private T[]? _items;
+
+        /// <summary>
+        /// The number of elements currently published into <see cref="_items" />.
+        /// </summary>
+        private int _count;
+
+        /// <summary>
+        /// The shared source enumerator, also used as the monitor guarding source advancement.
+        /// </summary>
         private IEnumerator<T>? _enumerator;
+
+        /// <summary>
+        /// The exception captured if the source faulted during enumeration.
+        /// </summary>
         private volatile ExceptionDispatchInfo? _exception;
+
+        /// <summary>
+        /// The index at which <see cref="_exception" /> was captured, or <c>-1</c> if none.
+        /// </summary>
         private int _exceptionIndex = -1;
-        private int _initializationState; // 0 = not initialized, 1 = initializing, 2 = initialized
+
+        /// <summary>
+        /// The initialization state: <c>0</c> not initialized, <c>1</c> initializing, <c>2</c> initialized.
+        /// </summary>
+        private int _initializationState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheEnumerable{T}" /> class.
@@ -80,7 +113,8 @@ public static partial class IEnumerableExtensions
 
             // Use volatile writes so that concurrent MoveNext callers on other threads
             // immediately observe the disposed state without stale-read false negatives.
-            Volatile.Write(ref _cache, null);
+            Volatile.Write(ref _count, 0);
+            Volatile.Write(ref _items, null);
             _exception = null;                        // already a volatile field; plain write is sufficient
             Volatile.Write(ref _exceptionIndex, -1);
             Volatile.Write(ref _initializationState, 0);
@@ -98,7 +132,7 @@ public static partial class IEnumerableExtensions
         private void EnsureInitialized()
         {
             // Fast path: already initialized
-            if (Volatile.Read(ref _cache) != null)
+            if (Volatile.Read(ref _items) != null)
                 return;
 
             // Try to claim initialization responsibility
@@ -107,7 +141,8 @@ public static partial class IEnumerableExtensions
                 try
                 {
                     _enumerator = _source.GetEnumerator(); // May throw
-                    _cache = new List<T>();
+                    Volatile.Write(ref _count, 0);
+                    Volatile.Write(ref _items, Array.Empty<T>()); // publish the (empty) cache last
                     Interlocked.Exchange(ref _initializationState, 2); // Mark as complete
                 }
                 catch (Exception ex)
@@ -130,12 +165,48 @@ public static partial class IEnumerableExtensions
         }
 
         /// <summary>
+        /// Appends an element to the cache, growing the backing array as required.
+        /// </summary>
+        /// <param name="item">The element to append.</param>
+        /// <remarks>
+        /// Only ever invoked by the single thread that currently holds the source-enumerator monitor, so reads of the
+        /// writer-owned <c>_items</c> and <c>_count</c> fields need no synchronization. The new element is stored into
+        /// its slot before <c>_count</c> is published with release semantics, so any reader that observes the updated
+        /// count is guaranteed to also observe the element and the (possibly larger) backing array.
+        /// </remarks>
+        private void Append(T item)
+        {
+            T[]? items = _items;
+            if (items is null)
+                return; // disposed concurrently; nothing to publish
+
+            var count = _count;
+            if (count == items.Length)
+            {
+                var grown = new T[items.Length == 0 ? DefaultCapacity : items.Length * 2];
+                Array.Copy(items, grown, count);
+                Volatile.Write(ref _items, grown); // publish the larger array before the slot write
+                items = grown;
+            }
+
+            items[count] = item;                   // write the element into its slot
+            Volatile.Write(ref _count, count + 1); // publish the new length last
+        }
+
+        /// <summary>
         /// Enumerator that reads items from the cached buffer or populates new items from the source.
         /// </summary>
         private sealed class Enumerator :
            System.Collections.Generic.IEnumerator<T>
         {
+            /// <summary>
+            /// The parent <see cref="CacheEnumerable{T}" /> whose cache this enumerator reads.
+            /// </summary>
             private readonly CacheEnumerable<T> _parent;
+
+            /// <summary>
+            /// The current zero-based position of this enumerator within the cached sequence.
+            /// </summary>
             private int _index;
 
             /// <summary>
@@ -154,10 +225,14 @@ public static partial class IEnumerableExtensions
             {
                 get
                 {
-                    List<T> cache = _parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
-                    return _index < 0 || _index >= cache.Count
+                    // Read the published length before the backing array so that, when _index is in range, the
+                    // observed array is guaranteed new enough to contain the element (see Append remarks).
+                    var count = Volatile.Read(ref _parent._count);
+                    T[] items = Volatile.Read(ref _parent._items)
+                        ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
+                    return _index < 0 || _index >= count
                         ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
-                        : cache[_index];
+                        : items[_index];
                 }
             }
 
@@ -175,19 +250,22 @@ public static partial class IEnumerableExtensions
             {
                 _index++;
 
-                List<T> cache = _parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
+                // Read the published length first; observing _items only serves to detect disposal
+                // (a live cache always exposes a non-null backing array, even when empty).
+                var count = Volatile.Read(ref _parent._count);
+                _ = Volatile.Read(ref _parent._items) ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
 
-                // Return from the cache if the element at this index is already populated.
-                if (_index < cache.Count)
+                // Fast path: the element at this index has already been published to the cache.
+                if (_index < count)
                     return true;
 
                 // Re-throw any exception previously captured at this index position.
-                if (_parent._exceptionIndex == _index)
+                if (Volatile.Read(ref _parent._exceptionIndex) == _index)
                     _parent._exception?.Throw();
 
-                IEnumerator<T>? enumerator = _parent._enumerator;
-                if (enumerator == null)
-                    return false;
+                IEnumerator<T>? enumerator = Volatile.Read(ref _parent._enumerator);
+                if (enumerator is null)
+                    return TryResolveCompletion();
 
                 // Attempt to take exclusive access to advance the source enumerator.
                 // Only one thread at a time may fetch the next element and append it to the cache.
@@ -198,13 +276,11 @@ public static partial class IEnumerableExtensions
                     SpinWait spin = default;
                     while (true)
                     {
-                        // Use Volatile.Read to avoid stale cache-count observations on weakly-ordered
-                        // architectures where the publishing write from another thread may not yet be visible.
-                        if (_index < (Volatile.Read(ref _parent._cache)?.Count ?? 0))
+                        if (_index < Volatile.Read(ref _parent._count))
                             return true;
 
-                        if (Volatile.Read(ref _parent._enumerator) == null)
-                            return false;
+                        if (Volatile.Read(ref _parent._enumerator) is null)
+                            return TryResolveCompletion();
 
                         spin.SpinOnce();
                     }
@@ -212,29 +288,61 @@ public static partial class IEnumerableExtensions
 
                 try
                 {
+                    // Re-check under the lock: between snapshotting the enumerator and acquiring it, another thread
+                    // may have appended the element at this index, or exhausted and disposed the source enumerator.
+                    // Advancing a disposed enumerator would spuriously report end-of-sequence and drop elements.
+                    if (_index < Volatile.Read(ref _parent._count))
+                        return true;
+
+                    if (Volatile.Read(ref _parent._enumerator) is null)
+                        return TryResolveCompletion();
+
                     if (enumerator.MoveNext())
                     {
-                        cache.Add(enumerator.Current); // Append to the shared cache under the lock
+                        _parent.Append(enumerator.Current); // append to the shared cache under the lock
                         return true;
                     }
 
                     // End of source sequence; release the enumerator.
                     enumerator.Dispose();
-                    _parent._enumerator = null;
+                    Volatile.Write(ref _parent._enumerator, null);
                     return false;
                 }
                 catch (Exception ex)
                 {
                     _parent._exception = ExceptionDispatchInfo.Capture(ex);
-                    _parent._exceptionIndex = _index;
+                    Volatile.Write(ref _parent._exceptionIndex, _index);
                     enumerator.Dispose();
-                    _parent._enumerator = null;
+                    Volatile.Write(ref _parent._enumerator, null);
                     throw;
                 }
                 finally
                 {
                     Monitor.Exit(enumerator);
                 }
+            }
+
+            /// <summary>
+            /// Resolves the result of <see cref="MoveNext" /> once the source enumerator has been observed as
+            /// completed, re-reading the published length so a concurrently appended final element is never skipped.
+            /// </summary>
+            /// <returns>
+            /// <see langword="true" /> if the element at the current index became available; otherwise,
+            /// <see langword="false" />.
+            /// </returns>
+            private bool TryResolveCompletion()
+            {
+                // A reader that has observed _enumerator == null is, by transitive happens-before through the
+                // source-enumerator monitor, guaranteed to also observe the final published count. Re-reading it
+                // here closes the race in which a stale earlier count read would terminate one element too soon.
+                if (_index < Volatile.Read(ref _parent._count))
+                    return true;
+
+                // Surface a fault captured at this position by the writer thread.
+                if (Volatile.Read(ref _parent._exceptionIndex) == _index)
+                    _parent._exception?.Throw();
+
+                return false;
             }
 
             /// <summary>
