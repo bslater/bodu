@@ -80,7 +80,7 @@ If the script's output ever diverges from the KAT rows in the test project, eith
 | `Update-CodeStyleAnalyzer.ps1` | One-command refresh of the in-repo `Bodu.CodeStyle.XmlDocumentation` analyzer: packs it into `local-packages/` (delegating to `bld/pack-codestyle-analyzer.ps1`, which also evicts NuGet's global cache), force-restores a consumer, then builds it so Roslyn loads the new payload. Run it after changing anything under `Bodu.CodeStyle/`. |
 
 ```pwsh
-# Repack the analyzer, then force-restore + build the whole solution against it
+# Repack the analyzer, then force-restore + build the solution against it (benchmarks excluded)
 pwsh ./tools/Update-CodeStyleAnalyzer.ps1
 
 # Narrow the restore/build target for faster iteration
@@ -88,6 +88,11 @@ pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -Target Bodu.Core/src/Bodu.Core.csproj
 
 # Pack + force-restore only (skip the consumer build)
 pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -SkipBuild
+
+# Include benchmark projects too (no exclusions)
+pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -ExcludeProjectPattern @()
 ```
+
+When the target is a solution, the script drops projects that don't exercise the XML-documentation analyzer — by default any `/bench/` project — by generating a temporary solution filter (`.slnf`) listing only the kept projects and restoring/building that. `-ExcludeProjectPattern` takes one or more regexes tested against each project path; pass `@()` to build the whole solution unfiltered, or add patterns to skip more. The parameter is ignored when `-Target` is a single project.
 
 The analyzer is always packed in **Release** (the configuration committed to `local-packages/` and used by CI); `-Configuration` governs only the consumer restore/build. Packing runs under the SDK 8 pin in `Bodu.CodeStyle/global.json` while the consumer build runs under the repo-root SDK 10 pin — each `dotnet` invocation resolves its own SDK from its working directory. After a successful run, commit the regenerated `local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg` alongside your source changes. See `Bodu.CodeStyle/README.md` for the full analyzer-authoring workflow.
