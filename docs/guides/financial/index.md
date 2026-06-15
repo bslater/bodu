@@ -37,8 +37,8 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   for dated lookups with full audit metadata
   ([`ExchangeRate`](xref:Bodu.Financial.ExchangeRate),
   [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries),
-  [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
-  [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider)).
+  [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider); grouping via
+  [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)).
 - **FX editing surface:**
   [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder)
   as the mutable companion to `ExchangeRateSeries`, plus
@@ -57,7 +57,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 
 <div class="bodu-card">
   <h3><a href="exchange-rates.md">Working with exchange rates</a></h3>
-  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>ExchangeRateLookupResult</code>, the composite fallback stack, and the <code>ExchangeRateSeriesBuilder</code> + <code>ExchangeRateTableBuilder</code> editing surface.</p>
+  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>ExchangeRateLookupResult</code>, provider grouping via the aggregator, and the <code>ExchangeRateSeriesBuilder</code> + <code>ExchangeRateTableBuilder</code> editing surface.</p>
 </div>
 
 <div class="bodu-card">
@@ -71,8 +71,8 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 </div>
 
 <div class="bodu-card">
-  <h3><a href="exchange-rate-caching.md">Caching exchange rates</a></h3>
-  <p>Cache fetched rates as TOML in front of any provider — <code>CachingDatedExchangeRateProvider</code>, per-provider expiry with a global default, single-date and range serving, and the on-disk format.</p>
+  <h3><a href="exchange-rate-caching.md">Caching and aggregating exchange rates</a></h3>
+  <p>Read-through caching one provider per cache (<code>CachingExchangeRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingExchangeRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
 </div>
 
 <div class="bodu-card">

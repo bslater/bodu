@@ -1,55 +1,62 @@
 ---
-title: Caching exchange rates
+title: Caching and aggregating exchange rates
 ---
 
-# Caching exchange rates
+# Caching and aggregating exchange rates
 
-`Bodu.Financial.ExchangeRates.Caching` adds a caching layer **in front of**
-the exchange-rate providers. The concrete providers (Yahoo, RBA, ECB, BoE)
-stay pure fetchers that know nothing of caching; the caching provider
-implements the same [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
-contract the caller already resolves, so it drops in transparently:
+`Bodu.Financial.ExchangeRates.Caching` adds two pieces **in front of** the
+exchange-rate providers. The concrete providers (Yahoo, RBA, ECB, BoE) stay pure
+fetchers that know nothing of caching; each piece implements the same
+[`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
+contract (and the timeless [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)),
+so they drop in transparently:
 
 ```text
 Caller
-  │  IDatedExchangeRateProvider
+  │  IDatedExchangeRateProvider / IExchangeRateProvider
   ▼
-CachingDatedExchangeRateProvider   ── returns the rate when a fresh one is cached;
-  │                                    otherwise delegates downstream and caches it
-  ▼
-concrete provider(s)  (Yahoo / RBA / ECB / BoE)
+AggregatingExchangeRateProvider     ── groups named children; routes per FX pair and
+  │                                    combines them with a strategy (priority / average)
+  ├── CachingExchangeRateProvider("RBA")  ── read-through cache over ONE source + ONE cache
+  │        └── RbaExchangeRateProvider
+  └── CachingExchangeRateProvider("ECB")
+           └── EcbExchangeRateProvider
 ```
 
-Rates are persisted as **TOML**, one file per `(provider, currency pair)`, so a
-fresh rate survives process restarts.
+The two pieces are orthogonal: use the cache alone to add read-through caching to
+a single source, the aggregator alone to group already-cached (or uncached)
+providers, or compose them as above.
 
 ## Concepts in one minute
 
-- **Caching provider** — [`CachingDatedExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.CachingDatedExchangeRateProvider)
-  wraps **one or more named** sources supplied at construction. It serves fresh
-  cached rates and delegates to a source only on a miss, then caches what the
+- **Caching provider** — [`CachingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider)
+  wraps **one** inner source over **one** single-provider cache. It serves fresh
+  cached rates and delegates to the source only on a miss, then caches what the
   source returns.
-- **Source name** — each wrapped source is paired with a name. That name is the
-  cache key segment (the TOML file prefix) and the key into the per-provider
-  expiry map.
+- **Cache** — a cache is **bound to one provider**.
+  [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
+  owns expiry: callers pass a duration, and the cache returns only fresh rows and
+  prunes stale ones on write. Shipped stores are
+  [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)
+  (on disk), [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache),
+  and the no-op [`NullExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache).
 - **Options** — [`CachingExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions)
   carries the cache **location** (`CacheDirectory`), the **default expiry**
-  (`DefaultExpiry`), and **per-provider overrides** (`ProviderExpiry`).
-- **Cache** — [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
-  owns expiry: callers pass a duration, and the cache returns only fresh rows and
-  prunes stale ones on write. [`TomlFileSystemExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileSystemExchangeRateCache)
-  is the on-disk implementation; [`NullExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache)
-  is the no-op.
+  (`DefaultExpiry`), **per-provider overrides** (`ProviderExpiry`), the per-event
+  log levels, and `DefaultLookupOptions` for the timeless surface.
+- **Aggregator** — [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
+  groups named children behind one entry point, combining them with a pluggable
+  [`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy)
+  and optional **per-FX-pair routing**.
 - **Entry** — [`CachedExchangeRate`](xref:Bodu.Financial.ExchangeRates.Caching.CachedExchangeRate)
   is one cached row: the observation `Date`, the `Rate`, and the `CachedAtUtc`
   instant that drives expiry.
 
-## Wrapping one or more providers
+## Caching one provider
 
-Pass the sources as ordered `(name, provider)` pairs. With several sources the
-caching provider behaves as a **caching composite**: it consults them in order
-and returns the first that can satisfy the request — from that source's fresh
-cache or, failing that, by fetching and caching.
+`CachingExchangeRateProvider` caches exactly one source. The convenience
+constructor builds a TOML file cache for you from the options; the provider name
+is the subdirectory the source's files land under.
 
 ```csharp
 using Bodu.Financial;
@@ -58,63 +65,70 @@ using Bodu.Financial.ExchangeRates.Caching;
 var options = new CachingExchangeRateOptions
 {
     CacheDirectory = "/var/cache/fx",       // null/blank → a bodu-exchange-rates temp folder
-    DefaultExpiry = TimeSpan.FromHours(12), // applies to any source without an override
+    DefaultExpiry = TimeSpan.FromHours(12),
 };
 options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);   // RBA publishes daily; cache longer
 
-var caching = new CachingDatedExchangeRateProvider(
-    new[]
-    {
-        new KeyValuePair<string, IDatedExchangeRateProvider>("Yahoo", yahoo),
-        new KeyValuePair<string, IDatedExchangeRateProvider>("RBA", rba),
-    },
-    options);
+// Wrap the RBA source. Cache files land under /var/cache/fx/RBA/.
+IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider("RBA", rba, options);
 ```
 
-The provider names live at the composition root — the provider classes never
-learn they are being cached. A second constructor accepts an explicit
-`IExchangeRateCache` for testing or to share one cache across providers; when one
-is supplied, `CacheDirectory` is ignored.
+The provider name lives at the composition root — the provider classes never learn
+they are being cached. A second constructor accepts an explicit
+[`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache),
+so you can choose the in-memory store or supply your own:
 
-## Per-provider expiry and the global default
+```csharp
+IDatedExchangeRateProvider cachedEcb =
+    new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
+```
 
-`GetExpiry(name)` returns a source's specific override when present and
+The decorator also implements the timeless surface, which resolves the current UTC
+date under `CachingExchangeRateOptions.DefaultLookupOptions`:
+
+```csharp
+decimal todayRate = ((IExchangeRateProvider)cachedRba).GetRate("AUD", "USD");
+```
+
+### Per-provider expiry and the global default
+
+`GetExpiry(name)` returns a provider's specific override when present and
 `DefaultExpiry` otherwise:
 
 ```csharp
 options.GetExpiry("RBA");     // 7 days   (override)
-options.GetExpiry("Yahoo");   // 12 hours (the default)
+options.GetExpiry("ECB");     // 12 hours (the default)
 ```
 
-## Single-date lookups
+### Single-date lookups
 
-`GetRate` / `TryGetRate` flow through the cache per source. On a hit the cached
-rows are reconstructed into a [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
+`GetRate` / `TryGetRate` flow through the cache. On a hit the cached rows are
+reconstructed into a [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
 so date-resolution policy, inverse pairs, and same-currency identity all behave
 exactly as the underlying stack would:
 
 ```csharp
-// Miss → fetched from the first source that has it, then cached.
-ExchangeRateLookupResult r1 = caching.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+// Miss → fetched from the source, then cached.
+ExchangeRateLookupResult r1 = cachedRba.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
 
-// Repeat within the expiry window → served from disk, no source call.
-ExchangeRateLookupResult r2 = caching.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+// Repeat within the expiry window → served from cache, no source call.
+ExchangeRateLookupResult r2 = cachedRba.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
 
 // Resolution policies are honoured against the cached rows.
-caching.TryGetRate("AUD", "USD", new DateOnly(2024, 1, 5),
+cachedRba.TryGetRate("AUD", "USD", new DateOnly(2024, 1, 5),
     ExchangeRateLookupOptions.PreviousWithin(7), out ExchangeRateLookupResult r3);
 ```
 
-## Range lookups
+### Range lookups
 
 `GetRatesAsync` returns every rate whose date falls in the inclusive window. The
-cache serves a range only when the source's fresh cached rows **span** the
-requested window (their earliest date is on or before `start` and their latest is
-on or after `end`); otherwise the whole range is refetched and re-cached.
+cache serves a range only when the fresh cached rows **span** the requested window
+(their earliest date is on or before `start` and their latest is on or after
+`end`); otherwise the whole range is refetched and re-cached.
 
 ```csharp
 IReadOnlyList<ExchangeRate> january =
-    await caching.GetRatesAsync("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+    await cachedRba.GetRatesAsync("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
 ```
 
 > [!NOTE]
@@ -122,12 +136,23 @@ IReadOnlyList<ExchangeRate> january =
 > edge falls on a non-trading day (for example a weekend) reads as "not spanned"
 > and triggers a refetch. This keeps the design free of extra coverage metadata.
 
-## The on-disk TOML format
+## The cache cascade
 
-A store under provider `Yahoo` for `AUD/USD` writes `Yahoo_AUDUSD.toml`. Each
-dated rate is a TOML table; the `decimal` rate is written as a **quoted string**
-so its full precision and scale round-trip exactly, and the dates use TOML's
-native RFC 3339 forms:
+The cache is deliberately layered so you can plug in at whichever level fits:
+
+| Layer | Type | Responsibility |
+|---|---|---|
+| Contract | [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache) | Single-provider store: a bound `Provider`; `GetRates`/`Store` by pair. |
+| Core | [`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1) | Freshness filtering + merge/prune. **No physical layout.** |
+| File seam | [`IFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache) / [`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1) | Directory + per-pair file-name resolution, best-effort IO. |
+| Leaf | [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) | The TOML serialization format only. |
+
+### The on-disk TOML format
+
+A cache bound to provider `RBA` stores `AUD/USD` as `<directory>/RBA/AUDUSD.toml`
+— a per-provider subdirectory with one file per pair. Each dated rate is a TOML
+table; the `decimal` rate is written as a **quoted string** so its full precision
+and scale round-trip exactly, and the dates use TOML's native RFC 3339 forms:
 
 ```toml
 [[Entries]]
@@ -144,95 +169,181 @@ CachedAtUtc = 2023-01-04T09:15:00+00:00
 The serializer is [`Bodu.Text.Toml`](xref:Bodu.Text.Toml.TomlSerializer) with
 `TomlDecimalHandling.String`. The file is **best-effort**: any I/O or TOML error
 on read yields an empty result, and a failed write is swallowed, so a cache
-problem never breaks rate retrieval.
-
-You can point the cache at any directory, or use it directly:
+problem never breaks rate retrieval. You can use a cache directly — note there is
+no provider argument; the cache is bound to its provider at construction:
 
 ```csharp
-var cache = new TomlFileSystemExchangeRateCache(
-    new FileSystemExchangeRateCacheOptions { CacheDirectory = "/var/cache/fx" });
+var cache = new TomlFileExchangeRateCache(
+    new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
 
 var now = DateTimeOffset.UtcNow;
-cache.Store("Yahoo", new ExchangeRatePair("AUD", "USD"),
+cache.Store(new ExchangeRatePair("AUD", "USD"),
     new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) },
     TimeSpan.FromHours(24), now);
 
 IReadOnlyList<CachedExchangeRate> fresh =
-    cache.GetRates("Yahoo", new ExchangeRatePair("AUD", "USD"), TimeSpan.FromHours(24), now);
+    cache.GetRates(new ExchangeRatePair("AUD", "USD"), TimeSpan.FromHours(24), now);
 ```
 
-## Custom cache stores
+### Custom cache stores
 
-Implement [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
-to back the cache with something other than the file system. The easiest path is
-to derive from [`ExchangeRateCacheBase`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase),
-which provides the merge-by-date, read-time freshness filter, and write-time
-prune; you supply only the raw entry persistence:
+To back the cache with something other than the file system, derive from
+[`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1).
+It provides the merge-by-date, read-time freshness filter, and write-time prune;
+you supply only the raw per-pair persistence:
 
 ```csharp
-public sealed class InMemoryExchangeRateCache : ExchangeRateCacheBase
+public sealed class DictionaryExchangeRateCache : ExchangeRateCacheBase<ExchangeRateCacheOptions>
 {
-    private readonly Dictionary<string, IReadOnlyList<CachedExchangeRate>> _store = new(StringComparer.Ordinal);
+    private readonly Dictionary<ExchangeRatePair, IReadOnlyList<CachedExchangeRate>> _store = new();
 
-    protected override IReadOnlyList<CachedExchangeRate> ReadEntries(string provider, ExchangeRatePair pair) =>
-        _store.TryGetValue($"{provider}_{pair.FromIsoCode}{pair.ToIsoCode}", out var rows)
-            ? rows : Array.Empty<CachedExchangeRate>();
+    public DictionaryExchangeRateCache(string provider)
+        : base(new ExchangeRateCacheOptions { Provider = provider }) { }
 
-    protected override void WriteEntries(string provider, ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries) =>
-        _store[$"{provider}_{pair.FromIsoCode}{pair.ToIsoCode}"] = entries;
+    protected override IReadOnlyList<CachedExchangeRate> ReadEntries(ExchangeRatePair pair) =>
+        _store.TryGetValue(pair, out var rows) ? rows : Array.Empty<CachedExchangeRate>();
+
+    protected override void WriteEntries(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries) =>
+        _store[pair] = entries;
 }
 ```
+
+For a new **file format**, derive from
+[`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1)
+instead and override only `FileExtension`, `Serialize`, and `Deserialize` — the
+base handles the directory layout and best-effort IO.
+
+## Grouping providers with the aggregator
+
+[`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
+groups several named children behind one entry point and resolves each request
+through a strategy. Build the children (typically each wrapped in its own cache),
+then group them:
+
+```csharp
+var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
+var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+
+IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
+    new[]
+    {
+        new NamedDatedExchangeRateProvider("RBA", rba),
+        new NamedDatedExchangeRateProvider("ECB", ecb),
+    });
+```
+
+### Strategies
+
+The combination is a pluggable
+[`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy):
+
+- [`PriorityFallbackStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy)
+  (the default) returns the first child that resolves — the successor to the
+  former `CompositeDatedExchangeRateProvider`.
+- [`AverageStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.AverageStrategy)
+  returns the arithmetic mean of every child that resolves, tagged with a
+  synthetic provider label (`Average` by default).
+- Implement the interface for anything else (weighted, median, first-non-stale).
+
+```csharp
+var options = new ExchangeRateAggregationOptions { DefaultStrategy = new AverageStrategy() };
+```
+
+### Per-FX-pair routing
+
+[`ExchangeRateAggregationOptions.Routes`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateAggregationOptions)
+maps a pair to an ordered child list and an optional pair-specific strategy, so
+each pair can prefer a different source — `AUD/USD` via `[RBA, ECB]` while
+`USD/GBP` prefers `[ECB, RBA]`:
+
+```csharp
+var aggregation = new ExchangeRateAggregationOptions();
+aggregation.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+aggregation.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+aggregation.Routes[new ExchangeRatePair("EUR", "USD")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+
+var provider = new AggregatingExchangeRateProvider(children, aggregation);
+```
+
+A pair without a route uses `DefaultProviderOrder` (or the supplied child order)
+and `DefaultStrategy`. When inversion is allowed, an inverse-pair route is also
+consulted.
+
+### Reaching a specific source
+
+The lookup methods always apply the configured strategy and routing. When you need
+one source's answer specifically, resolve it by name — without bypassing the
+contract:
+
+```csharp
+if (((AggregatingExchangeRateProvider)provider).TryGetProvider("RBA", out IDatedExchangeRateProvider rbaOnly))
+{
+    ExchangeRateLookupResult rbaRate = rbaOnly.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+}
+```
+
+Under dependency injection the same access is available through a keyed service
+(below).
 
 ## Dependency injection
 
 The companion package `Bodu.Financial.ExchangeRates.Caching.DependencyInjection`
-registers the caching provider as the `IDatedExchangeRateProvider`, wrapping
-named sources resolved from the container. Single-date **and** range lookups flow
-through the cache for anything that resolves the interface:
+registers either shape on the `IFinancialServiceBuilder`. Both resolve as the
+dated **and** timeless surfaces.
+
+A single cached provider:
 
 ```csharp
 using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 
 services.AddBoduFinancial()
-        .AddYahooExchangeRates()
         .AddRbaHistoricalRates()
-        .AddCachedExchangeRateProvider(
-            sources => sources
-                .AddSource<YahooExchangeRateProvider>(YahooExchangeRateProvider.ProviderName)
-                .AddSource<RbaExchangeRateProvider>(RbaExchangeRateProvider.ProviderName),
-            configure: o =>
-            {
-                o.CacheDirectory = "/var/cache/fx";
-                o.DefaultExpiry = TimeSpan.FromHours(12);
-                o.ProviderExpiry[RbaExchangeRateProvider.ProviderName] = TimeSpan.FromDays(7);
-            });
+        .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA",
+            configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
 ```
 
-`.AddSource<TProvider>(name)` resolves the concrete provider from the container;
-`.AddSource(name, sp => …)` takes a factory. Bind `CachingExchangeRateOptions`
-from configuration by passing an `IConfiguration` (default section
-`Financial:ExchangeRateCache`). A raw-factory overload
-(`Func<IServiceProvider, IEnumerable<KeyValuePair<string, IDatedExchangeRateProvider>>>`)
-is available for full control.
+A group of cached providers with per-pair routing. Each child is **also**
+registered as a keyed `IDatedExchangeRateProvider`, so a specific source is
+resolvable by name:
+
+```csharp
+services.AddBoduFinancial()
+        .AddRbaHistoricalRates()
+        .AddEcbHistoricalRates()
+        .AddAggregatedExchangeRateProvider(agg => agg
+            .AddCachedChild<RbaExchangeRateProvider>("RBA")
+            .AddCachedChild<EcbExchangeRateProvider>("ECB")
+            .MapPair(new ExchangeRatePair("AUD", "USD"), "RBA", "ECB")
+            .MapPair(new ExchangeRatePair("USD", "GBP"), "ECB", "RBA"));
+
+// Later: the aggregate, or a specific source.
+var aggregate = provider.GetRequiredService<IDatedExchangeRateProvider>();
+var rbaOnly = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
+```
+
+`UseDefaultStrategy(...)` overrides the default `PriorityFallbackStrategy`, and
+`MapPair(pair, strategy, order)` overrides the strategy for a single pair. Bind
+`CachingExchangeRateOptions` from configuration by passing an `IConfiguration`
+(default section `Financial:ExchangeRateCache`).
 
 ## How staleness works
 
-- A cached row is fresh while `asOf - CachedAtUtc < duration`, where `duration`
-  is the source's resolved expiry. Single-date serving filters per row.
+- A cached row is fresh while `asOf - CachedAtUtc < duration`, where `duration` is
+  the provider's resolved expiry. Single-date serving filters per row.
 - A write merges new rows with existing ones (latest `CachedAtUtc` wins per date)
-  and prunes rows that are no longer fresh, so files self-clean over time.
+  and prunes rows that are no longer fresh, so the store self-cleans over time.
 - Range serving uses the min/max dates of the fresh rows as a coverage proxy and
   refetches the whole range when they do not span the request.
 
 ## See also
 
 - [Working with exchange rates](exchange-rates.md) — the provider contracts the
-  cache wraps.
+  cache and aggregator wrap.
 - [Exchange-rate types catalogue](exchange-types.md) — every FX type mapped to a
   scenario.
 - [Dependency injection](dependency-injection.md) — the wider financial
   registration surface.
-- [`CachingDatedExchangeRateProvider` API reference](xref:Bodu.Financial.ExchangeRates.Caching.CachingDatedExchangeRateProvider)
-- [`CachingExchangeRateOptions` API reference](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions)
-- [`TomlFileSystemExchangeRateCache` API reference](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileSystemExchangeRateCache)
+- [`CachingExchangeRateProvider` API reference](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider)
+- [`AggregatingExchangeRateProvider` API reference](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
+- [`TomlFileExchangeRateCache` API reference](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)

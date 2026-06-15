@@ -332,7 +332,7 @@
           href: financial/exchange-types.md
         - name: Exchange-rate lookups (worked dataset)
           href: financial/exchange-rate-lookups.md
-        - name: Caching exchange rates
+        - name: Caching and aggregating exchange rates
           href: financial/exchange-rate-caching.md
         - name: Dependency injection
           href: financial/dependency-injection.md

@@ -24,7 +24,7 @@ The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip thro
 | <xref:Bodu.Financial.ExchangeRate>, <xref:Bodu.Financial.ExchangeRatePair>, <xref:Bodu.Financial.ExchangeRateObservation>, <xref:Bodu.Financial.ExchangeRateSeries> | Immutable FX observation value object, strongly-typed (from, to) key, single dated observation, and an O(log n) time series over observations. |
 | <xref:Bodu.Financial.ExchangeRateSeriesBuilder>, <xref:Bodu.Financial.ExchangeRateSeriesKey>, <xref:Bodu.Financial.ExchangeRateTableBuilder> | Mutable companion to `ExchangeRateSeries` for building or editing observations, the `(pair, provider)` key, and a higher-level multi-series editor for import workflows. |
 | <xref:Bodu.Financial.IExchangeRateProvider>, <xref:Bodu.Financial.IDatedExchangeRateProvider> | Timeless and dated provider contracts. The dated form returns an <xref:Bodu.Financial.ExchangeRateLookupResult> with provenance metadata (offset days, resolution policy, provider name). |
-| <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateProvider>, <xref:Bodu.Financial.CompositeDatedExchangeRateProvider> | In-memory provider implementations and a composite stack for prioritised fallback across multiple FX sources. |
+| <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateProvider> | In-memory provider implementations. Grouping several FX sources behind one entry point (prioritised fallback, averaging, per-FX-pair routing) now lives in the `Bodu.Financial.ExchangeRates.Caching` package as [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider). |
 | <xref:Bodu.Financial.TypedMoneyConversionResult`2> | Audit record returned by extension methods that convert through a dated provider — pairs source and target amount with the full lookup result. |
 
 ### `Bodu.Financial.Currencies`
@@ -101,7 +101,7 @@ Deserialization on `Money<TCurrency>` rejects payloads whose `currency` field do
 | ISO 4217 currency lookup at runtime | <xref:Bodu.Financial.CurrencyRegistry> |
 | Custom or future currencies not in the shipped catalogue | `CurrencyRegistry.Register(CurrencyInfo)` + your own `ICurrency` tag |
 | Dated FX lookup with audit-grade provenance metadata | <xref:Bodu.Financial.IDatedExchangeRateProvider> + <xref:Bodu.Financial.ExchangeRateLookupResult> |
-| Prioritised fallback across multiple FX sources | <xref:Bodu.Financial.CompositeDatedExchangeRateProvider> |
+| Prioritised fallback (or averaging) across multiple FX sources | [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) |
 | Build a rate series imperatively, or edit an existing one and snapshot the result | <xref:Bodu.Financial.ExchangeRateSeriesBuilder>, `ExchangeRateSeries.ToBuilder()` / `WithRate(...)` / `WithoutRate(...)` |
 | Import rates for many `(pair, provider)` combinations before producing immutable snapshots | <xref:Bodu.Financial.ExchangeRateTableBuilder> |
 | Three JSON wire shapes (strict-canonical, lenient-import, compact-string) for the same monetary type | <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> |

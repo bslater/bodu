@@ -7,8 +7,7 @@ title: Working with exchange rates
 `Bodu.Financial` ships a complete foreign-exchange provider stack:
 two contracts (timeless and dated), an immutable observation record,
 a strongly-typed pair key, an `O(log n)` series store, in-memory
-tables, a deterministic composite for fallback, a date-pinning
-adapter, and a conversion-audit record. This guide walks the surface
+tables, a date-pinning adapter, and a conversion-audit record. This guide walks the surface
 and the patterns it supports — unit-test rates, ledger postings, tax
 reports, and multi-source feeds that carry their provenance.
 
@@ -78,8 +77,9 @@ the timeless contract has only the throwing form.
 `FixedDatedExchangeRateProvider` accepts a flat sequence of
 `ExchangeRate` observations and groups them into one
 `ExchangeRateSeries` per `(pair, provider)`. Every observation for a
-pair must carry the same provider name; for rates from multiple
-sources, stack tables behind a `CompositeDatedExchangeRateProvider`.
+pair must carry the same provider name; to group rates from multiple
+sources, see [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
+in `Bodu.Financial.ExchangeRates.Caching`.
 
 ```csharp
 ExchangeRate[] observations =
@@ -210,18 +210,21 @@ directly. Empty builders are skipped by `ToSeries()` because an
 immutable series cannot be empty. The table is not thread-safe; use
 external synchronisation for concurrent edits.
 
-## Composite fallback stack
+## Grouping providers with fallback
 
-`CompositeDatedExchangeRateProvider` wraps an ordered set of dated
-providers. Every lookup consults them in construction order; the
-first successful result wins.
+Grouping several providers behind one entry point — prioritised fallback,
+averaging, or per-FX-pair routing — lives in the
+[`Bodu.Financial.ExchangeRates.Caching`](xref:Bodu.Financial.ExchangeRates.Caching)
+package as [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider).
+It wraps an ordered set of **named** dated providers; the default
+[`PriorityFallbackStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy)
+consults them in order and returns the first success.
 
 ```csharp
-CompositeDatedExchangeRateProvider stack = new(new IDatedExchangeRateProvider[]
+IDatedExchangeRateProvider stack = new AggregatingExchangeRateProvider(new[]
 {
-    new FixedDatedExchangeRateProvider(ecbObservations),
-    new FixedDatedExchangeRateProvider(oandaObservations),
-    new FixedDatedExchangeRateProvider(snapshotObservations),
+    new NamedDatedExchangeRateProvider("ECB", new FixedDatedExchangeRateProvider(ecbObservations)),
+    new NamedDatedExchangeRateProvider("OANDA", new FixedDatedExchangeRateProvider(oandaObservations)),
 });
 
 ExchangeRateLookupResult lookup = stack.GetRate(
@@ -232,11 +235,12 @@ ExchangeRateLookupResult lookup = stack.GetRate(
 // lookup.Rate.Provider identifies which underlying provider answered.
 ```
 
-The composite never re-orders results — if the primary returns a
-four-day-old rate before the backup is consulted, that result wins.
-Cross-provider policies (e.g. preferring an exact-date hit across all
-providers before any fallback) are deferred until a concrete consumer
-requires them.
+Priority fallback never re-orders results — if the primary returns a
+four-day-old rate before the backup is consulted, that result wins. Other
+strategies (averaging, or a custom
+[`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy))
+and per-FX-pair routing are covered in the
+[caching and aggregating guide](exchange-rate-caching.md).
 
 ## Pinning a date to a dated provider
 
@@ -292,7 +296,7 @@ extension methods for runtime-tagged amounts. For bags, see
 |---|---|
 | Unit-test rates; "current rate" caches | `FixedExchangeRateTable` |
 | In-memory table where the date matters | `FixedDatedExchangeRateProvider` + `ExchangeRateLookupOptions.PreviousWithin(...)` |
-| Primary feed plus fallbacks | `CompositeDatedExchangeRateProvider` over multiple dated providers |
+| Primary feed plus fallbacks | `AggregatingExchangeRateProvider` (in `Bodu.Financial.ExchangeRates.Caching`) over multiple dated providers |
 | Reporting period that pins one date everywhere | `DatedExchangeRateProviderAdapter` over the period-end date |
 | Ledger entry that records the rate provenance | `Money<T>.ConvertToWithRate<,>(provider, date, options)` returning `TypedMoneyConversionResult<,>` |
 | Runtime-tagged amount via a dated provider | `MoneyExchangeRateExtensions.ConvertToWithRate(...)` |
@@ -307,6 +311,6 @@ extension methods for runtime-tagged amounts. For bags, see
 - Contracts — [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider), [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
 - Values — [`ExchangeRate`](xref:Bodu.Financial.ExchangeRate), [`ExchangeRatePair`](xref:Bodu.Financial.ExchangeRatePair), [`ExchangeRateObservation`](xref:Bodu.Financial.ExchangeRateObservation), [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries)
 - Editing — [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder), [`ExchangeRateSeriesKey`](xref:Bodu.Financial.ExchangeRateSeriesKey), [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder), [`ExchangeRateBook`](xref:Bodu.Financial.ExchangeRateBook)
-- Providers — [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable), [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter)
+- Providers — [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable), [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter); grouping via [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
 - Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`TypedMoneyConversionResult<TSource, TTarget>`](xref:Bodu.Financial.TypedMoneyConversionResult`2)
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
