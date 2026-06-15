@@ -76,13 +76,13 @@ public sealed class InMemoryExchangeRateCache
         _store.TryGetValue(pair, out CachePairState? state) ? state : CachePairState.Empty;
 
     /// <inheritdoc />
-    private protected override void WriteState(ExchangeRatePair pair, CachePairState state)
+    private protected override bool WriteState(ExchangeRatePair pair, CachePairState state)
     {
         // Drop the pair entirely only when nothing remains to retain, so an empty state does not linger in the map.
         if (state.Entries.Count == 0 && state.Coverage.Count == 0)
         {
             _store.TryRemove(pair, out _);
-            return;
+            return true;
         }
 
         var entries = new CachedExchangeRate[state.Entries.Count];
@@ -94,5 +94,8 @@ public sealed class InMemoryExchangeRateCache
             coverage[i] = state.Coverage[i];
 
         _store[pair] = new CachePairState(entries, coverage);
+
+        // An in-memory dictionary write cannot fail, so the write is always durable for the instance lifetime.
+        return true;
     }
 }

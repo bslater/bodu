@@ -89,7 +89,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    private protected sealed override void WriteState(ExchangeRatePair pair, CachePairState state)
+    private protected sealed override bool WriteState(ExchangeRatePair pair, CachePairState state)
     {
         var path = ResolveFilePath(pair);
 
@@ -102,21 +102,25 @@ public abstract class FileExchangeRateCacheBase<TOptions>
                 if (File.Exists(path))
                     File.Delete(path);
 
-                return;
+                return true;
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(path) !);
 
             var text = Serialize(state);
             WriteAtomic(path, text);
+            return true;
         }
         catch (IOException)
         {
-            // Best-effort cache: a failed write must not break rate retrieval.
+            // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
+            // refetch rather than trust coverage that was never persisted.
+            return false;
         }
         catch (UnauthorizedAccessException)
         {
-            // Best-effort cache: a failed write must not break rate retrieval.
+            // Best-effort cache: see above.
+            return false;
         }
     }
 

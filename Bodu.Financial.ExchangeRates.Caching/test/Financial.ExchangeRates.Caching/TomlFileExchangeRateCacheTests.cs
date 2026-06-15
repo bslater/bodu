@@ -113,4 +113,31 @@ public sealed partial class TomlFileExchangeRateCacheTests
 
         Assert.AreEqual("Provider", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write whose underlying file write fails reports
+    /// <see cref="ExchangeRateCacheWriteStatus.Failed" /> rather than falsely reporting the rows and coverage as stored.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenFileWriteFails_ShouldReturnFailed()
+    {
+        // Occupy the configured cache directory path with a regular file so resolving the per-pair file forces the
+        // backend to create a directory beneath an existing file, which fails the write with an IOException that the
+        // best-effort backend swallows.
+        Directory.CreateDirectory(Path.GetDirectoryName(_directory)!);
+        File.WriteAllText(_directory, "not a directory");
+
+        TomlFileExchangeRateCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
+            Pair,
+            new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) },
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 3),
+            Duration,
+            now);
+
+        Assert.AreEqual(ExchangeRateCacheWriteStatus.Failed, status);
+    }
 }

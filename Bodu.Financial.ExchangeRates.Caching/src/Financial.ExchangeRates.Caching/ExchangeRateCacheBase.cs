@@ -148,10 +148,12 @@ public abstract class ExchangeRateCacheBase<TOptions>
             List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
                 ExchangeRateCacheRules.MergeCoverage(ToTuples(state.Coverage), start, end, duration, asOf);
 
-            WriteState(pair, new CachePairState(ordered, ToWindows(windows)));
+            // Report the real persistence outcome: a swallowed storage failure must surface as Failed so the caller
+            // refetches rather than trusting coverage that was never written.
+            return WriteState(pair, new CachePairState(ordered, ToWindows(windows)))
+                ? ExchangeRateCacheWriteStatus.Stored
+                : ExchangeRateCacheWriteStatus.Failed;
         }
-
-        return ExchangeRateCacheWriteStatus.Stored;
     }
 
     /// <summary>
@@ -173,11 +175,19 @@ public abstract class ExchangeRateCacheBase<TOptions>
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="state">The state to persist.</param>
+    /// <returns>
+    /// <see langword="true" /> when the state was persisted, including the deliberate deletion of an empty state;
+    /// <see langword="false" /> when a storage failure was swallowed and nothing was persisted.
+    /// </returns>
     /// <remarks>
     /// Declared <see langword="private protected" /> for the same reason as <see cref="ReadState" />:
-    /// <see cref="CachePairState" /> is an internal storage detail shared only with same-assembly backends.
+    /// <see cref="CachePairState" /> is an internal storage detail shared only with same-assembly backends. The
+    /// <see cref="bool" /> result lets <see cref="StoreFetchedRange" /> distinguish a durable write from a best-effort
+    /// backend that swallowed an <see cref="IOException" /> or similar fault, so a failed write is reported as
+    /// <see cref="ExchangeRateCacheWriteStatus.Failed" /> rather than falsely as
+    /// <see cref="ExchangeRateCacheWriteStatus.Stored" />.
     /// </remarks>
-    private protected abstract void WriteState(ExchangeRatePair pair, CachePairState state);
+    private protected abstract bool WriteState(ExchangeRatePair pair, CachePairState state);
 
     /// <summary>
     /// Projects the internal coverage windows into the plain tuples the shared
