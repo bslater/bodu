@@ -7,13 +7,13 @@
 namespace Bodu.Financial.ExchangeRates.Caching.Contracts;
 
 /// <summary>
-/// Runs the shared <see cref="IExchangeRateCache" /> contract against the in-memory test double, which exercises the
-/// <see cref="ExchangeRateCacheBase" /> mechanism directly.
+/// Runs the shared <see cref="IExchangeRateCache" /> contract against the in-memory cache, which exercises the
+/// <see cref="ExchangeRateCacheBase{TOptions}" /> mechanism without touching the file system.
 /// </summary>
 [TestClass]
 public sealed class InMemoryExchangeRateCacheContractTests
     : ExchangeRateCacheContractTests<InMemoryExchangeRateCache>
 {
     /// <inheritdoc />
-    protected override InMemoryExchangeRateCache CreateCache() => new();
+    protected override InMemoryExchangeRateCache CreateCache() => new(Provider);
 }

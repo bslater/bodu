@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CachingDatedExchangeRateProviderTests.GetRatesAsync.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CachingExchangeRateProviderTests.GetRatesAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
-public sealed partial class CachingDatedExchangeRateProviderTests
+public sealed partial class CachingExchangeRateProviderTests
 {
     /// <summary>
     /// Verifies that when the fresh cached rows span the requested range, the range is served without fetching.
@@ -16,7 +16,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
@@ -35,7 +35,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         IReadOnlyList<ExchangeRate> second = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
@@ -55,7 +55,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 10), 0.52m));
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10));
 
@@ -73,7 +73,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _clock.Advance(Duration + TimeSpan.FromHours(1));
         IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
@@ -88,7 +88,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenRangeInverted_ShouldThrowArgumentException()
     {
-        CachingDatedExchangeRateProvider sut = CreateDecorator(InnerWith());
+        CachingExchangeRateProvider sut = CreateDecorator(InnerWith());
 
         var ex = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
@@ -96,23 +96,5 @@ public sealed partial class CachingDatedExchangeRateProviderTests
         });
 
         Assert.AreEqual("endDate", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that a range the first source cannot satisfy falls through to the next source.
-    /// </summary>
-    [TestMethod]
-    public async Task GetRatesAsync_WhenFirstSourceEmpty_ShouldFallThroughToNext()
-    {
-        CountingDatedExchangeRateProvider first = InnerWith();
-        CountingDatedExchangeRateProvider second = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.6m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(Source("First", first), Source("Second", second));
-
-        IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
-
-        Assert.AreEqual(1, rates.Count);
-        Assert.AreEqual(0.6m, rates[0].Rate);
-        Assert.AreEqual(1, first.GetRatesAsyncCallCount);
-        Assert.AreEqual(1, second.GetRatesAsyncCallCount);
     }
 }

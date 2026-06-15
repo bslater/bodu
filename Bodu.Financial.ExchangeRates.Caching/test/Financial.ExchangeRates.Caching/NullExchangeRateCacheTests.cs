@@ -13,11 +13,29 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class NullExchangeRateCacheTests
 {
     /// <summary>
-    /// Verifies that <see cref="NullExchangeRateCache.Instance" /> returns the same shared singleton.
+    /// Verifies that the factory binds the supplied provider.
     /// </summary>
     [TestMethod]
-    public void Instance_WhenAccessedTwice_ShouldReturnSameSingleton() =>
-        Assert.AreSame(NullExchangeRateCache.Instance, NullExchangeRateCache.Instance);
+    public void Create_WhenProviderSupplied_ShouldBindProvider()
+    {
+        IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
+
+        Assert.AreEqual("Yahoo", cache.Provider);
+    }
+
+    /// <summary>
+    /// Verifies that the factory rejects a blank provider.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenProviderIsBlank_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = NullExchangeRateCache.Create("  ");
+        });
+
+        Assert.AreEqual("provider", ex.ParamName);
+    }
 
     /// <summary>
     /// Verifies that a read always returns an empty result, even after a store.
@@ -25,12 +43,12 @@ public sealed class NullExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenAnythingStored_ShouldReturnEmpty()
     {
-        IExchangeRateCache cache = NullExchangeRateCache.Instance;
+        IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
         ExchangeRatePair pair = new("AUD", "USD");
         var now = DateTimeOffset.UtcNow;
 
-        cache.Store("Yahoo", pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        Assert.AreEqual(0, cache.GetRates("Yahoo", pair, TimeSpan.FromHours(24), now).Count);
+        Assert.AreEqual(0, cache.GetRates(pair, TimeSpan.FromHours(24), now).Count);
     }
 }

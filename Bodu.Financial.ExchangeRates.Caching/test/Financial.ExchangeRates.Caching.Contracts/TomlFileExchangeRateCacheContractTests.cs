@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlFileSystemExchangeRateCacheContractTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlFileExchangeRateCacheContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,12 +7,12 @@
 namespace Bodu.Financial.ExchangeRates.Caching.Contracts;
 
 /// <summary>
-/// Runs the shared <see cref="IExchangeRateCache" /> contract against the TOML file-system cache, each test using an
-/// isolated temporary directory that is removed on cleanup.
+/// Runs the shared <see cref="IExchangeRateCache" /> contract against the TOML file cache, each test using an isolated
+/// temporary directory that is removed on cleanup.
 /// </summary>
 [TestClass]
-public sealed class TomlFileSystemExchangeRateCacheContractTests
-    : ExchangeRateCacheContractTests<TomlFileSystemExchangeRateCache>
+public sealed class TomlFileExchangeRateCacheContractTests
+    : ExchangeRateCacheContractTests<TomlFileExchangeRateCache>
 {
     /// <summary>
     /// The temporary directories created during a test, removed on cleanup.
@@ -20,11 +20,11 @@ public sealed class TomlFileSystemExchangeRateCacheContractTests
     private readonly List<string> _directories = new();
 
     /// <inheritdoc />
-    protected override TomlFileSystemExchangeRateCache CreateCache()
+    protected override TomlFileExchangeRateCache CreateCache()
     {
         var directory = Path.Combine(Path.GetTempPath(), "bodu-exchange-rates-tests", Guid.NewGuid().ToString("N"));
         _directories.Add(directory);
-        return new TomlFileSystemExchangeRateCache(new FileSystemExchangeRateCacheOptions { CacheDirectory = directory });
+        return new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = directory });
     }
 
     /// <summary>

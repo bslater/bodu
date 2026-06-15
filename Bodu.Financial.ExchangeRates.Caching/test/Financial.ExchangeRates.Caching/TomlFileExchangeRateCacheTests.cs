@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlFileSystemExchangeRateCacheTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="TomlFileExchangeRateCacheTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,14 +7,14 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies <see cref="TomlFileSystemExchangeRateCache" /> construction, directory selection, and the round-trip of
-/// cached rates through the file system.
+/// Verifies <see cref="TomlFileExchangeRateCache" /> construction, directory selection, and the round-trip of cached
+/// rates through the file system.
 /// </summary>
 [TestClass]
-public sealed partial class TomlFileSystemExchangeRateCacheTests
+public sealed partial class TomlFileExchangeRateCacheTests
 {
     /// <summary>
-    /// The provider identifier used by the tests.
+    /// The provider identifier the cache is bound to.
     /// </summary>
     private const string Provider = "Yahoo";
 
@@ -62,11 +62,11 @@ public sealed partial class TomlFileSystemExchangeRateCacheTests
     }
 
     /// <summary>
-    /// Creates a cache rooted at the test's temporary directory.
+    /// Creates a cache bound to <see cref="Provider" /> rooted at the test's temporary directory.
     /// </summary>
     /// <returns>A new cache instance.</returns>
-    private TomlFileSystemExchangeRateCache CreateCache() =>
-        new(new FileSystemExchangeRateCacheOptions { CacheDirectory = _directory });
+    private TomlFileExchangeRateCache CreateCache() =>
+        new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
 
     /// <summary>
     /// Verifies that a stored rate round-trips through the file system preserving its date, rate, and caching instant.
@@ -75,12 +75,12 @@ public sealed partial class TomlFileSystemExchangeRateCacheTests
     [TestCategory("Smoke")]
     public void Store_WhenRoundTripped_ShouldPreserveAllFields()
     {
-        TomlFileSystemExchangeRateCache cache = CreateCache();
+        TomlFileExchangeRateCache cache = CreateCache();
         var cachedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
         CachedExchangeRate stored = new(new DateOnly(2023, 1, 3), 0.5000m, cachedAt);
 
-        cache.Store(Provider, Pair, new[] { stored }, Duration, cachedAt);
-        IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Provider, Pair, Duration, cachedAt);
+        cache.Store(Pair, new[] { stored }, Duration, cachedAt);
+        IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, cachedAt);
 
         Assert.AreEqual(1, read.Count);
         Assert.AreEqual(stored.Date, read[0].Date);
@@ -93,10 +93,24 @@ public sealed partial class TomlFileSystemExchangeRateCacheTests
     /// directory is configured.
     /// </summary>
     [TestMethod]
-    public void Directory_WhenNoDirectoryConfigured_ShouldDefaultToTempSubfolder()
+    public void CacheDirectory_WhenNoDirectoryConfigured_ShouldDefaultToTempSubfolder()
     {
-        TomlFileSystemExchangeRateCache cache = new(new FileSystemExchangeRateCacheOptions());
+        TomlFileExchangeRateCache cache = new(new FileExchangeRateCacheOptions { Provider = Provider });
 
-        Assert.AreEqual(Path.Combine(Path.GetTempPath(), "bodu-exchange-rates"), cache.Directory);
+        Assert.AreEqual(Path.Combine(Path.GetTempPath(), "bodu-exchange-rates"), cache.CacheDirectory);
+    }
+
+    /// <summary>
+    /// Verifies that the constructor rejects options with a blank provider.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenProviderIsBlank_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "  ", CacheDirectory = _directory });
+        });
+
+        Assert.AreEqual("Provider", ex.ParamName);
     }
 }
