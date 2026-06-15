@@ -28,7 +28,7 @@ public sealed class KatDisplayNameTests
 
         var actual = KatDisplayName.GetDisplayName(method, [kat]);
 
-        Assert.AreEqual($"{method.Name}(sample-row)", actual);
+        Assert.AreEqual($"sample-row", actual);
     }
 
     /// <summary>
