@@ -25,4 +25,23 @@ public partial class RbaExchangeRateProviderTests
 
         Assert.AreEqual(0.6828m, rate);
     }
+
+    /// <summary>
+    /// Verifies that a served rate is stamped with the load instant captured from the injected
+    /// <see cref="TimeProvider" /> at the moment the era was downloaded.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRate_WhenEraLoaded_ShouldStampServedRateWithFetchInstant()
+    {
+        DateTimeOffset fetchedAt = new(2023, 1, 3, 10, 0, 0, TimeSpan.Zero);
+        RbaExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = false, EnableDiskCache = false };
+        FixtureRbaExchangeRateTableSource source = new(options);
+        MutableTimeProvider timeProvider = new(fetchedAt);
+        RbaExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 12, 31));
+
+        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+
+        Assert.AreEqual(fetchedAt, result.Rate.FetchedAtUtc);
+    }
 }

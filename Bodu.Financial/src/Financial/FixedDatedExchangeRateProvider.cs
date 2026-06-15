@@ -205,7 +205,7 @@ public sealed class FixedDatedExchangeRateProvider
             foreach (ExchangeRateObservation observation in series.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(fromIsoCode, toIsoCode, observation.Date, observation.Rate, priority[i]));
+                    result.Add(new ExchangeRate(fromIsoCode, toIsoCode, observation.Date, observation.Rate, priority[i], isInverted: false, series.FetchedAtUtc));
             }
 
             break;
@@ -333,8 +333,9 @@ public sealed class FixedDatedExchangeRateProvider
             var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
 
             // Pass the originally observed rate so an inverted conversion divides by it rather than multiplying by a
-            // pre-rounded reciprocal; the reported Rate is still the From->To multiplier.
-            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted);
+            // pre-rounded reciprocal; the reported Rate is still the From->To multiplier. The series' fetch instant is
+            // stamped onto the served rate as provenance.
+            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted, series.FetchedAtUtc);
 
             var offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
             result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays, ExchangeRateProvenance.Live(rate.Provider));

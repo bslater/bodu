@@ -25,4 +25,23 @@ public partial class YahooExchangeRateProviderTests
 
         Assert.AreEqual(0.6855m, rate);
     }
+
+    /// <summary>
+    /// Verifies that a served rate is stamped with the load instant captured from the injected
+    /// <see cref="TimeProvider" /> at the moment the chart was fetched.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRate_WhenPairLoaded_ShouldStampServedRateWithFetchInstant()
+    {
+        DateTimeOffset fetchedAt = new(2023, 1, 6, 12, 30, 0, TimeSpan.Zero);
+        YahooExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = false };
+        FixtureYahooExchangeRateChartSource source = new(options);
+        MutableTimeProvider timeProvider = new(fetchedAt);
+        YahooExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
+        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+
+        Assert.AreEqual(fetchedAt, result.Rate.FetchedAtUtc);
+    }
 }

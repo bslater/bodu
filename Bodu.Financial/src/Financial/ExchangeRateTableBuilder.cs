@@ -80,6 +80,10 @@ public sealed class ExchangeRateTableBuilder
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="date">The observation date.</param>
     /// <param name="rate">The rate to record.</param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the load contributing this observation downloaded its source data, or
+    /// <see langword="null" /> to leave the series' fetch instant unchanged.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
@@ -87,8 +91,19 @@ public sealed class ExchangeRateTableBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
-    public void Upsert(ExchangeRatePair pair, string provider, DateOnly date, decimal rate) =>
-        GetOrAddSeries(pair, provider).Upsert(date, rate);
+    /// <remarks>
+    /// When supplied, <paramref name="fetchedAtUtc" /> is recorded at the series grain — a property of the load, not of
+    /// the individual observation — and is stamped onto every <see cref="ExchangeRate" /> the series materializes. A
+    /// later upsert carrying a fresh instant overwrites it; passing <see langword="null" /> leaves any previously
+    /// recorded instant in place.
+    /// </remarks>
+    public void Upsert(ExchangeRatePair pair, string provider, DateOnly date, decimal rate, DateTimeOffset? fetchedAtUtc = null)
+    {
+        ExchangeRateSeriesBuilder builder = GetOrAddSeries(pair, provider);
+        builder.Upsert(date, rate);
+        if (fetchedAtUtc is { } f)
+            builder.FetchedAtUtc = f;
+    }
 
     /// <summary>
     /// Removes the entire series for the supplied pair and provider.

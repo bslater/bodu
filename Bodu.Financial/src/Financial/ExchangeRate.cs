@@ -33,6 +33,12 @@ public readonly record struct ExchangeRate
     private readonly decimal _observedRate;
 
     /// <summary>
+    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
+    /// when the fetch instant is not tracked. Carried as provenance metadata only and excluded from equality.
+    /// </summary>
+    private readonly DateTimeOffset? _fetchedAtUtc;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ExchangeRate" /> class.
     /// </summary>
     /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
@@ -42,6 +48,10 @@ public readonly record struct ExchangeRate
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="isInverted">
     /// <see langword="true" /> when the rate was derived from the reverse pair; otherwise <see langword="false" />.
+    /// </param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
+    /// when not tracked.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="fromIsoCode" />, <paramref name="toIsoCode" />, or <paramref name="provider" /> is
@@ -60,8 +70,9 @@ public readonly record struct ExchangeRate
         DateOnly date,
         decimal rate,
         string provider,
-        bool isInverted = false)
-        : this(fromIsoCode, toIsoCode, date, rate, isInverted ? 1m / rate : rate, provider, isInverted)
+        bool isInverted = false,
+        DateTimeOffset? fetchedAtUtc = null)
+        : this(fromIsoCode, toIsoCode, date, rate, isInverted ? 1m / rate : rate, provider, isInverted, fetchedAtUtc)
     {
     }
 
@@ -76,6 +87,10 @@ public readonly record struct ExchangeRate
     /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="isInverted"><see langword="true" /> when derived from the reverse pair.</param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
+    /// when not tracked.
+    /// </param>
     private ExchangeRate(
         string fromIsoCode,
         string toIsoCode,
@@ -83,7 +98,8 @@ public readonly record struct ExchangeRate
         decimal rate,
         decimal observedRate,
         string provider,
-        bool isInverted)
+        bool isInverted,
+        DateTimeOffset? fetchedAtUtc)
     {
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
@@ -97,6 +113,7 @@ public readonly record struct ExchangeRate
         Provider = provider;
         IsInverted = isInverted;
         _observedRate = observedRate;
+        _fetchedAtUtc = fetchedAtUtc;
     }
 
     /// <summary>
@@ -113,6 +130,10 @@ public readonly record struct ExchangeRate
     /// <param name="isInverted">
     /// <see langword="true" /> when <paramref name="observedRate" /> is the reverse-pair rate.
     /// </param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
+    /// when not tracked.
+    /// </param>
     /// <returns>The constructed exchange rate.</returns>
     internal static ExchangeRate FromObservedRate(
         string fromIsoCode,
@@ -120,12 +141,13 @@ public readonly record struct ExchangeRate
         DateOnly date,
         decimal observedRate,
         string provider,
-        bool isInverted)
+        bool isInverted,
+        DateTimeOffset? fetchedAtUtc = null)
     {
         ThrowHelper.ThrowIfZeroOrNegative(observedRate);
 
         var rate = isInverted ? 1m / observedRate : observedRate;
-        return new ExchangeRate(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted);
+        return new ExchangeRate(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
     }
 
     /// <summary>
@@ -140,6 +162,10 @@ public readonly record struct ExchangeRate
     /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="isInverted"><see langword="true" /> when derived from the reverse pair.</param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
+    /// when not tracked.
+    /// </param>
     /// <returns>The constructed exchange rate.</returns>
     internal static ExchangeRate FromComponents(
         string fromIsoCode,
@@ -148,8 +174,9 @@ public readonly record struct ExchangeRate
         decimal rate,
         decimal observedRate,
         string provider,
-        bool isInverted) =>
-        new(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted);
+        bool isInverted,
+        DateTimeOffset? fetchedAtUtc = null) =>
+        new(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
 
     /// <summary>
     /// Gets the source-currency ISO-style code.
@@ -191,6 +218,20 @@ public readonly record struct ExchangeRate
     public bool IsInverted { get; }
 
     /// <summary>
+    /// Gets the UTC instant at which the upstream data backing this rate was originally fetched, or
+    /// <see langword="null" /> when not tracked.
+    /// </summary>
+    /// <returns>
+    /// The fetch instant when known; otherwise <see langword="null" />.
+    /// </returns>
+    /// <remarks>
+    /// The value is provenance metadata describing when the load that produced this rate downloaded its source data. It
+    /// is excluded from <see cref="Equals(ExchangeRate)" /> and <see cref="GetHashCode" />, so two rates that differ
+    /// only in their fetch instant still compare equal.
+    /// </remarks>
+    public DateTimeOffset? FetchedAtUtc => _fetchedAtUtc;
+
+    /// <summary>
     /// Gets the underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted
     /// rate; for an inverted rate it is the original reverse-pair rate.
     /// </summary>
@@ -218,8 +259,9 @@ public readonly record struct ExchangeRate
 
     /// <summary>
     /// Determines whether this rate equals <paramref name="other" /> by its public fields. The internal observed rate
-    /// is excluded so two rates that report the same direction, date, multiplier, provider, and inversion compare equal
-    /// regardless of how each was constructed.
+    /// and the <see cref="FetchedAtUtc" /> fetch instant are excluded — both are provenance metadata — so two rates
+    /// that report the same direction, date, multiplier, provider, and inversion compare equal regardless of how each
+    /// was constructed or when its source data was fetched.
     /// </summary>
     /// <param name="other">The rate to compare with.</param>
     /// <returns><see langword="true" /> when the public fields match; otherwise <see langword="false" />.</returns>

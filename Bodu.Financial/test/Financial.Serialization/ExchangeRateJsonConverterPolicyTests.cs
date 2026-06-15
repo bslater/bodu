@@ -26,10 +26,21 @@ public class ExchangeRateJsonConverterPolicyTests
         new JsonSerializerOptions().AddFinancialJsonConverters(policy);
 
     /// <summary>
+    /// A representative fetch instant used by the provenance round-trip cases.
+    /// </summary>
+    private static readonly DateTimeOffset s_fetchedAt = new(2024, 5, 30, 14, 15, 16, TimeSpan.Zero);
+
+    /// <summary>
     /// Builds a representative exchange-rate observation.
     /// </summary>
     private static ExchangeRate SampleRate(bool isInverted = false) =>
         new("USD", "JPY", new DateOnly(2024, 5, 30), 156.42m, "ECB", isInverted);
+
+    /// <summary>
+    /// Builds a representative exchange-rate observation carrying a non-null fetch instant.
+    /// </summary>
+    private static ExchangeRate SampleRateWithFetch(bool isInverted = false) =>
+        new("USD", "JPY", new DateOnly(2024, 5, 30), 156.42m, "ECB", isInverted, s_fetchedAt);
 
     /// <summary>
     /// Verifies that the attribute-driven default emits the canonical object form, with all six fields in
@@ -208,5 +219,94 @@ public class ExchangeRateJsonConverterPolicyTests
         {
             _ = JsonSerializer.Deserialize<ExchangeRate>(json, Options(FinancialJsonPolicy.Strict));
         });
+    }
+
+    /// <summary>
+    /// Verifies that the strict policy round-trips a rate carrying a non-null fetch instant, preserving the instant.
+    /// </summary>
+    [TestMethod]
+    public void StrictPolicy_WhenRoundTrippingWithFetchedAtUtc_ShouldPreserveInstant()
+    {
+        ExchangeRate original = SampleRateWithFetch();
+        JsonSerializerOptions options = Options(FinancialJsonPolicy.Strict);
+
+        var json = JsonSerializer.Serialize(original, options);
+        ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json, options);
+
+        Assert.AreEqual(s_fetchedAt, recovered.FetchedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that the compact policy round-trips a rate carrying a non-null fetch instant, preserving the instant.
+    /// </summary>
+    [TestMethod]
+    public void CompactPolicy_WhenRoundTrippingWithFetchedAtUtc_ShouldPreserveInstant()
+    {
+        ExchangeRate original = SampleRateWithFetch();
+        JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
+
+        var json = JsonSerializer.Serialize(original, options);
+        ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json, options);
+
+        Assert.AreEqual(s_fetchedAt, recovered.FetchedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that reading a pre-provenance blob with no <c>fetchedAtUtc</c> property yields a <see langword="null" />
+    /// fetch instant.
+    /// </summary>
+    [TestMethod]
+    public void StrictPolicy_WhenReadingBlobWithoutFetchedAtUtc_ShouldYieldNullInstant()
+    {
+        var json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
+
+        ExchangeRate result = JsonSerializer.Deserialize<ExchangeRate>(json, Options(FinancialJsonPolicy.Strict));
+
+        Assert.IsNull(result.FetchedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that writing a rate whose fetch instant is <see langword="null" /> omits the <c>fetchedAtUtc</c>
+    /// property, keeping the canonical byte shape unchanged.
+    /// </summary>
+    [TestMethod]
+    public void StrictPolicy_WhenWritingNullFetchedAtUtc_ShouldOmitProperty()
+    {
+        var json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Strict));
+
+        Assert.AreEqual(
+            "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}",
+            json);
+    }
+
+    /// <summary>
+    /// Verifies that the compact writer omits the <c>fetchedAtUtc</c> property when the fetch instant is
+    /// <see langword="null" />, keeping the compact byte shape unchanged.
+    /// </summary>
+    [TestMethod]
+    public void CompactPolicy_WhenWritingNullFetchedAtUtc_ShouldOmitProperty()
+    {
+        var json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Compact));
+
+        Assert.AreEqual(
+            "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}",
+            json);
+    }
+
+    /// <summary>
+    /// Verifies that the canonical writer appends <c>fetchedAtUtc</c> as the final property when the fetch instant is
+    /// present.
+    /// </summary>
+    [TestMethod]
+    public void StrictPolicy_WhenWritingFetchedAtUtc_ShouldEmitInstantAsFinalProperty()
+    {
+        var json = JsonSerializer.Serialize(SampleRateWithFetch(), Options(FinancialJsonPolicy.Strict));
+
+        // The instant is written via the round-trippable "O" format; serialize the same string so the comparison
+        // accounts for how the JSON encoder escapes the offset's '+' sign.
+        var fetched = JsonSerializer.Serialize(s_fetchedAt.ToString("O", System.Globalization.CultureInfo.InvariantCulture));
+        Assert.AreEqual(
+            "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false,\"fetchedAtUtc\":" + fetched + "}",
+            json);
     }
 }

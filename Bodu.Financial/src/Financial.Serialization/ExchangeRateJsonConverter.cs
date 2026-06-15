@@ -85,6 +85,7 @@ public sealed class ExchangeRateJsonConverter
         string? provider = null;
         var isInverted = false;
         decimal? observedRate = null;
+        DateTimeOffset? fetchedAtUtc = null;
         var seenFrom = false;
         var seenTo = false;
         var seenPair = false;
@@ -93,6 +94,7 @@ public sealed class ExchangeRateJsonConverter
         var seenProvider = false;
         var seenIsInverted = false;
         var seenObservedRate = false;
+        var seenFetchedAtUtc = false;
 
         while (reader.Read())
         {
@@ -154,6 +156,12 @@ public sealed class ExchangeRateJsonConverter
                 seenObservedRate = true;
                 observedRate = ReadDecimalProperty(ref reader, "observedRate");
             }
+            else if (string.Equals(propertyName, "fetchedAtUtc", StringComparison.OrdinalIgnoreCase))
+            {
+                if (seenFetchedAtUtc) throw DuplicateProperty("fetchedAtUtc");
+                seenFetchedAtUtc = true;
+                fetchedAtUtc = ReadInstantProperty(ref reader, "fetchedAtUtc");
+            }
             else
             {
                 reader.Skip();
@@ -178,8 +186,8 @@ public sealed class ExchangeRateJsonConverter
             // When the originally observed rate is present, restore both the reported multiplier and the observed rate
             // exactly so neither is recomputed (and re-rounded) from the other; otherwise use the reported multiplier.
             return observedRate is not null
-                ? ExchangeRate.FromComponents(from, to, date.Value, rate.Value, observedRate.Value, provider, isInverted)
-                : new ExchangeRate(from, to, date.Value, rate.Value, provider, isInverted);
+                ? ExchangeRate.FromComponents(from, to, date.Value, rate.Value, observedRate.Value, provider, isInverted, fetchedAtUtc)
+                : new ExchangeRate(from, to, date.Value, rate.Value, provider, isInverted, fetchedAtUtc);
         }
         catch (ArgumentException ex)
         {
@@ -205,6 +213,9 @@ public sealed class ExchangeRateJsonConverter
                 writer.WriteBoolean("isInverted", true);
                 writer.WriteNumber("observedRate", value.ObservedRate);
             }
+
+            if (value.FetchedAtUtc is { } fetched)
+                writer.WriteString("fetchedAtUtc", fetched.ToString("O", CultureInfo.InvariantCulture));
         }
         else
         {
@@ -216,6 +227,9 @@ public sealed class ExchangeRateJsonConverter
             writer.WriteBoolean("isInverted", value.IsInverted);
             if (value.IsInverted)
                 writer.WriteNumber("observedRate", value.ObservedRate);
+
+            if (value.FetchedAtUtc is { } fetched)
+                writer.WriteString("fetchedAtUtc", fetched.ToString("O", CultureInfo.InvariantCulture));
         }
 
         writer.WriteEndObject();
@@ -294,6 +308,29 @@ public sealed class ExchangeRateJsonConverter
         var text = reader.GetString();
         return text is not null
             && DateOnly.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly parsed)
+            ? parsed
+            : throw new JsonException(
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
+    }
+
+    /// <summary>
+    /// Reads an instant property as a <see cref="DateTimeOffset" /> from a round-trippable (ISO 8601 <c>O</c>) string.
+    /// </summary>
+    /// <param name="reader">The reader positioned at the value.</param>
+    /// <param name="propertyName">The originating property name (used in the error message).</param>
+    /// <returns>The parsed instant.</returns>
+    /// <exception cref="JsonException">
+    /// Thrown when the token is not a string or does not parse as a round-trippable instant.
+    /// </exception>
+    private static DateTimeOffset ReadInstantProperty(ref Utf8JsonReader reader, string propertyName)
+    {
+        if (reader.TokenType != JsonTokenType.String)
+            throw new JsonException(
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
+
+        var text = reader.GetString();
+        return text is not null
+            && DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset parsed)
             ? parsed
             : throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));

@@ -295,12 +295,15 @@ public sealed class RbaExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the download completes so it stamps every rate this era produces.
+        var fetchedAt = _timeProvider.GetUtcNow();
+
         lock (_gate)
         {
             if (!_loadedEras.Add(era.Label))
                 return;
 
-            var count = Accumulate(table);
+            var count = Accumulate(table, fetchedAt);
             RebuildSnapshot();
             Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);
         }
@@ -417,11 +420,13 @@ public sealed class RbaExchangeRateProvider
     }
 
     /// <summary>
-    /// Upserts a parsed table's observations and series metadata into the accumulator.
+    /// Upserts a parsed table's observations and series metadata into the accumulator, stamping each contributing
+    /// series with the load instant.
     /// </summary>
     /// <param name="table">The parsed table.</param>
+    /// <param name="fetchedAt">The UTC instant at which the table was downloaded.</param>
     /// <returns>The number of rate observations upserted.</returns>
-    private int Accumulate(RbaExchangeRateTable table)
+    private int Accumulate(RbaExchangeRateTable table, DateTimeOffset fetchedAt)
     {
         foreach (RbaSeriesInfo info in table.GetSeriesInfo())
             _series[info.Pair] = info;
@@ -429,7 +434,7 @@ public sealed class RbaExchangeRateProvider
         var count = 0;
         foreach (ExchangeRate rate in table.EnumerateRates())
         {
-            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate, fetchedAt);
             Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
@@ -491,7 +496,7 @@ public sealed class RbaExchangeRateProvider
             foreach (ExchangeRateObservation observation in series.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, observation.Rate, ProviderName));
+                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, observation.Rate, ProviderName, isInverted: false, series.FetchedAtUtc));
             }
         }
         else if (book.TryGetSeries(pair.Inverse(), ProviderName, out ExchangeRateSeries? inverse) && inverse is not null)
@@ -499,7 +504,7 @@ public sealed class RbaExchangeRateProvider
             foreach (ExchangeRateObservation observation in inverse.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, 1m / observation.Rate, ProviderName, isInverted: true));
+                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, 1m / observation.Rate, ProviderName, isInverted: true, inverse.FetchedAtUtc));
             }
         }
 

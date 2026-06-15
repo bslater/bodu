@@ -310,9 +310,12 @@ public sealed partial class YahooExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the fetch completes so it stamps every rate this chart produces.
+        var fetchedAt = _timeProvider.GetUtcNow();
+
         lock (_gate)
         {
-            var count = Accumulate(chart);
+            var count = Accumulate(chart, fetchedAt);
             ExtendCoveredRange(pair, startDate, endDate);
             RebuildSnapshot();
             Log.PairLoaded(_logger, _options.DownloadCompletedLogLevel, symbol, count);
@@ -396,11 +399,13 @@ public sealed partial class YahooExchangeRateProvider
     }
 
     /// <summary>
-    /// Upserts a fetched chart's observations and series metadata into the accumulator.
+    /// Upserts a fetched chart's observations and series metadata into the accumulator, stamping the contributing
+    /// series with the load instant.
     /// </summary>
     /// <param name="chart">The parsed chart.</param>
+    /// <param name="fetchedAt">The UTC instant at which the chart was fetched.</param>
     /// <returns>The number of rate observations upserted.</returns>
-    private int Accumulate(YahooExchangeRateChart chart)
+    private int Accumulate(YahooExchangeRateChart chart, DateTimeOffset fetchedAt)
     {
         YahooSeriesInfo info = chart.GetSeriesInfo();
         _series[info.Pair] = info;
@@ -408,7 +413,7 @@ public sealed partial class YahooExchangeRateProvider
         var count = 0;
         foreach (ExchangeRate rate in chart.EnumerateRates())
         {
-            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate, fetchedAt);
             Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
@@ -503,7 +508,7 @@ public sealed partial class YahooExchangeRateProvider
             foreach (ExchangeRateObservation observation in series.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, observation.Rate, ProviderName));
+                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, observation.Rate, ProviderName, isInverted: false, series.FetchedAtUtc));
             }
         }
         else if (book.TryGetSeries(pair.Inverse(), ProviderName, out ExchangeRateSeries? inverse) && inverse is not null)
@@ -511,7 +516,7 @@ public sealed partial class YahooExchangeRateProvider
             foreach (ExchangeRateObservation observation in inverse.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, 1m / observation.Rate, ProviderName, isInverted: true));
+                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, 1m / observation.Rate, ProviderName, isInverted: true, inverse.FetchedAtUtc));
             }
         }
 

@@ -172,4 +172,56 @@ public partial class ExchangeRateTests
 
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
     }
+
+    /// <summary>
+    /// Verifies that a supplied fetch instant is exposed through <see cref="ExchangeRate.FetchedAtUtc" />.
+    /// </summary>
+    [TestMethod]
+    public void FetchedAtUtc_WhenSupplied_ShouldBeExposed()
+    {
+        DateTimeOffset fetchedAt = new(2024, 1, 3, 9, 30, 0, TimeSpan.Zero);
+        ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, fetchedAt);
+
+        Assert.AreEqual(fetchedAt, rate.FetchedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ExchangeRate.FetchedAtUtc" /> is <see langword="null" /> when no fetch instant is
+    /// supplied at construction.
+    /// </summary>
+    [TestMethod]
+    public void FetchedAtUtc_WhenOmitted_ShouldBeNull()
+    {
+        ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+
+        Assert.IsNull(rate.FetchedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that two exchange rates that differ only in their fetch instant compare equal, because the fetch
+    /// instant is provenance metadata excluded from equality.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenOnlyFetchedAtUtcDiffers_ShouldBeEqual()
+    {
+        ExchangeRate stamped = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
+        ExchangeRate other = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero));
+        ExchangeRate unstamped = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+
+        Assert.AreEqual(stamped, other);
+        Assert.AreEqual(stamped, unstamped);
+    }
+
+    /// <summary>
+    /// Verifies that two exchange rates that differ only in their fetch instant produce the same hash code, because the
+    /// fetch instant is excluded from the hash.
+    /// </summary>
+    [TestMethod]
+    public void GetHashCode_WhenOnlyFetchedAtUtcDiffers_ShouldBeEqual()
+    {
+        ExchangeRate stamped = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
+        ExchangeRate unstamped = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+
+        Assert.AreEqual(unstamped.GetHashCode(), stamped.GetHashCode());
+    }
 }

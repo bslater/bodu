@@ -287,9 +287,12 @@ public sealed class BoeExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the download completes so it stamps every rate this range produces.
+        var fetchedAt = _timeProvider.GetUtcNow();
+
         lock (_gate)
         {
-            var count = Accumulate(table);
+            var count = Accumulate(table, fetchedAt);
             _loadedRanges.Add((startDate, endDate));
             RebuildSnapshot();
             Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count);
@@ -406,11 +409,13 @@ public sealed class BoeExchangeRateProvider
     }
 
     /// <summary>
-    /// Upserts a parsed table's observations and series metadata into the accumulator.
+    /// Upserts a parsed table's observations and series metadata into the accumulator, stamping each contributing
+    /// series with the load instant.
     /// </summary>
     /// <param name="table">The parsed table.</param>
+    /// <param name="fetchedAt">The UTC instant at which the table was downloaded.</param>
     /// <returns>The number of rate observations upserted.</returns>
-    private int Accumulate(BoeExchangeRateTable table)
+    private int Accumulate(BoeExchangeRateTable table, DateTimeOffset fetchedAt)
     {
         foreach (BoeSeriesInfo info in table.GetSeriesInfo())
             _series[info.Pair] = info;
@@ -418,7 +423,7 @@ public sealed class BoeExchangeRateProvider
         var count = 0;
         foreach (ExchangeRate rate in table.EnumerateRates())
         {
-            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate, fetchedAt);
             Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
             count++;
         }
@@ -488,7 +493,7 @@ public sealed class BoeExchangeRateProvider
             foreach (ExchangeRateObservation observation in series.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, observation.Rate, ProviderName));
+                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, observation.Rate, ProviderName, isInverted: false, series.FetchedAtUtc));
             }
         }
         else if (book.TryGetSeries(pair.Inverse(), ProviderName, out ExchangeRateSeries? inverse) && inverse is not null)
@@ -496,7 +501,7 @@ public sealed class BoeExchangeRateProvider
             foreach (ExchangeRateObservation observation in inverse.GetObservations())
             {
                 if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, 1m / observation.Rate, ProviderName, isInverted: true));
+                    result.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, observation.Date, 1m / observation.Rate, ProviderName, isInverted: true, inverse.FetchedAtUtc));
             }
         }
 
