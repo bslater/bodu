@@ -61,6 +61,22 @@ public class DistributedExchangeRateCacheOptions
         }
     }
 
+    /// <inheritdoc />
+    public override bool TryValidate(out string? error)
+    {
+        if (!base.TryValidate(out error))
+            return false;
+
+        if (KeyPrefix is not null && string.IsNullOrWhiteSpace(KeyPrefix))
+        {
+            error = CachingDistributedResourceStrings.Arg_Invalid_KeyPrefixWhiteSpace;
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
+
     /// <summary>
     /// Builds the stable, collision-free cache key for a pair from the optional prefix, the bound provider, and the
     /// pair's currency codes.

@@ -55,7 +55,8 @@ internal static partial class Log
     public static partial void RangeCacheHit(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode);
 
     /// <summary>
-    /// Logs that a range lookup was refetched from a wrapped source and re-cached.
+    /// Logs that a range lookup was refetched from a wrapped source and the atomic rows-and-coverage write attempted,
+    /// reporting whether that write was persisted.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="level">The level at which to log the message.</param>
@@ -63,6 +64,7 @@ internal static partial class Log
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="count">The number of rates refetched.</param>
-    [LoggerMessage(EventId = 4504, Message = "Refetched {count} {fromIsoCode}->{toIsoCode} rate(s) from source '{source}' and cached the range")]
-    public static partial void RangeRefetched(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, int count);
+    /// <param name="status">The outcome of the atomic rows-and-coverage cache write.</param>
+    [LoggerMessage(EventId = 4504, Message = "Refetched {count} {fromIsoCode}->{toIsoCode} rate(s) from source '{source}'; cache write {status}")]
+    public static partial void RangeRefetched(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, int count, ExchangeRateCacheWriteStatus status);
 }

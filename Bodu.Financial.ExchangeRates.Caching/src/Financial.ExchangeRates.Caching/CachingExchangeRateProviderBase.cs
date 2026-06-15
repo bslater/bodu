@@ -29,9 +29,11 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Single-date lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from
 /// the cache only when its recorded coverage contains the whole requested window — that is, every day in the window was
 /// actually fetched and is still fresh — so an interior day that was never fetched forces a refetch rather than being
-/// served from a sparse set of rows. On a miss the whole range is refetched from the inner provider, re-cached, and
-/// recorded as covered. To group several sources behind one entry point, wrap each in its own caching provider and
-/// compose them with an <see cref="AggregatingExchangeRateProvider" />.
+/// served from a sparse set of rows. On a miss the whole range is refetched from the inner provider and written back
+/// through a single atomic <see cref="IExchangeRateCache.StoreFetchedRange" /> that merges the rows and records the
+/// covered window together, even when the fetch returned no rows, so an empty-but-fetched window is not refetched on the
+/// next lookup. To group several sources behind one entry point, wrap each in its own caching provider and compose them
+/// with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
@@ -148,19 +150,13 @@ public abstract class CachingExchangeRateProviderBase
         IReadOnlyList<ExchangeRate> fetched =
             await Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
 
-        if (fetched.Count > 0)
-        {
-            StoreRange(duration, pair, fetched, now);
+        // Write the fetched rows and the covered window atomically, regardless of how many rows came back: the request
+        // asked for every interior day, so even an empty fetch must record the whole window as covered or the same range
+        // would be refetched forever. A single atomic write rules out persisting coverage without its rows.
+        ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
-            // Record the whole requested window as covered, not merely the dates that returned a row: the request asked
-            // for every interior day, so a later lookup of the same window can be served without refetching gaps.
-            _cache.RecordCoverage(pair, startDate, endDate, duration, now);
-
-            Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count);
-            return fetched;
-        }
-
-        return Array.Empty<ExchangeRate>();
+        Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        return fetched;
     }
 
     /// <inheritdoc />
@@ -265,18 +261,28 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Stores a fetched range of observations for the requested pair.
+    /// Atomically caches a fetched range of observations and records the whole requested window as covered for the
+    /// requested pair.
     /// </summary>
-    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="duration">The duration cached rows and the recorded coverage window stay fresh.</param>
     /// <param name="pair">The requested currency pair.</param>
-    /// <param name="rates">The rates returned by the inner provider.</param>
-    /// <param name="now">The instant to stamp the cached rows with.</param>
-    private void StoreRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateTimeOffset now)
+    /// <param name="rates">The rates returned by the inner provider, possibly empty.</param>
+    /// <param name="startDate">The inclusive first date of the fetched range.</param>
+    /// <param name="endDate">The inclusive last date of the fetched range.</param>
+    /// <param name="now">The instant to stamp the cached rows and the fetched window with.</param>
+    /// <returns>The outcome of the atomic rows-and-coverage write.</returns>
+    /// <remarks>
+    /// The whole window is recorded as covered, not merely the dates that returned a row: the request asked for every
+    /// interior day, so a later lookup of the same window can be served without refetching gaps. The rows and the
+    /// coverage window are written as one atomic unit so a swallowed storage failure can never leave coverage recorded
+    /// without its rows.
+    /// </remarks>
+    private ExchangeRateCacheWriteStatus StoreFetchedRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateOnly startDate, DateOnly endDate, DateTimeOffset now)
     {
         var rows = new CachedExchangeRate[rates.Count];
         for (var i = 0; i < rates.Count; i++)
             rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now);
 
-        _cache.Store(pair, rows, duration, now);
+        return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);
     }
 }

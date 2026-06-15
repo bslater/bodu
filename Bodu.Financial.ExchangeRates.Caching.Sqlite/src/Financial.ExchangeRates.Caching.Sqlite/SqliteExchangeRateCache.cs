@@ -28,8 +28,12 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 /// <para>
 /// Expiry is by caching duration rather than by storage: stale and semantically invalid rows are filtered on read and
 /// pruned on write, and stale coverage windows are pruned when coverage is recorded, so the database self-cleans over
-/// time. The two halves of a pair's state are written independently — storing rates never drops recorded coverage, and
-/// recording coverage never drops cached rows.
+/// time. The freshness, validity, merge, and coverage rules are delegated to the shared
+/// <see cref="ExchangeRateCacheRules" /> so this backend stays behaviourally identical to the in-memory, file, and
+/// distributed caches; this class contributes only its SQLite storage and locking. The two halves of a pair's state are
+/// written independently through <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops
+/// recorded coverage, and recording coverage never drops cached rows — while <see cref="StoreFetchedRange" /> writes
+/// both halves in one transaction.
 /// </para>
 /// <para>
 /// The cache is a single-process best-effort store. Writes for the same pair are serialized under a per-pair lock and
@@ -59,12 +63,6 @@ public sealed class SqliteExchangeRateCache
     : IExchangeRateCache, IDisposable
 {
     /// <summary>
-    /// The clock-skew tolerance applied when validating a row's caching instant: a row stamped more than this far in
-    /// the future of the evaluation instant is treated as invalid rather than fresh.
-    /// </summary>
-    private static readonly TimeSpan s_clockSkewTolerance = TimeSpan.FromMinutes(1);
-
-    /// <summary>
     /// The validated options carrying the bound provider and the database location.
     /// </summary>
     private readonly SqliteExchangeRateCacheOptions _options;
@@ -81,8 +79,9 @@ public sealed class SqliteExchangeRateCache
     private readonly SqliteConnection _keepAlive;
 
     /// <summary>
-    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and
-    /// <see cref="RecordCoverage" />. One lock object is created per pair on first use and reused thereafter.
+    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />,
+    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first
+    /// use and reused thereafter.
     /// </summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
@@ -159,15 +158,7 @@ public sealed class SqliteExchangeRateCache
         if (entries.Count == 0)
             return Array.Empty<CachedExchangeRate>();
 
-        List<CachedExchangeRate> fresh = new(entries.Count);
-        foreach (CachedExchangeRate entry in entries)
-        {
-            if (IsValid(entry, asOf) && entry.IsFresh(asOf, duration))
-                fresh.Add(entry);
-        }
-
-        fresh.Sort(static (left, right) => left.Date.CompareTo(right.Date));
-        return fresh;
+        return ExchangeRateCacheRules.SelectFresh(entries, duration, asOf);
     }
 
     /// <inheritdoc />
@@ -180,32 +171,7 @@ public sealed class SqliteExchangeRateCache
 
         lock (LockFor(pair))
         {
-            IReadOnlyList<CachedExchangeRate> existing = ReadEntries(pair);
-
-            // Merge with any existing entry so the most recently cached rate wins per date.
-            Dictionary<DateOnly, CachedExchangeRate> merged = new();
-            foreach (CachedExchangeRate row in existing)
-                merged[row.Date] = row;
-
-            foreach (CachedExchangeRate rate in rates)
-            {
-                if (!IsValid(rate, asOf))
-                    continue;
-
-                if (!merged.TryGetValue(rate.Date, out CachedExchangeRate current) || rate.CachedAtUtc >= current.CachedAtUtc)
-                    merged[rate.Date] = rate;
-            }
-
-            // Prune rows that are no longer fresh or are semantically invalid, then order by date so the store is stable
-            // and self-cleaning.
-            List<CachedExchangeRate> ordered = new(merged.Count);
-            foreach (CachedExchangeRate entry in merged.Values)
-            {
-                if (IsValid(entry, asOf) && entry.IsFresh(asOf, duration))
-                    ordered.Add(entry);
-            }
-
-            ordered.Sort(static (left, right) => left.Date.CompareTo(right.Date));
+            List<CachedExchangeRate> ordered = ExchangeRateCacheRules.MergeRows(ReadEntries(pair), rates, duration, asOf);
 
             // Replace only the entries half; the coverage half is left untouched so storing rows never drops coverage.
             WriteEntries(pair, ordered);
@@ -213,17 +179,8 @@ public sealed class SqliteExchangeRateCache
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
-    {
-        DateRangeCoverage coverage = new();
-        foreach ((DateOnly start, DateOnly end, DateTimeOffset fetchedAt) in ReadCoverage(pair))
-        {
-            if (asOf - fetchedAt < duration)
-                coverage.Add(start, end);
-        }
-
-        return coverage;
-    }
+    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+        ExchangeRateCacheRules.BuildCoverage(ReadCoverage(pair), duration, asOf);
 
     /// <inheritdoc />
     public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
@@ -232,18 +189,37 @@ public sealed class SqliteExchangeRateCache
 
         lock (LockFor(pair))
         {
-            // Keep the still-fresh windows, drop the rest, then append the newly fetched window so the store self-cleans.
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new();
-            foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in ReadCoverage(pair))
-            {
-                if (asOf - fetchedAt < duration)
-                    windows.Add((windowStart, windowEnd, fetchedAt));
-            }
-
-            windows.Add((start, end, asOf));
+            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                ExchangeRateCacheRules.MergeCoverage(ReadCoverage(pair), start, end, duration, asOf);
 
             // Replace only the coverage half; the entries half is left untouched so recording coverage never drops rows.
             WriteCoverage(pair, windows);
+        }
+    }
+
+    /// <inheritdoc />
+    public ExchangeRateCacheWriteStatus StoreFetchedRange(
+        ExchangeRatePair pair,
+        IReadOnlyList<CachedExchangeRate> rows,
+        DateOnly start,
+        DateOnly end,
+        TimeSpan duration,
+        DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfNull(rows);
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        lock (LockFor(pair))
+        {
+            // Merge both halves first, then replace them in one transaction so a reader never observes coverage without
+            // its rows. Both tables are rewritten together: success persists both halves, failure persists neither.
+            List<CachedExchangeRate> ordered = ExchangeRateCacheRules.MergeRows(ReadEntries(pair), rows, duration, asOf);
+            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                ExchangeRateCacheRules.MergeCoverage(ReadCoverage(pair), start, end, duration, asOf);
+
+            return WritePairState(pair, ordered, windows)
+                ? ExchangeRateCacheWriteStatus.Stored
+                : ExchangeRateCacheWriteStatus.Failed;
         }
     }
 
@@ -258,27 +234,6 @@ public sealed class SqliteExchangeRateCache
         _disposed = true;
         _keepAlive.Dispose();
     }
-
-    /// <summary>
-    /// Reports whether a cached row is semantically valid against the evaluation instant.
-    /// </summary>
-    /// <param name="entry">The cached row to validate.</param>
-    /// <param name="asOf">
-    /// The instant against which the caching instant is checked for implausible future stamps.
-    /// </param>
-    /// <returns>
-    /// <see langword="false" /> when the row carries a non-positive rate, a default (unset) date, or a caching instant
-    /// implausibly far in the future of <paramref name="asOf" />; otherwise <see langword="true" />.
-    /// </returns>
-    /// <remarks>
-    /// Invalid rows are silently skipped on both write (rejecting bad incoming data) and read (rejecting persisted or
-    /// tampered rows) so a malformed cache never surfaces a nonsensical rate. A small clock-skew tolerance is allowed
-    /// so a row stamped marginally ahead of the evaluating clock is not discarded.
-    /// </remarks>
-    private static bool IsValid(CachedExchangeRate entry, DateTimeOffset asOf) =>
-        entry.Rate > 0m
-            && entry.Date != default
-            && entry.CachedAtUtc <= asOf + s_clockSkewTolerance;
 
     /// <summary>
     /// Creates the <c>rates</c> and <c>coverage</c> tables if they do not already exist.
@@ -433,39 +388,7 @@ public sealed class SqliteExchangeRateCache
             using SqliteConnection connection = OpenConnection();
             using SqliteTransaction transaction = connection.BeginTransaction();
 
-            using (SqliteCommand delete = connection.CreateCommand())
-            {
-                delete.Transaction = transaction;
-                delete.CommandText =
-                    "DELETE FROM rates WHERE provider = $provider AND from_code = $from AND to_code = $to;";
-                BindPair(delete, pair);
-                delete.ExecuteNonQuery();
-            }
-
-            if (entries.Count > 0)
-            {
-                using SqliteCommand insert = connection.CreateCommand();
-                insert.Transaction = transaction;
-                insert.CommandText =
-                    """
-                    INSERT INTO rates (provider, from_code, to_code, obs_date, rate, cached_at)
-                    VALUES ($provider, $from, $to, $date, $rate, $cached)
-                    ON CONFLICT (provider, from_code, to_code, obs_date)
-                    DO UPDATE SET rate = excluded.rate, cached_at = excluded.cached_at;
-                    """;
-                SqliteParameter date = insert.Parameters.Add("$date", SqliteType.Text);
-                SqliteParameter rate = insert.Parameters.Add("$rate", SqliteType.Text);
-                SqliteParameter cached = insert.Parameters.Add("$cached", SqliteType.Text);
-                BindPair(insert, pair);
-
-                foreach (CachedExchangeRate entry in entries)
-                {
-                    date.Value = FormatDate(entry.Date);
-                    rate.Value = FormatRate(entry.Rate);
-                    cached.Value = FormatInstant(entry.CachedAtUtc);
-                    insert.ExecuteNonQuery();
-                }
-            }
+            ReplaceEntries(connection, transaction, pair, entries);
 
             transaction.Commit();
         }
@@ -476,6 +399,55 @@ public sealed class SqliteExchangeRateCache
         catch (IOException)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+        }
+    }
+
+    /// <summary>
+    /// Replaces the persisted rate rows for a pair within an open transaction, deleting the existing rows and inserting
+    /// <paramref name="entries" />.
+    /// </summary>
+    /// <param name="connection">The open connection the commands run on.</param>
+    /// <param name="transaction">The transaction the delete and insert participate in.</param>
+    /// <param name="pair">The currency pair whose rows are replaced.</param>
+    /// <param name="entries">The rows to persist.</param>
+    /// <remarks>
+    /// Shared by <see cref="WriteEntries" /> and <see cref="WritePairState" /> so the rate-table statements are
+    /// single-sourced; the caller owns the transaction lifetime and commits or rolls back.
+    /// </remarks>
+    private void ReplaceEntries(SqliteConnection connection, SqliteTransaction transaction, ExchangeRatePair pair, List<CachedExchangeRate> entries)
+    {
+        using (SqliteCommand delete = connection.CreateCommand())
+        {
+            delete.Transaction = transaction;
+            delete.CommandText =
+                "DELETE FROM rates WHERE provider = $provider AND from_code = $from AND to_code = $to;";
+            BindPair(delete, pair);
+            delete.ExecuteNonQuery();
+        }
+
+        if (entries.Count == 0)
+            return;
+
+        using SqliteCommand insert = connection.CreateCommand();
+        insert.Transaction = transaction;
+        insert.CommandText =
+            """
+            INSERT INTO rates (provider, from_code, to_code, obs_date, rate, cached_at)
+            VALUES ($provider, $from, $to, $date, $rate, $cached)
+            ON CONFLICT (provider, from_code, to_code, obs_date)
+            DO UPDATE SET rate = excluded.rate, cached_at = excluded.cached_at;
+            """;
+        SqliteParameter date = insert.Parameters.Add("$date", SqliteType.Text);
+        SqliteParameter rate = insert.Parameters.Add("$rate", SqliteType.Text);
+        SqliteParameter cached = insert.Parameters.Add("$cached", SqliteType.Text);
+        BindPair(insert, pair);
+
+        foreach (CachedExchangeRate entry in entries)
+        {
+            date.Value = FormatDate(entry.Date);
+            rate.Value = FormatRate(entry.Rate);
+            cached.Value = FormatInstant(entry.CachedAtUtc);
+            insert.ExecuteNonQuery();
         }
     }
 
@@ -539,44 +511,14 @@ public sealed class SqliteExchangeRateCache
     /// Runs as a single transaction so a reader never observes a half-replaced set. A storage failure is swallowed so a
     /// failed write does not break rate retrieval.
     /// </remarks>
-    private void WriteCoverage(ExchangeRatePair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows)
+    private void WriteCoverage(ExchangeRatePair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
     {
         try
         {
             using SqliteConnection connection = OpenConnection();
             using SqliteTransaction transaction = connection.BeginTransaction();
 
-            using (SqliteCommand delete = connection.CreateCommand())
-            {
-                delete.Transaction = transaction;
-                delete.CommandText =
-                    "DELETE FROM coverage WHERE provider = $provider AND from_code = $from AND to_code = $to;";
-                BindPair(delete, pair);
-                delete.ExecuteNonQuery();
-            }
-
-            if (windows.Count > 0)
-            {
-                using SqliteCommand insert = connection.CreateCommand();
-                insert.Transaction = transaction;
-                insert.CommandText =
-                    """
-                    INSERT INTO coverage (provider, from_code, to_code, start_date, end_date, fetched_at)
-                    VALUES ($provider, $from, $to, $start, $end, $fetched);
-                    """;
-                SqliteParameter start = insert.Parameters.Add("$start", SqliteType.Text);
-                SqliteParameter end = insert.Parameters.Add("$end", SqliteType.Text);
-                SqliteParameter fetched = insert.Parameters.Add("$fetched", SqliteType.Text);
-                BindPair(insert, pair);
-
-                foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in windows)
-                {
-                    start.Value = FormatDate(windowStart);
-                    end.Value = FormatDate(windowEnd);
-                    fetched.Value = FormatInstant(fetchedAt);
-                    insert.ExecuteNonQuery();
-                }
-            }
+            ReplaceCoverage(connection, transaction, pair, windows);
 
             transaction.Commit();
         }
@@ -587,6 +529,94 @@ public sealed class SqliteExchangeRateCache
         catch (IOException)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+        }
+    }
+
+    /// <summary>
+    /// Replaces the persisted coverage windows for a pair within an open transaction, deleting the existing windows and
+    /// inserting <paramref name="windows" />.
+    /// </summary>
+    /// <param name="connection">The open connection the commands run on.</param>
+    /// <param name="transaction">The transaction the delete and insert participate in.</param>
+    /// <param name="pair">The currency pair whose windows are replaced.</param>
+    /// <param name="windows">The windows to persist.</param>
+    /// <remarks>
+    /// Shared by <see cref="WriteCoverage" /> and <see cref="WritePairState" /> so the coverage-table statements are
+    /// single-sourced; the caller owns the transaction lifetime and commits or rolls back.
+    /// </remarks>
+    private void ReplaceCoverage(SqliteConnection connection, SqliteTransaction transaction, ExchangeRatePair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
+    {
+        using (SqliteCommand delete = connection.CreateCommand())
+        {
+            delete.Transaction = transaction;
+            delete.CommandText =
+                "DELETE FROM coverage WHERE provider = $provider AND from_code = $from AND to_code = $to;";
+            BindPair(delete, pair);
+            delete.ExecuteNonQuery();
+        }
+
+        if (windows.Count == 0)
+            return;
+
+        using SqliteCommand insert = connection.CreateCommand();
+        insert.Transaction = transaction;
+        insert.CommandText =
+            """
+            INSERT INTO coverage (provider, from_code, to_code, start_date, end_date, fetched_at)
+            VALUES ($provider, $from, $to, $start, $end, $fetched);
+            """;
+        SqliteParameter start = insert.Parameters.Add("$start", SqliteType.Text);
+        SqliteParameter end = insert.Parameters.Add("$end", SqliteType.Text);
+        SqliteParameter fetched = insert.Parameters.Add("$fetched", SqliteType.Text);
+        BindPair(insert, pair);
+
+        foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in windows)
+        {
+            start.Value = FormatDate(windowStart);
+            end.Value = FormatDate(windowEnd);
+            fetched.Value = FormatInstant(fetchedAt);
+            insert.ExecuteNonQuery();
+        }
+    }
+
+    /// <summary>
+    /// Replaces both the rate rows and the coverage windows for a pair in one transaction, so the two halves are
+    /// persisted together or, on failure, neither is.
+    /// </summary>
+    /// <param name="pair">The currency pair whose state is replaced.</param>
+    /// <param name="entries">The rows to persist.</param>
+    /// <param name="windows">The coverage windows to persist.</param>
+    /// <returns>
+    /// <see langword="true" /> when the transaction committed; <see langword="false" /> when a storage error was
+    /// swallowed and nothing was persisted.
+    /// </returns>
+    /// <remarks>
+    /// Backs <see cref="StoreFetchedRange" />: rewriting both tables in a single transaction is what makes the
+    /// rows-plus-coverage write atomic, closing the window in which coverage could be recorded without its rows.
+    /// </remarks>
+    private bool WritePairState(ExchangeRatePair pair, List<CachedExchangeRate> entries, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
+    {
+        try
+        {
+            using SqliteConnection connection = OpenConnection();
+            using SqliteTransaction transaction = connection.BeginTransaction();
+
+            ReplaceEntries(connection, transaction, pair, entries);
+            ReplaceCoverage(connection, transaction, pair, windows);
+
+            transaction.Commit();
+            return true;
+        }
+        catch (SqliteException)
+        {
+            // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
+            // refetch rather than trust coverage that was never persisted.
+            return false;
+        }
+        catch (IOException)
+        {
+            // Best-effort cache: see above.
+            return false;
         }
     }
 

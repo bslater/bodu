@@ -91,4 +91,16 @@
   <data name="Arg_Invalid_AggregationRouteNull" xml:space="preserve">
     <value>An aggregation route must not be null.</value>
   </data>
+  <data name="Arg_Invalid_ProviderExpiryNull" xml:space="preserve">
+    <value>The per-provider expiry map must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_LookupOptionsNull" xml:space="preserve">
+    <value>The default lookup options must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_LogLevelUndefined" xml:space="preserve">
+    <value>Every configured cache log level must be a defined LogLevel value.</value>
+  </data>
+  <data name="Arg_Invalid_ProviderBlank" xml:space="preserve">
+    <value>The cache provider name must be a non-blank value.</value>
+  </data>
 </root>

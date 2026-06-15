@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 
@@ -130,6 +131,40 @@ public sealed class DistributedExchangeRateCacheServiceBuilderExtensionsTests
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that invalid options — here, a white-space key prefix — fail fast through <c>ValidateOnStart</c> when
+    /// the cache is resolved.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedExchangeRateCache_WhenOptionsInvalid_ShouldThrowOnResolve()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.KeyPrefix = "   ");
+        });
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IExchangeRateCache>();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the cache.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedExchangeRateCache_WhenOptionsValid_ShouldResolveCache()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.KeyPrefix = "fx:");
+        });
+
+        Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
     }
 
     /// <summary>

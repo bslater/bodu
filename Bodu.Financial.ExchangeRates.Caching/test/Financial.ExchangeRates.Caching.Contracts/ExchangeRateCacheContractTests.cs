@@ -378,4 +378,180 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         Assert.AreEqual(1, rows.Count);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
     }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write reports success and persists both halves: the rows are returned and
+    /// the whole window is reported as covered.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenRowsAndWindowSupplied_ShouldStoreBothHalves()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
+            Pair,
+            new[]
+            {
+                new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now),
+                new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now),
+            },
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 6),
+            Duration,
+            now);
+
+        Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
+        Assert.AreEqual(2, cache.GetRates(Pair, Duration, now).Count);
+        Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6)));
+    }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write with no rows still records the whole window as covered, so a later
+    /// range query of the window is a hit that returns an empty list rather than a miss.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenRowsEmpty_ShouldStillRecordCoverage()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
+            Pair,
+            Array.Empty<CachedExchangeRate>(),
+            new DateOnly(2023, 1, 7),
+            new DateOnly(2023, 1, 8),
+            Duration,
+            now);
+
+        Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
+        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+
+        // The empty-but-fetched window is covered: a range query over it is a hit, distinguishable from a miss because
+        // the coverage contains the window even though no row exists.
+        Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 7), new DateOnly(2023, 1, 8)));
+    }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write merges with, rather than replaces, previously stored rows and
+    /// coverage for a different window.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenPriorStatePresent_ShouldPreserveOtherWindow()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        cache.StoreFetchedRange(
+            Pair,
+            new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) },
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 3),
+            Duration,
+            now);
+
+        cache.StoreFetchedRange(
+            Pair,
+            new[] { new CachedExchangeRate(new DateOnly(2023, 1, 10), 0.5200m, now) },
+            new DateOnly(2023, 1, 10),
+            new DateOnly(2023, 1, 10),
+            Duration,
+            now);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+        Assert.AreEqual(2, rows.Count);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
+        Assert.AreEqual(new DateOnly(2023, 1, 10), rows[1].Date);
+
+        DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
+        Assert.IsTrue(coverage.Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3)));
+        Assert.IsTrue(coverage.Contains(new DateOnly(2023, 1, 10), new DateOnly(2023, 1, 10)));
+    }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write drops a semantically invalid row while still recording the window as
+    /// covered, so the coverage and the rows stay consistent.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenRowInvalid_ShouldDropRowButRecordCoverage()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
+            Pair,
+            new[]
+            {
+                new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now),
+                new CachedExchangeRate(new DateOnly(2023, 1, 4), -0.1m, now),
+            },
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 4),
+            Duration,
+            now);
+
+        Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+        Assert.AreEqual(1, rows.Count);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
+        Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)));
+    }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write rejects an inverted window.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenStartAfterEnd_ShouldThrowArgumentOutOfRangeException()
+    {
+        TCache cache = CreateCache();
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            cache.StoreFetchedRange(
+                Pair,
+                Array.Empty<CachedExchangeRate>(),
+                new DateOnly(2023, 1, 10),
+                new DateOnly(2023, 1, 3),
+                Duration,
+                DateTimeOffset.UtcNow);
+        });
+
+        Assert.AreEqual("start", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that concurrent atomic fetched-range writes for the same pair, each for a distinct window, lose neither
+    /// rows nor coverage.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public async Task StoreFetchedRange_WhenConcurrentForSamePair_ShouldNotLoseRowsOrCoverage()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        const int Windows = 16;
+
+        IEnumerable<Task> writes = Enumerable.Range(0, Windows).Select(i => Task.Run(() =>
+        {
+            var date = new DateOnly(2023, 2, 1).AddDays(i);
+            cache.StoreFetchedRange(
+                Pair,
+                new[] { new CachedExchangeRate(date, 0.5000m + (0.0001m * i), now) },
+                date,
+                date,
+                Duration,
+                now);
+        }));
+
+        await Task.WhenAll(writes);
+
+        Assert.AreEqual(Windows, cache.GetRates(Pair, Duration, now).Count);
+
+        DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
+        for (var i = 0; i < Windows; i++)
+        {
+            var date = new DateOnly(2023, 2, 1).AddDays(i);
+            Assert.IsTrue(coverage.Contains(date, date), $"coverage missing for {date:O}");
+        }
+    }
 }

@@ -75,4 +75,54 @@ public sealed partial class CachingExchangeRateProviderTests
 
         Assert.AreEqual(2, inner.GetRatesAsyncCallCount);
     }
+
+    /// <summary>
+    /// Verifies that a fetch returning zero rows still records the window as covered, so the same range is served from
+    /// the cache on the next call without a second fetch — the empty-but-fetched fix.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRatesAsync_WhenFetchReturnsNoRows_ShouldRecordCoverageAndNotRefetch()
+    {
+        // The inner source has no observations in the requested window, so the fetch returns an empty list.
+        CountingDatedExchangeRateProvider inner = InnerWith();
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
+
+        IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+        IReadOnlyList<ExchangeRate> second = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+
+        Assert.AreEqual(0, first.Count);
+        Assert.AreEqual(0, second.Count);
+
+        // The empty window was recorded as covered on the first call, so the second call is a cache hit returning an
+        // empty list rather than a second fetch.
+        Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
+    }
+
+    /// <summary>
+    /// Verifies that when the cache's atomic write reports failure (nothing persisted), the decorator does not treat the
+    /// range as covered: an identical later lookup refetches from the inner provider rather than serving an empty list
+    /// as a false hit.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRatesAsync_WhenStoreFetchedRangeFails_ShouldRefetchRatherThanFalseHit()
+    {
+        CountingDatedExchangeRateProvider inner = InnerWith(
+            ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
+            ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
+
+        // A cache whose StoreFetchedRange swallows the write and reports Failed, and whose reads return nothing: the
+        // coverage was never persisted, so a range lookup must miss and refetch.
+        var failingCache = new FailingStoreExchangeRateCache(Provider);
+        var sut = new CachingExchangeRateProvider(inner, failingCache, _options, _clock);
+
+        IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+        IReadOnlyList<ExchangeRate> second = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+
+        Assert.AreEqual(2, first.Count);
+        Assert.AreEqual(2, second.Count);
+
+        // Neither call was served from a false hit: both reached the inner provider because coverage was never recorded.
+        Assert.AreEqual(2, inner.GetRatesAsyncCallCount);
+        Assert.AreEqual(2, failingCache.StoreFetchedRangeCallCount);
+    }
 }
