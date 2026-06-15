@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu</RootNamespace>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <Version>1.0.0</Version>
+    <Description>Distributed (Redis-capable) exchange-rate cache for Bodu.Financial. Provides DistributedExchangeRateCache, an IExchangeRateCache implementation over Microsoft.Extensions.Caching.Distributed.IDistributedCache that persists a single provider's rates and fetch-coverage windows as a per-pair JSON blob, with the same freshness, merge, coverage, and validation semantics as the in-memory, TOML, and SQLite caches.</Description>
+    <PackageTags>bodu;financial;exchange-rate;forex;fx;cache;distributed;redis;decorator</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Distributed.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Caching\src\Bodu.Financial.ExchangeRates.Caching.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Financial.ExchangeRates.Caching.Distributed\CachingDistributedResourceStrings.resx">
+      <LastGenOutput>CachingDistributedResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Financial.ExchangeRates.Caching.Distributed\CachingDistributedResourceStrings.Designer.cs">
+      <DependentUpon>CachingDistributedResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

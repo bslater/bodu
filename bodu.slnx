@@ -127,6 +127,14 @@
     <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection/src/Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection/test/Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Caching.Distributed/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/src/Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/test/Bodu.Financial.ExchangeRates.Caching.Distributed.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection/src/Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection/test/Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
