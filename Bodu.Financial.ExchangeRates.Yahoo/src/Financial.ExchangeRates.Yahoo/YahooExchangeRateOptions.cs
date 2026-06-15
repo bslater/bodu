@@ -76,12 +76,16 @@ public sealed class YahooExchangeRateOptions
     public TimeSpan HttpTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Gets or sets the <c>User-Agent</c> header applied to chart requests by the dependency-injection registration.
+    /// Gets or sets the <c>User-Agent</c> header applied to every chart request the provider issues.
     /// </summary>
     /// <value>
-    /// The user-agent string; defaults to a browser-like identifier, because the Yahoo Finance endpoint rejects
-    /// requests that do not present a recognizable user agent.
+    /// The user-agent string; defaults to a browser-like identifier, because the Yahoo Finance endpoint answers
+    /// requests that do not present a recognizable user agent with <c>429 Too Many Requests</c>.
     /// </value>
+    /// <remarks>
+    /// The provider applies this header per request, so it is honored whether the provider is constructed directly or
+    /// resolved from dependency injection. An empty or white-space value suppresses the header.
+    /// </remarks>
     public string UserAgent { get; set; } =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 

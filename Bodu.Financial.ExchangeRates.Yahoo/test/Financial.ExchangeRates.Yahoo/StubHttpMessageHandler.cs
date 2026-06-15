@@ -40,11 +40,21 @@ internal sealed class StubHttpMessageHandler
     /// <returns>The last request URI.</returns>
     public Uri? LastRequestUri { get; private set; }
 
+    /// <summary>
+    /// Gets the raw <c>User-Agent</c> header value on the most recent request, or <see langword="null" /> when none has
+    /// been received or the request carried no such header.
+    /// </summary>
+    /// <returns>The last request's user-agent header value.</returns>
+    public string? LastUserAgent { get; private set; }
+
     /// <inheritdoc />
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         RequestCount++;
         LastRequestUri = request.RequestUri;
+        LastUserAgent = request.Headers.TryGetValues("User-Agent", out IEnumerable<string>? values)
+            ? string.Join(" ", values)
+            : null;
         return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(_content) });
     }
 }
