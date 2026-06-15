@@ -163,7 +163,7 @@ public abstract class WebExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
@@ -219,7 +219,7 @@ public abstract class WebExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public async ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
+    public async ValueTask<ExchangeRateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,

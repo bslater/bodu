@@ -58,4 +58,48 @@ public partial class FixedDatedExchangeRateProviderTests
 
         Assert.AreEqual("endDate", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that the range result reports the requested window and the observed span alongside the rates.
+    /// </summary>
+    [TestMethod]
+    public void GetRates_WhenObservationsInRange_ShouldReportRequestedWindowAndObservedSpan()
+    {
+        FixedDatedExchangeRateProvider table = new(
+        [
+            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 6), 1.52m, "RBA"),
+            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
+            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 10), 1.55m, "RBA"),
+        ]);
+
+        ExchangeRateRangeResult result = table.GetRates("USD", "AUD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 8));
+
+        Assert.AreEqual("USD", result.FromIsoCode);
+        Assert.AreEqual("AUD", result.ToIsoCode);
+        Assert.AreEqual(new DateOnly(2024, 1, 1), result.RequestedStartDate);
+        Assert.AreEqual(new DateOnly(2024, 1, 8), result.RequestedEndDate);
+        Assert.AreEqual(2, result.Count);
+        Assert.IsFalse(result.IsEmpty);
+        Assert.AreEqual(new DateOnly(2024, 1, 3), result.FirstObservedDate);
+        Assert.AreEqual(new DateOnly(2024, 1, 6), result.LastObservedDate);
+
+        // The result is itself the rate sequence (indexable, enumerable, LINQ-friendly).
+        Assert.AreEqual(new DateOnly(2024, 1, 3), result[0].Date);
+    }
+
+    /// <summary>
+    /// Verifies that an empty range result reports no observed span.
+    /// </summary>
+    [TestMethod]
+    public void GetRates_WhenPairAbsent_ShouldReportEmptyWithNullObservedSpan()
+    {
+        FixedDatedExchangeRateProvider table = new(SingleRate());
+
+        ExchangeRateRangeResult result = table.GetRates("EUR", "JPY", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+
+        Assert.IsTrue(result.IsEmpty);
+        Assert.AreEqual(0, result.Count);
+        Assert.IsNull(result.FirstObservedDate);
+        Assert.IsNull(result.LastObservedDate);
+    }
 }

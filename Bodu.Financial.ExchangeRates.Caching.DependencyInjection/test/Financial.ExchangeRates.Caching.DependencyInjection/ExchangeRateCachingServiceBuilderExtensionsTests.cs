@@ -182,7 +182,7 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
             Inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
 
         /// <inheritdoc />
-        public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+        public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
             Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
 
         /// <inheritdoc />
@@ -194,7 +194,7 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
             Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken);
 
         /// <inheritdoc />
-        public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
             Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
     }
 }

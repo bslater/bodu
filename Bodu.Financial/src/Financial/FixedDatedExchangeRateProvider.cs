@@ -235,7 +235,7 @@ public sealed class FixedDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRate> GetRates(
+    public ExchangeRateRangeResult GetRates(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -254,11 +254,11 @@ public sealed class FixedDatedExchangeRateProvider
             _ = TryCollectRange(pair.Inverse(), startDate, endDate, isInverted: true, result);
 
         result.Sort(static (left, right) => left.Date.CompareTo(right.Date));
-        return result;
+        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, result);
     }
 
     /// <inheritdoc />
-    public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
+    public ValueTask<ExchangeRateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,

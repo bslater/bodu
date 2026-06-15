@@ -71,7 +71,7 @@ internal sealed class CountingDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         GetRatesAsyncCallCount++;
         return _inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
@@ -92,7 +92,7 @@ internal sealed class CountingDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         GetRatesAsyncCallCount++;
         return _inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);

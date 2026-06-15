@@ -35,7 +35,7 @@ public sealed class DatedExchangeRateProviderRegistrationTests
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+        public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
@@ -47,7 +47,7 @@ public sealed class DatedExchangeRateProviderRegistrationTests
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
     }
 

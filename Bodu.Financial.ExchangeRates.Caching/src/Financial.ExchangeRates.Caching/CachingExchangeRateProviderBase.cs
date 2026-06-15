@@ -166,7 +166,7 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
@@ -178,15 +178,16 @@ public abstract class CachingExchangeRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
-            return cached;
+            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
         IReadOnlyList<ExchangeRate> fetched = [.. Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
-        return StoreFetchedRange(duration, pair, startDate, endDate, fetched, now, fromIsoCode, toIsoCode);
+        return new ExchangeRateRangeResult(
+            fromIsoCode, toIsoCode, startDate, endDate, StoreFetchedRange(duration, pair, startDate, endDate, fetched, now, fromIsoCode, toIsoCode));
     }
 
     /// <inheritdoc />
-    public async ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
+    public async ValueTask<ExchangeRateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -203,12 +204,13 @@ public abstract class CachingExchangeRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
-            return cached;
+            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
         IReadOnlyList<ExchangeRate> fetched =
             [.. await Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false)];
-        return StoreFetchedRange(duration, pair, startDate, endDate, fetched, now, fromIsoCode, toIsoCode);
+        return new ExchangeRateRangeResult(
+            fromIsoCode, toIsoCode, startDate, endDate, StoreFetchedRange(duration, pair, startDate, endDate, fetched, now, fromIsoCode, toIsoCode));
     }
 
     /// <inheritdoc />
