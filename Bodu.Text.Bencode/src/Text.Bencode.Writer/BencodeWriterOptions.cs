@@ -18,8 +18,13 @@ public struct BencodeWriterOptions
     /// <summary>
     /// Gets or sets the maximum container nesting depth the writer will permit.
     /// </summary>
-    /// <value>The maximum container nesting depth; <c>0</c> selects the default of 256.</value>
-    /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 256.</returns>
+    /// <value>The maximum container nesting depth; <c>0</c> selects the default of 64.</value>
+    /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 64.</returns>
+    /// <remarks>
+    /// The effective depth is clamped to the hard ceiling <see cref="BencodeLimits.AbsoluteMaxDepth" />; a larger value
+    /// has no effect beyond it. Opening a list or dictionary nested past the effective limit throws
+    /// <see cref="BencodeSerializationException" /> rather than risking a <see cref="StackOverflowException" />.
+    /// </remarks>
     public int MaxDepth { get; set; }
 
     /// <summary>

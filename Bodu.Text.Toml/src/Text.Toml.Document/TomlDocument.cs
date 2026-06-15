@@ -18,16 +18,16 @@ namespace Bodu.Text.Toml.Document;
 /// <remarks>
 /// <para>
 /// A <see cref="TomlDocument" /> holds the flat row store produced directly by the structural parser, so parsing
-/// materializes neither an intermediate node tree nor a token list. Value-type scalars are decoded into the row, while a
-/// string scalar is decoded on demand from the UTF-8 source the document retains, so a string is materialized only when
-/// read. Every <see cref="TomlElement" />, enumerator, and <see cref="TomlProperty" /> obtained from a document is valid
-/// only until the document is disposed.
+/// materializes neither an intermediate node tree nor a token list. Value-type scalars are decoded into the row, while
+/// a string scalar is decoded on demand from the UTF-8 source the document retains, so a string is materialized only
+/// when read. Every <see cref="TomlElement" />, enumerator, and <see cref="TomlProperty" /> obtained from a document is
+/// valid only until the document is disposed.
 /// </para>
 /// <para>
 /// Call <see cref="Dispose" /> when finished to invalidate the document and the <see cref="TomlElement" /> views taken
 /// from it; after disposal, any operation on such an element throws <see cref="ObjectDisposedException" />. A parsed
-/// document rents its retained source from the shared array pool, so disposal returns that buffer as well as dropping the
-/// row store; neglecting to dispose leaks the buffer back to the garbage collector rather than the pool.
+/// document rents its retained source from the shared array pool, so disposal returns that buffer as well as dropping
+/// the row store; neglecting to dispose leaks the buffer back to the garbage collector rather than the pool.
 /// </para>
 /// <para>
 /// The root value of a TOML document is always a table, so for a document produced by <see cref="Parse(string)" /> or
@@ -52,9 +52,10 @@ public sealed partial class TomlDocument
     : IDisposable
 {
     /// <summary>
-    /// The default maximum container nesting depth applied when the configured depth is zero or less.
+    /// The default maximum container nesting depth applied when the configured depth is zero or less. It equals
+    /// <see cref="TomlLimits.AbsoluteMaxDepth" />, the hard ceiling any larger configured depth is clamped to.
     /// </summary>
-    private const int DefaultMaxDepth = 256;
+    private const int DefaultMaxDepth = TomlLimits.AbsoluteMaxDepth;
 
     /// <summary>
     /// The UTF-8 encoding used to encode the <see cref="string" /> overload of <see cref="Parse(string)" />; invalid
@@ -136,11 +137,13 @@ public sealed partial class TomlDocument
     /// Thrown when the bytes are not a valid TOML document, or nest deeper than the configured maximum.
     /// </exception>
     /// <remarks>
-    /// A <see cref="TomlDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="TomlDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" />; a document nested deeper than the
+    /// effective limit throws <see cref="TomlFormatException" />.
     /// </remarks>
     public static TomlDocument Parse(ReadOnlySpan<byte> utf8Toml, TomlDocumentOptions options)
     {
-        var maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : options.MaxDepth;
+        var maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
 
         // Retain a copy of the source so string scalars can be decoded on demand; rent it so the retention costs no
         // managed allocation across repeated parses, and return it on disposal.
@@ -194,7 +197,7 @@ public sealed partial class TomlDocument
     /// </exception>
     /// <remarks>
     /// The text is encoded to UTF-8 and parsed by <see cref="Parse(ReadOnlySpan{byte}, TomlDocumentOptions)" />. A
-    /// <see cref="TomlDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// <see cref="TomlDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64.
     /// </remarks>
     public static TomlDocument Parse(string toml, TomlDocumentOptions options)
     {
@@ -229,8 +232,8 @@ public sealed partial class TomlDocument
     /// </summary>
     /// <remarks>
     /// Disposal is idempotent: calling it more than once has no further effect. A parsed document returns its pooled
-    /// source buffer to the shared array pool; a subtree view shares a garbage-collected copy and returns nothing. After
-    /// disposal, every element, enumerator, and property obtained from the document throws
+    /// source buffer to the shared array pool; a subtree view shares a garbage-collected copy and returns nothing.
+    /// After disposal, every element, enumerator, and property obtained from the document throws
     /// <see cref="ObjectDisposedException" />.
     /// </remarks>
     public void Dispose()

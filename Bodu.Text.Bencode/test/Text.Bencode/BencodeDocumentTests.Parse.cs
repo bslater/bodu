@@ -151,15 +151,16 @@ public partial class BencodeDocumentTests
     }
 
     /// <summary>
-    /// Verifies that a document nested deeper than the default maximum depth of 256 throws
+    /// Verifies that a document nested deeper than the default maximum depth throws
     /// <see cref="BencodeFormatException" />, and that nesting exactly to the default is accepted.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowBencodeFormatException()
     {
-        var atLimit = Bytes(new string('l', 256) + new string('e', 256));
-        var beyondLimit = Bytes(new string('l', 257) + new string('e', 257));
+        var atDepth = BencodeLimits.AbsoluteMaxDepth;
+        var atLimit = Bytes(new string('l', atDepth) + new string('e', atDepth));
+        var beyondLimit = Bytes(new string('l', atDepth + 1) + new string('e', atDepth + 1));
 
         using var document = BencodeDocument.Parse(atLimit);
         Assert.AreEqual(BencodeValueKind.Array, document.RootElement.ValueKind);

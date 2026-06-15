@@ -54,16 +54,16 @@ public ref struct TomlDocumentReader
     private readonly List<TomlReaderRow> _rows;
 
     /// <summary>
-    /// The UTF-8 source bytes, retained so a string value can be decoded on demand and a token's byte offset mapped to a
-    /// line and column on a binding failure. Held as a span because the reader is a <see langword="ref struct" /> scoped
-    /// to a single read.
+    /// The UTF-8 source bytes, retained so a string value can be decoded on demand and a token's byte offset mapped to
+    /// a line and column on a binding failure. Held as a span because the reader is a <see langword="ref struct" />
+    /// scoped to a single read.
     /// </summary>
     private readonly ReadOnlySpan<byte> _source;
 
     /// <summary>
     /// A lazily created garbage-collected copy of <see cref="_source" />, materialized on the first
-    /// <see cref="GetOwnedSource" /> so that subtree documents from <c>TomlDocument.ParseValue</c> can retain the source
-    /// the reader holds only as a span. Every such document from one read shares this single copy.
+    /// <see cref="GetOwnedSource" /> so that subtree documents from <c>TomlDocument.ParseValue</c> can retain the
+    /// source the reader holds only as a span. Every such document from one read shares this single copy.
     /// </summary>
     private byte[]? _ownedSource;
 
@@ -127,11 +127,14 @@ public ref struct TomlDocumentReader
     /// </param>
     /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
     /// <remarks>
-    /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
+    /// cannot drive the parser into a <see cref="StackOverflowException" />; a document nested deeper than the
+    /// effective limit throws <see cref="TomlFormatException" />.
     /// </remarks>
     public TomlDocumentReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
     {
-        var maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        var maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
 
         _rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
         _source = utf8Toml;

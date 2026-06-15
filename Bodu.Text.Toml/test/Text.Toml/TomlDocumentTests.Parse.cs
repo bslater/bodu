@@ -197,13 +197,14 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that inline arrays nested exactly to the default maximum depth of 256 are accepted.
+    /// Verifies that inline arrays nested exactly to the default maximum depth are accepted.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
     public void Parse_WhenNestingAtDefaultMaxDepth_ShouldParseDocument()
     {
-        var atLimit = "a = " + new string('[', 256) + "1" + new string(']', 256) + "\n";
+        var depth = TomlLimits.AbsoluteMaxDepth;
+        var atLimit = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
         using var document = TomlDocument.Parse(atLimit);
 
@@ -211,14 +212,15 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that inline arrays nested one level beyond the default maximum depth of 256 throw
+    /// Verifies that inline arrays nested one level beyond the default maximum depth throw
     /// <see cref="TomlFormatException" />.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowTomlFormatException()
     {
-        var beyondLimit = "a = " + new string('[', 257) + "1" + new string(']', 257) + "\n";
+        var depth = TomlLimits.AbsoluteMaxDepth + 1;
+        var beyondLimit = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {

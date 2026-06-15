@@ -85,7 +85,7 @@ public ref struct Utf8BencodeWriter
 
         _output = output;
         _frames = [];
-        _maxDepth = 256;
+        _maxDepth = BencodeLimits.AbsoluteMaxDepth;
         _allowMultipleRootValues = false;
         _root = new RootState();
     }
@@ -99,7 +99,10 @@ public ref struct Utf8BencodeWriter
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// A <see cref="BencodeWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="BencodeWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="BencodeLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
+    /// cannot drive the writer into a <see cref="StackOverflowException" />. Opening a list or dictionary past that
+    /// depth throws <see cref="BencodeSerializationException" />.
     /// </remarks>
     public Utf8BencodeWriter(IBufferWriter<byte> output, BencodeWriterOptions options)
     {
@@ -107,7 +110,7 @@ public ref struct Utf8BencodeWriter
 
         _output = output;
         _frames = [];
-        _maxDepth = options.MaxDepth <= 0 ? 256 : options.MaxDepth;
+        _maxDepth = options.MaxDepth <= 0 ? BencodeLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, BencodeLimits.AbsoluteMaxDepth);
         _allowMultipleRootValues = options.AllowMultipleRootValues;
         _root = new RootState();
     }

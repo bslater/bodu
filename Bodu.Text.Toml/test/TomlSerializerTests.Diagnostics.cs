@@ -34,6 +34,28 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing an object graph with an indirect reference cycle — a parent reachable from itself
+    /// through a child's back-reference — throws <see cref="TomlSerializationException" /> identifying the cycle rather
+    /// than recursing until the stack is exhausted.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenObjectGraphHasIndirectCycle_ShouldThrowWithCyclePath()
+    {
+        var parent = new TreeNode();
+        var child = new TreeNode();
+        parent.Child = child;
+        child.Parent = parent;
+
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(parent);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("cycle", StringComparison.OrdinalIgnoreCase));
+        Assert.AreEqual("Child.Parent", ex.Path);
+    }
+
+    /// <summary>
     /// Verifies that a binding failure on a nested member reports the dotted path from the document root to the
     /// offending member.
     /// </summary>
@@ -126,5 +148,23 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <returns>The values, or <see langword="null" />.</returns>
         public List<int>? Values { get; set; }
+    }
+
+    /// <summary>
+    /// A node with both a child and a parent back-reference, used to build an indirect reference cycle.
+    /// </summary>
+    private sealed class TreeNode
+    {
+        /// <summary>
+        /// Gets or sets the child node.
+        /// </summary>
+        /// <returns>The child, or <see langword="null" />.</returns>
+        public TreeNode? Child { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent node.
+        /// </summary>
+        /// <returns>The parent, or <see langword="null" />.</returns>
+        public TreeNode? Parent { get; set; }
     }
 }
