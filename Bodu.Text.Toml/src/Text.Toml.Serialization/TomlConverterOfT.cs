@@ -68,6 +68,13 @@ public abstract class TomlConverter<T>
         Read(ref reader, typeToConvert, options);
 
     /// <inheritdoc />
-    internal sealed override void WriteAsObject(Utf8TomlWriter writer, object? value, TomlSerializerOptions options) =>
+    internal sealed override void WriteAsObject(Utf8TomlWriter writer, object? value, TomlSerializerOptions options)
+    {
+        // Once a failure has been recorded, stop dispatching so the recursion unwinds through normal returns rather
+        // than entering another converter on an exhausted stack.
+        if (writer.WriteStack is { HasFailure: true })
+            return;
+
         Write(writer, (T)value!, options);
+    }
 }
