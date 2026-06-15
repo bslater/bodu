@@ -83,19 +83,48 @@ public sealed class BoeEndpointOptions
     }
 
     /// <summary>
-    /// Validates the endpoint options, throwing when a required value is missing.
+    /// Validates the endpoint options, throwing when a required value is missing or an invariant is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="BaseUrl" /> is <see langword="null" />, or <see cref="QueryPath" /> is empty or white
-    /// space.
+    /// Thrown when <see cref="BaseUrl" /> is <see langword="null" />; <see cref="QueryPath" /> is empty or white space;
+    /// or <see cref="HttpTimeout" /> is not greater than zero.
     /// </exception>
     public void Validate()
     {
+        if (!TryValidate(out var error))
+            throw new ArgumentException(error);
+    }
+
+    /// <summary>
+    /// Attempts to validate the endpoint options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    public bool TryValidate(out string? error)
+    {
         if (BaseUrl is null)
-            throw new ArgumentException(BoeResourceStrings.Arg_Invalid_BoeEndpointBaseUrl, nameof(BaseUrl));
+        {
+            error = BoeResourceStrings.Arg_Invalid_BoeEndpointBaseUrl;
+            return false;
+        }
 
         if (string.IsNullOrWhiteSpace(QueryPath))
-            throw new ArgumentException(BoeResourceStrings.Arg_Invalid_BoeEndpointQueryPath, nameof(QueryPath));
+        {
+            error = BoeResourceStrings.Arg_Invalid_BoeEndpointQueryPath;
+            return false;
+        }
+
+        if (HttpTimeout <= TimeSpan.Zero)
+        {
+            error = BoeResourceStrings.Arg_Invalid_BoeEndpointHttpTimeout;
+            return false;
+        }
+
+        error = null;
+        return true;
     }
 
     /// <summary>

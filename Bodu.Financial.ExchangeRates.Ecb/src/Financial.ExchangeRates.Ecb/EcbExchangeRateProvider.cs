@@ -33,8 +33,8 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
 /// package) the provider records: the start of a feed download (<see cref="LogLevel.Debug" />), a completed download
-/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation
-/// (<see cref="LogLevel.Trace" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
+/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation (
+/// <see cref="LogLevel.Trace" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
 /// synchronous on-demand network fetch (<see cref="LogLevel.Warning" />). Every level is configurable through the
 /// corresponding <c>*LogLevel</c> property on <see cref="EcbExchangeRateOptions" />; omitting the logger selects
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
@@ -106,6 +106,16 @@ public sealed class EcbExchangeRateProvider
     private readonly ILogger _logger;
 
     /// <summary>
+    /// The time source used to resolve the current instant for feed selection and the undated lookup surface.
+    /// </summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>
+    /// Coalesces concurrent downloads of the same feed so a cache miss triggers at most one in-flight fetch per feed.
+    /// </summary>
+    private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class backed by the ECB
     /// <c>eurofxref</c> feeds, downloaded with the supplied HTTP client.
     /// </summary>
@@ -115,12 +125,16 @@ public sealed class EcbExchangeRateProvider
     /// The logger that records feed downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for feed selection and the undated lookup surface.
+    /// <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public EcbExchangeRateProvider(HttpClient httpClient, EcbExchangeRateOptions options, ILogger? logger = null)
-        : this(CreateSource(httpClient, options), options, logger)
+    public EcbExchangeRateProvider(HttpClient httpClient, EcbExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+        : this(CreateSource(httpClient, options), options, logger, timeProvider)
     {
     }
 
@@ -134,11 +148,15 @@ public sealed class EcbExchangeRateProvider
     /// The logger that records feed downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for feed selection and the undated lookup surface.
+    /// <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal EcbExchangeRateProvider(IEcbExchangeRateTableSource source, EcbExchangeRateOptions options, ILogger? logger = null)
+    internal EcbExchangeRateProvider(IEcbExchangeRateTableSource source, EcbExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -147,6 +165,7 @@ public sealed class EcbExchangeRateProvider
         _source = source;
         _options = options;
         _logger = logger ?? NullLogger.Instance;
+        _timeProvider = timeProvider ?? TimeProvider.System;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -213,7 +232,7 @@ public sealed class EcbExchangeRateProvider
     /// <exception cref="KeyNotFoundException">Thrown when no rate is available for the pair.</exception>
     public decimal GetRate(string fromIsoCode, string toIsoCode)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, ExchangeRateLookupOptions.PreviousWithin(LatestRateToleranceDays)).Rate.Rate;
     }
 
@@ -239,10 +258,29 @@ public sealed class EcbExchangeRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="feed" /> is <see langword="null" />.
     /// </exception>
-    public async Task LoadFeedAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken = default)
+    public Task LoadFeedAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(feed);
 
+        lock (_gate)
+        {
+            if (_loadedFeeds.Contains(feed.Name))
+                return Task.CompletedTask;
+        }
+
+        // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
+        return _loadCoordinator.RunAsync(feed.Name, () => LoadFeedCoreAsync(feed, cancellationToken));
+    }
+
+    /// <summary>
+    /// Downloads and stores a single feed, re-checking the loaded set inside the single-flight section so a joiner that
+    /// arrives after a prior load completes does no redundant work.
+    /// </summary>
+    /// <param name="feed">The feed to load.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
+    /// <returns>A task that completes when the feed has been loaded.</returns>
+    private async Task LoadFeedCoreAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken)
+    {
         lock (_gate)
         {
             if (_loadedFeeds.Contains(feed.Name))
@@ -292,7 +330,7 @@ public sealed class EcbExchangeRateProvider
     {
         ThrowIfRangeInverted(startDate, endDate);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         EcbExchangeRateFeed feed = EcbExchangeRateFeed.ForDate(startDate, _options.Feeds, today) ?? SelectWidestFeed();
 
         return LoadFeedAsync(feed, cancellationToken);
@@ -444,7 +482,7 @@ public sealed class EcbExchangeRateProvider
     /// </returns>
     private bool TryLoadFeedForDate(DateOnly date)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         EcbExchangeRateFeed? feed = EcbExchangeRateFeed.ForDate(date, _options.Feeds, today);
         if (feed is null)
             return false;

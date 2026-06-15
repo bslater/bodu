@@ -64,6 +64,9 @@ public static class YahooFinancialServiceBuilderExtensions
             optionsBuilder.Bind(configuration.GetSection(sectionName));
         if (configure is not null)
             optionsBuilder.Configure(configure);
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "Yahoo exchange-rate options are invalid.")
+            .ValidateOnStart();
 
         services.AddHttpClient(HttpClientName, static (serviceProvider, client) =>
         {
@@ -77,7 +80,11 @@ public static class YahooFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
-            return new YahooExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<YahooExchangeRateProvider>());
+            return new YahooExchangeRateProvider(
+                client,
+                options,
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<YahooExchangeRateProvider>(),
+                serviceProvider.GetService<TimeProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());

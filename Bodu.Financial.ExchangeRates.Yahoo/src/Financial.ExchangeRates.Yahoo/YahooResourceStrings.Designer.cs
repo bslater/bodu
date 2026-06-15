@@ -122,5 +122,41 @@ namespace Bodu.Financial.ExchangeRates.Yahoo {
                 return ResourceManager.GetString("Arg_Invalid_YahooOptionsSymbolFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Yahoo options HTTP timeout must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_YahooOptionsHttpTimeout {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YahooOptionsHttpTimeout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Yahoo options default look-back window must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_YahooOptionsDefaultLookback {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YahooOptionsDefaultLookback", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Yahoo options currency alias map must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_YahooOptionsCurrencyAliases {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YahooOptionsCurrencyAliases", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Yahoo options must specify a defined log level for every logging concern..
+        /// </summary>
+        internal static string Arg_Invalid_YahooOptionsLogLevel {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YahooOptionsLogLevel", resourceCulture);
+            }
+        }
     }
 }

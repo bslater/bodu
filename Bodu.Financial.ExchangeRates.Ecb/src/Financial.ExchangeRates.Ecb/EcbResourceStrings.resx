@@ -88,4 +88,16 @@
   <data name="Op_Invalid_EcbEndpointBaseUrl" xml:space="preserve">
     <value>The ECB endpoint base URL has not been configured.</value>
   </data>
+  <data name="Arg_Invalid_EcbEndpointHttpTimeout" xml:space="preserve">
+    <value>The ECB endpoint options HTTP timeout must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_EcbOptionsRefreshInterval" xml:space="preserve">
+    <value>The ECB options refresh interval must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_EcbOptionsCurrencyAliases" xml:space="preserve">
+    <value>The ECB options currency alias map must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_EcbOptionsLogLevel" xml:space="preserve">
+    <value>The ECB options must specify a defined log level for every logging concern.</value>
+  </data>
 </root>

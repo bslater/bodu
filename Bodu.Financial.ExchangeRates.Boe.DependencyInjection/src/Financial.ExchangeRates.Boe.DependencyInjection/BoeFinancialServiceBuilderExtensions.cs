@@ -64,6 +64,9 @@ public static class BoeFinancialServiceBuilderExtensions
             optionsBuilder.Bind(configuration.GetSection(sectionName));
         if (configure is not null)
             optionsBuilder.Configure(configure);
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "Bank of England exchange-rate options are invalid.")
+            .ValidateOnStart();
 
         services.AddHttpClient(HttpClientName, static (serviceProvider, client) =>
         {
@@ -77,7 +80,11 @@ public static class BoeFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             BoeExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<BoeExchangeRateOptions>>().Value;
-            return new BoeExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<BoeExchangeRateProvider>());
+            return new BoeExchangeRateProvider(
+                client,
+                options,
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<BoeExchangeRateProvider>(),
+                serviceProvider.GetService<TimeProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<BoeExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<BoeExchangeRateProvider>());

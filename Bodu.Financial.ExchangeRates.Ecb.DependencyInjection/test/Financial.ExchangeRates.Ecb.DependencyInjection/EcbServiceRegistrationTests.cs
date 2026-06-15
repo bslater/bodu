@@ -123,4 +123,33 @@ public class EcbServiceRegistrationTests
             _ = EcbFinancialServiceBuilderExtensions.AddEcbReferenceRates(null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that invalid options fail fast through <c>ValidateOnStart</c> when the provider is resolved.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbReferenceRates_WhenOptionsInvalid_ShouldThrowOnResolve()
+    {
+        ServiceCollection services = new();
+        services.AddBoduFinancial().AddEcbReferenceRates(configure: o => o.Feeds = []);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<EcbExchangeRateProvider>();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbReferenceRates_WhenOptionsValid_ShouldResolveProvider()
+    {
+        ServiceCollection services = new();
+        services.AddBoduFinancial().AddEcbReferenceRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.IsNotNull(provider.GetRequiredService<EcbExchangeRateProvider>());
+    }
 }

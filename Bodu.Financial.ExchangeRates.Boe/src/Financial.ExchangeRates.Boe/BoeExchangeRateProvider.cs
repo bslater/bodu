@@ -32,10 +32,10 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
 /// package) the provider records: the start of a range download (<see cref="LogLevel.Debug" />), a completed download
-/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation
-/// (<see cref="LogLevel.Trace" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
-/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="BoeExchangeRateOptions" />; omitting
-/// the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
+/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation (
+/// <see cref="LogLevel.Trace" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
+/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="BoeExchangeRateOptions" />;
+/// omitting the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
 public sealed class BoeExchangeRateProvider
@@ -104,6 +104,17 @@ public sealed class BoeExchangeRateProvider
     private readonly ILogger _logger;
 
     /// <summary>
+    /// The time source used to resolve the current instant for on-demand windowing and the undated lookup surface.
+    /// </summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>
+    /// Coalesces concurrent downloads of the same series window so a cache miss triggers at most one in-flight fetch
+    /// per requested range.
+    /// </summary>
+    private readonly SingleFlightCoordinator<(DateOnly From, DateOnly To)> _loadCoordinator = new();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class backed by the IADB CSV endpoint,
     /// queried with the supplied HTTP client.
     /// </summary>
@@ -113,12 +124,16 @@ public sealed class BoeExchangeRateProvider
     /// The logger that records range downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for on-demand windowing and the undated lookup surface.
+    /// <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public BoeExchangeRateProvider(HttpClient httpClient, BoeExchangeRateOptions options, ILogger? logger = null)
-        : this(CreateSource(httpClient, options), options, logger)
+    public BoeExchangeRateProvider(HttpClient httpClient, BoeExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+        : this(CreateSource(httpClient, options), options, logger, timeProvider)
     {
     }
 
@@ -132,11 +147,15 @@ public sealed class BoeExchangeRateProvider
     /// The logger that records range downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for on-demand windowing and the undated lookup surface.
+    /// <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal BoeExchangeRateProvider(IBoeExchangeRateTableSource source, BoeExchangeRateOptions options, ILogger? logger = null)
+    internal BoeExchangeRateProvider(IBoeExchangeRateTableSource source, BoeExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -145,6 +164,7 @@ public sealed class BoeExchangeRateProvider
         _source = source;
         _options = options;
         _logger = logger ?? NullLogger.Instance;
+        _timeProvider = timeProvider ?? TimeProvider.System;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -208,7 +228,7 @@ public sealed class BoeExchangeRateProvider
     /// <exception cref="KeyNotFoundException">Thrown when no rate is available for the pair.</exception>
     public decimal GetRate(string fromIsoCode, string toIsoCode)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, ExchangeRateLookupOptions.PreviousWithin(LatestRateToleranceDays)).Rate.Rate;
     }
 
@@ -222,10 +242,30 @@ public sealed class BoeExchangeRateProvider
     /// <exception cref="BoeExchangeRateDateRangeException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
-    public async Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         ThrowIfRangeInverted(startDate, endDate);
 
+        lock (_gate)
+        {
+            if (IsRangeCovered(startDate, endDate))
+                return Task.CompletedTask;
+        }
+
+        // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task.
+        return _loadCoordinator.RunAsync((startDate, endDate), () => LoadRangeCoreAsync(startDate, endDate, cancellationToken));
+    }
+
+    /// <summary>
+    /// Downloads and stores a single range, re-checking coverage inside the single-flight section so a joiner that
+    /// arrives after a prior load completes does no redundant work.
+    /// </summary>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
+    /// <returns>A task that completes when the range has been loaded.</returns>
+    private async Task LoadRangeCoreAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    {
         lock (_gate)
         {
             if (IsRangeCovered(startDate, endDate))
@@ -404,7 +444,7 @@ public sealed class BoeExchangeRateProvider
     /// </returns>
     private bool TryLoadWindowForDate(DateOnly date)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         var window = _options.OnDemandWindowDays;
 
         var from = date.AddDays(-window);

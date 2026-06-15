@@ -64,6 +64,9 @@ public static class EcbFinancialServiceBuilderExtensions
             optionsBuilder.Bind(configuration.GetSection(sectionName));
         if (configure is not null)
             optionsBuilder.Configure(configure);
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "ECB exchange-rate options are invalid.")
+            .ValidateOnStart();
 
         services.AddHttpClient(HttpClientName, static (serviceProvider, client) =>
         {
@@ -77,7 +80,11 @@ public static class EcbFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             EcbExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<EcbExchangeRateOptions>>().Value;
-            return new EcbExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<EcbExchangeRateProvider>());
+            return new EcbExchangeRateProvider(
+                client,
+                options,
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<EcbExchangeRateProvider>(),
+                serviceProvider.GetService<TimeProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<EcbExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<EcbExchangeRateProvider>());

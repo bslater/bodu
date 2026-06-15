@@ -64,6 +64,9 @@ public static class RbaFinancialServiceBuilderExtensions
             optionsBuilder.Bind(configuration.GetSection(sectionName));
         if (configure is not null)
             optionsBuilder.Configure(configure);
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "RBA exchange-rate options are invalid.")
+            .ValidateOnStart();
 
         services.AddHttpClient(HttpClientName, static (serviceProvider, client) =>
         {
@@ -77,7 +80,11 @@ public static class RbaFinancialServiceBuilderExtensions
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
             RbaExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<RbaExchangeRateOptions>>().Value;
-            return new RbaExchangeRateProvider(client, options, serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<RbaExchangeRateProvider>());
+            return new RbaExchangeRateProvider(
+                client,
+                options,
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<RbaExchangeRateProvider>(),
+                serviceProvider.GetService<TimeProvider>());
         });
         services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<RbaExchangeRateProvider>());
         services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<RbaExchangeRateProvider>());

@@ -131,5 +131,41 @@ namespace Bodu.Financial.ExchangeRates.Rba {
                 return ResourceManager.GetString("Arg_Invalid_RbaOptionsEras", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The RBA options HTTP timeout must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_RbaOptionsHttpTimeout {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RbaOptionsHttpTimeout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The RBA options current-era refresh interval must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_RbaOptionsCurrentEraRefreshInterval {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RbaOptionsCurrentEraRefreshInterval", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The RBA options currency alias map must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_RbaOptionsCurrencyAliases {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RbaOptionsCurrencyAliases", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The RBA options must specify a defined log level for every logging concern..
+        /// </summary>
+        internal static string Arg_Invalid_RbaOptionsLogLevel {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RbaOptionsLogLevel", resourceCulture);
+            }
+        }
     }
 }

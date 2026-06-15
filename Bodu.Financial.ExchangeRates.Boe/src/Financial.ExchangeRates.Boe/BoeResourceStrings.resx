@@ -85,4 +85,16 @@
   <data name="Op_Invalid_BoeEndpointBaseUrl" xml:space="preserve">
     <value>The Bank of England endpoint base URL has not been configured.</value>
   </data>
+  <data name="Arg_Invalid_BoeEndpointHttpTimeout" xml:space="preserve">
+    <value>The Bank of England endpoint options HTTP timeout must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_BoeOptionsOnDemandWindowDays" xml:space="preserve">
+    <value>The Bank of England options on-demand window radius must not be negative.</value>
+  </data>
+  <data name="Arg_Invalid_BoeOptionsRefreshInterval" xml:space="preserve">
+    <value>The Bank of England options refresh interval must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_BoeOptionsLogLevel" xml:space="preserve">
+    <value>The Bank of England options must specify a defined log level for every logging concern.</value>
+  </data>
 </root>

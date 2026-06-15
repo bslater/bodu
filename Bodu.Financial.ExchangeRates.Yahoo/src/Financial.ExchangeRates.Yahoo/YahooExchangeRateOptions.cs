@@ -90,15 +90,17 @@ public sealed class YahooExchangeRateOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to allow synchronous, blocking fetches from <see cref="IDatedExchangeRateProvider" />
-    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="true" />.
+    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so
+    /// the provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
     /// </value>
     /// <remarks>
     /// Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
-    /// synchronization context (classic ASP.NET, WPF, WinForms). In those environments, set this to
-    /// <see langword="false" /> and warm the cache with <see cref="YahooExchangeRateProvider.LoadPairAsync" /> at
-    /// startup.
+    /// synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
+    /// <see langword="false" /> and warm the store with <see cref="YahooExchangeRateProvider.LoadPairAsync" /> at
+    /// startup; set it to <see langword="true" /> only to opt in to a blocking on-demand fetch from the synchronous
+    /// lookup path.
     /// </remarks>
-    public bool AllowSynchronousNetworkAccess { get; set; } = true;
+    public bool AllowSynchronousNetworkAccess { get; set; }
 
     /// <summary>
     /// Gets or sets the look-back window used when a synchronous or undated lookup must fetch a pair on demand. The
@@ -146,28 +148,96 @@ public sealed class YahooExchangeRateOptions
     public LogLevel SynchronousNetworkFetchLogLevel { get; set; } = LogLevel.Warning;
 
     /// <summary>
-    /// Validates the options, throwing when a required value is missing or a template lacks its placeholder.
+    /// Validates the options, throwing when a required value is missing, a template lacks its placeholder, or an
+    /// invariant is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="BaseAddress" /> is <see langword="null" />; when <see cref="ChartPath" /> is empty or
-    /// omits the <c>{symbol}</c> placeholder; or when <see cref="SymbolFormat" /> is empty or omits the <c>{from}</c>
-    /// or <c>{to}</c> placeholder.
+    /// Thrown when <see cref="BaseAddress" /> is <see langword="null" />; <see cref="ChartPath" /> is empty or omits
+    /// the <c>{symbol}</c> placeholder; <see cref="SymbolFormat" /> is empty or omits the <c>{from}</c> or <c>{to}</c>
+    /// placeholder; <see cref="HttpTimeout" /> or <see cref="DefaultLookback" /> is not greater than zero;
+    /// <see cref="CurrencyAliases" /> is <see langword="null" />; or any <c>*LogLevel</c> is not a defined
+    /// <see cref="LogLevel" />.
     /// </exception>
     public void Validate()
     {
+        if (!TryValidate(out var error))
+            throw new ArgumentException(error);
+    }
+
+    /// <summary>
+    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
+    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// </remarks>
+    public bool TryValidate(out string? error)
+    {
         if (BaseAddress is null)
-            throw new ArgumentException(YahooResourceStrings.Arg_Invalid_YahooOptionsBaseAddress, nameof(BaseAddress));
+        {
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsBaseAddress;
+            return false;
+        }
 
         if (string.IsNullOrWhiteSpace(ChartPath) || !ChartPath.Contains(SymbolPlaceholder, StringComparison.Ordinal))
-            throw new ArgumentException(YahooResourceStrings.Arg_Invalid_YahooOptionsChartPath, nameof(ChartPath));
+        {
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsChartPath;
+            return false;
+        }
 
         if (string.IsNullOrWhiteSpace(SymbolFormat)
             || !SymbolFormat.Contains(FromPlaceholder, StringComparison.Ordinal)
             || !SymbolFormat.Contains(ToPlaceholder, StringComparison.Ordinal))
         {
-            throw new ArgumentException(YahooResourceStrings.Arg_Invalid_YahooOptionsSymbolFormat, nameof(SymbolFormat));
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsSymbolFormat;
+            return false;
         }
+
+        if (HttpTimeout <= TimeSpan.Zero)
+        {
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsHttpTimeout;
+            return false;
+        }
+
+        if (DefaultLookback <= TimeSpan.Zero)
+        {
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsDefaultLookback;
+            return false;
+        }
+
+        if (CurrencyAliases is null)
+        {
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsCurrencyAliases;
+            return false;
+        }
+
+        if (!AreLogLevelsDefined())
+        {
+            error = YahooResourceStrings.Arg_Invalid_YahooOptionsLogLevel;
+            return false;
+        }
+
+        error = null;
+        return true;
     }
+
+    /// <summary>
+    /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every <c>*LogLevel</c> property is defined; otherwise <see langword="false" />.
+    /// </returns>
+    private bool AreLogLevelsDefined() =>
+        Enum.IsDefined(DownloadStartingLogLevel)
+        && Enum.IsDefined(DownloadCompletedLogLevel)
+        && Enum.IsDefined(DownloadFailedLogLevel)
+        && Enum.IsDefined(ObservationIngestedLogLevel)
+        && Enum.IsDefined(SynchronousNetworkFetchLogLevel);
 
     /// <summary>
     /// Builds the Yahoo Finance ticker for a currency pair from <see cref="SymbolFormat" />, applying any configured

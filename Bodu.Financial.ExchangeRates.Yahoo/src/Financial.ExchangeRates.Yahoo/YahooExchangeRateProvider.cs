@@ -32,14 +32,14 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
 /// package) the provider records: the start of a pair/chart download (<see cref="LogLevel.Debug" />), a completed
-/// download with its observation count (<see cref="LogLevel.Information" />), each ingested observation
-/// (<see cref="LogLevel.Trace" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
+/// download with its observation count (<see cref="LogLevel.Information" />), each ingested observation (
+/// <see cref="LogLevel.Trace" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
 /// synchronous on-demand network fetch (<see cref="LogLevel.Warning" />). Every level is configurable through the
 /// corresponding <c>*LogLevel</c> property on <see cref="YahooExchangeRateOptions" />; omitting the logger selects
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
-public sealed class YahooExchangeRateProvider
+public sealed partial class YahooExchangeRateProvider
     : IDatedExchangeRateProvider, IExchangeRateProvider
 {
     /// <summary>
@@ -74,9 +74,11 @@ public sealed class YahooExchangeRateProvider
     private readonly ExchangeRateTableBuilder _builder = new();
 
     /// <summary>
-    /// The inclusive date range fetched so far for each pair, used to avoid redundant fetches.
+    /// The set of inclusive date ranges fetched so far for each pair. A gap-respecting coverage set is used rather than
+    /// a single <c>(min, max)</c> envelope so a request that straddles an unfetched interior gap is correctly treated
+    /// as uncovered and re-fetched.
     /// </summary>
-    private readonly Dictionary<ExchangeRatePair, (DateOnly Start, DateOnly End)> _loadedRanges = new();
+    private readonly Dictionary<ExchangeRatePair, DateRangeCoverage> _coverage = new();
 
     /// <summary>
     /// The discovered currency series, keyed by pair.
@@ -99,6 +101,17 @@ public sealed class YahooExchangeRateProvider
     private readonly ILogger _logger;
 
     /// <summary>
+    /// The time source used to resolve the current instant for the undated lookup surface.
+    /// </summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>
+    /// Coalesces concurrent fetches of the same pair-and-window so a cache miss triggers at most one in-flight chart
+    /// request, with other callers awaiting the shared fetch.
+    /// </summary>
+    private readonly SingleFlightCoordinator<PairWindow> _loadCoordinator = new();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by the Yahoo Finance
     /// chart endpoint, queried with the supplied HTTP client.
     /// </summary>
@@ -108,12 +121,16 @@ public sealed class YahooExchangeRateProvider
     /// The logger that records chart downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for the undated lookup surface. <see langword="null" />
+    /// selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public YahooExchangeRateProvider(HttpClient httpClient, YahooExchangeRateOptions options, ILogger? logger = null)
-        : this(CreateSource(httpClient, options), options, logger)
+    public YahooExchangeRateProvider(HttpClient httpClient, YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+        : this(CreateSource(httpClient, options), options, logger, timeProvider)
     {
     }
 
@@ -127,11 +144,15 @@ public sealed class YahooExchangeRateProvider
     /// The logger that records chart downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for the undated lookup surface. <see langword="null" />
+    /// selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options, ILogger? logger = null)
+    internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -140,6 +161,7 @@ public sealed class YahooExchangeRateProvider
         _source = source;
         _options = options;
         _logger = logger ?? NullLogger.Instance;
+        _timeProvider = timeProvider ?? TimeProvider.System;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -206,7 +228,7 @@ public sealed class YahooExchangeRateProvider
     /// <exception cref="KeyNotFoundException">Thrown when no rate is available for the pair.</exception>
     public decimal GetRate(string fromIsoCode, string toIsoCode)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, ExchangeRateLookupOptions.PreviousWithin(LatestRateToleranceDays)).Rate.Rate;
     }
 
@@ -224,7 +246,7 @@ public sealed class YahooExchangeRateProvider
     /// <exception cref="YahooExchangeRateDateRangeException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
-    public async Task LoadPairAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public Task LoadPairAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(fromIsoCode);
         ThrowHelper.ThrowIfNull(toIsoCode);
@@ -232,6 +254,37 @@ public sealed class YahooExchangeRateProvider
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
 
+        lock (_gate)
+        {
+            if (IsRangeCovered(pair, startDate, endDate))
+                return Task.CompletedTask;
+        }
+
+        // Coalesce concurrent fetches of the same pair-and-window so only one chart request is in flight.
+        return _loadCoordinator.RunAsync(
+            new PairWindow(pair, startDate, endDate),
+            () => LoadPairCoreAsync(pair, fromIsoCode, toIsoCode, startDate, endDate, cancellationToken));
+    }
+
+    /// <summary>
+    /// Fetches and stores a pair's chart for the inclusive window, re-checking coverage inside the single-flight
+    /// section so a joiner that arrives after a prior fetch completes does no redundant work.
+    /// </summary>
+    /// <param name="pair">The currency pair to fetch.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the fetch.</param>
+    /// <returns>A task that completes when the pair's window has been loaded.</returns>
+    private async Task LoadPairCoreAsync(
+        ExchangeRatePair pair,
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken)
+    {
         lock (_gate)
         {
             if (IsRangeCovered(pair, startDate, endDate))
@@ -370,35 +423,34 @@ public sealed class YahooExchangeRateProvider
     }
 
     /// <summary>
-    /// Reports whether the inclusive range is already contained in the fetched window for a pair.
+    /// Reports whether every day in the inclusive range has already been fetched for a pair.
     /// </summary>
     /// <param name="pair">The pair to check.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
-    /// <returns><see langword="true" /> when the range is covered; otherwise <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> when the range is fully covered; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// Coverage is tracked as a gap-respecting set of intervals, so a window that straddles an unfetched interior gap
+    /// reports as not covered even when earlier and later sub-ranges have been fetched.
+    /// </remarks>
     private bool IsRangeCovered(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate) =>
-        _loadedRanges.TryGetValue(pair, out (DateOnly Start, DateOnly End) range)
-        && range.Start <= startDate
-        && range.End >= endDate;
+        _coverage.TryGetValue(pair, out DateRangeCoverage? coverage) && coverage.Contains(startDate, endDate);
 
     /// <summary>
-    /// Extends the recorded fetched window for a pair to include the inclusive range.
+    /// Records the inclusive range as fetched for a pair, merging it into the pair's coverage set.
     /// </summary>
     /// <param name="pair">The pair to extend.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
     private void ExtendCoveredRange(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate)
     {
-        if (_loadedRanges.TryGetValue(pair, out (DateOnly Start, DateOnly End) existing))
+        if (!_coverage.TryGetValue(pair, out DateRangeCoverage? coverage))
         {
-            _loadedRanges[pair] = (
-                existing.Start <= startDate ? existing.Start : startDate,
-                existing.End >= endDate ? existing.End : endDate);
+            coverage = new DateRangeCoverage();
+            _coverage[pair] = coverage;
         }
-        else
-        {
-            _loadedRanges[pair] = (startDate, endDate);
-        }
+
+        coverage.Add(startDate, endDate);
     }
 
     /// <summary>

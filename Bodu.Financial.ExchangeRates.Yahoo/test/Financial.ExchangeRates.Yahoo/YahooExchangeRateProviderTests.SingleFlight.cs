@@ -1,0 +1,57 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="YahooExchangeRateProviderTests.SingleFlight.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Financial.ExchangeRates.Yahoo;
+
+public partial class YahooExchangeRateProviderTests
+{
+    /// <summary>
+    /// Verifies that concurrent loads of the same pair and window are coalesced into a single underlying fetch.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenCalledConcurrentlyForSamePairAndWindow_ShouldFetchOnce()
+    {
+        YahooExchangeRateOptions options = new();
+        GatedYahooExchangeRateChartSource source = new(options);
+        YahooExchangeRateProvider provider = new(source, options);
+        DateOnly start = new(2023, 1, 1);
+        DateOnly end = new(2023, 1, 31);
+
+        Task[] loads =
+        [
+            provider.LoadPairAsync("AUD", "USD", start, end),
+            provider.LoadPairAsync("AUD", "USD", start, end),
+            provider.LoadPairAsync("AUD", "USD", start, end),
+            provider.LoadPairAsync("AUD", "USD", start, end),
+        ];
+
+        await source.Entered;
+        source.Release();
+        await Task.WhenAll(loads);
+
+        Assert.AreEqual(1, source.CallCount);
+    }
+
+    /// <summary>
+    /// Verifies that a load issued after a prior load has completed performs no fetch, because the window is already
+    /// present in the pair's coverage set.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenWindowAlreadyLoaded_ShouldNotFetchAgain()
+    {
+        YahooExchangeRateOptions options = new();
+        GatedYahooExchangeRateChartSource source = new(options);
+        YahooExchangeRateProvider provider = new(source, options);
+        DateOnly start = new(2023, 1, 1);
+        DateOnly end = new(2023, 1, 31);
+
+        source.Release();
+        await provider.LoadPairAsync("AUD", "USD", start, end);
+        await provider.LoadPairAsync("AUD", "USD", start, end);
+
+        Assert.AreEqual(1, source.CallCount);
+    }
+}
