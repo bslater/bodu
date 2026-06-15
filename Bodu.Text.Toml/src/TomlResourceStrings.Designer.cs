@@ -308,15 +308,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The object graph is nested too deeply to serialize without exhausting the call stack..
-        /// </summary>
-        internal static string Op_Invalid_WriterStackTooDeep {
-            get {
-                return ResourceManager.GetString("Op_Invalid_WriterStackTooDeep", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The key '{0}' has already been written to the current table..
         /// </summary>
         internal static string Op_Invalid_WriterDuplicateKey {

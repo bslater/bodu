@@ -7,15 +7,16 @@
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies that the serializer enforces an absolute nesting ceiling that bounds resource use even when the caller
-/// configures an arbitrarily large <see cref="TomlSerializerOptions.MaxDepth" />, so untrusted input cannot drive the
-/// writer into a process-terminating <see cref="StackOverflowException" />.
+/// Verifies that the serializer and parser enforce the hard absolute nesting ceiling that bounds call-stack use even
+/// when the caller configures an arbitrarily large <see cref="TomlSerializerOptions.MaxDepth" />, so untrusted input
+/// cannot drive either into a process-terminating <see cref="StackOverflowException" />.
 /// </summary>
 public partial class TomlSerializerTests
 {
     /// <summary>
-    /// Verifies that serializing an object graph nested beyond the absolute depth ceiling throws
-    /// <see cref="TomlSerializationException" /> even when the configured maximum depth is far larger.
+    /// Verifies that serializing an object graph nested beyond the absolute ceiling throws
+    /// <see cref="TomlSerializationException" /> even when the configured maximum depth is far larger, confirming the
+    /// caller-supplied <see cref="TomlSerializerOptions.MaxDepth" /> is clamped to the hard ceiling.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenGraphExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowTomlSerializationException()
@@ -23,7 +24,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         RecursiveModel deep = new();
-        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
         Assert.ThrowsExactly<TomlSerializationException>(() =>
@@ -33,72 +34,43 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing an object graph nested beyond the absolute depth ceiling throws a catchable
-    /// <see cref="TomlSerializationException" /> rather than overflowing the call stack, even when serialization runs
-    /// on a thread whose stack is constrained — pinning the requirement that the ceiling stays safe on a modest stack
-    /// budget rather than relying on the larger default stack of any particular platform.
+    /// Verifies that deserializing a document nested beyond the absolute ceiling throws <see cref="TomlFormatException" />
+    /// even when the configured maximum depth is far larger, confirming the reader clamps the caller-supplied
+    /// <see cref="TomlSerializerOptions.MaxDepth" /> to the hard ceiling.
     /// </summary>
-    /// <remarks>
-    /// The absolute ceiling exists to convert unbounded nesting into a catchable failure. That guarantee only holds
-    /// when the ceiling is reached before the physical call stack is exhausted: a ceiling set above the stack budget
-    /// lets recursion overflow first, terminating the process with an uncatchable <see cref="StackOverflowException" />
-    /// that the default-stack <c>Serialize_WhenGraphExceedsAbsoluteCapDespiteLargeMaxDepth</c> test cannot observe
-    /// where the platform stack is large. Running on an explicit, constrained stack reproduces that condition on any
-    /// platform. The 512 KB budget sits well above what the bounded recursion requires yet well below what an
-    /// unbounded ceiling would consume.
-    /// </remarks>
     [TestMethod]
-    public void Serialize_WhenGraphExceedsAbsoluteCapOnConstrainedStack_ShouldThrowTomlSerializationExceptionNotOverflow()
+    public void Deserialize_WhenDocumentExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowTomlFormatException()
     {
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
+        var toml = BuildNestedInlineTableDocument(TomlLimits.AbsoluteMaxDepth + 1);
 
-        RecursiveModel deep = new();
-        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
-            deep = new RecursiveModel { Child = deep };
-
-        Exception? captured = null;
-        var worker = new Thread(
-            () =>
-            {
-                try
-                {
-                    _ = TomlSerializer.Serialize(deep, options);
-                }
-                catch (Exception ex)
-                {
-                    captured = ex;
-                }
-            },
-            maxStackSize: 512 << 10);
-
-        worker.Start();
-        worker.Join();
-
-        Assert.IsNotNull(captured);
-        Assert.AreEqual(typeof(TomlSerializationException), captured.GetType());
+        Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<RecursiveModel>(toml, options);
+        });
     }
 
     /// <summary>
-    /// Verifies that the serializer survives an over-deep graph even when the available stack is too small to reach the
-    /// logical depth ceiling, by serializing on a stack that cannot hold <see cref="TomlLimits.AbsoluteMaxDepth" />
-    /// levels of recursion and asserting a catchable <see cref="TomlSerializationException" /> is thrown rather than the
-    /// process overflowing.
+    /// Verifies that serializing a graph nested far beyond the ceiling throws a catchable
+    /// <see cref="TomlSerializationException" /> rather than overflowing the call stack, even when serialization runs on
+    /// a thread whose stack is deliberately constrained — pinning the requirement that the ceiling stays low enough to
+    /// be reached before the physical stack is exhausted on a modest stack budget.
     /// </summary>
     /// <remarks>
-    /// A 256 KB stack cannot hold <see cref="TomlLimits.AbsoluteMaxDepth" /> levels of serializer recursion, so the
-    /// logical ceiling is unreachable on it: a guard expressed purely as a fixed level count set to the absolute maximum
-    /// would overflow the stack before it could throw. Only a guard that measures the actual remaining stack on each
-    /// descent converts the impending overflow into a catchable failure here, so this pins the runtime stack probe
-    /// specifically, complementing the 512 KB test above where the logical ceiling may still be reached first on a
-    /// platform with small stack frames.
+    /// The serializer descends one native call-stack frame per nested container, so the absolute ceiling only converts
+    /// unbounded nesting into a catchable failure while it is reached before the stack is exhausted. A ceiling raised
+    /// above the stack budget would let the recursion overflow first, terminating the process with an uncatchable
+    /// <see cref="StackOverflowException" /> that aborts the whole test run. Running on an explicit 256 KB stack with a
+    /// graph many times deeper than the ceiling makes that regression observable on any platform: it throws here only
+    /// because the ceiling is stack-safe.
     /// </remarks>
     [TestMethod]
-    public void Serialize_WhenGraphExceedsStackBudgetBelowDepthCeiling_ShouldThrowTomlSerializationExceptionNotOverflow()
+    public void Serialize_WhenGraphFarExceedsCapOnConstrainedStack_ShouldThrowTomlSerializationExceptionNotOverflow()
     {
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         RecursiveModel deep = new();
-        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+        for (var i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
         Exception? captured = null;
@@ -133,5 +105,23 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         Assert.AreEqual(int.MaxValue, options.MaxDepth);
+    }
+
+    /// <summary>
+    /// Builds a TOML document of <paramref name="depth" /> nested inline tables under a single recurring key, used to
+    /// drive the parser to a controlled nesting depth.
+    /// </summary>
+    /// <param name="depth">The number of nested inline tables to emit.</param>
+    /// <returns>The TOML source text.</returns>
+    private static string BuildNestedInlineTableDocument(int depth)
+    {
+        var builder = new System.Text.StringBuilder();
+        for (var i = 0; i < depth; i++)
+            builder.Append("Child = { ");
+        for (var i = 0; i < depth; i++)
+            builder.Append('}');
+        builder.Append('\n');
+
+        return builder.ToString();
     }
 }

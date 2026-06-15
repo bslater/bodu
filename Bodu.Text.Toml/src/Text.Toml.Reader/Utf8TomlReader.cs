@@ -232,7 +232,9 @@ public ref partial struct Utf8TomlReader
     /// The reader options controlling the specification version and maximum bracket nesting depth.
     /// </param>
     /// <remarks>
-    /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" />; input nested deeper than the effective
+    /// limit throws <see cref="TomlFormatException" />.
     /// </remarks>
     public Utf8TomlReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
         : this(utf8Toml, isFinalBlock: true, new TomlReaderState(options))
@@ -276,7 +278,7 @@ public ref partial struct Utf8TomlReader
         _source = utf8Toml;
         _isFinalBlock = isFinalBlock;
         _specVersion = state.Options.SpecVersion;
-        _maxDepth = state.Options.MaxDepth <= 0 ? 256 : state.Options.MaxDepth;
+        _maxDepth = state.Options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(state.Options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _state = state.ScanState;
         _containers = state.Containers;
         _containerCount = state.ContainerCount;
@@ -424,9 +426,12 @@ public ref partial struct Utf8TomlReader
     public readonly ReadOnlySpan<byte> ValueSpan => _source.Slice(_valueStart, _valueLength);
 
     /// <summary>
-    /// Gets the byte offset into the source at which the current token's raw text content begins, inside any delimiters.
+    /// Gets the byte offset into the source at which the current token's raw text content begins, inside any
+    /// delimiters.
     /// </summary>
-    /// <returns>The content start offset, paired with <see cref="ValueLength" /> to slice the source on demand.</returns>
+    /// <returns>
+    /// The content start offset, paired with <see cref="ValueLength" /> to slice the source on demand.
+    /// </returns>
     internal readonly int ValueStart => _valueStart;
 
     /// <summary>
@@ -1269,8 +1274,8 @@ public ref partial struct Utf8TomlReader
     /// and rejecting disallowed control characters.
     /// </summary>
     /// <remarks>
-    /// Both TOML v1.0.0 and v1.1.0 prohibit control characters other than tab (U+0000–U+0008, U+000A–U+001F,
-    /// U+007F) inside a comment, so the rule is applied unconditionally.
+    /// Both TOML v1.0.0 and v1.1.0 prohibit control characters other than tab (U+0000–U+0008, U+000A–U+001F, U+007F)
+    /// inside a comment, so the rule is applied unconditionally.
     /// </remarks>
     /// <returns>
     /// <see langword="true" /> when the comment was scanned; <see langword="false" /> when more data is required.

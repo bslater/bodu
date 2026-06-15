@@ -47,7 +47,10 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlSerializerOptions
 {
     /// <summary>
-    /// The default maximum nesting depth.
+    /// The default maximum container nesting depth applied when <see cref="MaxDepth" /> is left at zero. It is also the
+    /// library's hard ceiling (<see cref="TomlLimits.AbsoluteMaxDepth" />): a configured depth is never effective
+    /// beyond this value, because the recursive reader, writer, and serializer must stay within a safe call-stack
+    /// budget.
     /// </summary>
     public const int DefaultMaxDepth = 64;
 
@@ -310,12 +313,32 @@ public sealed partial class TomlSerializerOptions
     }
 
     /// <summary>
-    /// Gets or sets the maximum nesting depth permitted while serializing or deserializing.
+    /// Gets or sets the maximum container nesting depth permitted while serializing or deserializing.
     /// </summary>
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
     /// <returns>The configured maximum depth.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is negative.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
+    /// <remarks>
+    /// <para>
+    /// The limit bounds how deeply tables and arrays may nest. It is reached when serializing an object graph — or
+    /// deserializing a document — whose containers nest more levels deep than the effective limit, for example a chain
+    /// of objects each holding the next, a dictionary of dictionaries, or arrays within arrays. Crossing it is reported
+    /// as a catchable failure: <see cref="TomlSerializationException" /> while serializing, or
+    /// <see cref="TomlFormatException" /> while deserializing. A reference cycle (an object reachable from itself) is a
+    /// distinct condition reported separately as a <see cref="TomlSerializationException" /> identifying the cycle, not
+    /// as a depth-limit failure.
+    /// </para>
+    /// <para>
+    /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the library's hard
+    /// ceiling, <see cref="TomlLimits.AbsoluteMaxDepth" /> (64); setting a larger value — even
+    /// <see cref="int.MaxValue" /> — does not raise it. The ceiling exists because the serializer and parser recurse
+    /// one call-stack frame per nested container, so an unbounded depth on hostile or malformed input would exhaust the
+    /// call stack and terminate the process with an uncatchable <see cref="StackOverflowException" />. Clamping
+    /// converts that into the catchable exceptions above. Lowering this value below the default tightens the limit;
+    /// raising it has no effect beyond the ceiling.
+    /// </para>
+    /// </remarks>
     public int MaxDepth
     {
         get => _maxDepth;

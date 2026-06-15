@@ -20,20 +20,20 @@ internal static class TomlLimits
     /// <para>
     /// A configurable maximum depth only bounds normal use; left unbounded, a caller could set an arbitrarily large
     /// value and a deeply nested document or object graph would recurse until the process terminated with a
-    /// <see cref="StackOverflowException" />, which cannot be caught. This ceiling caps the configured depth so excessive
-    /// nesting fails with a catchable <see cref="TomlFormatException" /> (when reading) or
-    /// <see cref="TomlSerializationException" /> (when writing), which is essential when processing untrusted input.
+    /// <see cref="StackOverflowException" />, which cannot be caught. Every caller-supplied maximum depth is therefore
+    /// clamped to this ceiling, so excessive nesting fails with a catchable <see cref="TomlFormatException" /> (when
+    /// reading) or <see cref="TomlSerializationException" /> (when writing) — essential when processing untrusted
+    /// input.
     /// </para>
     /// <para>
-    /// This constant is a <em>logical</em> bound only; it is not what guarantees the process survives. The amount of
-    /// stack already consumed before serialization begins varies with the call context, so no fixed level count can be
-    /// chosen that is always reached before the physical stack is exhausted — a depth that is safe on a fresh thread can
-    /// overflow under a deep asynchronous call chain. The physical guarantee instead comes from probing the actual
-    /// remaining call stack on each descent (see the writer's stack guard), which converts impending exhaustion into a
-    /// catchable exception regardless of platform, thread stack size, or call context. This value sits far deeper than
-    /// any realistic document — four times the 64-level serializer default, and equal to the 256-level ceiling the reader
-    /// and writer apply by default — so it bounds pathological configured depths without constraining legitimate use.
+    /// The reader, writer, and serializer descend one native call-stack frame per nested container, so the ceiling must
+    /// be reached before the physical stack is exhausted; otherwise the recursion overflows first and the guarantee is
+    /// lost. The value therefore matches the <see cref="TomlSerializerOptions.DefaultMaxDepth" /> of 64 — deep enough
+    /// for any realistic document, yet shallow enough that the bounded recursion stays well within a modest stack
+    /// budget even when much of the stack was already consumed before the call (for example under a deep asynchronous
+    /// call chain). Supporting depths beyond this safely would require replacing the recursive descent with an explicit
+    /// stack-based traversal; until then a low ceiling is the deliberate trade-off.
     /// </para>
     /// </remarks>
-    internal const int AbsoluteMaxDepth = 256;
+    internal const int AbsoluteMaxDepth = TomlSerializerOptions.DefaultMaxDepth;
 }

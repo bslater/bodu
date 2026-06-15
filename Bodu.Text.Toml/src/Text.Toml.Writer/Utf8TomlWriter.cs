@@ -6,14 +6,13 @@
 
 using System.Buffers;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace Bodu.Text.Toml.Writer;
 
 /// <summary>
-/// Provides an append-only writer that emits normalized TOML bytes to an <see cref="IBufferWriter{T}" />. Because TOML's
-/// surface layout is a whole-document property, the writer is not progressive: it buffers every value into an in-memory
-/// tree and serializes it when the root table is closed.
+/// Provides an append-only writer that emits normalized TOML bytes to an <see cref="IBufferWriter{T}" />. Because
+/// TOML's surface layout is a whole-document property, the writer is not progressive: it buffers every value into an
+/// in-memory tree and serializes it when the root table is closed.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -127,7 +126,7 @@ public ref partial struct Utf8TomlWriter
         _output = output;
         _frames = [];
         _root = new TomlWriterNode?[1];
-        _maxDepth = 256;
+        _maxDepth = TomlLimits.AbsoluteMaxDepth;
         _byteCounts = new long[2];
         _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
@@ -143,9 +142,10 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256, and a
+    /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
     /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
-    /// cannot drive the writer into a <see cref="StackOverflowException" />.
+    /// cannot drive the writer into a <see cref="StackOverflowException" />. Opening a container past that depth — a
+    /// table or array nested deeper than the effective limit — throws <see cref="TomlSerializationException" />.
     /// </remarks>
     public Utf8TomlWriter(IBufferWriter<byte> output, TomlWriterOptions options)
     {
@@ -154,7 +154,7 @@ public ref partial struct Utf8TomlWriter
         _output = output;
         _frames = [];
         _root = new TomlWriterNode?[1];
-        _maxDepth = options.MaxDepth <= 0 ? 256 : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
+        _maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
         _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
     }
@@ -181,8 +181,7 @@ public ref partial struct Utf8TomlWriter
     /// Writes the start of a table.
     /// </summary>
     /// <exception cref="TomlSerializationException">
-    /// Thrown when opening the table would exceed the configured maximum nesting depth, or when too little call stack
-    /// remains to safely descend a further nesting level.
+    /// Thrown when opening the table would exceed the effective maximum nesting depth.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the document is already complete, or when the enclosing container is a table with no pending
@@ -192,7 +191,6 @@ public ref partial struct Utf8TomlWriter
     {
         ThrowIfComplete();
         ThrowIfValueNeedsPropertyName();
-        ThrowIfInsufficientStack();
         if (_frames.Count >= _maxDepth)
             throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
 
@@ -227,8 +225,7 @@ public ref partial struct Utf8TomlWriter
     /// Writes the start of an array.
     /// </summary>
     /// <exception cref="TomlSerializationException">
-    /// Thrown when opening the array would exceed the configured maximum nesting depth, or when too little call stack
-    /// remains to safely descend a further nesting level.
+    /// Thrown when opening the array would exceed the effective maximum nesting depth.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the document is already complete, when the array would become the document root (the root of a TOML
@@ -240,7 +237,6 @@ public ref partial struct Utf8TomlWriter
         if (_frames.Count == 0)
             throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_WriterRootMustBeTable);
         ThrowIfValueNeedsPropertyName();
-        ThrowIfInsufficientStack();
         if (_frames.Count >= _maxDepth)
             throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
 
@@ -381,27 +377,6 @@ public ref partial struct Utf8TomlWriter
     {
         if (_frames.Count > 0 && _frames[^1] is TableFrame { PendingKey: null })
             throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_WriterValueWithoutKey);
-    }
-
-    /// <summary>
-    /// Throws when too little call stack remains to safely open another container, converting an otherwise
-    /// process-terminating <see cref="StackOverflowException" /> into a catchable failure.
-    /// </summary>
-    /// <exception cref="TomlSerializationException">
-    /// Thrown when insufficient execution stack remains to descend a further nesting level.
-    /// </exception>
-    /// <remarks>
-    /// The serializer descends one native call-stack frame per nested container, so an object graph nested deeply enough
-    /// would exhaust the stack and terminate the process with an uncatchable <see cref="StackOverflowException" />. The
-    /// configured maximum depth bounds nesting logically, but the stack already consumed before a write call varies with
-    /// the surrounding context, so the same logical depth can leave very different amounts of stack and the logical bound
-    /// alone cannot guarantee the ceiling is reached before the physical stack is exhausted. Probing the actual remaining
-    /// stack closes that gap independently of platform, thread stack size, and call context.
-    /// </remarks>
-    private static void ThrowIfInsufficientStack()
-    {
-        if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
-            throw new TomlSerializationException(TomlResourceStrings.Op_Invalid_WriterStackTooDeep);
     }
 
     /// <summary>
