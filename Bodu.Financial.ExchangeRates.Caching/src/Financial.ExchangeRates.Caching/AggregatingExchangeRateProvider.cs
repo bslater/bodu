@@ -28,6 +28,37 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// routing.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Wrap each source in its own cache, then group them with per-FX-pair routing.
+/// var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
+/// var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+///
+/// var aggregation = new ExchangeRateAggregationOptions();
+/// aggregation.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+/// aggregation.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+/// aggregation.Routes[new ExchangeRatePair("EUR", "USD")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+///
+/// IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
+///     new[]
+///     {
+///         new NamedDatedExchangeRateProvider("RBA", rba),
+///         new NamedDatedExchangeRateProvider("ECB", ecb),
+///     },
+///     aggregation);
+///
+/// // AUD/USD is routed RBA-then-ECB; EUR/USD is averaged across both.
+/// ExchangeRateLookupResult aud = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), ExchangeRateLookupOptions.Exact);
+///
+/// // Reach a specific source directly when the routed result is not what you want.
+/// if (((AggregatingExchangeRateProvider)provider).TryGetProvider("ECB", out IDatedExchangeRateProvider ecbOnly))
+/// {
+///     ExchangeRateLookupResult ecbRate = ecbOnly.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), ExchangeRateLookupOptions.Exact);
+/// }
+///]]>
+/// </code>
+/// </example>
 public sealed class AggregatingExchangeRateProvider
     : IDatedExchangeRateProvider, IExchangeRateProvider
 {

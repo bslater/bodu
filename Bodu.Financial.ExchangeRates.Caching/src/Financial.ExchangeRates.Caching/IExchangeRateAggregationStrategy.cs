@@ -17,6 +17,44 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// the candidate set and per-pair strategy, and never passes a <see langword="null" /> options value; same-currency
 /// identity is handled by the aggregator before the strategy is consulted.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // A custom strategy that prefers the last candidate able to resolve (reverse priority).
+/// public sealed class LastAvailableStrategy : IExchangeRateAggregationStrategy
+/// {
+///     public bool TryAggregate(string fromIsoCode, string toIsoCode, DateOnly date,
+///         ExchangeRateLookupOptions options, IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+///         out ExchangeRateLookupResult result)
+///     {
+///         for (int i = candidates.Count - 1; i >= 0; i--)
+///         {
+///             if (candidates[i].Provider.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
+///                 return true;
+///         }
+///
+///         result = default;
+///         return false;
+///     }
+///
+///     public async ValueTask<IReadOnlyList<ExchangeRate>> AggregateRangeAsync(string fromIsoCode, string toIsoCode,
+///         DateOnly startDate, DateOnly endDate, IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+///         CancellationToken cancellationToken)
+///     {
+///         for (int i = candidates.Count - 1; i >= 0; i--)
+///         {
+///             IReadOnlyList<ExchangeRate> rates = await candidates[i].Provider
+///                 .GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
+///             if (rates.Count > 0)
+///                 return rates;
+///         }
+///
+///         return Array.Empty<ExchangeRate>();
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 public interface IExchangeRateAggregationStrategy
 {
     /// <summary>
