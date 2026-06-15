@@ -100,6 +100,16 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(value);
 
+        BencodeWriteStack? state = writer.WriteStack;
+        if (state is { HasFailure: true })
+            return;
+
+        if (state is not null && writer.CurrentDepth >= writer.EffectiveMaxDepth)
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, writer.EffectiveMaxDepth));
+            return;
+        }
+
         writer.WriteStartDictionary();
         foreach (KeyValuePair<TKey, TValue> entry in (IEnumerable<KeyValuePair<TKey, TValue>>)value)
         {
@@ -108,6 +118,8 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
 
             writer.WritePropertyName(FormatKey(entry.Key));
             _valueConverter.WriteAsObject(writer, entry.Value, options);
+            if (state is { HasFailure: true })
+                return;
         }
 
         writer.WriteEndDictionary();

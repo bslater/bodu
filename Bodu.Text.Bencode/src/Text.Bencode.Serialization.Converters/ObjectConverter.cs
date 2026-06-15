@@ -109,9 +109,22 @@ internal sealed class ObjectConverter<T>
         if (value is null)
             return;
 
+        BencodeWriteStack? state = writer.WriteStack;
+        if (state is { HasFailure: true })
+            return;
+
         (value as IBencodeOnSerializing)?.OnSerializing();
 
         TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
+
+        // Refuse to descend past the ceiling before opening the dictionary, so the failure is recorded cooperatively
+        // and the recursion unwinds through returns rather than throwing from the deepest writer frame.
+        if (state is not null && writer.CurrentDepth >= writer.EffectiveMaxDepth)
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, writer.EffectiveMaxDepth));
+            return;
+        }
+
         writer.WriteStartDictionary();
         foreach (PropertyMetadata property in metadata.Properties)
         {
@@ -121,6 +134,8 @@ internal sealed class ObjectConverter<T>
 
             writer.WritePropertyName(property.WireName);
             property.Converter.WriteAsObject(writer, memberValue, options);
+            if (state is { HasFailure: true })
+                return;
         }
 
         WriteExtensionData(writer, metadata, value);

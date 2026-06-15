@@ -35,8 +35,17 @@ internal static class BencodeSerializerEngine
         ThrowHelper.ThrowIfNull(options);
 
         options.MakeReadOnly();
+
+        // Attach the serializer write state so the converters record an over-deep graph cooperatively and unwind
+        // through returns; the single recorded failure is thrown once here, at the shallow root boundary, rather than
+        // from the deepest recursive frame.
+        var state = new BencodeWriteStack();
+        writer.AttachWriteStack(state);
+
         BencodeConverter converter = options.GetConverter(typeof(T));
         converter.WriteAsObject(writer, value, options);
+
+        state.ThrowIfFailed();
     }
 
     /// <summary>

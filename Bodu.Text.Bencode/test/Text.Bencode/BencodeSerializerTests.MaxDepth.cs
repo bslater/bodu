@@ -91,6 +91,62 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing lists nested far beyond the ceiling on a constrained stack throws a catchable
+    /// <see cref="BencodeSerializationException" /> rather than overflowing, confirming the collection converter detects
+    /// the ceiling cooperatively and unwinds through returns before the deep frames are entered.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNestedListsFarExceedCapOnConstrainedStack_ShouldThrowBencodeSerializationExceptionNotOverflow()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+
+        var inner = new List<object>();
+        var current = inner;
+        for (var i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        {
+            var next = new List<object>();
+            current.Add(next);
+            current = next;
+        }
+
+        var captured = RunOnConstrainedStack(() =>
+        {
+            _ = BencodeSerializer.Serialize(inner, options);
+        });
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(typeof(BencodeSerializationException), captured.GetType());
+    }
+
+    /// <summary>
+    /// Verifies that serializing dictionaries nested far beyond the ceiling on a constrained stack throws a catchable
+    /// <see cref="BencodeSerializationException" /> rather than overflowing, confirming the dictionary converter detects
+    /// the ceiling cooperatively and unwinds through returns before the deep frames are entered.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNestedDictionariesFarExceedCapOnConstrainedStack_ShouldThrowBencodeSerializationExceptionNotOverflow()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+
+        var root = new Dictionary<string, object>();
+        var current = root;
+        for (var i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        {
+            var next = new Dictionary<string, object>();
+            current["child"] = next;
+            current = next;
+        }
+
+        var captured = RunOnConstrainedStack(() =>
+        {
+            _ = BencodeSerializer.Serialize(root, options);
+        });
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(typeof(BencodeSerializationException), captured.GetType());
+    }
+
+    /// <summary>
     /// Verifies that serializing a POCO graph nested no deeper than <see cref="BencodeSerializerOptions.MaxDepth" />
     /// succeeds and emits canonical bytes.
     /// </summary>
@@ -178,6 +234,104 @@ public partial class BencodeSerializerTests
         {
             options.MaxDepth = 8;
         });
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a document nested beyond the absolute ceiling throws
+    /// <see cref="BencodeFormatException" /> even when the configured maximum depth is far larger, confirming the reader
+    /// clamps the caller-supplied <see cref="BencodeSerializerOptions.MaxDepth" /> to the hard ceiling.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDocumentExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowBencodeFormatException()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+        var bytes = BuildNestedDictionaryDocument(BencodeLimits.AbsoluteMaxDepth + 1);
+
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeSerializerOptions.MaxDepth" /> larger than the absolute ceiling is still
+    /// accepted by the property, confirming the ceiling is enforced while writing or reading rather than at
+    /// configuration time.
+    /// </summary>
+    [TestMethod]
+    public void MaxDepth_WhenSetAboveAbsoluteCap_ShouldBeAccepted()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+
+        Assert.AreEqual(int.MaxValue, options.MaxDepth);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a document nested far beyond the ceiling on a constrained stack throws a catchable
+    /// <see cref="BencodeFormatException" /> rather than overflowing the call stack, confirming the reader's iterative
+    /// depth cap stops the binding recursion before the physical stack is exhausted on a modest stack budget.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDocumentFarExceedsCapOnConstrainedStack_ShouldThrowBencodeFormatExceptionNotOverflow()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+        var bytes = BuildNestedDictionaryDocument((BencodeLimits.AbsoluteMaxDepth * 32) + 1);
+
+        var captured = RunOnConstrainedStack(() =>
+        {
+            _ = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
+        });
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(typeof(BencodeFormatException), captured.GetType());
+    }
+
+    /// <summary>
+    /// Runs <paramref name="work" /> on a deliberately constrained 256 KB thread stack, returning the exception it threw
+    /// or <see langword="null" /> when it completed. A process-terminating <see cref="StackOverflowException" /> cannot
+    /// be captured, so a non-null catchable result confirms the operation stayed within the stack budget.
+    /// </summary>
+    /// <param name="work">The operation to run.</param>
+    /// <returns>The captured exception, or <see langword="null" /> when the operation completed.</returns>
+    private static Exception? RunOnConstrainedStack(Action work)
+    {
+        Exception? captured = null;
+        var worker = new Thread(
+            () =>
+            {
+                try
+                {
+                    work();
+                }
+                catch (Exception ex)
+                {
+                    captured = ex;
+                }
+            },
+            maxStackSize: 256 << 10);
+
+        worker.Start();
+        worker.Join();
+
+        return captured;
+    }
+
+    /// <summary>
+    /// Builds a Bencode document of <paramref name="depth" /> nested dictionaries under a single recurring <c>Child</c>
+    /// key, used to drive the reader and binder to a controlled nesting depth.
+    /// </summary>
+    /// <param name="depth">The number of nested dictionaries to emit.</param>
+    /// <returns>The Bencode source bytes.</returns>
+    private static byte[] BuildNestedDictionaryDocument(int depth)
+    {
+        var builder = new StringBuilder();
+        for (var i = 0; i < depth - 1; i++)
+            builder.Append("d5:Child");
+        builder.Append("de");
+        for (var i = 0; i < depth - 1; i++)
+            builder.Append('e');
+
+        return Encoding.Latin1.GetBytes(builder.ToString());
     }
 
     /// <summary>
