@@ -35,9 +35,17 @@ public class DistributedExchangeRateCacheOptions
     /// <value>The key prefix, or <see langword="null" /> to write keys without a prefix.</value>
     /// <returns>The configured key prefix, or <see langword="null" /> when none is set.</returns>
     /// <remarks>
+    /// <para>
     /// A prefix namespaces the cache's entries within a shared distributed store so that several applications, or
     /// several caches over different providers, do not collide. When set it is included verbatim at the front of every
     /// key; when unset, keys begin with the provider name.
+    /// </para>
+    /// <para>
+    /// Validation rejects only a value that is non-null but consists solely of white space. It does not constrain
+    /// length or screen for control characters, so a prefix that a particular
+    /// <see cref="Microsoft.Extensions.Caching.Distributed.IDistributedCache" /> backend rejects as a key is not caught
+    /// here and surfaces only when the backing store is exercised.
+    /// </para>
     /// </remarks>
     public string? KeyPrefix { get; set; }
 

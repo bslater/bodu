@@ -309,6 +309,12 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="result">The resolved lookup result returned by the inner provider.</param>
     /// <param name="now">The instant to stamp the cached row with.</param>
+    /// <remarks>
+    /// A single-date miss caches only the resolved row through <see cref="IExchangeRateCache.Store" /> and records no
+    /// coverage window, so a later range query that spans the same day still refetches it. This asymmetry is by design:
+    /// a single-date serve is satisfied per row, whereas only a range fetch establishes the contiguous coverage a range
+    /// serve requires.
+    /// </remarks>
     private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);

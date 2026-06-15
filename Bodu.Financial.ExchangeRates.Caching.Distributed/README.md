@@ -18,6 +18,9 @@ Because it depends only on the `IDistributedCache` abstraction it is fully unit-
 * The value is a single JSON blob carrying both the cached rate rows and the recorded coverage windows.
 * Decimal rates are serialized as invariant strings and all dates and instants as invariant ISO text (`yyyy-MM-dd` for
   dates, round-trip `"O"` for instants) so precision and scale round-trip losslessly.
+* Each rate row carries an additive optional `observedAtUtc` JSON property holding the upstream fetch instant
+  (`ExchangeRate.FetchedAtUtc`), distinct from the row's cache-write instant. It is omitted from the JSON when `null`; a
+  legacy blob written before the property existed (or a row whose source supplied no fetch instant) reads back `null`.
 
 ## Behaviour
 
@@ -41,6 +44,11 @@ Because it depends only on the `IDistributedCache` abstraction it is fully unit-
   decorator's `StoreFetchedRange` blob set is atomic per write (each writer persists a self-consistent rows-plus-coverage
   blob, so a concurrent overwrite loses an update but never tears a half into another writer's blob). A backing-store
   failure or a corrupt blob degrades to an empty read or skipped write rather than throwing.
+
+Because the persisted `observedAtUtc` is restored onto a served rate's `ExchangeRate.FetchedAtUtc`, a cache-served rate
+reports its **original** upstream fetch instant (data age), distinct from the cache-write age surfaced through
+`ExchangeRateLookupResult.Provenance` (`CachedAtUtc` / `Age`). See the served-rate provenance notes in the
+`Bodu.Financial.ExchangeRates.Caching` README.
 
 ## When to use
 

@@ -100,4 +100,31 @@ configurable on `CachingExchangeRateOptions`:
 The aggregator's route-selected, aggregated, and unresolved diagnostics are configurable on
 `ExchangeRateAggregationOptions`.
 
+## Served-rate provenance & data age
+
+Every `ExchangeRateLookupResult` carries an `ExchangeRateProvenance` describing where the rate came from:
+
+- `Origin == Live` — the value was resolved directly by a provider (for a cache-fronted provider, a miss the inner
+  provider satisfied). `Backend`, `CachedAtUtc`, and `Age` are all `null`.
+- `Origin == Cache` — the value was served from a cache without consulting the provider. `Backend` is the cache's
+  runtime identity, `CachedAtUtc` is the instant the served data was written to the cache, and `Age` is the elapsed
+  time since then, clamped to be never negative (`Age >= 0`, since a row may be written marginally ahead of the lookup
+  clock).
+
+`Backend` is a **diagnostic** runtime identity (the cache type's name), not a stable key — do not parse it or branch on
+it as if it were part of the contract.
+
+Two ages travel with a cache-served rate and are deliberately distinct:
+
+- **Cache-write age** — `Provenance.Age` (and `Provenance.CachedAtUtc`) is anchored to when the row was written to the
+  cache.
+- **Data age** — `ExchangeRate.FetchedAtUtc` carries the *upstream* fetch instant end to end. A provider stamps it when
+  it loads a rate; the cache persists it (as `CachedExchangeRate.ObservedAtUtc`) and restores it onto the rate it
+  serves, so a cache-served rate reports the **original** fetch instant. Data age is `now - ExchangeRate.FetchedAtUtc`,
+  independent of how recently the row happened to be (re)written to the cache.
+
+`FetchedAtUtc` is excluded from `ExchangeRate` equality. The TOML file cache persists it as an optional `ObservedAtUtc`
+entry key per row; an entry written before the instant was tracked (or whose source never supplied one) has no key and
+reads back `null`. The SQLite and distributed caches persist it the same way through their own additive fields.
+
 Part of the [Bodu](https://github.com/bodu/bodu) utility library.

@@ -63,6 +63,12 @@ public interface IExchangeRateCache
     /// <param name="rates">The rates to store.</param>
     /// <param name="duration">The duration a cached rate remains fresh after it was cached.</param>
     /// <param name="asOf">The instant against which stale rows are pruned.</param>
+    /// <remarks>
+    /// This stores rate rows only and records no coverage window, so it is the path a single-date miss caches its
+    /// resolved row through. Because no coverage is recorded, a later range lookup that spans those dates still
+    /// refetches rather than serving from these rows — by design, since only a range fetch (through
+    /// <see cref="StoreFetchedRange" />) establishes the contiguous coverage a range serve requires.
+    /// </remarks>
     void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf);
 
     /// <summary>
