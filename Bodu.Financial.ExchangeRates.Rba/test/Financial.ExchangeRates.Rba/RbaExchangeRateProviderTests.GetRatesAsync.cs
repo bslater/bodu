@@ -19,7 +19,7 @@ public partial class RbaExchangeRateProviderTests
         RbaExchangeRateProvider provider = await CreatePreloadedAsync();
 
         IReadOnlyList<ExchangeRate> rates =
-            await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31));
+            [.. await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31))];
 
         Assert.IsTrue(rates.Count > 0);
         Assert.IsTrue(rates.All(r => r.Date >= new DateOnly(2023, 1, 3) && r.Date <= new DateOnly(2023, 1, 31)));
@@ -37,7 +37,7 @@ public partial class RbaExchangeRateProviderTests
         RbaExchangeRateProvider provider = await CreatePreloadedAsync();
 
         IReadOnlyList<ExchangeRate> rates =
-            await provider.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
+            [.. await provider.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3))];
 
         Assert.AreEqual(1, rates.Count);
         Assert.IsTrue(rates[0].IsInverted);

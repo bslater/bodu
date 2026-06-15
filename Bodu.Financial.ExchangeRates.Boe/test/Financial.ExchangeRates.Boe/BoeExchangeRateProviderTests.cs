@@ -118,7 +118,7 @@ public partial class BoeExchangeRateProviderTests
     {
         BoeExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        var latest = provider.GetRate("GBP", "USD");
+        var latest = provider.GetRate("GBP", "USD").Rate.Rate;
 
         Assert.AreEqual(1.2050m, latest);
     }

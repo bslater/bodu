@@ -118,7 +118,7 @@ public partial class RbaExchangeRateProviderTests
     {
         RbaExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        var latest = provider.GetRate("AUD", "USD");
+        var latest = provider.GetRate("AUD", "USD").Rate.Rate;
 
         Assert.AreEqual(0.7029m, latest);
     }

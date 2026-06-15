@@ -170,6 +170,10 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
             new(new[] { new ExchangeRate("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m, "RBA") });
 
         /// <inheritdoc />
+        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null) =>
+            Inner.GetRate(fromIsoCode, toIsoCode, options);
+
+        /// <inheritdoc />
         public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null) =>
             Inner.GetRate(fromIsoCode, toIsoCode, date, options);
 
@@ -178,7 +182,19 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
             Inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
 
         /// <inheritdoc />
-        public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+            Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
+
+        /// <inheritdoc />
+        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+            Inner.GetRateAsync(fromIsoCode, toIsoCode, options, cancellationToken);
+
+        /// <inheritdoc />
+        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+            Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken);
+
+        /// <inheritdoc />
+        public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
             Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
     }
 }

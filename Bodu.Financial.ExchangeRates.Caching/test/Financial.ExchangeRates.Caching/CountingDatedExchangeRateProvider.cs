@@ -50,6 +50,13 @@ internal sealed class CountingDatedExchangeRateProvider
     public int TotalCallCount => GetRateCallCount + TryGetRateCallCount;
 
     /// <inheritdoc />
+    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    {
+        GetRateCallCount++;
+        return _inner.GetRate(fromIsoCode, toIsoCode, options);
+    }
+
+    /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
     {
         GetRateCallCount++;
@@ -64,7 +71,28 @@ internal sealed class CountingDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    {
+        GetRatesAsyncCallCount++;
+        return _inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
+    }
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        GetRateCallCount++;
+        return _inner.GetRateAsync(fromIsoCode, toIsoCode, options, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        GetRateCallCount++;
+        return _inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         GetRatesAsyncCallCount++;
         return _inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
