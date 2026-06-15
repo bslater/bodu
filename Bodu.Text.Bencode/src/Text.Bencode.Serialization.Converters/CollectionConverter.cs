@@ -81,6 +81,16 @@ internal sealed class CollectionConverter<TCollection, TElement>
     {
         ThrowHelper.ThrowIfNull(value);
 
+        BencodeWriteStack? state = writer.WriteStack;
+        if (state is { HasFailure: true })
+            return;
+
+        if (state is not null && writer.CurrentDepth >= writer.EffectiveMaxDepth)
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterMaxDepthExceeded, writer.EffectiveMaxDepth));
+            return;
+        }
+
         writer.WriteStartList();
         foreach (TElement element in (IEnumerable<TElement>)value)
         {
@@ -88,6 +98,8 @@ internal sealed class CollectionConverter<TCollection, TElement>
                 throw new BencodeSerializationException(BencodeResourceStrings.Op_NotSupported_NullCollectionElement);
 
             _elementConverter.WriteAsObject(writer, element, options);
+            if (state is { HasFailure: true })
+                return;
         }
 
         writer.WriteEndList();

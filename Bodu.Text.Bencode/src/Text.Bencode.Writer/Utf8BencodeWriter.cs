@@ -8,6 +8,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Globalization;
 using System.Text;
+using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode.Writer;
 
@@ -140,6 +141,30 @@ public ref struct Utf8BencodeWriter
             MaxDepth = _maxDepth,
             AllowMultipleRootValues = _allowMultipleRootValues,
         };
+
+    /// <summary>
+    /// Gets the effective maximum container nesting depth this writer enforces, after clamping to
+    /// <see cref="BencodeLimits.AbsoluteMaxDepth" />.
+    /// </summary>
+    /// <returns>The effective maximum depth.</returns>
+    internal readonly int EffectiveMaxDepth =>
+        _maxDepth;
+
+    /// <summary>
+    /// Gets the serializer write state attached to this writer, or <see langword="null" /> when the writer is used
+    /// directly rather than by the serializer.
+    /// </summary>
+    /// <returns>The attached <see cref="BencodeWriteStack" />, or <see langword="null" />.</returns>
+    internal readonly BencodeWriteStack? WriteStack =>
+        _root.WriteStack;
+
+    /// <summary>
+    /// Attaches the serializer write state to this writer so the converters can record an over-deep graph cooperatively
+    /// instead of throwing from deep in the recursion.
+    /// </summary>
+    /// <param name="state">The write state to attach.</param>
+    internal readonly void AttachWriteStack(BencodeWriteStack state) =>
+        _root.WriteStack = state;
 
     /// <summary>
     /// Writes the start of a list.
@@ -749,6 +774,13 @@ public ref struct Utf8BencodeWriter
         /// </summary>
         /// <returns><see langword="true" /> once the document's root value has begun.</returns>
         internal bool HasRootValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the serializer write state, when the writer is driven by the serializer; otherwise
+        /// <see langword="null" />.
+        /// </summary>
+        /// <returns>The attached write state, or <see langword="null" />.</returns>
+        internal BencodeWriteStack? WriteStack { get; set; }
     }
 
     /// <summary>
