@@ -99,7 +99,7 @@ public sealed class AverageStrategy
     }
 
     /// <inheritdoc />
-    public async ValueTask<IReadOnlyList<ExchangeRateLookupResult>> AggregateRangeAsync(
+    public async ValueTask<IReadOnlyList<ExchangeRate>> AggregateRangeAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -110,22 +110,22 @@ public sealed class AverageStrategy
         ThrowHelper.ThrowIfNull(candidates);
 
         if (candidates.Count == 0)
-            return Array.Empty<ExchangeRateLookupResult>();
+            return Array.Empty<ExchangeRate>();
 
         // Gather each candidate's observations keyed by date; the last observation wins for a duplicated date.
         List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
         foreach (NamedDatedExchangeRateProvider candidate in candidates)
         {
-            IEnumerable<ExchangeRateLookupResult> rates =
+            IEnumerable<ExchangeRate> rates =
                 await candidate.Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
 
             Dictionary<DateOnly, decimal> byDate = new();
-            foreach (ExchangeRateLookupResult rate in rates)
-                byDate[rate.Rate.Date] = rate.Rate.Rate;
+            foreach (ExchangeRate rate in rates)
+                byDate[rate.Date] = rate.Rate;
 
             // A missing or empty candidate makes the inner join empty; return early.
             if (byDate.Count == 0)
-                return Array.Empty<ExchangeRateLookupResult>();
+                return Array.Empty<ExchangeRate>();
 
             perCandidate.Add(byDate);
         }
@@ -138,7 +138,7 @@ public sealed class AverageStrategy
                 smallest = perCandidate[i];
         }
 
-        List<ExchangeRateLookupResult> result = new(smallest.Count);
+        List<ExchangeRate> result = new(smallest.Count);
         foreach (DateOnly date in smallest.Keys)
         {
             var sum = 0m;
@@ -156,13 +156,10 @@ public sealed class AverageStrategy
             }
 
             if (present)
-            {
-                ExchangeRate averaged = new(fromIsoCode, toIsoCode, date, sum / perCandidate.Count, _providerLabel);
-                result.Add(new ExchangeRateLookupResult(averaged, date, ExchangeRateDateResolution.Exact, 0));
-            }
+                result.Add(new ExchangeRate(fromIsoCode, toIsoCode, date, sum / perCandidate.Count, _providerLabel));
         }
 
-        result.Sort(static (left, right) => left.Rate.Date.CompareTo(right.Rate.Date));
+        result.Sort(static (left, right) => left.Date.CompareTo(right.Date));
         return result;
     }
 }

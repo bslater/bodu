@@ -166,7 +166,7 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRateLookupResult> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
@@ -175,18 +175,18 @@ public abstract class CachingExchangeRateProviderBase
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRateLookupResult> cached))
+        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             return cached;
         }
 
-        IReadOnlyList<ExchangeRateLookupResult> fetched = [.. Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
+        IReadOnlyList<ExchangeRate> fetched = [.. Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
         return StoreFetchedRange(duration, pair, startDate, endDate, fetched, now, fromIsoCode, toIsoCode);
     }
 
     /// <inheritdoc />
-    public async ValueTask<IEnumerable<ExchangeRateLookupResult>> GetRatesAsync(
+    public async ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -200,13 +200,13 @@ public abstract class CachingExchangeRateProviderBase
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRateLookupResult> cached))
+        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             return cached;
         }
 
-        IReadOnlyList<ExchangeRateLookupResult> fetched =
+        IReadOnlyList<ExchangeRate> fetched =
             [.. await Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false)];
         return StoreFetchedRange(duration, pair, startDate, endDate, fetched, now, fromIsoCode, toIsoCode);
     }
@@ -228,18 +228,18 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="fromIsoCode">The source-currency ISO code, for diagnostics.</param>
     /// <param name="toIsoCode">The destination-currency ISO code, for diagnostics.</param>
     /// <returns>The stored range, or an empty sequence when <paramref name="fetched" /> is empty.</returns>
-    private IReadOnlyList<ExchangeRateLookupResult> StoreFetchedRange(
+    private IReadOnlyList<ExchangeRate> StoreFetchedRange(
         TimeSpan duration,
         ExchangeRatePair pair,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<ExchangeRateLookupResult> fetched,
+        IReadOnlyList<ExchangeRate> fetched,
         DateTimeOffset now,
         string fromIsoCode,
         string toIsoCode)
     {
         if (fetched.Count == 0)
-            return Array.Empty<ExchangeRateLookupResult>();
+            return Array.Empty<ExchangeRate>();
 
         StoreRange(duration, pair, fetched, now);
 
@@ -307,25 +307,22 @@ public abstract class CachingExchangeRateProviderBase
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRateLookupResult> result)
+    private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result)
     {
         // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched.
         if (!_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
         {
-            result = Array.Empty<ExchangeRateLookupResult>();
+            result = Array.Empty<ExchangeRate>();
             return false;
         }
 
         var provider = _cache.Provider;
         IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
-        List<ExchangeRateLookupResult> rates = new();
+        List<ExchangeRate> rates = new();
         foreach (CachedExchangeRate rate in fresh)
         {
             if (rate.Date >= startDate && rate.Date <= endDate)
-            {
-                ExchangeRate observed = new(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider);
-                rates.Add(new ExchangeRateLookupResult(observed, rate.Date, ExchangeRateDateResolution.Exact, 0));
-            }
+                rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider));
         }
 
         result = rates;
@@ -354,11 +351,11 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="pair">The requested currency pair.</param>
     /// <param name="rates">The rates returned by the inner provider.</param>
     /// <param name="now">The instant to stamp the cached rows with.</param>
-    private void StoreRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRateLookupResult> rates, DateTimeOffset now)
+    private void StoreRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateTimeOffset now)
     {
         var rows = new CachedExchangeRate[rates.Count];
         for (var i = 0; i < rates.Count; i++)
-            rows[i] = new CachedExchangeRate(rates[i].Rate.Date, rates[i].Rate.Rate, now);
+            rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now);
 
         _cache.Store(pair, rows, duration, now);
     }

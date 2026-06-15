@@ -235,7 +235,7 @@ public sealed class FixedDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRateLookupResult> GetRates(
+    public IEnumerable<ExchangeRate> GetRates(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -247,18 +247,18 @@ public sealed class FixedDatedExchangeRateProvider
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ExchangeRateRangeInverted, nameof(endDate));
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-        List<ExchangeRateLookupResult> result = new();
+        List<ExchangeRate> result = new();
 
         // Prefer the directly quoted series; fall back to the reverse pair, reporting each observation inverted.
         if (!TryCollectRange(pair, startDate, endDate, isInverted: false, result))
             _ = TryCollectRange(pair.Inverse(), startDate, endDate, isInverted: true, result);
 
-        result.Sort(static (left, right) => left.Rate.Date.CompareTo(right.Rate.Date));
+        result.Sort(static (left, right) => left.Date.CompareTo(right.Date));
         return result;
     }
 
     /// <inheritdoc />
-    public ValueTask<IEnumerable<ExchangeRateLookupResult>> GetRatesAsync(
+    public ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -456,7 +456,7 @@ public sealed class FixedDatedExchangeRateProvider
         DateOnly startDate,
         DateOnly endDate,
         bool isInverted,
-        List<ExchangeRateLookupResult> result)
+        List<ExchangeRate> result)
     {
         var priority = _providerPriority;
         for (var i = 0; i < priority.Length; i++)
@@ -472,8 +472,7 @@ public sealed class FixedDatedExchangeRateProvider
                 if (observation.Date < startDate || observation.Date > endDate)
                     continue;
 
-                var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, observation.Date, observation.Rate, series.Provider, isInverted);
-                result.Add(new ExchangeRateLookupResult(rate, observation.Date, ExchangeRateDateResolution.Exact, 0));
+                result.Add(ExchangeRate.FromObservedRate(reportedFrom, reportedTo, observation.Date, observation.Rate, series.Provider, isInverted));
             }
 
             return true;

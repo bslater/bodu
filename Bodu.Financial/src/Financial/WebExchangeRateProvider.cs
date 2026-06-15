@@ -103,7 +103,7 @@ public abstract class WebExchangeRateProvider
     /// Gets the provider identifier stamped on every rate this provider produces.
     /// </summary>
     /// <returns>The provider identifier.</returns>
-    protected abstract string ProviderName { get; }
+    protected abstract string ProviderId { get; }
 
     /// <summary>
     /// Gets a value indicating whether a synchronous lookup may block to fetch a missing window on demand.
@@ -163,12 +163,13 @@ public abstract class WebExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRateLookupResult> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
         if (endDate < startDate)
             throw CreateRangeInvertedException(startDate, endDate);
+        ValidateRangeRequest(fromIsoCode, toIsoCode, startDate, endDate);
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
 
@@ -218,7 +219,7 @@ public abstract class WebExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public async ValueTask<IEnumerable<ExchangeRateLookupResult>> GetRatesAsync(
+    public async ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -229,6 +230,7 @@ public abstract class WebExchangeRateProvider
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
         if (endDate < startDate)
             throw CreateRangeInvertedException(startDate, endDate);
+        ValidateRangeRequest(fromIsoCode, toIsoCode, startDate, endDate);
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
         await EnsureLoadedAsync(pair, startDate, endDate, cancellationToken).ConfigureAwait(false);
@@ -284,7 +286,7 @@ public abstract class WebExchangeRateProvider
         var count = 0;
         foreach (ExchangeRate rate in rates)
         {
-            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderName, rate.Date, rate.Rate);
+            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderId, rate.Date, rate.Rate);
             OnObservationIngested(rate);
             count++;
         }
@@ -316,6 +318,19 @@ public abstract class WebExchangeRateProvider
     /// </summary>
     /// <param name="date">The date around which the fetch was performed.</param>
     protected virtual void OnSynchronousNetworkFetch(DateOnly date)
+    {
+    }
+
+    /// <summary>
+    /// Validates a range request against feed-specific preconditions before any fetch is attempted. The default does
+    /// nothing; derived types may override to reject unsupported pairs (for example, a single-issuer feed that quotes
+    /// only against one base currency).
+    /// </summary>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    protected virtual void ValidateRangeRequest(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
     }
 

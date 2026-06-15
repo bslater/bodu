@@ -130,11 +130,7 @@ public interface IDatedExchangeRateProvider
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
-    /// <returns>
-    /// The rates in the range ordered by date, each wrapped in an <see cref="ExchangeRateLookupResult" /> reporting the
-    /// observation's own date with <see cref="ExchangeRateDateResolution.Exact" /> resolution and a zero offset; an
-    /// empty sequence when none are available.
-    /// </returns>
+    /// <returns>The rates in the range ordered by date, or an empty sequence when none are available.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
@@ -147,7 +143,7 @@ public interface IDatedExchangeRateProvider
     /// within the window rather than resolving a single date. An implementation backed by a remote feed may block to
     /// fetch on demand, or serve only already-loaded data; use <see cref="GetRatesAsync" /> to fetch without blocking.
     /// </remarks>
-    IEnumerable<ExchangeRateLookupResult> GetRates(
+    IEnumerable<ExchangeRate> GetRates(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -222,10 +218,7 @@ public interface IDatedExchangeRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the operation.</param>
     /// <returns>
-    /// A task that yields the rates in the range ordered by date, each wrapped in an
-    /// <see cref="ExchangeRateLookupResult" /> reporting the observation's own date with
-    /// <see cref="ExchangeRateDateResolution.Exact" /> resolution and a zero offset; an empty sequence when none are
-    /// available.
+    /// A task that yields the rates in the range ordered by date, or an empty sequence when none are available.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
@@ -239,7 +232,7 @@ public interface IDatedExchangeRateProvider
     /// within the window rather than resolving a single date. Implementations backed by a remote feed may fetch on
     /// demand, which is why the method is asynchronous.
     /// </remarks>
-    ValueTask<IEnumerable<ExchangeRateLookupResult>> GetRatesAsync(
+    ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,

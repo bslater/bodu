@@ -53,7 +53,7 @@ public sealed class PriorityFallbackStrategy
     }
 
     /// <inheritdoc />
-    public async ValueTask<IReadOnlyList<ExchangeRateLookupResult>> AggregateRangeAsync(
+    public async ValueTask<IReadOnlyList<ExchangeRate>> AggregateRangeAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -65,13 +65,13 @@ public sealed class PriorityFallbackStrategy
 
         for (var i = 0; i < candidates.Count; i++)
         {
-            IReadOnlyList<ExchangeRateLookupResult> rates =
+            IReadOnlyList<ExchangeRate> rates =
                 [.. await candidates[i].Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false)];
 
             if (rates.Count > 0)
                 return rates;
         }
 
-        return Array.Empty<ExchangeRateLookupResult>();
+        return Array.Empty<ExchangeRate>();
     }
 }

@@ -37,19 +37,19 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///         return false;
 ///     }
 ///
-///     public async ValueTask<IReadOnlyList<ExchangeRateLookupResult>> AggregateRangeAsync(string fromIsoCode, string toIsoCode,
+///     public async ValueTask<IReadOnlyList<ExchangeRate>> AggregateRangeAsync(string fromIsoCode, string toIsoCode,
 ///         DateOnly startDate, DateOnly endDate, IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
 ///         CancellationToken cancellationToken)
 ///     {
 ///         for (int i = candidates.Count - 1; i >= 0; i--)
 ///         {
-///             IReadOnlyList<ExchangeRateLookupResult> rates = [.. await candidates[i].Provider
+///             IReadOnlyList<ExchangeRate> rates = [.. await candidates[i].Provider
 ///                 .GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken)];
 ///             if (rates.Count > 0)
 ///                 return rates;
 ///         }
 ///
-///         return Array.Empty<ExchangeRateLookupResult>();
+///         return Array.Empty<ExchangeRate>();
 ///     }
 /// }
 ///]]>
@@ -88,7 +88,7 @@ public interface IExchangeRateAggregationStrategy
     /// <param name="candidates">The ordered candidate providers to combine.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the operation.</param>
     /// <returns>The combined rates ordered by date, or an empty list when none are available.</returns>
-    ValueTask<IReadOnlyList<ExchangeRateLookupResult>> AggregateRangeAsync(
+    ValueTask<IReadOnlyList<ExchangeRate>> AggregateRangeAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,

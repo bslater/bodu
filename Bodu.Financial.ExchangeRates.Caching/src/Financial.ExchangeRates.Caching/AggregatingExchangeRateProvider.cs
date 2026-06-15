@@ -251,7 +251,7 @@ public sealed class AggregatingExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<ExchangeRateLookupResult> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public IEnumerable<ExchangeRate> GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
 #pragma warning disable VSTHRD002 // The aggregation strategy exposes range combination only asynchronously.
         return GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, CancellationToken.None).AsTask().GetAwaiter().GetResult();
@@ -259,7 +259,7 @@ public sealed class AggregatingExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public async ValueTask<IEnumerable<ExchangeRateLookupResult>> GetRatesAsync(
+    public async ValueTask<IEnumerable<ExchangeRate>> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
