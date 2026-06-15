@@ -72,3 +72,22 @@ python3 tools/cipher-vectors/wide_serpent.py
 ```
 
 If the script's output ever diverges from the KAT rows in the test project, either the C# implementation has regressed or this port has, and the discrepancy must be investigated before changing either side.
+
+## CodeStyle analyzer (PowerShell 7+)
+
+| Script | Purpose |
+| --- | --- |
+| `Update-CodeStyleAnalyzer.ps1` | One-command refresh of the in-repo `Bodu.CodeStyle.XmlDocumentation` analyzer: packs it into `local-packages/` (delegating to `bld/pack-codestyle-analyzer.ps1`, which also evicts NuGet's global cache), force-restores a consumer, then builds it so Roslyn loads the new payload. Run it after changing anything under `Bodu.CodeStyle/`. |
+
+```pwsh
+# Repack the analyzer, then force-restore + build the whole solution against it
+pwsh ./tools/Update-CodeStyleAnalyzer.ps1
+
+# Narrow the restore/build target for faster iteration
+pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -Target Bodu.Core/src/Bodu.Core.csproj
+
+# Pack + force-restore only (skip the consumer build)
+pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -SkipBuild
+```
+
+The analyzer is always packed in **Release** (the configuration committed to `local-packages/` and used by CI); `-Configuration` governs only the consumer restore/build. Packing runs under the SDK 8 pin in `Bodu.CodeStyle/global.json` while the consumer build runs under the repo-root SDK 10 pin — each `dotnet` invocation resolves its own SDK from its working directory. After a successful run, commit the regenerated `local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg` alongside your source changes. See `Bodu.CodeStyle/README.md` for the full analyzer-authoring workflow.
