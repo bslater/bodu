@@ -22,6 +22,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// The <c>Cache*LogLevel</c> members set the <see cref="LogLevel" /> at which each cache diagnostic is logged, so
 /// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
 /// default to <see cref="LogLevel.Trace" /> because they run on the read hot path; the range events default to
+/// <see cref="LogLevel.Debug" />. The per-serve <see cref="RateProvenanceLogLevel" /> records the lineage of every
+/// served rate — live versus cache hit, the backend identity, and the served data's age — and also defaults to
 /// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
 /// </para>
 /// </remarks>
@@ -95,6 +97,17 @@ public sealed class CachingExchangeRateOptions
     public LogLevel CacheRangeRefetchLogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
+    /// Gets or sets the level at which the provenance of every served rate is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    /// <remarks>
+    /// This per-serve diagnostic records the lineage of each result — whether it was resolved live or from the cache,
+    /// the cache backend that served it, and the served data's age — and so is richer than the per-concern hit and miss
+    /// events on the read hot path. Set it to <see cref="LogLevel.None" /> to suppress provenance entirely.
+    /// </remarks>
+    public LogLevel RateProvenanceLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
     /// Gets or sets the lookup options applied by the timeless
     /// <see cref="IExchangeRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
     /// UTC date.
@@ -118,8 +131,8 @@ public sealed class CachingExchangeRateOptions
     /// </summary>
     /// <exception cref="ArgumentException">
     /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive,
-    /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when any
-    /// <c>Cache*LogLevel</c> is not a defined <see cref="LogLevel" />.
+    /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when
+    /// any <c>Cache*LogLevel</c> or <see cref="RateProvenanceLogLevel" /> is not a defined <see cref="LogLevel" />.
     /// </exception>
     /// <remarks>
     /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
@@ -207,14 +220,16 @@ public sealed class CachingExchangeRateOptions
     }
 
     /// <summary>
-    /// Reports whether every configurable cache log level is a defined <see cref="LogLevel" /> value.
+    /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when every <c>Cache*LogLevel</c> property is defined; otherwise <see langword="false" />.
+    /// <see langword="true" /> when every <c>Cache*LogLevel</c> property and <see cref="RateProvenanceLogLevel" /> is
+    /// defined; otherwise <see langword="false" />.
     /// </returns>
     private bool AreLogLevelsDefined() =>
         Enum.IsDefined(CacheHitLogLevel)
         && Enum.IsDefined(CacheMissLogLevel)
         && Enum.IsDefined(CacheRangeHitLogLevel)
-        && Enum.IsDefined(CacheRangeRefetchLogLevel);
+        && Enum.IsDefined(CacheRangeRefetchLogLevel)
+        && Enum.IsDefined(RateProvenanceLogLevel);
 }
