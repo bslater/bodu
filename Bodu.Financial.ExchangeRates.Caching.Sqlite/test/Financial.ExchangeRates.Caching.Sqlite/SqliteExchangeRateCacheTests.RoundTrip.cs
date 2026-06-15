@@ -98,6 +98,48 @@ public sealed partial class SqliteExchangeRateCacheTests
     }
 
     /// <summary>
+    /// Verifies that a row's upstream fetch instant round-trips with its offset and sub-second precision intact across a
+    /// writer-dispose and reader-reopen, confirming the <c>observed_at</c> column persists losslessly.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenObservedAtUtcHasOffsetAndSubSeconds_ShouldRoundTripAcrossReopen()
+    {
+        var path = NewDatabasePath();
+        var now = DateTimeOffset.UtcNow;
+        var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+
+        SqliteExchangeRateCache writer = CreateFileCache(path);
+        writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now, observedAt) }, Duration, now);
+        writer.Dispose();
+
+        SqliteExchangeRateCache reader = CreateFileCache(path);
+        CachedExchangeRate row = reader.GetRates(Pair, Duration, now)[0];
+
+        Assert.AreEqual(observedAt, row.ObservedAtUtc);
+        Assert.AreEqual(observedAt.Offset, row.ObservedAtUtc!.Value.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a row stored without an upstream fetch instant reads back with a <see langword="null" />
+    /// <see cref="CachedExchangeRate.ObservedAtUtc" /> across a reopen, so a missing instant survives as null.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenObservedAtUtcNull_ShouldReadBackNullAcrossReopen()
+    {
+        var path = NewDatabasePath();
+        var now = DateTimeOffset.UtcNow;
+
+        SqliteExchangeRateCache writer = CreateFileCache(path);
+        writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
+        writer.Dispose();
+
+        SqliteExchangeRateCache reader = CreateFileCache(path);
+        CachedExchangeRate row = reader.GetRates(Pair, Duration, now)[0];
+
+        Assert.IsNull(row.ObservedAtUtc);
+    }
+
+    /// <summary>
     /// Verifies that a recorded coverage window's dates and fetch instant round-trip exactly across a reopen.
     /// </summary>
     [TestMethod]

@@ -243,6 +243,11 @@ public abstract class CachingExchangeRateProviderBase
         }
 
         servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+
+        // FixedDatedExchangeRateProvider flattens the cached rows to (Date, Rate) and drops the fetch instant, so restore
+        // it from the matching cached row onto the rebuilt rate; the cache-write instant stays separate in the provenance.
+        DateTimeOffset? servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
         return true;
     }
 
@@ -283,7 +288,9 @@ public abstract class CachingExchangeRateProviderBase
         {
             if (rate.Date >= startDate && rate.Date <= endDate)
             {
-                rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider));
+                // This serve path returns the rebuilt rows directly, so the cached fetch instant is stamped onto the
+                // rate here rather than restored later; no FixedDatedExchangeRateProvider round-trip drops it.
+                rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider, isInverted: false, rate.ObservedAtUtc));
                 if (oldest is not { } current || rate.CachedAtUtc < current)
                     oldest = rate.CachedAtUtc;
             }
@@ -305,7 +312,7 @@ public abstract class CachingExchangeRateProviderBase
     private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-        CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now) };
+        CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
         _cache.Store(pair, rows, duration, now);
     }
 
@@ -330,7 +337,7 @@ public abstract class CachingExchangeRateProviderBase
     {
         var rows = new CachedExchangeRate[rates.Count];
         for (var i = 0; i < rates.Count; i++)
-            rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now);
+            rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
 
         return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);
     }
@@ -373,6 +380,56 @@ public abstract class CachingExchangeRateProviderBase
         }
 
         return oldest;
+    }
+
+    /// <summary>
+    /// Resolves the upstream fetch instant that represents a single-date serve: the
+    /// <see cref="CachedExchangeRate.ObservedAtUtc" /> of the candidate row whose date matches the resolved result, or
+    /// the upstream fetch instant of the oldest candidate row (by cache-write instant) when no row matches that date.
+    /// </summary>
+    /// <param name="direct">The fresh candidate rows for the requested pair.</param>
+    /// <param name="inverse">The fresh candidate rows for the inverse pair, empty when inversion is disallowed.</param>
+    /// <param name="resolvedDate">The observation date of the resolved result.</param>
+    /// <returns>
+    /// The upstream fetch instant of the row dated <paramref name="resolvedDate" /> when one exists, otherwise the
+    /// upstream fetch instant of the oldest candidate row, or <see langword="null" /> when no candidate rows are
+    /// present or none carried an upstream fetch instant.
+    /// </returns>
+    /// <remarks>
+    /// Parallels <see cref="ResolveServedInstant" />: a nearest-date or inverse serve has no row dated exactly
+    /// <paramref name="resolvedDate" />, so the oldest candidate's upstream fetch instant is reported, matching the
+    /// cache-write instant the same serve reports through the provenance.
+    /// </remarks>
+    private static DateTimeOffset? ResolveServedObservedInstant(IReadOnlyList<CachedExchangeRate> direct, IReadOnlyList<CachedExchangeRate> inverse, DateOnly resolvedDate)
+    {
+        DateTimeOffset? oldestCachedAt = null;
+        DateTimeOffset? oldestObservedAt = null;
+
+        foreach (CachedExchangeRate row in direct)
+        {
+            if (row.Date == resolvedDate)
+                return row.ObservedAtUtc;
+
+            if (oldestCachedAt is not { } current || row.CachedAtUtc < current)
+            {
+                oldestCachedAt = row.CachedAtUtc;
+                oldestObservedAt = row.ObservedAtUtc;
+            }
+        }
+
+        foreach (CachedExchangeRate row in inverse)
+        {
+            if (row.Date == resolvedDate)
+                return row.ObservedAtUtc;
+
+            if (oldestCachedAt is not { } current || row.CachedAtUtc < current)
+            {
+                oldestCachedAt = row.CachedAtUtc;
+                oldestObservedAt = row.ObservedAtUtc;
+            }
+        }
+
+        return oldestObservedAt;
     }
 
     /// <summary>

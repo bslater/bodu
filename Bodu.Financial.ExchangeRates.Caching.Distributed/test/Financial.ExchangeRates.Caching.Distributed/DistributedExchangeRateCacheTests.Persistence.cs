@@ -128,4 +128,30 @@ public sealed partial class DistributedExchangeRateCacheTests
         Assert.AreEqual(0.5000m, cache.GetRates(Pair, Duration, now)[0].Rate);
         Assert.AreEqual(1.1000m, cache.GetRates(other, Duration, now)[0].Rate);
     }
+
+    /// <summary>
+    /// Verifies that a hand-written pre-C blob — one whose rate object has no <c>observedAtUtc</c> property — reads back
+    /// with a <see langword="null" /> <see cref="CachedExchangeRate.ObservedAtUtc" /> and without error, confirming
+    /// backward compatibility with blobs written before the upstream fetch instant was tracked.
+    /// </summary>
+    [TestMethod]
+    public void GetRates_WhenBlobHasNoObservedAtUtc_ShouldReadRowWithNullObservedAtUtc()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var backingStore = CreateBackingStore();
+        DistributedExchangeRateCache cache = CreateCache(backingStore);
+
+        // A hand-written legacy blob in the Web (camelCase) shape, with a rate object that predates observedAtUtc.
+        var legacyJson =
+            "{\"rates\":[{\"date\":\"2023-01-03\",\"rate\":\"0.5000\",\"cachedAtUtc\":\""
+            + now.ToString("O", System.Globalization.CultureInfo.InvariantCulture)
+            + "\"}],\"coverage\":[]}";
+        backingStore.Set("Test:AUDUSD", System.Text.Encoding.UTF8.GetBytes(legacyJson));
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+
+        Assert.AreEqual(1, rows.Count);
+        Assert.AreEqual(0.5000m, rows[0].Rate);
+        Assert.IsNull(rows[0].ObservedAtUtc);
+    }
 }

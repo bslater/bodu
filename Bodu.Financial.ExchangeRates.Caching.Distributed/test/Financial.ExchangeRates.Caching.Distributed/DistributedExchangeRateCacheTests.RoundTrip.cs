@@ -97,6 +97,63 @@ public sealed partial class DistributedExchangeRateCacheTests
     }
 
     /// <summary>
+    /// Verifies that a row's upstream fetch instant round-trips with its offset and sub-second precision intact through
+    /// the JSON blob, confirming the <c>observedAtUtc</c> property persists losslessly.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenObservedAtUtcHasOffsetAndSubSeconds_ShouldRoundTripThroughBlob()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+        var backingStore = CreateBackingStore();
+
+        DistributedExchangeRateCache writer = CreateCache(backingStore);
+        writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now, observedAt) }, Duration, now);
+
+        DistributedExchangeRateCache reader = CreateCache(backingStore);
+        CachedExchangeRate row = reader.GetRates(Pair, Duration, now)[0];
+
+        Assert.AreEqual(observedAt, row.ObservedAtUtc);
+        Assert.AreEqual(observedAt.Offset, row.ObservedAtUtc!.Value.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a row stored without an upstream fetch instant reads back with a <see langword="null" />
+    /// <see cref="CachedExchangeRate.ObservedAtUtc" /> through the JSON blob, so a missing instant survives as null.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenObservedAtUtcNull_ShouldReadBackNullThroughBlob()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var backingStore = CreateBackingStore();
+
+        DistributedExchangeRateCache writer = CreateCache(backingStore);
+        writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
+
+        DistributedExchangeRateCache reader = CreateCache(backingStore);
+        CachedExchangeRate row = reader.GetRates(Pair, Duration, now)[0];
+
+        Assert.IsNull(row.ObservedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that a row carrying no upstream fetch instant omits the <c>observedAtUtc</c> property from the serialized
+    /// blob, keeping legacy-shaped blobs minimal.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenObservedAtUtcNull_ShouldOmitPropertyFromBlob()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var backingStore = CreateBackingStore();
+        DistributedExchangeRateCache cache = CreateCache(backingStore);
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
+
+        var json = System.Text.Encoding.UTF8.GetString(backingStore.Get("Test:AUDUSD")!);
+        Assert.IsFalse(json.Contains("observedAtUtc", StringComparison.OrdinalIgnoreCase), json);
+    }
+
+    /// <summary>
     /// Verifies that a recorded coverage window's dates and fetch instant round-trip exactly through the JSON blob.
     /// </summary>
     [TestMethod]

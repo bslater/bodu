@@ -554,4 +554,63 @@ public abstract class ExchangeRateCacheContractTests<TCache>
             Assert.IsTrue(coverage.Contains(date, date), $"coverage missing for {date:O}");
         }
     }
+
+    /// <summary>
+    /// Verifies that a row stored with a non-null <see cref="CachedExchangeRate.ObservedAtUtc" /> — carrying an offset
+    /// and sub-second precision — is read back with that upstream fetch instant intact, across every backend.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenRowHasObservedAtUtc_ShouldRoundTripObservedAtUtc()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+        var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now, observedAt) }, Duration, now);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+        Assert.AreEqual(1, rows.Count);
+        Assert.AreEqual(observedAt, rows[0].ObservedAtUtc);
+        Assert.AreEqual(observedAt.Offset, rows[0].ObservedAtUtc!.Value.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a row stored without an upstream fetch instant reads back with a <see langword="null" />
+    /// <see cref="CachedExchangeRate.ObservedAtUtc" />, across every backend.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenRowHasNoObservedAtUtc_ShouldReadBackNull()
+    {
+        TCache cache = CreateCache();
+        var now = DateTimeOffset.UtcNow;
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+        Assert.AreEqual(1, rows.Count);
+        Assert.IsNull(rows[0].ObservedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that re-storing the same date with a newer cache-write instant keeps the newer row's upstream fetch
+    /// instant, proving <see cref="CachedExchangeRate.ObservedAtUtc" /> rides along through a merge-and-prune cycle.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenSameDateRestoredWithNewerCachedAt_ShouldKeepLatestObservedAt()
+    {
+        TCache cache = CreateCache();
+        var older = DateTimeOffset.UtcNow - TimeSpan.FromHours(1);
+        var newer = DateTimeOffset.UtcNow;
+        var date = new DateOnly(2023, 1, 3);
+        var observedOld = new DateTimeOffset(2023, 1, 3, 8, 0, 0, TimeSpan.Zero);
+        var observedNew = new DateTimeOffset(2023, 1, 3, 16, 0, 0, TimeSpan.Zero);
+
+        cache.Store(Pair, new[] { new CachedExchangeRate(date, 0.5000m, older, observedOld) }, Duration, newer);
+        cache.Store(Pair, new[] { new CachedExchangeRate(date, 0.6000m, newer, observedNew) }, Duration, newer);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, newer);
+        Assert.AreEqual(1, rows.Count);
+        Assert.AreEqual(0.6000m, rows[0].Rate);
+        Assert.AreEqual(observedNew, rows[0].ObservedAtUtc);
+    }
 }

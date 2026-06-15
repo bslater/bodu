@@ -18,7 +18,8 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 /// <para>
 /// Rates and coverage live in two tables. The <c>rates</c> table is keyed by
 /// <c>(provider, from_code, to_code, obs_date)</c>, one row per dated observation, written through an UPSERT so a
-/// re-stored date replaces the prior row. The <c>coverage</c> table records
+/// re-stored date replaces the prior row; its nullable <c>observed_at</c> column carries the upstream fetch instant
+/// when the source supplied one. The <c>coverage</c> table records
 /// <c>(provider, from_code, to_code, start_date, end_date, fetched_at)</c>, allowing multiple windows per pair so a
 /// sparse fetch history is preserved exactly. Decimal rates are stored as invariant strings and all dates and instants
 /// as invariant ISO text (a <see cref="DateOnly" /> as <c>yyyy-MM-dd</c>, a <see cref="DateTimeOffset" /> in round-trip
@@ -101,8 +102,9 @@ public sealed class SqliteExchangeRateCache
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     /// <remarks>
-    /// The schema is created if it does not already exist, in one transaction, when the instance is constructed. A
-    /// failure to create the schema is swallowed so a transiently unwritable database surfaces later as empty reads and
+    /// The schema is created if it does not already exist, and a pre-existing <c>rates</c> table is migrated to add the
+    /// <c>observed_at</c> column when it is absent, in one transaction, when the instance is constructed. A failure to
+    /// create or migrate the schema is swallowed so a transiently unwritable database surfaces later as empty reads and
     /// skipped writes rather than a construction-time exception.
     /// </remarks>
     public SqliteExchangeRateCache(SqliteExchangeRateCacheOptions options)
@@ -242,9 +244,18 @@ public sealed class SqliteExchangeRateCache
     }
 
     /// <summary>
-    /// Creates the <c>rates</c> and <c>coverage</c> tables if they do not already exist.
+    /// Creates the <c>rates</c> and <c>coverage</c> tables if they do not already exist, then brings a pre-existing
+    /// <c>rates</c> table up to the current schema by adding the <c>observed_at</c> column when it is absent.
     /// </summary>
     /// <param name="connection">An open connection to run the schema statements on.</param>
+    /// <remarks>
+    /// The whole sequence runs in one transaction. A freshly created table already carries <c>observed_at</c> from the
+    /// <c>CREATE</c>; a table created by a pre-C build lacks it, so <c>PRAGMA table_info(rates)</c> probes for the
+    /// column and a single <c>ALTER TABLE ... ADD COLUMN</c> adds it as nullable, preserving every existing row with a
+    /// <see langword="null" /> upstream fetch instant. The migration is best-effort like the rest of construction: a
+    /// failure is swallowed by the caller so a transiently unwritable database degrades to empty reads and skipped
+    /// writes rather than throwing.
+    /// </remarks>
     private static void EnsureSchema(SqliteConnection connection)
     {
         using SqliteTransaction transaction = connection.BeginTransaction();
@@ -254,12 +265,13 @@ public sealed class SqliteExchangeRateCache
             command.CommandText =
                 """
                 CREATE TABLE IF NOT EXISTS rates (
-                    provider   TEXT NOT NULL,
-                    from_code  TEXT NOT NULL,
-                    to_code    TEXT NOT NULL,
-                    obs_date   TEXT NOT NULL,
-                    rate       TEXT NOT NULL,
-                    cached_at  TEXT NOT NULL,
+                    provider    TEXT NOT NULL,
+                    from_code   TEXT NOT NULL,
+                    to_code     TEXT NOT NULL,
+                    obs_date    TEXT NOT NULL,
+                    rate        TEXT NOT NULL,
+                    cached_at   TEXT NOT NULL,
+                    observed_at TEXT NULL,
                     PRIMARY KEY (provider, from_code, to_code, obs_date)
                 );
 
@@ -277,7 +289,47 @@ public sealed class SqliteExchangeRateCache
             command.ExecuteNonQuery();
         }
 
+        // Bring a pre-C rates table up to the current schema: a table created before observed_at was added is otherwise
+        // missing the column the INSERT and SELECT reference. Probe with PRAGMA table_info and add it once if absent.
+        if (!HasObservedColumn(connection, transaction))
+        {
+            using SqliteCommand alter = connection.CreateCommand();
+            alter.Transaction = transaction;
+            alter.CommandText = "ALTER TABLE rates ADD COLUMN observed_at TEXT NULL;";
+            alter.ExecuteNonQuery();
+        }
+
         transaction.Commit();
+    }
+
+    /// <summary>
+    /// Reports whether the <c>rates</c> table already declares the <c>observed_at</c> column.
+    /// </summary>
+    /// <param name="connection">The open connection the probe runs on.</param>
+    /// <param name="transaction">The transaction the probe participates in.</param>
+    /// <returns>
+    /// <see langword="true" /> when <c>rates</c> carries an <c>observed_at</c> column; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The <c>PRAGMA table_info(rates)</c> reader is fully read and closed before the caller issues the conditional
+    /// <c>ALTER</c>, so the schema change does not run while a reader is open over the same table.
+    /// </remarks>
+    private static bool HasObservedColumn(SqliteConnection connection, SqliteTransaction transaction)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "PRAGMA table_info(rates);";
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        var nameOrdinal = reader.GetOrdinal("name");
+        while (reader.Read())
+        {
+            if (string.Equals(reader.GetString(nameOrdinal), "observed_at", StringComparison.Ordinal))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -346,7 +398,7 @@ public sealed class SqliteExchangeRateCache
             using SqliteConnection connection = OpenConnection();
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
-                "SELECT obs_date, rate, cached_at FROM rates WHERE provider = $provider AND from_code = $from AND to_code = $to;";
+                "SELECT obs_date, rate, cached_at, observed_at FROM rates WHERE provider = $provider AND from_code = $from AND to_code = $to;";
             BindPair(command, pair);
 
             using SqliteDataReader reader = command.ExecuteReader();
@@ -354,10 +406,14 @@ public sealed class SqliteExchangeRateCache
             {
                 try
                 {
+                    // A pre-C row, or a row whose source never supplied a fetch instant, stores observed_at as NULL and
+                    // reads back as a null ObservedAtUtc.
+                    DateTimeOffset? observedAt = reader.IsDBNull(3) ? (DateTimeOffset?)null : ParseInstant(reader.GetString(3));
                     rows.Add(new CachedExchangeRate(
                         ParseDate(reader.GetString(0)),
                         ParseRate(reader.GetString(1)),
-                        ParseInstant(reader.GetString(2))));
+                        ParseInstant(reader.GetString(2)),
+                        observedAt));
                 }
                 catch (FormatException)
                 {
@@ -438,14 +494,15 @@ public sealed class SqliteExchangeRateCache
         insert.Transaction = transaction;
         insert.CommandText =
             """
-            INSERT INTO rates (provider, from_code, to_code, obs_date, rate, cached_at)
-            VALUES ($provider, $from, $to, $date, $rate, $cached)
+            INSERT INTO rates (provider, from_code, to_code, obs_date, rate, cached_at, observed_at)
+            VALUES ($provider, $from, $to, $date, $rate, $cached, $observed)
             ON CONFLICT (provider, from_code, to_code, obs_date)
-            DO UPDATE SET rate = excluded.rate, cached_at = excluded.cached_at;
+            DO UPDATE SET rate = excluded.rate, cached_at = excluded.cached_at, observed_at = excluded.observed_at;
             """;
         SqliteParameter date = insert.Parameters.Add("$date", SqliteType.Text);
         SqliteParameter rate = insert.Parameters.Add("$rate", SqliteType.Text);
         SqliteParameter cached = insert.Parameters.Add("$cached", SqliteType.Text);
+        SqliteParameter observed = insert.Parameters.Add("$observed", SqliteType.Text);
         BindPair(insert, pair);
 
         foreach (CachedExchangeRate entry in entries)
@@ -453,6 +510,7 @@ public sealed class SqliteExchangeRateCache
             date.Value = FormatDate(entry.Date);
             rate.Value = FormatRate(entry.Rate);
             cached.Value = FormatInstant(entry.CachedAtUtc);
+            observed.Value = entry.ObservedAtUtc is { } o ? FormatInstant(o) : (object)DBNull.Value;
             insert.ExecuteNonQuery();
         }
     }

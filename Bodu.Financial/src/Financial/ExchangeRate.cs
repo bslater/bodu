@@ -258,6 +258,24 @@ public readonly record struct ExchangeRate
         IsInverted ? amount / _observedRate : amount * _observedRate;
 
     /// <summary>
+    /// Returns a copy of this rate with the specified upstream fetch instant, preserving all other values.
+    /// </summary>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant the upstream data backing the returned rate was originally fetched, or <see langword="null" />
+    /// when not tracked.
+    /// </param>
+    /// <returns>
+    /// A new <see cref="ExchangeRate" /> identical to this one except for its <see cref="FetchedAtUtc" /> value.
+    /// </returns>
+    /// <remarks>
+    /// The internal observed rate is carried over exactly, so an inverted rate's precise reverse-pair value survives
+    /// the copy. Because <see cref="FetchedAtUtc" /> is excluded from equality, the returned rate compares equal to
+    /// this one.
+    /// </remarks>
+    public ExchangeRate WithFetchedAtUtc(DateTimeOffset? fetchedAtUtc) =>
+        new(FromIsoCode, ToIsoCode, Date, Rate, _observedRate, Provider, IsInverted, fetchedAtUtc);
+
+    /// <summary>
     /// Determines whether this rate equals <paramref name="other" /> by its public fields. The internal observed rate
     /// and the <see cref="FetchedAtUtc" /> fetch instant are excluded — both are provenance metadata — so two rates
     /// that report the same direction, date, multiplier, provider, and inversion compare equal regardless of how each

@@ -266,7 +266,10 @@ public sealed class DistributedExchangeRateCache
         {
             try
             {
-                rows.Add(new CachedExchangeRate(ParseDate(rate.Date), ParseRate(rate.Rate), ParseInstant(rate.CachedAtUtc)));
+                // A legacy blob, or a row whose source never supplied a fetch instant, omits ObservedAtUtc and reads
+                // back as a null upstream fetch instant.
+                DateTimeOffset? observedAt = rate.ObservedAtUtc is { } s ? ParseInstant(s) : (DateTimeOffset?)null;
+                rows.Add(new CachedExchangeRate(ParseDate(rate.Date), ParseRate(rate.Rate), ParseInstant(rate.CachedAtUtc), observedAt));
             }
             catch (FormatException)
             {
@@ -364,6 +367,7 @@ public sealed class DistributedExchangeRateCache
                     Date = FormatDate(row.Date),
                     Rate = FormatRate(row.Rate),
                     CachedAtUtc = FormatInstant(row.CachedAtUtc),
+                    ObservedAtUtc = row.ObservedAtUtc is { } o ? FormatInstant(o) : null,
                 });
             }
 

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text.Json.Serialization;
+
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 
 /// <summary>
@@ -11,10 +13,11 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 /// value so the wire format can evolve independently of the in-memory contract.
 /// </summary>
 /// <remarks>
-/// All three fields are persisted as invariant text so the row round-trips losslessly regardless of the serializer's
-/// default number and date handling: the rate as an invariant decimal string preserves full precision and scale, the
-/// date as <c>yyyy-MM-dd</c>, and the caching instant in round-trip (<c>"O"</c>) form preserves its offset and
-/// sub-second precision.
+/// Every field is persisted as invariant text so the row round-trips losslessly regardless of the serializer's default
+/// number and date handling: the rate as an invariant decimal string preserves full precision and scale, the date as
+/// <c>yyyy-MM-dd</c>, and the caching and upstream fetch instants in round-trip (<c>"O"</c>) form preserve their offset
+/// and sub-second precision. The optional <see cref="ObservedAtUtc" /> is omitted from the JSON when
+/// <see langword="null" />, so a legacy-shaped blob without it stays minimal and reads back as a null fetch instant.
 /// </remarks>
 internal sealed class DistributedCacheRate
 {
@@ -37,4 +40,18 @@ internal sealed class DistributedCacheRate
     /// </summary>
     /// <returns>The caching instant as invariant round-trip text.</returns>
     public string CachedAtUtc { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the UTC instant the upstream data backing the rate was originally fetched, formatted as invariant
+    /// round-trip (<c>"O"</c>) text, or <see langword="null" /> when the source did not supply it.
+    /// </summary>
+    /// <returns>
+    /// The upstream fetch instant as invariant round-trip text, or <see langword="null" /> when not tracked.
+    /// </returns>
+    /// <remarks>
+    /// Omitted from the serialized JSON when <see langword="null" /> so legacy-shaped blobs stay minimal; a blob
+    /// written before this field existed therefore reads back as <see langword="null" />.
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? ObservedAtUtc { get; set; }
 }
