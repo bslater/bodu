@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Version>1.0.0</Version>
-    <Description>Dependency-injection extensions for the Bodu.Financial exchange-rate caching layer. Registers the TOML on-disk cache and decorates the registered IDatedExchangeRateProvider with a CachingDatedExchangeRateProvider so consumers transparently get cached lookups.</Description>
+    <Description>Dependency-injection extensions for the Bodu.Financial exchange-rate caching layer. Registers a per-provider CachingExchangeRateProvider and an AggregatingExchangeRateProvider (priority-fallback, averaging, per-pair routing) so consumers transparently get cached, grouped lookups on both the dated and timeless provider surfaces.</Description>
     <PackageTags>bodu;financial;exchange-rate;cache;decorator;dependency-injection;options</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
