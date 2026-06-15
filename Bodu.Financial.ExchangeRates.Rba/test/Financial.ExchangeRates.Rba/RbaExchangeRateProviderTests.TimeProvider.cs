@@ -1,0 +1,28 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RbaExchangeRateProviderTests.TimeProvider.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Financial.ExchangeRates.Rba;
+
+public partial class RbaExchangeRateProviderTests
+{
+    /// <summary>
+    /// Verifies that the undated lookup resolves the current instant from the injected <see cref="TimeProvider" />, so
+    /// the most-recent rate is taken as of the provider's clock rather than the wall clock.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRate_WhenUndatedAndTimeProviderInjected_ShouldResolveAgainstInjectedClock()
+    {
+        RbaExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = false, EnableDiskCache = false };
+        FixtureRbaExchangeRateTableSource source = new(options);
+        MutableTimeProvider timeProvider = new(new DateTimeOffset(2023, 1, 3, 0, 0, 0, TimeSpan.Zero));
+        RbaExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 12, 31));
+
+        var rate = provider.GetRate("AUD", "USD");
+
+        Assert.AreEqual(0.6828m, rate);
+    }
+}

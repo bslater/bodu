@@ -39,11 +39,15 @@ decimal latest = provider.GetRate("EUR", "GBP");
   per call through `LoadPairAsync` / `GetRatesAsync`.
 - **Loading.** Call `LoadPairAsync` to warm the in-memory store. A synchronous lookup
   that misses an un-fetched pair will block to fetch a window around the requested date
-  when `AllowSynchronousNetworkAccess` is enabled (the default).
-- **Caching.** When `EnableDiskCache` is on (the default), fetched rates are persisted
-  in a provider- and pair-keyed format where each dated rate carries its retrieval
-  time. A cached rate is served until `CacheExpiry` elapses after retrieval, after which
-  the provider re-fetches.
+  only when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the
+  provider serves a snapshot of already-loaded data and a synchronous miss does not reach
+  the network).
+- **No provider-local disk cache.** The Yahoo provider fetches over HTTP and keeps only an
+  in-memory store of the pairs and windows it has fetched this session; it does not persist
+  anything to disk. For durable caching across processes, compose it with the generic
+  caching provider — `AddCachedExchangeRateProvider<…>` from the
+  [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
+  — rather than a provider-local cache.
 
 ## Endpoint configuration
 
@@ -56,12 +60,14 @@ decimal latest = provider.GetRate("EUR", "GBP");
 | `SymbolFormat` | `{from}{to}=X` | The FX ticker template (`{from}` / `{to}` placeholders). |
 | `UserAgent` | browser-like | Yahoo rejects requests without a recognizable user agent. |
 | `HttpTimeout` | 30 s | Applied to the configured `HttpClient` by the DI registration. |
-| `AllowSynchronousNetworkAccess` | `true` | Allow blocking on-demand fetches from synchronous lookups. |
+| `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
 | `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
-| `EnableDiskCache` | `true` | Persist fetched rates to disk in the pair/provider-keyed cache format. |
-| `CacheDirectory` | temp `bodu-yahoo` | Where cached rate files are written. |
-| `CacheExpiry` | 24 hours | How long a cached rate stays fresh after its retrieval time. |
 | `CurrencyAliases` | empty | Maps ISO codes to Yahoo symbol components where they differ. |
+
+The Yahoo provider has no `EnableDiskCache` / `CacheDirectory` / `CacheExpiry` options: it
+fetches over HTTP with no provider-local disk cache. Use the generic
+[`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
+(`AddCachedExchangeRateProvider<…>`) when you need caching.
 
 ## Dependency injection
 

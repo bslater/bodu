@@ -82,4 +82,16 @@
   <data name="Arg_Invalid_RbaOptionsEras" xml:space="preserve">
     <value>The RBA options must specify at least one era.</value>
   </data>
+  <data name="Arg_Invalid_RbaOptionsHttpTimeout" xml:space="preserve">
+    <value>The RBA options HTTP timeout must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_RbaOptionsCurrentEraRefreshInterval" xml:space="preserve">
+    <value>The RBA options current-era refresh interval must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_RbaOptionsCurrencyAliases" xml:space="preserve">
+    <value>The RBA options currency alias map must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_RbaOptionsLogLevel" xml:space="preserve">
+    <value>The RBA options must specify a defined log level for every logging concern.</value>
+  </data>
 </root>

@@ -79,4 +79,16 @@
   <data name="Arg_Invalid_YahooOptionsSymbolFormat" xml:space="preserve">
     <value>The Yahoo options symbol format must be specified and contain the '{from}' and '{to}' placeholders.</value>
   </data>
+  <data name="Arg_Invalid_YahooOptionsHttpTimeout" xml:space="preserve">
+    <value>The Yahoo options HTTP timeout must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_YahooOptionsDefaultLookback" xml:space="preserve">
+    <value>The Yahoo options default look-back window must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_YahooOptionsCurrencyAliases" xml:space="preserve">
+    <value>The Yahoo options currency alias map must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_YahooOptionsLogLevel" xml:space="preserve">
+    <value>The Yahoo options must specify a defined log level for every logging concern.</value>
+  </data>
 </root>

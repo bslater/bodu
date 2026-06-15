@@ -66,38 +66,49 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         Path.Combine(_directory, SanitizeProvider(Provider), BuildFileName(pair));
 
     /// <inheritdoc />
-    protected sealed override IReadOnlyList<CachedExchangeRate> ReadEntries(ExchangeRatePair pair)
+    private protected sealed override CachePairState ReadState(ExchangeRatePair pair)
     {
         var path = ResolveFilePath(pair);
 
         try
         {
             if (!File.Exists(path))
-                return Array.Empty<CachedExchangeRate>();
+                return CachePairState.Empty;
 
             var text = File.ReadAllText(path);
             return Deserialize(text);
         }
         catch (IOException)
         {
-            return Array.Empty<CachedExchangeRate>();
+            return CachePairState.Empty;
         }
         catch (UnauthorizedAccessException)
         {
-            return Array.Empty<CachedExchangeRate>();
+            return CachePairState.Empty;
         }
     }
 
     /// <inheritdoc />
-    protected sealed override void WriteEntries(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries)
+    private protected sealed override void WriteState(ExchangeRatePair pair, CachePairState state)
     {
+        var path = ResolveFilePath(pair);
+
         try
         {
-            var path = ResolveFilePath(pair);
+            // An entirely empty state has nothing worth persisting: delete the file so a stale, empty file is not left
+            // behind, mirroring the in-memory cache that removes the pair entry.
+            if (state.Entries.Count == 0 && state.Coverage.Count == 0)
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+
+                return;
+            }
+
             Directory.CreateDirectory(Path.GetDirectoryName(path) !);
 
-            var text = Serialize(entries);
-            File.WriteAllText(path, text);
+            var text = Serialize(state);
+            WriteAtomic(path, text);
         }
         catch (IOException)
         {
@@ -140,16 +151,74 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     }
 
     /// <summary>
-    /// Serializes the supplied entries to the cache file's text format.
+    /// Serializes the supplied state to the cache file's text format.
     /// </summary>
-    /// <param name="entries">The ordered entries to persist.</param>
+    /// <param name="state">The per-pair state — cached rows and coverage windows — to persist.</param>
     /// <returns>The serialized text to write to the cache file.</returns>
-    protected abstract string Serialize(IReadOnlyList<CachedExchangeRate> entries);
+    /// <remarks>
+    /// Declared <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage
+    /// detail shared only with same-assembly backends.
+    /// </remarks>
+    private protected abstract string Serialize(CachePairState state);
 
     /// <summary>
-    /// Deserializes the cache file's text into entries, returning an empty list when the content is malformed.
+    /// Deserializes the cache file's text into per-pair state, returning <see cref="CachePairState.Empty" /> when the
+    /// content is malformed.
     /// </summary>
     /// <param name="text">The file text to parse.</param>
-    /// <returns>The parsed entries, or an empty list when the content cannot be parsed.</returns>
-    protected abstract IReadOnlyList<CachedExchangeRate> Deserialize(string text);
+    /// <returns>The parsed state, or <see cref="CachePairState.Empty" /> when the content cannot be parsed.</returns>
+    /// <remarks>
+    /// Declared <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage
+    /// detail shared only with same-assembly backends.
+    /// </remarks>
+    private protected abstract CachePairState Deserialize(string text);
+
+    /// <summary>
+    /// Writes <paramref name="text" /> to <paramref name="path" /> atomically by writing to a uniquely named temporary
+    /// file in the same directory and moving it into place, so a reader never observes a partially written file.
+    /// </summary>
+    /// <param name="path">The destination file path.</param>
+    /// <param name="text">The text to write.</param>
+    /// <remarks>
+    /// The temporary file shares the destination directory so the final <see cref="File.Move(string, string, bool)" />
+    /// is a same-volume rename rather than a copy. The temporary file is removed on failure so a crashed or rejected
+    /// write leaves no orphan behind.
+    /// </remarks>
+    private static void WriteAtomic(string path, string text)
+    {
+        var tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
+
+        try
+        {
+            File.WriteAllText(tempPath, text);
+            File.Move(tempPath, path, overwrite: true);
+        }
+        catch
+        {
+            TryDelete(tempPath);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Deletes the file at <paramref name="path" /> if it exists, swallowing file-system failures so cleanup never
+    /// masks the original error.
+    /// </summary>
+    /// <param name="path">The path of the file to delete.</param>
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+        catch (IOException)
+        {
+            // Best-effort cleanup of the temp file.
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // Best-effort cleanup of the temp file.
+        }
+    }
 }

@@ -74,4 +74,32 @@ public class EcbEndpointOptionsTests
 
         _ = Assert.ThrowsExactly<ArgumentException>(() => options.Validate());
     }
+
+    /// <summary>
+    /// Verifies that the endpoint defaults validate successfully.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenDefault_ShouldReturnTrue()
+    {
+        EcbEndpointOptions endpoint = new();
+
+        var valid = endpoint.TryValidate(out var error);
+
+        Assert.IsTrue(valid);
+        Assert.IsNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a non-positive endpoint HTTP timeout is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenHttpTimeoutIsZero_ShouldReturnFalse()
+    {
+        EcbEndpointOptions endpoint = new() { HttpTimeout = TimeSpan.Zero };
+
+        var valid = endpoint.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
 }

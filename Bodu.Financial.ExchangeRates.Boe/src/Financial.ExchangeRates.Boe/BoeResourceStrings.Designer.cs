@@ -140,5 +140,41 @@ namespace Bodu.Financial.ExchangeRates.Boe {
                 return ResourceManager.GetString("Op_Invalid_BoeEndpointBaseUrl", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bank of England endpoint options HTTP timeout must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_BoeEndpointHttpTimeout {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BoeEndpointHttpTimeout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bank of England options on-demand window radius must not be negative..
+        /// </summary>
+        internal static string Arg_Invalid_BoeOptionsOnDemandWindowDays {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BoeOptionsOnDemandWindowDays", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bank of England options refresh interval must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_BoeOptionsRefreshInterval {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BoeOptionsRefreshInterval", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bank of England options must specify a defined log level for every logging concern..
+        /// </summary>
+        internal static string Arg_Invalid_BoeOptionsLogLevel {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BoeOptionsLogLevel", resourceCulture);
+            }
+        }
     }
 }

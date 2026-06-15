@@ -73,6 +73,22 @@
     <Project Path="Bodu.Financial.ExchangeRates.Caching.DependencyInjection/src/Bodu.Financial.ExchangeRates.Caching.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Caching.DependencyInjection/test/Bodu.Financial.ExchangeRates.Caching.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection/src/Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection/test/Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching.Distributed/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/src/Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/test/Bodu.Financial.ExchangeRates.Caching.Distributed.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection/src/Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection/test/Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching.Sqlite/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Bodu.Financial.ExchangeRates.Caching.Sqlite.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/test/Bodu.Financial.ExchangeRates.Caching.Sqlite.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching/">
     <Project Path="Bodu.Financial.ExchangeRates.Caching/src/Bodu.Financial.ExchangeRates.Caching.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Caching/test/Bodu.Financial.ExchangeRates.Caching.Test.csproj" />

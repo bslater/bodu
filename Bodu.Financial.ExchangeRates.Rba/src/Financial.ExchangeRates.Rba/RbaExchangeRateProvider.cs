@@ -32,10 +32,10 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
 /// package) the provider records: the start of an era download (<see cref="LogLevel.Debug" />), a completed download
-/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation
-/// (<see cref="LogLevel.Trace" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
-/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="RbaExchangeRateOptions" />; omitting
-/// the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
+/// with its observation count (<see cref="LogLevel.Information" />), each ingested observation (
+/// <see cref="LogLevel.Trace" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
+/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="RbaExchangeRateOptions" />;
+/// omitting the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
 public sealed class RbaExchangeRateProvider
@@ -104,6 +104,16 @@ public sealed class RbaExchangeRateProvider
     private readonly ILogger _logger;
 
     /// <summary>
+    /// The time source used to resolve the current instant for the undated lookup surface.
+    /// </summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>
+    /// Coalesces concurrent downloads of the same era so a cache miss triggers at most one in-flight fetch per era.
+    /// </summary>
+    private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RbaExchangeRateProvider" /> class backed by the RBA <c>.xls</c>
     /// files, downloaded with the supplied HTTP client.
     /// </summary>
@@ -113,12 +123,16 @@ public sealed class RbaExchangeRateProvider
     /// The logger that records era downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for the undated lookup surface. <see langword="null" />
+    /// selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public RbaExchangeRateProvider(HttpClient httpClient, RbaExchangeRateOptions options, ILogger? logger = null)
-        : this(CreateSource(httpClient, options), options, logger)
+    public RbaExchangeRateProvider(HttpClient httpClient, RbaExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+        : this(CreateSource(httpClient, options), options, logger, timeProvider)
     {
     }
 
@@ -132,11 +146,15 @@ public sealed class RbaExchangeRateProvider
     /// The logger that records era downloads and on-demand network fetches. <see langword="null" /> selects
     /// <see cref="NullLogger.Instance" />.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source used to resolve the current instant for the undated lookup surface. <see langword="null" />
+    /// selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal RbaExchangeRateProvider(IRbaExchangeRateTableSource source, RbaExchangeRateOptions options, ILogger? logger = null)
+    internal RbaExchangeRateProvider(IRbaExchangeRateTableSource source, RbaExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
     {
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(options);
@@ -145,6 +163,7 @@ public sealed class RbaExchangeRateProvider
         _source = source;
         _options = options;
         _logger = logger ?? NullLogger.Instance;
+        _timeProvider = timeProvider ?? TimeProvider.System;
         _book = _builder.ToBook();
         _snapshot = new FixedDatedExchangeRateProvider(_book);
     }
@@ -208,7 +227,7 @@ public sealed class RbaExchangeRateProvider
     /// <exception cref="KeyNotFoundException">Thrown when no rate is available for the pair.</exception>
     public decimal GetRate(string fromIsoCode, string toIsoCode)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, ExchangeRateLookupOptions.PreviousWithin(LatestRateToleranceDays)).Rate.Rate;
     }
 
@@ -232,10 +251,29 @@ public sealed class RbaExchangeRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="era" /> is <see langword="null" />.
     /// </exception>
-    public async Task LoadEraAsync(RbaEra era, CancellationToken cancellationToken = default)
+    public Task LoadEraAsync(RbaEra era, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(era);
 
+        lock (_gate)
+        {
+            if (_loadedEras.Contains(era.Label))
+                return Task.CompletedTask;
+        }
+
+        // Coalesce concurrent loads of the same era so only one download is in flight; joiners await that shared task.
+        return _loadCoordinator.RunAsync(era.Label, () => LoadEraCoreAsync(era, cancellationToken));
+    }
+
+    /// <summary>
+    /// Downloads and stores a single era, re-checking the loaded set inside the single-flight section so a joiner that
+    /// arrives after a prior load completes does no redundant work.
+    /// </summary>
+    /// <param name="era">The era to load.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
+    /// <returns>A task that completes when the era has been loaded.</returns>
+    private async Task LoadEraCoreAsync(RbaEra era, CancellationToken cancellationToken)
+    {
         lock (_gate)
         {
             if (_loadedEras.Contains(era.Label))

@@ -51,4 +51,19 @@ public sealed class NullExchangeRateCacheTests
 
         Assert.AreEqual(0, cache.GetRates(pair, TimeSpan.FromHours(24), now).Count);
     }
+
+    /// <summary>
+    /// Verifies that coverage is never reported, even after a window is recorded.
+    /// </summary>
+    [TestMethod]
+    public void GetCoverage_WhenCoverageRecorded_ShouldReturnEmpty()
+    {
+        IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
+        ExchangeRatePair pair = new("AUD", "USD");
+        var now = DateTimeOffset.UtcNow;
+
+        cache.RecordCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), TimeSpan.FromHours(24), now);
+
+        Assert.IsTrue(cache.GetCoverage(pair, TimeSpan.FromHours(24), now).IsEmpty);
+    }
 }

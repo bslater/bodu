@@ -55,15 +55,17 @@ public sealed class RbaExchangeRateOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedExchangeRateProvider" />
-    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="true" />.
+    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so
+    /// the provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
     /// </value>
     /// <remarks>
     /// Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
-    /// synchronization context (classic ASP.NET, WPF, WinForms). In those environments, set this to
-    /// <see langword="false" /> and warm the cache with <see cref="RbaExchangeRateProvider.PreloadAsync" /> or
-    /// <see cref="RbaExchangeRateProvider.LoadRangeAsync" /> at startup.
+    /// synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
+    /// <see langword="false" /> and warm the store with <see cref="RbaExchangeRateProvider.PreloadAsync" /> or
+    /// <see cref="RbaExchangeRateProvider.LoadRangeAsync" /> at startup; set it to <see langword="true" /> only to opt
+    /// in to a blocking on-demand fetch from the synchronous lookup path.
     /// </remarks>
-    public bool AllowSynchronousNetworkAccess { get; set; } = true;
+    public bool AllowSynchronousNetworkAccess { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether downloaded era files are persisted to an on-disk cache.
@@ -120,18 +122,83 @@ public sealed class RbaExchangeRateOptions
     public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
 
     /// <summary>
-    /// Validates the options, throwing when a required value is missing.
+    /// Validates the options, throwing when a required value is missing or an invariant is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="BaseUrl" /> is <see langword="null" />, or <see cref="Eras" /> is <see langword="null" />
-    /// or empty.
+    /// Thrown when <see cref="BaseUrl" /> is <see langword="null" />; <see cref="Eras" /> is <see langword="null" /> or
+    /// empty; <see cref="HttpTimeout" /> or <see cref="CurrentEraRefreshInterval" /> is not greater than zero;
+    /// <see cref="CurrencyAliases" /> is <see langword="null" />; or any <c>*LogLevel</c> is not a defined
+    /// <see cref="LogLevel" />.
     /// </exception>
     public void Validate()
     {
+        if (!TryValidate(out var error))
+            throw new ArgumentException(error);
+    }
+
+    /// <summary>
+    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
+    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// </remarks>
+    public bool TryValidate(out string? error)
+    {
         if (BaseUrl is null)
-            throw new ArgumentException(RbaResourceStrings.Arg_Invalid_RbaOptionsBaseUrl, nameof(BaseUrl));
+        {
+            error = RbaResourceStrings.Arg_Invalid_RbaOptionsBaseUrl;
+            return false;
+        }
 
         if (Eras is null || Eras.Count == 0)
-            throw new ArgumentException(RbaResourceStrings.Arg_Invalid_RbaOptionsEras, nameof(Eras));
+        {
+            error = RbaResourceStrings.Arg_Invalid_RbaOptionsEras;
+            return false;
+        }
+
+        if (HttpTimeout <= TimeSpan.Zero)
+        {
+            error = RbaResourceStrings.Arg_Invalid_RbaOptionsHttpTimeout;
+            return false;
+        }
+
+        if (CurrentEraRefreshInterval <= TimeSpan.Zero)
+        {
+            error = RbaResourceStrings.Arg_Invalid_RbaOptionsCurrentEraRefreshInterval;
+            return false;
+        }
+
+        if (CurrencyAliases is null)
+        {
+            error = RbaResourceStrings.Arg_Invalid_RbaOptionsCurrencyAliases;
+            return false;
+        }
+
+        if (!AreLogLevelsDefined())
+        {
+            error = RbaResourceStrings.Arg_Invalid_RbaOptionsLogLevel;
+            return false;
+        }
+
+        error = null;
+        return true;
     }
+
+    /// <summary>
+    /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every <c>*LogLevel</c> property is defined; otherwise <see langword="false" />.
+    /// </returns>
+    private bool AreLogLevelsDefined() =>
+        Enum.IsDefined(DownloadStartingLogLevel)
+        && Enum.IsDefined(DownloadCompletedLogLevel)
+        && Enum.IsDefined(DownloadFailedLogLevel)
+        && Enum.IsDefined(ObservationIngestedLogLevel);
 }

@@ -51,4 +51,14 @@ public sealed class NullExchangeRateCache
     {
         // Intentionally no-op: this cache never stores anything.
     }
+
+    /// <inheritdoc />
+    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+        new();
+
+    /// <inheritdoc />
+    public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
+    {
+        // Intentionally no-op: this cache records no coverage.
+    }
 }

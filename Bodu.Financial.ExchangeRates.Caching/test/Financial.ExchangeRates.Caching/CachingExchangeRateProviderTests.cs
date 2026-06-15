@@ -151,4 +151,14 @@ public sealed partial class CachingExchangeRateProviderTests
             rows.Select(r => new CachedExchangeRate(r.Date, r.Rate, _clock.GetUtcNow())).ToArray(),
             Duration,
             _clock.GetUtcNow());
+
+    /// <summary>
+    /// Records a fresh coverage window for the supplied pair, stamped at the current clock instant, so a range lookup of
+    /// that window is treated as cached.
+    /// </summary>
+    /// <param name="pair">The pair to record coverage for.</param>
+    /// <param name="start">The inclusive first date of the covered window.</param>
+    /// <param name="end">The inclusive last date of the covered window.</param>
+    private void SeedCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end) =>
+        _cache.RecordCoverage(pair, start, end, Duration, _clock.GetUtcNow());
 }

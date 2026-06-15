@@ -66,12 +66,41 @@ public sealed class EcbEndpointOptions
     }
 
     /// <summary>
-    /// Validates the endpoint options, throwing when a required value is missing.
+    /// Validates the endpoint options, throwing when a required value is missing or an invariant is violated.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown when <see cref="BaseUrl" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <see cref="BaseUrl" /> is <see langword="null" />, or <see cref="HttpTimeout" /> is not greater than
+    /// zero.
+    /// </exception>
     public void Validate()
     {
+        if (!TryValidate(out var error))
+            throw new ArgumentException(error);
+    }
+
+    /// <summary>
+    /// Attempts to validate the endpoint options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    public bool TryValidate(out string? error)
+    {
         if (BaseUrl is null)
-            throw new ArgumentException(EcbResourceStrings.Arg_Invalid_EcbOptionsBaseUrl, nameof(BaseUrl));
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbOptionsBaseUrl;
+            return false;
+        }
+
+        if (HttpTimeout <= TimeSpan.Zero)
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbEndpointHttpTimeout;
+            return false;
+        }
+
+        error = null;
+        return true;
     }
 }

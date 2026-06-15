@@ -44,15 +44,17 @@ public sealed class EcbExchangeRateOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedExchangeRateProvider" />
-    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="true" />.
+    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so
+    /// the provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
     /// </value>
     /// <remarks>
     /// Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
-    /// synchronization context (classic ASP.NET, WPF, WinForms). In those environments, set this to
-    /// <see langword="false" /> and warm the cache with <see cref="EcbExchangeRateProvider.PreloadAsync" /> or
-    /// <see cref="EcbExchangeRateProvider.LoadRangeAsync" /> at startup.
+    /// synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
+    /// <see langword="false" /> and warm the store with <see cref="EcbExchangeRateProvider.PreloadAsync" /> or
+    /// <see cref="EcbExchangeRateProvider.LoadRangeAsync" /> at startup; set it to <see langword="true" /> only to opt
+    /// in to a blocking on-demand fetch from the synchronous lookup path.
     /// </remarks>
-    public bool AllowSynchronousNetworkAccess { get; set; } = true;
+    public bool AllowSynchronousNetworkAccess { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether downloaded feed files are persisted to an on-disk cache.
@@ -119,20 +121,81 @@ public sealed class EcbExchangeRateOptions
     public LogLevel SynchronousNetworkFetchLogLevel { get; set; } = LogLevel.Warning;
 
     /// <summary>
-    /// Validates the options, throwing when a required value is missing.
+    /// Validates the options, throwing when a required value is missing or an invariant is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="Endpoint" /> is <see langword="null" /> or fails validation, or when <see cref="Feeds" />
-    /// is <see langword="null" /> or empty.
+    /// Thrown when <see cref="Endpoint" /> is <see langword="null" /> or fails validation; <see cref="Feeds" /> is
+    /// <see langword="null" /> or empty; <see cref="RefreshInterval" /> is not greater than zero;
+    /// <see cref="CurrencyAliases" /> is <see langword="null" />; or any <c>*LogLevel</c> is not a defined
+    /// <see cref="LogLevel" />.
     /// </exception>
     public void Validate()
     {
-        if (Endpoint is null)
-            throw new ArgumentException(EcbResourceStrings.Arg_Invalid_EcbOptionsEndpoint, nameof(Endpoint));
+        if (!TryValidate(out var error))
+            throw new ArgumentException(error);
+    }
 
-        Endpoint.Validate();
+    /// <summary>
+    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
+    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// </remarks>
+    public bool TryValidate(out string? error)
+    {
+        if (Endpoint is null)
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbOptionsEndpoint;
+            return false;
+        }
+
+        if (!Endpoint.TryValidate(out error))
+            return false;
 
         if (Feeds is null || Feeds.Count == 0)
-            throw new ArgumentException(EcbResourceStrings.Arg_Invalid_EcbOptionsFeeds, nameof(Feeds));
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbOptionsFeeds;
+            return false;
+        }
+
+        if (RefreshInterval <= TimeSpan.Zero)
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbOptionsRefreshInterval;
+            return false;
+        }
+
+        if (CurrencyAliases is null)
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbOptionsCurrencyAliases;
+            return false;
+        }
+
+        if (!AreLogLevelsDefined())
+        {
+            error = EcbResourceStrings.Arg_Invalid_EcbOptionsLogLevel;
+            return false;
+        }
+
+        error = null;
+        return true;
     }
+
+    /// <summary>
+    /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every <c>*LogLevel</c> property is defined; otherwise <see langword="false" />.
+    /// </returns>
+    private bool AreLogLevelsDefined() =>
+        Enum.IsDefined(DownloadStartingLogLevel)
+        && Enum.IsDefined(DownloadCompletedLogLevel)
+        && Enum.IsDefined(DownloadFailedLogLevel)
+        && Enum.IsDefined(ObservationIngestedLogLevel)
+        && Enum.IsDefined(SynchronousNetworkFetchLogLevel);
 }

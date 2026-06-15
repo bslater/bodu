@@ -1,0 +1,140 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="EcbExchangeRateOptionsTests.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Microsoft.Extensions.Logging;
+
+namespace Bodu.Financial.ExchangeRates.Ecb;
+
+/// <summary>
+/// Verifies the validation behaviour of <see cref="EcbExchangeRateOptions" />.
+/// </summary>
+[TestClass]
+public class EcbExchangeRateOptionsTests
+{
+    /// <summary>
+    /// Verifies that the defaults validate successfully.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenDefault_ShouldReturnTrue()
+    {
+        EcbExchangeRateOptions options = new();
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsTrue(valid);
+        Assert.IsNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that the default leaves synchronous network access disabled.
+    /// </summary>
+    [TestMethod]
+    public void AllowSynchronousNetworkAccess_WhenDefault_ShouldBeFalse()
+    {
+        EcbExchangeRateOptions options = new();
+
+        Assert.IsFalse(options.AllowSynchronousNetworkAccess);
+    }
+
+    /// <summary>
+    /// Verifies that a null endpoint is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenEndpointIsNull_ShouldReturnFalse()
+    {
+        EcbExchangeRateOptions options = new() { Endpoint = null! };
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid endpoint surfaces through the aggregate validation.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenEndpointInvalid_ShouldReturnFalse()
+    {
+        EcbExchangeRateOptions options = new();
+        options.Endpoint.HttpTimeout = TimeSpan.Zero;
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that an empty feed catalogue is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenFeedsEmpty_ShouldReturnFalse()
+    {
+        EcbExchangeRateOptions options = new() { Feeds = [] };
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a non-positive refresh interval is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenRefreshIntervalIsNegative_ShouldReturnFalse()
+    {
+        EcbExchangeRateOptions options = new() { RefreshInterval = TimeSpan.FromHours(-1) };
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a null currency-alias map is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenCurrencyAliasesIsNull_ShouldReturnFalse()
+    {
+        EcbExchangeRateOptions options = new() { CurrencyAliases = null! };
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that an undefined log level is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenLogLevelUndefined_ShouldReturnFalse()
+    {
+        EcbExchangeRateOptions options = new() { DownloadFailedLogLevel = (LogLevel)999 };
+
+        var valid = options.TryValidate(out var error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EcbExchangeRateOptions.Validate" /> throws for invalid options.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenInvalid_ShouldThrowArgumentException()
+    {
+        EcbExchangeRateOptions options = new() { Feeds = [] };
+
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            options.Validate();
+        });
+    }
+}

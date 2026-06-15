@@ -9,13 +9,16 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed partial class CachingExchangeRateProviderTests
 {
     /// <summary>
-    /// Verifies that when the fresh cached rows span the requested range, the range is served without fetching.
+    /// Verifies that when recorded coverage contains the requested range, the range is served from the cached rows
+    /// without fetching.
     /// </summary>
     [TestMethod]
-    public async Task GetRatesAsync_WhenCacheSpansRange_ShouldServeWithoutFetch()
+    public async Task GetRatesAsync_WhenCoverageContainsRange_ShouldServeWithoutFetch()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
+        ExchangeRatePair pair = new("AUD", "USD");
+        SeedCache(pair, (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
+        SeedCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
