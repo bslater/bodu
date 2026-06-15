@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Globalization;
+using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml.Writer;
 
@@ -107,10 +108,15 @@ public ref partial struct Utf8TomlWriter
     private readonly long[] _byteCounts;
 
     /// <summary>
-    /// The set of reference-typed values currently being written, used by the serializer to detect object cycles. Held
-    /// in a shared managed object so it survives a by-value copy of the writer, as <see cref="_frames" /> does.
+    /// The single-element holder for the serializer's write state, when the writer is driven by the serializer.
     /// </summary>
-    private readonly HashSet<object> _references;
+    /// <remarks>
+    /// The holder is a shared managed object so the attached state survives a by-value copy of the writer, just as
+    /// <see cref="_frames" /> and <see cref="_root" /> do. It is <see langword="null" /> for direct, imperative, or DOM
+    /// writing, where the serializer's cooperative depth and cycle tracking is inactive and the writer's own depth
+    /// guard applies.
+    /// </remarks>
+    private readonly TomlWriteStack?[] _writeStack;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8TomlWriter" /> struct.
@@ -128,7 +134,7 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = TomlLimits.AbsoluteMaxDepth;
         _byteCounts = new long[2];
-        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        _writeStack = new TomlWriteStack?[1];
     }
 
     /// <summary>
@@ -156,26 +162,39 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
-        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        _writeStack = new TomlWriteStack?[1];
     }
 
     /// <summary>
-    /// Records that the specified reference-typed value is being written, reporting whether it was already in progress.
+    /// Gets the serializer write state attached to this writer, or <see langword="null" /> when the writer is used
+    /// directly rather than by the serializer.
     /// </summary>
-    /// <param name="value">The reference being entered.</param>
-    /// <returns>
-    /// <see langword="true" /> when the reference was newly recorded; <see langword="false" /> when it is already being
-    /// written, which indicates an object cycle.
-    /// </returns>
-    internal bool TryEnterReference(object value) =>
-        _references.Add(value);
+    /// <returns>The attached <see cref="TomlWriteStack" />, or <see langword="null" />.</returns>
+    internal readonly TomlWriteStack? WriteStack =>
+        _writeStack[0];
 
     /// <summary>
-    /// Removes the specified reference-typed value from the in-progress set once it has been fully written.
+    /// Gets the current container nesting depth — the number of open tables and arrays.
     /// </summary>
-    /// <param name="value">The reference being exited.</param>
-    internal void ExitReference(object value) =>
-        _references.Remove(value);
+    /// <returns>The number of containers currently open.</returns>
+    internal readonly int Depth =>
+        _frames.Count;
+
+    /// <summary>
+    /// Gets the effective maximum container nesting depth this writer enforces, after clamping to
+    /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
+    /// </summary>
+    /// <returns>The effective maximum depth.</returns>
+    internal readonly int EffectiveMaxDepth =>
+        _maxDepth;
+
+    /// <summary>
+    /// Attaches the serializer write state to this writer so the converters can record depth and cycle failures
+    /// cooperatively instead of throwing from deep in the recursion.
+    /// </summary>
+    /// <param name="state">The write state to attach.</param>
+    internal readonly void AttachWriteStack(TomlWriteStack state) =>
+        _writeStack[0] = state;
 
     /// <summary>
     /// Writes the start of a table.

@@ -35,8 +35,17 @@ internal static class TomlSerializerEngine
         ThrowHelper.ThrowIfNull(options);
 
         options.MakeReadOnly();
+
+        // Attach the serializer write state so the converters record an over-deep graph or a reference cycle
+        // cooperatively and unwind through returns; the single recorded failure is thrown once here, at the shallow
+        // root boundary, rather than from the deepest recursive frame.
+        var state = new TomlWriteStack();
+        writer.AttachWriteStack(state);
+
         TomlConverter converter = options.GetConverter(typeof(T));
         converter.WriteAsObject(writer, value, options);
+
+        state.ThrowIfFailed();
     }
 
     /// <summary>
