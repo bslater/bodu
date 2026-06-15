@@ -31,9 +31,15 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// actually fetched and is still fresh — so an interior day that was never fetched forces a refetch rather than being
 /// served from a sparse set of rows. On a miss the whole range is refetched from the inner provider and written back
 /// through a single atomic <see cref="IExchangeRateCache.StoreFetchedRange" /> that merges the rows and records the
-/// covered window together, even when the fetch returned no rows, so an empty-but-fetched window is not refetched on the
-/// next lookup. To group several sources behind one entry point, wrap each in its own caching provider and compose them
-/// with an <see cref="AggregatingExchangeRateProvider" />.
+/// covered window together, even when the fetch returned no rows, so an empty-but-fetched window is not refetched on
+/// the next lookup. To group several sources behind one entry point, wrap each in its own caching provider and compose
+/// them with an <see cref="AggregatingExchangeRateProvider" />.
+/// </para>
+/// <para>
+/// Each of the four serve points additionally emits a provenance record alongside its hit/miss diagnostic, recording
+/// whether the rate was resolved live or from the cache, the cache backend that served it, and — for a cache serve —
+/// the age of the served data. The provenance event is logged at
+/// <see cref="CachingExchangeRateOptions.RateProvenanceLogLevel" />.
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
@@ -58,6 +64,12 @@ public abstract class CachingExchangeRateProviderBase
     /// The logger that records cache hits, misses, and refetches.
     /// </summary>
     private readonly ILogger _logger;
+
+    /// <summary>
+    /// The runtime identity of the cache backend, captured once at construction to avoid recomputing it on the serve
+    /// path. It is reported as the backend of every provenance record this provider emits.
+    /// </summary>
+    private readonly string _backend;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CachingExchangeRateProviderBase" /> class.
@@ -86,6 +98,7 @@ public abstract class CachingExchangeRateProviderBase
         _options = options;
         _timeProvider = timeProvider ?? TimeProvider.System;
         _logger = logger ?? NullLogger.Instance;
+        _backend = cache.GetType().Name;
     }
 
     /// <summary>
@@ -109,9 +122,10 @@ public abstract class CachingExchangeRateProviderBase
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out result))
+        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out result, out DateTimeOffset? servedCachedAtUtc))
         {
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now), fromIsoCode, toIsoCode);
             return true;
         }
 
@@ -119,6 +133,7 @@ public abstract class CachingExchangeRateProviderBase
         {
             StoreResult(duration, fromIsoCode, toIsoCode, result, now);
             Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
             return true;
         }
 
@@ -141,9 +156,10 @@ public abstract class CachingExchangeRateProviderBase
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
+        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return cached;
         }
 
@@ -156,6 +172,7 @@ public abstract class CachingExchangeRateProviderBase
         ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
         return fetched;
     }
 
@@ -178,10 +195,16 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="options">The lookup rules to apply.</param>
     /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the resolved result.</param>
+    /// <param name="servedCachedAtUtc">
+    /// When this method returns <see langword="true" />, the cache instant representing the served data: the
+    /// <see cref="CachedExchangeRate.CachedAtUtc" /> of the row whose date matches the resolved result, or the oldest
+    /// instant among the fresh candidate rows when no exact match is found. <see langword="null" /> when this method
+    /// returns <see langword="false" />.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeFromCache(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result)
+    private bool TryServeFromCache(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
 
@@ -195,6 +218,7 @@ public abstract class CachingExchangeRateProviderBase
         if (direct.Count == 0 && inverse.Count == 0)
         {
             result = default;
+            servedCachedAtUtc = null;
             return false;
         }
 
@@ -206,7 +230,14 @@ public abstract class CachingExchangeRateProviderBase
             rates.Add(new ExchangeRate(toIsoCode, fromIsoCode, rate.Date, rate.Rate, provider));
 
         FixedDatedExchangeRateProvider snapshot = new(rates);
-        return snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
+        if (!snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
+        {
+            servedCachedAtUtc = null;
+            return false;
+        }
+
+        servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+        return true;
     }
 
     /// <summary>
@@ -220,28 +251,40 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="now">The instant against which cached rows and coverage are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the rates within the range.</param>
+    /// <param name="oldestCachedAtUtc">
+    /// When this method returns <see langword="true" />, the oldest <see cref="CachedExchangeRate.CachedAtUtc" /> among
+    /// the in-window rows added to <paramref name="result" />, or <see langword="null" /> when the covered window
+    /// yields no rows. <see langword="null" /> when this method returns <see langword="false" />.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result)
+    private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
     {
         // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched.
         if (!_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
         {
             result = Array.Empty<ExchangeRate>();
+            oldestCachedAtUtc = null;
             return false;
         }
 
         var provider = _cache.Provider;
         IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
         List<ExchangeRate> rates = new();
+        DateTimeOffset? oldest = null;
         foreach (CachedExchangeRate rate in fresh)
         {
             if (rate.Date >= startDate && rate.Date <= endDate)
+            {
                 rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider));
+                if (oldest is not { } current || rate.CachedAtUtc < current)
+                    oldest = rate.CachedAtUtc;
+            }
         }
 
         result = rates;
+        oldestCachedAtUtc = oldest;
         return true;
     }
 
@@ -285,4 +328,66 @@ public abstract class CachingExchangeRateProviderBase
 
         return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);
     }
+
+    /// <summary>
+    /// Resolves the cache instant that represents a single-date serve: the cache instant of the candidate row whose
+    /// date matches the resolved result, or the oldest instant among all candidate rows when no row matches that date.
+    /// </summary>
+    /// <param name="direct">The fresh candidate rows for the requested pair.</param>
+    /// <param name="inverse">The fresh candidate rows for the inverse pair, empty when inversion is disallowed.</param>
+    /// <param name="resolvedDate">The observation date of the resolved result.</param>
+    /// <returns>
+    /// The cache instant of the row dated <paramref name="resolvedDate" /> when one exists, otherwise the oldest cache
+    /// instant among the candidate rows, or <see langword="null" /> when no candidate rows are present.
+    /// </returns>
+    /// <remarks>
+    /// A nearest-date or inverse serve has no row dated exactly <paramref name="resolvedDate" />, so the oldest
+    /// candidate instant is reported as a stable, lower-bound representative of the data backing the serve.
+    /// </remarks>
+    private static DateTimeOffset? ResolveServedInstant(IReadOnlyList<CachedExchangeRate> direct, IReadOnlyList<CachedExchangeRate> inverse, DateOnly resolvedDate)
+    {
+        DateTimeOffset? oldest = null;
+
+        foreach (CachedExchangeRate row in direct)
+        {
+            if (row.Date == resolvedDate)
+                return row.CachedAtUtc;
+
+            if (oldest is not { } current || row.CachedAtUtc < current)
+                oldest = row.CachedAtUtc;
+        }
+
+        foreach (CachedExchangeRate row in inverse)
+        {
+            if (row.Date == resolvedDate)
+                return row.CachedAtUtc;
+
+            if (oldest is not { } current || row.CachedAtUtc < current)
+                oldest = row.CachedAtUtc;
+        }
+
+        return oldest;
+    }
+
+    /// <summary>
+    /// Emits the provenance of a served rate through the source-generated provenance log message at the configured
+    /// level.
+    /// </summary>
+    /// <param name="provenance">The lineage of the served rate.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <remarks>
+    /// The call is unconditional: the <see cref="LoggerMessageAttribute" /> source generator short-circuits before any
+    /// argument is formatted when <see cref="CachingExchangeRateOptions.RateProvenanceLogLevel" /> is disabled.
+    /// </remarks>
+    private void EmitProvenance(ExchangeRateProvenance provenance, string fromIsoCode, string toIsoCode) =>
+        Log.RateProvenance(
+            _logger,
+            _options.RateProvenanceLogLevel,
+            provenance.Provider,
+            fromIsoCode,
+            toIsoCode,
+            provenance.Origin,
+            provenance.Backend,
+            provenance.Age);
 }
