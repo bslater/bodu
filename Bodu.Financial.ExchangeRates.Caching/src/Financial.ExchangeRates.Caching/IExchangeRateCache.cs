@@ -28,6 +28,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// having been fetched, so a range is served from the cache only when its coverage contains the whole window.
 /// </para>
 /// <para>
+/// A fetched range writes both halves at once through <see cref="StoreFetchedRange" />, which merges the fetched rows
+/// and records the covered window as one atomic unit. Splitting that into a separate <see cref="Store" /> and
+/// <see cref="RecordCoverage" /> risks persisting coverage without its rows on a backend that silently swallows a write
+/// failure, which would let a later range lookup report a false hit and return incomplete data as if complete.
+/// </para>
+/// <para>
 /// Implementations are expected to be resilient: a cache failure should manifest as an empty result or a no-op rather
 /// than an exception that breaks rate retrieval.
 /// </para>
@@ -94,4 +100,53 @@ public interface IExchangeRateCache
     /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
     /// </exception>
     void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf);
+
+    /// <summary>
+    /// Atomically merges <paramref name="rows" /> into the pair's cached rows and records the inclusive range
+    /// <paramref name="start" />..<paramref name="end" /> as covered, persisting both halves together or neither.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="rows">The rows fetched for the range, which may be empty when the fetch returned no observation.</param>
+    /// <param name="start">The inclusive first date of the fetched range.</param>
+    /// <param name="end">The inclusive last date of the fetched range.</param>
+    /// <param name="duration">
+    /// The duration a cached row and a recorded coverage window remain fresh after they were cached or fetched.
+    /// </param>
+    /// <param name="asOf">
+    /// The instant newly cached rows and the fetched window are stamped with and against which stale rows and windows
+    /// are pruned.
+    /// </param>
+    /// <returns>
+    /// <see cref="ExchangeRateCacheWriteStatus.Stored" /> when both halves were persisted;
+    /// <see cref="ExchangeRateCacheWriteStatus.Failed" /> when a storage error was swallowed and nothing was persisted;
+    /// <see cref="ExchangeRateCacheWriteStatus.Skipped" /> for a cache that intentionally stores nothing.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="rows" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The coverage window is recorded even when <paramref name="rows" /> is empty: a successful fetch that returned no
+    /// observation (a weekend, a holiday, a true gap) must still mark the window covered so a later lookup of the same
+    /// window is served rather than refetched.
+    /// </para>
+    /// <para>
+    /// The merge follows the same most-recent-per-date rule as <see cref="Store" /> and the same window pruning as
+    /// <see cref="RecordCoverage" />. The write is atomic per pair — under the per-pair lock for the in-memory and file
+    /// caches, in one transaction for SQLite, and as one read-modify-write of the per-pair blob for a distributed cache
+    /// — so a reader never observes coverage without its rows. As with the other write paths, a swallowed storage error
+    /// degrades to <see cref="ExchangeRateCacheWriteStatus.Failed" /> rather than throwing; argument validation still
+    /// throws.
+    /// </para>
+    /// </remarks>
+    ExchangeRateCacheWriteStatus StoreFetchedRange(
+        ExchangeRatePair pair,
+        IReadOnlyList<CachedExchangeRate> rows,
+        DateOnly start,
+        DateOnly end,
+        TimeSpan duration,
+        DateTimeOffset asOf);
 }

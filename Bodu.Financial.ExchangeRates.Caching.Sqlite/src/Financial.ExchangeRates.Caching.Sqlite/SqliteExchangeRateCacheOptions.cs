@@ -75,6 +75,22 @@ public class SqliteExchangeRateCacheOptions
         }
     }
 
+    /// <inheritdoc />
+    public override bool TryValidate(out string? error)
+    {
+        if (!base.TryValidate(out error))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(ConnectionString) && string.IsNullOrWhiteSpace(DatabaseFilePath))
+        {
+            error = CachingSqliteResourceStrings.Arg_Invalid_DatabaseLocationMissing;
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
+
     /// <summary>
     /// Resolves the SQLite connection string from the configured location, preferring an explicit
     /// <see cref="ConnectionString" /> over one built from <see cref="DatabaseFilePath" />.

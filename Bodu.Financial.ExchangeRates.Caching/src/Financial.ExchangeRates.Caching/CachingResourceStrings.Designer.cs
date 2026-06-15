@@ -158,5 +158,41 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Arg_Invalid_AggregationRouteNull", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The per-provider expiry map must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_ProviderExpiryNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ProviderExpiryNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The default lookup options must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_LookupOptionsNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_LookupOptionsNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every configured cache log level must be a defined LogLevel value..
+        /// </summary>
+        internal static string Arg_Invalid_LogLevelUndefined {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_LogLevelUndefined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The cache provider name must be a non-blank value..
+        /// </summary>
+        internal static string Arg_Invalid_ProviderBlank {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ProviderBlank", resourceCulture);
+            }
+        }
     }
 }

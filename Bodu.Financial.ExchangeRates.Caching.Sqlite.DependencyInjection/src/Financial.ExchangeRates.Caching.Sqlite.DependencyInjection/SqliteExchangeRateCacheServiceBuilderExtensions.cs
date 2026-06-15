@@ -47,8 +47,8 @@ public static class SqliteExchangeRateCacheServiceBuilderExtensions
     /// <remarks>
     /// The cache is registered as a singleton so its keep-alive connection and per-pair write locks are shared across
     /// resolutions and the container disposes it on shutdown. The bound provider name is also applied to the options so
-    /// a configuration section need not repeat it. Options are validated lazily when the cache is first resolved,
-    /// matching the lazy validation of the other caching registrations.
+    /// a configuration section need not repeat it. Options are validated through <c>ValidateOnStart</c>, so
+    /// misconfiguration fails fast at application startup.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -83,6 +83,9 @@ public static class SqliteExchangeRateCacheServiceBuilderExtensions
             options.Provider = providerName;
             configure?.Invoke(options);
         });
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "SQLite exchange-rate cache options are invalid.")
+            .ValidateOnStart();
 
         // Register the concrete cache once as a singleton so a single instance — and its single keep-alive connection
         // and per-pair locks — backs every resolution and the container disposes it on shutdown.

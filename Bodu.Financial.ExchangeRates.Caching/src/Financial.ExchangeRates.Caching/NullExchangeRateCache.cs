@@ -61,4 +61,16 @@ public sealed class NullExchangeRateCache
     {
         // Intentionally no-op: this cache records no coverage.
     }
+
+    /// <inheritdoc />
+    public ExchangeRateCacheWriteStatus StoreFetchedRange(
+        ExchangeRatePair pair,
+        IReadOnlyList<CachedExchangeRate> rows,
+        DateOnly start,
+        DateOnly end,
+        TimeSpan duration,
+        DateTimeOffset asOf) =>
+
+        // Intentionally no-op: this cache persists neither rows nor coverage, so it reports the write as skipped.
+        ExchangeRateCacheWriteStatus.Skipped;
 }

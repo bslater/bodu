@@ -117,8 +117,15 @@ public sealed class CachingExchangeRateOptions
     /// Validates the option values, throwing when a rule is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive.
+    /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive,
+    /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when any
+    /// <c>Cache*LogLevel</c> is not a defined <see cref="LogLevel" />.
     /// </exception>
+    /// <remarks>
+    /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
+    /// dependency-injection registration instead wires <see cref="TryValidate" /> into <c>ValidateOnStart</c>, which
+    /// reports the same invariants without throwing.
+    /// </remarks>
     public void Validate()
     {
         if (DefaultExpiry <= TimeSpan.Zero)
@@ -127,6 +134,9 @@ public sealed class CachingExchangeRateOptions
                 string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, DefaultExpiry),
                 nameof(DefaultExpiry));
         }
+
+        if (ProviderExpiry is null)
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_ProviderExpiryNull, nameof(ProviderExpiry));
 
         foreach (KeyValuePair<string, TimeSpan> entry in ProviderExpiry)
         {
@@ -137,5 +147,74 @@ public sealed class CachingExchangeRateOptions
                     nameof(ProviderExpiry));
             }
         }
+
+        if (DefaultLookupOptions is null)
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LookupOptionsNull, nameof(DefaultLookupOptions));
+
+        if (!AreLogLevelsDefined())
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LogLevelUndefined, nameof(CacheHitLogLevel));
     }
+
+    /// <summary>
+    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
+    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// </remarks>
+    public bool TryValidate(out string? error)
+    {
+        if (DefaultExpiry <= TimeSpan.Zero)
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, DefaultExpiry);
+            return false;
+        }
+
+        if (ProviderExpiry is null)
+        {
+            error = CachingResourceStrings.Arg_Invalid_ProviderExpiryNull;
+            return false;
+        }
+
+        foreach (KeyValuePair<string, TimeSpan> entry in ProviderExpiry)
+        {
+            if (entry.Value <= TimeSpan.Zero)
+            {
+                error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, entry.Value);
+                return false;
+            }
+        }
+
+        if (DefaultLookupOptions is null)
+        {
+            error = CachingResourceStrings.Arg_Invalid_LookupOptionsNull;
+            return false;
+        }
+
+        if (!AreLogLevelsDefined())
+        {
+            error = CachingResourceStrings.Arg_Invalid_LogLevelUndefined;
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
+
+    /// <summary>
+    /// Reports whether every configurable cache log level is a defined <see cref="LogLevel" /> value.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every <c>Cache*LogLevel</c> property is defined; otherwise <see langword="false" />.
+    /// </returns>
+    private bool AreLogLevelsDefined() =>
+        Enum.IsDefined(CacheHitLogLevel)
+        && Enum.IsDefined(CacheMissLogLevel)
+        && Enum.IsDefined(CacheRangeHitLogLevel)
+        && Enum.IsDefined(CacheRangeRefetchLogLevel);
 }

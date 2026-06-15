@@ -27,18 +27,24 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 /// <para>
 /// Expiry is by caching duration rather than by storage: stale and semantically invalid rows are filtered on read and
 /// pruned on write, and stale coverage windows are pruned when coverage is recorded, so the entry self-cleans over
-/// time. The two halves of a pair's state are written independently — storing rates never drops recorded coverage, and
-/// recording coverage never drops cached rows — by reading the existing blob, replacing only the affected half, and
-/// writing the merged blob back.
+/// time. The freshness, validity, merge, and coverage rules are delegated to the shared
+/// <see cref="ExchangeRateCacheRules" /> so this backend stays behaviourally identical to the in-memory, file, and
+/// SQLite caches; this class contributes only its blob storage and locking. The two halves of a pair's state are
+/// written independently through <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops
+/// recorded coverage, and recording coverage never drops cached rows — by reading the existing blob, replacing only the
+/// affected half, and writing the merged blob back. <see cref="StoreFetchedRange" /> instead replaces both halves in one
+/// blob write.
 /// </para>
 /// <para>
 /// The cache is best-effort. An <see cref="IDistributedCache" /> offers no atomic read-modify-write, so the per-pair
 /// blob is read, modified, and written back: same-process races are prevented by a per-pair in-process lock guarding
-/// <see cref="Store" /> and <see cref="RecordCoverage" />, but <em>cross-process</em> concurrent writes to the same
-/// pair are last-write-wins, consistent with the documented best-effort nature of the contract. As required by
-/// <see cref="IExchangeRateCache" />, a backing-store failure surfaces as an empty read or a skipped write rather than
-/// an exception: <see cref="IDistributedCache" /> faults and JSON (de)serialization faults degrade gracefully, while
-/// argument validation still throws.
+/// <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />, but
+/// <em>cross-process</em> concurrent writes to the same pair are last-write-wins, consistent with the documented
+/// best-effort nature of the contract. Because both halves of a fetched range travel in one blob, a single
+/// <see cref="StoreFetchedRange" /> set is all-or-nothing: the reader never observes coverage without its rows even
+/// across processes. As required by <see cref="IExchangeRateCache" />, a backing-store failure surfaces as an empty
+/// read or a skipped write rather than an exception: <see cref="IDistributedCache" /> faults and JSON
+/// (de)serialization faults degrade gracefully, while argument validation still throws.
 /// </para>
 /// </remarks>
 /// <example>
@@ -55,12 +61,6 @@ public sealed class DistributedExchangeRateCache
     : IExchangeRateCache
 {
     /// <summary>
-    /// The clock-skew tolerance applied when validating a row's caching instant: a row stamped more than this far in
-    /// the future of the evaluation instant is treated as invalid rather than fresh.
-    /// </summary>
-    private static readonly TimeSpan s_clockSkewTolerance = TimeSpan.FromMinutes(1);
-
-    /// <summary>
     /// The serializer options used for every read and write so the wire format is stable and culture-independent.
     /// </summary>
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
@@ -76,8 +76,9 @@ public sealed class DistributedExchangeRateCache
     private readonly DistributedExchangeRateCacheOptions _options;
 
     /// <summary>
-    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and
-    /// <see cref="RecordCoverage" />. One lock object is created per pair on first use and reused thereafter.
+    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />,
+    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first
+    /// use and reused thereafter.
     /// </summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
@@ -128,15 +129,7 @@ public sealed class DistributedExchangeRateCache
         if (entries.Count == 0)
             return Array.Empty<CachedExchangeRate>();
 
-        List<CachedExchangeRate> fresh = new(entries.Count);
-        foreach (CachedExchangeRate entry in entries)
-        {
-            if (IsValid(entry, asOf) && entry.IsFresh(asOf, duration))
-                fresh.Add(entry);
-        }
-
-        fresh.Sort(static (left, right) => left.Date.CompareTo(right.Date));
-        return fresh;
+        return ExchangeRateCacheRules.SelectFresh(entries, duration, asOf);
     }
 
     /// <inheritdoc />
@@ -151,30 +144,7 @@ public sealed class DistributedExchangeRateCache
         {
             PairState state = ReadEntry(pair);
 
-            // Merge with any existing entry so the most recently cached rate wins per date.
-            Dictionary<DateOnly, CachedExchangeRate> merged = new();
-            foreach (CachedExchangeRate existing in state.Entries)
-                merged[existing.Date] = existing;
-
-            foreach (CachedExchangeRate rate in rates)
-            {
-                if (!IsValid(rate, asOf))
-                    continue;
-
-                if (!merged.TryGetValue(rate.Date, out CachedExchangeRate current) || rate.CachedAtUtc >= current.CachedAtUtc)
-                    merged[rate.Date] = rate;
-            }
-
-            // Prune rows that are no longer fresh or are semantically invalid, then order by date so the entry is stable
-            // and self-cleaning.
-            List<CachedExchangeRate> ordered = new(merged.Count);
-            foreach (CachedExchangeRate entry in merged.Values)
-            {
-                if (IsValid(entry, asOf) && entry.IsFresh(asOf, duration))
-                    ordered.Add(entry);
-            }
-
-            ordered.Sort(static (left, right) => left.Date.CompareTo(right.Date));
+            List<CachedExchangeRate> ordered = ExchangeRateCacheRules.MergeRows(state.Entries, rates, duration, asOf);
 
             // Preserve the existing coverage half: storing rows must never drop recorded coverage.
             WriteEntry(pair, new PairState(ordered, state.Coverage));
@@ -182,17 +152,8 @@ public sealed class DistributedExchangeRateCache
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
-    {
-        DateRangeCoverage coverage = new();
-        foreach ((DateOnly start, DateOnly end, DateTimeOffset fetchedAt) in ReadEntry(pair).Coverage)
-        {
-            if (asOf - fetchedAt < duration)
-                coverage.Add(start, end);
-        }
-
-        return coverage;
-    }
+    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+        ExchangeRateCacheRules.BuildCoverage(ReadEntry(pair).Coverage, duration, asOf);
 
     /// <inheritdoc />
     public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
@@ -203,41 +164,41 @@ public sealed class DistributedExchangeRateCache
         {
             PairState state = ReadEntry(pair);
 
-            // Keep the still-fresh windows, drop the rest, then append the newly fetched window so the entry self-cleans.
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new(state.Coverage.Count + 1);
-            foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in state.Coverage)
-            {
-                if (asOf - fetchedAt < duration)
-                    windows.Add((windowStart, windowEnd, fetchedAt));
-            }
-
-            windows.Add((start, end, asOf));
+            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                ExchangeRateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
 
             // Preserve the existing entries half: recording coverage must never drop cached rows.
             WriteEntry(pair, new PairState(state.Entries, windows));
         }
     }
 
-    /// <summary>
-    /// Reports whether a cached row is semantically valid against the evaluation instant.
-    /// </summary>
-    /// <param name="entry">The cached row to validate.</param>
-    /// <param name="asOf">
-    /// The instant against which the caching instant is checked for implausible future stamps.
-    /// </param>
-    /// <returns>
-    /// <see langword="false" /> when the row carries a non-positive rate, a default (unset) date, or a caching instant
-    /// implausibly far in the future of <paramref name="asOf" />; otherwise <see langword="true" />.
-    /// </returns>
-    /// <remarks>
-    /// Invalid rows are silently skipped on both write (rejecting bad incoming data) and read (rejecting persisted or
-    /// tampered rows) so a malformed cache never surfaces a nonsensical rate. A small clock-skew tolerance is allowed
-    /// so a row stamped marginally ahead of the evaluating clock is not discarded.
-    /// </remarks>
-    private static bool IsValid(CachedExchangeRate entry, DateTimeOffset asOf) =>
-        entry.Rate > 0m
-            && entry.Date != default
-            && entry.CachedAtUtc <= asOf + s_clockSkewTolerance;
+    /// <inheritdoc />
+    public ExchangeRateCacheWriteStatus StoreFetchedRange(
+        ExchangeRatePair pair,
+        IReadOnlyList<CachedExchangeRate> rows,
+        DateOnly start,
+        DateOnly end,
+        TimeSpan duration,
+        DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfNull(rows);
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        lock (LockFor(pair))
+        {
+            PairState state = ReadEntry(pair);
+
+            // Merge both halves, then write them in one blob so a reader never observes coverage without its rows; the
+            // single Set is all-or-nothing.
+            List<CachedExchangeRate> ordered = ExchangeRateCacheRules.MergeRows(state.Entries, rows, duration, asOf);
+            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                ExchangeRateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
+
+            return WriteEntry(pair, new PairState(ordered, windows))
+                ? ExchangeRateCacheWriteStatus.Stored
+                : ExchangeRateCacheWriteStatus.Failed;
+        }
+    }
 
     /// <summary>
     /// Formats a <see cref="DateOnly" /> as invariant <c>yyyy-MM-dd</c> text for storage.
@@ -372,11 +333,16 @@ public sealed class DistributedExchangeRateCache
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="state">The state to persist.</param>
+    /// <returns>
+    /// <see langword="true" /> when the blob was written or removed; <see langword="false" /> when a backing-store or
+    /// serialization fault was swallowed and nothing was persisted.
+    /// </returns>
     /// <remarks>
-    /// A backing-store fault or a serialization fault is swallowed so a failed write does not break rate retrieval.
-    /// When both halves are empty the key is removed so the entry self-cleans rather than persisting an empty blob.
+    /// A backing-store fault or a serialization fault is swallowed so a failed write does not break rate retrieval, and
+    /// the failure is reported so <see cref="StoreFetchedRange" /> can signal that nothing was persisted. When both
+    /// halves are empty the key is removed so the entry self-cleans rather than persisting an empty blob.
     /// </remarks>
-    private void WriteEntry(ExchangeRatePair pair, PairState state)
+    private bool WriteEntry(ExchangeRatePair pair, PairState state)
     {
         var key = _options.BuildKey(pair);
 
@@ -385,7 +351,7 @@ public sealed class DistributedExchangeRateCache
             if (state.Entries.Count == 0 && state.Coverage.Count == 0)
             {
                 _cache.Remove(key);
-                return;
+                return true;
             }
 
             var entry = new DistributedCacheEntry();
@@ -411,16 +377,17 @@ public sealed class DistributedExchangeRateCache
 
             var payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
             _cache.Set(key, payload);
+            return true;
         }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception
         catch (Exception)
         {
             // Best-effort cache: a fault from an arbitrary IDistributedCache implementation (a network error, a
             // timeout, a disposed or misconfigured cache) or a serialization fault must degrade to a skipped write
             // rather than break rate retrieval, as the IExchangeRateCache contract requires. The exception is
-            // deliberately swallowed; argument validation runs before this block and still throws.
+            // deliberately swallowed and reported as a failure; argument validation runs before this block and still
+            // throws.
+            return false;
         }
-#pragma warning restore RCS1075
     }
 
     /// <summary>

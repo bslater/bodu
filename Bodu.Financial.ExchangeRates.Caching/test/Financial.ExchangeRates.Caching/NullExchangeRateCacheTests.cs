@@ -66,4 +66,27 @@ public sealed class NullExchangeRateCacheTests
 
         Assert.IsTrue(cache.GetCoverage(pair, TimeSpan.FromHours(24), now).IsEmpty);
     }
+
+    /// <summary>
+    /// Verifies that an atomic fetched-range write stores nothing and reports the write as skipped.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenInvoked_ShouldReturnSkippedAndStoreNothing()
+    {
+        IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
+        ExchangeRatePair pair = new("AUD", "USD");
+        var now = DateTimeOffset.UtcNow;
+
+        ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
+            pair,
+            new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) },
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 10),
+            TimeSpan.FromHours(24),
+            now);
+
+        Assert.AreEqual(ExchangeRateCacheWriteStatus.Skipped, status);
+        Assert.AreEqual(0, cache.GetRates(pair, TimeSpan.FromHours(24), now).Count);
+        Assert.IsTrue(cache.GetCoverage(pair, TimeSpan.FromHours(24), now).IsEmpty);
+    }
 }

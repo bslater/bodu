@@ -25,21 +25,22 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// Rate rows and coverage windows are independent halves of the per-pair state: a write through one path preserves the
 /// other half so that recording coverage never drops rows and storing rows never drops coverage. The read-modify-write
-/// sequences in <see cref="Store" /> and <see cref="RecordCoverage" /> run under a per-pair lock so concurrent writes
-/// to the same pair cannot interleave and lose either half. The lock is process-local; file caches remain best-effort
-/// across processes, where the atomic temp-and-move write keeps each file internally consistent.
+/// sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" /> run under a
+/// per-pair lock so concurrent writes to the same pair cannot interleave and lose either half. The lock is
+/// process-local; file caches remain best-effort across processes, where the atomic temp-and-move write keeps each file
+/// internally consistent.
+/// </para>
+/// <para>
+/// The freshness, validity, merge, and coverage rules are not implemented here: they are delegated to the shared
+/// <see cref="ExchangeRateCacheRules" /> so this base and the SQLite and distributed backends apply one authoritative
+/// policy. This base contributes only the per-pair locking and the read-modify-write sequencing over a
+/// <see cref="CachePairState" />.
 /// </para>
 /// </remarks>
 public abstract class ExchangeRateCacheBase<TOptions>
     : IExchangeRateCache
     where TOptions : ExchangeRateCacheOptions
 {
-    /// <summary>
-    /// The clock-skew tolerance applied when validating a row's caching instant: a row stamped more than this far in
-    /// the future of the evaluation instant is treated as invalid rather than fresh.
-    /// </summary>
-    private static readonly TimeSpan s_clockSkewTolerance = TimeSpan.FromMinutes(1);
-
     /// <summary>
     /// The validated options carrying the bound provider and any storage settings.
     /// </summary>
@@ -83,15 +84,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
         if (entries.Count == 0)
             return Array.Empty<CachedExchangeRate>();
 
-        List<CachedExchangeRate> fresh = new(entries.Count);
-        foreach (CachedExchangeRate entry in entries)
-        {
-            if (IsValid(entry, asOf) && entry.IsFresh(asOf, duration))
-                fresh.Add(entry);
-        }
-
-        fresh.Sort(static (left, right) => left.Date.CompareTo(right.Date));
-        return fresh;
+        return ExchangeRateCacheRules.SelectFresh(entries, duration, asOf);
     }
 
     /// <inheritdoc />
@@ -106,30 +99,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
         {
             CachePairState state = ReadState(pair);
 
-            // Merge with any existing entry so the most recently cached rate wins per date.
-            Dictionary<DateOnly, CachedExchangeRate> merged = new();
-            foreach (CachedExchangeRate existing in state.Entries)
-                merged[existing.Date] = existing;
-
-            foreach (CachedExchangeRate rate in rates)
-            {
-                if (!IsValid(rate, asOf))
-                    continue;
-
-                if (!merged.TryGetValue(rate.Date, out CachedExchangeRate current) || rate.CachedAtUtc >= current.CachedAtUtc)
-                    merged[rate.Date] = rate;
-            }
-
-            // Prune rows that are no longer fresh or are semantically invalid, then order by date so the store is stable
-            // and self-cleaning.
-            List<CachedExchangeRate> ordered = new(merged.Count);
-            foreach (CachedExchangeRate entry in merged.Values)
-            {
-                if (IsValid(entry, asOf) && entry.IsFresh(asOf, duration))
-                    ordered.Add(entry);
-            }
-
-            ordered.Sort(static (left, right) => left.Date.CompareTo(right.Date));
+            List<CachedExchangeRate> ordered = ExchangeRateCacheRules.MergeRows(state.Entries, rates, duration, asOf);
 
             // Preserve the existing coverage half: storing rows must never drop recorded coverage.
             WriteState(pair, new CachePairState(ordered, state.Coverage));
@@ -137,17 +107,8 @@ public abstract class ExchangeRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
-    {
-        DateRangeCoverage coverage = new();
-        foreach (CoverageWindow window in ReadState(pair).Coverage)
-        {
-            if (window.IsFresh(asOf, duration))
-                coverage.Add(window.Start, window.End);
-        }
-
-        return coverage;
-    }
+    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+        ExchangeRateCacheRules.BuildCoverage(ToTuples(ReadState(pair).Coverage), duration, asOf);
 
     /// <inheritdoc />
     public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
@@ -158,19 +119,39 @@ public abstract class ExchangeRateCacheBase<TOptions>
         {
             CachePairState state = ReadState(pair);
 
-            // Keep the still-fresh windows, drop the rest, then append the newly fetched window so the store self-cleans.
-            List<CoverageWindow> windows = new(state.Coverage.Count + 1);
-            foreach (CoverageWindow window in state.Coverage)
-            {
-                if (window.IsFresh(asOf, duration))
-                    windows.Add(window);
-            }
-
-            windows.Add(new CoverageWindow(start, end, asOf));
+            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                ExchangeRateCacheRules.MergeCoverage(ToTuples(state.Coverage), start, end, duration, asOf);
 
             // Preserve the existing entries half: recording coverage must never drop cached rows.
-            WriteState(pair, new CachePairState(state.Entries, windows));
+            WriteState(pair, new CachePairState(state.Entries, ToWindows(windows)));
         }
+    }
+
+    /// <inheritdoc />
+    public ExchangeRateCacheWriteStatus StoreFetchedRange(
+        ExchangeRatePair pair,
+        IReadOnlyList<CachedExchangeRate> rows,
+        DateOnly start,
+        DateOnly end,
+        TimeSpan duration,
+        DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfNull(rows);
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        lock (LockFor(pair))
+        {
+            CachePairState state = ReadState(pair);
+
+            // Merge both halves first, then write them together so a reader never observes coverage without its rows.
+            List<CachedExchangeRate> ordered = ExchangeRateCacheRules.MergeRows(state.Entries, rows, duration, asOf);
+            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                ExchangeRateCacheRules.MergeCoverage(ToTuples(state.Coverage), start, end, duration, asOf);
+
+            WriteState(pair, new CachePairState(ordered, ToWindows(windows)));
+        }
+
+        return ExchangeRateCacheWriteStatus.Stored;
     }
 
     /// <summary>
@@ -199,25 +180,34 @@ public abstract class ExchangeRateCacheBase<TOptions>
     private protected abstract void WriteState(ExchangeRatePair pair, CachePairState state);
 
     /// <summary>
-    /// Reports whether a cached row is semantically valid against the evaluation instant.
+    /// Projects the internal coverage windows into the plain tuples the shared
+    /// <see cref="ExchangeRateCacheRules" /> operate on.
     /// </summary>
-    /// <param name="entry">The cached row to validate.</param>
-    /// <param name="asOf">
-    /// The instant against which the caching instant is checked for implausible future stamps.
-    /// </param>
-    /// <returns>
-    /// <see langword="false" /> when the row carries a non-positive rate, a default (unset) date, or a caching instant
-    /// implausibly far in the future of <paramref name="asOf" />; otherwise <see langword="true" />.
-    /// </returns>
-    /// <remarks>
-    /// Invalid rows are silently skipped on both write (rejecting bad incoming data) and read (rejecting persisted or
-    /// tampered rows) so a malformed cache never surfaces a nonsensical rate. A small clock-skew tolerance is allowed
-    /// so a row stamped marginally ahead of the evaluating clock is not discarded.
-    /// </remarks>
-    private static bool IsValid(CachedExchangeRate entry, DateTimeOffset asOf) =>
-        entry.Rate > 0m
-            && entry.Date != default
-            && entry.CachedAtUtc <= asOf + s_clockSkewTolerance;
+    /// <param name="coverage">The coverage windows to project.</param>
+    /// <returns>The windows as <c>(Start, End, FetchedAtUtc)</c> tuples.</returns>
+    private static List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> ToTuples(IReadOnlyList<CoverageWindow> coverage)
+    {
+        List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> tuples = new(coverage.Count);
+        foreach (CoverageWindow window in coverage)
+            tuples.Add((window.Start, window.End, window.FetchedAtUtc));
+
+        return tuples;
+    }
+
+    /// <summary>
+    /// Projects the plain coverage tuples produced by the shared <see cref="ExchangeRateCacheRules" /> back into the
+    /// internal <see cref="CoverageWindow" /> representation persisted in a <see cref="CachePairState" />.
+    /// </summary>
+    /// <param name="tuples">The coverage tuples to project.</param>
+    /// <returns>The tuples as <see cref="CoverageWindow" /> values.</returns>
+    private static List<CoverageWindow> ToWindows(List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> tuples)
+    {
+        List<CoverageWindow> windows = new(tuples.Count);
+        foreach ((DateOnly start, DateOnly end, DateTimeOffset fetchedAt) in tuples)
+            windows.Add(new CoverageWindow(start, end, fetchedAt));
+
+        return windows;
+    }
 
     /// <summary>
     /// Returns the lock object guarding writes for the supplied pair, creating it on first use.
