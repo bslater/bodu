@@ -6,24 +6,44 @@ uid: Bodu.Financial.ExchangeRates.Caching
 
 ## Purpose
 
-**Bodu.Financial.ExchangeRates.Caching** is the caching layer for the [`Bodu.Financial`](Bodu.Financial.md) exchange-rate provider stack. Rather than building caching into each provider, it adds a caching provider that sits *in front of* the fetch-only providers: <xref:Bodu.Financial.ExchangeRates.Caching.CachingDatedExchangeRateProvider> implements the same <xref:Bodu.Financial.IDatedExchangeRateProvider> contract the caller already resolves, wraps one or more named sources supplied at construction, serves fresh rates from a cache, and delegates downstream only on a miss.
+**Bodu.Financial.ExchangeRates.Caching** is the caching and composition layer for the [`Bodu.Financial`](Bodu.Financial.md) exchange-rate provider stack. Rather than building caching or grouping into each provider, it ships two orthogonal pieces that each implement the same <xref:Bodu.Financial.IDatedExchangeRateProvider> contract (and the timeless <xref:Bodu.Financial.IExchangeRateProvider>), so they drop in anywhere a provider is expected:
 
-Rates are persisted as **TOML**, one file per `(provider, currency pair)` (for example `Yahoo_AUDUSD.toml`), so a fresh rate survives process restarts. The cache owns expiry: each source has its own caching duration with a global default, the cache returns only fresh rows, and it prunes stale rows on write. Both single-date lookups and range lookups (`GetRatesAsync`) flow through the cache.
+- **A read-through cache, one cache per provider.** <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider> wraps exactly one inner source over one single-provider cache. It serves fresh cached rates and delegates to the source only on a miss, then caches what the source returns.
+- **An aggregator that groups many providers.** <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> groups named children behind one entry point, combining them through a pluggable strategy with optional per-currency-pair routing.
+
+The cache owns expiry: each provider has its own caching duration with a global default, the cache returns only fresh rows, and it prunes stale rows on write. Both single-date lookups and range lookups (`GetRatesAsync`) flow through the cache.
 
 ## Static documentation
 
-- **[Caching exchange rates guide](~/guides/financial/exchange-rate-caching.md)** — wrapping providers, per-provider expiry, single-date and range serving, the on-disk TOML format, and custom cache stores.
+- **[Caching and aggregating exchange rates guide](~/guides/financial/exchange-rate-caching.md)** — the cache cascade, one-cache-per-provider read-through, the aggregator's strategies and per-pair routing, the on-disk TOML format, custom storage, and dependency injection.
 
 ## Key types
 
-- <xref:Bodu.Financial.ExchangeRates.Caching.CachingDatedExchangeRateProvider> — the caching provider; wraps one or more named <xref:Bodu.Financial.IDatedExchangeRateProvider> sources (a caching composite when several are supplied) over a shared cache.
-- <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProviderBase> — the abstract base holding the caching, staleness, and range logic; derived types supply the wrapped sources.
-- <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions> — cache location (`CacheDirectory`), `DefaultExpiry`, and the per-provider `ProviderExpiry` overrides; `GetExpiry(name)` resolves the effective duration.
-- <xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache> — the cache contract: `GetRates` returns fresh rows; `Store` merges and prunes.
-- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase> — shared merge / prune / freshness mechanism; derive and implement only raw entry persistence.
-- <xref:Bodu.Financial.ExchangeRates.Caching.TomlFileSystemExchangeRateCache> — the TOML-on-disk cache (one file per provider and pair; decimals as quoted strings for lossless round-trips).
-- <xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache> — the no-op cache, for when on-disk caching is disabled.
+**Storage (a cache is bound to one provider)**
+
+- <xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache> — the single-provider cache contract: a bound `Provider`, and `GetRates`/`Store` keyed by currency pair.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1> — the storage-agnostic core: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Extend it for a non-file store.
+- <xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1> — the file-storage seam and its plumbing: per-provider subdirectory layout, file-name resolution, and best-effort IO. Extend the base for a new file format.
+- <xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache> — the sealed TOML leaf (`<directory>/<provider>/<from><to>.toml`; decimals quoted for lossless round-trips).
+- <xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache> — an in-memory cache reusing the same expiry mechanism; nothing is persisted.
+- <xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache> — the no-op cache (`NullExchangeRateCache.Create(provider)`), for when caching is disabled.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheOptions>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheOptions> — the storage-agnostic options (bound `Provider`) and the file options (adds `CacheDirectory`).
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachedExchangeRate> — one cached row: observation `Date`, `Rate`, and the `CachedAtUtc` instant that drives expiry.
+
+**Read-through caching decorator**
+
+- <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider> — wraps one inner source over one cache; implements both the dated and timeless surfaces.
+- <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProviderBase> — the abstract base holding the read-through, staleness, and range logic; derived types supply the wrapped inner provider.
+- <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions> — cache location (`CacheDirectory`), `DefaultExpiry`, the per-provider `ProviderExpiry` overrides, the per-event log levels, and `DefaultLookupOptions` for the timeless surface.
+
+**Aggregation (group many providers)**
+
+- <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> — groups named children, applies a strategy and per-pair routing, and exposes `TryGetProvider` for direct access to a named child.
+- <xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy> — the strategy seam; implement it for weighted, median, or first-non-stale combination.
+- <xref:Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy> — first child that resolves wins (the default; successor to the former composite provider).
+- <xref:Bodu.Financial.ExchangeRates.Caching.AverageStrategy> — arithmetic mean of every child that resolves, tagged with a synthetic provider label.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRatePairRoute>, <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateAggregationOptions> — a per-pair ordered child list (with an optional pair-specific strategy) and the aggregator options that hold the default strategy, default order, and the route map.
+- <xref:Bodu.Financial.ExchangeRates.Caching.NamedDatedExchangeRateProvider> — pairs a child provider with the name it is referenced by in routing and diagnostics.
 
 ## Minimal sample
 
@@ -38,17 +58,24 @@ var options = new CachingExchangeRateOptions
 };
 options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);
 
-var caching = new CachingDatedExchangeRateProvider(
+// One cache per provider.
+var rbaCached = new CachingExchangeRateProvider("RBA", rba, options);
+var ecbCached = new CachingExchangeRateProvider("ECB", ecb, options);
+
+// Group them with per-FX-pair routing.
+var aggregation = new ExchangeRateAggregationOptions();
+aggregation.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+aggregation.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+
+IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
     new[]
     {
-        new KeyValuePair<string, IDatedExchangeRateProvider>("Yahoo", yahoo),
-        new KeyValuePair<string, IDatedExchangeRateProvider>("RBA", rba),
+        new NamedDatedExchangeRateProvider("RBA", rbaCached),
+        new NamedDatedExchangeRateProvider("ECB", ecbCached),
     },
-    options);
+    aggregation);
 
-ExchangeRateLookupResult today = caching.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
-IReadOnlyList<ExchangeRate> january =
-    await caching.GetRatesAsync("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+ExchangeRateLookupResult today = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
 ```
 
 For dependency-injection wiring, see [`Bodu.Financial.ExchangeRates.Caching.DependencyInjection`](Bodu.Financial.ExchangeRates.Caching.DependencyInjection.md) and the [caching guide](~/guides/financial/exchange-rate-caching.md).

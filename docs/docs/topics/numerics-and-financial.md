@@ -75,7 +75,7 @@ Endpoint inclusivity is independent on each side, so closed, open, and both half
 | Splitting an amount across N shares without remainder loss | `Money<T>.Allocate(parts)` / `Allocate(ratios)` | Largest-remainder distribution; the shares always sum to the original. |
 | Sub-minor-unit-precise interest or percentage chains | `Money<T>.ToFraction()` / `FromFraction()` / `MultiplyExact()` | The bridge between the two libraries. |
 | FX conversion with dated rates and audit provenance | <xref:Bodu.Financial.IDatedExchangeRateProvider> + <xref:Bodu.Financial.ExchangeRateLookupResult> | Provider name, actual date used, offset days, resolution policy. |
-| Prioritised fallback across multiple FX sources | <xref:Bodu.Financial.CompositeDatedExchangeRateProvider> | Deterministic first-available resolution in construction order. |
+| Prioritised fallback (or averaging) across multiple FX sources | [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) | In the `Bodu.Financial.ExchangeRates.Caching` package; deterministic first-available (PriorityFallback) or mean (Average) via a pluggable strategy. |
 | Registering the financial stack in a DI container | `AddBoduFinancial(...)` | Currency lookup, monetary contexts, providers, JSON converters. |
 
 ## How the pieces compose

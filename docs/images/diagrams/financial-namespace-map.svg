@@ -97,10 +97,10 @@
       </g>
       <g transform="translate(563 50)">
         <rect class="fin-card" width="183" height="78" rx="6"/>
-        <text class="fin-role" x="12" y="20">Composite stack</text>
-        <text class="fin-type" x="12" y="38">CompositeDatedExchangeRateProvider</text>
+        <text class="fin-role" x="12" y="20">Aggregation · Caching pkg</text>
+        <text class="fin-type" x="12" y="38">AggregatingExchangeRateProvider</text>
         <text class="fin-type" x="12" y="54">ExchangeRateLookupResult</text>
-        <text class="fin-use" x="12" y="70">prioritised fallback · provenance</text>
+        <text class="fin-use" x="12" y="70">prioritised fallback · averaging</text>
       </g>
     </g>
   </g>

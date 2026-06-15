@@ -278,20 +278,21 @@ filter out pass-throughs without a magic string. Turn the flag off
 falls through to the table like any other — failing unless a literal
 same-currency series was loaded.
 
-## Stacking providers: the composite
+## Stacking providers: the aggregator
 
-[`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider)
-applies the *same* `ExchangeRateLookupOptions` to an ordered list of
-providers and returns the **first** success. The lookup options decide
-the date behaviour within each provider; the composite decides the
-order they are tried.
+[`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
+(in `Bodu.Financial.ExchangeRates.Caching`) applies the *same*
+`ExchangeRateLookupOptions` to an ordered list of named providers and, under the
+default [`PriorityFallbackStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy),
+returns the **first** success. The lookup options decide the date behaviour within
+each provider; the strategy decides the order they are tried.
 
 ```csharp
-CompositeDatedExchangeRateProvider stack = new(new IDatedExchangeRateProvider[]
+IDatedExchangeRateProvider stack = new AggregatingExchangeRateProvider(new[]
 {
-    primaryEcbFeed,        // tried first
-    backupOandaFeed,       // tried only if the primary misses
-    lastKnownGoodTable,    // final fallback
+    new NamedDatedExchangeRateProvider("ECB", primaryEcbFeed),       // tried first
+    new NamedDatedExchangeRateProvider("OANDA", backupOandaFeed),    // tried only if the primary misses
+    new NamedDatedExchangeRateProvider("Snapshot", lastKnownGoodTable),
 });
 
 ExchangeRateLookupResult r = stack.GetRate(
@@ -301,14 +302,12 @@ ExchangeRateLookupResult r = stack.GetRate(
 r.Rate.Provider;   // identifies which underlying provider answered
 ```
 
-The selection is **first-available**, not best-available: if the
-primary returns a four-day-old `PreviousOnOrBefore` hit, that wins even
-when a lower-priority provider has the exact date. The
-[`ExchangeRateProviderSelectionPolicy`](xref:Bodu.Financial.ExchangeRateProviderSelectionPolicy)
-enum names the alternative strategies (exact-before-fallback,
-smallest-offset-first), but only `ProviderPriorityFirst` is
-implemented in v1.0 — the others throw `NotSupportedException` so the
-intent is expressible without yet being silently approximated.
+Priority fallback is **first-available**, not best-available: if the primary
+returns a four-day-old `PreviousOnOrBefore` hit, that wins even when a
+lower-priority provider has the exact date. To combine providers differently —
+averaging, per-FX-pair routing, or a custom
+[`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy)
+— see the [caching and aggregating guide](exchange-rate-caching.md).
 
 ## Pinning one date everywhere: the adapter
 
@@ -358,5 +357,5 @@ the dated provider directly and read the
 - [Exchange-rate types](exchange-types.md) — which exchange type to reach for, by scenario.
 - [Bodu.Financial — Core concepts](../../docs/financial/concepts.md) — the vocabulary these pages assume.
 - Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult).
-- Providers — [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter).
+- Providers — [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter); grouping via [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider).
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

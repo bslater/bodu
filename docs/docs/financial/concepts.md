@@ -146,17 +146,20 @@ A dated lookup returns an <xref:Bodu.Financial.ExchangeRateLookupResult> with ev
 
 That set is what lets accounting and tax workflows answer "which observed rate produced this number, and how far off the requested date was it?" without re-querying the table.
 
-## Composite provider
+## Aggregating provider
 
-<xref:Bodu.Financial.CompositeDatedExchangeRateProvider> wraps an ordered set of `IDatedExchangeRateProvider` instances and resolves every lookup with a deterministic first-available strategy: providers are consulted in construction order, and the first successful result is returned. This keeps fallback behaviour explicit and auditable — useful for stacking a primary ECB feed over an OANDA backup over a static last-known-good table.
+Grouping several FX sources behind one entry point is no longer part of core `Bodu.Financial` — it lives in the `Bodu.Financial.ExchangeRates.Caching` package as [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider). It wraps a set of named child providers and combines their results through a pluggable [`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy):
 
-More elaborate cross-provider policies (such as preferring an exact-date hit from any provider before any fallback) are intentionally deferred until a concrete consumer requires them.
+- `PriorityFallbackStrategy` resolves every lookup with a deterministic first-available strategy — child providers are consulted in order and the first successful result is returned. This is the direct successor to the old composite stack, keeping fallback behaviour explicit and auditable, useful for stacking a primary ECB feed over an OANDA backup over a static last-known-good table.
+- `AverageStrategy` returns the mean of all contributing providers for the pair.
+
+Strategies are expressed through `IExchangeRateAggregationStrategy` (PriorityFallback / Average / custom) rather than a fixed enum, and the aggregator supports optional per-FX-pair routing so different pairs can resolve through different child providers.
 
 ## In-memory providers
 
 <xref:Bodu.Financial.FixedExchangeRateTable> implements the timeless <xref:Bodu.Financial.IExchangeRateProvider> from a fixed `(from, to) → rate` dictionary. Same-currency lookups return `1m` without consulting the table, and a missing pair triggers an inverse-pair fallback that returns `1 / rate` — the convention most FX feeds use to keep the table minimal.
 
-<xref:Bodu.Financial.FixedDatedExchangeRateProvider> implements the dated <xref:Bodu.Financial.IDatedExchangeRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind a `CompositeDatedExchangeRateProvider` rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedExchangeRateProvider.IdentityProviderName` label so audit consumers can filter by it.
+<xref:Bodu.Financial.FixedDatedExchangeRateProvider> implements the dated <xref:Bodu.Financial.IDatedExchangeRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind an [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedExchangeRateProvider.IdentityProviderName` label so audit consumers can filter by it.
 
 ## `TypedMoneyConversionResult<TSource, TTarget>`
 

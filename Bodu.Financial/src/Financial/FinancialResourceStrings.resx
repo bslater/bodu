@@ -78,9 +78,6 @@
   <data name="Arg_Invalid_ClampMinGreaterThanMax" xml:space="preserve">
     <value>Min ({0}) must be ≤ Max ({1}).</value>
   </data>
-  <data name="Arg_Invalid_CompositeNoProviders" xml:space="preserve">
-    <value>At least one provider is required.</value>
-  </data>
   <data name="Arg_Invalid_CurrencyCodeNotMapped" xml:space="preserve">
     <value>The CurrencyCode value '{0}' (numeric {1}) does not correspond to a registered currency.</value>
   </data>
@@ -147,9 +144,6 @@
   <data name="Arg_Invalid_UnknownCurrencyRequiresScale" xml:space="preserve">
     <value>Currency '{0}' is not registered; UnknownCurrencyPolicy.AllowWithExplicitScale requires a minor-unit scale. Use Money.FromUnchecked to supply one.</value>
   </data>
-  <data name="Arg_Null_ProviderAtIndex" xml:space="preserve">
-    <value>Provider at index {0} is null.</value>
-  </data>
   <data name="Arg_OutOfRange_AllocationPolicyUndefined" xml:space="preserve">
     <value>AllocationPolicy '{0}' is not a defined value.</value>
   </data>
@@ -209,9 +203,6 @@
   </data>
   <data name="Format_Invalid_MoneyString" xml:space="preserve">
     <value>The input '{0}' is not a valid Money representation.</value>
-  </data>
-  <data name="IO_KeyNotFound_CompositeExchangeRate" xml:space="preserve">
-    <value>No exchange rate available for {0} -&gt; {1} on {2:yyyy-MM-dd} across {3} provider(s).</value>
   </data>
   <data name="IO_KeyNotFound_Currency" xml:space="preserve">
     <value>Currency '{0}' is not registered.</value>
@@ -365,9 +356,6 @@
   </data>
   <data name="Op_Invalid_RateSeriesBuilderEmpty" xml:space="preserve">
     <value>Cannot create an immutable series snapshot from an empty builder.</value>
-  </data>
-  <data name="Op_NotSupported_SelectionPolicy" xml:space="preserve">
-    <value>ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version.</value>
   </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>

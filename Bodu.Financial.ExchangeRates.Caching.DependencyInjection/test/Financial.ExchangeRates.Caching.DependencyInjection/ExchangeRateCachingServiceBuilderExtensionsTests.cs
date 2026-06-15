@@ -5,38 +5,75 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.DependencyInjection;
-using Bodu.Financial.ExchangeRates.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 
 /// <summary>
-/// Verifies the dependency-injection wiring of the caching exchange-rate provider.
+/// Verifies the dependency-injection wiring of the single-provider caching exchange-rate provider.
 /// </summary>
 [TestClass]
 public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
 {
     /// <summary>
-    /// Verifies that the registered <see cref="IDatedExchangeRateProvider" /> is a caching provider.
+    /// The isolated cache directory for the current test.
     /// </summary>
-    [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenRegistered_ShouldResolveCachingProvider()
-    {
-        ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider(_ => new[] { Source("Test", FixedProvider(new DateOnly(2023, 1, 3), 0.5m)) }));
+    private string _directory = null!;
 
-        Assert.IsInstanceOfType<CachingDatedExchangeRateProvider>(provider.GetRequiredService<IDatedExchangeRateProvider>());
+    /// <summary>
+    /// Creates an isolated cache directory for the current test.
+    /// </summary>
+    [TestInitialize]
+    public void Initialize() =>
+        _directory = Path.Combine(Path.GetTempPath(), "bodu-di-tests", Guid.NewGuid().ToString("N"));
+
+    /// <summary>
+    /// Removes the isolated cache directory created for the current test.
+    /// </summary>
+    [TestCleanup]
+    public void Cleanup()
+    {
+        try
+        {
+            if (Directory.Exists(_directory))
+                Directory.Delete(_directory, recursive: true);
+        }
+        catch (IOException)
+        {
+            // Best-effort cleanup.
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // Best-effort cleanup.
+        }
     }
 
     /// <summary>
-    /// Verifies that the registered caching provider wraps the supplied source and serves its rate.
+    /// Verifies that the registered cached provider resolves on both the dated and timeless surfaces as the same instance.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void AddCachedExchangeRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+
+        IDatedExchangeRateProvider dated = provider.GetRequiredService<IDatedExchangeRateProvider>();
+        IExchangeRateProvider timeless = provider.GetRequiredService<IExchangeRateProvider>();
+
+        Assert.IsInstanceOfType<CachingExchangeRateProvider>(dated);
+        Assert.AreSame<object>(dated, timeless);
+    }
+
+    /// <summary>
+    /// Verifies that the registered caching provider serves the wrapped source's rate.
     /// </summary>
     [TestMethod]
     public void AddCachedExchangeRateProvider_WhenResolved_ShouldServeWrappedSource()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider(_ => new[] { Source("Test", FixedProvider(new DateOnly(2023, 1, 3), 0.5m)) }));
+            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
         IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
         ExchangeRateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
@@ -45,49 +82,36 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the cache is registered as a singleton <see cref="TomlFileSystemExchangeRateCache" />.
+    /// Verifies that the configured cache directory is used, writing the source's rate under a per-provider subdirectory.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenRegistered_ShouldRegisterTomlCacheSingleton()
+    public void AddCachedExchangeRateProvider_WhenConfigured_ShouldCacheToConfiguredDirectory()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider(_ => new[] { Source("Test", FixedProvider(new DateOnly(2023, 1, 3), 0.5m)) }));
+            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
 
-        Assert.IsInstanceOfType<TomlFileSystemExchangeRateCache>(provider.GetRequiredService<IExchangeRateCache>());
+        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+
+        Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.toml")));
     }
 
     /// <summary>
-    /// Verifies that the cache directory is bound from the configuration section.
+    /// Verifies that the cache directory is bound from configuration.
     /// </summary>
     [TestMethod]
     public void AddCachedExchangeRateProvider_WhenConfigurationProvided_ShouldBindCacheDirectory()
     {
-        var directory = Path.Combine(Path.GetTempPath(), "bodu-di-bound");
         IConfiguration config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:CacheDirectory"] = directory })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:CacheDirectory"] = _directory })
             .Build();
 
-        ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider(_ => new[] { Source("Test", FixedProvider(new DateOnly(2023, 1, 3), 0.5m)) }, config));
+        ServiceProvider provider = BuildProvider(builder => builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", config));
+        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
 
-        var cache = (TomlFileSystemExchangeRateCache)provider.GetRequiredService<IExchangeRateCache>();
-        Assert.AreEqual(directory, cache.Directory);
-    }
+        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-    /// <summary>
-    /// Verifies that the <c>configure</c> delegate is applied to the caching options.
-    /// </summary>
-    [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenConfigured_ShouldApplyOptions()
-    {
-        var directory = Path.Combine(Path.GetTempPath(), "bodu-di-configure");
-        ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider(
-                _ => new[] { Source("Test", FixedProvider(new DateOnly(2023, 1, 3), 0.5m)) },
-                configure: o => o.CacheDirectory = directory));
-
-        var cache = (TomlFileSystemExchangeRateCache)provider.GetRequiredService<IExchangeRateCache>();
-        Assert.AreEqual(directory, cache.Directory);
+        Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.toml")));
     }
 
     /// <summary>
@@ -98,27 +122,27 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ExchangeRateCachingServiceBuilderExtensions.AddCachedExchangeRateProvider(null!, _ => Array.Empty<KeyValuePair<string, IDatedExchangeRateProvider>>());
+            _ = ExchangeRateCachingServiceBuilderExtensions.AddCachedExchangeRateProvider<StubRbaProvider>(null!, "RBA");
         });
 
         Assert.AreEqual("builder", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> sources factory is rejected.
+    /// Verifies that a blank provider name is rejected.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenSourcesIsNull_ShouldThrowArgumentNullException()
+    public void AddCachedExchangeRateProvider_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = builder.AddCachedExchangeRateProvider(null!);
+            _ = builder.AddCachedExchangeRateProvider<StubRbaProvider>("  ");
         });
 
-        Assert.AreEqual("sources", ex.ParamName);
+        Assert.AreEqual("providerName", ex.ParamName);
     }
 
     /// <summary>
@@ -134,20 +158,27 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
     }
 
     /// <summary>
-    /// Builds a named source entry.
+    /// A parameterless <see cref="IDatedExchangeRateProvider" /> source resolving a single AUD/USD observation.
     /// </summary>
-    /// <param name="name">The source name.</param>
-    /// <param name="provider">The source provider.</param>
-    /// <returns>The named source entry.</returns>
-    private static KeyValuePair<string, IDatedExchangeRateProvider> Source(string name, IDatedExchangeRateProvider provider) =>
-        new(name, provider);
+    private sealed class StubRbaProvider
+        : IDatedExchangeRateProvider
+    {
+        /// <summary>
+        /// The fixed provider backing the stub.
+        /// </summary>
+        private static readonly FixedDatedExchangeRateProvider Inner =
+            new(new[] { new ExchangeRate("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m, "RBA") });
 
-    /// <summary>
-    /// Builds a fixed provider resolving a single AUD/USD observation.
-    /// </summary>
-    /// <param name="date">The observation date.</param>
-    /// <param name="rate">The rate.</param>
-    /// <returns>A new fixed provider.</returns>
-    private static FixedDatedExchangeRateProvider FixedProvider(DateOnly date, decimal rate) =>
-        new(new[] { new ExchangeRate("AUD", "USD", date, rate, "Test") });
+        /// <inheritdoc />
+        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null) =>
+            Inner.GetRate(fromIsoCode, toIsoCode, date, options);
+
+        /// <inheritdoc />
+        public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result) =>
+            Inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
+
+        /// <inheritdoc />
+        public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+            Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
+    }
 }

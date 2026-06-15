@@ -8,14 +8,14 @@ namespace Bodu.Financial.ExchangeRates.Caching.Contracts;
 
 /// <summary>
 /// Validates the <see cref="IExchangeRateCache" /> contract shared by every implementation: read-time freshness
-/// filtering, write-time merge and prune, and resilience to missing data.
+/// filtering, write-time merge and prune, single-provider binding, and resilience to missing data.
 /// </summary>
 /// <typeparam name="TCache">The concrete cache under test.</typeparam>
 public abstract class ExchangeRateCacheContractTests<TCache>
     where TCache : IExchangeRateCache
 {
     /// <summary>
-    /// The provider identifier used by the contract tests.
+    /// The provider identifier the cache under test is bound to.
     /// </summary>
     protected const string Provider = "Test";
 
@@ -30,10 +30,21 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     protected static readonly TimeSpan Duration = TimeSpan.FromHours(24);
 
     /// <summary>
-    /// Creates a fresh, empty cache instance for a single test.
+    /// Creates a fresh, empty cache bound to <see cref="Provider" /> for a single test.
     /// </summary>
     /// <returns>A new cache instance.</returns>
     protected abstract TCache CreateCache();
+
+    /// <summary>
+    /// Verifies that the cache reports the provider it was constructed for.
+    /// </summary>
+    [TestMethod]
+    public void Provider_ShouldBeBoundAtConstruction()
+    {
+        TCache cache = CreateCache();
+
+        Assert.AreEqual(Provider, cache.Provider);
+    }
 
     /// <summary>
     /// Verifies that a read against an empty cache returns an empty result rather than throwing.
@@ -43,7 +54,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, DateTimeOffset.UtcNow);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
         Assert.AreEqual(0, result.Count);
     }
@@ -56,9 +67,9 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
         var now = DateTimeOffset.UtcNow;
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, now);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(0.5000m, result[0].Rate);
@@ -72,9 +83,9 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
         var cachedAt = DateTimeOffset.UtcNow - TimeSpan.FromHours(48);
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, DateTimeOffset.UtcNow);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
         Assert.AreEqual(0, result.Count);
     }
@@ -88,9 +99,9 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         TCache cache = CreateCache();
         var cachedAt = DateTimeOffset.UtcNow - Duration;
         var asOf = cachedAt + Duration;
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, asOf);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, asOf);
 
         Assert.AreEqual(0, result.Count);
     }
@@ -106,10 +117,10 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         var newer = DateTimeOffset.UtcNow;
         var date = new DateOnly(2023, 1, 3);
 
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(date, 0.5000m, older) }, Duration, newer);
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(date, 0.6000m, newer) }, Duration, newer);
+        cache.Store(Pair, new[] { new CachedExchangeRate(date, 0.5000m, older) }, Duration, newer);
+        cache.Store(Pair, new[] { new CachedExchangeRate(date, 0.6000m, newer) }, Duration, newer);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, newer);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, newer);
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(0.6000m, result[0].Rate);
@@ -124,10 +135,10 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         TCache cache = CreateCache();
         var now = DateTimeOffset.UtcNow;
 
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now) }, Duration, now);
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now) }, Duration, now);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, now);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
 
         Assert.AreEqual(2, result.Count);
         Assert.AreEqual(new DateOnly(2023, 1, 3), result[0].Date);
@@ -144,10 +155,10 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         var stale = DateTimeOffset.UtcNow - TimeSpan.FromHours(48);
         var now = DateTimeOffset.UtcNow;
 
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, stale) }, Duration, stale);
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now) }, Duration, now);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, stale) }, Duration, stale);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now) }, Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, now);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(new DateOnly(2023, 1, 6), result[0].Date);
@@ -161,11 +172,11 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
         var now = DateTimeOffset.UtcNow;
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        cache.Store(Provider, Pair, Array.Empty<CachedExchangeRate>(), Duration, now);
+        cache.Store(Pair, Array.Empty<CachedExchangeRate>(), Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Provider, Pair, Duration, now);
+        IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
         Assert.AreEqual(1, result.Count);
     }
 
@@ -177,9 +188,9 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
         var now = DateTimeOffset.UtcNow;
-        cache.Store(Provider, Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> other = cache.GetRates(Provider, new ExchangeRatePair("EUR", "USD"), Duration, now);
+        IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new ExchangeRatePair("EUR", "USD"), Duration, now);
 
         Assert.AreEqual(0, other.Count);
     }

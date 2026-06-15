@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CachingDatedExchangeRateProviderTests.Inverse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CachingExchangeRateProviderTests.Inverse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
-public sealed partial class CachingDatedExchangeRateProviderTests
+public sealed partial class CachingExchangeRateProviderTests
 {
     /// <summary>
     /// Verifies that a request for the inverse pair is served from the cached direct rows when inversion is allowed,
@@ -17,7 +17,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         var found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
@@ -36,7 +36,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         var options = new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowInverse: false);
         var found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), options, out _);

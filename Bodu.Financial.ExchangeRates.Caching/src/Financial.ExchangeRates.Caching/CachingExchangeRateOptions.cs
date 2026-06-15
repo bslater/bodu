@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures a <see cref="CachingDatedExchangeRateProvider" />: the on-disk cache location, the default time a cached
-/// rate stays fresh, and per-provider overrides of that default.
+/// Configures a <see cref="CachingExchangeRateProvider" />: the on-disk cache location, the default time a cached rate
+/// stays fresh, and per-provider overrides of that default.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -93,6 +93,16 @@ public sealed class CachingExchangeRateOptions
     /// </summary>
     /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
     public LogLevel CacheRangeRefetchLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the lookup options applied by the timeless
+    /// <see cref="IExchangeRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
+    /// UTC date.
+    /// </summary>
+    /// <value>
+    /// The lookup options used for timeless lookups; defaults to <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// </value>
+    public ExchangeRateLookupOptions DefaultLookupOptions { get; set; } = ExchangeRateLookupOptions.Exact;
 
     /// <summary>
     /// Resolves the caching duration for a provider, returning its specific override when present and the default

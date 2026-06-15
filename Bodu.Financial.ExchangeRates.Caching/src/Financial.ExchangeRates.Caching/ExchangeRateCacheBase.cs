@@ -7,9 +7,11 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the shared mechanism for an <see cref="IExchangeRateCache" />: read-time freshness filtering, write-time
-/// merge-and-prune, and cache-file naming. Derived types implement only the persistence of raw entries.
+/// Provides the storage-agnostic mechanism for an <see cref="IExchangeRateCache" />: read-time freshness filtering and
+/// write-time merge-and-prune for a single provider. Derived types implement only the persistence of raw entries; this
+/// base prescribes no physical storage structure.
 /// </summary>
+/// <typeparam name="TOptions">The options type carrying the bound provider and any storage settings.</typeparam>
 /// <remarks>
 /// <para>
 /// <see cref="ReadEntries" /> returns the raw stored rows without filtering; this base applies the freshness policy in
@@ -17,15 +19,44 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="WriteEntries" />, so the backing store self-cleans on every write.
 /// </para>
 /// </remarks>
-public abstract class ExchangeRateCacheBase
+public abstract class ExchangeRateCacheBase<TOptions>
     : IExchangeRateCache
+    where TOptions : ExchangeRateCacheOptions
 {
-    /// <inheritdoc />
-    public IReadOnlyList<CachedExchangeRate> GetRates(string provider, ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
+    /// <summary>
+    /// The validated options carrying the bound provider and any storage settings.
+    /// </summary>
+    private readonly TOptions _options;
 
-        IReadOnlyList<CachedExchangeRate> entries = ReadEntries(provider, pair);
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRateCacheBase{TOptions}" /> class.
+    /// </summary>
+    /// <param name="options">The options carrying the bound provider and any storage settings.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
+    protected ExchangeRateCacheBase(TOptions options)
+    {
+        ThrowHelper.ThrowIfNull(options);
+        options.Validate();
+
+        _options = options;
+    }
+
+    /// <inheritdoc />
+    public string Provider => _options.Provider;
+
+    /// <summary>
+    /// Gets the validated options the cache was constructed with.
+    /// </summary>
+    /// <returns>The cache options.</returns>
+    protected TOptions Options => _options;
+
+    /// <inheritdoc />
+    public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
+    {
+        IReadOnlyList<CachedExchangeRate> entries = ReadEntries(pair);
         if (entries.Count == 0)
             return Array.Empty<CachedExchangeRate>();
 
@@ -41,9 +72,8 @@ public abstract class ExchangeRateCacheBase
     }
 
     /// <inheritdoc />
-    public void Store(string provider, ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
+    public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
-        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
         ThrowHelper.ThrowIfNull(rates);
 
         if (rates.Count == 0)
@@ -51,7 +81,7 @@ public abstract class ExchangeRateCacheBase
 
         // Merge with any existing entry so the most recently cached rate wins per date.
         Dictionary<DateOnly, CachedExchangeRate> merged = new();
-        foreach (CachedExchangeRate existing in ReadEntries(provider, pair))
+        foreach (CachedExchangeRate existing in ReadEntries(pair))
             merged[existing.Date] = existing;
 
         foreach (CachedExchangeRate rate in rates)
@@ -60,7 +90,7 @@ public abstract class ExchangeRateCacheBase
                 merged[rate.Date] = rate;
         }
 
-        // Prune rows that are no longer fresh, then order by date so the file is stable and self-cleaning.
+        // Prune rows that are no longer fresh, then order by date so the store is stable and self-cleaning.
         List<CachedExchangeRate> ordered = new(merged.Count);
         foreach (CachedExchangeRate entry in merged.Values)
         {
@@ -70,31 +100,20 @@ public abstract class ExchangeRateCacheBase
 
         ordered.Sort(static (left, right) => left.Date.CompareTo(right.Date));
 
-        WriteEntries(provider, pair, ordered);
+        WriteEntries(pair, ordered);
     }
 
     /// <summary>
-    /// Builds the cache-file name for a provider and pair.
+    /// Reads the raw, unfiltered cached entries for a pair.
     /// </summary>
-    /// <param name="provider">The provider identifier.</param>
-    /// <param name="pair">The currency pair.</param>
-    /// <returns>The file name, for example <c>Yahoo_AUDUSD.toml</c>.</returns>
-    protected static string BuildFileName(string provider, ExchangeRatePair pair) =>
-        $"{provider}_{pair.FromIsoCode}{pair.ToIsoCode}.toml";
-
-    /// <summary>
-    /// Reads the raw, unfiltered cached entries for a provider and pair.
-    /// </summary>
-    /// <param name="provider">The provider identifier.</param>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The stored entries, or an empty list when none are available or the read fails.</returns>
-    protected abstract IReadOnlyList<CachedExchangeRate> ReadEntries(string provider, ExchangeRatePair pair);
+    protected abstract IReadOnlyList<CachedExchangeRate> ReadEntries(ExchangeRatePair pair);
 
     /// <summary>
-    /// Writes the supplied entries for a provider and pair, replacing any existing entry.
+    /// Writes the supplied entries for a pair, replacing any existing entry.
     /// </summary>
-    /// <param name="provider">The provider identifier.</param>
     /// <param name="pair">The currency pair.</param>
     /// <param name="entries">The ordered entries to persist.</param>
-    protected abstract void WriteEntries(string provider, ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries);
+    protected abstract void WriteEntries(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries);
 }

@@ -105,14 +105,6 @@ namespace Bodu.Financial {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to At least one provider is required..
-        /// </summary>
-        internal static string Arg_Invalid_CompositeNoProviders {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_CompositeNoProviders", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The CurrencyCode value &apos;{0}&apos; (numeric {1}) does not correspond to a registered currency..
@@ -267,14 +259,6 @@ namespace Bodu.Financial {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Provider at index {0} is null..
-        /// </summary>
-        internal static string Arg_Null_ProviderAtIndex {
-            get {
-                return ResourceManager.GetString("Arg_Null_ProviderAtIndex", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not registered. Register it via CurrencyRegistry or use Money.FromUnchecked / an explicit UnknownCurrencyPolicy to supply a minor-unit scale..
@@ -501,14 +485,6 @@ namespace Bodu.Financial {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to No exchange rate available for {0} -&gt; {1} on {2:yyyy-MM-dd} across {3} provider(s)..
-        /// </summary>
-        internal static string IO_KeyNotFound_CompositeExchangeRate {
-            get {
-                return ResourceManager.GetString("IO_KeyNotFound_CompositeExchangeRate", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not registered..
@@ -969,14 +945,6 @@ namespace Bodu.Financial {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to ExchangeRateProviderSelectionPolicy.{0} is reserved for a future release; only ProviderPriorityFirst is supported in this version..
-        /// </summary>
-        internal static string Op_NotSupported_SelectionPolicy {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_SelectionPolicy", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Unable to create a JSON converter for &apos;{0}&apos;..

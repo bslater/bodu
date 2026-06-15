@@ -13,24 +13,41 @@ public sealed class NullExchangeRateCache
     : IExchangeRateCache
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="NullExchangeRateCache" /> class.
+    /// Initializes a new instance of the <see cref="NullExchangeRateCache" /> class bound to a provider.
     /// </summary>
-    private NullExchangeRateCache()
+    /// <param name="provider">The provider identifier the cache reports.</param>
+    private NullExchangeRateCache(string provider)
     {
+        Provider = provider;
     }
 
+    /// <inheritdoc />
+    public string Provider { get; }
+
     /// <summary>
-    /// Gets the shared instance of the no-op cache.
+    /// Creates a no-op cache bound to the supplied provider.
     /// </summary>
-    /// <returns>The singleton <see cref="NullExchangeRateCache" />.</returns>
-    public static NullExchangeRateCache Instance { get; } = new();
+    /// <param name="provider">The provider identifier the cache reports.</param>
+    /// <returns>A new no-op cache bound to <paramref name="provider" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="provider" /> is empty or white space.
+    /// </exception>
+    public static NullExchangeRateCache Create(string provider)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
+
+        return new NullExchangeRateCache(provider);
+    }
 
     /// <inheritdoc />
-    public IReadOnlyList<CachedExchangeRate> GetRates(string provider, ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+    public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
         Array.Empty<CachedExchangeRate>();
 
     /// <inheritdoc />
-    public void Store(string provider, ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
+    public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
         // Intentionally no-op: this cache never stores anything.
     }

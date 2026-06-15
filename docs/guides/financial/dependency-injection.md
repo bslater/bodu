@@ -95,24 +95,18 @@ The name must be non-empty; `AddMonetaryContext` throws `ArgumentException` for 
 
 ## Registering exchange-rate providers
 
-The generic overloads register an implementation *type*; the instance overloads accept a pre-built provider. Both use `TryAdd` semantics, so the first registration for each contract wins. The instance overload is the natural home for a composite fallback stack — wrap the ordered providers once and register the wrapper as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>:
+The generic overloads register an implementation *type*; the instance overloads accept a pre-built provider. Both use `TryAdd` semantics, so the first registration for each contract wins:
 
 ```csharp
 using Bodu.Financial;
 
 services.AddBoduFinancial(financial =>
 {
-    financial.AddDatedExchangeRateProvider(
-        new CompositeDatedExchangeRateProvider(new IDatedExchangeRateProvider[]
-        {
-            new FixedDatedExchangeRateProvider(ecbObservations),      // primary
-            new FixedDatedExchangeRateProvider(oandaObservations),    // fallback
-            new FixedDatedExchangeRateProvider(snapshotObservations), // last resort
-        }));
+    financial.AddDatedExchangeRateProvider(new FixedDatedExchangeRateProvider(ecbObservations));
 });
 ```
 
-Every lookup consults the wrapped providers in construction order and the first successful result wins; `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See [Working with exchange rates](exchange-rates.md#composite-fallback-stack) for the lookup semantics.
+To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use the `Bodu.Financial.ExchangeRates.Caching.DependencyInjection` package's `AddAggregatedExchangeRateProvider(...)`, which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>. `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
 
 Neither `AddBoduFinancial` overload registers an FX provider by default — an application that never crosses currencies pays nothing for the contract.
 

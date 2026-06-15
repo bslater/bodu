@@ -58,7 +58,7 @@ public sealed class FixedDatedExchangeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="book" /> contains two providers for the same pair; supply a provider-priority list to
-    /// disambiguate, or compose multiple providers with <see cref="CompositeDatedExchangeRateProvider" />.
+    /// disambiguate.
     /// </exception>
     public FixedDatedExchangeRateProvider(ExchangeRateBook book)
     {

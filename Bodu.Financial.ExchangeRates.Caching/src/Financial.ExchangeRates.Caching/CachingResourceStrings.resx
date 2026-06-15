@@ -79,4 +79,16 @@
   <data name="Arg_Invalid_RangeInverted" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>
+  <data name="Arg_Invalid_UnknownAggregationChild" xml:space="preserve">
+    <value>The provider name '{0}' referenced by the aggregation configuration was not supplied as a child.</value>
+  </data>
+  <data name="Arg_Invalid_AggregationRoutePair" xml:space="preserve">
+    <value>An aggregation route is keyed by an invalid currency pair.</value>
+  </data>
+  <data name="Arg_Invalid_AggregationRouteEmpty" xml:space="preserve">
+    <value>An aggregation route must reference at least one provider.</value>
+  </data>
+  <data name="Arg_Invalid_AggregationRouteNull" xml:space="preserve">
+    <value>An aggregation route must not be null.</value>
+  </data>
 </root>

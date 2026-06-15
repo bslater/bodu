@@ -27,7 +27,7 @@ behaviour, see [Working with exchange rates](exchange-rates.md) and
 | To import across many pairs/providers | [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder) | mutable builder |
 | A "current rate" lookup, no dates | [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider) + [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable) | contract + impl |
 | A dated lookup with audit metadata | [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider) + [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider) | contract + impl |
-| A primary feed with fallbacks | [`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider) | composite |
+| A primary feed with fallbacks | [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) | aggregator (caching package) |
 | To expose a dated source as timeless | [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter) | adapter |
 | The rules applied on a date miss | [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions) | options |
 | The outcome of a dated lookup | [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult) | value (record struct) |
@@ -214,16 +214,18 @@ This is the workhorse store behind dated lookups; its behaviour under
 every `ExchangeRateLookupOptions` setting is the subject of the
 [worked-dataset page](exchange-rate-lookups.md).
 
-### `CompositeDatedExchangeRateProvider` — primary plus fallbacks
+### `AggregatingExchangeRateProvider` — primary plus fallbacks
 
-[`CompositeDatedExchangeRateProvider`](xref:Bodu.Financial.CompositeDatedExchangeRateProvider)
-wraps an ordered set of dated providers and returns the first success,
-in construction order. **Reach for it** to stack a primary feed over a
-backup over a last-known-good table. Selection is deterministic
-first-available; the
-[`ExchangeRateProviderSelectionPolicy`](xref:Bodu.Financial.ExchangeRateProviderSelectionPolicy)
-enum names richer strategies, but only `ProviderPriorityFirst` ships in
-v1.0.
+[`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
+(in `Bodu.Financial.ExchangeRates.Caching`) groups an ordered set of named dated
+providers. Under the default
+[`PriorityFallbackStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy)
+it returns the first success, in construction order. **Reach for it** to stack a
+primary feed over a backup over a last-known-good table. Other strategies
+([`AverageStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.AverageStrategy) or a
+custom [`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy))
+and per-FX-pair routing are covered in the
+[caching and aggregating guide](exchange-rate-caching.md).
 
 ### `DatedExchangeRateProviderAdapter` — dated source, timeless surface
 
@@ -289,7 +291,7 @@ line of provenance per source currency alongside the total.
    `DatedExchangeRateProviderAdapter`). Yes → dated
    (`IDatedExchangeRateProvider` / `FixedDatedExchangeRateProvider`).
 2. **One source or several?** One → a single provider. Several →
-   `CompositeDatedExchangeRateProvider`, or one
+   `AggregatingExchangeRateProvider` (caching package), or one
    `FixedDatedExchangeRateProvider` over a multi-provider
    `ExchangeRateBook` with a priority list.
 3. **How do you build the data?** A one-shot literal → construct the

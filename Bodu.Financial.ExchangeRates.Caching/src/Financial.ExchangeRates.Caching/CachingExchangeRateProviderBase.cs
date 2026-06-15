@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,34 +11,37 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the shared caching mechanism for a provider that wraps one or more named
-/// <see cref="IDatedExchangeRateProvider" /> sources: it serves fresh rates from an <see cref="IExchangeRateCache" />
-/// and delegates to a source only on a miss, caching what the source returns. Derived types supply the wrapped sources.
+/// Provides the shared caching mechanism for a provider that wraps a single inner
+/// <see cref="IDatedExchangeRateProvider" /> over a single-provider <see cref="IExchangeRateCache" />: it serves fresh
+/// rates from the cache and delegates to the inner provider only on a miss, caching what the inner provider returns.
+/// Derived types supply the wrapped inner provider.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The provider implements the same <see cref="IDatedExchangeRateProvider" /> contract the caller resolves, so it can
-/// be inserted transparently. Each source has its own caching duration, taken from
-/// <see cref="CachingExchangeRateOptions.ProviderExpiry" /> when present and otherwise
-/// <see cref="CachingExchangeRateOptions.DefaultExpiry" />.
+/// be inserted transparently, and also the timeless <see cref="IExchangeRateProvider" /> surface, which resolves the
+/// current UTC date under <see cref="CachingExchangeRateOptions.DefaultLookupOptions" />. The cache's
+/// <see cref="IExchangeRateCache.Provider" /> identifies the source: it selects the caching duration from
+/// <see cref="CachingExchangeRateOptions.ProviderExpiry" /> (falling back to
+/// <see cref="CachingExchangeRateOptions.DefaultExpiry" />) and tags both cached rows and log messages.
 /// </para>
 /// <para>
-/// Sources are consulted in the order returned by <see cref="Sources" />; the first to satisfy a request wins.
 /// Single-date lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from
-/// the cache only when the cached fresh rows for the source span the requested window; otherwise the whole range is
-/// refetched from the source and re-cached.
+/// the cache only when the cached fresh rows span the requested window; otherwise the whole range is refetched from the
+/// inner provider and re-cached. To group several sources behind one entry point, wrap each in its own caching provider
+/// and compose them with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
-    : IDatedExchangeRateProvider
+    : IDatedExchangeRateProvider, IExchangeRateProvider
 {
     /// <summary>
-    /// The cache that serves fresh rates and stores resolved observations.
+    /// The single-provider cache that serves fresh rates and stores resolved observations.
     /// </summary>
     private readonly IExchangeRateCache _cache;
 
     /// <summary>
-    /// The options carrying the per-source and default caching durations.
+    /// The options carrying the caching durations and the timeless-surface lookup options.
     /// </summary>
     private readonly CachingExchangeRateOptions _options;
 
@@ -55,7 +58,7 @@ public abstract class CachingExchangeRateProviderBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CachingExchangeRateProviderBase" /> class.
     /// </summary>
-    /// <param name="cache">The cache that serves fresh rates and stores resolved observations.</param>
+    /// <param name="cache">The single-provider cache that serves fresh rates and stores resolved observations.</param>
     /// <param name="options">The options carrying the caching durations.</param>
     /// <param name="timeProvider">
     /// The time source used to evaluate freshness and stamp newly cached rows. <see langword="null" /> selects
@@ -82,10 +85,10 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Gets the wrapped sources, in priority order, paired with the name each is cached under.
+    /// Gets the inner provider consulted on a cache miss.
     /// </summary>
-    /// <returns>The wrapped named sources.</returns>
-    protected abstract IReadOnlyList<KeyValuePair<string, IDatedExchangeRateProvider>> Sources { get; }
+    /// <returns>The wrapped inner provider.</returns>
+    protected abstract IDatedExchangeRateProvider Inner { get; }
 
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
@@ -100,23 +103,19 @@ public abstract class CachingExchangeRateProviderBase
     public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
     {
         var now = _timeProvider.GetUtcNow();
+        var duration = _options.GetExpiry(_cache.Provider);
 
-        foreach (KeyValuePair<string, IDatedExchangeRateProvider> source in Sources)
+        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out result))
         {
-            var duration = _options.GetExpiry(source.Key);
+            Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            return true;
+        }
 
-            if (TryServeFromCache(source.Key, duration, fromIsoCode, toIsoCode, date, options, now, out result))
-            {
-                Log.CacheHit(_logger, _options.CacheHitLogLevel, source.Key, fromIsoCode, toIsoCode, date);
-                return true;
-            }
-
-            if (source.Value.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
-            {
-                StoreResult(source.Key, duration, fromIsoCode, toIsoCode, result, now);
-                Log.CacheMissStored(_logger, _options.CacheMissLogLevel, source.Key, fromIsoCode, toIsoCode, date);
-                return true;
-            }
+        if (Inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
+        {
+            StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+            Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            return true;
         }
 
         result = default;
@@ -136,37 +135,40 @@ public abstract class CachingExchangeRateProviderBase
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
         var now = _timeProvider.GetUtcNow();
+        var duration = _options.GetExpiry(_cache.Provider);
 
-        foreach (KeyValuePair<string, IDatedExchangeRateProvider> source in Sources)
+        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
         {
-            var duration = _options.GetExpiry(source.Key);
+            Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            return cached;
+        }
 
-            if (TryServeRangeFromCache(source.Key, duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached))
-            {
-                Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, source.Key, fromIsoCode, toIsoCode);
-                return cached;
-            }
+        IReadOnlyList<ExchangeRate> fetched =
+            await Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
 
-            IReadOnlyList<ExchangeRate> fetched =
-                await source.Value.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
-
-            if (fetched.Count > 0)
-            {
-                StoreRange(source.Key, duration, pair, fetched, now);
-                Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, source.Key, fromIsoCode, toIsoCode, fetched.Count);
-                return fetched;
-            }
+        if (fetched.Count > 0)
+        {
+            StoreRange(duration, pair, fetched, now);
+            Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count);
+            return fetched;
         }
 
         return Array.Empty<ExchangeRate>();
     }
 
+    /// <inheritdoc />
+    public decimal GetRate(string fromIsoCode, string toIsoCode)
+    {
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+
+        return new DatedExchangeRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);
+    }
+
     /// <summary>
-    /// Attempts to resolve a single-date request from the fresh cached rows for a source (and its inverse, when
-    /// inversion is permitted) by delegating to a <see cref="FixedDatedExchangeRateProvider" /> built from them.
+    /// Attempts to resolve a single-date request from the fresh cached rows (and their inverse, when inversion is
+    /// permitted) by delegating to a <see cref="FixedDatedExchangeRateProvider" /> built from them.
     /// </summary>
-    /// <param name="provider">The source name the rows are cached under.</param>
-    /// <param name="duration">The duration cached rows for the source stay fresh.</param>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="date">The calendar date for which a rate is required.</param>
@@ -176,15 +178,15 @@ public abstract class CachingExchangeRateProviderBase
     /// <returns>
     /// <see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeFromCache(string provider, TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result)
+    private bool TryServeFromCache(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
 
-        IReadOnlyList<CachedExchangeRate> direct = _cache.GetRates(provider, pair, duration, now);
+        IReadOnlyList<CachedExchangeRate> direct = _cache.GetRates(pair, duration, now);
 
         var allowInverse = options?.AllowInverse ?? ExchangeRateLookupOptions.Exact.AllowInverse;
         IReadOnlyList<CachedExchangeRate> inverse = allowInverse
-            ? _cache.GetRates(provider, pair.Inverse(), duration, now)
+            ? _cache.GetRates(pair.Inverse(), duration, now)
             : Array.Empty<CachedExchangeRate>();
 
         if (direct.Count == 0 && inverse.Count == 0)
@@ -193,6 +195,7 @@ public abstract class CachingExchangeRateProviderBase
             return false;
         }
 
+        var provider = _cache.Provider;
         List<ExchangeRate> rates = new(direct.Count + inverse.Count);
         foreach (CachedExchangeRate rate in direct)
             rates.Add(new ExchangeRate(fromIsoCode, toIsoCode, rate.Date, rate.Rate, provider));
@@ -204,11 +207,10 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Attempts to serve a range request from the cache, treating the source's fresh cached rows as covering the
-    /// request only when their earliest and latest dates span the requested window.
+    /// Attempts to serve a range request from the cache, treating the fresh cached rows as covering the request only
+    /// when their earliest and latest dates span the requested window.
     /// </summary>
-    /// <param name="provider">The source name the rows are cached under.</param>
-    /// <param name="duration">The duration cached rows for the source stay fresh.</param>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="pair">The requested currency pair.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
@@ -217,9 +219,9 @@ public abstract class CachingExchangeRateProviderBase
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeRangeFromCache(string provider, TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result)
+    private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result)
     {
-        IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(provider, pair, duration, now);
+        IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
 
         // GetRates returns rows ordered ascending by date; treat the range as cached only when the fresh rows span it.
         if (fresh.Count == 0 || fresh[0].Date > startDate || fresh[^1].Date < endDate)
@@ -228,6 +230,7 @@ public abstract class CachingExchangeRateProviderBase
             return false;
         }
 
+        var provider = _cache.Provider;
         List<ExchangeRate> rates = new();
         foreach (CachedExchangeRate rate in fresh)
         {
@@ -240,35 +243,33 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
-    /// Stores the resolved single-date observation for the requested pair under a source.
+    /// Stores the resolved single-date observation for the requested pair.
     /// </summary>
-    /// <param name="provider">The source name to cache the rate under.</param>
-    /// <param name="duration">The duration cached rows for the source stay fresh.</param>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
-    /// <param name="result">The resolved lookup result returned by the wrapped source.</param>
+    /// <param name="result">The resolved lookup result returned by the inner provider.</param>
     /// <param name="now">The instant to stamp the cached row with.</param>
-    private void StoreResult(string provider, TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
+    private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
         CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now) };
-        _cache.Store(provider, pair, rows, duration, now);
+        _cache.Store(pair, rows, duration, now);
     }
 
     /// <summary>
-    /// Stores a fetched range of observations for the requested pair under a source.
+    /// Stores a fetched range of observations for the requested pair.
     /// </summary>
-    /// <param name="provider">The source name to cache the rates under.</param>
-    /// <param name="duration">The duration cached rows for the source stay fresh.</param>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="pair">The requested currency pair.</param>
-    /// <param name="rates">The rates returned by the wrapped source.</param>
+    /// <param name="rates">The rates returned by the inner provider.</param>
     /// <param name="now">The instant to stamp the cached rows with.</param>
-    private void StoreRange(string provider, TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateTimeOffset now)
+    private void StoreRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateTimeOffset now)
     {
-        CachedExchangeRate[] rows = new CachedExchangeRate[rates.Count];
+        var rows = new CachedExchangeRate[rates.Count];
         for (var i = 0; i < rates.Count; i++)
             rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now);
 
-        _cache.Store(provider, pair, rows, duration, now);
+        _cache.Store(pair, rows, duration, now);
     }
 }

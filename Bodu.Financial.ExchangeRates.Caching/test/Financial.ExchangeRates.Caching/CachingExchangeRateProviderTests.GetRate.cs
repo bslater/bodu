@@ -1,23 +1,23 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CachingDatedExchangeRateProviderTests.GetRate.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CachingExchangeRateProviderTests.GetRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
-public sealed partial class CachingDatedExchangeRateProviderTests
+public sealed partial class CachingExchangeRateProviderTests
 {
     /// <summary>
-    /// Verifies that a fresh cached rate is returned by <see cref="CachingDatedExchangeRateProvider.GetRate" /> without
-    /// consulting the inner provider.
+    /// Verifies that a fresh cached rate is returned by <see cref="CachingExchangeRateProvider.GetRate(string, string, DateOnly, ExchangeRateLookupOptions?)" />
+    /// without consulting the inner provider.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenCacheFresh_ShouldServeWithoutInner()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
@@ -29,14 +29,15 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     /// Verifies that a cache miss delegates to the inner provider and stores the resolved rate.
     /// </summary>
     [TestMethod]
+    [TestCategory("Smoke")]
     public void GetRate_WhenCacheMiss_ShouldDelegateAndStore()
     {
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(Provider, new ExchangeRatePair("AUD", "USD"), Duration, _clock.GetUtcNow());
+        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(new ExchangeRatePair("AUD", "USD"), Duration, _clock.GetUtcNow());
         Assert.AreEqual(1, cached.Count);
         Assert.AreEqual(0.5m, cached[0].Rate);
         Assert.AreEqual(1, inner.TotalCallCount);
@@ -50,7 +51,7 @@ public sealed partial class CachingDatedExchangeRateProviderTests
     public void GetRate_WhenHardMiss_ShouldPropagateKeyNotFoundException()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        CachingDatedExchangeRateProvider sut = CreateDecorator(inner);
+        CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
