@@ -110,11 +110,24 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        if (!writer.TryEnterReference(value))
-            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(TDictionary)));
+        TomlWriteStack? state = writer.WriteStack;
+        if (state is { HasFailure: true })
+            return;
+
+        if (state is not null && !state.TryEnterReference(value))
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(TDictionary)));
+            return;
+        }
 
         try
         {
+            if (state is not null && writer.Depth >= writer.EffectiveMaxDepth)
+            {
+                state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, writer.EffectiveMaxDepth));
+                return;
+            }
+
             writer.WriteStartTable();
             foreach (KeyValuePair<TKey, TValue> entry in (IEnumerable<KeyValuePair<TKey, TValue>>)value)
             {
@@ -123,22 +136,20 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
 
                 var keyText = FormatKey(entry.Key);
                 writer.WritePropertyName(keyText);
-                try
-                {
-                    _valueConverter.WriteAsObject(writer, entry.Value, options);
-                }
-                catch (TomlSerializationException ex)
-                {
-                    ex.Path = TomlSerializationException.CombinePath(keyText, ex.Path);
-                    throw;
-                }
+
+                state?.PushPath(keyText);
+                _valueConverter.WriteAsObject(writer, entry.Value, options);
+                if (state is { HasFailure: true })
+                    return;
+                state?.PopPath();
             }
 
             writer.WriteEndTable();
         }
         finally
         {
-            writer.ExitReference(value);
+            if (state is not null)
+                state.ExitReference(value);
         }
     }
 

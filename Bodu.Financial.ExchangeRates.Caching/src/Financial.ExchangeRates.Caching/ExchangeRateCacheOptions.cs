@@ -32,6 +32,37 @@ public class ExchangeRateCacheOptions
     /// Thrown when <see cref="Provider" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <see cref="Provider" /> is empty or white space.</exception>
+    /// <remarks>
+    /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
+    /// dependency-injection registration instead wires <see cref="TryValidate" /> into <c>ValidateOnStart</c>, which
+    /// reports the same invariants without throwing.
+    /// </remarks>
     public virtual void Validate() =>
         ThrowHelper.ThrowIfNullOrWhiteSpace(Provider);
+
+    /// <summary>
+    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The dependency-injection registration wires this method into <c>ValidateOnStart</c> so misconfiguration fails
+    /// fast at application startup. It mirrors the invariants of <see cref="Validate" /> but returns a message rather
+    /// than throwing with a <c>ParamName</c>. Storage-specific option types override this method to add their own
+    /// invariants after invoking the base implementation.
+    /// </remarks>
+    public virtual bool TryValidate(out string? error)
+    {
+        if (string.IsNullOrWhiteSpace(Provider))
+        {
+            error = CachingResourceStrings.Arg_Invalid_ProviderBlank;
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
 }

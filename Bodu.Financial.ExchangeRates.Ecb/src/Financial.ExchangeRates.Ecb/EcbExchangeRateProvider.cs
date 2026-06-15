@@ -210,7 +210,9 @@ public sealed class EcbExchangeRateProvider
         }
 
         // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
-        return _loadCoordinator.RunAsync(feed.Name, () => LoadFeedCoreAsync(feed, cancellationToken));
+        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
+        // others; cancellationToken only abandons this caller's wait.
+        return _loadCoordinator.RunAsync(feed.Name, ct => LoadFeedCoreAsync(feed, ct), cancellationToken);
     }
 
     /// <summary>

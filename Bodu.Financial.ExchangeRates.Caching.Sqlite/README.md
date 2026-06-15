@@ -19,8 +19,11 @@ coverage, and validation semantics — and is validated against the same shared 
 
 * Expiry is by caching duration: stale and semantically invalid rows are filtered on read and pruned on write; stale
   coverage windows are pruned when coverage is recorded, so the database self-cleans.
-* The two halves of a pair's state are written independently — storing rates never drops coverage, and recording
-  coverage never drops rows.
+* The independent half-writes preserve the other half — `Store` never drops coverage, and `RecordCoverage` never drops
+  rows — while `StoreFetchedRange` (the path the `CachingExchangeRateProvider` decorator uses) rewrites both the `rates`
+  and `coverage` tables for the pair in **one transaction**, so a reader never observes coverage without its rows. An
+  empty-but-fetched range still records its coverage window so it is not perpetually re-fetched. The write reports an
+  `ExchangeRateCacheWriteStatus` (`Stored` / `Failed` / `Skipped`).
 * Single-process best-effort: same-pair writes are serialized under a per-pair lock and run in a transaction. A storage
   failure (`SqliteException` / `IOException`) degrades to an empty read or skipped write rather than throwing.
 

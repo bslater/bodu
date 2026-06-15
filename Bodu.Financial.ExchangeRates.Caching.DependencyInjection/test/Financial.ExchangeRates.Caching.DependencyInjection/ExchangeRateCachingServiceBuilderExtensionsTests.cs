@@ -7,6 +7,7 @@
 using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 
@@ -143,6 +144,33 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that invalid cache options fail fast through <c>ValidateOnStart</c> when the cached provider is resolved.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedExchangeRateProvider_WhenOptionsInvalid_ShouldThrowOnResolve()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.DefaultExpiry = TimeSpan.Zero));
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IDatedExchangeRateProvider>();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that valid cache options pass <c>ValidateOnStart</c> and resolve the cached provider.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedExchangeRateProvider_WhenOptionsValid_ShouldResolveProvider()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+
+        Assert.IsNotNull(provider.GetRequiredService<IDatedExchangeRateProvider>());
     }
 
     /// <summary>

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml.Writer;
 
@@ -54,7 +55,7 @@ public ref partial struct Utf8TomlWriter
         _root = new TomlWriterNode?[1];
         _maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
         _byteCounts = new long[2];
-        _references = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        _writeStack = new TomlWriteStack?[1];
     }
 
     /// <summary>
@@ -120,6 +121,7 @@ public ref partial struct Utf8TomlWriter
     {
         _frames.Clear();
         _root[0] = null;
+        _writeStack[0] = null;
         _streamBuffer?.Clear();
         _byteCounts[0] = 0;
         _byteCounts[1] = 0;

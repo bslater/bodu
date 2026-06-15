@@ -94,11 +94,24 @@ internal sealed class CollectionConverter<TCollection, TElement>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        if (!writer.TryEnterReference(value))
-            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(TCollection)));
+        TomlWriteStack? state = writer.WriteStack;
+        if (state is { HasFailure: true })
+            return;
+
+        if (state is not null && !state.TryEnterReference(value))
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(TCollection)));
+            return;
+        }
 
         try
         {
+            if (state is not null && writer.Depth >= writer.EffectiveMaxDepth)
+            {
+                state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, writer.EffectiveMaxDepth));
+                return;
+            }
+
             writer.WriteStartArray();
             var index = 0;
             foreach (TElement element in (IEnumerable<TElement>)value)
@@ -106,15 +119,11 @@ internal sealed class CollectionConverter<TCollection, TElement>
                 if (element is null)
                     throw new TomlSerializationException(TomlResourceStrings.Op_NotSupported_NullCollectionElement);
 
-                try
-                {
-                    _elementConverter.WriteAsObject(writer, element, options);
-                }
-                catch (TomlSerializationException ex)
-                {
-                    ex.Path = TomlSerializationException.CombinePath("[" + index.ToString(CultureInfo.InvariantCulture) + "]", ex.Path);
-                    throw;
-                }
+                state?.PushPath("[" + index.ToString(CultureInfo.InvariantCulture) + "]");
+                _elementConverter.WriteAsObject(writer, element, options);
+                if (state is { HasFailure: true })
+                    return;
+                state?.PopPath();
 
                 index++;
             }
@@ -123,7 +132,8 @@ internal sealed class CollectionConverter<TCollection, TElement>
         }
         finally
         {
-            writer.ExitReference(value);
+            if (state is not null)
+                state.ExitReference(value);
         }
     }
 

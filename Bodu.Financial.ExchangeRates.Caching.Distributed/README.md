@@ -23,12 +23,32 @@ Because it depends only on the `IDistributedCache` abstraction it is fully unit-
 
 * Expiry is by caching duration: stale and semantically invalid rows are filtered on read and pruned on write; stale
   coverage windows are pruned when coverage is recorded, so the entry self-cleans.
-* The two halves of a pair's state are written independently — storing rates never drops coverage, and recording
-  coverage never drops rows — by read-modify-writing the per-pair blob.
-* Best-effort: an `IDistributedCache` offers no atomic read-modify-write, so the per-pair blob is read, modified, and
-  written back. Same-process races are prevented by a per-pair in-process lock; **cross-process** concurrent writes to
-  the same pair are last-write-wins. A backing-store failure or a corrupt blob degrades to an empty read or skipped
-  write rather than throwing.
+* The two **independent** half-writes preserve the other half: `Store` writes rate rows without dropping coverage, and
+  `RecordCoverage` writes coverage windows without dropping rows — each by read-modify-writing the per-pair blob.
+* `StoreFetchedRange` — the path the `CachingExchangeRateProvider` decorator uses after a range fetch — writes **both**
+  halves together as one atomic blob set: the pair's rate rows and the fetched coverage window are merged and persisted
+  in a single `Set`, all-or-nothing. A reader (even in another process) therefore never observes coverage without its
+  rows, so a range lookup cannot report a false hit and return incomplete data as if complete. The write returns an
+  `ExchangeRateCacheWriteStatus` (`Stored` when both halves were persisted, `Failed` when a backing-store error was
+  swallowed and nothing was persisted, `Skipped` for a no-op cache), which the decorator logs and, on `Failed`, treats
+  as a miss so the next lookup refetches rather than trusting partial coverage.
+* An empty-but-fetched range still records coverage: a successful fetch that returned no observation (a weekend, a
+  holiday, a true gap) marks the window covered, so it is served from the cache on a later lookup rather than being
+  perpetually re-fetched.
+* Consistency is best-effort. An `IDistributedCache` offers no cross-process atomic read-modify-write, so each write
+  reads the per-pair blob, modifies it, and writes it back. Same-process races are prevented by a per-pair in-process
+  lock. **Cross-process**, the independent `Store` / `RecordCoverage` half-writes are last-write-wins, while the
+  decorator's `StoreFetchedRange` blob set is atomic per write (each writer persists a self-consistent rows-plus-coverage
+  blob, so a concurrent overwrite loses an update but never tears a half into another writer's blob). A backing-store
+  failure or a corrupt blob degrades to an empty read or skipped write rather than throwing.
+
+## When to use
+
+Reach for this distributed (Redis-backed) cache when several application instances or processes share one rate cache,
+so a fetch by one instance warms the others. For a single process, prefer the SQLite, file (TOML), or in-memory caches
+in `Bodu.Financial.ExchangeRates.Caching` (and `…Caching.Sqlite`): they offer stronger local atomicity — the per-pair
+lock for the in-memory and file caches, and one transaction for SQLite — for every write path, including the independent
+`Store` / `RecordCoverage` halves.
 
 ## Usage
 

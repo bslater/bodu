@@ -200,6 +200,10 @@ public static class ExchangeRateCachingServiceBuilderExtensions
 
         if (configure is not null)
             optionsBuilder.Configure(configure);
+
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "Caching exchange-rate options are invalid.")
+            .ValidateOnStart();
     }
 
     /// <summary>

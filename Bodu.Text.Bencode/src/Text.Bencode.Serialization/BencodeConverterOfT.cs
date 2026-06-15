@@ -68,6 +68,13 @@ public abstract class BencodeConverter<T>
         Read(ref reader, typeToConvert, options);
 
     /// <inheritdoc />
-    internal sealed override void WriteAsObject(Utf8BencodeWriter writer, object? value, BencodeSerializerOptions options) =>
+    internal sealed override void WriteAsObject(Utf8BencodeWriter writer, object? value, BencodeSerializerOptions options)
+    {
+        // Once a failure has been recorded, stop dispatching so the recursion unwinds through normal returns rather
+        // than entering another converter on an exhausted stack.
+        if (writer.WriteStack is { HasFailure: true })
+            return;
+
         Write(writer, (T)value!, options);
+    }
 }

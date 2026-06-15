@@ -236,10 +236,13 @@ public sealed partial class YahooExchangeRateProvider
                 return ValueTask.CompletedTask;
         }
 
-        // Coalesce concurrent fetches of the same pair-and-window so only one chart request is in flight.
+        // Coalesce concurrent fetches of the same pair-and-window so only one chart request is in flight. The shared
+        // fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
+        // cancellationToken only abandons this caller's wait.
         return new ValueTask(_loadCoordinator.RunAsync(
             new PairWindow(pair, startDate, endDate),
-            () => LoadPairCoreAsync(pair, startDate, endDate, cancellationToken)));
+            ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
+            cancellationToken));
     }
 
     /// <inheritdoc />

@@ -292,8 +292,10 @@ public sealed class BoeExchangeRateProvider
                 return Task.CompletedTask;
         }
 
-        // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task.
-        return _loadCoordinator.RunAsync((startDate, endDate), () => LoadRangeCoreAsync(startDate, endDate, cancellationToken));
+        // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task. The
+        // shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
+        // others; cancellationToken only abandons this caller's wait.
+        return _loadCoordinator.RunAsync((startDate, endDate), ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
     }
 
     /// <summary>

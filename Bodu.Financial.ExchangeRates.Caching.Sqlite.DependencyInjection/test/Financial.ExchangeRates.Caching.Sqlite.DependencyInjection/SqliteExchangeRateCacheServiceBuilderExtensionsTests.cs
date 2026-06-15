@@ -8,6 +8,7 @@ using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.ExchangeRates.Caching.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection;
 
@@ -150,6 +151,33 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that invalid options — here, no database location supplied — fail fast through <c>ValidateOnStart</c>
+    /// when the cache is resolved.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteExchangeRateCache_WhenOptionsInvalid_ShouldThrowOnResolve()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder.AddSqliteExchangeRateCache("RBA"));
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IExchangeRateCache>();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteExchangeRateCache_WhenOptionsValid_ShouldResolveCache()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+
+        Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
     }
 
     /// <summary>

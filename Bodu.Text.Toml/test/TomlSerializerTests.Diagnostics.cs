@@ -56,6 +56,45 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a reference cycle through a collection element is reported as a cycle whose path combines the
+    /// containing dictionary key and the array index, confirming the cooperative path is built from the serializer state
+    /// across the dictionary and collection converters.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenCollectionContainsItself_ShouldThrowWithIndexedCyclePath()
+    {
+        var items = new List<object>();
+        items.Add(items);
+        var root = new Dictionary<string, object> { ["items"] = items };
+
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("cycle", StringComparison.OrdinalIgnoreCase));
+        Assert.AreEqual("items[0]", ex.Path);
+    }
+
+    /// <summary>
+    /// Verifies that exceeding the configured maximum depth reports the dotted path to the level at which the limit was
+    /// reached, confirming the cooperative depth failure captures the path from the serializer state.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenGraphExceedsMaxDepth_ShouldReportPathToFailingLevel()
+    {
+        var options = new TomlSerializerOptions { MaxDepth = 3 };
+        var deep = new RecursiveModel { Child = new RecursiveModel { Child = new RecursiveModel { Child = new RecursiveModel { Child = new RecursiveModel() } } } };
+
+        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(deep, options);
+        });
+
+        Assert.AreEqual("Child.Child.Child", ex.Path);
+    }
+
+    /// <summary>
     /// Verifies that a binding failure on a nested member reports the dotted path from the document root to the
     /// offending member.
     /// </summary>

@@ -22,6 +22,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// The <c>Cache*LogLevel</c> members set the <see cref="LogLevel" /> at which each cache diagnostic is logged, so
 /// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
 /// default to <see cref="LogLevel.Trace" /> because they run on the read hot path; the range events default to
+/// <see cref="LogLevel.Debug" />. The per-serve <see cref="RateProvenanceLogLevel" /> records the lineage of every
+/// served rate — live versus cache hit, the backend identity, and the served data's age — and also defaults to
 /// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
 /// </para>
 /// </remarks>
@@ -95,6 +97,17 @@ public sealed class CachingExchangeRateOptions
     public LogLevel CacheRangeRefetchLogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
+    /// Gets or sets the level at which the provenance of every served rate is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    /// <remarks>
+    /// This per-serve diagnostic records the lineage of each result — whether it was resolved live or from the cache,
+    /// the cache backend that served it, and the served data's age — and so is richer than the per-concern hit and miss
+    /// events on the read hot path. Set it to <see cref="LogLevel.None" /> to suppress provenance entirely.
+    /// </remarks>
+    public LogLevel RateProvenanceLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
     /// Gets or sets the lookup options applied by the timeless
     /// <see cref="IExchangeRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
     /// UTC date.
@@ -117,8 +130,15 @@ public sealed class CachingExchangeRateOptions
     /// Validates the option values, throwing when a rule is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive.
+    /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive,
+    /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when
+    /// any <c>Cache*LogLevel</c> or <see cref="RateProvenanceLogLevel" /> is not a defined <see cref="LogLevel" />.
     /// </exception>
+    /// <remarks>
+    /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
+    /// dependency-injection registration instead wires <see cref="TryValidate" /> into <c>ValidateOnStart</c>, which
+    /// reports the same invariants without throwing.
+    /// </remarks>
     public void Validate()
     {
         if (DefaultExpiry <= TimeSpan.Zero)
@@ -127,6 +147,9 @@ public sealed class CachingExchangeRateOptions
                 string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, DefaultExpiry),
                 nameof(DefaultExpiry));
         }
+
+        if (ProviderExpiry is null)
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_ProviderExpiryNull, nameof(ProviderExpiry));
 
         foreach (KeyValuePair<string, TimeSpan> entry in ProviderExpiry)
         {
@@ -137,5 +160,76 @@ public sealed class CachingExchangeRateOptions
                     nameof(ProviderExpiry));
             }
         }
+
+        if (DefaultLookupOptions is null)
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LookupOptionsNull, nameof(DefaultLookupOptions));
+
+        if (!AreLogLevelsDefined())
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LogLevelUndefined, nameof(CacheHitLogLevel));
     }
+
+    /// <summary>
+    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// </summary>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
+    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// </remarks>
+    public bool TryValidate(out string? error)
+    {
+        if (DefaultExpiry <= TimeSpan.Zero)
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, DefaultExpiry);
+            return false;
+        }
+
+        if (ProviderExpiry is null)
+        {
+            error = CachingResourceStrings.Arg_Invalid_ProviderExpiryNull;
+            return false;
+        }
+
+        foreach (KeyValuePair<string, TimeSpan> entry in ProviderExpiry)
+        {
+            if (entry.Value <= TimeSpan.Zero)
+            {
+                error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, entry.Value);
+                return false;
+            }
+        }
+
+        if (DefaultLookupOptions is null)
+        {
+            error = CachingResourceStrings.Arg_Invalid_LookupOptionsNull;
+            return false;
+        }
+
+        if (!AreLogLevelsDefined())
+        {
+            error = CachingResourceStrings.Arg_Invalid_LogLevelUndefined;
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
+
+    /// <summary>
+    /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when every <c>Cache*LogLevel</c> property and <see cref="RateProvenanceLogLevel" /> is
+    /// defined; otherwise <see langword="false" />.
+    /// </returns>
+    private bool AreLogLevelsDefined() =>
+        Enum.IsDefined(CacheHitLogLevel)
+        && Enum.IsDefined(CacheMissLogLevel)
+        && Enum.IsDefined(CacheRangeHitLogLevel)
+        && Enum.IsDefined(CacheRangeRefetchLogLevel)
+        && Enum.IsDefined(RateProvenanceLogLevel);
 }

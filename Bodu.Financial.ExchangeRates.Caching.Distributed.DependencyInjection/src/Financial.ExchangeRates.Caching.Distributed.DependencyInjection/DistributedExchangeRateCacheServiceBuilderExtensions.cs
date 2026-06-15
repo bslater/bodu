@@ -53,7 +53,7 @@ public static class DistributedExchangeRateCacheServiceBuilderExtensions
     /// <see cref="AddRedisExchangeRateCache" /> to register a Redis cache and the exchange-rate cache together. The
     /// cache is registered as a singleton so its per-pair write locks are shared across resolutions, and is exposed on
     /// both the default and the keyed <see cref="IExchangeRateCache" /> surface as the same instance. Options are
-    /// validated lazily when the cache is first resolved, matching the other caching registrations.
+    /// validated through <c>ValidateOnStart</c>, so misconfiguration fails fast at application startup.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -89,6 +89,9 @@ public static class DistributedExchangeRateCacheServiceBuilderExtensions
             options.Provider = providerName;
             configure?.Invoke(options);
         });
+        optionsBuilder
+            .Validate(static options => options.TryValidate(out _), "Distributed exchange-rate cache options are invalid.")
+            .ValidateOnStart();
 
         // Register the concrete cache once as a singleton so a single instance — and its per-pair locks — backs every
         // resolution. The backing IDistributedCache is resolved from the container so any registered distributed cache

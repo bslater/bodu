@@ -108,10 +108,17 @@ internal sealed class ObjectConverter<T>
         if (value is null)
             return;
 
+        TomlWriteStack? state = writer.WriteStack;
+        if (state is { HasFailure: true })
+            return;
+
         // A value type cannot participate in a reference cycle, so only reference instances are tracked.
         var tracked = !typeof(T).IsValueType;
-        if (tracked && !writer.TryEnterReference(value!))
-            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(T)));
+        if (tracked && state is not null && !state.TryEnterReference(value!))
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(T)));
+            return;
+        }
 
         try
         {
@@ -123,6 +130,14 @@ internal sealed class ObjectConverter<T>
             // serialization error rather than surfacing as a writer-level duplicate-key failure.
             HashSet<string>? emittedKeys = metadata.ExtensionData is null ? null : new HashSet<string>(StringComparer.Ordinal);
 
+            // Refuse to descend past the ceiling before opening the table, so the failure is recorded cooperatively and
+            // the recursion unwinds through returns rather than throwing from the deepest writer frame.
+            if (state is not null && writer.Depth >= writer.EffectiveMaxDepth)
+            {
+                state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, writer.EffectiveMaxDepth));
+                return;
+            }
+
             writer.WriteStartTable();
             foreach (PropertyMetadata property in metadata.Properties)
             {
@@ -131,15 +146,12 @@ internal sealed class ObjectConverter<T>
                     continue;
 
                 writer.WritePropertyName(property.WireName);
-                try
-                {
-                    property.Converter.WriteAsObject(writer, memberValue, options);
-                }
-                catch (TomlSerializationException ex)
-                {
-                    ex.Path = TomlSerializationException.CombinePath(property.WireName, ex.Path);
-                    throw;
-                }
+
+                state?.PushPath(property.WireName);
+                property.Converter.WriteAsObject(writer, memberValue, options);
+                if (state is { HasFailure: true })
+                    return;
+                state?.PopPath();
 
                 _ = emittedKeys?.Add(property.WireName);
             }
@@ -152,8 +164,8 @@ internal sealed class ObjectConverter<T>
         }
         finally
         {
-            if (tracked)
-                writer.ExitReference(value!);
+            if (tracked && state is not null)
+                state.ExitReference(value!);
         }
     }
 
