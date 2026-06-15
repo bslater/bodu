@@ -109,7 +109,9 @@ public sealed partial class BencodeDocument
     /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than the configured maximum.
     /// </exception>
     /// <remarks>
-    /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="BencodeLimits.AbsoluteMaxDepth" />; a document nested deeper than the
+    /// effective limit throws <see cref="BencodeFormatException" />.
     /// </remarks>
     public static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeDocumentOptions options) =>
         Parse(data, ToReaderOptions(options));
@@ -127,7 +129,9 @@ public sealed partial class BencodeDocument
     /// Thrown when the bytes are not a single, canonical Bencode value, or nest deeper than the configured maximum.
     /// </exception>
     /// <remarks>
-    /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="BencodeDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="BencodeLimits.AbsoluteMaxDepth" />; a document nested deeper than the
+    /// effective limit throws <see cref="BencodeFormatException" />.
     /// </remarks>
     public static BencodeDocument Parse(byte[] data, BencodeDocumentOptions options)
     {

@@ -111,12 +111,16 @@ public ref struct Utf8BencodeReader
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="maxDepth" /> is not positive.
     /// </exception>
-    public Utf8BencodeReader(ReadOnlySpan<byte> data, int maxDepth = 256)
+    /// <remarks>
+    /// The value is clamped to <see cref="BencodeLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
+    /// cannot drive the reader into a <see cref="StackOverflowException" /> on a deeply nested document.
+    /// </remarks>
+    public Utf8BencodeReader(ReadOnlySpan<byte> data, int maxDepth = BencodeLimits.AbsoluteMaxDepth)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(maxDepth, 0);
 
         _data = data;
-        _maxDepth = maxDepth;
+        _maxDepth = Math.Min(maxDepth, BencodeLimits.AbsoluteMaxDepth);
         _frames = [];
         _position = 0;
         _tokenType = BencodeTokenType.None;
@@ -129,10 +133,12 @@ public ref struct Utf8BencodeReader
     /// <param name="data">The Bencode source bytes.</param>
     /// <param name="options">The reader options controlling the maximum nesting depth and key leniency.</param>
     /// <remarks>
-    /// A <see cref="BencodeReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 256.
+    /// A <see cref="BencodeReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
+    /// larger value is clamped to <see cref="BencodeLimits.AbsoluteMaxDepth" />; a document nested deeper than the
+    /// effective limit throws <see cref="BencodeFormatException" />.
     /// </remarks>
     public Utf8BencodeReader(ReadOnlySpan<byte> data, BencodeReaderOptions options)
-        : this(data, options.MaxDepth <= 0 ? 256 : options.MaxDepth)
+        : this(data, options.MaxDepth <= 0 ? BencodeLimits.AbsoluteMaxDepth : options.MaxDepth)
     {
         _allowUnsortedKeys = options.AllowUnsortedKeys;
         _allowDuplicateKeys = options.AllowDuplicateKeys;

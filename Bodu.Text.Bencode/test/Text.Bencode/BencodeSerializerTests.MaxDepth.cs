@@ -34,6 +34,63 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing an object graph nested beyond the absolute ceiling throws
+    /// <see cref="BencodeSerializationException" /> even when the configured maximum depth is far larger, confirming the
+    /// caller-supplied <see cref="BencodeSerializerOptions.MaxDepth" /> is clamped to the hard ceiling.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenGraphExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowBencodeSerializationException()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+
+        var deep = new RecursiveModel();
+        for (var i = 0; i < BencodeLimits.AbsoluteMaxDepth + 1; i++)
+            deep = new RecursiveModel { Child = deep };
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(deep, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing a graph nested far beyond the ceiling throws a catchable
+    /// <see cref="BencodeSerializationException" /> rather than overflowing the call stack, even on a thread whose stack
+    /// is deliberately constrained — pinning the requirement that the ceiling stays reachable before the physical stack
+    /// is exhausted on a modest stack budget.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenGraphFarExceedsCapOnConstrainedStack_ShouldThrowBencodeSerializationExceptionNotOverflow()
+    {
+        var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
+
+        var deep = new RecursiveModel();
+        for (var i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
+            deep = new RecursiveModel { Child = deep };
+
+        Exception? captured = null;
+        var worker = new Thread(
+            () =>
+            {
+                try
+                {
+                    _ = BencodeSerializer.Serialize(deep, options);
+                }
+                catch (Exception ex)
+                {
+                    captured = ex;
+                }
+            },
+            maxStackSize: 256 << 10);
+
+        worker.Start();
+        worker.Join();
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(typeof(BencodeSerializationException), captured.GetType());
+    }
+
+    /// <summary>
     /// Verifies that serializing a POCO graph nested no deeper than <see cref="BencodeSerializerOptions.MaxDepth" />
     /// succeeds and emits canonical bytes.
     /// </summary>

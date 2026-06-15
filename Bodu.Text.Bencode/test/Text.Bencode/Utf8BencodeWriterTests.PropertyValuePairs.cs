@@ -139,7 +139,7 @@ public partial class Utf8BencodeWriterTests
         var buffer = new ArrayBufferWriter<byte>();
 
         var defaulted = new Utf8BencodeWriter(buffer);
-        Assert.AreEqual(256, defaulted.Options.MaxDepth);
+        Assert.AreEqual(BencodeLimits.AbsoluteMaxDepth, defaulted.Options.MaxDepth);
         Assert.IsFalse(defaulted.Options.AllowMultipleRootValues);
 
         var configured = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = 8, AllowMultipleRootValues = true });

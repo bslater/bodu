@@ -352,15 +352,26 @@ public sealed class BencodeSerializerOptions
     }
 
     /// <summary>
-    /// Gets or sets the maximum nesting depth permitted while serializing or deserializing.
+    /// Gets or sets the maximum container nesting depth permitted while serializing or deserializing.
     /// </summary>
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
     /// <returns>The configured maximum depth.</returns>
     /// <remarks>
-    /// The default of <see cref="DefaultMaxDepth" /> (64) is deliberately tighter than the default of 256 used by
-    /// <see cref="Reader.Utf8BencodeReader" />, <see cref="Writer.Utf8BencodeWriter" />, and
-    /// <see cref="Document.BencodeDocument" />: the serializer is the typical entry point for untrusted input, while
-    /// the lower-level surfaces favour permissiveness for callers that manage their own limits.
+    /// <para>
+    /// The limit bounds how deeply lists and dictionaries may nest. It is reached when serializing an object graph — or
+    /// deserializing a document — whose containers nest more levels deep than the effective limit, for example a chain
+    /// of objects each holding the next, a dictionary of dictionaries, or lists within lists. Crossing it is reported
+    /// as a catchable failure: <see cref="BencodeSerializationException" /> while serializing, or
+    /// <see cref="BencodeFormatException" /> while deserializing.
+    /// </para>
+    /// <para>
+    /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the hard ceiling,
+    /// <see cref="BencodeLimits.AbsoluteMaxDepth" /> (64); setting a larger value — even <see cref="int.MaxValue" /> —
+    /// does not raise it. The ceiling exists because the serializer recurses one call-stack frame per nested container,
+    /// so an unbounded depth on hostile or malformed input would exhaust the call stack and terminate the process with
+    /// an uncatchable <see cref="StackOverflowException" />. Clamping converts that into the catchable exceptions
+    /// above.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is negative.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
