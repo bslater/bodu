@@ -124,8 +124,12 @@ public abstract class CachingExchangeRateProviderBase
 
         if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out result, out DateTimeOffset? servedCachedAtUtc))
         {
+            // The snapshot built from cached rows yields Live provenance; overwrite it with the cache lineage so the
+            // returned result and the logged provenance describe the same serve and cannot diverge.
+            result = result with { Provenance = ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now) };
+
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
-            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now), fromIsoCode, toIsoCode);
+            EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
 
@@ -133,7 +137,9 @@ public abstract class CachingExchangeRateProviderBase
         {
             StoreResult(duration, fromIsoCode, toIsoCode, result, now);
             Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
-            EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+
+            // A miss carries the inner provider's Live provenance through unchanged.
+            EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
 

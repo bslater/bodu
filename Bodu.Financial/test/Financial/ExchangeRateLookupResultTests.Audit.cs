@@ -16,7 +16,7 @@ public partial class ExchangeRateLookupResultTests
     {
         DateOnly resolved = new(2024, 1, 3);
         ExchangeRate rate = new("USD", "AUD", resolved, 1.5m, "RBA");
-        ExchangeRateLookupResult result = new(rate, new DateOnly(2024, 1, 5), ExchangeRateDateResolution.PreviousOnOrBefore, 2);
+        ExchangeRateLookupResult result = new(rate, new DateOnly(2024, 1, 5), ExchangeRateDateResolution.PreviousOnOrBefore, 2, ExchangeRateProvenance.Live(rate.Provider));
 
         Assert.AreEqual(resolved, result.ResolvedDate);
     }
@@ -29,7 +29,7 @@ public partial class ExchangeRateLookupResultTests
     public void SignedOffsetDays_WhenResolvedBeforeRequested_ShouldBeNegative()
     {
         ExchangeRate rate = new("USD", "AUD", new DateOnly(2024, 1, 3), 1.5m, "RBA");
-        ExchangeRateLookupResult result = new(rate, new DateOnly(2024, 1, 5), ExchangeRateDateResolution.PreviousOnOrBefore, 2);
+        ExchangeRateLookupResult result = new(rate, new DateOnly(2024, 1, 5), ExchangeRateDateResolution.PreviousOnOrBefore, 2, ExchangeRateProvenance.Live(rate.Provider));
 
         Assert.AreEqual(-2, result.SignedOffsetDays);
         Assert.IsTrue(result.IsPreviousDate);
@@ -44,7 +44,7 @@ public partial class ExchangeRateLookupResultTests
     public void SignedOffsetDays_WhenResolvedAfterRequested_ShouldBePositive()
     {
         ExchangeRate rate = new("USD", "AUD", new DateOnly(2024, 1, 7), 1.5m, "RBA");
-        ExchangeRateLookupResult result = new(rate, new DateOnly(2024, 1, 5), ExchangeRateDateResolution.NextOnOrAfter, 2);
+        ExchangeRateLookupResult result = new(rate, new DateOnly(2024, 1, 5), ExchangeRateDateResolution.NextOnOrAfter, 2, ExchangeRateProvenance.Live(rate.Provider));
 
         Assert.AreEqual(2, result.SignedOffsetDays);
         Assert.IsTrue(result.IsFutureDate);
@@ -59,7 +59,7 @@ public partial class ExchangeRateLookupResultTests
     {
         DateOnly date = new(2024, 1, 5);
         ExchangeRate rate = new("USD", "AUD", date, 1.5m, "RBA");
-        ExchangeRateLookupResult result = new(rate, date, ExchangeRateDateResolution.Exact, 0);
+        ExchangeRateLookupResult result = new(rate, date, ExchangeRateDateResolution.Exact, 0, ExchangeRateProvenance.Live(rate.Provider));
 
         Assert.AreEqual(0, result.SignedOffsetDays);
         Assert.IsFalse(result.IsPreviousDate);

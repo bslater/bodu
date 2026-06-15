@@ -159,7 +159,7 @@ public sealed class FixedDatedExchangeRateProvider
             string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
         {
             ExchangeRate identity = new(fromIsoCode, toIsoCode, date, 1m, IdentityProviderName);
-            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0);
+            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
             return true;
         }
 
@@ -337,7 +337,7 @@ public sealed class FixedDatedExchangeRateProvider
             var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted);
 
             var offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
-            result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays);
+            result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays, ExchangeRateProvenance.Live(rate.Provider));
             return true;
         }
 
