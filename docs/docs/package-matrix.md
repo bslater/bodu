@@ -54,6 +54,10 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 | `Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the Yahoo Finance provider as a singleton backed by a configured `HttpClient`, binding `YahooExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Yahoo`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
 | `Bodu.Financial.ExchangeRates.Caching` | **Preview** | `CachingExchangeRateProvider`, a one-cache-per-provider decorator that wraps any `IDatedExchangeRateProvider` and serves fresh rates from a pluggable cache cascade — `InMemoryExchangeRateCache` and the on-disk `TomlFileExchangeRateCache` (one TOML file per provider and currency pair) — delegating to the inner provider only on a miss; plus `AggregatingExchangeRateProvider`, which groups named child providers behind one entry point and combines them with a pluggable strategy (prioritised fallback, averaging, or per-FX-pair routing). | `Bodu.Text.Toml`, `Bodu.Financial`, `Bodu.Core` |
 | `Bodu.Financial.ExchangeRates.Caching.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the cache cascade (`InMemoryExchangeRateCache`, `TomlFileExchangeRateCache`) and decorate the registered `IDatedExchangeRateProvider` with a `CachingExchangeRateProvider`, so consumers transparently get cached lookups. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.DependencyInjection` |
+| `Bodu.Financial.ExchangeRates.Caching.Distributed` | **Preview** | `DistributedExchangeRateCache`, an `IExchangeRateCache` over a `Microsoft.Extensions.Caching.Distributed.IDistributedCache` (Redis-capable), persisting a provider's dated rates and fetch-coverage windows as a per-pair JSON blob; behaviourally identical to the in-memory, TOML, and SQLite caches and validated against the same `ExchangeRateCacheContractTests`. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Core`, `Microsoft.Extensions.Caching.Abstractions` |
+| `Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register `DistributedExchangeRateCache` as the exchange-rate cache — optionally backed by Redis via `Microsoft.Extensions.Caching.StackExchangeRedis` — binding its options through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Caching.Distributed`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Caching.StackExchangeRedis` |
+| `Bodu.Financial.ExchangeRates.Caching.Sqlite` | **Preview** | `SqliteExchangeRateCache`, an `IExchangeRateCache` over a SQLite database (via `Microsoft.Data.Sqlite`), persisting a provider's dated rates and fetch-coverage windows in `rates` and `coverage` tables; behaviourally identical to the in-memory and TOML caches and validated against the same `ExchangeRateCacheContractTests`. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
+| `Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register `SqliteExchangeRateCache` as the exchange-rate cache, binding `SqliteExchangeRateCacheOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Caching.Sqlite`, `Bodu.Financial.DependencyInjection` |
 
 ## Calendar data packs
 
@@ -114,6 +118,10 @@ dotnet add package Bodu.Financial.ExchangeRates.Yahoo
 dotnet add package Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection
 dotnet add package Bodu.Financial.ExchangeRates.Caching
 dotnet add package Bodu.Financial.ExchangeRates.Caching.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Caching.Distributed
+dotnet add package Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Caching.Sqlite
+dotnet add package Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection
 
 # Calendar regional data packs (install only what you need)
 dotnet add package Bodu.Globalization.Calendar.Americas
