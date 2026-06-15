@@ -262,7 +262,9 @@ public sealed class RbaExchangeRateProvider
         }
 
         // Coalesce concurrent loads of the same era so only one download is in flight; joiners await that shared task.
-        return _loadCoordinator.RunAsync(era.Label, () => LoadEraCoreAsync(era, cancellationToken));
+        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
+        // others; cancellationToken only abandons this caller's wait.
+        return _loadCoordinator.RunAsync(era.Label, ct => LoadEraCoreAsync(era, ct), cancellationToken);
     }
 
     /// <summary>
