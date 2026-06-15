@@ -46,6 +46,7 @@
   <data name="Format_Invalid_TomlUnterminatedString" xml:space="preserve"><value>The string is not terminated.</value></data>
   <data name="Format_Invalid_TomlUnterminatedTable" xml:space="preserve"><value>The table header is not terminated.</value></data>
   <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Op_Invalid_WriterStackTooDeep" xml:space="preserve"><value>The object graph is nested too deeply to serialize without exhausting the call stack.</value></data>
   <data name="Op_Invalid_WriterDuplicateKey" xml:space="preserve"><value>The key '{0}' has already been written to the current table.</value></data>
   <data name="Op_Invalid_WriterValueWithoutKey" xml:space="preserve"><value>A value cannot be written to a table before a property name is written.</value></data>
   <data name="Op_Invalid_WriterPropertyNameOutsideTable" xml:space="preserve"><value>A property name can only be written when the current container is a table.</value></data>

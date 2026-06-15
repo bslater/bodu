@@ -79,6 +79,51 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that the serializer survives an over-deep graph even when the available stack is too small to reach the
+    /// logical depth ceiling, by serializing on a stack that cannot hold <see cref="TomlLimits.AbsoluteMaxDepth" />
+    /// levels of recursion and asserting a catchable <see cref="TomlSerializationException" /> is thrown rather than the
+    /// process overflowing.
+    /// </summary>
+    /// <remarks>
+    /// A 256 KB stack cannot hold <see cref="TomlLimits.AbsoluteMaxDepth" /> levels of serializer recursion, so the
+    /// logical ceiling is unreachable on it: a guard expressed purely as a fixed level count set to the absolute maximum
+    /// would overflow the stack before it could throw. Only a guard that measures the actual remaining stack on each
+    /// descent converts the impending overflow into a catchable failure here, so this pins the runtime stack probe
+    /// specifically, complementing the 512 KB test above where the logical ceiling may still be reached first on a
+    /// platform with small stack frames.
+    /// </remarks>
+    [TestMethod]
+    public void Serialize_WhenGraphExceedsStackBudgetBelowDepthCeiling_ShouldThrowTomlSerializationExceptionNotOverflow()
+    {
+        var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
+
+        RecursiveModel deep = new();
+        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+            deep = new RecursiveModel { Child = deep };
+
+        Exception? captured = null;
+        var worker = new Thread(
+            () =>
+            {
+                try
+                {
+                    _ = TomlSerializer.Serialize(deep, options);
+                }
+                catch (Exception ex)
+                {
+                    captured = ex;
+                }
+            },
+            maxStackSize: 256 << 10);
+
+        worker.Start();
+        worker.Join();
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(typeof(TomlSerializationException), captured.GetType());
+    }
+
+    /// <summary>
     /// Verifies that a <see cref="TomlSerializerOptions.MaxDepth" /> larger than the absolute ceiling is still accepted
     /// by the property, confirming the ceiling is enforced while parsing or writing rather than at configuration time.
     /// </summary>
