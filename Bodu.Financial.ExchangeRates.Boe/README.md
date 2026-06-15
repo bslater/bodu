@@ -8,7 +8,7 @@ It builds an IADB CSV query for the configured series over a date range, parses 
 response with the `Bodu.Text.Formats` RFC 4180 reader, and serves the results as
 `Bodu.Financial.ExchangeRate` values through the standard `IDatedExchangeRateProvider`
 and `IExchangeRateProvider` contracts — so it composes with `Money.ConvertTo`,
-`CompositeDatedExchangeRateProvider`, and the rest of the Bodu.Financial FX stack.
+the caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
 using Bodu.Financial.ExchangeRates.Boe;

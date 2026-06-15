@@ -125,7 +125,7 @@ Bridge between forms via `typed.ToRuntime()` and `ExchangeRate<TBase, TQuote>.Fr
 Provider stack:
 
 - Timeless: `IExchangeRateProvider` with `FixedExchangeRateTable` (inverse-rate fallback).
-- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `CompositeDatedExchangeRateProvider`, `ExchangeRateBook`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`.
+- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `ExchangeRateBook`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`. Grouping several providers (priority-fallback, averaging, per-pair routing) lives in `Bodu.Financial.ExchangeRates.Caching` as `AggregatingExchangeRateProvider`.
 
 ## `MoneyBag`
 

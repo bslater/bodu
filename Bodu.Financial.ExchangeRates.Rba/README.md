@@ -8,7 +8,7 @@ It downloads the RBA `.xls` files, parses them (via
 [`Bodu.IO.Compound`](../Bodu.IO.Compound)), and serves the results as
 `Bodu.Financial.ExchangeRate` values through the standard `IDatedExchangeRateProvider`
 and `IExchangeRateProvider` contracts — so it composes with `Money.ConvertTo`,
-`CompositeDatedExchangeRateProvider`, and the rest of the Bodu.Financial FX stack.
+the caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
 using Bodu.Financial.ExchangeRates.Rba;

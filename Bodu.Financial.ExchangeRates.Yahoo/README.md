@@ -6,7 +6,7 @@ Finance** chart REST service.
 It fetches the Yahoo Finance `v8/finance/chart/{symbol}` endpoint, parses the JSON
 response, and serves the results as `Bodu.Financial.ExchangeRate` values through the
 standard `IDatedExchangeRateProvider` and `IExchangeRateProvider` contracts — so it
-composes with `Money.ConvertTo`, `CompositeDatedExchangeRateProvider`, and the rest of
+composes with `Money.ConvertTo`, the caching and aggregating providers, and the rest of
 the Bodu.Financial FX stack. It is a logical sister to
 [`Bodu.Financial.ExchangeRates.Rba`](../Bodu.Financial.ExchangeRates.Rba): the same
 interfaces and DI shape, a different data source.
