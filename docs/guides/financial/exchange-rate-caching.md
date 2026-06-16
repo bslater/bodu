@@ -224,6 +224,26 @@ For a new **file format**, derive from
 instead and override only `FileExtension`, `Serialize`, and `Deserialize` — the
 base handles the directory layout and best-effort IO.
 
+### Persistent and shared backends
+
+Two further `IExchangeRateCache` backends ship as separate packages and drop in the
+same way — construct one and hand it to a `CachingExchangeRateProvider`, or register
+it through its `*.DependencyInjection` companion:
+
+- [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Sqlite.SqliteExchangeRateCache)
+  (`Bodu.Financial.ExchangeRates.Caching.Sqlite`) persists rates and coverage in a
+  SQLite database — durable across restarts, with per-pair transactional writes.
+  Register it with `AddSqliteExchangeRateCache("RBA", …)`.
+- [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache)
+  (`Bodu.Financial.ExchangeRates.Caching.Distributed`) stores each pair as a JSON blob
+  in any `IDistributedCache` (Redis, SQL Server, in-memory), so several processes share
+  one warm cache. Register it with `AddDistributedExchangeRateCache("RBA")` or
+  `AddRedisExchangeRateCache("RBA", redis => …)`.
+
+Every backend shares the same freshness, merge, and coverage semantics — the same
+`ExchangeRateCacheContractTests` — so the choice is one of reach: in-memory or TOML
+for a single process, SQLite for durable single-process, distributed for many.
+
 ## Grouping providers with the aggregator
 
 [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
