@@ -36,7 +36,7 @@ public sealed class RbaExchangeRateOptions
     /// Gets or sets the catalogue of era files to draw from.
     /// </summary>
     /// <value>The era catalogue; defaults to <see cref="RbaEra.Default" />.</value>
-    public IReadOnlyList<RbaEra> Eras { get; set; } = RbaEra.Default;
+    internal IReadOnlyList<RbaEra> Eras { get; set; } = RbaEra.Default;
 
     /// <summary>
     /// Gets or sets the HTTP request timeout applied to era downloads by the dependency-injection registration.
@@ -72,9 +72,9 @@ public sealed class RbaExchangeRateOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to enable the on-disk cache; otherwise <see langword="false" />. Defaults to
-    /// <see langword="true" />.
+    /// <see langword="false" />.
     /// </value>
-    public bool EnableDiskCache { get; set; } = true;
+    public bool EnableDiskCache { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the directory used by the on-disk cache.
