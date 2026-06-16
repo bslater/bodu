@@ -13,7 +13,8 @@ the caching and aggregating providers, and the rest of the Bodu.Financial FX sta
 ```csharp
 using Bodu.Financial.ExchangeRates.Rba;
 
-var provider = new RbaExchangeRateProvider(httpClient, new RbaExchangeRateOptions());
+// The provider builds and owns its HttpClient from the options; dispose it to release the client.
+using var provider = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
 
 // Warm the cache for a range (recommended), then look rates up synchronously.
 await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
@@ -21,8 +22,9 @@ await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30
 ExchangeRateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 // usd.Rate == 0.6828m
 
-// Read a whole range at once (AUD-based pairs; the reverse direction is inverted).
-IReadOnlyList<ExchangeRate> series =
+// Read a whole range at once (AUD-based pairs; the reverse direction is inverted). The result is
+// an IReadOnlyList<ExchangeRate> that also reports the requested window and the observed span.
+ExchangeRateRangeResult series =
     await provider.GetRatesAsync("AUD", "JPY", new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 12));
 
 // Discover what pairs the loaded data supports.
@@ -42,6 +44,17 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
 - **Configuration.** `RbaExchangeRateOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`; see the `*.DependencyInjection` package for
   `AddRbaHistoricalRates`.
+
+## HTTP client and lifetime
+
+The provider is `IDisposable` and offers two construction styles:
+
+- `new RbaExchangeRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+  `HttpClient`, created via `ExchangeRateHttpClientFactory.Create` from the configured user agent
+  and timeout. Dispose the provider (for example with `using`) to release the client.
+- `new RbaExchangeRateProvider(httpClient, options, ...)` — you supply the client and own its
+  lifetime; the provider never disposes a client it did not create. This is the form the
+  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
 ## Logging
 

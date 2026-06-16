@@ -11,7 +11,8 @@ the caching and aggregating providers, and the rest of the Bodu.Financial FX sta
 ```csharp
 using Bodu.Financial.ExchangeRates.Ecb;
 
-var provider = new EcbExchangeRateProvider(httpClient, new EcbExchangeRateOptions());
+// The provider builds and owns its HttpClient from the options; dispose it to release the client.
+using var provider = new EcbExchangeRateProvider(new EcbExchangeRateOptions());
 
 // Warm the cache for a range (recommended), then look rates up synchronously.
 await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
@@ -19,8 +20,9 @@ await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30
 ExchangeRateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 // usd.Rate.Rate is the number of US dollars per euro on that date.
 
-// Read a whole range at once (EUR-based pairs; the reverse direction is inverted).
-IReadOnlyList<ExchangeRate> series =
+// Read a whole range at once (EUR-based pairs; the reverse direction is inverted). The result is
+// an IReadOnlyList<ExchangeRate> that also reports the requested window and the observed span.
+ExchangeRateRangeResult series =
     await provider.GetRatesAsync("EUR", "JPY", new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 12));
 
 // Discover what pairs the loaded data supports.
@@ -47,6 +49,17 @@ foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
   its `Endpoint` (`EcbEndpointOptions`) — base URL, HTTP timeout, and user-agent — so the
   feeds can be pointed at a mirror or proxy without touching caching or feed selection. See
   the `*.DependencyInjection` package for `AddEcbReferenceRates`.
+
+## HTTP client and lifetime
+
+The provider is `IDisposable` and offers two construction styles:
+
+- `new EcbExchangeRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+  `HttpClient`, created via `ExchangeRateHttpClientFactory.Create` from the configured user agent
+  and timeout. Dispose the provider (for example with `using`) to release the client.
+- `new EcbExchangeRateProvider(httpClient, options, ...)` — you supply the client and own its
+  lifetime; the provider never disposes a client it did not create. This is the form the
+  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
 ## Logging
 
