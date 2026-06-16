@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — ECB Exchange Rates DI</Title>
     <Description>Dependency-injection extensions for the ECB euro reference-rate provider. Registers EcbExchangeRateProvider as a singleton backed by a configured HttpClient and binds EcbExchangeRateOptions through Microsoft.Extensions.Options.</Description>
     <PackageTags>$(PackageTags);financial;ecb;exchange-rate;dependency-injection;options</PackageTags>
   </PropertyGroup>

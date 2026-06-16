@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Financial DI</Title>
     <Description>Microsoft.Extensions.DependencyInjection registration helpers for Bodu.Financial. Configures named monetary contexts and FinancialOptions through IFinancialServiceBuilder, binding currency, rounding, and allocation defaults into the standard options and configuration pipeline.</Description>
     <PackageTags>$(PackageTags);financial;money;currency;dependency-injection;di;options</PackageTags>
   </PropertyGroup>

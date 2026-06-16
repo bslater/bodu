@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu Calendar Data — Europe</Title>
+    <Title>Bodu — Calendar Data (Europe)</Title>
     <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering Europe (United Kingdom, France, Germany), built on the notable-date schema. Additional European territories follow the same Gregorian/Easter pattern. Exposed through the EuropeCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;europe;gb;fr;de</PackageTags>
   </PropertyGroup>

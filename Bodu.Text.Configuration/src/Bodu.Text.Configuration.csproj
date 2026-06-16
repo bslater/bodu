@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — Configuration</Title>
     <Description>An EditorConfig-inspired, INI-backed configuration document model for .NET with independent parse, resolve, and write phases. ConfigurationDocument.Parse turns source text into an IniDocument, .Resolve(targetPath) projects it into a ConfigurationView, and typed view getters read values back. Ships coherent profiles (Bodu, EditorConfigCompatible, Strict, Relaxed) that select matching parse, resolve, and write defaults.</Description>
     <PackageTags>$(PackageTags);text;configuration;ini;editorconfig;config;settings</PackageTags>
   </PropertyGroup>

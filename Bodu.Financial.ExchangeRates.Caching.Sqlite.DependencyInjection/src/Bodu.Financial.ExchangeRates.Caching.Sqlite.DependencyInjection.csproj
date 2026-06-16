@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Exchange Rate Cache (SQLite) DI</Title>
     <Description>Dependency-injection extensions for the SQLite-backed Bodu.Financial exchange-rate cache. Registers a per-provider SqliteExchangeRateCache as an IExchangeRateCache so consumers transparently get a persistent, SQLite-backed cache for cached exchange-rate lookups.</Description>
     <PackageTags>$(PackageTags);financial;exchange-rate;cache;sqlite;dependency-injection;options</PackageTags>
   </PropertyGroup>

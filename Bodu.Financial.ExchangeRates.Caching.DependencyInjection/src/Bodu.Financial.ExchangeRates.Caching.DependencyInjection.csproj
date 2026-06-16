@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Exchange Rate Cache DI</Title>
     <Description>Dependency-injection extensions for the Bodu.Financial exchange-rate caching layer. Registers a per-provider CachingExchangeRateProvider and an AggregatingExchangeRateProvider (priority-fallback, averaging, per-pair routing) so consumers transparently get cached, grouped lookups on both the dated and timeless provider surfaces.</Description>
     <PackageTags>$(PackageTags);financial;exchange-rate;cache;decorator;dependency-injection;options</PackageTags>
   </PropertyGroup>

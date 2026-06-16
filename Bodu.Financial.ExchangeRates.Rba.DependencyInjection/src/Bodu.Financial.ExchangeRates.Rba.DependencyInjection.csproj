@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — RBA Exchange Rates DI</Title>
     <Description>Dependency-injection extensions for the RBA historical exchange-rate provider. Registers RbaExchangeRateProvider as a singleton backed by a configured HttpClient and binds RbaExchangeRateOptions through Microsoft.Extensions.Options.</Description>
     <PackageTags>$(PackageTags);financial;rba;exchange-rate;dependency-injection;options</PackageTags>
   </PropertyGroup>

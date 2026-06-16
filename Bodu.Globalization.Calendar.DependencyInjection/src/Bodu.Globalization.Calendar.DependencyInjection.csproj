@@ -4,7 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar.DependencyInjection</RootNamespace>
-    <Title>Bodu Calendar — Dependency Injection</Title>
+    <Title>Bodu — Calendar DI</Title>
     <Description>Microsoft.Extensions.DependencyInjection registration helpers for Bodu.Globalization.Calendar, registering INotableDateService over a loaded NotableDateResource.</Description>
     <PackageTags>$(PackageTags);calendar;notable-dates;dependency-injection;di</PackageTags>
   </PropertyGroup>

@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — TOML</Title>
     <Description>A self-contained TOML (v1.0.0 / v1.1.0) library for .NET 8, shaped after System.Text.Json and matching the sibling Bodu.Text.Bencode surface: the TomlSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the forward-only ref-struct Utf8TomlReader/Utf8TomlWriter token surface, a mutable TomlNode DOM, and a read-only TomlDocument DOM. Adds native float, boolean, and the four RFC 3339 date-time kinds.</Description>
     <PackageTags>$(PackageTags);text;toml;configuration;serialization;serializer;rfc3339</PackageTags>
   </PropertyGroup>

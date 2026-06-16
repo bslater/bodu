@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — Bencode</Title>
     <Description>A self-contained Bencode (BEP 3) library for .NET 8, shaped after System.Text.Json: the BencodeSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the forward-only ref-struct Utf8BencodeReader/Utf8BencodeWriter token surface, a mutable BencodeNode DOM, and a read-only BencodeDocument DOM. Reads and writes canonical BEP 3 (ascending unique dictionary keys, single root) and can return a value's exact encoded slice for info-hash scenarios.</Description>
     <PackageTags>$(PackageTags);text;bencode;bep3;bittorrent;torrent;serialization;serializer</PackageTags>
   </PropertyGroup>

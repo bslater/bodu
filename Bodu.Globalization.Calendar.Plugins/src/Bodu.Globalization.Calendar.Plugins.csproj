@@ -4,7 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar.Plugins</RootNamespace>
-    <Title>Bodu Calendar — Plugins</Title>
+    <Title>Bodu — Calendar Plugins</Title>
     <Description>External plugin model for Bodu.Globalization.Calendar: trust-gated loading of assemblies that contribute custom INotableDateAlgorithm implementations.</Description>
     <PackageTags>$(PackageTags);calendar;notable-dates;plugins;extensibility</PackageTags>
   </PropertyGroup>

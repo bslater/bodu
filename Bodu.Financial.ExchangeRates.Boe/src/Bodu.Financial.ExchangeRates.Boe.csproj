@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — BoE Exchange Rates</Title>
     <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching.</Description>
     <PackageTags>$(PackageTags);financial;boe;exchange-rate;forex;fx;sterling;gbp;bank-of-england</PackageTags>
   </PropertyGroup>

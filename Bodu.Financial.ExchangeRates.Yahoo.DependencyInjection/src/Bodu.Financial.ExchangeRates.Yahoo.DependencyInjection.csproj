@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Yahoo Finance Exchange Rates DI</Title>
     <Description>Dependency-injection extensions for the Yahoo Finance exchange-rate provider. Registers YahooExchangeRateProvider as a singleton backed by a configured HttpClient and binds YahooExchangeRateOptions through Microsoft.Extensions.Options.</Description>
     <PackageTags>$(PackageTags);financial;yahoo;exchange-rate;dependency-injection;options</PackageTags>
   </PropertyGroup>

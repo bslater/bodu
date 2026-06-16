@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — RBA Exchange Rates</Title>
     <Description>Reserve Bank of Australia (RBA) historical exchange-rate provider for Bodu.Financial. Downloads and parses the RBA's published daily .xls files and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching.</Description>
     <PackageTags>$(PackageTags);financial;rba;exchange-rate;forex;fx;australia;aud</PackageTags>
   </PropertyGroup>

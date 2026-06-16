@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — Calendar</Title>
     <Description>A resource-driven notable-date (holiday and observance) engine for .NET 8. Calendars are declarative, importable documents — concepts, rules, calculation strategies, and adjustment and resolution policies — that the engine resolves into concrete occurrences for a territory and date range. Ships the calculation strategies, astronomical algorithms, range-resolution machinery, shared faith and civil catalogues, and working-day DateOnly/DateTime extensions; regional holiday data ships in the companion Bodu.Globalization.Calendar.&lt;Region&gt; packages.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;observances;working-days;globalization;i18n</PackageTags>
   </PropertyGroup>

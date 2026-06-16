@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — Binary Encodings</Title>
     <Description>Binary-to-text encodings for .NET 8 — Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32 — with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. Every encoding exposes span, string, UTF-8, and IBufferWriter surfaces with Try* and length-calculation overloads for allocation-free use.</Description>
     <PackageTags>$(PackageTags);text;encoding;base16;base32;base58;base64;base85;bech32;hex</PackageTags>
   </PropertyGroup>

@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu Calendar Data — Asia-Pacific</Title>
+    <Title>Bodu — Calendar Data (Asia-Pacific)</Title>
     <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering the Asia-Pacific region (Australia, China, Japan, New Zealand), built on the notable-date schema. Exercises the Gregorian, Chinese lunisolar, equinox, lunar-phase, and gazetted-table strategies through the AsiaPacificCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;asia-pacific;au;cn;jp;nz</PackageTags>
   </PropertyGroup>

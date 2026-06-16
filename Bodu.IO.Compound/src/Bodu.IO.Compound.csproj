@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Compound File</Title>
     <Description>Reader for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files such as .xls, .doc, and .msg. Exposes the embedded named streams of a compound file without any application-format knowledge.</Description>
     <PackageTags>$(PackageTags);cfb;ole2;compound-file;structured-storage;binary</PackageTags>
   </PropertyGroup>

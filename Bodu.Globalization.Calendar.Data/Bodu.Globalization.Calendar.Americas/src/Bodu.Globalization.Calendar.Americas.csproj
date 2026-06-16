@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu Calendar Data — Americas</Title>
+    <Title>Bodu — Calendar Data (Americas)</Title>
     <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering the Americas region (Canada, United States), built on the notable-date schema. Each territory is a self-contained embedded resource exposed through the AmericasCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;americas;ca;us</PackageTags>
   </PropertyGroup>

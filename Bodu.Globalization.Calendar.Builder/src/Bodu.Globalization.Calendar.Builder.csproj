@@ -4,7 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu Calendar — Builder</Title>
+    <Title>Bodu — Calendar Builder</Title>
     <Description>Fluent, chainable C# API for authoring Bodu.Globalization.Calendar notable-date documents on the notable-date schema, with full XML serialization and a JSON-subset surface for load and save.</Description>
     <PackageTags>$(PackageTags);calendar;notable-dates;authoring;builder;xml;json</PackageTags>
   </PropertyGroup>

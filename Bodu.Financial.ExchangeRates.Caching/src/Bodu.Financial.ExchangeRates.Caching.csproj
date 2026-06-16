@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Exchange Rate Cache</Title>
     <Description>Caching layer for Bodu.Financial exchange-rate providers. Provides CachingDatedExchangeRateProvider, a decorator that wraps any IDatedExchangeRateProvider and serves fresh rates from a shared on-disk cache (one TOML file per provider and currency pair), delegating to the inner provider only on a miss.</Description>
     <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;toml;decorator</PackageTags>
   </PropertyGroup>

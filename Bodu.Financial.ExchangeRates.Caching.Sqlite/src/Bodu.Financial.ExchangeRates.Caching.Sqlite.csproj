@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Exchange Rate Cache (SQLite)</Title>
     <Description>SQLite-backed exchange-rate cache for Bodu.Financial. Provides SqliteExchangeRateCache, an IExchangeRateCache implementation that persists a single provider's rates and fetch-coverage windows in a SQLite database, with the same freshness, merge, coverage, and validation semantics as the in-memory and TOML caches.</Description>
     <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;sqlite;decorator</PackageTags>
   </PropertyGroup>

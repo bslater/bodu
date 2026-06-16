@@ -6,6 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Hashing</Title>
     <Description>Non-cryptographic hashing and integrity primitives for .NET: Fletcher-16/32/64, the full RevEng CRC catalogue, and check-digit algorithms (Luhn, Damm, Verhoeff, EAN/UPC/GTIN, ISBN, IBAN, ISIN, LEI, ISO 7064, ...). These are for data integrity and validation, NOT security — do not use them where a cryptographic hash or MAC is required.</Description>
     <PackageTags>$(PackageTags);hashing;checksum;crc;fletcher;luhn;check-digit;integrity</PackageTags>
   </PropertyGroup>

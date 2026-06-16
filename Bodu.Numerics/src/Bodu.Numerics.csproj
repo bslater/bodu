@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Numerics</Title>
     <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;, and Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt; with independent open or closed endpoints and full set algebra. Money, currency, and foreign-exchange types ship in the companion Bodu.Financial package.</Description>
     <PackageTags>$(PackageTags);numerics;fraction;rational;ratio;bigrational;interval;range;math</PackageTags>
   </PropertyGroup>

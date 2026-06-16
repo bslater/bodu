@@ -6,6 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Cryptography</Title>
     <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only — see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
     <PackageTags>$(PackageTags);cryptography;crypto;cipher;aead;hash;mac;ed25519;ml-kem;ml-dsa</PackageTags>
   </PropertyGroup>

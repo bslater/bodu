@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — BoE Exchange Rates DI</Title>
     <Description>Dependency-injection extensions for the Bank of England daily spot exchange-rate provider. Registers BoeExchangeRateProvider as a singleton backed by a configured HttpClient and binds BoeExchangeRateOptions through Microsoft.Extensions.Options.</Description>
     <PackageTags>$(PackageTags);financial;boe;exchange-rate;dependency-injection;options</PackageTags>
   </PropertyGroup>

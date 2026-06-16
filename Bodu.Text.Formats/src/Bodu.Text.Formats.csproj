@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — Text Formats</Title>
     <Description>Parsers and serializers for common text document formats on .NET 8 — delimited text (RFC 4180 CSV/TSV), DotEnv, and INI. Each format offers a static Parse/Format/TryParse entry point, a low-level Reader/Writer pair, an immutable document model, and an options struct controlling parse behaviour and round-trip fidelity, preserving comments and layout so that parse-then-serialize round-trips faithfully.</Description>
     <PackageTags>$(PackageTags);text;formats;csv;tsv;delimited;rfc4180;dotenv;ini</PackageTags>
   </PropertyGroup>
