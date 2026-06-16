@@ -175,3 +175,11 @@ slnx.sqlite
 /ConsoleApp2/
 /bc-csharp/
 **/.cr/personal/
+
+# -----------------------------
+# Strong-name signing keys
+# -----------------------------
+# Commit only the public key (bld/Bodu.public.snk). The PRIVATE key must never be committed —
+# supply it from a secret at release time, ideally to a path outside the working tree.
+*.snk
+!bld/Bodu.public.snk
