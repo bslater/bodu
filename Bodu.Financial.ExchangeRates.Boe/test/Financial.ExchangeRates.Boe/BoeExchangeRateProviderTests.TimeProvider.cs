@@ -21,7 +21,7 @@ public partial class BoeExchangeRateProviderTests
         BoeExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 
-        var rate = provider.GetRate("GBP", "USD");
+        var rate = provider.GetRate("GBP", "USD").Rate.Rate;
 
         Assert.AreEqual(1.2065m, rate);
     }

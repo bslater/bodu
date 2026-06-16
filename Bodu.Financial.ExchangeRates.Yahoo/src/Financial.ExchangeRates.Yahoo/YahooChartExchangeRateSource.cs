@@ -13,8 +13,10 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// </summary>
 /// <remarks>
 /// The bar interval is fixed at one day; the date range is taken from the request and expressed as the <c>period1</c>/
-/// <c>period2</c> Unix-second query parameters. Connection reuse is the responsibility of the supplied
-/// <see cref="HttpClient" /> (typically one created by <c>IHttpClientFactory</c>).
+/// <c>period2</c> Unix-second query parameters. The <c>User-Agent</c> the Yahoo Finance endpoint requires is configured
+/// on the <see cref="HttpClient" /> (by the provider when it owns the client, or by the caller when the client is
+/// supplied), not per request. Connection reuse is the responsibility of the supplied <see cref="HttpClient" />
+/// (typically one created by <c>IHttpClientFactory</c>).
 /// </remarks>
 internal sealed class YahooChartExchangeRateSource
     : IYahooExchangeRateChartSource

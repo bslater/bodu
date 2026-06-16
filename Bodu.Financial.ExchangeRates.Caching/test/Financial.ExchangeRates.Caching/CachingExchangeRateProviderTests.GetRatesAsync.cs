@@ -21,7 +21,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+        IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
         Assert.AreEqual(2, rates.Count);
         Assert.AreEqual(0.5m, rates[0].Rate);
@@ -40,8 +40,8 @@ public sealed partial class CachingExchangeRateProviderTests
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
-        IReadOnlyList<ExchangeRate> second = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+        IReadOnlyList<ExchangeRate> first = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
+        IReadOnlyList<ExchangeRate> second = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
         Assert.AreEqual(2, first.Count);
         Assert.AreEqual(2, second.Count);
@@ -60,7 +60,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10));
+        IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10))];
 
         Assert.AreEqual(2, rates.Count);
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
@@ -79,7 +79,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _clock.Advance(Duration + TimeSpan.FromHours(1));
-        IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+        IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
         Assert.AreEqual(2, rates.Count);
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);

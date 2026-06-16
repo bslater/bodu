@@ -143,6 +143,60 @@ public sealed class FixedDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
+    public ExchangeRateLookupResult GetRate(
+        string fromIsoCode,
+        string toIsoCode,
+        ExchangeRateLookupOptions? options = null)
+    {
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
+        options ??= ExchangeRateLookupOptions.Exact;
+        options.Validate();
+
+        if (options.AllowSameCurrencyIdentityRate && string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
+        {
+            var identityDate = LatestDateInBook();
+            ExchangeRate identity = new(fromIsoCode, toIsoCode, identityDate, 1m, IdentityProviderName);
+            return new ExchangeRateLookupResult(identity, identityDate, options.DateResolution, 0);
+        }
+
+        ExchangeRatePair directPair = new(fromIsoCode, toIsoCode);
+
+        if (TryGetLatestRate(directPair, options, isInverted: false, out ExchangeRateLookupResult result))
+            return result;
+
+        if (options.AllowInverse && TryGetLatestRate(directPair.Inverse(), options, isInverted: true, out result))
+            return result;
+
+        throw new KeyNotFoundException(
+            string.Format(
+                CultureInfo.CurrentCulture,
+                FinancialResourceStrings.IO_KeyNotFound_DatedExchangeRate,
+                fromIsoCode,
+                toIsoCode,
+                "(latest)",
+                options.DateResolution,
+                options.ToleranceDays));
+    }
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        ExchangeRateLookupOptions? options = null,
+        CancellationToken cancellationToken = default) =>
+        new(GetRate(fromIsoCode, toIsoCode, options));
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly date,
+        ExchangeRateLookupOptions? options = null,
+        CancellationToken cancellationToken = default) =>
+        new(GetRate(fromIsoCode, toIsoCode, date, options));
+
+    /// <inheritdoc />
     public bool TryGetRate(
         string fromIsoCode,
         string toIsoCode,
@@ -181,12 +235,11 @@ public sealed class FixedDatedExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(
+    public ExchangeRateRangeResult GetRates(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
-        DateOnly endDate,
-        CancellationToken cancellationToken = default)
+        DateOnly endDate)
     {
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
@@ -196,24 +249,22 @@ public sealed class FixedDatedExchangeRateProvider
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
         List<ExchangeRate> result = new();
 
-        var priority = _providerPriority;
-        for (var i = 0; i < priority.Length; i++)
-        {
-            if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)
-                continue;
-
-            foreach (ExchangeRateObservation observation in series.GetObservations())
-            {
-                if (observation.Date >= startDate && observation.Date <= endDate)
-                    result.Add(new ExchangeRate(fromIsoCode, toIsoCode, observation.Date, observation.Rate, priority[i]));
-            }
-
-            break;
-        }
+        // Prefer the directly quoted series; fall back to the reverse pair, reporting each observation inverted.
+        if (!TryCollectRange(pair, startDate, endDate, isInverted: false, result))
+            _ = TryCollectRange(pair.Inverse(), startDate, endDate, isInverted: true, result);
 
         result.Sort(static (left, right) => left.Date.CompareTo(right.Date));
-        return new ValueTask<IReadOnlyList<ExchangeRate>>(result);
+        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, result);
     }
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateRangeResult> GetRatesAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken = default) =>
+        new(GetRates(fromIsoCode, toIsoCode, startDate, endDate));
 
     /// <summary>
     /// Materialises the supplied observations into a multi-provider <see cref="ExchangeRateBook" />, validating that
@@ -343,5 +394,116 @@ public sealed class FixedDatedExchangeRateProvider
 
         result = default;
         return false;
+    }
+
+    /// <summary>
+    /// Attempts to resolve the most recent observation for the supplied <paramref name="pair" /> by walking the provider
+    /// priority and selecting the latest dated observation of the first matching series.
+    /// </summary>
+    /// <param name="pair">The pair to probe, possibly the inverse of the user's requested pair.</param>
+    /// <param name="options">The lookup options to apply.</param>
+    /// <param name="isInverted">
+    /// <see langword="true" /> if <paramref name="pair" /> is the inverse of the originally requested pair, in which
+    /// case the returned rate is inverted before being reported back to the caller.
+    /// </param>
+    /// <param name="result">When this method returns <see langword="true" />, the resolved lookup result.</param>
+    /// <returns><see langword="true" /> if a rate was resolved; otherwise <see langword="false" />.</returns>
+    private bool TryGetLatestRate(
+        ExchangeRatePair pair,
+        ExchangeRateLookupOptions options,
+        bool isInverted,
+        out ExchangeRateLookupResult result)
+    {
+        var priority = _providerPriority;
+        for (var i = 0; i < priority.Length; i++)
+        {
+            if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null || series.Count == 0)
+                continue;
+
+            // Observations are stored in ascending date order, so the last is the most recent.
+            ExchangeRateObservation latest = series.GetObservations().Last();
+
+            var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
+            var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, latest.Date, latest.Rate, series.Provider, isInverted);
+
+            result = new ExchangeRateLookupResult(rate, latest.Date, options.DateResolution, 0);
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Collects the in-window observations for the supplied <paramref name="pair" /> from the first series that matches
+    /// it under the provider priority, appending one <see cref="ExchangeRateLookupResult" /> per observation.
+    /// </summary>
+    /// <param name="pair">The pair to probe, possibly the inverse of the user's requested pair.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="isInverted">
+    /// <see langword="true" /> if <paramref name="pair" /> is the inverse of the requested pair, in which case each
+    /// observation is reported inverted.
+    /// </param>
+    /// <param name="result">The accumulator the matching observations are appended to.</param>
+    /// <returns>
+    /// <see langword="true" /> if a series matched the pair (even when no observation falls in the window); otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private bool TryCollectRange(
+        ExchangeRatePair pair,
+        DateOnly startDate,
+        DateOnly endDate,
+        bool isInverted,
+        List<ExchangeRate> result)
+    {
+        var priority = _providerPriority;
+        for (var i = 0; i < priority.Length; i++)
+        {
+            if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)
+                continue;
+
+            var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
+            var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+
+            foreach (ExchangeRateObservation observation in series.GetObservations())
+            {
+                if (observation.Date < startDate || observation.Date > endDate)
+                    continue;
+
+                result.Add(ExchangeRate.FromObservedRate(reportedFrom, reportedTo, observation.Date, observation.Rate, series.Provider, isInverted));
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Returns the latest observation date present across every series in the book, or <see cref="DateOnly.MinValue" />
+    /// when the book is empty. Used to stamp a same-currency identity result on the undated surface.
+    /// </summary>
+    /// <returns>The most recent observation date in the book, or <see cref="DateOnly.MinValue" /> when empty.</returns>
+    private DateOnly LatestDateInBook()
+    {
+        DateOnly max = DateOnly.MinValue;
+        var any = false;
+
+        foreach (ExchangeRateSeriesKey key in _book.Keys)
+        {
+            if (!_book.TryGetSeries(key.Pair, key.Provider, out ExchangeRateSeries? series) || series is null || series.Count == 0)
+                continue;
+
+            DateOnly last = series.GetObservations().Last().Date;
+            if (!any || last > max)
+            {
+                max = last;
+                any = true;
+            }
+        }
+
+        return max;
     }
 }

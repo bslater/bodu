@@ -21,7 +21,7 @@ public partial class YahooExchangeRateProviderTests
         YahooExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
-        var rate = provider.GetRate("AUD", "USD");
+        var rate = provider.GetRate("AUD", "USD").Rate.Rate;
 
         Assert.AreEqual(0.6855m, rate);
     }

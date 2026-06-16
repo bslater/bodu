@@ -23,6 +23,10 @@ public sealed class DatedExchangeRateProviderRegistrationTests
         : IDatedExchangeRateProvider
     {
         /// <inheritdoc />
+        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
         public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null) =>
             throw new NotSupportedException();
 
@@ -31,7 +35,19 @@ public sealed class DatedExchangeRateProviderRegistrationTests
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
     }
 

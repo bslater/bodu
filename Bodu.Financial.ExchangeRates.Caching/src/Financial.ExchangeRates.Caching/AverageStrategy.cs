@@ -116,10 +116,10 @@ public sealed class AverageStrategy
         List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
         foreach (NamedDatedExchangeRateProvider candidate in candidates)
         {
-            IReadOnlyList<ExchangeRate> rates =
+            IEnumerable<ExchangeRate> rates =
                 await candidate.Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
 
-            Dictionary<DateOnly, decimal> byDate = new(rates.Count);
+            Dictionary<DateOnly, decimal> byDate = new();
             foreach (ExchangeRate rate in rates)
                 byDate[rate.Date] = rate.Rate;
 

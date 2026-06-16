@@ -108,6 +108,13 @@ public abstract class CachingExchangeRateProviderBase
     protected abstract IDatedExchangeRateProvider Inner { get; }
 
     /// <inheritdoc />
+    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    {
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+        return GetRate(fromIsoCode, toIsoCode, today, options ?? _options.DefaultLookupOptions);
+    }
+
+    /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
     {
         return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
@@ -142,7 +149,72 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public async ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        ExchangeRateLookupOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+        return GetRateAsync(fromIsoCode, toIsoCode, today, options ?? _options.DefaultLookupOptions, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<ExchangeRateLookupResult> GetRateAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly date,
+        ExchangeRateLookupOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        var now = _timeProvider.GetUtcNow();
+        var duration = _options.GetExpiry(_cache.Provider);
+
+        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
+        {
+            Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now), fromIsoCode, toIsoCode);
+            return result;
+        }
+
+        result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
+        StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+        Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+        EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+        return result;
+    }
+
+    /// <inheritdoc />
+    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    {
+        if (endDate < startDate)
+            throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
+
+        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        var now = _timeProvider.GetUtcNow();
+        var duration = _options.GetExpiry(_cache.Provider);
+
+        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
+        {
+            Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
+            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
+        }
+
+        IReadOnlyList<ExchangeRate> fetched = [.. Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
+
+        // Write the fetched rows and the covered window atomically, regardless of how many rows came back: the request
+        // asked for every interior day, so even an empty fetch must record the whole window as covered or the same range
+        // would be refetched forever. A single atomic write rules out persisting coverage without its rows.
+        ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
+
+        Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<ExchangeRateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -160,7 +232,7 @@ public abstract class CachingExchangeRateProviderBase
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
-            return cached;
+            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
         IReadOnlyList<ExchangeRate> fetched =
@@ -173,7 +245,7 @@ public abstract class CachingExchangeRateProviderBase
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
         EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
-        return fetched;
+        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }
 
     /// <inheritdoc />
