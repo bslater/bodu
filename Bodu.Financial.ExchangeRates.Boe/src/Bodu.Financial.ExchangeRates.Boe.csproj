@@ -2,23 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
     <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching.</Description>
     <PackageTags>bodu;financial;boe;exchange-rate;forex;fx;sterling;gbp;bank-of-england</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

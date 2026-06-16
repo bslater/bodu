@@ -2,25 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only — see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
-    <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

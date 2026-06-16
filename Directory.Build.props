@@ -1,6 +1,18 @@
 <Project>
 
   <!--
+    Project-tier detection from the project's containing folder (src / test / bench). This runs
+    before the csproj body, so concern files imported below can key conventions off the tier
+    without each project repeating them. (Test projects also set IsTestProject explicitly, which
+    Directory.Build.targets relies on after the body is evaluated.)
+  -->
+  <PropertyGroup>
+    <_BoduProjectFolder>$([System.IO.Path]::GetFileName('$(MSBuildProjectDirectory)'))</_BoduProjectFolder>
+    <BoduIsSourceProject Condition="'$(BoduIsSourceProject)' == '' and '$(_BoduProjectFolder)' == 'src'">true</BoduIsSourceProject>
+    <BoduIsBenchmarkProject Condition="'$(BoduIsBenchmarkProject)' == '' and '$(_BoduProjectFolder)' == 'bench'">true</BoduIsBenchmarkProject>
+  </PropertyGroup>
+
+  <!--
     Single import point for shared build configuration: company/copyright metadata, versioning,
     target frameworks, compiler policy, packaging, Source Link, signing, and analyzer settings.
     The concrete properties live in concern-scoped files under bld/, aggregated by bld/Bodu.props.

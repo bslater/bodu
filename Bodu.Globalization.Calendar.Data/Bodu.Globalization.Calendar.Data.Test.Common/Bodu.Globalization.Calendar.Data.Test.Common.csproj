@@ -8,9 +8,6 @@
   -->
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <AssemblyName>Bodu.Globalization.Calendar.Data.Test.Common</AssemblyName>
     <IsPackable>false</IsPackable>

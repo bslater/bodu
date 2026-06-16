@@ -2,23 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
     <Description>Caching layer for Bodu.Financial exchange-rate providers. Provides CachingDatedExchangeRateProvider, a decorator that wraps any IDatedExchangeRateProvider and serves fresh rates from a shared on-disk cache (one TOML file per provider and currency pair), delegating to the inner provider only on a miss.</Description>
     <PackageTags>bodu;financial;exchange-rate;forex;fx;cache;toml;decorator</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

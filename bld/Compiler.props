@@ -18,4 +18,26 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
+  <!-- Implicit usings and nullable reference types are enabled across the repository. -->
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!--
+    Source projects emit an XML documentation file; the doc-comment warnings promoted to errors
+    above then make undocumented public APIs a build failure. Test and benchmark projects do not.
+  -->
+  <PropertyGroup Condition="'$(BoduIsSourceProject)' == 'true'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!--
+    Unsafe code is off by default (the SDK default). A project opts in with AllowUnsafeBlocks=true,
+    which additionally defines the ALLOW_UNSAFE compilation symbol used to guard unsafe code paths.
+  -->
+  <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
+    <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
+  </PropertyGroup>
+
 </Project>
