@@ -1,11 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Description>An EditorConfig-inspired, INI-backed configuration document model for .NET with independent parse, resolve, and write phases. ConfigurationDocument.Parse turns source text into an IniDocument, .Resolve(targetPath) projects it into a ConfigurationView, and typed view getters read values back. Ships coherent profiles (Bodu, EditorConfigCompatible, Strict, Relaxed) that select matching parse, resolve, and write defaults.</Description>
+    <PackageTags>$(PackageTags);text;configuration;ini;editorconfig;config;settings</PackageTags>
   </PropertyGroup>
 
+  <!-- Per-framework compilation symbols. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
@@ -24,6 +28,7 @@
     <Compile Remove="Text.Configuration\ConfigurationThrowHelper.*NetStandard.cs" />
   </ItemGroup>
 
+  <!-- Grant internals to the companion test project and the sibling bridge library. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Text.Configuration.Test</_Parameter1>
@@ -36,11 +41,13 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Text.Formats\src\Bodu.Text.Formats.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Include="ConfigurationResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

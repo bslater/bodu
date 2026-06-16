@@ -1,25 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Description>A self-contained Bencode (BEP 3) library for .NET 8, shaped after System.Text.Json: the BencodeSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the forward-only ref-struct Utf8BencodeReader/Utf8BencodeWriter token surface, a mutable BencodeNode DOM, and a read-only BencodeDocument DOM. Reads and writes canonical BEP 3 (ascending unique dictionary keys, single root) and can return a value's exact encoded slice for info-hash scenarios.</Description>
+    <PackageTags>$(PackageTags);text;bencode;bep3;bittorrent;torrent;serialization;serializer</PackageTags>
   </PropertyGroup>
 
+  <!-- Per-framework compilation symbols. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Text.Bencode.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Include="BencodeResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1,28 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Version>1.0.0</Version>
     <Description>European Central Bank (ECB) euro foreign-exchange reference-rate provider for Bodu.Financial. Downloads and parses the ECB's published eurofxref XML feeds and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching.</Description>
-    <PackageTags>bodu;financial;ecb;exchange-rate;forex;fx;euro;eur;eurofxref</PackageTags>
+    <PackageTags>$(PackageTags);financial;ecb;exchange-rate;forex;fx;euro;eur;eurofxref</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Financial.ExchangeRates.Ecb.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- External package dependencies. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Update="Financial.ExchangeRates.Ecb\EcbResourceStrings.resx">
       <LastGenOutput>EcbResourceStrings.Designer.cs</LastGenOutput>

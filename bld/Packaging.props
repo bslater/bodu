@@ -9,7 +9,12 @@
     <RepositoryType>git</RepositoryType>
     <!--<PackageProjectUrl>https://www.bodu.com.au/</PackageProjectUrl>-->
 
-    <PackageTags>bodu;utilities;library</PackageTags>
+    <!--
+      Brand prefix shared by every Bodu package. Individual projects extend it with their own
+      domain-specific tags via <PackageTags>$(PackageTags);tag1;tag2;...</PackageTags>, so the
+      common 'bodu' tag is defined once here rather than repeated in every project file.
+    -->
+    <PackageTags>bodu</PackageTags>
 
     <!--
       Opt-in shipping switch. Off for ordinary inner-loop and CI test builds; the pack / publish

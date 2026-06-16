@@ -1,29 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Version>1.0.0</Version>
     <Description>SQLite-backed exchange-rate cache for Bodu.Financial. Provides SqliteExchangeRateCache, an IExchangeRateCache implementation that persists a single provider's rates and fetch-coverage windows in a SQLite database, with the same freshness, merge, coverage, and validation semantics as the in-memory and TOML caches.</Description>
-    <PackageTags>bodu;financial;exchange-rate;forex;fx;cache;sqlite;decorator</PackageTags>
+    <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;sqlite;decorator</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Sqlite.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- External package dependencies. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.11" />
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Caching\src\Bodu.Financial.ExchangeRates.Caching.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Update="Financial.ExchangeRates.Caching.Sqlite\CachingSqliteResourceStrings.resx">
       <LastGenOutput>CachingSqliteResourceStrings.Designer.cs</LastGenOutput>

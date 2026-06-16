@@ -1,29 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Version>1.0.0</Version>
     <Description>Distributed (Redis-capable) exchange-rate cache for Bodu.Financial. Provides DistributedExchangeRateCache, an IExchangeRateCache implementation over Microsoft.Extensions.Caching.Distributed.IDistributedCache that persists a single provider's rates and fetch-coverage windows as a per-pair JSON blob, with the same freshness, merge, coverage, and validation semantics as the in-memory, TOML, and SQLite caches.</Description>
-    <PackageTags>bodu;financial;exchange-rate;forex;fx;cache;distributed;redis;decorator</PackageTags>
+    <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;distributed;redis;decorator</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Distributed.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- External package dependencies. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Caching\src\Bodu.Financial.ExchangeRates.Caching.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Update="Financial.ExchangeRates.Caching.Distributed\CachingDistributedResourceStrings.resx">
       <LastGenOutput>CachingDistributedResourceStrings.Designer.cs</LastGenOutput>

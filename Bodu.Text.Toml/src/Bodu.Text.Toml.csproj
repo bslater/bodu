@@ -1,25 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Description>A self-contained TOML (v1.0.0 / v1.1.0) library for .NET 8, shaped after System.Text.Json and matching the sibling Bodu.Text.Bencode surface: the TomlSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the forward-only ref-struct Utf8TomlReader/Utf8TomlWriter token surface, a mutable TomlNode DOM, and a read-only TomlDocument DOM. Adds native float, boolean, and the four RFC 3339 date-time kinds.</Description>
+    <PackageTags>$(PackageTags);text;toml;configuration;serialization;serializer;rfc3339</PackageTags>
   </PropertyGroup>
 
+  <!-- Per-framework compilation symbols. -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Text.Toml.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Include="TomlResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
