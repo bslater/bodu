@@ -103,7 +103,7 @@ public readonly struct ValueRange<TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        IComparer<TKey> comparer = Comparer<TKey>.Default;
+        Comparer<TKey> comparer = Comparer<TKey>.Default;
         return comparer.Compare(StartInclusive, key) <= 0 &&
                comparer.Compare(key, EndExclusive) < 0;
     }

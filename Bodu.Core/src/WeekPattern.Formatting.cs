@@ -78,10 +78,10 @@ public partial struct WeekPattern
     /// </item>
     /// </list>
     /// </param>
-    /// <param name="provider">An <see cref="IFormatProvider" /> (currently ignored).</param>
+    /// <param name="formatProvider">An <see cref="IFormatProvider" /> (currently ignored).</param>
     /// <returns>A formatted seven-character string representing the selected days.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="format" /> is not recognized.</exception>
-    public string ToString(string? format, IFormatProvider? provider)
+    public string ToString(string? format, IFormatProvider? formatProvider)
     {
         (var startDay, var unselectedChar, var isBinary) = ParseFormatForToString(format);
         unselectedChar ??= '_';

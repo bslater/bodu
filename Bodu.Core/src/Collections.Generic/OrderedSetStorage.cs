@@ -82,7 +82,7 @@ internal sealed class OrderedSetStorage<T>
         _buckets = [];
 
         if (capacity > 0)
-            ResizeBuckets(CalculateBucketCapacity(capacity));
+            ResizeBuckets(OrderedSetStorage<T>.CalculateBucketCapacity(capacity));
     }
 
     /// <summary>
@@ -421,7 +421,7 @@ internal sealed class OrderedSetStorage<T>
 
         Array.Resize(ref _items, _count);
         Array.Resize(ref _next, _count);
-        ResizeBuckets(CalculateBucketCapacity(_count));
+        ResizeBuckets(OrderedSetStorage<T>.CalculateBucketCapacity(_count));
         RebuildHashTable();
         _version++;
     }
@@ -536,7 +536,7 @@ internal sealed class OrderedSetStorage<T>
         if (_buckets.Length == 0 ||
             itemCount * MaxLoadFactorDenominator > _buckets.Length * MaxLoadFactorNumerator)
         {
-            ResizeBuckets(CalculateBucketCapacity(itemCount));
+            ResizeBuckets(OrderedSetStorage<T>.CalculateBucketCapacity(itemCount));
             RebuildHashTable();
         }
     }
@@ -554,7 +554,7 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="itemCapacity">The intended item capacity.</param>
     /// <returns>The bucket array length to allocate.</returns>
-    private int CalculateBucketCapacity(int itemCapacity)
+    private static int CalculateBucketCapacity(int itemCapacity)
     {
         var minimum = Math.Max(DefaultCapacity, (itemCapacity * MaxLoadFactorDenominator / MaxLoadFactorNumerator) + 1);
         return RoundUpToPowerOfTwo(minimum);

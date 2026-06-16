@@ -80,7 +80,7 @@ public readonly struct Range<T>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        IComparer<T> comparer = Comparer<T>.Default;
+        Comparer<T> comparer = Comparer<T>.Default;
         return comparer.Compare(StartInclusive, value) <= 0 &&
                comparer.Compare(value, EndExclusive) < 0;
     }
